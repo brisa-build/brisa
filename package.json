@@ -1,0 +1,25 @@
+{
+  "name": "bunrise",
+  "module": "./out/index.ts",
+  "version": "0.1.0-alpha.1",
+  "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "Aral Roca Gòmez",
+    "email": "contact@aralroca.com"
+  },
+  "files": [
+    "out"
+  ],
+  "scripts": {
+    "build": "bun build --minify --outdir=out src/index.ts",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "5.0.0"
+  }
+}
