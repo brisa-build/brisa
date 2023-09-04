@@ -1,16 +1,4 @@
-interface Props {
-  [key: string]: any;
-  children?: JSXNode;
-}
-
-type JSXNode = string | number | JSXElement;
-
-interface JSXElement {
-  type: string | JSXComponent;
-  props: Props;
-}
-
-type JSXComponent = (props: Props) => JSXNode;
+import type { Props, JSXNode, JSXElement } from "../types";
 
 function renderAttributes(props: Props): string {
   let attributes = '';
@@ -34,19 +22,17 @@ function renderChildren(children: JSXNode | undefined): string {
   return renderChild(children);
 }
 
-export function renderToString(element: JSXElement): string {
-  if (typeof element.type === 'function') {
-    const jsx = element.type(element.props)
+export function renderToString({ type, props }: JSXElement): string {
+  if (typeof type === 'function') {
+    const jsx = type(props)
     return typeof jsx === 'string' || typeof jsx === 'number' ? jsx.toString() : renderToString(jsx)
   }
 
-  const attributes = renderAttributes(element.props)
-  const content = renderChildren(element.props.children)
-  const openTag = `<${element.type}${attributes}>`
+  const attributes = renderAttributes(props)
+  const content = renderChildren(props.children)
 
-  return `${openTag}${content}</${element.type}>`
+  return `<${type}${attributes}>${content}</${type}>`
 }
-
 
 export function page(element: JSXElement, responseOptions?: ResponseInit) {
   return new Response(renderToString(element), responseOptions ?? {

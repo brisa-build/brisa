@@ -1,8 +1,10 @@
-function Fragment(props) {
+import type { Props } from "../types";
+
+function Fragment(props: Props) {
   return props.children;
 }
 
-function createNode(type, props, key, __source, __self) {
+function createNode(type: string | number | object | Function, props: Props, key: string, __source: unknown, __self: unknown) {
   return {
     type,
     props,
