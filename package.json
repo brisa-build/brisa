@@ -2,7 +2,7 @@
   "name": "bunrise",
   "module": "./out/index.js",
   "main": "./out/index.js",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
@@ -20,8 +20,8 @@
   "scripts": {
     "build": "bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:bunrise",
     "build:bunrise": "bun build --minify --outdir=out bunrise/index.ts",
-    "build:jsx-runtime": "bun build --minify --outdir=out/jsx-runtime jsx-runtime/index.ts",
-    "build:jsx-dev-runtime": "bun build --minify --outdir=out/jsx-dev-runtime jsx-runtime/index.ts",
+    "build:jsx-runtime": "bun build --minify --outdir=jsx-runtime jsx-runtime/index.ts",
+    "build:jsx-dev-runtime": "bun build --minify --outdir=jsx-dev-runtime jsx-runtime/index.ts",
     "test": "bun test"
   },
   "devDependencies": {

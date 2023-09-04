@@ -111,6 +111,8 @@ web_modules/
 
 .next
 out
+jsx-runtime
+jsx-dev-runtime
 
 # Nuxt.js build / generate output
 
