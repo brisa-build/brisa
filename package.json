@@ -1,13 +1,18 @@
 {
   "name": "bunrise",
-  "module": "./out/index.ts",
-  "version": "0.1.0-alpha.2",
+  "module": "./out/index.js",
+  "main": "./out/index.js",
+  "version": "0.1.0-alpha.3",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
   "author": {
     "name": "Aral Roca Gòmez",
     "email": "contact@aralroca.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aralroca/bunrise.git"
   },
   "files": [
     "out"
