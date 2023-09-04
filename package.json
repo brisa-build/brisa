@@ -2,7 +2,7 @@
   "name": "bunrise",
   "module": "./out/index.js",
   "main": "./out/index.js",
-  "version": "0.1.0-alpha.5",
+  "version": "0.1.0-alpha.6",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
@@ -15,7 +15,9 @@
     "url": "https://github.com/aralroca/bunrise.git"
   },
   "files": [
-    "out"
+    "out",
+    "jsx-runtime",
+    "jsx-dev-runtime"
   ],
   "scripts": {
     "build": "bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:bunrise",
