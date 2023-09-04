@@ -13,7 +13,8 @@
     "out"
   ],
   "scripts": {
-    "build": "bun build --minify --outdir=out src/index.ts",
+    "build": "bun run build:jsx-runtime && bun run build:bunrise",
+    "build:bunrise": "bun build --minify --outdir=out src/index.ts",
     "build:jsx-runtime": "bun build --minify --outdir=out src/jsx-runtime.ts",
     "test": "bun test"
   },
