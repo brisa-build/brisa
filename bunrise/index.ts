@@ -46,3 +46,12 @@ export function renderToString(element: JSXElement): string {
 
   return `${openTag}${content}</${element.type}>`
 }
+
+
+export function page(element: JSXElement, responseOptions?: ResponseInit) {
+  return new Response(renderToString(element), responseOptions ?? {
+    headers: {
+      'content-type': 'text/html;charset=UTF-8'
+    }
+  })
+}
