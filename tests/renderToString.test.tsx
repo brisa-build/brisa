@@ -37,4 +37,18 @@ describe('renderToString', () => {
     const expected = '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>'
     expect(result).toEqual(expected)
   })
+
+  it('should be possible to access to the request object inside components', async () => {
+    const Component = ({ name, title }: { name: string, title: string }, { request }: { request: Request }) => (
+      <div title={title}>
+        <h1>Hello {name}</h1>
+        <p>The URL is: {request.url}</p>
+      </div>
+    )
+    const element = <Component name="World" title="Test" />
+    const context = { request: new Request('http://test.com/') }
+    const result = await renderToString(element, context)
+    const expected = '<div title="Test"><h1>Hello World</h1><p>The URL is: http://test.com/</p></div>'
+    expect(result).toEqual(expected)
+  })
 })
