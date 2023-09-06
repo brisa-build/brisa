@@ -4,6 +4,8 @@
 - [x] Fix jsx-runtime types (JSX.IntrinsicElements...)
 - [x] async components
 - [ ] stream rendering
+- [ ] async components error component
+- [ ] async components loading component (pending state)
 - [ ] Make a CLI that compiles + executes the app (no need to make Bun.serve(/* ... */))
 - [ ] Read pages as Next.js way /pages/index.ts or /src/pages/index.ts
 - [ ] Investigate better alternative to manage the state, context and events
