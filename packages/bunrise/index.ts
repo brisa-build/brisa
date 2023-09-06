@@ -10,32 +10,36 @@ function renderAttributes(props: Props): string {
   return attributes;
 }
 
-function renderChildren(children: JSXNode | undefined): string {
+async function renderChildren(children: JSXNode | undefined): Promise<string> {
   const renderChild = (child: JSXNode | undefined) => {
     if (typeof child === 'string') return child;
     if (typeof child === 'object') return renderToString(child);
     return '';
   }
 
-  if (Array.isArray(children)) return children.map(renderChild).join('');
+  if (Array.isArray(children)) return (await Promise.all(children.map(renderChild))).join('');
 
   return renderChild(children);
 }
 
-export function renderToString({ type, props }: JSXElement): string {
+export async function renderToString({ type, props }: JSXElement): Promise<string> {
   if (typeof type === 'function') {
-    const jsx = type(props)
-    return typeof jsx === 'string' || typeof jsx === 'number' ? jsx.toString() : renderToString(jsx)
+    let jsx = type(props)
+
+    if (jsx instanceof Promise) return jsx.then(renderToString)
+    if (typeof jsx === 'string' || typeof jsx === 'number') return jsx.toString()
+
+    return renderToString(jsx)
   }
 
   const attributes = renderAttributes(props)
-  const content = renderChildren(props.children)
+  const content = await renderChildren(props.children)
 
   return `<${type}${attributes}>${content}</${type}>`
 }
 
-export function page(element: JSXElement, responseOptions?: ResponseInit) {
-  return new Response(renderToString(element), responseOptions ?? {
+export async function page(element: JSXElement, responseOptions?: ResponseInit) {
+  return new Response(await renderToString(element), responseOptions ?? {
     headers: {
       'content-type': 'text/html;charset=UTF-8'
     }
