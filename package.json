@@ -3,7 +3,7 @@
   "module": "./out/index.js",
   "main": "./out/index.js",
   "types": "./types/index.d.ts",
-  "version": "0.1.0-alpha.20",
+  "version": "0.1.0-alpha.21",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
