@@ -10,7 +10,7 @@ describe('renderToString', () => {
   })
 
   it('should render a complex JSX element', () => {
-    const Component = ({ name, title }) => (
+    const Component = ({ name, title }: { name: string, title: string }) => (
       <div title={title}>
         <h1>Hello {name}</h1>
         <p>This is a paragraph</p>
