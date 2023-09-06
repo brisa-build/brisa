@@ -22,11 +22,12 @@ async function renderChildren(children: JSXNode | undefined): Promise<string> {
   return renderChild(children);
 }
 
-export async function renderToString({ type, props }: JSXElement): Promise<string> {
-  if (typeof type === 'function') {
-    let jsx = type(props)
+export async function renderToString(element: JSXElement | Promise<JSXElement>): Promise<string> {
+  const { type, props } = await Promise.resolve(element)
 
-    if (jsx instanceof Promise) return jsx.then(renderToString)
+  if (typeof type === 'function') {
+    const jsx = await Promise.resolve(type(props))
+
     if (typeof jsx === 'string' || typeof jsx === 'number') return jsx.toString()
 
     return renderToString(jsx)

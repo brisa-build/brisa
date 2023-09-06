@@ -23,15 +23,18 @@ describe('renderToString', () => {
   })
 
   it('should work with async components', async () => {
+    const AsyncChild = async ({ name }: { name: string }) => (
+      <h1>Hello {await Promise.resolve('test')} {name}</h1>
+    )
     const AsyncComponent = async ({ title }: { title: string }) => (
       <div title={title}>
-        <h1>Hello {await Promise.resolve('test')}</h1>
+        <AsyncChild name="test" />
         <p>This is a paragraph</p>
       </div>
     )
-    const element = <AsyncComponent title="Test" />
-    const result = await renderToString(element)
-    const expected = '<div title="Test"><h1>Hello test</h1><p>This is a paragraph</p></div>'
+
+    const result = await renderToString(<AsyncComponent title="Test" />)
+    const expected = '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>'
     expect(result).toEqual(expected)
   })
 })

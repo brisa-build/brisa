@@ -3,7 +3,7 @@
   "module": "./out/index.js",
   "main": "./out/index.js",
   "types": "./types/index.d.ts",
-  "version": "0.1.0-alpha.19",
+  "version": "0.1.0-alpha.20",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
@@ -28,11 +28,11 @@
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime packages/jsx-runtime/index.ts && cp types/index.d.ts jsx-dev-runtime/index.d.ts",
     "test": "bun test",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",
-    "clean": "rm -rf out jsx-runtime/index.js jsx-dev-runtime"
+    "clean": "rm -rf out jsx-runtime jsx-dev-runtime"
   },
   "devDependencies": {
     "bun-types": "latest",
-    "bunrise": "0.1.0-alpha.18"
+    "bunrise": "0.1.0-alpha.19"
   },
   "peerDependencies": {
     "typescript": "5.0.0"
