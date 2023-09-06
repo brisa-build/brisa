@@ -5,6 +5,11 @@ export interface Props {
 
 export type JSXNode = string | number | JSXElement;
 
+export type HtmlEscaped = { isEscaped: true }
+export type HtmlEscapedString = string & HtmlEscaped
+
+type Child = string | number | JSXNode | Child[];
+
 export interface JSXElement {
   type: string | JSXComponent;
   props: Props;
@@ -14,6 +19,11 @@ export type JSXComponent = (props: Props) => JSXNode;
 
 declare global {
   export namespace JSX {
+    type Element = HtmlEscapedString
+
+    interface ElementChildrenAttribute {
+      children: Child
+    }
     interface IntrinsicElements {
       // HTML
       a: HTMLAttributes<HTMLAnchorElement>;
