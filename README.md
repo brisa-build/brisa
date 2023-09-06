@@ -1,15 +1,7 @@
-# bunrise
+# Bunrise
+## TODO
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v0.8.1. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- [ ] Fix jsx-runtime types (JSX.IntrinsicElements...)
+- [ ] Make a CLI that compiles + executes the app (no need to make Bun.serve(/* ... */))
+- [ ] Read pages as Next.js way /pages/index.ts or /src/pages/index.ts
+- [ ] Investigate better alternative to manage the state and events
