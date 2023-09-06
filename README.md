@@ -6,7 +6,7 @@
 - [ ] stream rendering
 - [ ] async components error component
 - [ ] async components loading component (pending state)
-- [ ] Investigate and do (if possible) to support components to have request as second param
+- [x] Investigate and do (if possible) to support components to have request as second param
 - [ ] api folder
 - [ ] hotreloading
 - [ ] Make a CLI that compiles + executes the app (no need to make Bun.serve(/* ... */))

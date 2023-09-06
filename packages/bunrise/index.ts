@@ -1,4 +1,4 @@
-import type { Props, JSXNode, JSXElement, Context } from "../../types/index";
+import type { Props, JSXNode, JSXElement } from "../../types/index";
 
 function renderAttributes(props: Props): string {
   let attributes = '';
@@ -10,10 +10,10 @@ function renderAttributes(props: Props): string {
   return attributes;
 }
 
-async function renderChildren(children: JSXNode | undefined, context: Context): Promise<string> {
+async function renderChildren(children: JSXNode | undefined, request: BunriseRequest): Promise<string> {
   const renderChild = (child: JSXNode | undefined) => {
     if (typeof child === 'string') return child;
-    if (typeof child === 'object') return renderToString(child, context);
+    if (typeof child === 'object') return renderToString(child, request);
     return '';
   }
 
@@ -22,29 +22,35 @@ async function renderChildren(children: JSXNode | undefined, context: Context): 
   return renderChild(children);
 }
 
-export async function renderToString(element: JSXElement | Promise<JSXElement>, context: Context = {}): Promise<string> {
+export async function renderToString(element: JSXElement | Promise<JSXElement>, request: BunriseRequest): Promise<string> {
   const { type, props } = await Promise.resolve(element)
 
   if (typeof type === 'function') {
-    const jsx = await Promise.resolve(type(props, context))
+    const jsx = await Promise.resolve(type(props, request))
 
     if (typeof jsx === 'string' || typeof jsx === 'number') return jsx.toString()
 
-    return renderToString(jsx, context)
+    return renderToString(jsx, request)
   }
 
   const attributes = renderAttributes(props)
-  const content = await renderChildren(props.children, context)
+  const content = await renderChildren(props.children, request)
 
   return `<${type}${attributes}>${content}</${type}>`
 }
 
 export async function page(element: JSXElement, request: Request, responseOptions?: ResponseInit) {
-  const context = { request }
-
-  return new Response(await renderToString(element, context), responseOptions ?? {
+  return new Response(await renderToString(element, new BunriseRequest(request)), responseOptions ?? {
     headers: {
       'content-type': 'text/html;charset=UTF-8'
     }
   })
+}
+
+export class BunriseRequest extends Request {
+  constructor(request: Request) {
+    super(request)
+  }
+
+  context = new Map<string, any>();
 }
