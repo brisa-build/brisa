@@ -8,11 +8,11 @@ export type JSXNode = string | number | JSXElement;
 type Child = string | number | JSXNode | Child[];
 
 export interface JSXElement {
-  type: string | JSXComponent;
+  type: string | JSXComponent | Promise<JSXComponent>;
   props: Props;
 }
 
-export type JSXComponent = (props: Props) => JSXNode;
+export type JSXComponent = (props: Props) => JSXNode | Promise<JSXNode>;
 
 declare global {
   export namespace JSX {
