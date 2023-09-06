@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test"
-import { renderToString } from "../bunrise"
+import { renderToString } from "../packages/bunrise"
 
 describe('renderToString', () => {
   it('should render a simple JSX element', () => {
