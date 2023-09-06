@@ -1,10 +1,10 @@
+export interface BunriseRequest extends Request {
+  context: Map<string, any>;
+}
+
 export interface Props {
   [key: string]: any;
   children?: JSXNode;
-}
-
-export type Context = {
-  request?: Request
 }
 
 export type JSXNode = string | number | JSXElement;
@@ -16,7 +16,8 @@ export interface JSXElement {
   props: Props;
 }
 
-export type JSXComponent = (props: Props, context?: Context) => JSXNode | Promise<JSXNode>;
+export type JSXComponent = (props: Props) => JSXNode | Promise<JSXNode>;
+export type JSXComponent = (props: Props, request: BunriseRequest) => JSXNode | Promise<JSXNode>;
 
 declare global {
   export namespace JSX {
