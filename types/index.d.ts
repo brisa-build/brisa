@@ -16,7 +16,7 @@ export type JSXComponent = (props: Props) => JSXNode;
 
 declare global {
   export namespace JSX {
-    type Element = JSXElement
+    type Element = JSXElement | Promise<JSXElement>;
 
     interface ElementChildrenAttribute {
       children: Child
