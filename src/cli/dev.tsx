@@ -1,6 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import { page } from 'bunrise'
+import fs from 'node:fs';
+import path from 'node:path';
+import { page } from '../bunrise'
+import { JSXElement } from '../types';
 
 process.env.NODE_ENV = 'development';
 
@@ -30,7 +31,7 @@ const server = Bun.serve({
       const module = await import(route.filePath)
       const PageComponent = module.default
 
-      return page(<PageComponent />, req);
+      return page(<PageComponent /> as JSXElement, req);
     }
 
     if (fs.existsSync(assetPath)) return new Response(Bun.file(assetPath));
