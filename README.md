@@ -19,6 +19,7 @@
 - [ ] Investigate better alternative to manage the state, context and events in front
 - [ ] Assets (images, favicon, manifest, etc)
 - [ ] Implement state, context and events in front
+- [ ] Dialogs
 - [ ] i18n routing
 - [ ] middleware
 - [ ] meta attributes per page
