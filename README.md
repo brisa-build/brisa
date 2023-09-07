@@ -7,8 +7,8 @@
 - [x] Add request as second param of components (to access to params, cookies, url, headers, etc)
 - [x] CLI dev
 - [x] api folder
-- [ ] access variable of dynamic routing
-- [ ] hotreloading
+- [x] access variable of dynamic routing
+- [ ] hotreloading (I think has an issue in current version of Bun)
 - [ ] CLI build
 - [ ] CLI start
 - [ ] stream rendering
