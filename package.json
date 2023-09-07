@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "bun-types": "latest",
-    "bunrise": "0.1.0-alpha.21"
+    "bunrise": "0.1.0-alpha.25"
   },
   "peerDependencies": {
     "typescript": "5.0.0"
