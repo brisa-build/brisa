@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$1" = "dev" ]; then
-    bun --watch node_modules/bunrise/out/cli/dev.js
+    bun --hot node_modules/bunrise/out/cli/dev.js
 elif [ "$1" = "build" ]; then
     bun node_modules/bunrise/out/cli/build.js
 elif [ "$1" = "start" ]; then
