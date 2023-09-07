@@ -18,13 +18,16 @@ else {
 }
 
 const assetsDir = path.join(dir, '..', 'public');
+const apiDir = path.join(dir, '..', 'api');
 const pagesRouter = new Bun.FileSystemRouter({ style: "nextjs", dir });
+const apiRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: apiDir });
 
 const server = Bun.serve({
   port: 3000,
   fetch: async (req) => {
     const url = new URL(req.url);
     const route = pagesRouter.match(url.pathname);
+    const apiRoute = apiRouter.match(url.pathname);
     const assetPath = path.join(assetsDir, url.pathname)
 
     if (route) {
@@ -35,6 +38,12 @@ const server = Bun.serve({
     }
 
     if (fs.existsSync(assetPath)) return new Response(Bun.file(assetPath));
+
+    if (apiRoute) {
+      const module = await import(apiRoute.filePath)
+      const method = req.method.toLowerCase();
+      if (module[method]) return module[method](req);
+    }
 
     // TODO: support 404 page
     return new Response('Not found', { status: 404 })
