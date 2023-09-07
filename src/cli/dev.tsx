@@ -20,19 +20,16 @@ else {
   process.exit(1);
 }
 
-const assetsDir = path.join(dir, "..", "public");
-const apiDir = path.join(dir, "..", "api");
+const rootDir = path.join(dir, "..");
+const assetsDir = path.join(rootDir, "public");
 const pagesRouter = new Bun.FileSystemRouter({ style: "nextjs", dir });
-
-const apiRouter = fs.existsSync(apiDir)
-  ? new Bun.FileSystemRouter({ style: "nextjs", dir: apiDir })
-  : null;
+const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: rootDir })
 
 export default async function fetch(req: Request) {
   const url = new URL(req.url);
   const route = pagesRouter.match(req);
-  const apiRoute = apiRouter?.match?.(req);
   const isApi = url.pathname.startsWith('/api/');
+  const apiRoute = isApi ? rootRouter.match(req) : null;
   const assetPath = path.join(assetsDir, url.pathname);
 
   if (!isApi && route) {
