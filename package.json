@@ -3,7 +3,7 @@
   "module": "./out/index.js",
   "main": "./out/index.js",
   "types": "./types/index.d.ts",
-  "version": "0.1.0-alpha.22",
+  "version": "0.1.0-alpha.23",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
@@ -22,13 +22,22 @@
     "types"
   ],
   "scripts": {
-    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:bunrise",
+    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:bunrise && bun run build:cli",
     "build:bunrise": "bun build --minify --target=bun --outdir=out packages/bunrise/index.ts",
     "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime packages/jsx-runtime/index.ts && cp types/index.d.ts jsx-runtime/index.d.ts",
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime packages/jsx-runtime/index.ts && cp types/index.d.ts jsx-dev-runtime/index.d.ts",
+    "build:cli": "bun run build:cli:build && bun run build:cli:start && bun run build:cli:dev",
+    "build:cli:build": "bun build ./packages/cli/build.ts --outfile cli-build --compile",
+    "build:cli:start": "bun build ./packages/cli/start.ts --outfile cli-start --compile",
+    "build:cli:dev": "bun build ./packages/cli/dev.ts --outfile cli-dev --compile",
     "test": "bun test",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",
-    "clean": "rm -rf out jsx-runtime jsx-dev-runtime"
+    "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli"
+  },
+  "bin": {
+    "bunrise build": "./cli-build",
+    "bunrise start": "./cli-start",
+    "bunrise dev": "./cli-dev"
   },
   "devDependencies": {
     "bun-types": "latest",
