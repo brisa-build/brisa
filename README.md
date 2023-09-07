@@ -8,7 +8,7 @@
 - [x] CLI dev
 - [x] api folder
 - [x] access variable of dynamic routing
-- [ ] hotreloading (I think has an issue in current version of Bun)
+- [-] hotreloading (Works but is displaying an error in the console)
 - [ ] CLI build
 - [ ] CLI start
 - [ ] stream rendering

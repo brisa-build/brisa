@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { BunriseRequest, renderToString } from "../bunrise";
 import { JSXElement } from "../types";
+import { enableLiveReload } from "./dev-live-reload";
 
 process.env.NODE_ENV = "development";
 
@@ -9,21 +10,17 @@ const projectDir = import.meta.dir.replace(
   /(\/|\\)node_modules(\/|\\)bunrise(\/|\\)out(\/|\\)cli/,
   "",
 );
-const pagesDir = path.join(projectDir, "pages");
-const srcPagesDir = path.join(projectDir, "src", "pages");
-let dir;
+const pagesDir = path.join(projectDir, "src", "pages");
 
-if (fs.existsSync(pagesDir)) dir = pagesDir;
-else if (fs.existsSync(srcPagesDir)) dir = srcPagesDir;
-else {
-  console.error('Not exist "pages" or "src/pages" directory');
+if (!fs.existsSync(pagesDir)) {
+  console.error('Not exist "src/pages" directory. It\'s required to run "bunrise dev"');
   process.exit(1);
 }
 
-const rootDir = path.join(dir, "..");
-const assetsDir = path.join(rootDir, "public");
-const pagesRouter = new Bun.FileSystemRouter({ style: "nextjs", dir });
-const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: rootDir })
+const srcDir = path.join(pagesDir, "..");
+const assetsDir = path.join(srcDir, "public");
+const pagesRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: pagesDir });
+const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: srcDir })
 
 export default async function fetch(req: Request) {
   const url = new URL(req.url);
@@ -59,6 +56,7 @@ export default async function fetch(req: Request) {
   return new Response("Not found", { status: 404 });
 }
 
-const server = Bun.serve({ port: 3000, fetch });
+const serverOptions = enableLiveReload({ port: 3000, fetch });
+const server = Bun.serve(serverOptions);
 
 console.log(`Listening on http://localhost:${server.port}...`);
