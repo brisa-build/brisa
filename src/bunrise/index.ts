@@ -1,4 +1,4 @@
-import type { Props, JSXNode, JSXElement } from "../../types/index";
+import type { Props, JSXNode, JSXElement } from "../types/index";
 
 function renderAttributes(props: Props): string {
   let attributes = '';

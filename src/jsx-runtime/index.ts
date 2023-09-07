@@ -1,4 +1,4 @@
-import type { Props } from "../../types/index.d.ts";
+import type { Props } from "../types/index";
 
 function Fragment(props: Props) {
   return props.children;
