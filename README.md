@@ -1,4 +1,4 @@
-# Bunrise
+lo# Bunrise
 
 ## TODO
 
@@ -14,6 +14,7 @@
 - [ ] stream rendering
 - [ ] async components error component
 - [ ] async components loading component (pending state)
+- [ ] Server events
 - [ ] \_404 and \_500 page support
 - [ ] Read pages as Next.js way /pages/index.ts or /src/pages/index.ts
 - [ ] Investigate better alternative to manage the state, context and events in front
