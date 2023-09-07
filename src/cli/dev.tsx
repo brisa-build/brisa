@@ -20,34 +20,35 @@ else {
 const assetsDir = path.join(dir, '..', 'public');
 const apiDir = path.join(dir, '..', 'api');
 const pagesRouter = new Bun.FileSystemRouter({ style: "nextjs", dir });
-const apiRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: apiDir });
+const apiRouter = fs.existsSync(apiDir) ? new Bun.FileSystemRouter({ style: "nextjs", dir: apiDir }) : null;
 
-const server = Bun.serve({
-  port: 3000,
-  fetch: async (req) => {
-    const url = new URL(req.url);
-    const route = pagesRouter.match(url.pathname);
-    const apiRoute = apiRouter.match(url.pathname);
-    const assetPath = path.join(assetsDir, url.pathname)
+export default async function fetch(req: Request) {
+  const url = new URL(req.url);
+  const route = pagesRouter.match(url.pathname);
+  const apiPath = url.pathname.replace(/^\/api/, '');
+  const apiRoute = apiRouter?.match?.(apiPath);
+  const assetPath = path.join(assetsDir, url.pathname);
 
-    if (route) {
-      const module = await import(route.filePath)
-      const PageComponent = module.default
+  if (route) {
+    const module = await import(route.filePath)
+    const PageComponent = module.default
 
-      return page(<PageComponent /> as JSXElement, req);
-    }
+    return page(<PageComponent /> as JSXElement, req);
+  }
 
-    if (fs.existsSync(assetPath)) return new Response(Bun.file(assetPath));
+  if (fs.existsSync(assetPath)) return new Response(Bun.file(assetPath));
 
-    if (apiRoute) {
-      const module = await import(apiRoute.filePath)
-      const method = req.method.toLowerCase();
-      if (module[method]) return module[method](req);
-    }
+  if (apiRoute && url.pathname.startsWith('/api')) {
+    const module = await import(apiRoute.filePath)
+    const method = req.method.toLowerCase();
 
-    // TODO: support 404 page
-    return new Response('Not found', { status: 404 })
-  },
-});
+    if (module[method]) return module[method](req);
+  }
+
+  // TODO: support 404 page
+  return new Response('Not found', { status: 404 })
+}
+
+const server = Bun.serve({ port: 3000, fetch });
 
 console.log(`Listening on http://localhost:${server.port}...`);
