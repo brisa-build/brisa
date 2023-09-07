@@ -19,7 +19,10 @@
     "out",
     "jsx-runtime",
     "jsx-dev-runtime",
-    "types"
+    "types",
+    "cli-build",
+    "cli-start",
+    "cli-dev"
   ],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:bunrise && bun run build:cli",
