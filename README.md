@@ -1,4 +1,4 @@
-lo# Bunrise
+# Bunrise
 
 ## TODO
 
@@ -8,17 +8,17 @@ lo# Bunrise
 - [x] CLI dev
 - [x] api folder
 - [x] access variable of dynamic routing
-- [-] hotreloading (Works but is displaying an error in the console)
+- [x] hotreloading (Works but is displaying an error in the console)
+- [x] Assets (images, favicon, manifest, etc)
 - [ ] CLI build
 - [ ] CLI start
 - [ ] stream rendering
 - [ ] async components error component
 - [ ] async components loading component (pending state)
-- [ ] Server events
+- [ ] Server actions and server events by default
 - [ ] \_404 and \_500 page support
 - [ ] Read pages as Next.js way /pages/index.ts or /src/pages/index.ts
 - [ ] Investigate better alternative to manage the state, context and events in front
-- [ ] Assets (images, favicon, manifest, etc)
 - [ ] Implement state, context and events in front
 - [ ] Dialogs
 - [ ] i18n routing
