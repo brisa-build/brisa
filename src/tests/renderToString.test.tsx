@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test"
-import { renderToString, BunriseRequest } from "../packages/bunrise"
+import { renderToString, BunriseRequest } from "../bunrise"
 
 const testRequest = new BunriseRequest(new Request('http://test.com/'))
 
