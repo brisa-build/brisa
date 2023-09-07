@@ -12,8 +12,11 @@
 - [ ] hotreloading
 - [ ] Read pages as Next.js way /pages/index.ts or /src/pages/index.ts
 - [ ] Investigate better alternative to manage the state, context and events
+- [ ] Assets (images, favicon, manifest, etc)
 - [ ] Implement state, context and events
 - [ ] i18n routing
 - [ ] middleware
 - [ ] meta attributes per page
 - [ ] env variables in front code
+- [ ] Create a bun template https://bun.sh/docs/templates
+- [ ] Write docs in a website
