@@ -10,7 +10,7 @@
 - [x] CLI dev
 - [ ] CLI build
 - [ ] CLI start
-- [ ] api folder
+- [x] api folder
 - [ ] _404 and _500 page support
 - [ ] hotreloading
 - [ ] Read pages as Next.js way /pages/index.ts or /src/pages/index.ts
