@@ -1,5 +1,6 @@
 export interface BunriseRequest extends Request {
   context: Map<string, any>;
+  route?: MatchedRoute;
 }
 
 export interface Props {
@@ -17,14 +18,17 @@ export interface JSXElement {
 }
 
 export type JSXComponent = (props: Props) => JSXNode | Promise<JSXNode>;
-export type JSXComponent = (props: Props, request: BunriseRequest) => JSXNode | Promise<JSXNode>;
+export type JSXComponent = (
+  props: Props,
+  request: BunriseRequest,
+) => JSXNode | Promise<JSXNode>;
 
 declare global {
   export namespace JSX {
     type Element = JSXElement | Promise<JSXElement>;
 
     interface ElementChildrenAttribute {
-      children: Child
+      children: Child;
     }
     interface IntrinsicElements {
       // HTML

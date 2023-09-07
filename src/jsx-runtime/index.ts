@@ -4,14 +4,20 @@ function Fragment(props: Props) {
   return props.children;
 }
 
-function createNode(type: string | number | object | Function, props: Props, key: string, __source: unknown, __self: unknown) {
+function createNode(
+  type: string | number | object | Function,
+  props: Props,
+  key: string,
+  __source: unknown,
+  __self: unknown,
+) {
   return {
     type,
     props,
     key,
     ref: props?.ref,
     __source,
-    __self
+    __self,
   };
 }
 
@@ -19,5 +25,5 @@ export {
   createNode as jsx,
   createNode as jsxs,
   createNode as jsxDEV,
-  Fragment
+  Fragment,
 };
