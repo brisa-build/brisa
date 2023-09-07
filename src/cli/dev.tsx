@@ -30,12 +30,11 @@ const apiRouter = fs.existsSync(apiDir)
 
 export default async function fetch(req: Request) {
   const url = new URL(req.url);
-  const route = pagesRouter.match(url.pathname);
-  const apiPath = url.pathname.replace(/^\/api/, "");
-  const apiRoute = apiRouter?.match?.(apiPath);
+  const route = pagesRouter.match(req);
+  const isApi = url.pathname.startsWith('/api/');
   const assetPath = path.join(assetsDir, url.pathname);
 
-  if (route) {
+  if (!isApi && route) {
     const module = await import(route.filePath);
     const PageComponent = module.default;
     const pageElement = (<PageComponent />) as JSXElement;
@@ -50,12 +49,12 @@ export default async function fetch(req: Request) {
 
   if (fs.existsSync(assetPath)) return new Response(Bun.file(assetPath));
 
-  if (apiRoute && url.pathname.startsWith("/api")) {
-    const module = await import(apiRoute.filePath);
+  if (isApi && route) {
+    const module = await import(route.filePath);
     const method = req.method.toLowerCase();
 
     if (module[method])
-      return module[method](new BunriseRequest(req, apiRoute));
+      return module[method](new BunriseRequest(req, route));
   }
 
   // TODO: support 404 page
