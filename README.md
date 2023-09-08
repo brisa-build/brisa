@@ -28,5 +28,6 @@
 - [ ] middleware
 - [ ] meta attributes per page
 - [ ] testing tools to test bunrise routes (pages and api)
+- [ ] CLI build desktop app like Electron
 - [ ] Create a bun template https://bun.sh/docs/templates
 - [ ] Write docs in a website
