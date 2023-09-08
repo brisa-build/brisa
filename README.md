@@ -24,6 +24,7 @@
 - [ ] Implement state, context and events in front
 - [ ] use env variables inside browser events and interactivity
 - [ ] Dialogs
+- [ ] Navigation with Transition API
 - [ ] i18n routing
 - [ ] middleware
 - [ ] meta attributes per page
