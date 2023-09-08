@@ -30,6 +30,7 @@ const pagesRouter = new Bun.FileSystemRouter({
   style: "nextjs",
   dir: pagesDir,
 });
+
 const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: rootDir });
 
 export default async function fetch(req: Request) {
@@ -69,6 +70,7 @@ export default async function fetch(req: Request) {
 const serverOptions = isProduction
   ? { port: 3000, fetch, development: false }
   : enableLiveReload({ port: 3000, fetch });
+
 const server = Bun.serve(serverOptions);
 
-console.log(`Listening on http://localhost:${server.port}...`);
+console.log(`Listening on http://localhost:${server.port} (${process.env.NODE_ENV})...`);

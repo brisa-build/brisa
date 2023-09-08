@@ -12,6 +12,7 @@ const pagesRouter = new Bun.FileSystemRouter({
   style: "nextjs",
   dir: pagesDir,
 });
+
 const apiRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: apiDir });
 const pagesEntrypoints = Object.values(pagesRouter.routes);
 const apiEntrypoints = Object.values(apiRouter.routes);
