@@ -12,6 +12,7 @@
 - [x] Assets (images, favicon, manifest, etc)
 - [ ] CLI build
 - [ ] CLI start
+- [ ] CLI build: optimization of assets like images (optional to use this optimization by configuration)
 - [ ] stream rendering
 - [ ] async components error component
 - [ ] async components loading component (pending state)
