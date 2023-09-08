@@ -3,21 +3,19 @@ import path from "node:path";
 import { BunriseRequest, renderToString } from "../bunrise";
 import { JSXElement } from "../types";
 import { enableLiveReload } from "./dev-live-reload";
+import getRootDir from "../utils/get-root-dir";
 
 process.env.NODE_ENV = "development";
 
-const projectDir = import.meta.dir.replace(
-  /(\/|\\)node_modules(\/|\\)bunrise(\/|\\)out(\/|\\)cli/,
-  "",
-);
-const pagesDir = path.join(projectDir, "src", "pages");
+const projectDir = getRootDir();
+const srcDir = path.join(projectDir, "src");
+const pagesDir = path.join(srcDir, "pages");
 
 if (!fs.existsSync(pagesDir)) {
   console.error('Not exist "src/pages" directory. It\'s required to run "bunrise dev"');
   process.exit(1);
 }
 
-const srcDir = path.join(pagesDir, "..");
 const assetsDir = path.join(srcDir, "public");
 const pagesRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: pagesDir });
 const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: srcDir })
