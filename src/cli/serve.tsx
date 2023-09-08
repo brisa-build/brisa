@@ -18,7 +18,7 @@ if (isProduction && !fs.existsSync(buildDir)) {
   process.exit(1);
 }
 
-if (fs.existsSync(pagesDir)) {
+if (!fs.existsSync(pagesDir)) {
   const path = isProduction ? "build/pages" : "src/pages";
   const cli = isProduction ? "bunrise start" : "bunrise dev";
 
