@@ -73,4 +73,6 @@ const serverOptions = isProduction
 
 const server = Bun.serve(serverOptions);
 
-console.log(`Listening on http://localhost:${server.port} (${process.env.NODE_ENV})...`);
+console.log(
+  `Listening on http://localhost:${server.port} (${process.env.NODE_ENV})...`,
+);
