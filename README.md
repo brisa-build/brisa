@@ -26,6 +26,7 @@
 - [ ] i18n routing
 - [ ] middleware
 - [ ] meta attributes per page
-- [ ] env variables in front code
+- [ ] env variables in front code
+- [ ] testing tools to test bunrise routes (pages and api)
 - [ ] Create a bun template https://bun.sh/docs/templates
 - [ ] Write docs in a website
