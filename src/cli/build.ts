@@ -1,4 +1,5 @@
 import path from "node:path";
+import fs from "node:fs";
 import getRootDir from "../utils/get-root-dir";
 import logTable from "../utils/log-table";
 
@@ -36,4 +37,8 @@ logTable(
 );
 
 console.log("\nλ  (Server)  server-side renders at runtime\n");
+
+// Copy all assets to the build directory
+fs.cpSync(path.join(srcDir, "public"), path.join(outdir, "public"), { recursive: true });
+
 console.info(`✨  Done in ${(Bun.nanoseconds() / 1000000).toFixed(2)}ms.`);
