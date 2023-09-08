@@ -2,6 +2,8 @@ import path from "node:path";
 import getRootDir from "../utils/get-root-dir";
 import logTable from "../utils/log-table";
 
+process.env.NODE_ENV = 'production';
+
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
 const pagesDir = path.join(srcDir, "pages");
@@ -20,7 +22,6 @@ const { success, logs, outputs } = await Bun.build({
   entrypoints,
   outdir,
   minify: true,
-  define: { NODE_ENV: "production" },
 });
 
 if (!success) {

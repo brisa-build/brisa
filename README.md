@@ -8,7 +8,7 @@
 - [x] CLI dev
 - [x] api folder
 - [x] access variable of dynamic routing
-- [x] hotreloading (Works but is displaying an error in the console)
+- [x] hotreloading
 - [x] Assets (images, favicon, manifest, etc)
 - [ ] CLI build
 - [ ] CLI start
