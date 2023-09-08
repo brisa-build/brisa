@@ -5,8 +5,7 @@ import { JSXElement } from "../types";
 import getRootDir from "../utils/get-root-dir";
 import { enableLiveReload } from "./dev-live-reload";
 
-const environment = process.env.NODE_ENV || "development";
-const isProduction = environment === "production";
+const isProduction = process.env.NODE_ENV === "production";
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
 const buildDir = path.join(projectDir, "build");
@@ -31,7 +30,7 @@ const pagesRouter = new Bun.FileSystemRouter({
   style: "nextjs",
   dir: pagesDir,
 });
-const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: buildDir });
+const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: rootDir });
 
 export default async function fetch(req: Request) {
   const url = new URL(req.url);
