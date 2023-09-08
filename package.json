@@ -36,8 +36,8 @@
     "bunrise": "./cli.sh"
   },
   "devDependencies": {
-    "bun-types": "latest",
-    "bunrise": "0.1.0-alpha.39"
+    "bun-types": "1.0.1",
+    "bunrise": "0.1.0-alpha.40"
   },
   "peerDependencies": {
     "typescript": "5.0.0"
