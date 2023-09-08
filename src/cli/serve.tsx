@@ -2,23 +2,32 @@ import fs from "node:fs";
 import path from "node:path";
 import { BunriseRequest, renderToString } from "../bunrise";
 import { JSXElement } from "../types";
-import { enableLiveReload } from "./dev-live-reload";
 import getRootDir from "../utils/get-root-dir";
+import { enableLiveReload } from "./dev-live-reload";
 
-process.env.NODE_ENV = "development";
-
+const isProduction = process.env.NODE_ENV === "production";
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
-const pagesDir = path.join(srcDir, "pages");
+const buildDir = path.join(projectDir, "build");
+const rootDir = isProduction ? buildDir : srcDir;
+const assetsDir = path.join(rootDir, "public");
+const pagesDir = path.join(rootDir, "pages");
 
-if (!fs.existsSync(pagesDir)) {
-  console.error('Not exist "src/pages" directory. It\'s required to run "bunrise dev"');
+if (isProduction && !fs.existsSync(buildDir)) {
+  console.error('Not exist "build" yet. Please run "bunrise build" first');
   process.exit(1);
 }
 
-const assetsDir = path.join(srcDir, "public");
+if (fs.existsSync(pagesDir)) {
+  const path = isProduction ? "build/pages" : "src/pages";
+  const cli = isProduction ? "bunrise start" : "bunrise dev";
+
+  console.error(`Not exist ${path}" directory. It\'s required to run "${cli}"`);
+  process.exit(1);
+}
+
 const pagesRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: pagesDir });
-const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: srcDir })
+const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: buildDir })
 
 export default async function fetch(req: Request) {
   const url = new URL(req.url);
@@ -54,7 +63,7 @@ export default async function fetch(req: Request) {
   return new Response("Not found", { status: 404 });
 }
 
-const serverOptions = enableLiveReload({ port: 3000, fetch });
+const serverOptions = isProduction ? { port: 3000, fetch, development: false } : enableLiveReload({ port: 3000, fetch });
 const server = Bun.serve(serverOptions);
 
 console.log(`Listening on http://localhost:${server.port}...`);
