@@ -52,7 +52,9 @@ export function enableLiveReload(options: {
       open: (ws: ServerWebSocket<unknown>) => {
         globalThis.ws = ws;
       },
-      message: () => { /* void */ }
-    }
+      message: () => {
+        /* void */
+      },
+    },
   };
 }

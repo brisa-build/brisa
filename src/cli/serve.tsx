@@ -5,7 +5,8 @@ import { JSXElement } from "../types";
 import getRootDir from "../utils/get-root-dir";
 import { enableLiveReload } from "./dev-live-reload";
 
-const environment = process.argv[2] === 'production' ? 'production' : 'development'
+const environment =
+  process.argv[2] === "production" ? "production" : "development";
 const isProduction = environment === "production";
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
@@ -27,15 +28,18 @@ if (!fs.existsSync(pagesDir)) {
   process.exit(1);
 }
 
-const pagesRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: pagesDir });
+const pagesRouter = new Bun.FileSystemRouter({
+  style: "nextjs",
+  dir: pagesDir,
+});
 const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: buildDir });
 
-process.env.NODE_ENV = environment
+process.env.NODE_ENV = environment;
 
 export default async function fetch(req: Request) {
   const url = new URL(req.url);
   const route = pagesRouter.match(req);
-  const isApi = url.pathname.startsWith('/api/');
+  const isApi = url.pathname.startsWith("/api/");
   const apiRoute = isApi ? rootRouter.match(req) : null;
   const assetPath = path.join(assetsDir, url.pathname);
 
@@ -66,7 +70,9 @@ export default async function fetch(req: Request) {
   return new Response("Not found", { status: 404 });
 }
 
-const serverOptions = isProduction ? { port: 3000, fetch, development: false } : enableLiveReload({ port: 3000, fetch });
+const serverOptions = isProduction
+  ? { port: 3000, fetch, development: false }
+  : enableLiveReload({ port: 3000, fetch });
 const server = Bun.serve(serverOptions);
 
 console.log(`Listening on http://localhost:${server.port}...`);
