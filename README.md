@@ -10,8 +10,8 @@
 - [x] access variable of dynamic routing
 - [x] hotreloading
 - [x] Assets (images, favicon, manifest, etc)
-- [ ] CLI build
-- [ ] CLI start
+- [x] CLI build
+- [x] CLI start
 - [ ] CLI build: gzip and brotli assets
 - [ ] CLI build: optimization of assets like images (optional to use this optimization by configuration)
 - [ ] stream rendering
