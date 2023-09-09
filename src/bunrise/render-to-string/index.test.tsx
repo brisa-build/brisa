@@ -96,5 +96,50 @@ describe("bunrise core", () => {
       expect(result).toEqual(expected);
       expect(result2).toEqual(expected2);
     });
+
+    it("should throw an error if the component throws an error", async () => {
+      const Component = () => {
+        throw new Error("Test");
+      };
+
+      try {
+        await renderToString(<Component />, testRequest);
+      } catch (e: any) {
+        expect(e.message).toEqual("Test");
+      }
+    });
+
+    it("should render the error component as fallback if the component throws an error", async () => {
+      const Component = () => {
+        throw new Error("Test");
+      };
+
+      Component.error = () => <div>Error</div>;
+
+      const result = await renderToString(<Component />, testRequest);
+      expect(result).toEqual("<div>Error</div>");
+    });
+
+    it("should render the error component as fallback if the nested component throws an error", async () => {
+      const ComponentChild = () => {
+        throw new Error("Test");
+      };
+
+      ComponentChild.error = () => <div>Error</div>;
+
+      const Component = () => {
+        return (
+          <div>
+            <h1>Parent component</h1>
+            <ComponentChild />
+          </div>
+        );
+      };
+
+      const result = await renderToString(<Component />, testRequest);
+      expect(result).toEqual(
+        "<div><h1>Parent component</h1><div>Error</div></div>",
+      );
+    });
   });
 });

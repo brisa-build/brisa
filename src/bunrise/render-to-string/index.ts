@@ -1,4 +1,4 @@
-import type { Props, JSXNode, JSXElement } from "../../types/index";
+import type { Props, JSXNode } from "../../types/index";
 import BunriseRequest from "../bunrise-request";
 
 function renderAttributes(props: Props): string {
@@ -28,13 +28,21 @@ async function renderChildren(
 }
 
 export default async function renderToString(
-  element: JSXElement | Promise<JSXElement>,
+  element: JSX.Element,
   request: BunriseRequest,
 ): Promise<string> {
-  const { type, props } = await Promise.resolve(element);
+  const { type, props } = await Promise.resolve().then(() => element);
 
   if (typeof type === "function") {
-    const jsx = await Promise.resolve(type(props, request));
+    const handleError = (error: Error) => {
+      if (typeof type.error === "function")
+        return type.error({ error, ...props }, request);
+      throw error;
+    };
+
+    const jsx = await Promise.resolve()
+      .then(() => type(props, request))
+      .catch(handleError);
 
     if (typeof jsx === "string" || typeof jsx === "number")
       return jsx.toString();
