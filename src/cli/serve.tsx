@@ -33,6 +33,13 @@ const pagesRouter = new Bun.FileSystemRouter({
 
 const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: rootDir });
 
+const responseInitWithGzip = {
+  headers: {
+    "content-encoding": "gzip",
+    vary: "Accept-Encoding",
+  },
+};
+
 export default async function fetch(req: Request) {
   const url = new URL(req.url);
   const route = pagesRouter.match(req);
@@ -57,7 +64,10 @@ export default async function fetch(req: Request) {
     const isGzip =
       isProduction && req.headers.get("accept-encoding")?.includes?.("gzip");
 
-    return new Response(Bun.file(isGzip ? `${assetPath}.gz` : assetPath));
+    const file = Bun.file(isGzip ? `${assetPath}.gz` : assetPath);
+    const responseOptions = isGzip ? responseInitWithGzip : {};
+
+    return new Response(file, responseOptions);
   }
 
   if (isApi && apiRoute) {
