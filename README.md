@@ -15,7 +15,7 @@
 - [x] CLI build
 - [x] CLI start
 - [x] CLI build: gzip assets (brotli in future, needs support from Bun)
-- [ ] async components error component
+- [x] async components error component
 - [ ] \_404 and \_500 page support
 - [ ] stream rendering
 - [ ] async components loading component (pending state)
