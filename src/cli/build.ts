@@ -3,12 +3,15 @@ import fs from "node:fs";
 import getRootDir from "../utils/get-root-dir";
 import logTable from "../utils/log-table";
 import byteSizeToString from "../utils/byte-size-to-string";
+import precompressAssets from "../utils/precompress-assets";
 
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
 const pagesDir = path.join(srcDir, "pages");
 const apiDir = path.join(srcDir, "api");
 const outdir = path.join(projectDir, "build");
+const outAssetsDir = path.join(outdir, "public");
+const inAssetsDir = path.join(srcDir, "public");
 
 const pagesRouter = new Bun.FileSystemRouter({
   style: "nextjs",
@@ -40,8 +43,9 @@ logTable(
 console.log("\nλ  (Server)  server-side renders at runtime\n");
 
 // Copy all assets to the build directory
-fs.cpSync(path.join(srcDir, "public"), path.join(outdir, "public"), {
-  recursive: true,
-});
+fs.cpSync(inAssetsDir, outAssetsDir, { recursive: true });
+
+// Precompress all assets
+precompressAssets(outAssetsDir)
 
 console.info(`✨  Done in ${(Bun.nanoseconds() / 1000000).toFixed(2)}ms.`);
