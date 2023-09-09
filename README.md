@@ -14,7 +14,7 @@
 - [x] CLI dev
 - [x] CLI build
 - [x] CLI start
-- [ ] CLI build: gzip and brotli assets
+- [x] CLI build: gzip assets (brotli in future, needs support from Bun)
 - [ ] stream rendering
 - [ ] async components error component
 - [ ] async components loading component (pending state)
