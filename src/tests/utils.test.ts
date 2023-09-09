@@ -1,7 +1,13 @@
-import { describe, it, expect, mock } from "bun:test";
-import getRootDir from "./get-root-dir";
-import logTable from "./log-table";
-import byteSizeToString from "./byte-size-to-string";
+import { describe, it, expect, mock, beforeAll, afterEach } from "bun:test";
+import { exists, unlink } from "node:fs/promises";
+
+import getRootDir from "../utils/get-root-dir";
+import logTable from "../utils/log-table";
+import byteSizeToString from "../utils/byte-size-to-string";
+import getFilesFromDir from "../utils/get-all-files-from-dir";
+import precompressAssets from "../utils/precompress-assets";
+
+const assetsPath = `${import.meta.dir}/__fixtures__/assets`;
 
 describe("utils", () => {
   describe("getRootDir", () => {
@@ -66,6 +72,39 @@ describe("utils", () => {
       const expected = "1.00 GB";
 
       expect(output).toBe(expected);
+    });
+  });
+
+  describe("getFilesFromDir", () => {
+    it("should return all files from a directory", async () => {
+      const output = await getFilesFromDir(assetsPath);
+      const expected = [
+        `${assetsPath}/favicon.ico`,
+        `${assetsPath}/some-dir/some-img.png`,
+        `${assetsPath}/some-dir/some-text.txt`,
+      ];
+
+      expect(output).toEqual(expected);
+    });
+  });
+
+  describe("precompressAssets", () => {
+    afterEach(async () =>
+      Promise.all([
+        unlink(`${assetsPath}/favicon.ico.gz`),
+        unlink(`${assetsPath}/some-dir/some-img.png.gz`),
+        unlink(`${assetsPath}/some-dir/some-text.txt.gz`),
+      ]),
+    );
+
+    it("should precompress all assets", async () => {
+      await precompressAssets(assetsPath);
+
+      expect(await exists(`${assetsPath}/favicon.ico.gz`)).toBe(true);
+      expect(await exists(`${assetsPath}/some-dir/some-img.png.gz`)).toBe(true);
+      expect(await exists(`${assetsPath}/some-dir/some-text.txt.gz`)).toBe(
+        true,
+      );
     });
   });
 });
