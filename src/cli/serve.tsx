@@ -1,9 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
+
+import getRootDir from "../utils/get-root-dir";
+import getRouteMatcher from "../utils/get-route-matcher";
 import { BunriseRequest, renderToString } from "../bunrise";
 import { JSXElement } from "../types";
-import getRootDir from "../utils/get-root-dir";
 import { enableLiveReload } from "./dev-live-reload";
+import { MatchedRoute } from "bun";
+
+const PAGE_404 = "/_404";
+const PAGE_500 = "/_500";
+const RESERVED_PAGES = [PAGE_404, PAGE_500];
 
 const isProduction = process.env.NODE_ENV === "production";
 const projectDir = getRootDir();
@@ -26,12 +33,8 @@ if (!fs.existsSync(pagesDir)) {
   process.exit(1);
 }
 
-const pagesRouter = new Bun.FileSystemRouter({
-  style: "nextjs",
-  dir: pagesDir,
-});
-
-const rootRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: rootDir });
+const pagesRouter = getRouteMatcher(pagesDir, RESERVED_PAGES);
+const rootRouter = getRouteMatcher(rootDir);
 
 const responseInitWithGzip = {
   headers: {
@@ -40,26 +43,34 @@ const responseInitWithGzip = {
   },
 };
 
-export default async function fetch(req: Request) {
+async function responseRenderedPage(req: Request, route: MatchedRoute, status = 200) {
+  const module = await import(route.filePath);
+  const PageComponent = module.default;
+  const pageElement = (<PageComponent />) as JSXElement;
+  const bunriseRequest = new BunriseRequest(req, route);
+  const htmlString = await renderToString(pageElement, bunriseRequest);
+  const responseOptions = {
+    headers: { "content-type": "text/html;charset=UTF-8" },
+    status,
+  };
+
+  return new Response(htmlString, responseOptions);
+}
+
+export default async function handleRequest(req: Request) {
   const url = new URL(req.url);
-  const route = pagesRouter.match(req);
-  const isApi = url.pathname.startsWith("/api/");
-  const apiRoute = isApi ? rootRouter.match(req) : null;
-  const assetPath = path.join(assetsDir, url.pathname);
+  const pathname = url.pathname;
+  const { route, isReservedPathname } = pagesRouter.match(req);
+  const isApi = pathname.startsWith("/api/");
+  const api = isApi ? rootRouter.match(req) : null;
+  const assetPath = path.join(assetsDir, pathname);
 
-  if (!isApi && route) {
-    const module = await import(route.filePath);
-    const PageComponent = module.default;
-    const pageElement = (<PageComponent />) as JSXElement;
-    const bunriseRequest = new BunriseRequest(req, route);
-    const htmlString = await renderToString(pageElement, bunriseRequest);
-    const responseOptions = {
-      headers: { "content-type": "text/html;charset=UTF-8" },
-    };
-
-    return new Response(htmlString, responseOptions);
+  // Pages
+  if (!isApi && route && !isReservedPathname) {
+    return responseRenderedPage(req, route);
   }
 
+  // Assets
   if (fs.existsSync(assetPath)) {
     const isGzip =
       isProduction && req.headers.get("accept-encoding")?.includes?.("gzip");
@@ -70,16 +81,30 @@ export default async function fetch(req: Request) {
     return new Response(file, responseOptions);
   }
 
-  if (isApi && apiRoute) {
-    const module = await import(apiRoute.filePath);
+  // API
+  if (isApi && api?.route && !api?.isReservedPathname) {
+    const module = await import(api.route.filePath);
     const method = req.method.toLowerCase();
 
-    if (module[method])
-      return module[method](new BunriseRequest(req, apiRoute));
+    return module[method]?.(new BunriseRequest(req, api.route));
   }
 
-  // TODO: support 404 page
-  return new Response("Not found", { status: 404 });
+  // 404 page
+  const route404 = pagesRouter.reservedRoutes[PAGE_404];
+
+  return route404
+    ? responseRenderedPage(req, route404, 404)
+    : new Response("Not found", { status: 404 });
+}
+
+async function fetch(req: Request) {
+  return handleRequest(req)
+    // 500 page
+    .catch((e) => {
+      const route500 = pagesRouter.reservedRoutes[PAGE_500];
+      if (!route500) throw e;
+      return responseRenderedPage(req, route500, 500);
+    });
 }
 
 const serverOptions = isProduction
