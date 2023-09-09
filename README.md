@@ -15,11 +15,11 @@
 - [x] CLI build
 - [x] CLI start
 - [x] CLI build: gzip assets (brotli in future, needs support from Bun)
-- [ ] stream rendering
 - [ ] async components error component
+- [ ] \_404 and \_500 page support
+- [ ] stream rendering
 - [ ] async components loading component (pending state)
 - [ ] Server actions and server events by default
-- [ ] \_404 and \_500 page support
 - [ ] Investigate better alternative to manage the state, context and events in front
 - [ ] Implement state, context and events in front
 - [ ] use env variables inside browser events and interactivity

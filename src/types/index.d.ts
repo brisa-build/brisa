@@ -13,15 +13,23 @@ export type JSXNode = string | number | JSXElement;
 type Child = string | number | JSXNode | Child[];
 
 export interface JSXElement {
-  type: string | JSXComponent | Promise<JSXComponent>;
+  type: string | ComponentType | Promise<ComponentType>;
   props: Props;
 }
 
-export type JSXComponent = (props: Props) => JSXNode | Promise<JSXNode>;
 export type JSXComponent = (
   props: Props,
   request: BunriseRequest,
 ) => JSXNode | Promise<JSXNode>;
+
+interface ComponentType extends JSXComponent {
+  error: (
+    props: Props & {
+      error?: Error;
+    },
+    request: BunriseRequest,
+  ) => JSXNode | Promise<JSXNode>;
+}
 
 declare global {
   export namespace JSX {
