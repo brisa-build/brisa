@@ -1,4 +1,4 @@
-import { describe, it, expect, mock, beforeAll, afterEach } from "bun:test";
+import { describe, it, expect, mock, afterEach } from "bun:test";
 import { exists, unlink } from "node:fs/promises";
 
 import getRootDir from "../utils/get-root-dir";
