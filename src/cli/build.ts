@@ -46,6 +46,6 @@ console.log("\nλ  (Server)  server-side renders at runtime\n");
 fs.cpSync(inAssetsDir, outAssetsDir, { recursive: true });
 
 // Precompress all assets
-precompressAssets(outAssetsDir)
+await precompressAssets(outAssetsDir).catch(console.error);
 
 console.info(`✨  Done in ${(Bun.nanoseconds() / 1000000).toFixed(2)}ms.`);

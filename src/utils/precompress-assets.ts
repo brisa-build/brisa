@@ -1,10 +1,13 @@
 import { gzipSync } from 'bun'
+import { getFiles } from './get-all-files-from-dir';
 
+// TODO: Support brotli when it's supported by Bun
 export default async function precompressAssets(assetsPath: string) {
-  const assetsRouter = new Bun.FileSystemRouter({ dir: assetsPath, style: 'nextjs' })
-  const assets = Object.values(assetsRouter.routes);
+  const assets = await getFiles(assetsPath);
 
   await Promise.all(assets.map(async (asset) => {
+    if (asset.endsWith('.gz')) return;
+
     const assetContent = Bun.file(asset);
     const gzip = gzipSync(new Uint8Array((await assetContent.arrayBuffer())));
 
