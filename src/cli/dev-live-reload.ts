@@ -17,7 +17,7 @@ export function enableLiveReload(options: {
   const wsUrl = `ws://0.0.0.0:${port}/${LIVE_RELOAD_WEBSOCKET_PATH}`;
 
   async function injectReloadScript(response: Response) {
-    if (!response.headers.get("Content-Type")?.includes("text/html")) {
+    if (!response?.headers?.get?.("Content-Type")?.includes("text/html")) {
       return response;
     }
 

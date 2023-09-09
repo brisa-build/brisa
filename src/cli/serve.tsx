@@ -43,10 +43,15 @@ const responseInitWithGzip = {
   },
 };
 
-async function responseRenderedPage(req: Request, route: MatchedRoute, status = 200) {
+async function responseRenderedPage({ req, route, status = 200, error }: {
+  req: Request;
+  route: MatchedRoute;
+  status?: number;
+  error?: Error;
+}) {
   const module = await import(route.filePath);
   const PageComponent = module.default;
-  const pageElement = (<PageComponent />) as JSXElement;
+  const pageElement = (<PageComponent error={error} />) as JSXElement;
   const bunriseRequest = new BunriseRequest(req, route);
   const htmlString = await renderToString(pageElement, bunriseRequest);
   const responseOptions = {
@@ -67,7 +72,7 @@ export default async function handleRequest(req: Request) {
 
   // Pages
   if (!isApi && route && !isReservedPathname) {
-    return responseRenderedPage(req, route);
+    return responseRenderedPage({ req, route });
   }
 
   // Assets
@@ -93,17 +98,17 @@ export default async function handleRequest(req: Request) {
   const route404 = pagesRouter.reservedRoutes[PAGE_404];
 
   return route404
-    ? responseRenderedPage(req, route404, 404)
+    ? responseRenderedPage({ req, route: route404, status: 404 })
     : new Response("Not found", { status: 404 });
 }
 
 async function fetch(req: Request) {
   return handleRequest(req)
     // 500 page
-    .catch((e) => {
+    .catch((error) => {
       const route500 = pagesRouter.reservedRoutes[PAGE_500];
-      if (!route500) throw e;
-      return responseRenderedPage(req, route500, 500);
+      if (!route500) throw error;
+      return responseRenderedPage({ req, route: route500, status: 500, error });
     });
 }
 
