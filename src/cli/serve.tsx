@@ -53,7 +53,12 @@ export default async function fetch(req: Request) {
     return new Response(htmlString, responseOptions);
   }
 
-  if (fs.existsSync(assetPath)) return new Response(Bun.file(assetPath));
+  if (fs.existsSync(assetPath)) {
+    const isGzip =
+      isProduction && req.headers.get("accept-encoding")?.includes?.("gzip");
+
+    return new Response(Bun.file(isGzip ? `${assetPath}.gz` : assetPath));
+  }
 
   if (isApi && apiRoute) {
     const module = await import(apiRoute.filePath);
