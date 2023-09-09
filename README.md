@@ -33,3 +33,4 @@
 - [ ] CLI build desktop app like Electron
 - [ ] Create a bun template https://bun.sh/docs/templates
 - [ ] Write docs in a website
+- [ ] Add examples inside the repo style nextjs (with-somelib)
