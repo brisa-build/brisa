@@ -24,6 +24,7 @@
 - [ ] Implement state, context and events in front
 - [ ] use env variables inside browser events and interactivity
 - [ ] Dialogs
+- [ ] Controlled and uncontrolled forms
 - [ ] Navigation with Transition API
 - [ ] i18n routing
 - [ ] middleware
@@ -33,6 +34,9 @@
 - [ ] CLI build desktop app like Electron
 - [ ] Loader + transpiler: Compatibility with React libraries/components
 - [ ] Loader: support import rust, zig, c functions directly via ffi
+- [ ] Available in the edge (Deno, Cloidflare)?
+- [ ] Integrations with Tailwind, MDX and more
+- [ ] UI-agnostic: React, Preact, Svelte, Vue, Solid, Lit, Qwik
 - [ ] Create a bun template https://bun.sh/docs/templates
 - [ ] Write docs in a website
 - [ ] Add examples inside the repo style nextjs (with-somelib)
