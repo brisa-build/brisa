@@ -1,5 +1,5 @@
-import type { Props, JSXNode, JSXElement } from "../types/index";
-import BunriseRequest from "./bunrise-request";
+import type { Props, JSXNode, JSXElement } from "../../types/index";
+import BunriseRequest from "../bunrise-request";
 
 function renderAttributes(props: Props): string {
   let attributes = "";
