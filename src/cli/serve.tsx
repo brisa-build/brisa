@@ -3,7 +3,7 @@ import path from "node:path";
 
 import getRootDir from "../utils/get-root-dir";
 import getRouteMatcher from "../utils/get-route-matcher";
-import { BunriseRequest, renderToString } from "../bunrise";
+import { BunriseRequest, renderToReadableStream } from "../bunrise";
 import { JSXElement } from "../types";
 import { enableLiveReload } from "./dev-live-reload";
 import { MatchedRoute } from "bun";
@@ -58,13 +58,13 @@ async function responseRenderedPage({
   const PageComponent = module.default;
   const pageElement = (<PageComponent error={error} />) as JSXElement;
   const bunriseRequest = new BunriseRequest(req, route);
-  const htmlString = await renderToString(pageElement, bunriseRequest);
+  const htmlStream = await renderToReadableStream(pageElement, bunriseRequest);
   const responseOptions = {
     headers: { "content-type": "text/html;charset=UTF-8" },
     status,
   };
 
-  return new Response(htmlString, responseOptions);
+  return new Response(htmlStream, responseOptions);
 }
 
 export default async function handleRequest(req: Request) {
