@@ -86,7 +86,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({}, request: BunriseRequest) => (
+      const ComponentChild = ({ }, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 

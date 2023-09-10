@@ -75,9 +75,10 @@ export default function renderToReadableStream(
   request: BunriseRequest,
 ) {
   return new ReadableStream({
-    async start(controller) {
-      await enqueueDuringRendering(element, request, controller);
-      controller.close();
+    start(controller) {
+      enqueueDuringRendering(element, request, controller)
+        .then(() => controller.close())
+        .catch((e) => controller.error(e));
     },
   });
 }
