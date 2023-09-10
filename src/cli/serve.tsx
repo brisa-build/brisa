@@ -43,7 +43,12 @@ const responseInitWithGzip = {
   },
 };
 
-async function responseRenderedPage({ req, route, status = 200, error }: {
+async function responseRenderedPage({
+  req,
+  route,
+  status = 200,
+  error,
+}: {
   req: Request;
   route: MatchedRoute;
   status?: number;
@@ -103,13 +108,20 @@ export default async function handleRequest(req: Request) {
 }
 
 async function fetch(req: Request) {
-  return handleRequest(req)
-    // 500 page
-    .catch((error) => {
-      const route500 = pagesRouter.reservedRoutes[PAGE_500];
-      if (!route500) throw error;
-      return responseRenderedPage({ req, route: route500, status: 500, error });
-    });
+  return (
+    handleRequest(req)
+      // 500 page
+      .catch((error) => {
+        const route500 = pagesRouter.reservedRoutes[PAGE_500];
+        if (!route500) throw error;
+        return responseRenderedPage({
+          req,
+          route: route500,
+          status: 500,
+          error,
+        });
+      })
+  );
 }
 
 const serverOptions = isProduction
