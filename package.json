@@ -37,6 +37,7 @@
     "bunrise": "./cli.sh"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "11.0.2",
     "bun-types": "1.0.1",
     "bunrise": "0.1.0-alpha.52"
   },

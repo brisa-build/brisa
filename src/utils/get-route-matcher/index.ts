@@ -13,12 +13,15 @@ export default function getRouteMatcher(
       route,
       isReservedPathname: reservedPathnamesSet.has(route?.pathname ?? ""),
     };
-  }
+  };
 
-  const reservedRoutes = reservedPathnames.reduce((all, pathname) => {
-    all[pathname] = router.match(pathname);
-    return all;
-  }, {} as Record<string, MatchedRoute | null>)
+  const reservedRoutes = reservedPathnames.reduce(
+    (all, pathname) => {
+      all[pathname] = router.match(pathname);
+      return all;
+    },
+    {} as Record<string, MatchedRoute | null>,
+  );
 
   return { match: routeMatcher, reservedRoutes };
 }
