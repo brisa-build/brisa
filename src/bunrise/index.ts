@@ -1,4 +1,4 @@
-import renderToString from "./render-to-string";
+import renderToReadableStream from "./render-to-readable-stream";
 import BunriseRequest from "./bunrise-request";
 
-export { renderToString, BunriseRequest };
+export { renderToReadableStream, BunriseRequest };

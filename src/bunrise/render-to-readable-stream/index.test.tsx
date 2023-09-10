@@ -1,15 +1,32 @@
 import { describe, it, expect } from "bun:test";
-import renderToString from ".";
+import renderToReadableStream from ".";
 import { BunriseRequest } from "..";
 
 const testRequest = new BunriseRequest(new Request("http://test.com/"));
 
+async function streamToText(stream: ReadableStream): Promise<string> {
+  const reader = stream.getReader();
+  let result = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+
+    if (done) break;
+
+    result += value;
+  }
+
+  return result;
+}
+
 describe("bunrise core", () => {
-  describe("renderToString", () => {
+  describe("renderToReadableStream", () => {
     it("should render a simple JSX element", async () => {
-      const element = <div>Hello World</div>;
-      const result = await renderToString(element, testRequest);
-      const expected = "<div>Hello World</div>";
+      const element = <div class="test">Hello World</div>;
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
+
+      const expected = `<div class="test">Hello World</div>`;
       expect(result).toEqual(expected);
     });
 
@@ -21,7 +38,8 @@ describe("bunrise core", () => {
         </div>
       );
       const element = <Component name="World" title="Test" />;
-      const result = await renderToString(element, testRequest);
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello World</h1><p>This is a paragraph</p></div>';
       expect(result).toEqual(expected);
@@ -39,11 +57,11 @@ describe("bunrise core", () => {
           <p>This is a paragraph</p>
         </div>
       );
-
-      const result = await renderToString(
+      const stream = renderToReadableStream(
         <AsyncComponent title="Test" />,
         testRequest,
       );
+      const result = await streamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>';
       expect(result).toEqual(expected);
@@ -60,7 +78,8 @@ describe("bunrise core", () => {
         </div>
       );
       const element = <Component name="World" title="Test" />;
-      const result = await renderToString(element, testRequest);
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello World</h1><p>The URL is: http://test.com/</p></div>';
       expect(result).toEqual(expected);
@@ -84,13 +103,15 @@ describe("bunrise core", () => {
       };
 
       const element = <Component name="World" />;
-      const result = await renderToString(element, testRequest);
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
       const expected = "<div>Hello World</div>";
 
-      const result2 = await renderToString(
+      const stream2 = await renderToReadableStream(
         element,
         new BunriseRequest(new Request("http://test.com/?name=Test")),
       );
+      const result2 = await streamToText(stream2);
       const expected2 = "<div>Hello Test</div>";
 
       expect(result).toEqual(expected);
@@ -103,7 +124,7 @@ describe("bunrise core", () => {
       };
 
       try {
-        await renderToString(<Component />, testRequest);
+        await renderToReadableStream(<Component />, testRequest);
       } catch (e: any) {
         expect(e.message).toEqual("Test");
       }
@@ -116,7 +137,8 @@ describe("bunrise core", () => {
 
       Component.error = () => <div>Error</div>;
 
-      const result = await renderToString(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
       expect(result).toEqual("<div>Error</div>");
     });
 
@@ -136,7 +158,8 @@ describe("bunrise core", () => {
         );
       };
 
-      const result = await renderToString(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
       expect(result).toEqual(
         "<div><h1>Parent component</h1><div>Error</div></div>",
       );
