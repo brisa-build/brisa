@@ -60,7 +60,11 @@ async function responseRenderedPage({
   const bunriseRequest = new BunriseRequest(req, route);
   const htmlStream = await renderToReadableStream(pageElement, bunriseRequest);
   const responseOptions = {
-    headers: { "content-type": "text/html;charset=UTF-8" },
+    headers: {
+      "transfer-encoding": "chunked",
+      "vary": "Accept-Encoding",
+      "content-type": "text/html; charset=utf-8",
+    },
     status,
   };
 
