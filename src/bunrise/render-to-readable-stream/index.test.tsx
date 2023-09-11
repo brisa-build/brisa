@@ -1,7 +1,6 @@
 import { describe, it, expect } from "bun:test";
 import renderToReadableStream from ".";
 import { BunriseRequest } from "..";
-import { JSXElement } from "../../types";
 
 const testRequest = new BunriseRequest(new Request("http://test.com/"));
 
@@ -87,7 +86,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({ }, request: BunriseRequest) => (
+      const ComponentChild = ({}, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
@@ -190,7 +189,7 @@ describe("bunrise core", () => {
     });
 
     it("should work with fragments", async () => {
-      const Component = ({ children }: { children: JSXElement }) => (
+      const Component = ({ children }: { children: JSX.Element }) => (
         <>
           <>This is</>
           {children}
@@ -211,14 +210,18 @@ describe("bunrise core", () => {
     });
 
     it("should render a list of elements", async () => {
-      const Bold = ({ children }: { children: string }) => <b>{children}</b>;
-      const Component = ({ children }: { children: JSXElement }) => (
+      const arrayOfNumbers = [1, 2, 3, 4, 5];
+
+      const Bold = ({ children }: { children: JSX.Element }) => (
+        <b>{children}</b>
+      );
+      const Component = ({ children }: { children: JSX.Element[] }) => (
         <>{children}</>
       );
-      const arrayOfNumbers = [1, 2, 3, 4, 5];
+
       const stream = renderToReadableStream(
         <Component>
-          {arrayOfNumbers.map((v) => (
+          {arrayOfNumbers.map((v: number) => (
             <Bold>{v}</Bold>
           ))}
         </Component>,
@@ -226,6 +229,36 @@ describe("bunrise core", () => {
       );
       const result = await streamToText(stream);
       expect(result).toEqual("<b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>");
+    });
+
+    it("should work with booleans and numbers in the same way than React", async () => {
+      const Component = () => (
+        <>
+          {true && <div>TRUE</div>}
+          {false && <div>FALSE</div>}
+          {1 && <div>TRUE</div>}
+          {0 && <div>FALSE</div>}
+        </>
+      );
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual("<div>TRUE</div><div>TRUE</div>0");
+    });
+
+    it("should be possible to render undefined and null", async () => {
+      const Component = () => (
+        <>
+          <div class="empty">{undefined}</div>
+          <div class="empty">{null}</div>
+        </>
+      );
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual(
+        '<div class="empty"></div><div class="empty"></div>',
+      );
     });
   });
 });
