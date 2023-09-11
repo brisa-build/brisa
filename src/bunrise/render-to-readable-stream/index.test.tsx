@@ -1,6 +1,7 @@
 import { describe, it, expect } from "bun:test";
 import renderToReadableStream from ".";
 import { BunriseRequest } from "..";
+import { JSXElement } from "../../types";
 
 const testRequest = new BunriseRequest(new Request("http://test.com/"));
 
@@ -165,8 +166,8 @@ describe("bunrise core", () => {
       );
     });
 
-    it('should work using the children prop', async () => {
-      const Component = ({ children }: { children: JSX.Element }) => children
+    it("should work using the children prop", async () => {
+      const Component = ({ children }: { children: JSX.Element }) => children;
       const AnotherComponent = ({ children }: { children: JSX.Element }) => (
         <div>
           <h1>another component</h1>
@@ -176,7 +177,9 @@ describe("bunrise core", () => {
 
       const stream = renderToReadableStream(
         <Component>
-          <AnotherComponent><script>{`alert('test')`}</script></AnotherComponent>
+          <AnotherComponent>
+            <script>{`alert('test')`}</script>
+          </AnotherComponent>
         </Component>,
         testRequest,
       );
@@ -186,19 +189,43 @@ describe("bunrise core", () => {
       );
     });
 
-    it('should work with fragments', async () => {
-      const Component = () => (
+    it("should work with fragments", async () => {
+      const Component = ({ children }: { children: JSXElement }) => (
         <>
-          <h1>Parent component</h1>
-          <p>Test</p>
+          <>This is</>
+          {children}
+          <b>test</b>
         </>
       );
 
-      const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
-      expect(result).toEqual(
-        "<h1>Parent component</h1><p>Test</p>",
+      const stream = renderToReadableStream(
+        <>
+          <Component>
+            <>{` a `}</>
+          </Component>
+        </>,
+        testRequest,
       );
+      const result = await streamToText(stream);
+      expect(result).toEqual("This is a <b>test</b>");
+    });
+
+    it("should render a list of elements", async () => {
+      const Bold = ({ children }: { children: string }) => <b>{children}</b>;
+      const Component = ({ children }: { children: JSXElement }) => (
+        <>{children}</>
+      );
+      const arrayOfNumbers = [1, 2, 3, 4, 5];
+      const stream = renderToReadableStream(
+        <Component>
+          {arrayOfNumbers.map((v) => (
+            <Bold>{v}</Bold>
+          ))}
+        </Component>,
+        testRequest,
+      );
+      const result = await streamToText(stream);
+      expect(result).toEqual("<b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>");
     });
   });
 });
