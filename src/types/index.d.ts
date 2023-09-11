@@ -5,12 +5,12 @@ export interface BunriseRequest extends Request {
 
 export interface Props {
   [key: string]: any;
-  children?: JSXNode;
+  children?: Child;
 }
 
 export type JSXNode = string | number | JSXElement;
 
-type Child = string | number | JSXNode | Child[];
+type Child = JSXNode | Child[];
 
 export interface JSXElement {
   type: string | ComponentType | Promise<ComponentType>;
