@@ -42,12 +42,16 @@ logTable(
 
 console.log("\nλ  (Server)  server-side renders at runtime\n");
 
-if (fs.existsSync(inAssetsDir)) {
-  // Copy all assets to the build directory
-  fs.cpSync(inAssetsDir, outAssetsDir, { recursive: true });
+try {
+  if (fs.existsSync(inAssetsDir)) {
+    // Copy all assets to the build directory
+    fs.cpSync(inAssetsDir, outAssetsDir, { recursive: true });
 
-  // Precompress all assets
-  await precompressAssets(outAssetsDir).catch(console.error);
+    // Precompress all assets
+    await precompressAssets(outAssetsDir).catch(console.error);
+  }
+
+  console.info(`✨  Done in ${(Bun.nanoseconds() / 1000000).toFixed(2)}ms.`);
+} catch (e) {
+  console.error(e);
 }
-
-console.info(`✨  Done in ${(Bun.nanoseconds() / 1000000).toFixed(2)}ms.`);
