@@ -59,29 +59,20 @@ async function enqueueChildren(
   request: BunriseRequest,
   controller: Controller,
 ): Promise<void> {
-  const enqueueChild = async (child: JSXNode | JSXNode[]) => {
-    if (Array.isArray(child)) {
-      for (const grandchild of child)
-        await enqueueDuringRendering(grandchild, request, controller);
-      return;
-    }
-
-    if (typeof child === "object") {
-      return enqueueDuringRendering(child, request, controller);
-    }
-
-    if (typeof child?.toString === "function") {
-      return controller.enqueue(child.toString());
-    }
-  };
-
   if (Array.isArray(children)) {
     for (const child of children)
       await enqueueDuringRendering(child, request, controller);
     return;
   }
 
-  enqueueChild(children);
+  if (typeof children === "object") {
+    await enqueueDuringRendering(children, request, controller);
+    return
+  }
+
+  if (typeof children?.toString === "function") {
+    return controller.enqueue(children.toString());
+  }
 }
 
 function renderAttributes(props: Props): string {
