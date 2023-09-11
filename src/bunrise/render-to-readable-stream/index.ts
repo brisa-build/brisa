@@ -1,3 +1,4 @@
+import { expect } from "bun:test";
 import type { Props, JSXNode } from "../../types/index";
 import BunriseRequest from "../bunrise-request";
 
@@ -43,31 +44,34 @@ export async function enqueueDuringRendering(
   request: BunriseRequest,
   controller: Controller,
 ): Promise<void> {
-  const { type, props } = await Promise.resolve().then(() => element);
+  const result = await Promise.resolve().then(() => element);
+  const elements = Array.isArray(result) ? result : [result];
 
-  if (typeof type === "function") {
-    const handleError = (error: Error) => {
-      if (typeof type.error === "function")
-        return type.error({ error, ...props }, request);
-      throw error;
-    };
+  for (const { type, props } of elements) {
+    if (typeof type === "function") {
+      const handleError = (error: Error) => {
+        if (typeof type.error === "function")
+          return type.error({ error, ...props }, request);
+        throw error;
+      };
 
-    const jsx = await Promise.resolve()
-      .then(() => type(props, request))
-      .catch(handleError);
+      const jsx = await Promise.resolve()
+        .then(() => type(props, request))
+        .catch(handleError);
 
-    if (typeof jsx === "string" || typeof jsx === "number") {
-      return controller.enqueue(jsx.toString());
+      if (typeof jsx === "string" || typeof jsx === "number") {
+        return controller.enqueue(jsx.toString());
+      }
+
+      return enqueueDuringRendering(jsx, request, controller);
     }
 
-    return enqueueDuringRendering(jsx, request, controller);
+    const attributes = renderAttributes(props);
+
+    controller.enqueue(`<${type}${attributes}>`);
+    await enqueueChildren(props.children, request, controller);
+    controller.enqueue(`</${type}>`);
   }
-
-  const attributes = renderAttributes(props);
-
-  controller.enqueue(`<${type}${attributes}>`);
-  await enqueueChildren(props.children, request, controller);
-  controller.enqueue(`</${type}>`);
 }
 
 export default function renderToReadableStream(

@@ -86,7 +86,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({}, request: BunriseRequest) => (
+      const ComponentChild = ({ }, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
@@ -162,6 +162,42 @@ describe("bunrise core", () => {
       const result = await streamToText(stream);
       expect(result).toEqual(
         "<div><h1>Parent component</h1><div>Error</div></div>",
+      );
+    });
+
+    it('should work using the children prop', async () => {
+      const Component = ({ children }: { children: JSX.Element }) => children
+      const AnotherComponent = ({ children }: { children: JSX.Element }) => (
+        <div>
+          <h1>another component</h1>
+          {children}
+        </div>
+      );
+
+      const stream = renderToReadableStream(
+        <Component>
+          <AnotherComponent><script>{`alert('test')`}</script></AnotherComponent>
+        </Component>,
+        testRequest,
+      );
+      const result = await streamToText(stream);
+      expect(result).toEqual(
+        "<div><h1>another component</h1><script>alert('test')</script></div>",
+      );
+    });
+
+    it('should work with fragments', async () => {
+      const Component = () => (
+        <>
+          <h1>Parent component</h1>
+          <p>Test</p>
+        </>
+      );
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual(
+        "<h1>Parent component</h1><p>Test</p>",
       );
     });
   });

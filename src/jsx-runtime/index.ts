@@ -4,6 +4,8 @@ function Fragment(props: Props) {
   return props.children;
 }
 
+Fragment.__isFragment = true;
+
 function createNode(
   type: string | number | object | Function,
   props: Props,
