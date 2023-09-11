@@ -38,6 +38,7 @@ export function enableLiveReload(options: {
 
   return {
     development: true,
+    port,
     async fetch(request: Request, server: Server) {
       if (server.upgrade(request)) {
         return;
