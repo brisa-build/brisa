@@ -1,7 +1,12 @@
-import { describe, it, expect, mock } from "bun:test";
+import { describe, it, expect, mock, afterEach } from "bun:test";
 import logTable from ".";
 
+const originalConsoleLog = console.log;
+
 describe("utils", () => {
+  afterEach(() => {
+    console.log = originalConsoleLog;
+  })
   describe("logTable", () => {
     it("should log a table", () => {
       const data = [
