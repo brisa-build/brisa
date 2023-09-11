@@ -17,7 +17,8 @@
 - [x] CLI build: gzip assets (brotli in future, needs support from Bun)
 - [x] async components error component
 - [x] \_404 and \_500 page support
-- [ ] stream rendering
+- [x] Allow different port than 3000 using "bun dev -p 8080"
+- [ ] stream rendering (implemented but hard to test, awaiting http/2 supported by Bun)
 - [ ] async components loading component (Component.pending)
 - [ ] Server actions and server events by default
 - [ ] Investigate better alternative to manage the state, context and events in front
@@ -34,7 +35,7 @@
 - [ ] CLI build desktop app like Electron
 - [ ] Loader + transpiler: Compatibility with React libraries/components
 - [ ] Loader: support import rust, zig, c functions directly via ffi
-- [ ] Available in the edge (Deno, Cloidflare)?
+- [ ] Available in the edge and serverless (Vercel, Deno, Cloudflare)?
 - [ ] Integrations with Tailwind, MDX and more
 - [ ] UI-agnostic: React, Preact, Svelte, Vue, Solid, Lit, Qwik
 - [ ] Create a bun template https://bun.sh/docs/templates
