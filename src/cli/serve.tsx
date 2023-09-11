@@ -5,23 +5,16 @@ import getRootDir from "../utils/get-root-dir";
 import getRouteMatcher from "../utils/get-route-matcher";
 import { BunriseRequest, renderToReadableStream } from "../bunrise";
 import { MatchedRoute, ServerWebSocket } from "bun";
+import { LiveReloadScript } from "./dev-live-reload";
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
 }
 
-const LIVE_RELOAD_WEBSOCKET_PATH = "__bunrise_live_reload__";
-const LIVE_RELOAD_COMMAND = "reload";
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
 const RESERVED_PAGES = [PAGE_404, PAGE_500];
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
-
-if (!IS_PRODUCTION) {
-  // Enable live reload
-  globalThis.ws?.send?.(LIVE_RELOAD_COMMAND);
-}
-
 const port = parseInt(process.argv[2]) || 3000;
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
@@ -76,6 +69,9 @@ Bun.serve({
   websocket: {
     open: (ws: ServerWebSocket<unknown>) => {
       globalThis.ws = ws;
+    },
+    close: () => {
+      globalThis.ws = undefined;
     },
     message: () => {
       /* void */
@@ -169,7 +165,7 @@ function Layout({ children }: { children: JSX.Element }) {
   const childrenWithLiveReload = IS_PRODUCTION ? (
     children
   ) : (
-    <LiveReloadScript>{children}</LiveReloadScript>
+    <LiveReloadScript port={port}>{children}</LiveReloadScript>
   );
 
   return (
@@ -179,24 +175,5 @@ function Layout({ children }: { children: JSX.Element }) {
       </head>
       <body>{childrenWithLiveReload}</body>
     </html>
-  );
-}
-
-function LiveReloadScript({ children }: { children: JSX.Element }) {
-  const wsUrl = `ws://0.0.0.0:${port}/${LIVE_RELOAD_WEBSOCKET_PATH}`;
-
-  return (
-    <>
-      <script>
-        {`
-        const socket = new WebSocket("${wsUrl}");
-        socket.onmessage = evt => {
-          if (evt.data === "${LIVE_RELOAD_COMMAND}") {
-            location.reload();
-          }
-        }`}
-      </script>
-      {children}
-    </>
   );
 }

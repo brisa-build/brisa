@@ -41,8 +41,15 @@ async function enqueueDuringRendering(
 
     if (isComponent(type)) {
       const jsx = await getValueOfComponent(type, props, request);
-      if (ALLOWED_PRIMARIES.has(typeof jsx)) return controller.enqueue(jsx.toString());
-      if (Array.isArray(jsx)) return enqueueChildren(jsx, request, controller);
+
+      if (ALLOWED_PRIMARIES.has(typeof jsx)) {
+        return controller.enqueue(jsx.toString());
+      }
+
+      if (Array.isArray(jsx)) {
+        return enqueueChildren(jsx, request, controller);
+      }
+
       return enqueueDuringRendering(jsx, request, controller);
     }
 
