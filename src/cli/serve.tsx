@@ -50,7 +50,8 @@ const responseInitWithGzip = {
 Bun.serve({
   port,
   development: !IS_PRODUCTION,
-  async fetch(req: Request) {
+  async fetch(req: Request, server) {
+    if (server.upgrade(req)) return;
     return (
       handleRequest(req)
         // 500 page
