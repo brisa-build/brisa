@@ -12,6 +12,7 @@ const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
 const RESERVED_PAGES = [PAGE_404, PAGE_500];
 
+const port = parseInt(process.argv[2]) || 3000;
 const isProduction = process.env.NODE_ENV === "production";
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
@@ -129,8 +130,8 @@ async function fetch(req: Request) {
 }
 
 const serverOptions = isProduction
-  ? { port: 3000, fetch, development: false }
-  : enableLiveReload({ port: 3000, fetch });
+  ? { port, fetch, development: false }
+  : enableLiveReload({ port, fetch });
 
 const server = Bun.serve(serverOptions);
 
