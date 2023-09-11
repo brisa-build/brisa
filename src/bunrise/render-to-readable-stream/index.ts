@@ -1,3 +1,4 @@
+import { expect } from "bun:test";
 import type { Props, ComponentType, JSXNode } from "../../types";
 import BunriseRequest from "../bunrise-request";
 
@@ -40,10 +41,9 @@ async function enqueueDuringRendering(
 
     if (isComponent(type)) {
       const jsx = await getValueOfComponent(type, props, request);
-
-      return ALLOWED_PRIMARIES.has(typeof jsx)
-        ? controller.enqueue(jsx.toString())
-        : enqueueDuringRendering(jsx, request, controller);
+      if (ALLOWED_PRIMARIES.has(typeof jsx)) return controller.enqueue(jsx.toString());
+      if (Array.isArray(jsx)) return enqueueChildren(jsx, request, controller);
+      return enqueueDuringRendering(jsx, request, controller);
     }
 
     const attributes = renderAttributes(props);
@@ -60,14 +60,14 @@ async function enqueueChildren(
   controller: Controller,
 ): Promise<void> {
   if (Array.isArray(children)) {
-    for (const child of children)
+    for (const child of children) {
       await enqueueDuringRendering(child, request, controller);
+    }
     return;
   }
 
   if (typeof children === "object") {
-    await enqueueDuringRendering(children, request, controller);
-    return
+    return enqueueDuringRendering(children, request, controller);
   }
 
   if (typeof children?.toString === "function") {

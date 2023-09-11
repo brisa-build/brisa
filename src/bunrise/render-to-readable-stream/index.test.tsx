@@ -86,7 +86,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({ }, request: BunriseRequest) => (
+      const ComponentChild = ({}, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
@@ -228,7 +228,9 @@ describe("bunrise core", () => {
         testRequest,
       );
       const result = await streamToText(stream);
-      expect(result).toEqual("<b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>");
+      expect(result).toEqual(
+        "<b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>",
+      );
     });
 
     it("should work with booleans and numbers in the same way than React", async () => {
