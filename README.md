@@ -18,7 +18,7 @@
 - [x] async components error component
 - [x] \_404 and \_500 page support
 - [x] Allow different port than 3000 using "bun dev -p 8080"
-- [ ] stream rendering (implemented but hard to test, awaiting http/2 supported by Bun)
+- [x] stream rendering
 - [ ] async components loading component (Component.pending)
 - [ ] Server actions and server events by default
 - [ ] Investigate better alternative to manage the state, context and events in front
