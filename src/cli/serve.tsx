@@ -63,7 +63,7 @@ async function responseRenderedPage({
   const responseOptions = {
     headers: {
       "transfer-encoding": "chunked",
-      "vary": "Accept-Encoding",
+      vary: "Accept-Encoding",
       "content-type": "text/html; charset=utf-8",
     },
     status,

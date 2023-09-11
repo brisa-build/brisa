@@ -4,6 +4,7 @@ import getRootDir from "../utils/get-root-dir";
 import logTable from "../utils/log-table";
 import byteSizeToString from "../utils/byte-size-to-string";
 import precompressAssets from "../utils/precompress-assets";
+import getEntrypoints from "../utils/get-entrypoints";
 
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
@@ -12,15 +13,8 @@ const apiDir = path.join(srcDir, "api");
 const outdir = path.join(projectDir, "build");
 const outAssetsDir = path.join(outdir, "public");
 const inAssetsDir = path.join(srcDir, "public");
-
-const pagesRouter = new Bun.FileSystemRouter({
-  style: "nextjs",
-  dir: pagesDir,
-});
-
-const apiRouter = new Bun.FileSystemRouter({ style: "nextjs", dir: apiDir });
-const pagesEntrypoints = Object.values(pagesRouter.routes);
-const apiEntrypoints = Object.values(apiRouter.routes);
+const pagesEntrypoints = getEntrypoints(pagesDir);
+const apiEntrypoints = getEntrypoints(apiDir);
 const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
 const { success, logs, outputs } = await Bun.build({
   entrypoints,
