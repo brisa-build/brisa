@@ -3,19 +3,20 @@ export interface BunriseRequest extends Request {
   route?: MatchedRoute;
 }
 
-export interface Props {
-  [key: string]: any;
+type Props = Record<string, unknown> & {
   children?: Child;
-}
+};
 
 export type JSXNode = string | number | JSXElement;
 
 type Child = JSXNode | Child[];
 
-export interface JSXElement {
-  type: string | ComponentType | Promise<ComponentType>;
+export type Type = string | number | ComponentType | Promise<ComponentType>;
+
+export type JSXElement = {
+  type: Type;
   props: Props;
-}
+} & (number | string);
 
 export type JSXComponent = (
   props: Props,

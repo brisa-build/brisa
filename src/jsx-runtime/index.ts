@@ -1,27 +1,9 @@
-import type { Props } from "../types/index";
+import type { Type, Props } from "../types/index";
 
-function Fragment(props: Props) {
-  return props.children;
-}
+const Fragment = (props: Props) => props.children;
+const createNode = (type: Type, props: Props) => ({ type, props });
 
 Fragment.__isFragment = true;
-
-function createNode(
-  type: string | number | object | Function,
-  props: Props,
-  key: string,
-  __source: unknown,
-  __self: unknown,
-) {
-  return {
-    type,
-    props,
-    key,
-    ref: props?.ref,
-    __source,
-    __self,
-  };
-}
 
 export {
   createNode as jsx,
