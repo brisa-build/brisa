@@ -4,31 +4,40 @@ import path from "node:path";
 import getRootDir from "../utils/get-root-dir";
 import getRouteMatcher from "../utils/get-route-matcher";
 import { BunriseRequest, renderToReadableStream } from "../bunrise";
-import { JSXElement } from "../types";
-import { enableLiveReload } from "./dev-live-reload";
-import { MatchedRoute } from "bun";
+import { MatchedRoute, ServerWebSocket } from "bun";
 
+declare global {
+  var ws: ServerWebSocket<unknown> | undefined;
+}
+
+const LIVE_RELOAD_WEBSOCKET_PATH = "__bunrise_live_reload__";
+const LIVE_RELOAD_COMMAND = "reload";
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
 const RESERVED_PAGES = [PAGE_404, PAGE_500];
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
+if (!IS_PRODUCTION) {
+  // Enable live reload
+  globalThis.ws?.send?.(LIVE_RELOAD_COMMAND);
+}
 
 const port = parseInt(process.argv[2]) || 3000;
-const isProduction = process.env.NODE_ENV === "production";
 const projectDir = getRootDir();
 const srcDir = path.join(projectDir, "src");
 const buildDir = path.join(projectDir, "build");
-const rootDir = isProduction ? buildDir : srcDir;
+const rootDir = IS_PRODUCTION ? buildDir : srcDir;
 const assetsDir = path.join(rootDir, "public");
 const pagesDir = path.join(rootDir, "pages");
 
-if (isProduction && !fs.existsSync(buildDir)) {
+if (IS_PRODUCTION && !fs.existsSync(buildDir)) {
   console.error('Not exist "build" yet. Please run "bunrise build" first');
   process.exit(1);
 }
 
 if (!fs.existsSync(pagesDir)) {
-  const path = isProduction ? "build/pages" : "src/pages";
-  const cli = isProduction ? "bunrise start" : "bunrise dev";
+  const path = IS_PRODUCTION ? "build/pages" : "src/pages";
+  const cli = IS_PRODUCTION ? "bunrise start" : "bunrise dev";
 
   console.error(`Not exist ${path}" directory. It\'s required to run "${cli}"`);
   process.exit(1);
@@ -44,35 +53,45 @@ const responseInitWithGzip = {
   },
 };
 
-async function responseRenderedPage({
-  req,
-  route,
-  status = 200,
-  error,
-}: {
-  req: Request;
-  route: MatchedRoute;
-  status?: number;
-  error?: Error;
-}) {
-  const module = await import(route.filePath);
-  const PageComponent = module.default;
-  const pageElement = (<PageComponent error={error} />) as JSXElement;
-  const bunriseRequest = new BunriseRequest(req, route);
-  const htmlStream = await renderToReadableStream(pageElement, bunriseRequest);
-  const responseOptions = {
-    headers: {
-      "transfer-encoding": "chunked",
-      vary: "Accept-Encoding",
-      "content-type": "text/html; charset=utf-8",
+// Start server
+Bun.serve({
+  port,
+  development: !IS_PRODUCTION,
+  async fetch(req: Request) {
+    return (
+      handleRequest(req)
+        // 500 page
+        .catch((error) => {
+          const route500 = pagesRouter.reservedRoutes[PAGE_500];
+          if (!route500) throw error;
+          return responseRenderedPage({
+            req,
+            route: route500,
+            status: 500,
+            error,
+          });
+        })
+    );
+  },
+  websocket: {
+    open: (ws: ServerWebSocket<unknown>) => {
+      globalThis.ws = ws;
     },
-    status,
-  };
+    message: () => {
+      /* void */
+    },
+  },
+});
 
-  return new Response(htmlStream, responseOptions);
-}
+console.log(
+  `Listening on http://localhost:${port} (${process.env.NODE_ENV})...`,
+);
 
-export default async function handleRequest(req: Request) {
+///////////////////////////////////////////////////////
+////////////////////// HELPERS ///////////////////////
+///////////////////////////////////////////////////////
+
+async function handleRequest(req: Request) {
   const url = new URL(req.url);
   const pathname = url.pathname;
   const { route, isReservedPathname } = pagesRouter.match(req);
@@ -88,7 +107,7 @@ export default async function handleRequest(req: Request) {
   // Assets
   if (fs.existsSync(assetPath)) {
     const isGzip =
-      isProduction && req.headers.get("accept-encoding")?.includes?.("gzip");
+      IS_PRODUCTION && req.headers.get("accept-encoding")?.includes?.("gzip");
 
     const file = Bun.file(isGzip ? `${assetPath}.gz` : assetPath);
     const responseOptions = isGzip ? responseInitWithGzip : {};
@@ -112,29 +131,72 @@ export default async function handleRequest(req: Request) {
     : new Response("Not found", { status: 404 });
 }
 
-async function fetch(req: Request) {
+async function responseRenderedPage({
+  req,
+  route,
+  status = 200,
+  error,
+}: {
+  req: Request;
+  route: MatchedRoute;
+  status?: number;
+  error?: Error;
+}) {
+  const module = await import(route.filePath);
+  const PageComponent = module.default;
+  const bunriseRequest = new BunriseRequest(req, route);
+
+  const pageElement = (
+    <Layout>
+      <PageComponent error={error} />
+    </Layout>
+  );
+
+  const htmlStream = await renderToReadableStream(pageElement, bunriseRequest);
+  const responseOptions = {
+    headers: {
+      "transfer-encoding": "chunked",
+      vary: "Accept-Encoding",
+      "content-type": "text/html; charset=utf-8",
+    },
+    status,
+  };
+
+  return new Response(htmlStream, responseOptions);
+}
+
+function Layout({ children }: { children: JSX.Element }) {
+  const childrenWithLiveReload = IS_PRODUCTION ? (
+    children
+  ) : (
+    <LiveReloadScript>{children}</LiveReloadScript>
+  );
+
   return (
-    handleRequest(req)
-      // 500 page
-      .catch((error) => {
-        const route500 = pagesRouter.reservedRoutes[PAGE_500];
-        if (!route500) throw error;
-        return responseRenderedPage({
-          req,
-          route: route500,
-          status: 500,
-          error,
-        });
-      })
+    <html>
+      <head>
+        <title>Bunrise</title>
+      </head>
+      <body>{childrenWithLiveReload}</body>
+    </html>
   );
 }
 
-const serverOptions = isProduction
-  ? { port, fetch, development: false }
-  : enableLiveReload({ port, fetch });
+function LiveReloadScript({ children }: { children: JSX.Element }) {
+  const wsUrl = `ws://0.0.0.0:${port}/${LIVE_RELOAD_WEBSOCKET_PATH}`;
 
-const server = Bun.serve(serverOptions);
-
-console.log(
-  `Listening on http://localhost:${server.port} (${process.env.NODE_ENV})...`,
-);
+  return (
+    <>
+      <script>
+        {`
+        const socket = new WebSocket("${wsUrl}");
+        socket.onmessage = evt => {
+          if (evt.data === "${LIVE_RELOAD_COMMAND}") {
+            location.reload();
+          }
+        }`}
+      </script>
+      {children}
+    </>
+  );
+}
