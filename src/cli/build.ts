@@ -27,7 +27,6 @@ const { success, logs, outputs } = await Bun.build({
   entrypoints,
   outdir,
   minify: true,
-  sourcemap: "external",
 });
 
 if (!success) {
