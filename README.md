@@ -20,6 +20,7 @@
 - [x] Allow different port than 3000 using "bun dev -p 8080"
 - [x] stream rendering
 - [ ] async components loading component (Component.pending)
+- [ ] support layouts
 - [ ] Server actions and server events by default
 - [ ] Investigate better alternative to manage the state, context and events in front
 - [ ] Implement state, context and events in front

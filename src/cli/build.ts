@@ -19,7 +19,9 @@ const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
 
 // This fix Bun build with only one entrypoint because it doesn't create the subfolder
 if (entrypoints.length === 1) {
-  const subfolder = entrypoints[0].includes(path.join(outdir, "api")) ? 'api' : 'pages';
+  const subfolder = entrypoints[0].includes(path.join(outdir, "api"))
+    ? "api"
+    : "pages";
   outdir = path.join(outdir, subfolder);
 }
 
