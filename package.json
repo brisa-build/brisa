@@ -22,12 +22,11 @@
     "cli.sh"
   ],
   "scripts": {
-    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:bunrise && bun run build:browser-scripts",
+    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:bunrise",
     "build:bunrise": "bun build --minify --target=bun --outdir=out/bunrise src/bunrise/* && bun run build:cli && cp src/types/index.d.ts out/bunrise/index.d.ts",
     "build:cli": "NODE_ENV=production bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/serve.tsx && NODE_ENV=development bun build --minify --target=bun --outdir=out/cli/dev src/cli/serve.tsx",
     "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-runtime/index.d.ts",
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
-    "build:browser-scripts": "bun build --minify --target=browser --outdir=out/browser-scripts src/browser-scripts/*",
     "test": "bun test",
     "test:coverage": "bun test --coverage",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",

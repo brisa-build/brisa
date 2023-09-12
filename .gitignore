@@ -4,6 +4,7 @@ node_modules
 # Build output
 
 /out/
+**/inject-unsuspense-script/out
 /jsx-runtime/
 /jsx-dev-runtime/
 cli-build
