@@ -3,7 +3,7 @@
   "module": "./out/bunrise/index.js",
   "main": "./out/bunrise/index.js",
   "types": "./out/bunrise/index.d.ts",
-  "version": "0.1.0-alpha.70",
+  "version": "0.1.0-alpha.71",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
