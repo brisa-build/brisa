@@ -1,5 +1,6 @@
 import type { Props, ComponentType, JSXNode } from "../../types";
 import BunriseRequest from "../bunrise-request";
+import injectUnsuspenseScript from "../inject-unsuspense-script"; // with { type: "macro" }
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 
@@ -56,6 +57,11 @@ async function enqueueDuringRendering(
 
     controller.enqueue(`<${type}${attributes}>`);
     await enqueueChildren(props.children, request, controller);
+
+    if (type === 'head') {
+      controller.enqueue(injectUnsuspenseScript());
+    }
+
     controller.enqueue(`</${type}>`);
   }
 }

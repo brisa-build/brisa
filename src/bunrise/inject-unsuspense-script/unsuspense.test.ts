@@ -3,7 +3,7 @@
 import path from "node:path";
 import { describe, it, expect } from "bun:test";
 
-const filePathname = path.join(import.meta.dir, "index.ts");
+const filePathname = path.join(import.meta.dir, "unsuspense.ts");
 const fileToTest = Bun.file(filePathname);
 const transpiler = new Bun.Transpiler({
   loader: "tsx",
