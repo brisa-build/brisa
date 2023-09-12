@@ -1,4 +1,3 @@
-import { expect } from "bun:test";
 import type { Props, ComponentType, JSXNode } from "../../types";
 import BunriseRequest from "../bunrise-request";
 

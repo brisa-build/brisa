@@ -86,7 +86,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({}, request: BunriseRequest) => (
+      const ComponentChild = ({ }, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
@@ -262,5 +262,18 @@ describe("bunrise core", () => {
         '<div class="empty"></div><div class="empty"></div>',
       );
     });
+
+    it.skip('should render the suspense component before if the async component support it', async () => {
+      const Component = async () => {
+        await Promise.resolve();
+        return <div>Test</div>;
+      };
+
+      Component.suspense = () => <b>Loading...</b>;
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toStartWith('<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>Test</div></template><script id="R:1">u$("1")</script>');
+    })
   });
 });

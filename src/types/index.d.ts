@@ -105,6 +105,7 @@ declare global {
       main: HTMLAttributes<HTMLElement>;
       map: HTMLAttributes<HTMLMapElement>;
       mark: HTMLAttributes<HTMLElement>;
+      template: HTMLAttributes<HTMLTemplateElement>;
       marquee: HTMLAttributes<HTMLMarqueeElement>;
       menu: HTMLAttributes<HTMLMenuElement>;
       menuitem: HTMLAttributes<HTMLUnknownElement>;
