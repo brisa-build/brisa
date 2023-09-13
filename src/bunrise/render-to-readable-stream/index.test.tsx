@@ -263,6 +263,18 @@ describe("bunrise core", () => {
       );
     });
 
+    it('should inject the unsuspense script', async () => {
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      )
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toMatch(/<html><head><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm);
+    })
+
     it.skip('should render the suspense component before if the async component support it', async () => {
       const Component = async () => {
         await Promise.resolve();
@@ -274,6 +286,28 @@ describe("bunrise core", () => {
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await streamToText(stream);
       expect(result).toStartWith('<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>Test</div></template><script id="R:1">u$("1")</script>');
+    })
+
+    it.skip('should render the rest of HTML meanhile the suspense component is loading', async () => {
+      const Component = async () => {
+        await Promise.resolve();
+        return <div>Test</div>;
+      };
+
+      Component.suspense = () => <b>Loading...</b>;
+
+      const AnotherComponent = () => <h2>Another</h2>;
+
+      const Page = () => (
+        <>
+          <Component />
+          <AnotherComponent />
+        </>
+      )
+
+      const stream = renderToReadableStream(<Page />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toStartWith('<div id="S:1"><b>Loading...</b></div><h2>Another</h2><template id="U:1"><div>Test</div></template><script id="R:1">u$("1")</script>');
     })
   });
 });
