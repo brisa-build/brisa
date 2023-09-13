@@ -12,7 +12,7 @@ const transpiler = new Bun.Transpiler({
 });
 const code = await transpiler.transform(await fileToTest.text());
 const runCode = (ids: string[]) => {
-  eval(code + ids.map(id => `u$(${id});`).join("") + "u$('0')")
+  eval(code + ids.map((id) => `u$(${id});`).join("") + "u$('0')");
 };
 
 function inlineHTML(html: string) {
@@ -20,7 +20,6 @@ function inlineHTML(html: string) {
 }
 
 describe("unsuspense window.u$", () => {
-
   it("should replace pending to success nodes", async () => {
     document.body.innerHTML = inlineHTML(`
       <body id="test_1">
@@ -35,7 +34,7 @@ describe("unsuspense window.u$", () => {
       </body>
     `);
 
-    await runCode(['1']);
+    await runCode(["1"]);
 
     expect(document.body.innerHTML).toEqual(
       inlineHTML(`
@@ -68,7 +67,7 @@ describe("unsuspense window.u$", () => {
       </body>
     `);
 
-    await runCode(['1', '2']);
+    await runCode(["1", "2"]);
 
     expect(document.body.innerHTML).toEqual(
       inlineHTML(`
@@ -101,7 +100,7 @@ describe("unsuspense window.u$", () => {
       </body>
     `);
 
-    await runCode(['1', '1.1']);
+    await runCode(["1", "1.1"]);
 
     expect(document.body.innerHTML).toEqual(
       inlineHTML(`
@@ -133,7 +132,7 @@ describe("unsuspense window.u$", () => {
       </body>
     `);
 
-    await runCode(['1']);
+    await runCode(["1"]);
 
     expect(document.body.innerHTML).toEqual(
       inlineHTML(`

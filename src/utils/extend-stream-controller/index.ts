@@ -3,7 +3,7 @@ export type ChunksOptions = {
   suspenseId?: number;
   isEndOfTag?: boolean;
   isOpenOfTag?: boolean;
-}
+};
 
 export type Controller = {
   enqueue(chunksOptions: ChunksOptions): void;
@@ -14,15 +14,17 @@ type SuspenseContent = {
   chunk: string;
   openTags: number;
   closeTags: number;
-}
+};
 
 const defaultSuspensedContent: SuspenseContent = {
   chunk: "",
   openTags: 0,
-  closeTags: 0
-}
+  closeTags: 0,
+};
 
-export default function extendStreamController(controller: ReadableStreamDefaultController<string>): Controller {
+export default function extendStreamController(
+  controller: ReadableStreamDefaultController<string>,
+): Controller {
   const suspensed = new Map<number, SuspenseContent>();
   let suspenseIndex = 0;
 
@@ -44,11 +46,14 @@ export default function extendStreamController(controller: ReadableStreamDefault
       if (isEndOfTag) suspensedChunkContent.openTags++;
 
       if (isEndOfTag && isReadyToFlush(suspensedChunkContent)) {
-        const finalChunk = suspensedChunkContent.chunk + chunk + `<script>u$('${suspenseId}')</script>`
+        const finalChunk =
+          suspensedChunkContent.chunk +
+          chunk +
+          `<script>u$('${suspenseId}')</script>`;
 
         controller.enqueue(finalChunk);
         suspensed.delete(suspenseId);
-        return
+        return;
       }
 
       suspensedChunkContent.chunk += chunk;
@@ -56,8 +61,8 @@ export default function extendStreamController(controller: ReadableStreamDefault
     },
     nextSuspenseIndex() {
       return ++suspenseIndex;
-    }
-  }
+    },
+  };
 }
 
 function isReadyToFlush(chunkContent: SuspenseContent) {
