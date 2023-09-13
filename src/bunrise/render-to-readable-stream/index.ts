@@ -1,11 +1,12 @@
 import type { Props, ComponentType, JSXNode } from "../../types";
-import extendStreamController, { Controller } from "../../utils/extend-stream-controller";
+import extendStreamController, {
+  Controller,
+} from "../../utils/extend-stream-controller";
 import BunriseRequest from "../bunrise-request";
 import injectUnsuspenseScript from "../inject-unsuspense-script"; // with { type: "macro" }
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const unsuspenseScriptCode = injectUnsuspenseScript();
-
 
 export default function renderToReadableStream(
   element: JSX.Element,
@@ -13,8 +14,11 @@ export default function renderToReadableStream(
 ) {
   return new ReadableStream({
     start(controller) {
-      const extendedController = extendStreamController(controller);
-      enqueueDuringRendering(element, request, extendedController)
+      enqueueDuringRendering(
+        element,
+        request,
+        extendStreamController(controller),
+      )
         .then(() => controller.close())
         .catch((e) => controller.error(e));
     },
@@ -39,17 +43,17 @@ async function enqueueDuringRendering(
     const { type, props } = elementContent;
 
     if (isComponent(type)) {
-      const jsx = await getValueOfComponent(type, props, request);
+      const componentValue = await getValueOfComponent(type, props, request);
 
-      if (ALLOWED_PRIMARIES.has(typeof jsx)) {
-        return controller.enqueue({ chunk: jsx.toString() });
+      if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
+        return controller.enqueue({ chunk: componentValue.toString() });
       }
 
-      if (Array.isArray(jsx)) {
-        return enqueueChildren(jsx, request, controller);
+      if (Array.isArray(componentValue)) {
+        return enqueueChildren(componentValue, request, controller);
       }
 
-      return enqueueDuringRendering(jsx, request, controller);
+      return enqueueDuringRendering(componentValue, request, controller);
     }
 
     const attributes = renderAttributes(props);
@@ -60,7 +64,7 @@ async function enqueueDuringRendering(
     // Node Content
     await enqueueChildren(props.children, request, controller);
 
-    if (type === 'head') {
+    if (type === "head") {
       // Inject unsuspense script in the end of head
       controller.enqueue({ chunk: unsuspenseScriptCode });
     }
