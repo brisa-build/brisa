@@ -3,10 +3,10 @@ import extendStreamController, {
   Controller,
 } from "../../utils/extend-stream-controller";
 import BunriseRequest from "../bunrise-request";
-import injectUnsuspenseScript from "../inject-unsuspense-script"; // with { type: "macro" }
+import { injectUnsuspenseScript } from "../inject-unsuspense-script" assert { type: "macro" };
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
-const unsuspenseScriptCode = injectUnsuspenseScript();
+const unsuspenseScriptCode = await injectUnsuspenseScript();
 
 export default function renderToReadableStream(
   element: JSX.Element,
