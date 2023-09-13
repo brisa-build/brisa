@@ -13,14 +13,16 @@ export default function renderToReadableStream(
   request: BunriseRequest,
 ) {
   return new ReadableStream({
-    start(controller) {
-      enqueueDuringRendering(
-        element,
-        request,
-        extendStreamController(controller),
-      )
-        .then(() => controller.close())
-        .catch((e) => controller.error(e));
+    async start(controller) {
+      const extendedController = extendStreamController(controller);
+
+      await enqueueDuringRendering(element, request, extendedController).catch(
+        (e) => controller.error(e),
+      );
+
+      await extendedController.waitSuspensedPromises();
+
+      controller.close();
     },
   });
 }
@@ -29,6 +31,7 @@ async function enqueueDuringRendering(
   element: JSXNode | Promise<JSXNode>,
   request: BunriseRequest,
   controller: Controller,
+  suspenseId?: number,
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
@@ -36,62 +39,107 @@ async function enqueueDuringRendering(
   for (const elementContent of elements) {
     if (elementContent === false || elementContent == null) continue;
     if (ALLOWED_PRIMARIES.has(typeof elementContent)) {
-      controller.enqueue({ chunk: elementContent.toString() });
+      controller.enqueue(elementContent.toString(), suspenseId);
       continue;
     }
 
     const { type, props } = elementContent;
 
     if (isComponent(type)) {
-      const componentValue = await getValueOfComponent(type, props, request);
+      const componentContent = { component: type, props };
+      const isSuspenseComponent = isComponent(type.suspense);
 
-      if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
-        return controller.enqueue({ chunk: componentValue.toString() });
+      if (isSuspenseComponent) {
+        const id = controller.nextSuspenseIndex();
+
+        controller.startTag(`<div id="S:${id}">`, suspenseId);
+
+        await enqueueComponent(
+          { component: type.suspense, props },
+          request,
+          controller,
+          suspenseId,
+        );
+
+        controller.endTag(`</div>`, suspenseId);
+
+        return controller.suspensePromise(enqueueComponent(
+          componentContent,
+          request,
+          controller,
+          id,
+        ));
       }
 
-      if (Array.isArray(componentValue)) {
-        return enqueueChildren(componentValue, request, controller);
-      }
-
-      return enqueueDuringRendering(componentValue, request, controller);
+      return enqueueComponent(
+        componentContent,
+        request,
+        controller,
+        suspenseId,
+      );
     }
 
     const attributes = renderAttributes(props);
 
-    // Node tag start
-    controller.enqueue({ chunk: `<${type}${attributes}>`, isOpenOfTag: true });
+
+    controller.startTag(`<${type}${attributes}>`, suspenseId);
 
     // Node Content
-    await enqueueChildren(props.children, request, controller);
+    await enqueueChildren(props.children, request, controller, suspenseId);
 
     if (type === "head") {
       // Inject unsuspense script in the end of head
-      controller.enqueue({ chunk: unsuspenseScriptCode });
+      controller.enqueue(unsuspenseScriptCode, suspenseId);
     }
 
     // Node tag end
-    controller.enqueue({ chunk: `</${type}>`, isEndOfTag: true });
+    controller.endTag(`</${type}>`, suspenseId);
   }
+}
+
+async function enqueueComponent(
+  { component, props }: { component: ComponentType; props: Props },
+  request: BunriseRequest,
+  controller: Controller,
+  suspenseId?: number,
+): Promise<void> {
+  const componentValue = await getValueOfComponent(component, props, request);
+
+  if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
+    return controller.enqueue(componentValue.toString(), suspenseId);
+  }
+
+  if (Array.isArray(componentValue)) {
+    return enqueueChildren(componentValue, request, controller, suspenseId);
+  }
+
+  return enqueueDuringRendering(
+    componentValue,
+    request,
+    controller,
+    suspenseId,
+  );
 }
 
 async function enqueueChildren(
   children: JSXNode,
   request: BunriseRequest,
   controller: Controller,
+  suspenseId?: number,
 ): Promise<void> {
   if (Array.isArray(children)) {
     for (const child of children) {
-      await enqueueDuringRendering(child, request, controller);
+      await enqueueDuringRendering(child, request, controller, suspenseId);
     }
     return;
   }
 
   if (typeof children === "object") {
-    return enqueueDuringRendering(children, request, controller);
+    return enqueueDuringRendering(children, request, controller, suspenseId);
   }
 
   if (typeof children?.toString === "function") {
-    return controller.enqueue({ chunk: children.toString() });
+    return controller.enqueue(children.toString(), suspenseId);
   }
 }
 

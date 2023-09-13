@@ -86,7 +86,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({}, request: BunriseRequest) => (
+      const ComponentChild = ({ }, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
@@ -288,13 +288,13 @@ describe("bunrise core", () => {
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await streamToText(stream);
       expect(result).toStartWith(
-        '<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>Test</div></template><script id="R:1">u$("1")</script>',
+        `<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
       );
     });
 
     it("should render the rest of HTML meanhile the suspense component is loading", async () => {
       const Component = async () => {
-        await Promise.resolve();
+        await Bun.sleep(0); // Next clock tick
         return <div>Test</div>;
       };
 
@@ -312,7 +312,7 @@ describe("bunrise core", () => {
       const stream = renderToReadableStream(<Page />, testRequest);
       const result = await streamToText(stream);
       expect(result).toStartWith(
-        '<div id="S:1"><b>Loading...</b></div><h2>Another</h2><template id="U:1"><div>Test</div></template><script id="R:1">u$("1")</script>',
+        `<div id="S:1"><b>Loading...</b></div><h2>Another</h2><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
       );
     });
   });
