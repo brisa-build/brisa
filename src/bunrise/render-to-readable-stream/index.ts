@@ -1,13 +1,11 @@
 import type { Props, ComponentType, JSXNode } from "../../types";
+import extendStreamController, { Controller } from "../../utils/extend-stream-controller";
 import BunriseRequest from "../bunrise-request";
 import injectUnsuspenseScript from "../inject-unsuspense-script"; // with { type: "macro" }
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
+const unsuspenseScriptCode = injectUnsuspenseScript();
 
-type Controller = {
-  enqueue(chunk: string): void;
-  close(): void;
-};
 
 export default function renderToReadableStream(
   element: JSX.Element,
@@ -15,7 +13,8 @@ export default function renderToReadableStream(
 ) {
   return new ReadableStream({
     start(controller) {
-      enqueueDuringRendering(element, request, controller)
+      const extendedController = extendStreamController(controller);
+      enqueueDuringRendering(element, request, extendedController)
         .then(() => controller.close())
         .catch((e) => controller.error(e));
     },
@@ -33,7 +32,7 @@ async function enqueueDuringRendering(
   for (const elementContent of elements) {
     if (elementContent === false || elementContent == null) continue;
     if (ALLOWED_PRIMARIES.has(typeof elementContent)) {
-      controller.enqueue(elementContent.toString());
+      controller.enqueue({ chunk: elementContent.toString() });
       continue;
     }
 
@@ -43,7 +42,7 @@ async function enqueueDuringRendering(
       const jsx = await getValueOfComponent(type, props, request);
 
       if (ALLOWED_PRIMARIES.has(typeof jsx)) {
-        return controller.enqueue(jsx.toString());
+        return controller.enqueue({ chunk: jsx.toString() });
       }
 
       if (Array.isArray(jsx)) {
@@ -55,14 +54,19 @@ async function enqueueDuringRendering(
 
     const attributes = renderAttributes(props);
 
-    controller.enqueue(`<${type}${attributes}>`);
+    // Node tag start
+    controller.enqueue({ chunk: `<${type}${attributes}>`, isOpenOfTag: true });
+
+    // Node Content
     await enqueueChildren(props.children, request, controller);
 
     if (type === 'head') {
-      controller.enqueue(injectUnsuspenseScript());
+      // Inject unsuspense script in the end of head
+      controller.enqueue({ chunk: unsuspenseScriptCode });
     }
 
-    controller.enqueue(`</${type}>`);
+    // Node tag end
+    controller.enqueue({ chunk: `</${type}>`, isEndOfTag: true });
   }
 }
 
@@ -83,7 +87,7 @@ async function enqueueChildren(
   }
 
   if (typeof children?.toString === "function") {
-    return controller.enqueue(children.toString());
+    return controller.enqueue({ chunk: children.toString() });
   }
 }
 
