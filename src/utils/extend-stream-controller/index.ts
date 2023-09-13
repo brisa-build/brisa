@@ -1,70 +1,107 @@
 export type ChunksOptions = {
   chunk: string;
   suspenseId?: number;
-  isEndOfTag?: boolean;
-  isOpenOfTag?: boolean;
 };
 
 export type Controller = {
-  enqueue(chunksOptions: ChunksOptions): void;
+  enqueue(chunk: string, suspenseId?: number): void;
   nextSuspenseIndex(): number;
+  suspensePromise(promise: Promise<void>): void;
+  waitSuspensedPromises(): Promise<void>;
+  startTag(chunk: string, suspenseId?: number): void;
+  endTag(chunk: string, suspenseId?: number): void;
+  flushAllReady(): void;
 };
 
-type SuspenseContent = {
+type SuspensedState = {
   chunk: string;
   openTags: number;
   closeTags: number;
 };
 
-const defaultSuspensedContent: SuspenseContent = {
-  chunk: "",
-  openTags: 0,
-  closeTags: 0,
-};
-
 export default function extendStreamController(
   controller: ReadableStreamDefaultController<string>,
 ): Controller {
-  const suspensed = new Map<number, SuspenseContent>();
-  let suspenseIndex = 0;
+  const suspensePromises: Promise<void>[] = [];
+  const suspensedMap = new Map<number, SuspensedState>();
+  const getSuspensedState = (id: number) =>
+    suspensedMap.get(id) ?? { chunk: "", openTags: 0, closeTags: 0 };
+
+  let noSuspensedOpenTags = 0;
+  let noSuspensedCloseTags = 0;
+
+  const startSuspenseTag = (chunk: string, id: number) =>
+    `<template id="U:${id}">${chunk}`
+
+  const endSuspenseTag = (chunk: string, id: number) =>
+    `${chunk}</template><script id="R:${id}">u$('${id}')</script>`
+
+  const wrapSuspenseTag = (chunk: string, id: number) =>
+    startSuspenseTag(chunk, id) + endSuspenseTag("", id)
 
   return {
-    enqueue({ chunk, suspenseId, isEndOfTag, isOpenOfTag }: ChunksOptions) {
+    startTag(chunk, suspenseId) {
       if (!suspenseId) {
+        noSuspensedOpenTags++;
+        return controller.enqueue(chunk);
+      }
+
+      const state = getSuspensedState(suspenseId);
+
+      state.openTags++;
+      state.chunk += startSuspenseTag(chunk, suspenseId);
+      suspensedMap.set(suspenseId, state);
+    },
+    enqueue(chunk, suspenseId) {
+      if (!suspenseId) return controller.enqueue(chunk);
+
+      const state = getSuspensedState(suspenseId);
+      const isHTMLTextWithoutTags = state.openTags === 0;
+
+      if (isHTMLTextWithoutTags) {
+        state.chunk += wrapSuspenseTag(chunk, suspenseId);
+        suspensedMap.set(suspenseId, state);
+        return this.flushAllReady();
+      }
+
+      state.chunk += chunk;
+
+      return suspensedMap.set(suspenseId, state);
+    },
+    endTag(chunk, suspenseId) {
+      if (!suspenseId) {
+        noSuspensedCloseTags++;
         controller.enqueue(chunk);
-        return;
+        return this.flushAllReady();
       }
 
-      let suspensedChunkContent = suspensed.get(suspenseId);
+      const state = getSuspensedState(suspenseId);
 
-      if (!suspensedChunkContent) {
-        suspensedChunkContent = { ...defaultSuspensedContent };
-        suspensed.set(suspenseId, suspensedChunkContent);
+      state.closeTags++;
+      state.chunk += endSuspenseTag(chunk, suspenseId);
+      suspensedMap.set(suspenseId, state);
+
+      this.flushAllReady();
+    },
+    flushAllReady() {
+      if (noSuspensedOpenTags !== noSuspensedCloseTags) return;
+
+      for (const [suspenseId, state] of suspensedMap.entries()) {
+        if (state.closeTags !== state.openTags) continue;
+        controller.enqueue(state.chunk);
+        suspensedMap.delete(suspenseId);
       }
-
-      if (isOpenOfTag) suspensedChunkContent.closeTags++;
-      if (isEndOfTag) suspensedChunkContent.openTags++;
-
-      if (isEndOfTag && isReadyToFlush(suspensedChunkContent)) {
-        const finalChunk =
-          suspensedChunkContent.chunk +
-          chunk +
-          `<script>u$('${suspenseId}')</script>`;
-
-        controller.enqueue(finalChunk);
-        suspensed.delete(suspenseId);
-        return;
-      }
-
-      suspensedChunkContent.chunk += chunk;
-      suspensed.set(suspenseId, suspensedChunkContent);
+    },
+    suspensePromise(promise: Promise<void>) {
+      suspensePromises.push(promise);
+    },
+    async waitSuspensedPromises() {
+      await Promise.all(suspensePromises);
+      this.flushAllReady();
+      return;
     },
     nextSuspenseIndex() {
-      return ++suspenseIndex;
+      return suspensePromises.length + 1;
     },
   };
-}
-
-function isReadyToFlush(chunkContent: SuspenseContent) {
-  return chunkContent.closeTags === chunkContent.openTags;
 }
