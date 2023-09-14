@@ -63,12 +63,9 @@ async function enqueueDuringRendering(
 
         controller.endTag(`</div>`, suspenseId);
 
-        return controller.suspensePromise(enqueueComponent(
-          componentContent,
-          request,
-          controller,
-          id,
-        ));
+        return controller.suspensePromise(
+          enqueueComponent(componentContent, request, controller, id),
+        );
       }
 
       return enqueueComponent(
@@ -80,7 +77,6 @@ async function enqueueDuringRendering(
     }
 
     const attributes = renderAttributes(props);
-
 
     controller.startTag(`<${type}${attributes}>`, suspenseId);
 

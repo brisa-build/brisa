@@ -170,5 +170,5 @@ function PageLayout({ children }: { children: JSX.Element }) {
     <LiveReloadScript port={port}>{children}</LiveReloadScript>
   );
 
-  return <LoadLayout>{childrenWithLiveReload}</LoadLayout>
+  return <LoadLayout>{childrenWithLiveReload}</LoadLayout>;
 }
