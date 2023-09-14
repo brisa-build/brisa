@@ -1,8 +1,19 @@
-import { describe, it, expect } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  mock,
+  afterEach,
+  afterAll,
+} from "bun:test";
 import renderToReadableStream from ".";
 import { BunriseRequest } from "..";
 
 const testRequest = new BunriseRequest(new Request("http://test.com/"));
+const mockConsoleError = mock(() => {});
+const consoleError = console.error;
+console.error = mockConsoleError;
 
 async function streamToText(stream: ReadableStream): Promise<string> {
   const reader = stream.getReader();
@@ -20,6 +31,12 @@ async function streamToText(stream: ReadableStream): Promise<string> {
 }
 
 describe("bunrise core", () => {
+  afterEach(() => {
+    mockConsoleError.mockClear();
+  });
+  afterAll(() => {
+    console.error = consoleError;
+  });
   describe("renderToReadableStream", () => {
     it("should render a simple JSX element", async () => {
       const element = <div class="test">Hello World</div>;
@@ -28,6 +45,21 @@ describe("bunrise core", () => {
 
       const expected = `<div class="test">Hello World</div>`;
       expect(result).toEqual(expected);
+      expect(mockConsoleError.mock.calls[0]).toEqual([
+        "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
+      ]);
+    });
+
+    it("should not console.error when it has a <head> tag", async () => {
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, testRequest);
+      await streamToText(stream);
+      expect(mockConsoleError.mock.calls.length).toEqual(0);
     });
 
     it("should render a complex JSX element", async () => {
