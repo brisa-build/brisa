@@ -1,10 +1,12 @@
 export default async function middleware(request: Request) {
-  if (request.url !== "/test") return;
+  const url = new URL(request.url);
+
+  if (url.pathname !== "/test") return;
 
   return new Response("", {
     status: 302,
     headers: {
-      Location: "/new-url",
+      Location: "/",
     },
   });
 }
