@@ -46,8 +46,9 @@ export default async function LoadLayout({
   }
 
   const CustomLayout = await import(path.join(srcDir, "layout"));
+  const layoutEl = <CustomLayout.default>{children}</CustomLayout.default>;
 
-  if (!IS_PRODUCTION && !(await hasAllMandatoryTags(CustomLayout.default))) {
+  if (!IS_PRODUCTION && !(await hasAllMandatoryTags(layoutEl))) {
     console.error(
       `Missing mandatory tag in custom layout (${MANDATORY_TAGS.join(
         ", ",
@@ -55,7 +56,7 @@ export default async function LoadLayout({
     );
   }
 
-  return <CustomLayout.default>{children}</CustomLayout.default>;
+  return layoutEl;
 }
 
 async function hasAllMandatoryTags(element: JSX.Element) {
