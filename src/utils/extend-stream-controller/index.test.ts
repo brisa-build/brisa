@@ -2,7 +2,7 @@ import { it, describe, expect, mock, beforeEach } from "bun:test";
 import extendStreamController from ".";
 
 const mockController = {
-  enqueue: mock(() => { }),
+  enqueue: mock(() => {}),
 } as any;
 
 describe("extendStreamController", () => {
@@ -54,7 +54,9 @@ describe("extendStreamController", () => {
       ["<div>"],
       ["Another"],
       ["</div>"],
-      [`<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`],
+      [
+        `<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`,
+      ],
     ]);
   });
 
@@ -95,8 +97,12 @@ describe("extendStreamController", () => {
       ["<h1>"],
       ["Hello world"],
       ["</h1>"],
-      [`<template id="U:2"><div>Success U2!</div></template><script id="R:2">u$('2')</script>`],
-      [`<template id="U:1">Success U1!</template><script id="R:1">u$('1')</script>`],
+      [
+        `<template id="U:2"><div>Success U2!</div></template><script id="R:2">u$('2')</script>`,
+      ],
+      [
+        `<template id="U:1">Success U1!</template><script id="R:1">u$('1')</script>`,
+      ],
     ]);
   });
 
@@ -131,8 +137,12 @@ describe("extendStreamController", () => {
       ["<h1>"],
       ["Hello world"],
       ["</h1>"],
-      [`<template id="U:2">Success U2!</template><script id="R:2">u$('2')</script>`],
-      [`<template id="U:1">Success U1!</template><script id="R:1">u$('1')</script>`],
+      [
+        `<template id="U:2">Success U2!</template><script id="R:2">u$('2')</script>`,
+      ],
+      [
+        `<template id="U:1">Success U1!</template><script id="R:1">u$('1')</script>`,
+      ],
     ]);
   });
 });
