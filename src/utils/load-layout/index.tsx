@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import getRootDir from "../get-root-dir";
 
-const MANDATORY_TAGS = ["html", "head", "body"];
+const MANDATORY_TAGS = ["html", "head", "body", "title"];
 const MANDATORY_TAGS_SET = new Set(MANDATORY_TAGS);
 const projectDir = getRootDir();
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
@@ -61,6 +61,7 @@ export default async function LoadLayout({
 async function hasAllMandatoryTags(element: JSX.Element) {
   const mandatory = new Set();
 
+  console.log(JSON.stringify(element))
   JSON.stringify(element, (key, value) => {
     if (key === "type" && MANDATORY_TAGS_SET.has(value)) mandatory.add(value);
     return value;
