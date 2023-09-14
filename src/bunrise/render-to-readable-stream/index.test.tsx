@@ -1,34 +1,12 @@
-import {
-  describe,
-  it,
-  expect,
-  beforeAll,
-  mock,
-  afterEach,
-  afterAll,
-} from "bun:test";
+import { describe, it, expect, mock, afterEach, afterAll } from "bun:test";
 import renderToReadableStream from ".";
 import { BunriseRequest } from "..";
+import streamToText from "../../utils/__fixtures__/stream-to-text";
 
 const testRequest = new BunriseRequest(new Request("http://test.com/"));
 const mockConsoleError = mock(() => {});
 const consoleError = console.error;
 console.error = mockConsoleError;
-
-async function streamToText(stream: ReadableStream): Promise<string> {
-  const reader = stream.getReader();
-  let result = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-
-    if (done) break;
-
-    result += value;
-  }
-
-  return result;
-}
 
 describe("bunrise core", () => {
   afterEach(() => {

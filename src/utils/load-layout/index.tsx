@@ -5,21 +5,18 @@ import isImportableFileInDir from "../is-importable-file-in-dir";
 const projectDir = getRootDir();
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const srcDir = path.join(projectDir, "src");
-const existCustomLayoutAtTheBeginning = await isImportableFileInDir(
-  "layout",
-  srcDir,
-);
+const doesCustomLayoutExist = await isImportableFileInDir("layout", srcDir);
 
 export default async function LoadLayout({
   children,
 }: {
   children: JSX.Element;
 }) {
-  const checkCustomLayout = IS_PRODUCTION
-    ? existCustomLayoutAtTheBeginning
+  const displayCustomLayout = IS_PRODUCTION
+    ? doesCustomLayoutExist
     : await isImportableFileInDir("layout", srcDir);
 
-  if (!checkCustomLayout) {
+  if (!displayCustomLayout) {
     return (
       <html>
         <head>
@@ -30,6 +27,8 @@ export default async function LoadLayout({
     );
   }
 
-  const CustomLayout = await import(path.join(srcDir, "layout"));
-  return <CustomLayout.default>{children}</CustomLayout.default>;
+  const layoutModule = await import(path.join(srcDir, "layout"));
+  const CustomLayout = layoutModule.default;
+
+  return <CustomLayout>{children}</CustomLayout>;
 }
