@@ -7,6 +7,7 @@ import getRouteMatcher from "../utils/get-route-matcher";
 import { BunriseRequest, renderToReadableStream } from "../bunrise";
 import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
+import loadMiddleware from "../utils/load-middleware";
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
@@ -23,6 +24,7 @@ const buildDir = path.join(projectDir, "build");
 const rootDir = IS_PRODUCTION ? buildDir : srcDir;
 const assetsDir = path.join(rootDir, "public");
 const pagesDir = path.join(rootDir, "pages");
+const customMiddleware = await loadMiddleware();
 
 if (IS_PRODUCTION && !fs.existsSync(buildDir)) {
   console.error('Not exist "build" yet. Please run "bunrise build" first');
@@ -96,6 +98,12 @@ async function handleRequest(req: Request) {
   const isApi = pathname.startsWith("/api/");
   const api = isApi ? rootRouter.match(req) : null;
   const assetPath = path.join(assetsDir, pathname);
+
+  // Middleware
+  if (customMiddleware) {
+    const middlewareResponse = await Promise.resolve().then(() => customMiddleware(req));
+    if (middlewareResponse) return middlewareResponse;
+  }
 
   // Pages
   if (!isApi && route && !isReservedPathname) {
