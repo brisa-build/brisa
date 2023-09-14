@@ -1,8 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import injectUnsuspenseScript from ".";
+import { injectUnsuspenseScript } from ".";
 
 describe("injectUnsuspenseScript", () => {
-  it("should return a script tag with the code", () => {
-    expect(injectUnsuspenseScript()).toMatch(/<script>[\s\S]+<\/script>/gm);
+  it("should return a script tag with the code", async () => {
+    expect(await injectUnsuspenseScript()).toMatch(
+      /<script>[\s\S]+<\/script>/gm,
+    );
   });
 });

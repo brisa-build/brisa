@@ -7,6 +7,7 @@ import { injectUnsuspenseScript } from "../inject-unsuspense-script" assert { ty
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const unsuspenseScriptCode = await injectUnsuspenseScript();
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export default function renderToReadableStream(
   element: JSX.Element,
@@ -23,6 +24,12 @@ export default function renderToReadableStream(
       await extendedController.waitSuspensedPromises();
 
       controller.close();
+
+      if (!IS_PRODUCTION && !extendedController.hasHeadTag) {
+        console.error(
+          "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
+        );
+      }
     },
   });
 }
@@ -86,6 +93,7 @@ async function enqueueDuringRendering(
     if (type === "head") {
       // Inject unsuspense script in the end of head
       controller.enqueue(unsuspenseScriptCode, suspenseId);
+      controller.hasHeadTag = true;
     }
 
     // Node tag end

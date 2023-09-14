@@ -11,6 +11,7 @@ export type Controller = {
   startTag(chunk: string, suspenseId?: number): void;
   endTag(chunk: string, suspenseId?: number): void;
   flushAllReady(): void;
+  hasHeadTag: boolean;
 };
 
 type SuspensedState = {
@@ -40,6 +41,7 @@ export default function extendStreamController(
     startSuspenseTag(chunk, id) + endSuspenseTag("", id);
 
   return {
+    hasHeadTag: false,
     startTag(chunk, suspenseId) {
       if (!suspenseId) {
         noSuspensedOpenTags++;

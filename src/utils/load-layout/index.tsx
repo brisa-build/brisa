@@ -2,8 +2,6 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import getRootDir from "../get-root-dir";
 
-const MANDATORY_TAGS = ["html", "head", "body", "title"];
-const MANDATORY_TAGS_SET = new Set(MANDATORY_TAGS);
 const projectDir = getRootDir();
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const srcDir = path.join(projectDir, "src");
@@ -46,27 +44,5 @@ export default async function LoadLayout({
   }
 
   const CustomLayout = await import(path.join(srcDir, "layout"));
-  const layoutEl = <CustomLayout.default>{children}</CustomLayout.default>;
-
-  if (!IS_PRODUCTION && !(await hasAllMandatoryTags(layoutEl))) {
-    console.error(
-      `Missing mandatory tag in custom layout (${MANDATORY_TAGS.join(
-        ", ",
-      )}). Please check your layout file. You can experiment some problems with your JavaScript client code`,
-    );
-  }
-
-  return layoutEl;
-}
-
-async function hasAllMandatoryTags(element: JSX.Element) {
-  const mandatory = new Set();
-
-  console.log(JSON.stringify(element))
-  JSON.stringify(element, (key, value) => {
-    if (key === "type" && MANDATORY_TAGS_SET.has(value)) mandatory.add(value);
-    return value;
-  });
-
-  return mandatory.size === MANDATORY_TAGS_SET.size;
+  return <CustomLayout.default>{children}</CustomLayout.default>;
 }
