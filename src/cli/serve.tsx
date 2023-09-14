@@ -1,11 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import LoadLayout from "../utils/load-layout";
 import getRootDir from "../utils/get-root-dir";
 import getRouteMatcher from "../utils/get-route-matcher";
 import { BunriseRequest, renderToReadableStream } from "../bunrise";
-import { MatchedRoute, ServerWebSocket } from "bun";
 import { LiveReloadScript } from "./dev-live-reload";
+import { MatchedRoute, ServerWebSocket } from "bun";
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
@@ -144,9 +145,9 @@ async function responseRenderedPage({
   const bunriseRequest = new BunriseRequest(req, route);
 
   const pageElement = (
-    <Layout>
+    <PageLayout>
       <PageComponent error={error} />
-    </Layout>
+    </PageLayout>
   );
 
   const htmlStream = await renderToReadableStream(pageElement, bunriseRequest);
@@ -162,19 +163,12 @@ async function responseRenderedPage({
   return new Response(htmlStream, responseOptions);
 }
 
-function Layout({ children }: { children: JSX.Element }) {
+function PageLayout({ children }: { children: JSX.Element }) {
   const childrenWithLiveReload = IS_PRODUCTION ? (
     children
   ) : (
     <LiveReloadScript port={port}>{children}</LiveReloadScript>
   );
 
-  return (
-    <html>
-      <head>
-        <title>Bunrise</title>
-      </head>
-      <body>{childrenWithLiveReload}</body>
-    </html>
-  );
+  return <LoadLayout>{childrenWithLiveReload}</LoadLayout>
 }
