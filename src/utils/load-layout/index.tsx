@@ -1,27 +1,14 @@
-import fs from "node:fs/promises";
 import path from "node:path";
 import getRootDir from "../get-root-dir";
+import isImportableFileInDir from "../is-importable-file-in-dir";
 
 const projectDir = getRootDir();
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const srcDir = path.join(projectDir, "src");
-const supportedFormats = ["tsx", "ts", "js"];
-const supportedPaths = [
-  path.join(srcDir, "layout", "index"),
-  path.join(srcDir, "layout"),
-];
-
-async function isCustomLayout() {
-  const promises = supportedPaths.flatMap((path) =>
-    supportedFormats.map((format) => fs.exists(`${path}.${format}`)),
-  );
-
-  const results = await Promise.all(promises);
-
-  return results.some((exist) => exist);
-}
-
-const existCustomLayoutAtTheBeginning = await isCustomLayout();
+const existCustomLayoutAtTheBeginning = await isImportableFileInDir(
+  "layout",
+  srcDir,
+);
 
 export default async function LoadLayout({
   children,
@@ -30,7 +17,7 @@ export default async function LoadLayout({
 }) {
   const checkCustomLayout = IS_PRODUCTION
     ? existCustomLayoutAtTheBeginning
-    : await isCustomLayout();
+    : await isImportableFileInDir("layout", srcDir);
 
   if (!checkCustomLayout) {
     return (
