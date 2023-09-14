@@ -24,7 +24,6 @@ const buildDir = path.join(projectDir, "build");
 const rootDir = IS_PRODUCTION ? buildDir : srcDir;
 const assetsDir = path.join(rootDir, "public");
 const pagesDir = path.join(rootDir, "pages");
-const customMiddleware = await loadMiddleware();
 
 if (IS_PRODUCTION && !fs.existsSync(buildDir)) {
   console.error('Not exist "build" yet. Please run "bunrise build" first');
@@ -41,6 +40,7 @@ if (!fs.existsSync(pagesDir)) {
 
 const pagesRouter = getRouteMatcher(pagesDir, RESERVED_PAGES);
 const rootRouter = getRouteMatcher(rootDir);
+const customMiddleware = await loadMiddleware();
 
 const responseInitWithGzip = {
   headers: {
