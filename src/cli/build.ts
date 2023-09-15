@@ -60,8 +60,9 @@ logTable(
 );
 
 console.log("\nλ  Server entry-points");
-console.log("Φ JS shared by all");
-console.log("ƒ  Middleware \n");
+console.log("Δ  Layout");
+console.log("ƒ  Middleware");
+console.log("Φ  JS shared by all \n");
 
 if (fs.existsSync(inAssetsDir)) {
   // Copy all assets to the build directory
