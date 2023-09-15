@@ -2,7 +2,7 @@ import { describe, it, expect } from "bun:test";
 import path from "node:path";
 import getEntrypoints from ".";
 
-const pagesDir = path.join(import.meta.dir, "..", "__fixtures__", "pages");
+const pagesDir = path.join(import.meta.dir, "..", "..", "__fixtures__", "pages");
 
 describe("utils", () => {
   describe("getEntrypoints", () => {

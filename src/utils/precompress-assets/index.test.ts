@@ -1,8 +1,9 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import { exists, unlink } from "node:fs/promises";
+import path from "node:path";
 import precompressAssets from ".";
 
-const assetsPath = `${import.meta.dir}/../__fixtures__/assets`;
+const assetsPath = path.join(import.meta.dir, "..", "..", "__fixtures__", "assets");
 
 describe("utils", () => {
   describe("precompressAssets", () => {

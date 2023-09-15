@@ -1,8 +1,9 @@
 import { describe, it, expect } from "bun:test";
+import path from "node:path";
 
 import getFilesFromDir from ".";
 
-const assetsPath = `${import.meta.dir}/../__fixtures__/assets`;
+const assetsPath = path.join(import.meta.dir, "..", "..", "__fixtures__", "assets")
 
 describe("utils", () => {
   describe("getFilesFromDir", () => {
