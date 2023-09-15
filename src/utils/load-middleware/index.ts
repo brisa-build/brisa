@@ -4,7 +4,7 @@ import getImportableFilepath from "../get-importable-filepath";
 const rootDir = getRootDir();
 
 export default async function loadMiddleware() {
-  const middlewarePath = getImportableFilepath(rootDir, 'middleware')
+  const middlewarePath = getImportableFilepath('middleware', rootDir)
 
   if (!middlewarePath) return null;
 

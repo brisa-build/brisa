@@ -15,8 +15,8 @@ const outAssetsDir = path.join(outdir, "public");
 const inAssetsDir = path.join(srcDir, "public");
 const pagesEntrypoints = getEntrypoints(pagesDir);
 const apiEntrypoints = getEntrypoints(apiDir);
-const middlewarePath = getImportableFilepath(srcDir, 'middleware');
-const layoutPath = getImportableFilepath(srcDir, 'layout');
+const middlewarePath = getImportableFilepath('middleware', srcDir);
+const layoutPath = getImportableFilepath('layout', srcDir);
 const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
 
 if (middlewarePath) entrypoints.push(middlewarePath);
