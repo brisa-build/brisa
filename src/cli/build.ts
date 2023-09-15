@@ -35,6 +35,7 @@ const { success, logs, outputs } = await Bun.build({
   outdir,
   root: srcDir,
   minify: true,
+  splitting: true,
 });
 
 if (!success) {
@@ -43,13 +44,23 @@ if (!success) {
 }
 
 logTable(
-  outputs.map((output) => ({
-    Route: `λ ${output.path.replace(outdir, "")}`,
-    Size: byteSizeToString(output.size, 0),
-  })),
+  outputs.map((output) => {
+    let symbol = 'λ';
+
+    if (output.kind === 'chunk') symbol = 'Φ';
+    if (output.path.startsWith('/middleware')) symbol = 'ƒ';
+    if (output.path.startsWith('/layout')) symbol = 'Δ';
+
+    return {
+      Route: `λ ${output.path.replace(outdir, "")}`,
+      Size: byteSizeToString(output.size, 0),
+    }
+  }),
 );
 
-console.log("\nλ  (Server)  server-side renders at runtime\n");
+console.log("\nλ  Server entry-points \n");
+console.log("Φ JS shared by all\n");
+console.log("ƒ  Middleware \n");
 
 if (fs.existsSync(inAssetsDir)) {
   // Copy all assets to the build directory
