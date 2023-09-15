@@ -33,6 +33,7 @@ if (entrypoints.length === 1) {
 const { success, logs, outputs } = await Bun.build({
   entrypoints,
   outdir,
+  root: srcDir,
   minify: true,
 });
 
