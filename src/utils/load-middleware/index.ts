@@ -1,23 +1,14 @@
-import path from "node:path";
 import getRootDir from "../get-root-dir";
-import isImportableFileInDir from "../is-importable-file-in-dir";
+import getImportableFilepath from "../get-importable-filepath";
 
-const projectDir = getRootDir();
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
-const srcDir = path.join(projectDir, "src");
-const doesCustomMiddlewareExist = await isImportableFileInDir(
-  "middleware",
-  srcDir,
-);
+const rootDir = getRootDir();
 
 export default async function loadMiddleware() {
-  const displayCustomMiddleware = IS_PRODUCTION
-    ? doesCustomMiddlewareExist
-    : await isImportableFileInDir("middleware", srcDir);
+  const middlewarePath = getImportableFilepath(rootDir, 'middleware')
 
-  if (!displayCustomMiddleware) return null;
+  if (!middlewarePath) return null;
 
-  const middlewareModule = await import(path.join(srcDir, "middleware"));
+  const middlewareModule = await import(middlewarePath);
 
   return middlewareModule.default;
 }

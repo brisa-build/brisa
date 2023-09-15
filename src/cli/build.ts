@@ -6,11 +6,10 @@ import byteSizeToString from "../utils/byte-size-to-string";
 import precompressAssets from "../utils/precompress-assets";
 import getEntrypoints from "../utils/get-entrypoints";
 
-const projectDir = getRootDir();
-const srcDir = path.join(projectDir, "src");
+const srcDir = getRootDir('development');
 const pagesDir = path.join(srcDir, "pages");
 const apiDir = path.join(srcDir, "api");
-let outdir = path.join(projectDir, "build");
+let outdir = getRootDir('production');
 const outAssetsDir = path.join(outdir, "public");
 const inAssetsDir = path.join(srcDir, "public");
 const pagesEntrypoints = getEntrypoints(pagesDir);

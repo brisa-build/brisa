@@ -3,10 +3,20 @@ import getRootDir from ".";
 
 describe("utils", () => {
   describe("getRootDir", () => {
-    it("should return the root directory", () => {
-      const input = "some/project/node_modules/bunrise/out/";
-      const output = getRootDir(input);
-      const expected = "some/project";
+    it("should return the src directory in development", () => {
+      const dir = "some/project/node_modules/bunrise/out/";
+      const env = "development";
+      const output = getRootDir(env, dir);
+      const expected = "some/project/src";
+
+      expect(output).toBe(expected);
+    });
+
+    it("should return the build directory in production", () => {
+      const dir = "some/project/node_modules/bunrise/out/";
+      const env = "production";
+      const output = getRootDir(env, dir);
+      const expected = "some/project/build";
 
       expect(output).toBe(expected);
     });

@@ -18,14 +18,11 @@ const PAGE_500 = "/_500";
 const RESERVED_PAGES = [PAGE_404, PAGE_500];
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const port = parseInt(process.argv[2]) || 3000;
-const projectDir = getRootDir();
-const srcDir = path.join(projectDir, "src");
-const buildDir = path.join(projectDir, "build");
-const rootDir = IS_PRODUCTION ? buildDir : srcDir;
+const rootDir = getRootDir();
 const assetsDir = path.join(rootDir, "public");
 const pagesDir = path.join(rootDir, "pages");
 
-if (IS_PRODUCTION && !fs.existsSync(buildDir)) {
+if (IS_PRODUCTION && !fs.existsSync(rootDir)) {
   console.error('Not exist "build" yet. Please run "bunrise build" first');
   process.exit(1);
 }

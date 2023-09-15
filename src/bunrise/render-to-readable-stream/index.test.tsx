@@ -1,10 +1,10 @@
 import { describe, it, expect, mock, afterEach, afterAll } from "bun:test";
 import renderToReadableStream from ".";
 import { BunriseRequest } from "..";
-import streamToText from "../../utils/__fixtures__/stream-to-text";
+import streamToText from "../../__fixtures__/stream-to-text";
 
 const testRequest = new BunriseRequest(new Request("http://test.com/"));
-const mockConsoleError = mock(() => {});
+const mockConsoleError = mock(() => { });
 const consoleError = console.error;
 console.error = mockConsoleError;
 
@@ -96,7 +96,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({}, request: BunriseRequest) => (
+      const ComponentChild = ({ }, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 

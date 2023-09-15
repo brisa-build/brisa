@@ -1,22 +1,16 @@
-import path from "node:path";
+import getImportableFilepath from "../get-importable-filepath";
 import getRootDir from "../get-root-dir";
-import isImportableFileInDir from "../is-importable-file-in-dir";
 
-const projectDir = getRootDir();
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
-const srcDir = path.join(projectDir, "src");
-const doesCustomLayoutExist = await isImportableFileInDir("layout", srcDir);
+const rootDir = getRootDir();
 
 export default async function LoadLayout({
   children,
 }: {
   children: JSX.Element;
 }) {
-  const displayCustomLayout = IS_PRODUCTION
-    ? doesCustomLayoutExist
-    : await isImportableFileInDir("layout", srcDir);
+  const layoutPath = getImportableFilepath(rootDir, 'layout')
 
-  if (!displayCustomLayout) {
+  if (!layoutPath) {
     return (
       <html>
         <head>
@@ -27,7 +21,7 @@ export default async function LoadLayout({
     );
   }
 
-  const layoutModule = await import(path.join(srcDir, "layout"));
+  const layoutModule = await import(layoutPath);
   const CustomLayout = layoutModule.default;
 
   return <CustomLayout>{children}</CustomLayout>;
