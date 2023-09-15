@@ -5,6 +5,7 @@ import logTable from "../utils/log-table";
 import byteSizeToString from "../utils/byte-size-to-string";
 import precompressAssets from "../utils/precompress-assets";
 import getEntrypoints from "../utils/get-entrypoints";
+import getImportableFilepath from "../utils/get-importable-filepath";
 
 const srcDir = getRootDir('development');
 const pagesDir = path.join(srcDir, "pages");
@@ -14,7 +15,12 @@ const outAssetsDir = path.join(outdir, "public");
 const inAssetsDir = path.join(srcDir, "public");
 const pagesEntrypoints = getEntrypoints(pagesDir);
 const apiEntrypoints = getEntrypoints(apiDir);
+const middlewarePath = getImportableFilepath(srcDir, 'middleware');
+const layoutPath = getImportableFilepath(srcDir, 'layout');
 const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
+
+if (middlewarePath) entrypoints.push(middlewarePath);
+if (layoutPath) entrypoints.push(layoutPath);
 
 // This fix Bun build with only one entrypoint because it doesn't create the subfolder
 if (entrypoints.length === 1) {
