@@ -8,7 +8,7 @@ export default async function LoadLayout({
 }: {
   children: JSX.Element;
 }) {
-  const layoutPath = getImportableFilepath(rootDir, 'layout')
+  const layoutPath = getImportableFilepath('layout', rootDir)
 
   if (!layoutPath) {
     return (
