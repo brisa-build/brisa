@@ -45,21 +45,22 @@ if (!success) {
 
 logTable(
   outputs.map((output) => {
+    const route = output.path.replace(outdir, "")
     let symbol = 'λ';
 
-    if (output.kind === 'chunk') symbol = 'Φ';
-    if (output.path.startsWith('/middleware')) symbol = 'ƒ';
-    if (output.path.startsWith('/layout')) symbol = 'Δ';
+    if (route.startsWith('/chunk-')) symbol = 'Φ';
+    if (route.startsWith('/middleware')) symbol = 'ƒ';
+    if (route.startsWith('/layout')) symbol = 'Δ';
 
     return {
-      Route: `λ ${output.path.replace(outdir, "")}`,
+      Route: `${symbol} ${route}`,
       Size: byteSizeToString(output.size, 0),
     }
   }),
 );
 
-console.log("\nλ  Server entry-points \n");
-console.log("Φ JS shared by all\n");
+console.log("\nλ  Server entry-points");
+console.log("Φ JS shared by all");
 console.log("ƒ  Middleware \n");
 
 if (fs.existsSync(inAssetsDir)) {
