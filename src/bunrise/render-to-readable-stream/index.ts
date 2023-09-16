@@ -2,6 +2,7 @@ import type { Props, ComponentType, JSXNode } from "../../types";
 import extendStreamController, {
   Controller,
 } from "../../utils/extend-stream-controller";
+import isExternalUrl from "../../utils/is-external-url";
 import BunriseRequest from "../bunrise-request";
 import { injectUnsuspenseScript } from "../inject-unsuspense-script" assert { type: "macro" };
 
@@ -159,8 +160,31 @@ function renderAttributes({
   let attributes = "";
 
   for (const prop in props) {
-    if (type === "html" && prop === "lang") continue;
-    if (prop !== "children") attributes += ` ${prop}="${props[prop]}"`;
+    const value = props[prop];
+
+    if (prop === "children" || (type === "html" && prop === "lang")) continue;
+
+    // i18n navigation
+    if (
+      type === "a" &&
+      prop === "href" &&
+      request.i18n?.locale &&
+      typeof value === "string"
+    ) {
+      const { locale, locales } = request.i18n ?? {};
+
+      if (
+        !isExternalUrl(value) &&
+        !locales?.some((locale) => value?.split("/")?.[1] === locale)
+      ) {
+        const newValue = value === "/" ? "" : value;
+
+        attributes += ` ${prop}="/${locale}${newValue}"`;
+        continue;
+      }
+    }
+
+    attributes += ` ${prop}="${value}"`;
   }
 
   if (type === "html" && request.i18n?.locale) {

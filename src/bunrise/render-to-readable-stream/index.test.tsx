@@ -4,7 +4,7 @@ import { BunriseRequest } from "..";
 import streamToText from "../../__fixtures__/stream-to-text";
 
 const testRequest = new BunriseRequest(new Request("http://test.com/"));
-const mockConsoleError = mock(() => {});
+const mockConsoleError = mock(() => { });
 const consoleError = console.error;
 console.error = mockConsoleError;
 
@@ -96,7 +96,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({}, request: BunriseRequest) => (
+      const ComponentChild = ({ }, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
@@ -360,6 +360,92 @@ describe("bunrise core", () => {
       const result = await streamToText(stream);
       testRequest.i18n = undefined;
       expect(result).toStartWith(`<html lang="es"><head>`);
+    });
+
+    it('should render the "a" tag with the locale if the i18n is enabled and the link does not has locale', async () => {
+      testRequest.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+      };
+      const home = await streamToText(
+        renderToReadableStream(<a href="/">Test</a>, testRequest),
+      );
+      const withParam = await streamToText(
+        renderToReadableStream(<a href="/test?some=true">Test</a>, testRequest),
+      );
+      const withHash = await streamToText(
+        renderToReadableStream(<a href="/test#some">Test</a>, testRequest),
+      );
+
+      testRequest.i18n = undefined;
+      expect(home).toEqual(`<a href="/es">Test</a>`);
+      expect(withParam).toEqual(`<a href="/es/test?some=true">Test</a>`);
+      expect(withHash).toEqual(`<a href="/es/test#some">Test</a>`);
+    });
+
+    it('should render the "a" tag with the locale if i18n is enabled, the link lacks locale but starts with a page with locale in its name', async () => {
+      testRequest.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+      };
+      const essencePage = await streamToText(
+        renderToReadableStream(<a href="/essence">Test</a>, testRequest),
+      );
+      const withParam = await streamToText(
+        renderToReadableStream(
+          <a href="/essence?some=true">Test</a>,
+          testRequest,
+        ),
+      );
+      const withHash = await streamToText(
+        renderToReadableStream(<a href="/essence#some">Test</a>, testRequest),
+      );
+
+      testRequest.i18n = undefined;
+      expect(essencePage).toEqual(`<a href="/es/essence">Test</a>`);
+      expect(withParam).toEqual(`<a href="/es/essence?some=true">Test</a>`);
+      expect(withHash).toEqual(`<a href="/es/essence#some">Test</a>`);
+    });
+
+    it('should NOT render the "a" tag with the locale if the url is external', async () => {
+      testRequest.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+      };
+      const element = <a href="http://test.com/test">Test</a>;
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
+      testRequest.i18n = undefined;
+      expect(result).toEqual(`<a href="http://test.com/test">Test</a>`);
+    });
+
+    it('should NOT render the "a" tag with the locale if the url is external and mailto protocol', async () => {
+      testRequest.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+      };
+      const element = <a href="mailto:test@test.com">Test</a>;
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
+      testRequest.i18n = undefined;
+      expect(result).toEqual(`<a href="mailto:test@test.com">Test</a>`);
+    });
+
+    it('should NOT render the "a" tag with the locale if the i18n is enabled and the link already has some locale', async () => {
+      testRequest.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+      };
+      const element = <a href="/en/test">Test</a>;
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
+      testRequest.i18n = undefined;
+      expect(result).toEqual(`<a href="/en/test">Test</a>`);
     });
   });
 });
