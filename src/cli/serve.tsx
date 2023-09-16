@@ -7,7 +7,9 @@ import getRouteMatcher from "../utils/get-route-matcher";
 import { BunriseRequest, renderToReadableStream } from "../bunrise";
 import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
-import loadMiddleware from "../utils/load-middleware";
+import importFileIfExists from "../utils/import-file-if-exists";
+import getLocaleFromRequest from "../utils/get-locale-from-request";
+import removeLocaleFromUrl from "../utils/remove-locale-from-url";
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
@@ -37,7 +39,8 @@ if (!fs.existsSync(pagesDir)) {
 
 const pagesRouter = getRouteMatcher(pagesDir, RESERVED_PAGES);
 const rootRouter = getRouteMatcher(rootDir);
-const customMiddleware = await loadMiddleware();
+const customMiddleware = await importFileIfExists("middleware");
+const i18nConfig = await importFileIfExists("i18n");
 
 const responseInitWithGzip = {
   headers: {
@@ -52,14 +55,28 @@ Bun.serve({
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
     if (server.upgrade(req)) return;
+    let bunriseRequest = new BunriseRequest(req);
+
+    // i18n
+    if (i18nConfig && i18nConfig.locales && i18nConfig.defaultLocale) {
+      const locale = getLocaleFromRequest(i18nConfig, bunriseRequest);
+      const url = removeLocaleFromUrl(bunriseRequest.url, locale);
+      bunriseRequest.url = url;
+      bunriseRequest.i18n = {
+        defaultLocale: i18nConfig.defaultLocale,
+        locales: i18nConfig.locales,
+        locale,
+      };
+    }
+
     return (
-      handleRequest(req)
+      handleRequest(bunriseRequest)
         // 500 page
         .catch((error) => {
           const route500 = pagesRouter.reservedRoutes[PAGE_500];
           if (!route500) throw error;
           return responseRenderedPage({
-            req,
+            req: bunriseRequest,
             route: route500,
             status: 500,
             error,
@@ -88,7 +105,7 @@ console.log(
 ////////////////////// HELPERS ///////////////////////
 ///////////////////////////////////////////////////////
 
-async function handleRequest(req: Request) {
+async function handleRequest(req: BunriseRequest) {
   const url = new URL(req.url);
   const pathname = url.pathname;
   const { route, isReservedPathname } = pagesRouter.match(req);
@@ -98,7 +115,9 @@ async function handleRequest(req: Request) {
 
   // Middleware
   if (customMiddleware) {
-    const middlewareResponse = await Promise.resolve().then(() => customMiddleware(req));
+    const middlewareResponse = await Promise.resolve().then(() =>
+      customMiddleware(req),
+    );
     if (middlewareResponse) return middlewareResponse;
   }
 
@@ -123,7 +142,9 @@ async function handleRequest(req: Request) {
     const module = await import(api.route.filePath);
     const method = req.method.toLowerCase();
 
-    return module[method]?.(new BunriseRequest(req, api.route));
+    req.route = api.route;
+
+    return module[method]?.(req);
   }
 
   // 404 page
@@ -140,14 +161,15 @@ async function responseRenderedPage({
   status = 200,
   error,
 }: {
-  req: Request;
+  req: BunriseRequest;
   route: MatchedRoute;
   status?: number;
   error?: Error;
 }) {
   const module = await import(route.filePath);
   const PageComponent = module.default;
-  const bunriseRequest = new BunriseRequest(req, route);
+
+  req.route = route;
 
   const pageElement = (
     <PageLayout>
@@ -155,7 +177,7 @@ async function responseRenderedPage({
     </PageLayout>
   );
 
-  const htmlStream = await renderToReadableStream(pageElement, bunriseRequest);
+  const htmlStream = await renderToReadableStream(pageElement, req);
   const responseOptions = {
     headers: {
       "transfer-encoding": "chunked",
