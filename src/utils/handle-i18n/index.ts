@@ -4,14 +4,14 @@ import getRouteMatcher from "../get-route-matcher";
 import getConstants from "../../constants";
 
 export default function handleI18n(req: BunriseRequest): {
-  response?: Response,
-  pagesRouter?: ReturnType<typeof getRouteMatcher>,
-  rootRouter?: ReturnType<typeof getRouteMatcher>,
+  response?: Response;
+  pagesRouter?: ReturnType<typeof getRouteMatcher>;
+  rootRouter?: ReturnType<typeof getRouteMatcher>;
 } {
   const { PAGES_DIR, ROOT_DIR, RESERVED_PAGES, I18N_CONFIG } = getConstants();
   const { locales, defaultLocale } = I18N_CONFIG || {};
 
-  if (!defaultLocale || !locales?.length) return {}
+  if (!defaultLocale || !locales?.length) return {};
 
   const locale = getLocaleFromRequest(req);
   const url = new URL(req.url);
@@ -27,7 +27,7 @@ export default function handleI18n(req: BunriseRequest): {
           location,
         },
       }),
-    }
+    };
   }
 
   req.i18n = { defaultLocale: defaultLocale, locales: locales, locale };
@@ -35,5 +35,5 @@ export default function handleI18n(req: BunriseRequest): {
   return {
     pagesRouter: getRouteMatcher(PAGES_DIR, RESERVED_PAGES, locale),
     rootRouter: getRouteMatcher(ROOT_DIR, undefined, locale),
-  }
+  };
 }

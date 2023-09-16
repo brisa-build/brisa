@@ -7,10 +7,19 @@ import { BunriseRequest, renderToReadableStream } from "../bunrise";
 import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
 import importFileIfExists from "../utils/import-file-if-exists";
-import getConstants from '../constants'
+import getConstants from "../constants";
 import handleI18n from "../utils/handle-i18n";
 
-const { IS_PRODUCTION, PAGE_404, PAGE_500, RESERVED_PAGES, ROOT_DIR, PORT, PAGES_DIR, ASSETS_DIR } = getConstants();
+const {
+  IS_PRODUCTION,
+  PAGE_404,
+  PAGE_500,
+  RESERVED_PAGES,
+  ROOT_DIR,
+  PORT,
+  PAGES_DIR,
+  ASSETS_DIR,
+} = getConstants();
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
