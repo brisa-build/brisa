@@ -60,6 +60,8 @@ logTable(
       symbol = "ƒ";
     } else if (route.startsWith("/layout")) {
       symbol = "Δ";
+    } else if (route.startsWith("/i18n")) {
+      symbol = "Ω";
     }
 
     return {
