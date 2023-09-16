@@ -9,7 +9,6 @@ import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
 import importFileIfExists from "../utils/import-file-if-exists";
 import getLocaleFromRequest from "../utils/get-locale-from-request";
-import removeLocaleFromUrl from "../utils/remove-locale-from-url";
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
@@ -37,10 +36,10 @@ if (!fs.existsSync(pagesDir)) {
   process.exit(1);
 }
 
-const pagesRouter = getRouteMatcher(pagesDir, RESERVED_PAGES);
-const rootRouter = getRouteMatcher(rootDir);
 const customMiddleware = await importFileIfExists("middleware");
 const i18nConfig = await importFileIfExists("i18n");
+let pagesRouter = getRouteMatcher(pagesDir, RESERVED_PAGES);
+let rootRouter = getRouteMatcher(rootDir);
 
 const responseInitWithGzip = {
   headers: {
@@ -55,28 +54,49 @@ Bun.serve({
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
     if (server.upgrade(req)) return;
-    let bunriseRequest = new BunriseRequest(req);
+    const request = new BunriseRequest(req);
 
     // i18n
     if (i18nConfig && i18nConfig.locales && i18nConfig.defaultLocale) {
-      const locale = getLocaleFromRequest(i18nConfig, bunriseRequest);
-      const url = removeLocaleFromUrl(bunriseRequest.url, locale);
-      bunriseRequest.url = url;
-      bunriseRequest.i18n = {
+      const locale = getLocaleFromRequest(i18nConfig, request);
+
+      // Redirect to default locale if there is no locale in the URL
+      if (
+        locale !== i18nConfig.defaultLocale &&
+        !request.url.includes(`/${locale}/`)
+      ) {
+        const url = new URL(request.url);
+
+        url.pathname = `/${locale}${url.pathname}`;
+
+        return new Response(null, {
+          status: 301,
+          headers: {
+            location: url.toString(),
+          },
+        });
+      }
+
+      const assetPrefix = `/${locale}`;
+
+      request.i18n = {
         defaultLocale: i18nConfig.defaultLocale,
         locales: i18nConfig.locales,
         locale,
       };
+
+      pagesRouter = getRouteMatcher(pagesDir, RESERVED_PAGES, assetPrefix);
+      rootRouter = getRouteMatcher(rootDir, undefined, assetPrefix);
     }
 
     return (
-      handleRequest(bunriseRequest)
+      handleRequest(request)
         // 500 page
         .catch((error) => {
           const route500 = pagesRouter.reservedRoutes[PAGE_500];
           if (!route500) throw error;
           return responseRenderedPage({
-            req: bunriseRequest,
+            req: request,
             route: route500,
             status: 500,
             error,

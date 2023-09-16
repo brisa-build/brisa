@@ -3,8 +3,13 @@ import { MatchedRoute } from "bun";
 export default function getRouteMatcher(
   dir: string,
   reservedPathnames: string[] = [],
+  assetPrefix?: string,
 ) {
-  const router = new Bun.FileSystemRouter({ style: "nextjs", dir });
+  const router = new Bun.FileSystemRouter({
+    style: "nextjs",
+    dir,
+    assetPrefix,
+  });
   const reservedPathnamesSet = new Set(reservedPathnames);
   const routeMatcher = (req: Request) => {
     const route = router.match(req);
