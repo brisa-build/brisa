@@ -15,9 +15,10 @@ export default function handleI18n(req: BunriseRequest): {
 
   const locale = getLocaleFromRequest(req);
   const url = new URL(req.url);
+  const [, localeFromUrl] = url.pathname.split("/");
 
   // Redirect to default locale if there is no locale in the URL
-  if (!url.pathname.startsWith(`/${locale}/`)) {
+  if (localeFromUrl !== locale) {
     const location = `/${locale}${url.pathname}${url.search}${url.hash}`;
 
     return {

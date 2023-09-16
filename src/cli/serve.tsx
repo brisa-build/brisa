@@ -101,12 +101,14 @@ console.log(
 ///////////////////////////////////////////////////////
 
 async function handleRequest(req: BunriseRequest) {
+  const locale = req.i18n?.locale;
   const url = new URL(req.url);
   const pathname = url.pathname;
   const { route, isReservedPathname } = pagesRouter.match(req);
   const isApi = pathname.startsWith("/api/");
+  const pathnameWithoutLocale = locale ? pathname.replace(`/${locale}`, "") : "";
   const api = isApi ? rootRouter.match(req) : null;
-  const assetPath = path.join(ASSETS_DIR, pathname);
+  const assetPath = path.join(ASSETS_DIR, pathnameWithoutLocale);
 
   // Middleware
   if (customMiddleware) {
@@ -121,6 +123,16 @@ async function handleRequest(req: BunriseRequest) {
     return responseRenderedPage({ req, route });
   }
 
+  // API
+  if (isApi && api?.route && !api?.isReservedPathname) {
+    const module = await import(api.route.filePath);
+    const method = req.method.toLowerCase();
+
+    req.route = api.route;
+
+    return module[method]?.(req);
+  }
+
   // Assets
   if (fs.existsSync(assetPath)) {
     const isGzip =
@@ -130,16 +142,6 @@ async function handleRequest(req: BunriseRequest) {
     const responseOptions = isGzip ? responseInitWithGzip : {};
 
     return new Response(file, responseOptions);
-  }
-
-  // API
-  if (isApi && api?.route && !api?.isReservedPathname) {
-    const module = await import(api.route.filePath);
-    const method = req.method.toLowerCase();
-
-    req.route = api.route;
-
-    return module[method]?.(req);
   }
 
   // 404 page
