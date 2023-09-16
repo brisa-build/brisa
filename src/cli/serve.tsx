@@ -93,7 +93,7 @@ Bun.serve({
 });
 
 console.log(
-  `Listening on http://localhost:${port} (${process.env.NODE_ENV})...`,
+  `Listening on http://localhost:${PORT} (${process.env.NODE_ENV})...`,
 );
 
 ///////////////////////////////////////////////////////
