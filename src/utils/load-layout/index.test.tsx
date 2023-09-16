@@ -8,7 +8,9 @@ const join = path.join;
 const testRequest = new BunriseRequest(new Request("https://test.com"));
 
 describe("utils", () => {
-  afterEach(() => { path.join = join });
+  afterEach(() => {
+    path.join = join;
+  });
 
   describe("LoadLayout", () => {
     it('should return default layout if "layout.tsx" does not exist', async () => {
@@ -23,7 +25,8 @@ describe("utils", () => {
     });
 
     it('should return custom layout if "layout.tsx" exists', async () => {
-      path.join = () => join(import.meta.dir, "..", "..", "__fixtures__", "layout");
+      path.join = () =>
+        join(import.meta.dir, "..", "..", "__fixtures__", "layout");
 
       const stream = renderToReadableStream(
         <LoadLayout>

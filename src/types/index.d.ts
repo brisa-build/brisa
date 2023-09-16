@@ -23,6 +23,18 @@ export type JSXComponent = (
   request: BunriseRequest,
 ) => JSXNode | Promise<JSXNode>;
 
+export type I18nConfig = {
+  defaultLocale: string;
+  locales: string[];
+  messages?: Record<string, Record<string, string>>;
+};
+
+export type I18nFromRequest = {
+  locale: string;
+  defaultLocale: string;
+  locales: string[];
+};
+
 interface ComponentType extends JSXComponent {
   error: (
     props: Props & {

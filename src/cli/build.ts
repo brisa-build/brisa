@@ -7,20 +7,22 @@ import precompressAssets from "../utils/precompress-assets";
 import getEntrypoints from "../utils/get-entrypoints";
 import getImportableFilepath from "../utils/get-importable-filepath";
 
-const srcDir = getRootDir('development');
+const srcDir = getRootDir("development");
 const pagesDir = path.join(srcDir, "pages");
 const apiDir = path.join(srcDir, "api");
-let outdir = getRootDir('production');
+let outdir = getRootDir("production");
 const outAssetsDir = path.join(outdir, "public");
 const inAssetsDir = path.join(srcDir, "public");
 const pagesEntrypoints = getEntrypoints(pagesDir);
 const apiEntrypoints = getEntrypoints(apiDir);
-const middlewarePath = getImportableFilepath('middleware', srcDir);
-const layoutPath = getImportableFilepath('layout', srcDir);
+const middlewarePath = getImportableFilepath("middleware", srcDir);
+const layoutPath = getImportableFilepath("layout", srcDir);
+const i18nPath = getImportableFilepath("i18n", srcDir);
 const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
 
 if (middlewarePath) entrypoints.push(middlewarePath);
 if (layoutPath) entrypoints.push(layoutPath);
+if (i18nPath) entrypoints.push(i18nPath);
 
 // This fix Bun build with only one entrypoint because it doesn't create the subfolder
 if (entrypoints.length === 1) {
@@ -43,25 +45,34 @@ if (!success) {
   process.exit(1);
 }
 
+let hasChunk = false;
+
 logTable(
   outputs.map((output) => {
-    const route = output.path.replace(outdir, "")
-    let symbol = 'λ';
+    const route = output.path.replace(outdir, "");
+    const isChunk = route.startsWith("/chunk-");
+    let symbol = "λ";
 
-    if (route.startsWith('/chunk-')) symbol = 'Φ';
-    if (route.startsWith('/middleware')) symbol = 'ƒ';
-    if (route.startsWith('/layout')) symbol = 'Δ';
+    if (isChunk) {
+      hasChunk = true;
+      symbol = "Φ";
+    } else if (route.startsWith("/middleware")) {
+      symbol = "ƒ";
+    } else if (route.startsWith("/layout")) {
+      symbol = "Δ";
+    }
 
     return {
       Route: `${symbol} ${route}`,
       Size: byteSizeToString(output.size, 0),
-    }
+    };
   }),
 );
 
 console.log("\nλ  Server entry-points");
-console.log("Δ  Layout");
-console.log("ƒ  Middleware");
+if (layoutPath) console.log("Δ  Layout");
+if (middlewarePath) console.log("ƒ  Middleware");
+if (i18nPath) console.log("Ω  i18n");
 console.log("Φ  JS shared by all \n");
 
 if (fs.existsSync(inAssetsDir)) {

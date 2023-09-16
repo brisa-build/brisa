@@ -9,11 +9,9 @@ describe("bunrise core", () => {
         path: "/",
       } as any;
       const bunriseRequest = new BunriseRequest(request, route);
-      const expected = {
-        route,
-        context: new Map<string, any>(),
-      };
-      expect(bunriseRequest).toEqual(expected);
+      expect(bunriseRequest.route).toEqual(route);
+      expect(bunriseRequest.url).toEqual(request.url);
+      expect(bunriseRequest.context).toBeInstanceOf(Map);
     });
 
     it("should work context", () => {

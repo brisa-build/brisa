@@ -1,12 +1,16 @@
 import { MatchedRoute } from "bun";
-import { describe } from "bun:test";
+import { I18nFromRequest } from "../../types";
 
 export default class BunriseRequest extends Request {
   constructor(request: Request, route?: MatchedRoute) {
     super(request);
     this.route = route;
+    this.url = request.url;
+    this.context = new Map<string, any>();
   }
 
+  url: string;
   route?: MatchedRoute;
-  context = new Map<string, any>();
+  context: Map<string, any>;
+  i18n?: I18nFromRequest;
 }
