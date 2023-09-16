@@ -59,6 +59,14 @@ describe("handleI18n util", () => {
     expect(rootRouter).toBeDefined();
   });
 
+  it("should not redirect if there is locale in the URL without trailings slash", () => {
+    const req = new BunriseRequest(new Request("https://example.com/en"));
+    const { response, pagesRouter, rootRouter } = handleI18n(req);
+    expect(response).toBeUndefined();
+    expect(pagesRouter).toBeDefined();
+    expect(rootRouter).toBeDefined();
+  });
+
   it("should not redirect if there is locale in the URL with pathname and query params", () => {
     const req = new BunriseRequest(
       new Request("https://example.com/en/somepage?foo=bar"),

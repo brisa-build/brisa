@@ -1,6 +1,7 @@
 export interface BunriseRequest extends Request {
   context: Map<string, any>;
   route?: MatchedRoute;
+  i18n?: I18nFromRequest;
 }
 
 type Props = Record<string, unknown> & {
