@@ -3,16 +3,21 @@ import { MatchedRoute } from "bun";
 export default function getRouteMatcher(
   dir: string,
   reservedPathnames: string[] = [],
-  assetPrefix?: string,
+  locale?: string,
 ) {
   const router = new Bun.FileSystemRouter({
     style: "nextjs",
     dir,
-    assetPrefix,
   });
   const reservedPathnamesSet = new Set(reservedPathnames);
   const routeMatcher = (req: Request) => {
-    const route = router.match(req);
+    const url = new URL(req.url);
+
+    if (locale) {
+      url.pathname = url.pathname.replace(`/${locale}`, "")
+    }
+
+    const route = router.match(new Request(url, req));
 
     return {
       route,
