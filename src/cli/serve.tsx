@@ -106,7 +106,9 @@ async function handleRequest(req: BunriseRequest) {
   const pathname = url.pathname;
   const { route, isReservedPathname } = pagesRouter.match(req);
   const isApi = pathname.startsWith("/api/");
-  const pathnameWithoutLocale = locale ? pathname.replace(`/${locale}`, "") : pathname;
+  const pathnameWithoutLocale = locale
+    ? pathname.replace(`/${locale}`, "")
+    : pathname;
   const api = isApi ? rootRouter.match(req) : null;
   const assetPath = path.join(ASSETS_DIR, pathnameWithoutLocale);
 

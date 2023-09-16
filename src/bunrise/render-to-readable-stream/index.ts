@@ -83,7 +83,7 @@ async function enqueueDuringRendering(
       );
     }
 
-    const attributes = renderAttributes(props);
+    const attributes = renderAttributes({ props, request, type });
 
     controller.startTag(`<${type}${attributes}>`, suspenseId);
 
@@ -147,11 +147,24 @@ async function enqueueChildren(
   }
 }
 
-function renderAttributes(props: Props): string {
+function renderAttributes({
+  props,
+  request,
+  type,
+}: {
+  props: Props;
+  request: BunriseRequest;
+  type: string;
+}): string {
   let attributes = "";
 
   for (const prop in props) {
+    if (type === "html" && prop === "lang") continue;
     if (prop !== "children") attributes += ` ${prop}="${props[prop]}"`;
+  }
+
+  if (type === "html" && request.i18n?.locale) {
+    attributes += ` lang="${request.i18n?.locale}"`;
   }
 
   return attributes;
