@@ -2,33 +2,26 @@ import fs from "node:fs";
 import path from "node:path";
 
 import LoadLayout from "../utils/load-layout";
-import getRootDir from "../utils/get-root-dir";
 import getRouteMatcher from "../utils/get-route-matcher";
 import { BunriseRequest, renderToReadableStream } from "../bunrise";
 import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
 import importFileIfExists from "../utils/import-file-if-exists";
-import getLocaleFromRequest from "../utils/get-locale-from-request";
+import getConstants from '../constants'
+import handleI18n from "../utils/handle-i18n";
+
+const { IS_PRODUCTION, PAGE_404, PAGE_500, RESERVED_PAGES, ROOT_DIR, PORT, PAGES_DIR, ASSETS_DIR } = getConstants();
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
 }
 
-const PAGE_404 = "/_404";
-const PAGE_500 = "/_500";
-const RESERVED_PAGES = [PAGE_404, PAGE_500];
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
-const port = parseInt(process.argv[2]) || 3000;
-const rootDir = getRootDir();
-const assetsDir = path.join(rootDir, "public");
-const pagesDir = path.join(rootDir, "pages");
-
-if (IS_PRODUCTION && !fs.existsSync(rootDir)) {
+if (IS_PRODUCTION && !fs.existsSync(ROOT_DIR)) {
   console.error('Not exist "build" yet. Please run "bunrise build" first');
   process.exit(1);
 }
 
-if (!fs.existsSync(pagesDir)) {
+if (!fs.existsSync(PAGES_DIR)) {
   const path = IS_PRODUCTION ? "build/pages" : "src/pages";
   const cli = IS_PRODUCTION ? "bunrise start" : "bunrise dev";
 
@@ -37,9 +30,8 @@ if (!fs.existsSync(pagesDir)) {
 }
 
 const customMiddleware = await importFileIfExists("middleware");
-const i18nConfig = await importFileIfExists("i18n");
-let pagesRouter = getRouteMatcher(pagesDir, RESERVED_PAGES);
-let rootRouter = getRouteMatcher(rootDir);
+let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
+let rootRouter = getRouteMatcher(ROOT_DIR);
 
 const responseInitWithGzip = {
   headers: {
@@ -50,43 +42,17 @@ const responseInitWithGzip = {
 
 // Start server
 Bun.serve({
-  port,
+  port: PORT,
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
     if (server.upgrade(req)) return;
     const request = new BunriseRequest(req);
+    const i18nRes = handleI18n(request);
 
-    // i18n
-    if (i18nConfig && i18nConfig.locales && i18nConfig.defaultLocale) {
-      const locale = getLocaleFromRequest(i18nConfig, request);
-
-      // Redirect to default locale if there is no locale in the URL
-      if (
-        locale !== i18nConfig.defaultLocale &&
-        !request.url.includes(`/${locale}/`)
-      ) {
-        const url = new URL(request.url);
-
-        url.pathname = `/${locale}${url.pathname}`;
-
-        return new Response(null, {
-          status: 301,
-          headers: {
-            location: url.toString(),
-          },
-        });
-      }
-
-      const assetPrefix = `/${locale}`;
-
-      request.i18n = {
-        defaultLocale: i18nConfig.defaultLocale,
-        locales: i18nConfig.locales,
-        locale,
-      };
-
-      pagesRouter = getRouteMatcher(pagesDir, RESERVED_PAGES, assetPrefix);
-      rootRouter = getRouteMatcher(rootDir, undefined, assetPrefix);
+    if (i18nRes.response) return i18nRes.response;
+    if (i18nRes.pagesRouter && i18nRes.rootRouter) {
+      pagesRouter = i18nRes.pagesRouter;
+      rootRouter = i18nRes.rootRouter;
     }
 
     return (
@@ -131,7 +97,7 @@ async function handleRequest(req: BunriseRequest) {
   const { route, isReservedPathname } = pagesRouter.match(req);
   const isApi = pathname.startsWith("/api/");
   const api = isApi ? rootRouter.match(req) : null;
-  const assetPath = path.join(assetsDir, pathname);
+  const assetPath = path.join(ASSETS_DIR, pathname);
 
   // Middleware
   if (customMiddleware) {
@@ -214,7 +180,7 @@ function PageLayout({ children }: { children: JSX.Element }) {
   const childrenWithLiveReload = IS_PRODUCTION ? (
     children
   ) : (
-    <LiveReloadScript port={port}>{children}</LiveReloadScript>
+    <LiveReloadScript port={PORT}>{children}</LiveReloadScript>
   );
 
   return <LoadLayout>{childrenWithLiveReload}</LoadLayout>;

@@ -14,7 +14,7 @@ describe("utils", () => {
   describe("getEntrypoints", () => {
     it("should return an array", () => {
       const entrypoints = getEntrypoints(pagesDir);
-      const expected = ["_404.ts", "somepage.ts", "[username].ts"].map(
+      const expected = ["_404.tsx", "somepage.tsx", "[username].tsx"].map(
         (route) => path.join(pagesDir, route),
       );
       expect(entrypoints).toEqual(expected);
