@@ -8,8 +8,8 @@ describe("utils", () => {
       I18N_CONFIG: {
         locales: ["en", "ru"],
         defaultLocale: "en",
-      }
-    }
+      },
+    };
   });
 
   afterEach(() => {

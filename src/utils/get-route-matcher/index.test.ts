@@ -2,18 +2,19 @@ import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import path from "node:path";
 import getRouteMatcher from ".";
 
-const PAGES_DIR = path.join(import.meta.dir,
+const PAGES_DIR = path.join(
+  import.meta.dir,
   "..",
   "..",
   "__fixtures__",
   "pages",
-)
+);
 
 describe("utils", () => {
   beforeEach(() => {
     globalThis.mockConstants = {
       PAGES_DIR,
-    }
+    };
   });
 
   afterEach(() => {

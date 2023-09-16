@@ -16,18 +16,19 @@ const constants = {
   ASSETS_DIR: path.join(rootDir, "public"),
   PAGES_DIR: path.join(rootDir, "pages"),
   I18N_CONFIG: await importFileIfExists("i18n"),
-}
+};
 
 /**
  * TODO: Remove this function and use directly the constants when Bun supports mock modules.
- * 
- * 🚨 This is a workaround meanwhile Bun doesn't support mock modules. After that, we can 
- * refactor to use directly the constants without the need of this function and replace 
- * it in all the codebase and implement the mock modules in the tests. 
+ *
+ * 🚨 This is a workaround meanwhile Bun doesn't support mock modules. After that, we can
+ * refactor to use directly the constants without the need of this function and replace
+ * it in all the codebase and implement the mock modules in the tests.
  */
 export default function getConstants() {
-  if (globalThis.mockConstants) return globalThis.mockConstants as typeof constants;
-  return constants
+  if (globalThis.mockConstants)
+    return globalThis.mockConstants as typeof constants;
+  return constants;
 }
 
 declare global {
