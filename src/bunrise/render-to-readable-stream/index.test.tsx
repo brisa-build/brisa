@@ -325,5 +325,41 @@ describe("bunrise core", () => {
         `<div id="S:1"><b>Loading...</b></div><h2>Another</h2><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
       );
     });
+
+    it("should add the lang attribute inside the html tag when i18n locale exist", async () => {
+      testRequest.i18n = {
+        locale: "en",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+      };
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
+      testRequest.i18n = undefined;
+      expect(result).toStartWith(`<html lang="en"><head>`);
+    });
+
+    it("should replace the lang attribute inside the html tag when i18n locale exist", async () => {
+      testRequest.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+      };
+      const element = (
+        <html lang="en">
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await streamToText(stream);
+      testRequest.i18n = undefined;
+      expect(result).toStartWith(`<html lang="es"><head>`);
+    });
   });
 });
