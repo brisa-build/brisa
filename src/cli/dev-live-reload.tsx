@@ -1,3 +1,5 @@
+import { dangerHTML } from "../types";
+
 const LIVE_RELOAD_WEBSOCKET_PATH = "__bunrise_live_reload__";
 const LIVE_RELOAD_COMMAND = "reload";
 
@@ -15,7 +17,7 @@ export function LiveReloadScript({
   return (
     <>
       <script>
-        {`(new WebSocket("${wsUrl}")).onmessage = e => e.data === "${LIVE_RELOAD_COMMAND}" && location.reload();`}
+        {dangerHTML(`(new WebSocket("${wsUrl}")).onmessage = e => e.data === "${LIVE_RELOAD_COMMAND}" && location.reload();`)}
       </script>
       {children}
     </>
