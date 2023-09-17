@@ -52,8 +52,9 @@ async function enqueueDuringRendering(
     }
 
     const { type, props } = elementContent;
+    const isFragment = type?.__isFragment;
 
-    if (isComponent(type)) {
+    if (isComponent(type) && !isFragment) {
       const componentContent = { component: type, props };
       const isSuspenseComponent = isComponent(type.suspense);
 
@@ -86,7 +87,10 @@ async function enqueueDuringRendering(
 
     const attributes = renderAttributes({ props, request, type });
 
-    controller.startTag(`<${type}${attributes}>`, suspenseId);
+    controller.startTag(
+      isFragment ? null : `<${type}${attributes}>`,
+      suspenseId,
+    );
 
     // Node Content
     await enqueueChildren(props.children, request, controller, suspenseId);
@@ -98,7 +102,7 @@ async function enqueueDuringRendering(
     }
 
     // Node tag end
-    controller.endTag(`</${type}>`, suspenseId);
+    controller.endTag(isFragment ? null : `</${type}>`, suspenseId);
   }
 }
 

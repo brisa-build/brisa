@@ -4,7 +4,7 @@ import { BunriseRequest } from "..";
 import streamToText from "../../__fixtures__/stream-to-text";
 
 const testRequest = new BunriseRequest(new Request("http://test.com/"));
-const mockConsoleError = mock(() => { });
+const mockConsoleError = mock(() => {});
 const consoleError = console.error;
 console.error = mockConsoleError;
 
@@ -96,7 +96,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({ }, request: BunriseRequest) => (
+      const ComponentChild = ({}, request: BunriseRequest) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
@@ -258,6 +258,30 @@ describe("bunrise core", () => {
       expect(result).toEqual("<div>TRUE</div><div>TRUE</div>0");
     });
 
+    it("should be possible to render in a tag {text|number} in a middle of string ", async () => {
+      const Component = () => (
+        <div>
+          This is {1} {"example"}
+        </div>
+      );
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual("<div>This is 1 example</div>");
+    });
+
+    it("should be possible to render in a Fragment {text|number} in a middle of string", async () => {
+      const Component = () => (
+        <>
+          This is {1} {"example"}
+        </>
+      );
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual("This is 1 example");
+    });
+
     it("should be possible to render undefined and null", async () => {
       const Component = () => (
         <>
@@ -323,6 +347,90 @@ describe("bunrise core", () => {
       const result = await streamToText(stream);
       expect(result).toStartWith(
         `<div id="S:1"><b>Loading...</b></div><h2>Another</h2><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
+      );
+    });
+
+    it("should be possible in tag suspense to render {text|number} in a middle of string ", async () => {
+      const Component = () => (
+        <div>
+          This is {1} {"example"}
+        </div>
+      );
+
+      Component.suspense = () => <b>Loading...</b>;
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual(
+        '<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>This is 1 example</div></template><script id="R:1">u$(\'1\')</script>',
+      );
+    });
+
+    it("should be possible to render in a Fragment suspense {text|number} in a middle of string", async () => {
+      const Component = () => (
+        <>
+          This is {1} {"example"}
+        </>
+      );
+
+      Component.suspense = () => <b>Loading...</b>;
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual(
+        '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is 1 example</template><script id="R:1">u$(\'1\')</script>',
+      );
+    });
+
+    it("should be possible to render in a Fragment suspense different tags and components", async () => {
+      const Example = () => <>example</>;
+      const Component = () => (
+        <>
+          This is <b>1</b> <Example />
+        </>
+      );
+
+      Component.suspense = () => <b>Loading...</b>;
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual(
+        '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is <b>1</b> example</template><script id="R:1">u$(\'1\')</script>',
+      );
+    });
+
+    it("should be possible to suspense with children {text|number} in a middle of string", async () => {
+      const Example = ({ children }: { children: JSX.Element }) => children;
+      const Component = () => (
+        <Example>
+          This is {1} {"example"}
+        </Example>
+      );
+
+      Component.suspense = () => <b>Loading...</b>;
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual(
+        '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is 1 example</template><script id="R:1">u$(\'1\')</script>',
+      );
+    });
+
+    it("should be possible to suspense a div with multiple items", async () => {
+      const Component = () => (
+        <div>
+          This is <b>is </b>
+          <i>an </i>
+          <b>example</b>
+        </div>
+      );
+
+      Component.suspense = () => <b>Loading...</b>;
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual(
+        '<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>This is <b>is </b><i>an </i><b>example</b></div></template><script id="R:1">u$(\'1\')</script>',
       );
     });
 
