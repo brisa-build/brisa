@@ -17,7 +17,7 @@ const constants = {
   ASSETS_DIR: path.join(rootDir, "public"),
   PAGES_DIR: path.join(rootDir, "pages"),
   I18N_CONFIG,
-  LOCALES_SET: new Set(I18N_CONFIG?.locales || []),
+  LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
 };
 
 /**

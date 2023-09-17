@@ -51,5 +51,33 @@ describe("utils", () => {
 
       expect(locale).toBe("ru");
     });
+
+    it("should return the BUNRISE_LOCALE cookie as default locale if locale is not supported", () => {
+      const request = new BunriseRequest(
+        new Request("https://example.com/ua", {
+          headers: {
+            "Accept-Language": "es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7",
+            Cookie: "BUNRISE_LOCALE=ru",
+          },
+        }),
+      );
+      const locale = getLocaleFromRequest(request);
+
+      expect(locale).toBe("ru");
+    });
+
+    it("should return the browser language if the BUNRISE_LOCALE cookie is not supported locale", () => {
+      const request = new BunriseRequest(
+        new Request("https://example.com/ua", {
+          headers: {
+            "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+            Cookie: "BUNRISE_LOCALE=ua",
+          },
+        }),
+      );
+      const locale = getLocaleFromRequest(request);
+
+      expect(locale).toBe("ru");
+    });
   });
 });
