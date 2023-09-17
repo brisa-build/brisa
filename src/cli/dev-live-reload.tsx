@@ -1,4 +1,4 @@
-import { dangerHTML } from "../types";
+import dangerHTML from "../bunrise/danger-html";
 
 const LIVE_RELOAD_WEBSOCKET_PATH = "__bunrise_live_reload__";
 const LIVE_RELOAD_COMMAND = "reload";
