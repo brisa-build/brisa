@@ -145,4 +145,33 @@ describe("extendStreamController", () => {
       ],
     ]);
   });
+
+  it("should work with suspensed fragment with different content", async () => {
+    const controller = extendStreamController(mockController);
+    const suspenseId = controller.nextSuspenseIndex();
+    controller.suspensePromise(Promise.resolve());
+
+    controller.startTag(`<div id="S:1">`);
+    controller.enqueue("Loading...");
+    controller.endTag("</div>");
+
+    // <>This {'is'} a {'test'}</>
+    controller.startTag(null, suspenseId);
+    controller.enqueue("This ", suspenseId);
+    controller.enqueue("is ", suspenseId);
+    controller.enqueue("a ", suspenseId);
+    controller.enqueue("test", suspenseId);
+    controller.endTag(null, suspenseId);
+
+    await controller.waitSuspensedPromises();
+
+    expect(mockController.enqueue.mock.calls).toEqual([
+      [`<div id="S:1">`],
+      ["Loading..."],
+      ["</div>"],
+      [
+        `<template id="U:1">This is a test</template><script id="R:1">u$('1')</script>`,
+      ],
+    ]);
+  });
 });

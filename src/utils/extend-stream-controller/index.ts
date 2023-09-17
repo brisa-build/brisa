@@ -8,8 +8,8 @@ export type Controller = {
   nextSuspenseIndex(): number;
   suspensePromise(promise: Promise<void>): void;
   waitSuspensedPromises(): Promise<void>;
-  startTag(chunk: string, suspenseId?: number): void;
-  endTag(chunk: string, suspenseId?: number): void;
+  startTag(chunk: string | null, suspenseId?: number): void;
+  endTag(chunk: string | null, suspenseId?: number): void;
   flushAllReady(): void;
   hasHeadTag: boolean;
 };
@@ -45,26 +45,21 @@ export default function extendStreamController(
     startTag(chunk, suspenseId) {
       if (!suspenseId) {
         noSuspensedOpenTags++;
-        return controller.enqueue(chunk);
+        // chunk=null when is a fragment
+        if (chunk) controller.enqueue(chunk);
+        return;
       }
 
       const state = getSuspensedState(suspenseId);
 
       state.openTags++;
-      state.chunk += startSuspenseTag(chunk, suspenseId);
+      state.chunk += chunk ?? "";
       suspensedMap.set(suspenseId, state);
     },
     enqueue(chunk, suspenseId) {
       if (!suspenseId) return controller.enqueue(chunk);
 
       const state = getSuspensedState(suspenseId);
-      const isHTMLTextWithoutTags = state.openTags === 0;
-
-      if (isHTMLTextWithoutTags) {
-        state.chunk += wrapSuspenseTag(chunk, suspenseId);
-        suspensedMap.set(suspenseId, state);
-        return this.flushAllReady();
-      }
 
       state.chunk += chunk;
 
@@ -73,14 +68,15 @@ export default function extendStreamController(
     endTag(chunk, suspenseId) {
       if (!suspenseId) {
         noSuspensedCloseTags++;
-        controller.enqueue(chunk);
+        // chunk=null when is a fragment
+        if (chunk) controller.enqueue(chunk);
         return this.flushAllReady();
       }
 
       const state = getSuspensedState(suspenseId);
 
       state.closeTags++;
-      state.chunk += endSuspenseTag(chunk, suspenseId);
+      state.chunk += chunk ?? "";
       suspensedMap.set(suspenseId, state);
 
       this.flushAllReady();
@@ -90,7 +86,7 @@ export default function extendStreamController(
 
       for (const [suspenseId, state] of suspensedMap.entries()) {
         if (state.closeTags !== state.openTags) continue;
-        controller.enqueue(state.chunk);
+        controller.enqueue(wrapSuspenseTag(state.chunk, suspenseId));
         suspensedMap.delete(suspenseId);
       }
     },
