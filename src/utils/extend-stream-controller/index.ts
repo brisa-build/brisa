@@ -20,6 +20,9 @@ type SuspensedState = {
   closeTags: number;
 };
 
+const wrapSuspenseTag = (chunk: string, id: number) =>
+  `<template id="U:${id}">${chunk}</template><script id="R:${id}">u$('${id}')</script>`;
+
 export default function extendStreamController(
   controller: ReadableStreamDefaultController<string>,
 ): Controller {
@@ -30,15 +33,6 @@ export default function extendStreamController(
 
   let noSuspensedOpenTags = 0;
   let noSuspensedCloseTags = 0;
-
-  const startSuspenseTag = (chunk: string, id: number) =>
-    `<template id="U:${id}">${chunk}`;
-
-  const endSuspenseTag = (chunk: string, id: number) =>
-    `${chunk}</template><script id="R:${id}">u$('${id}')</script>`;
-
-  const wrapSuspenseTag = (chunk: string, id: number) =>
-    startSuspenseTag(chunk, id) + endSuspenseTag("", id);
 
   return {
     hasHeadTag: false,

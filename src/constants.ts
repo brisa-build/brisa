@@ -5,6 +5,7 @@ import importFileIfExists from "./utils/import-file-if-exists";
 const rootDir = getRootDir();
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
+const I18N_CONFIG = await importFileIfExists("i18n");
 
 const constants = {
   PAGE_404,
@@ -15,7 +16,8 @@ const constants = {
   ROOT_DIR: rootDir,
   ASSETS_DIR: path.join(rootDir, "public"),
   PAGES_DIR: path.join(rootDir, "pages"),
-  I18N_CONFIG: await importFileIfExists("i18n"),
+  I18N_CONFIG,
+  LOCALES_SET: new Set(I18N_CONFIG?.locales || []),
 };
 
 /**

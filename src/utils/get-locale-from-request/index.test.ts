@@ -9,6 +9,7 @@ describe("utils", () => {
         locales: ["en", "ru"],
         defaultLocale: "en",
       },
+      LOCALES_SET: new Set(["en", "ru"]),
     };
   });
 
@@ -24,11 +25,31 @@ describe("utils", () => {
       expect(locale).toBe("ru");
     });
 
-    it("should return default locale if locale not found", () => {
+    it("should return default locale if not locale", () => {
+      const request = new BunriseRequest(new Request("https://example.com"));
+      const locale = getLocaleFromRequest(request);
+
+      expect(locale).toBe("en");
+    });
+
+    it("should return default locale if locale is not supported", () => {
       const request = new BunriseRequest(new Request("https://example.com/ua"));
       const locale = getLocaleFromRequest(request);
 
       expect(locale).toBe("en");
+    });
+
+    it("should return the browser language as default locale if locale is not supported", () => {
+      const request = new BunriseRequest(
+        new Request("https://example.com/ua", {
+          headers: {
+            "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+          },
+        }),
+      );
+      const locale = getLocaleFromRequest(request);
+
+      expect(locale).toBe("ru");
     });
   });
 });
