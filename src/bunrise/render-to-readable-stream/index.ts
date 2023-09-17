@@ -51,6 +51,10 @@ async function enqueueDuringRendering(
       continue;
     }
 
+    if (typeof elementContent?.html === "string" && elementContent?.isDangerousHTML) {
+      return controller.enqueue(elementContent.html, suspenseId);
+    }
+
     const { type, props } = elementContent;
     const isFragment = type?.__isFragment;
 
@@ -115,7 +119,7 @@ async function enqueueComponent(
   const componentValue = await getValueOfComponent(component, props, request);
 
   if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
-    return controller.enqueue(componentValue.toString(), suspenseId);
+    return controller.enqueue(Bun.escapeHTML(componentValue.toString()), suspenseId);
   }
 
   if (Array.isArray(componentValue)) {
@@ -148,7 +152,7 @@ async function enqueueChildren(
   }
 
   if (typeof children?.toString === "function") {
-    return controller.enqueue(children.toString(), suspenseId);
+    return controller.enqueue(Bun.escapeHTML(children.toString()), suspenseId);
   }
 }
 
