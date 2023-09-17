@@ -45,6 +45,13 @@ interface ComponentType extends JSXComponent {
   ) => JSXNode | Promise<JSXNode>;
 }
 
+export default function dangerHTML(html: string): {
+  type: "danger-html",
+  props: {
+    html: string,
+  },
+}
+
 declare global {
   export namespace JSX {
     type Element = JSXElement | Promise<JSXElement>;

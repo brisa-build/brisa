@@ -47,16 +47,17 @@ async function enqueueDuringRendering(
   for (const elementContent of elements) {
     if (elementContent === false || elementContent == null) continue;
     if (ALLOWED_PRIMARIES.has(typeof elementContent)) {
-      controller.enqueue(elementContent.toString(), suspenseId);
+      controller.enqueue(Bun.escapeHTML(elementContent.toString()), suspenseId);
       continue;
-    }
-
-    if (typeof elementContent?.html === "string" && elementContent?.isDangerousHTML) {
-      return controller.enqueue(elementContent.html, suspenseId);
     }
 
     const { type, props } = elementContent;
     const isFragment = type?.__isFragment;
+
+    if (type === "danger-html") {
+      controller.enqueue(props.html, suspenseId);
+      continue;
+    }
 
     if (isComponent(type) && !isFragment) {
       const componentContent = { component: type, props };
