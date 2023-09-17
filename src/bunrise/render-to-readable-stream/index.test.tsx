@@ -557,11 +557,18 @@ describe("bunrise core", () => {
       expect(result).toEqual(`<a href="/en/test">Test</a>`);
     });
 
-    it('should not be possible to inject HTML as string directly in the JSX', async () => {
+    it('should not be possible to inject HTML as string directly in the JSX element', async () => {
       const element = <div>{`<script>alert('test')</script>`}</div>;
       const stream = renderToReadableStream(element, testRequest);
       const result = await streamToText(stream);
       expect(result).toEqual(`<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`);
+    });
+
+    it('should not be possible to inject HTML as string directly in the JSX component', async () => {
+      const Component = () => <div><h1>Example</h1>{`<script>alert('test')</script>`}</div>;
+      const stream = renderToReadableStream(<Component />, testRequest);
+      const result = await streamToText(stream);
+      expect(result).toEqual(`<div><h1>Example</h1>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`);
     });
 
     it('should be possible to inject HTML as string in the JSX using the "dangerHTML" helper', async () => {
