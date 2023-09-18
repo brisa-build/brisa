@@ -1,5 +1,5 @@
 import getConstants from "../../constants"
-import { I18nConfig, I18nDictionary, TranslationQuery } from "../../types"
+import { I18nConfig, I18nDictionary, Translate, TranslationQuery } from "../../types"
 
 export default function translateCore(locale: string) {
   const config: I18nConfig = getConstants().I18N_CONFIG || {}
@@ -20,9 +20,9 @@ export default function translateCore(locale: string) {
     return interpolation({ text: value as string, query, config, locale })
   }
 
-  const t = (i18nKey = '', query?, options?) => {
+  const t: Translate = (i18nKey = '', query, options) => {
     const dic = config.messages?.[locale] || {}
-    const keyWithPlural = plural(pluralRules, dic, i18nKey, config, query)
+    const keyWithPlural = plural(pluralRules, dic, i18nKey as string, config, query)
     const dicValue = getDicValue(dic, keyWithPlural, config, options)
     const value =
       typeof dicValue === 'object'
