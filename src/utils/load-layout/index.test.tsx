@@ -1,11 +1,11 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import LoadLayout from ".";
 import path from "node:path";
-import { BunriseRequest, renderToReadableStream } from "../../bunrise";
+import { RequestContext, renderToReadableStream } from "../../bunrise";
 import streamToText from "../../__fixtures__/stream-to-text";
 
 const join = path.join;
-const testRequest = new BunriseRequest(new Request("https://test.com"));
+const testRequest = new RequestContext(new Request("https://test.com"));
 
 describe("utils", () => {
   afterEach(() => {

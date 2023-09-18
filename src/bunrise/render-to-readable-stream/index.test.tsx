@@ -1,10 +1,10 @@
 import { describe, it, expect, mock, afterEach, afterAll } from "bun:test";
 import renderToReadableStream from ".";
-import { BunriseRequest } from "..";
+import { RequestContext } from "..";
 import streamToText from "../../__fixtures__/stream-to-text";
 import dangerHTML from "../danger-html";
 
-const testRequest = new BunriseRequest(new Request("http://test.com/"));
+const testRequest = new RequestContext(new Request("http://test.com/"));
 const mockConsoleError = mock(() => { });
 const consoleError = console.error;
 console.error = mockConsoleError;
@@ -97,13 +97,13 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({ }, request: BunriseRequest) => (
+      const ComponentChild = ({ }, request: RequestContext) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
       const Component = (
         { name }: { name: string },
-        request: BunriseRequest,
+        request: RequestContext,
       ) => {
         const url = new URL(request.url);
         const query = new URLSearchParams(url.search);
@@ -120,7 +120,7 @@ describe("bunrise core", () => {
 
       const stream2 = await renderToReadableStream(
         element,
-        new BunriseRequest(new Request("http://test.com/?name=Test")),
+        new RequestContext(new Request("http://test.com/?name=Test")),
       );
       const result2 = await streamToText(stream2);
       const expected2 = "<div>Hello Test</div>";

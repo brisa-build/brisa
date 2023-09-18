@@ -1,5 +1,5 @@
 import renderToReadableStream from "./render-to-readable-stream";
-import BunriseRequest from "./bunrise-request";
+import RequestContext from "./request-context";
 import dangerHTML from "./danger-html";
 
-export { renderToReadableStream, BunriseRequest, dangerHTML };
+export { renderToReadableStream, RequestContext, dangerHTML };

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import path from "node:path";
 import handleI18n from ".";
-import { BunriseRequest } from "../../bunrise";
+import { RequestContext } from "../../bunrise";
 
 const rootDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const pagesDir = path.join(rootDir, "pages");
@@ -28,7 +28,7 @@ describe("handleI18n util", () => {
     globalThis.mockConstants = {};
     const req = new Request("https://example.com");
     const { response, pagesRouter, rootRouter } = handleI18n(
-      new BunriseRequest(req),
+      new RequestContext(req),
     );
 
     expect(response).toBeUndefined();
@@ -37,14 +37,14 @@ describe("handleI18n util", () => {
   });
 
   it("should redirect to default locale if there is no locale in the URL", () => {
-    const req = new BunriseRequest(new Request("https://example.com"));
+    const req = new RequestContext(new Request("https://example.com"));
     const { response } = handleI18n(req);
     expect(response?.status).toBe(301);
     expect(response?.headers.get("location")).toBe("/en/");
   });
 
   it("should redirect to the browser language as default locale if there is no locale in the URL", () => {
-    const req = new BunriseRequest(
+    const req = new RequestContext(
       new Request("https://example.com", {
         headers: {
           "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -57,7 +57,7 @@ describe("handleI18n util", () => {
   });
 
   it("should redirect to the last browser language as default locale if there is no locale in the URL", () => {
-    const req = new BunriseRequest(
+    const req = new RequestContext(
       new Request("https://example.com", {
         headers: {
           "Accept-Language":
@@ -71,7 +71,7 @@ describe("handleI18n util", () => {
   });
 
   it("should redirect with pathname and query params if there is no locale in the URL", () => {
-    const req = new BunriseRequest(
+    const req = new RequestContext(
       new Request("https://example.com/somepage?foo=bar"),
     );
     const { response } = handleI18n(req);
@@ -80,7 +80,7 @@ describe("handleI18n util", () => {
   });
 
   it("should not redirect if there is locale in the URL", () => {
-    const req = new BunriseRequest(new Request("https://example.com/en/"));
+    const req = new RequestContext(new Request("https://example.com/en/"));
     const { response, pagesRouter, rootRouter } = handleI18n(req);
     expect(response).toBeUndefined();
     expect(pagesRouter).toBeDefined();
@@ -88,7 +88,7 @@ describe("handleI18n util", () => {
   });
 
   it("should not redirect if there is locale in the URL without trailings slash", () => {
-    const req = new BunriseRequest(new Request("https://example.com/en"));
+    const req = new RequestContext(new Request("https://example.com/en"));
     const { response, pagesRouter, rootRouter } = handleI18n(req);
     expect(response).toBeUndefined();
     expect(pagesRouter).toBeDefined();
@@ -96,7 +96,7 @@ describe("handleI18n util", () => {
   });
 
   it("should not redirect if there is locale in the URL with pathname and query params", () => {
-    const req = new BunriseRequest(
+    const req = new RequestContext(
       new Request("https://example.com/en/somepage?foo=bar"),
     );
     const { response, pagesRouter, rootRouter } = handleI18n(req);
@@ -106,7 +106,7 @@ describe("handleI18n util", () => {
   });
 
   it("should pageRouter that handleI18n returns works with locale", () => {
-    const req = new BunriseRequest(
+    const req = new RequestContext(
       new Request("https://example.com/en/somepage?foo=bar"),
     );
     const { pagesRouter } = handleI18n(req);

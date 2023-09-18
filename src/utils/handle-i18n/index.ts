@@ -1,10 +1,10 @@
-import { BunriseRequest } from "../../bunrise";
+import { RequestContext } from "../../bunrise";
 import getLocaleFromRequest from "../get-locale-from-request";
 import getRouteMatcher from "../get-route-matcher";
 import getConstants from "../../constants";
 import translateCore from "../translate-core";
 
-export default function handleI18n(req: BunriseRequest): {
+export default function handleI18n(req: RequestContext): {
   response?: Response;
   pagesRouter?: ReturnType<typeof getRouteMatcher>;
   rootRouter?: ReturnType<typeof getRouteMatcher>;
@@ -36,6 +36,7 @@ export default function handleI18n(req: BunriseRequest): {
     };
   }
 
+  // Set i18n to the request
   req.i18n = {
     defaultLocale,
     locales,

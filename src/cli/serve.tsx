@@ -3,7 +3,7 @@ import path from "node:path";
 
 import LoadLayout from "../utils/load-layout";
 import getRouteMatcher from "../utils/get-route-matcher";
-import { BunriseRequest, renderToReadableStream } from "../bunrise";
+import { RequestContext, renderToReadableStream } from "../bunrise";
 import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
 import importFileIfExists from "../utils/import-file-if-exists";
@@ -55,7 +55,7 @@ Bun.serve({
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
     if (server.upgrade(req)) return;
-    const request = new BunriseRequest(req);
+    const request = new RequestContext(req);
     const i18nRes = handleI18n(request);
 
     if (i18nRes.response) return i18nRes.response;
@@ -100,7 +100,7 @@ console.log(
 ////////////////////// HELPERS ///////////////////////
 ///////////////////////////////////////////////////////
 
-async function handleRequest(req: BunriseRequest) {
+async function handleRequest(req: RequestContext) {
   const locale = req.i18n?.locale;
   const url = new URL(req.url);
   const pathname = url.pathname;
@@ -160,7 +160,7 @@ async function responseRenderedPage({
   status = 200,
   error,
 }: {
-  req: BunriseRequest;
+  req: RequestContext;
   route: MatchedRoute;
   status?: number;
   error?: Error;
