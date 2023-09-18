@@ -105,7 +105,7 @@ async function handleRequest(req: RequestContext) {
   const url = new URL(req.url);
   const pathname = url.pathname;
   const { route, isReservedPathname } = pagesRouter.match(req);
-  const isApi = pathname.startsWith("/api/");
+  const isApi = pathname.startsWith(locale ? `/${locale}/api/` : "/api/");
   const pathnameWithoutLocale = locale
     ? pathname.replace(`/${locale}`, "")
     : pathname;
