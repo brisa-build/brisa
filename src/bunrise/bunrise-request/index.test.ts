@@ -19,7 +19,7 @@ describe("bunrise core", () => {
       const route = {
         path: "/",
       } as any;
-      const bunriseRequest = new BunriseRequest(request, route);
+      const  = new BunriseRequest(request, route);
       bunriseRequest.context.set("foo", "bar");
       expect(bunriseRequest.context.get("foo")).toBe("bar");
     });

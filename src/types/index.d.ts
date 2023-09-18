@@ -48,10 +48,21 @@ export type I18nConfig = {
   keySeparator?: string;
 };
 
+export type Translate = <T extends unknown = string>(
+  i18nKey: string | TemplateStringsArray,
+  query?: TranslationQuery | null,
+  options?: {
+    returnObjects?: boolean
+    fallback?: string | string[]
+    default?: T | string
+  }
+) => T
+
 export type I18nFromRequest = {
   locale: string;
   defaultLocale: string;
   locales: string[];
+  t: Translate;
 };
 
 interface ComponentType extends JSXComponent {
