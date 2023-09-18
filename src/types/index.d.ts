@@ -24,13 +24,28 @@ export type JSXComponent = (
   request: BunriseRequest,
 ) => JSXNode | Promise<JSXNode>;
 
+export interface I18nDictionary {
+  [key: string]: string | I18nDictionary
+}
+
+export interface TranslationQuery {
+  [name: string]: any
+}
+
 export type I18nConfig = {
   defaultLocale: string;
   locales: string[];
   domains?: Record<string, {
     defaultLocale: string;
   }>;
-  messages?: Record<string, Record<string, string>>;
+  messages?: Record<string, I18nDictionary>;
+  interpolation?: {
+    prefix: string;
+    suffix: string;
+    format: (value: unknown, format: string, locale: string) => string;
+  };
+  allowEmptyStrings?: boolean;
+  keySeparator?: string;
 };
 
 export type I18nFromRequest = {
