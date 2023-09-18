@@ -1,4 +1,4 @@
-export interface BunriseRequest extends Request {
+export interface RequestContext extends Request {
   context: Map<string, any>;
   route?: MatchedRoute;
   i18n?: I18nFromRequest;
@@ -21,7 +21,7 @@ export type JSXElement = {
 
 export type JSXComponent = (
   props: Props,
-  request: BunriseRequest,
+  request: RequestContext,
 ) => JSXNode | Promise<JSXNode>;
 
 export interface I18nDictionary {
@@ -70,7 +70,7 @@ interface ComponentType extends JSXComponent {
     props: Props & {
       error?: Error;
     },
-    request: BunriseRequest,
+    request: RequestContext,
   ) => JSXNode | Promise<JSXNode>;
 }
 

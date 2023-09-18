@@ -3,7 +3,7 @@ import extendStreamController, {
   Controller,
 } from "../../utils/extend-stream-controller";
 import isExternalUrl from "../../utils/is-external-url";
-import BunriseRequest from "../bunrise-request";
+import RequestContext from "../request-context";
 import { injectUnsuspenseScript } from "../inject-unsuspense-script" assert { type: "macro" };
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
@@ -12,7 +12,7 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export default function renderToReadableStream(
   element: JSX.Element,
-  request: BunriseRequest,
+  request: RequestContext,
 ) {
   return new ReadableStream({
     async start(controller) {
@@ -37,7 +37,7 @@ export default function renderToReadableStream(
 
 async function enqueueDuringRendering(
   element: JSXNode | Promise<JSXNode>,
-  request: BunriseRequest,
+  request: RequestContext,
   controller: Controller,
   suspenseId?: number,
 ): Promise<void> {
@@ -113,7 +113,7 @@ async function enqueueDuringRendering(
 
 async function enqueueComponent(
   { component, props }: { component: ComponentType; props: Props },
-  request: BunriseRequest,
+  request: RequestContext,
   controller: Controller,
   suspenseId?: number,
 ): Promise<void> {
@@ -137,7 +137,7 @@ async function enqueueComponent(
 
 async function enqueueChildren(
   children: JSXNode,
-  request: BunriseRequest,
+  request: RequestContext,
   controller: Controller,
   suspenseId?: number,
 ): Promise<void> {
@@ -163,7 +163,7 @@ function renderAttributes({
   type,
 }: {
   props: Props;
-  request: BunriseRequest;
+  request: RequestContext;
   type: string;
 }): string {
   let attributes = "";
@@ -210,7 +210,7 @@ function isComponent(type: unknown): boolean {
 async function getValueOfComponent(
   componentFn: ComponentType,
   props: Props,
-  request: BunriseRequest,
+  request: RequestContext,
 ) {
   return Promise.resolve()
     .then(() => componentFn(props, request) ?? "")

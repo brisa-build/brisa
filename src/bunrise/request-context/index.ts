@@ -1,7 +1,7 @@
 import { MatchedRoute } from "bun";
 import { I18nFromRequest } from "../../types";
 
-export default class BunriseRequest extends Request {
+export default class RequestContext extends Request {
   constructor(request: Request, route?: MatchedRoute) {
     super(request);
     this.route = route;
