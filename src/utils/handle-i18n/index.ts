@@ -25,7 +25,11 @@ export default function handleI18n(req: BunriseRequest): {
       response: new Response(null, {
         status: 301,
         headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          expires: '-1',
+          pragma: 'no-cache',
           location,
+          vary: 'Accept-Language',
         },
       }),
     };
