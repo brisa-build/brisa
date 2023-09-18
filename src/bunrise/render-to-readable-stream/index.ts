@@ -120,7 +120,10 @@ async function enqueueComponent(
   const componentValue = await getValueOfComponent(component, props, request);
 
   if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
-    return controller.enqueue(Bun.escapeHTML(componentValue.toString()), suspenseId);
+    return controller.enqueue(
+      Bun.escapeHTML(componentValue.toString()),
+      suspenseId,
+    );
   }
 
   if (Array.isArray(componentValue)) {

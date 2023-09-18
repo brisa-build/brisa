@@ -43,8 +43,8 @@ describe("utils", () => {
       globalThis.mockConstants!.I18N_CONFIG.domains = {
         "example.com": {
           defaultLocale: "ru",
-        }
-      }
+        },
+      };
       const request = new RequestContext(new Request("https://example.com"));
       const locale = getLocaleFromRequest(request);
 
@@ -55,8 +55,8 @@ describe("utils", () => {
       globalThis.mockConstants!.I18N_CONFIG.domains = {
         "example.com": {
           defaultLocale: "ru",
-        }
-      }
+        },
+      };
       const request = new RequestContext(new Request("https://example.com/ua"));
       const locale = getLocaleFromRequest(request);
 

@@ -5,7 +5,7 @@ import streamToText from "../../__fixtures__/stream-to-text";
 import dangerHTML from "../danger-html";
 
 const testRequest = new RequestContext(new Request("http://test.com/"));
-const mockConsoleError = mock(() => { });
+const mockConsoleError = mock(() => {});
 const consoleError = console.error;
 console.error = mockConsoleError;
 
@@ -97,7 +97,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({ }, request: RequestContext) => (
+      const ComponentChild = ({}, request: RequestContext) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
@@ -557,18 +557,27 @@ describe("bunrise core", () => {
       expect(result).toEqual(`<a href="/en/test">Test</a>`);
     });
 
-    it('should not be possible to inject HTML as string directly in the JSX element', async () => {
+    it("should not be possible to inject HTML as string directly in the JSX element", async () => {
       const element = <div>{`<script>alert('test')</script>`}</div>;
       const stream = renderToReadableStream(element, testRequest);
       const result = await streamToText(stream);
-      expect(result).toEqual(`<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`);
+      expect(result).toEqual(
+        `<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`,
+      );
     });
 
-    it('should not be possible to inject HTML as string directly in the JSX component', async () => {
-      const Component = () => <div><h1>Example</h1>{`<script>alert('test')</script>`}</div>;
+    it("should not be possible to inject HTML as string directly in the JSX component", async () => {
+      const Component = () => (
+        <div>
+          <h1>Example</h1>
+          {`<script>alert('test')</script>`}
+        </div>
+      );
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await streamToText(stream);
-      expect(result).toEqual(`<div><h1>Example</h1>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`);
+      expect(result).toEqual(
+        `<div><h1>Example</h1>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`,
+      );
     });
 
     it('should be possible to inject HTML as string in the JSX using the "dangerHTML" helper', async () => {
@@ -578,16 +587,20 @@ describe("bunrise core", () => {
       expect(result).toEqual(`<div><script>alert('test')</script></div>`);
     });
 
-    it('should not be possible to inject HTML as children string directly in the JSX', async () => {
-      const Component = () => <>{`<script>alert('test')</script>`}</>
+    it("should not be possible to inject HTML as children string directly in the JSX", async () => {
+      const Component = () => <>{`<script>alert('test')</script>`}</>;
       const element = <Component />;
       const stream = renderToReadableStream(element, testRequest);
       const result = await streamToText(stream);
-      expect(result).toEqual(`&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`);
+      expect(result).toEqual(
+        `&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`,
+      );
     });
 
     it('should be possible to inject HTML as children string in the JSX using the "dangerHTML" helper', async () => {
-      const Component = () => <>{dangerHTML(`<script>alert('test')</script>`)}</>
+      const Component = () => (
+        <>{dangerHTML(`<script>alert('test')</script>`)}</>
+      );
       const element = <Component />;
       const stream = renderToReadableStream(element, testRequest);
       const result = await streamToText(stream);
