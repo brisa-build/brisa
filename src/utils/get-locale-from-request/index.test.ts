@@ -39,6 +39,30 @@ describe("utils", () => {
       expect(locale).toBe("en");
     });
 
+    it("should return domain default locale if not locale", () => {
+      globalThis.mockConstants!.I18N_CONFIG.domains = {
+        "example.com": {
+          defaultLocale: "ru",
+        }
+      }
+      const request = new BunriseRequest(new Request("https://example.com"));
+      const locale = getLocaleFromRequest(request);
+
+      expect(locale).toBe("ru");
+    });
+
+    it("should return domain default locale if locale is not supported", () => {
+      globalThis.mockConstants!.I18N_CONFIG.domains = {
+        "example.com": {
+          defaultLocale: "ru",
+        }
+      }
+      const request = new BunriseRequest(new Request("https://example.com/ua"));
+      const locale = getLocaleFromRequest(request);
+
+      expect(locale).toBe("ru");
+    });
+
     it("should return the browser language as default locale if locale is not supported", () => {
       const request = new BunriseRequest(
         new Request("https://example.com/ua", {
