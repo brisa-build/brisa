@@ -25,19 +25,22 @@ export type JSXComponent = (
 ) => JSXNode | Promise<JSXNode>;
 
 export interface I18nDictionary {
-  [key: string]: string | I18nDictionary
+  [key: string]: string | I18nDictionary;
 }
 
 export interface TranslationQuery {
-  [name: string]: any
+  [name: string]: any;
 }
 
 export type I18nConfig = {
   defaultLocale: string;
   locales: string[];
-  domains?: Record<string, {
-    defaultLocale: string;
-  }>;
+  domains?: Record<
+    string,
+    {
+      defaultLocale: string;
+    }
+  >;
   messages?: Record<string, I18nDictionary>;
   interpolation?: {
     prefix: string;
@@ -52,11 +55,12 @@ export type Translate = <T extends unknown = string>(
   i18nKey: string | TemplateStringsArray,
   query?: TranslationQuery | null,
   options?: {
-    returnObjects?: boolean
-    fallback?: string | string[]
-    default?: T | string
-  }
-) => T
+    returnObjects?: boolean;
+    fallback?: string | string[];
+    default?: T | string;
+    elements?: JSXElement[] | Record<string, JSXElement>;
+  },
+) => T;
 
 export type I18nFromRequest = {
   locale: string;
@@ -75,11 +79,11 @@ interface ComponentType extends JSXComponent {
 }
 
 export function dangerHTML(html: string): {
-  type: "danger-html",
+  type: "danger-html";
   props: {
-    html: string,
-  },
-}
+    html: string;
+  };
+};
 
 declare global {
   export namespace JSX {

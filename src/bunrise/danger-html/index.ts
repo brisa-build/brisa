@@ -1,8 +1,8 @@
 export default function dangerHTML(html: string) {
   return {
-    type: 'danger-html',
+    type: "danger-html",
     props: {
-      html
-    }
+      html,
+    },
   };
 }
