@@ -26,7 +26,11 @@ export default function translateCore(locale: string) {
     return interpolation({ text: value as string, query, config, locale });
   };
 
-  const translate = (i18nKey: string | TemplateStringsArray = "", query, options) => {
+  const translate = (
+    i18nKey: string | TemplateStringsArray = "",
+    query,
+    options,
+  ) => {
     const dic = config.messages?.[locale] || {};
     const keyWithPlural = plural(
       pluralRules,
@@ -80,7 +84,7 @@ export default function translateCore(locale: string) {
     return interpolateUnknown(value, query);
   };
 
-  const t: Translate = (i18nKey = '', query, options) => {
+  const t: Translate = (i18nKey = "", query, options) => {
     const translationText = translate(i18nKey, query, options);
     return options?.elements
       ? formatElements(translationText, options.elements)
