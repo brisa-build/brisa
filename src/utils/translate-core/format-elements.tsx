@@ -1,5 +1,3 @@
-import { JSXElement, JSXNode } from "../../types";
-
 export const tagParsingRegex = /<(\w+) *>(.*?)<\/\1 *>|<(\w+) *\/>/;
 
 const nlRe = /(?:\r\n|\r|\n)/g;
@@ -18,13 +16,13 @@ function getElements(
 
 export default function formatElements(
   value: string,
-  elements: JSXElement[] | Record<string, JSXElement> = [],
+  elements: JSX.Element[] | Record<string, JSX.Element> = [],
 ) {
   const parts = value.replace(nlRe, "").split(tagParsingRegex);
 
   if (parts.length === 1) return value;
 
-  const tree: (string | JSXElement)[] = [];
+  const tree: (string | Element)[] = [];
 
   const before = parts.shift();
   if (before) tree.push(before);

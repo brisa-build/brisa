@@ -58,9 +58,9 @@ export type Translate = <T extends unknown = string>(
     returnObjects?: boolean;
     fallback?: string | string[];
     default?: T | string;
-    elements?: JSXElement[] | Record<string, JSXElement>;
+    elements?: JSX.Element[] | Record<string, JSX.Element>;
   },
-) => T;
+) => T | JSX.Element[] | string;
 
 export type I18nFromRequest = {
   locale: string;

@@ -72,5 +72,26 @@ describe("utils", () => {
       expect(element.type?.toString()).toBe("strong");
       expect(element.props?.children).toBe("test");
     });
+
+    it("should return a string wrapped multiple tags and defined as object", () => {
+      const elements = {
+        a: <strong />,
+        b: <em />,
+        c: <span />,
+      };
+
+      const output = formatElements("<a>this is a <b>test</b></a><c>!</c>", elements);
+      const elementA = output[0] as JSXElement;
+      const elementB = elementA.props?.children as JSXElement;
+      const elementC = output[1] as JSXElement;
+
+      expect(elementA.type?.toString()).toBe("strong");
+      expect(Array.isArray(elementB)).toBe(true)
+      expect(elementB[0]).toBe("this is a ");
+      expect(elementB[1].type?.toString()).toBe("em");
+      expect(elementB[1].props?.children).toBe("test");
+      expect(elementC.type?.toString()).toBe("span");
+      expect(elementC.props?.children).toBe("!");
+    });
   });
 });
