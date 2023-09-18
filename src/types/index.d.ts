@@ -27,6 +27,9 @@ export type JSXComponent = (
 export type I18nConfig = {
   defaultLocale: string;
   locales: string[];
+  domains: Record<string, {
+    defaultLocale: string;
+  }>;
   messages?: Record<string, Record<string, string>>;
 };
 

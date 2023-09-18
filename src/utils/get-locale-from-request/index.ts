@@ -1,4 +1,5 @@
 import getConstants from "../../constants";
+import { I18nConfig } from "../../types";
 
 export default function getLocaleFromRequest(request: Request): string {
   const { I18N_CONFIG = {}, LOCALES_SET } = getConstants();
@@ -16,7 +17,7 @@ export default function getLocaleFromRequest(request: Request): string {
   const browserLocales = getLocalesFromAcceptLanguage(request);
   const browserLocale = getFirstSupportedLocale(browserLocales, LOCALES_SET);
 
-  return browserLocale ? browserLocale : I18N_CONFIG.defaultLocale;
+  return browserLocale ? browserLocale : getDefaultLocale(request, I18N_CONFIG);
 }
 
 function getLocaleFromCookie(request: Request): string | undefined {
@@ -30,6 +31,13 @@ function getLocalesFromAcceptLanguage(request: Request): string[] | undefined {
   const acceptLanguage = request.headers.get("Accept-Language");
 
   return acceptLanguage?.split(",").map((locale) => locale.split(";")[0]);
+}
+
+function getDefaultLocale(request: Request, I18N_CONFIG: I18nConfig): string {
+  const domain = new URL(request.url).hostname;
+  const domainDefaultLocale = I18N_CONFIG.domains?.[domain]?.defaultLocale;
+
+  return domainDefaultLocale ?? I18N_CONFIG.defaultLocale;
 }
 
 function getFirstSupportedLocale(
