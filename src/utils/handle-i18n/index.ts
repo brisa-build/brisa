@@ -3,6 +3,7 @@ import getLocaleFromRequest from "../get-locale-from-request";
 import getRouteMatcher from "../get-route-matcher";
 import getConstants from "../../constants";
 import translateCore from "../translate-core";
+import adaptRouterToPageTranslations from "../adapt-router-to-page-translations";
 
 export default function handleI18n(req: RequestContext): {
   response?: Response;
@@ -10,7 +11,7 @@ export default function handleI18n(req: RequestContext): {
   rootRouter?: ReturnType<typeof getRouteMatcher>;
 } {
   const { PAGES_DIR, ROOT_DIR, RESERVED_PAGES, I18N_CONFIG } = getConstants();
-  const { locales, defaultLocale } = I18N_CONFIG || {};
+  const { locales, defaultLocale, pages } = I18N_CONFIG || {};
 
   if (!defaultLocale || !locales?.length) return {};
 
@@ -44,8 +45,17 @@ export default function handleI18n(req: RequestContext): {
     t: translateCore(locale),
   };
 
-  return {
+  const routers = {
     pagesRouter: getRouteMatcher(PAGES_DIR, RESERVED_PAGES, locale),
     rootRouter: getRouteMatcher(ROOT_DIR, undefined, locale),
   };
+
+  if (pages) {
+    routers.pagesRouter = adaptRouterToPageTranslations(
+      pages,
+      routers.pagesRouter,
+    );
+  }
+
+  return routers;
 }
