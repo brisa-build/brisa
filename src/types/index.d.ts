@@ -49,6 +49,11 @@ export type I18nConfig = {
   };
   allowEmptyStrings?: boolean;
   keySeparator?: string;
+  pages?: {
+    [pageName: string]: {
+      [locale: string]: string;
+    };
+  };
 };
 
 export type Translate = <T extends unknown = string>(
