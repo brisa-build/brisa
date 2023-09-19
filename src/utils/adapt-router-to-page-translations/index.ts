@@ -1,3 +1,5 @@
+const regexTrailingSlash = /\/$/;
+
 export default function adaptRouterToPageTranslations(pages, pagesRouter) {
   const pageEntries = Object.entries(pages);
   const translationsEntries = pageEntries.flatMap(toTranslationEntries);
@@ -5,9 +7,11 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
 
   const match = (req) => {
     const url = new URL(req.url);
-    const pathname = url.pathname;
     const userLocale = req.i18n?.locale;
-    let request = req;
+
+    url.pathname = url.pathname
+      .replace(`/${userLocale}`, '')
+      .replace(regexTrailingSlash, "");
 
     for (const translation in translations) {
       const { page, locale } = translations[translation];
@@ -17,17 +21,17 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
       const hasLocale = userLocale && pages[page][userLocale];
       const translationIsDifferentFromPage = translation !== page;
 
-      if (hasLocale && translationIsDifferentFromPage && compare(page, pathname)) {
+      if (hasLocale && translationIsDifferentFromPage && compare(page, url.pathname)) {
         return { route: null, isReservedPathname: false };
       }
 
-      if (compare(translation, pathname)) {
+      if (compare(translation, url.pathname)) {
         url.pathname = page;
         return pagesRouter.match(new Request(url.toString(), req));
       }
     }
 
-    return pagesRouter.match(request);
+    return pagesRouter.match(new Request(url.toString(), req));
   };
 
   return { match, reservedRoutes: pagesRouter.reservedRoutes };
