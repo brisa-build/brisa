@@ -195,6 +195,7 @@ describe("utils", () => {
           "/user/[username]/settings/[id]": {
             es: "/usuario/[username]/configuracion/[id]",
           },
+          "/somepage-without-spanish": { it: "/qualsiasi/" },
         };
         const { match } = adaptRouterToPageTranslations(mockPages, mockRouter);
 
@@ -219,6 +220,7 @@ describe("utils", () => {
 
         // not untranslated because is not in the current locale "es"
         expect(match(createRequest("https://example.com/es/qualsiasi-pagina/"))).toBe('/qualsiasi-pagina');
+        expect(match(createRequest("https://example.com/es/somepage-without-spanish/"))).toBe('/somepage-without-spanish');
       });
     });
   });
