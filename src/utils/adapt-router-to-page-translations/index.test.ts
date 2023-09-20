@@ -65,7 +65,7 @@ describe("utils", () => {
         expect(reservedRoutes["/_404"]).toBeDefined();
       });
 
-      it('should NOT return the route given another locale page', () => {
+      it("should NOT return the route given another locale page", () => {
         const { match, reservedRoutes } = adaptRouterToPageTranslations(
           pages,
           router,
@@ -111,9 +111,12 @@ describe("utils", () => {
 
     describe("given a mock router", () => {
       it("should detect all the translated routes", () => {
-        const mockRouter = { match: (v) => typeof v.url === 'string' ? new URL(v.url).pathname : null };
+        const mockRouter = {
+          match: (v) =>
+            typeof v.url === "string" ? new URL(v.url).pathname : null,
+        };
         const mockPages = {
-          "/somepage": { es: "/alguna-pagina", it: '/qualsiasi-pagina' },
+          "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },
           "/user/[username]": { es: "/usuario/[username]" },
           "/some/[...slug]": { es: "/algo/[...slug]" },
           "/another/[[...catchall]]": { es: "/otra-cosa/[[...catchall]]" },
@@ -144,13 +147,18 @@ describe("utils", () => {
         ).toBe("/user/[username]/settings/[id]");
 
         // not untranslated because is not in the current locale "es"
-        expect(match(createRequest("https://example.com/qualsiasi-pagina"))).toBe('/qualsiasi-pagina');
+        expect(
+          match(createRequest("https://example.com/qualsiasi-pagina")),
+        ).toBe("/qualsiasi-pagina");
       });
 
       it("should detect all the translated routes with locale prefix", () => {
-        const mockRouter = { match: (v) => typeof v.url === 'string' ? new URL(v.url).pathname : null };
+        const mockRouter = {
+          match: (v) =>
+            typeof v.url === "string" ? new URL(v.url).pathname : null,
+        };
         const mockPages = {
-          "/somepage": { es: "/alguna-pagina", it: '/qualsiasi-pagina' },
+          "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },
           "/user/[username]": { es: "/usuario/[username]" },
           "/some/[...slug]": { es: "/algo/[...slug]" },
           "/another/[[...catchall]]": { es: "/otra-cosa/[[...catchall]]" },
@@ -161,12 +169,12 @@ describe("utils", () => {
         };
         const { match } = adaptRouterToPageTranslations(mockPages, mockRouter);
 
-        expect(match(createRequest("https://example.com/es/alguna-pagina"))).toBe(
-          "/somepage",
-        );
-        expect(match(createRequest("https://example.com/es/usuario/aral"))).toBe(
-          "/user/[username]",
-        );
+        expect(
+          match(createRequest("https://example.com/es/alguna-pagina")),
+        ).toBe("/somepage");
+        expect(
+          match(createRequest("https://example.com/es/usuario/aral")),
+        ).toBe("/user/[username]");
         expect(match(createRequest("https://example.com/es/algo/1/2/3"))).toBe(
           "/some/[...slug]",
         );
@@ -176,18 +184,25 @@ describe("utils", () => {
         expect(match(createRequest("https://example.com/es"))).toBe("/");
         expect(
           match(
-            createRequest("https://example.com/es/usuario/aral/configuracion/1"),
+            createRequest(
+              "https://example.com/es/usuario/aral/configuracion/1",
+            ),
           ),
         ).toBe("/user/[username]/settings/[id]");
 
         // not untranslated because is not in the current locale "es"
-        expect(match(createRequest("https://example.com/es/qualsiasi-pagina"))).toBe('/qualsiasi-pagina');
+        expect(
+          match(createRequest("https://example.com/es/qualsiasi-pagina")),
+        ).toBe("/qualsiasi-pagina");
       });
 
       it("should detect all the translated routes with trailingSlash", () => {
-        const mockRouter = { match: (v) => typeof v.url === 'string' ? new URL(v.url).pathname : null };
+        const mockRouter = {
+          match: (v) =>
+            typeof v.url === "string" ? new URL(v.url).pathname : null,
+        };
         const mockPages = {
-          "/somepage": { es: "/alguna-pagina", it: '/qualsiasi-pagina' },
+          "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },
           "/user/[username]": { es: "/usuario/[username]" },
           "/some/[...slug]": { es: "/algo/[...slug]" },
           "/another/[[...catchall]]": { es: "/otra-cosa/[[...catchall]]" },
@@ -199,12 +214,12 @@ describe("utils", () => {
         };
         const { match } = adaptRouterToPageTranslations(mockPages, mockRouter);
 
-        expect(match(createRequest("https://example.com/es/alguna-pagina/"))).toBe(
-          "/somepage",
-        );
-        expect(match(createRequest("https://example.com/es/usuario/aral/"))).toBe(
-          "/user/[username]",
-        );
+        expect(
+          match(createRequest("https://example.com/es/alguna-pagina/")),
+        ).toBe("/somepage");
+        expect(
+          match(createRequest("https://example.com/es/usuario/aral/")),
+        ).toBe("/user/[username]");
         expect(match(createRequest("https://example.com/es/algo/1/2/3/"))).toBe(
           "/some/[...slug]",
         );
@@ -214,13 +229,21 @@ describe("utils", () => {
         expect(match(createRequest("https://example.com/es/"))).toBe("/");
         expect(
           match(
-            createRequest("https://example.com/es/usuario/aral/configuracion/1/"),
+            createRequest(
+              "https://example.com/es/usuario/aral/configuracion/1/",
+            ),
           ),
         ).toBe("/user/[username]/settings/[id]");
 
         // not untranslated because is not in the current locale "es"
-        expect(match(createRequest("https://example.com/es/qualsiasi-pagina/"))).toBe('/qualsiasi-pagina');
-        expect(match(createRequest("https://example.com/es/somepage-without-spanish/"))).toBe('/somepage-without-spanish');
+        expect(
+          match(createRequest("https://example.com/es/qualsiasi-pagina/")),
+        ).toBe("/qualsiasi-pagina");
+        expect(
+          match(
+            createRequest("https://example.com/es/somepage-without-spanish/"),
+          ),
+        ).toBe("/somepage-without-spanish");
       });
     });
   });
