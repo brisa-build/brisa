@@ -3,6 +3,7 @@ import path from "node:path";
 import adaptRouterToPageTranslations from ".";
 import getRouteMatcher from "../get-route-matcher";
 import { RequestContext } from "../../bunrise";
+import getConstants from "../../constants";
 
 const PAGES_DIR = path.join(
   import.meta.dir,
@@ -38,6 +39,7 @@ const createRequest = (url: string) => {
 describe("utils", () => {
   beforeEach(() => {
     globalThis.mockConstants = {
+      ...(getConstants() ?? {}),
       PAGES_DIR,
       I18N_CONFIG: {
         locales: ["en", "es"],
