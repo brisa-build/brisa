@@ -1,3 +1,5 @@
+import isTranslationMatchingPathname from "../is-translation-matching-pathname";
+
 const regexTrailingSlash = /\/$/;
 
 export default function adaptRouterToPageTranslations(pages, pagesRouter) {
@@ -10,7 +12,7 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
     const userLocale = req.i18n?.locale;
 
     url.pathname = url.pathname
-      .replace(`/${userLocale}`, '')
+      .replace(`/${userLocale}`, "")
       .replace(regexTrailingSlash, "");
 
     for (const translation in translations) {
@@ -21,11 +23,15 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
       const hasLocale = userLocale && pages[page][userLocale];
       const translationIsDifferentFromPage = translation !== page;
 
-      if (hasLocale && translationIsDifferentFromPage && compare(page, url.pathname)) {
+      if (
+        hasLocale &&
+        translationIsDifferentFromPage &&
+        isTranslationMatchingPathname(page, url.pathname)
+      ) {
         return { route: null, isReservedPathname: false };
       }
 
-      if (compare(translation, url.pathname)) {
+      if (isTranslationMatchingPathname(translation, url.pathname)) {
         url.pathname = page;
         return pagesRouter.match(new Request(url.toString(), req));
       }
@@ -35,21 +41,6 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
   };
 
   return { match, reservedRoutes: pagesRouter.reservedRoutes };
-}
-
-function compare(translation, pathname) {
-  // [username] -> [\w+]
-  const dynamicPart = translation.replace(/\[.*?\]/g, "\\w+");
-  // [...rest] -> [.*]
-  const restDynamicPart = translation.replace(/\[\.{3}.*?\]/g, ".*");
-  // [[..catchall]] -> [.*]
-  const catchAllDynamicPart = translation.replace(/\[\[\.{3}.*?\]\]/g, ".*");
-
-  return (
-    new RegExp(`^${catchAllDynamicPart}$`).test(pathname) ||
-    new RegExp(`^${restDynamicPart}$`).test(pathname) ||
-    new RegExp(`^${dynamicPart}$`).test(pathname)
-  );
 }
 
 function toTranslationEntries([path, translations]) {
