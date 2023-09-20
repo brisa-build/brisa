@@ -18,6 +18,11 @@ const constants = {
   PAGES_DIR: path.join(rootDir, "pages"),
   I18N_CONFIG,
   LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
+  REGEX: {
+    CATCH_ALL: /\[\[\.{3}.*?\]\]/g,
+    DYNAMIC: /\[.*?\]/g,
+    REST_DYNAMIC: /\[\.{3}.*?\]/g,
+  },
 };
 
 /**

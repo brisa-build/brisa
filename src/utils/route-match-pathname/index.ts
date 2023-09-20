@@ -1,17 +1,12 @@
-const catchAllRegexInput = /\[\[\.{3}.*?\]\]/g;
-const restRegexInput = /\[\.{3}.*?\]/g;
-const dynamicRouteRegexInput = /\[.*?\]/g;
-const dynamicRouteStringOutput = '[^\\/:*?"<>|]+';
-const everyCharacter = ".*";
+import getConstants from "../../constants";
 
-export default function routeMatchPathname(
-  route: string,
-  pathname: string,
-) {
+export default function routeMatchPathname(route: string, pathname: string) {
+  const { REGEX } = getConstants();
+  const everyCharacter = ".*";
   const routeWithoutDynamicParts = route
-    .replace(catchAllRegexInput, everyCharacter) // [[...catchall]] -> [.*]
-    .replace(restRegexInput, everyCharacter) // [...rest] -> [.*]
-    .replace(dynamicRouteRegexInput, dynamicRouteStringOutput); // [dynamic] -> all characters except /:*?"<>|
+    .replace(REGEX.CATCH_ALL, everyCharacter) // [[...catchall]] -> [.*]
+    .replace(REGEX.REST_DYNAMIC, everyCharacter) // [...rest] -> [.*]
+    .replace(REGEX.DYNAMIC, '[^\\/:*?"<>|]+'); // [dynamic] -> all characters except /:*?"<>|
 
   return new RegExp(`^${routeWithoutDynamicParts}$`).test(pathname);
 }
