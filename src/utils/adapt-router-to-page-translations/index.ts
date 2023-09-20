@@ -1,4 +1,4 @@
-import isTranslationMatchingPathname from "../is-translation-matching-pathname";
+import routeMatchPathname from "../route-match-pathname";
 
 const regexTrailingSlash = /\/$/;
 
@@ -16,23 +16,23 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
       .replace(regexTrailingSlash, "");
 
     for (const translation in translations) {
-      const { page, locale } = translations[translation];
+      const { route, locale } = translations[translation];
 
       if (locale !== userLocale) continue;
 
-      const hasLocale = userLocale && pages[page][userLocale];
-      const translationIsDifferentFromPage = translation !== page;
+      const hasLocale = userLocale && pages[route][userLocale];
+      const translationIsDifferentFromPage = translation !== route;
 
       if (
         hasLocale &&
         translationIsDifferentFromPage &&
-        isTranslationMatchingPathname(page, url.pathname)
+        routeMatchPathname(route, url.pathname)
       ) {
         return { route: null, isReservedPathname: false };
       }
 
-      if (isTranslationMatchingPathname(translation, url.pathname)) {
-        url.pathname = page;
+      if (routeMatchPathname(translation, url.pathname)) {
+        url.pathname = route;
         return pagesRouter.match(new Request(url.toString(), req));
       }
     }
@@ -46,6 +46,6 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
 function toTranslationEntries([path, translations]) {
   return Object.entries(translations ?? {}).map(([locale, translation]) => [
     translation,
-    { locale, page: path },
+    { locale, route: path },
   ]);
 }
