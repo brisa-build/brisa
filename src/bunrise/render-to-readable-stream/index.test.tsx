@@ -12,6 +12,7 @@ console.error = mockConsoleError;
 describe("bunrise core", () => {
   afterEach(() => {
     mockConsoleError.mockClear();
+    globalThis.mockConstants = undefined;
   });
   afterAll(() => {
     console.error = consoleError;
@@ -295,6 +296,34 @@ describe("bunrise core", () => {
       const result = await streamToText(stream);
       expect(result).toEqual(
         '<div class="empty"></div><div class="empty"></div>',
+      );
+    });
+
+    it('should inject the hrefLang attributes if the i18n is enabled and have hrefLangOrigin defined', () => {
+      const req = new RequestContext(new Request(testRequest));
+      const i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+      }
+      req.i18n = { ...i18n, t: () => '' };
+      globalThis.mockConstants = {
+        I18N_CONFIG: {
+          ...i18n,
+          hrefLangOrigin: "https://test.com"
+        }
+      }
+
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, req);
+      const result = streamToText(stream);
+      expect(result).resolves.toMatch(
+        /<html lang="es"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
       );
     });
 
