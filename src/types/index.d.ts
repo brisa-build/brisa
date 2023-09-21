@@ -34,7 +34,7 @@ export interface TranslationQuery {
 
 export type Translations = {
   [locale: string]: string;
-}
+};
 
 export type I18nConfig = {
   defaultLocale: string;
@@ -56,9 +56,7 @@ export type I18nConfig = {
   pages?: {
     [pageName: string]: Translations;
   };
-  hrefLangOrigin?:
-  | string
-  | Translations;
+  hrefLangOrigin?: string | Translations;
 };
 
 export type Translate = <T extends unknown = string>(

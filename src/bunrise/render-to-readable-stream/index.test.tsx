@@ -299,20 +299,20 @@ describe("bunrise core", () => {
       );
     });
 
-    it('should inject the hrefLang attributes if the i18n is enabled and have hrefLangOrigin defined', () => {
+    it("should inject the hrefLang attributes if the i18n is enabled and have hrefLangOrigin defined", () => {
       const req = new RequestContext(new Request(testRequest));
       const i18n = {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
-      }
-      req.i18n = { ...i18n, t: () => '' };
+      };
+      req.i18n = { ...i18n, t: () => "" };
       globalThis.mockConstants = {
         I18N_CONFIG: {
           ...i18n,
-          hrefLangOrigin: "https://test.com"
-        }
-      }
+          hrefLangOrigin: "https://test.com",
+        },
+      };
 
       const element = (
         <html>

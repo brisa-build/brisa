@@ -176,7 +176,7 @@ async function responseRenderedPage({
     </PageLayout>
   );
 
-  const htmlStream = await renderToReadableStream(pageElement, req);
+  const htmlStream = renderToReadableStream(pageElement, req);
   const responseOptions = {
     headers: {
       "transfer-encoding": "chunked",

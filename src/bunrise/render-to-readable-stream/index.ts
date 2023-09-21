@@ -103,7 +103,7 @@ async function enqueueDuringRendering(
 
     if (type === "head") {
       const optionalHrefLang = generateHrefLang(request);
-      const codeToInject = `${optionalHrefLang}${unsuspenseScriptCode}`
+      const codeToInject = `${optionalHrefLang}${unsuspenseScriptCode}`;
 
       controller.enqueue(codeToInject, suspenseId);
       controller.hasHeadTag = true;
