@@ -32,6 +32,10 @@ export interface TranslationQuery {
   [name: string]: any;
 }
 
+export type Translations = {
+  [locale: string]: string;
+}
+
 export type I18nConfig = {
   defaultLocale: string;
   locales: string[];
@@ -50,10 +54,11 @@ export type I18nConfig = {
   allowEmptyStrings?: boolean;
   keySeparator?: string;
   pages?: {
-    [pageName: string]: {
-      [locale: string]: string;
-    };
+    [pageName: string]: Translations;
   };
+  hrefLangOrigin?:
+  | string
+  | Translations;
 };
 
 export type Translate = <T extends unknown = string>(

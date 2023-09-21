@@ -5,6 +5,7 @@ import extendStreamController, {
 import RequestContext from "../request-context";
 import { injectUnsuspenseScript } from "../inject-unsuspense-script" assert { type: "macro" };
 import renderAttributes from "../../utils/render-attributes";
+import generateHrefLang from "../../utils/generate-href-lang";
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const unsuspenseScriptCode = await injectUnsuspenseScript();
@@ -101,8 +102,10 @@ async function enqueueDuringRendering(
     await enqueueChildren(props.children, request, controller, suspenseId);
 
     if (type === "head") {
-      // Inject unsuspense script in the end of head
-      controller.enqueue(unsuspenseScriptCode, suspenseId);
+      const optionalHrefLang = generateHrefLang(request);
+      const codeToInject = `${optionalHrefLang}${unsuspenseScriptCode}`
+
+      controller.enqueue(codeToInject, suspenseId);
       controller.hasHeadTag = true;
     }
 
