@@ -13,15 +13,15 @@ export default function generateHrefLang(request: RequestContext) {
   return locales
     .map((lang: string) => {
       if (lang === locale) return "";
-      const domain = getHrefLangDomain(lang)
+      const domain = getHrefLangDomain(lang);
 
-      if (!domain) return ""
+      if (!domain) return "";
 
-      const url = new URL(`${domain}${page}`)
+      const url = new URL(`${domain}${page}`);
       const request = new RequestContext(new Request(url));
-      request.i18n = { ...I18N_CONFIG, locale: lang }
-      const pathname = translatePathname(url.pathname, request)
-      url.pathname = pathname
+      request.i18n = { ...I18N_CONFIG, locale: lang };
+      const pathname = translatePathname(url.pathname, request);
+      url.pathname = pathname;
 
       return `<link rel="alternate" hreflang="${lang}" href="${url.toString()}" />`;
     })
@@ -32,7 +32,9 @@ function getHrefLangDomain(locale: string): string {
   const { I18N_CONFIG, IS_PRODUCTION } = getConstants();
   const { hrefLangOrigin } = I18N_CONFIG ?? {};
   const domain =
-    typeof hrefLangOrigin === "string" ? hrefLangOrigin : hrefLangOrigin?.[locale];
+    typeof hrefLangOrigin === "string"
+      ? hrefLangOrigin
+      : hrefLangOrigin?.[locale];
 
   if (!domain) return "";
 
@@ -44,5 +46,5 @@ function getHrefLangDomain(locale: string): string {
     return "";
   }
 
-  return domain
+  return domain;
 }

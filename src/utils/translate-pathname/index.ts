@@ -3,7 +3,10 @@ import getConstants from "../../constants";
 import { I18nConfig, Translations } from "../../types";
 import routeMatchPathname from "../route-match-pathname";
 
-export default function translatePathname(pagePathname: string, request: RequestContext) {
+export default function translatePathname(
+  pagePathname: string,
+  request: RequestContext,
+) {
   const { I18N_CONFIG } = getConstants();
   const { pages } = I18N_CONFIG ?? {};
   const { locale, locales } = request.i18n ?? {};
@@ -27,11 +30,11 @@ export default function translatePathname(pagePathname: string, request: Request
   return pathname;
 }
 
-function findTranslatedPage(pages: I18nConfig['pages'], pathname: string) {
+function findTranslatedPage(pages: I18nConfig["pages"], pathname: string) {
   if (!pages) return;
 
   return Object.entries(pages).find(([pageName]) =>
-    routeMatchPathname(pageName, pathname)
+    routeMatchPathname(pageName, pathname),
   );
 }
 
