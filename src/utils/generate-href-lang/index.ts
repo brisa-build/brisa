@@ -4,10 +4,11 @@ import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
 export default function generateHrefLang(request: RequestContext) {
   const { locale } = request.i18n ?? {};
-  const { I18N_CONFIG } = getConstants();
+  const { I18N_CONFIG, RESERVED_PAGES } = getConstants();
   const { locales, hrefLangOrigin } = I18N_CONFIG ?? {};
+  const pageRoute = request.route?.name || "";
 
-  if (!locale || !hrefLangOrigin) return "";
+  if (!locale || !hrefLangOrigin || RESERVED_PAGES.includes(pageRoute)) return "";
 
   return locales
     .map((lang: string) => {
