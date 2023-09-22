@@ -1,6 +1,5 @@
 import { afterEach, describe, it, expect } from "bun:test";
-import translatePathname from ".";
-import { RequestContext } from "../../bunrise";
+import substituteI18nRouteValues from ".";
 import getConstants from "../../constants";
 
 describe("utils", () => {
@@ -8,7 +7,7 @@ describe("utils", () => {
     globalThis.mockConstants = undefined;
   });
 
-  describe("translatePathname", () => {
+  describe("substituteI18nRouteValues", () => {
     it("should translate the pathname", () => {
       globalThis.mockConstants = {
         ...getConstants(),
@@ -17,24 +16,19 @@ describe("utils", () => {
           locales: ["es", "en"],
           defaultLocale: "es",
           pages: {
-            "/example": {
-              es: "/ejemplo",
+            "/example/[id]": {
+              es: "/ejemplo/[id]",
             },
           },
         },
       };
 
-      const requestContext = new RequestContext(
-        new Request("https://example.com"),
+      const output = substituteI18nRouteValues(
+        "/example/[id]",
+        "/ejemplo/some-id",
       );
-      requestContext.i18n = {
-        ...globalThis.mockConstants.I18N_CONFIG,
-        locale: "es",
-      };
 
-      const output = translatePathname("/example", requestContext);
-
-      expect(output).toBe("/es/ejemplo");
+      expect(output).toBe("/example/some-id");
     });
 
     it("should work with dynamic routes and catchAll routes", () => {
@@ -52,20 +46,12 @@ describe("utils", () => {
         },
       };
 
-      const requestContext = new RequestContext(
-        new Request("https://example.com"),
-      );
-      requestContext.i18n = {
-        ...globalThis.mockConstants.I18N_CONFIG,
-        locale: "es",
-      };
-
-      const output = translatePathname(
-        "/example/1/settings/2/3",
-        requestContext,
+      const output = substituteI18nRouteValues(
+        "/example/[id]/settings/[[...catchAll]]",
+        "/ejemplo/1/configuracion/2/3",
       );
 
-      expect(output).toBe("/es/ejemplo/1/configuracion/2/3");
+      expect(output).toBe("/example/1/settings/2/3");
     });
   });
 });

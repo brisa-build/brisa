@@ -1,10 +1,9 @@
 import { RequestContext } from "../../bunrise";
 import getConstants from "../../constants";
-import translatePathname from "../translate-pathname";
+import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
 export default function generateHrefLang(request: RequestContext) {
   const { locale } = request.i18n ?? {};
-  const page = new URL(request.url).pathname;
   const { I18N_CONFIG } = getConstants();
   const { locales, hrefLangOrigin } = I18N_CONFIG ?? {};
 
@@ -13,15 +12,12 @@ export default function generateHrefLang(request: RequestContext) {
   return locales
     .map((lang: string) => {
       if (lang === locale) return "";
+
       const domain = getHrefLangDomain(lang);
 
       if (!domain) return "";
 
-      const url = new URL(`${domain}${page}`);
-      const request = new RequestContext(new Request(url));
-      request.i18n = { ...I18N_CONFIG, locale: lang };
-      const pathname = translatePathname(url.pathname, request);
-      url.pathname = pathname;
+      const url = getURLInAnotherLang(domain, lang, request);
 
       return `<link rel="alternate" hreflang="${lang}" href="${url.toString()}" />`;
     })
@@ -47,4 +43,25 @@ function getHrefLangDomain(locale: string): string {
   }
 
   return domain;
+}
+
+function getURLInAnotherLang(
+  domain: string,
+  locale: string,
+  request: RequestContext,
+) {
+  const { I18N_CONFIG, LOCALES_SET } = getConstants();
+  const paths = new URL(request.url).pathname.split("/");
+  const page = LOCALES_SET.has(paths[1])
+    ? paths.join("/").slice(3)
+    : paths.join("/");
+  const url = new URL(page, domain);
+  const { pages = {} } = I18N_CONFIG ?? {};
+  const pageRoute = request.route?.name || "";
+  const pageTranslatedRoute = pages[pageRoute]?.[locale] || pageRoute;
+  const translation = substituteI18nRouteValues(pageTranslatedRoute, page);
+
+  url.pathname = `/${locale}${translation}`;
+
+  return url;
 }

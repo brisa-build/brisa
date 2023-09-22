@@ -2,6 +2,7 @@ import { describe, it, expect, mock, afterEach } from "bun:test";
 import generateHrefLang from ".";
 import getConstants from "../../constants";
 import { RequestContext } from "../../bunrise";
+import { MatchedRoute } from "bun";
 
 const warn = console.warn.bind(console);
 
@@ -14,6 +15,7 @@ describe("utils", () => {
     it("should generate the hreflang with the rest of locales", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           locales: ["es", "en"],
           pages: {
@@ -29,6 +31,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage"),
+        { name: "/somepage" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -43,6 +46,7 @@ describe("utils", () => {
     it("should warn and return empty string if hrefLangOrigin is not a valid URL", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           locales: ["es", "en"],
           pages: {
@@ -60,6 +64,7 @@ describe("utils", () => {
       console.warn = mockWarn;
       const input = new RequestContext(
         new Request("https://www.example.com/somepage"),
+        { name: "/somepage" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -75,6 +80,7 @@ describe("utils", () => {
     it("should work with hrefLangOrigin as string", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           locales: ["es", "en"],
           pages: {
@@ -87,6 +93,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage"),
+        { name: "/somepage" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -101,6 +108,7 @@ describe("utils", () => {
     it("should work with dynamic pages without translations", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           locales: ["es", "en"],
           pages: {
@@ -113,6 +121,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage/1"),
+        { name: "/somepage/[id]" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -127,6 +136,7 @@ describe("utils", () => {
     it("should work with dynamic pages with translations", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           locales: ["es", "en"],
           pages: {
@@ -140,6 +150,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage/1"),
+        { name: "/somepage/[id]" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -154,6 +165,7 @@ describe("utils", () => {
     it("should return empty string if locale is not defined", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           locales: ["es", "en"],
           pages: {
@@ -166,6 +178,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage"),
+        { name: "/somepage" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -178,6 +191,7 @@ describe("utils", () => {
     it("should work with catchAll routes with translations", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           locales: ["es", "en"],
           pages: {
@@ -191,6 +205,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage/1/2/3"),
+        { name: "/somepage/[[...catchAll]]" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -205,6 +220,7 @@ describe("utils", () => {
     it("should work with dynamic routes and rest dynamic with translations", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           locales: ["es", "en"],
           pages: {
@@ -218,6 +234,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage/1/settings/2/3"),
+        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -232,6 +249,7 @@ describe("utils", () => {
     it("should work with multi supported locales", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en", "fr"]),
         I18N_CONFIG: {
           locales: ["es", "en", "fr"],
           pages: {
@@ -248,6 +266,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage"),
+        { name: "/somepage" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -262,6 +281,7 @@ describe("utils", () => {
     it("should work with dynamic routes and multi supported locales", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en", "fr", "it", "de"]),
         I18N_CONFIG: {
           locales: ["es", "en", "fr", "it", "de"],
           pages: {
@@ -284,6 +304,7 @@ describe("utils", () => {
       };
       const input = new RequestContext(
         new Request("https://www.example.com/somepage/1/settings/2/3"),
+        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       );
       input.i18n = {
         ...getConstants().I18N_CONFIG,
@@ -303,6 +324,7 @@ describe("utils", () => {
     it("should skip the hrefLang of some locale without domain in hrefLangOrigin", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        LOCALES_SET: new Set(["es", "en", "fr", "de"]),
         I18N_CONFIG: {
           locales: ["es", "en", "fr", "de"],
           pages: {
@@ -324,10 +346,11 @@ describe("utils", () => {
         },
       };
       const input = new RequestContext(
-        new Request("https://www.example.com/somepage/1/settings/2/3"),
+        new Request("https://www.example.com/en/somepage/1/settings/2/3"),
+        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       );
       input.i18n = {
-        ...getConstants().I18N_CONFIG,
+        ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
       };
       const output = generateHrefLang(input);
@@ -335,6 +358,59 @@ describe("utils", () => {
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
+        ].join(""),
+      );
+    });
+
+    it("should work with more I18nConfig and with already the language in the pathname", () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
+        I18N_CONFIG: {
+          defaultLocale: "en",
+          locales: ["en", "es"],
+          messages: {
+            en: {
+              hello: "Hello {{name}}!",
+              withHtml: "Hello <strong>{{name}}</strong>!",
+            },
+            es: {
+              hello: "¡Hola {{name}}!",
+              withHtml: "¡Hola <strong>{{name}}</strong>!",
+            },
+          },
+          pages: {
+            "/a": {
+              en: "/about-us",
+              es: "/sobre-nosotros",
+            },
+            "/user/[username]": {
+              en: "/user/[username]",
+              es: "/usuario/[username]",
+            },
+            "/somepage": {
+              en: "/somepage",
+              es: "/alguna-pagina",
+            },
+          },
+          hrefLangOrigin: "https://test.com",
+        },
+      };
+
+      const input = new RequestContext(
+        new Request("https://test.com/es/sobre-nosotros"),
+        { name: "/a" } as MatchedRoute,
+      );
+      input.i18n = {
+        ...getConstants().I18N_CONFIG,
+        locale: "es",
+      };
+
+      const output = generateHrefLang(input);
+
+      expect(output).toBe(
+        [
+          '<link rel="alternate" hreflang="en" href="https://test.com/en/about-us" />',
         ].join(""),
       );
     });
