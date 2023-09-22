@@ -1,6 +1,8 @@
 import { RequestContext } from "../../bunrise";
-import { Props } from "../../types";
-import translatePathname from "../translate-pathname";
+import getConstants from "../../constants";
+import { I18nConfig, Props, Translations } from "../../types";
+import routeMatchPathname from "../route-match-pathname";
+import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
 export default function renderAttributes({
   props,
@@ -25,7 +27,7 @@ export default function renderAttributes({
       request.i18n?.locale &&
       typeof value === "string"
     ) {
-      attributes += ` ${prop}="${translatePathname(value, request)}"`;
+      attributes += ` ${prop}="${renderI18nHrefAttribute(value, request)}"`;
       continue;
     }
 
@@ -37,4 +39,37 @@ export default function renderAttributes({
   }
 
   return attributes;
+}
+
+export function renderI18nHrefAttribute(
+  pagePathname: string,
+  request: RequestContext,
+) {
+  const { I18N_CONFIG } = getConstants();
+  const { pages } = I18N_CONFIG ?? {};
+  const { locale, locales } = request.i18n ?? {};
+  const isExternalUrl = URL.canParse(pagePathname);
+  let pathname = pagePathname;
+
+  if (isExternalUrl || !locale) return pagePathname;
+
+  const page = findTranslatedPage(pages, pathname);
+
+  if (page) {
+    const [pageName, translations] = page;
+    const translatedPage = (translations as Translations)?.[locale] ?? pageName;
+    pathname = substituteI18nRouteValues(translatedPage, pathname);
+  }
+
+  if (!locales?.some((locale) => pathname?.split("/")?.[1] === locale)) {
+    return `/${locale}${pathname === "/" ? "" : pathname}`;
+  }
+
+  return pathname;
+}
+
+function findTranslatedPage(pages: I18nConfig["pages"], pathname: string) {
+  for (const page of Object.entries(pages ?? {})) {
+    if (routeMatchPathname(page[0], pathname)) return page;
+  }
 }

@@ -1,3 +1,4 @@
+import { RequestContext } from "../../bunrise";
 import routeMatchPathname from "../route-match-pathname";
 
 const regexTrailingSlash = /\/$/;
@@ -7,7 +8,7 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
   const translationsEntries = pageEntries.flatMap(toTranslationEntries);
   const translations = Object.fromEntries(translationsEntries);
 
-  const match = (req) => {
+  const match = (req: RequestContext) => {
     const url = new URL(req.url);
     const userLocale = req.i18n?.locale;
 

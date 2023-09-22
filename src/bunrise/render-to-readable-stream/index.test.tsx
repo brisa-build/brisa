@@ -3,6 +3,7 @@ import renderToReadableStream from ".";
 import { RequestContext } from "..";
 import streamToText from "../../__fixtures__/stream-to-text";
 import dangerHTML from "../danger-html";
+import getConstants from "../../constants";
 
 const testRequest = new RequestContext(new Request("http://test.com/"));
 const mockConsoleError = mock(() => {});
@@ -308,6 +309,7 @@ describe("bunrise core", () => {
       };
       req.i18n = { ...i18n, t: () => "" };
       globalThis.mockConstants = {
+        ...getConstants(),
         I18N_CONFIG: {
           ...i18n,
           hrefLangOrigin: "https://test.com",
