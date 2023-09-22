@@ -471,6 +471,7 @@ describe("bunrise core", () => {
         locale: "en",
         locales: ["en", "es"],
         defaultLocale: "en",
+        t: () => "",
       };
       const element = (
         <html>
@@ -489,6 +490,7 @@ describe("bunrise core", () => {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
+        t: () => "",
       };
       const element = (
         <html lang="en">
@@ -507,6 +509,7 @@ describe("bunrise core", () => {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
+        t: () => "",
       };
       const home = await streamToText(
         renderToReadableStream(<a href="/">Test</a>, testRequest),
@@ -529,6 +532,7 @@ describe("bunrise core", () => {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
+        t: () => "",
       };
       const essencePage = await streamToText(
         renderToReadableStream(<a href="/essence">Test</a>, testRequest),
@@ -554,6 +558,7 @@ describe("bunrise core", () => {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
+        t: () => "",
       };
       const element = <a href="http://test.com/test">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
@@ -567,6 +572,7 @@ describe("bunrise core", () => {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
+        t: () => "",
       };
       const element = <a href="mailto:test@test.com">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
@@ -580,6 +586,7 @@ describe("bunrise core", () => {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
+        t: () => "",
       };
       const element = <a href="/en/test">Test</a>;
       const stream = renderToReadableStream(element, testRequest);

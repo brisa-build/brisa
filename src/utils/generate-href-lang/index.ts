@@ -8,7 +8,8 @@ export default function generateHrefLang(request: RequestContext) {
   const { locales, hrefLangOrigin } = I18N_CONFIG ?? {};
   const pageRoute = request.route?.name || "";
 
-  if (!locale || !hrefLangOrigin || RESERVED_PAGES.includes(pageRoute)) return "";
+  if (!locale || !hrefLangOrigin || RESERVED_PAGES.includes(pageRoute))
+    return "";
 
   return locales
     .map((lang: string) => {

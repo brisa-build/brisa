@@ -59,6 +59,14 @@ export type I18nConfig = {
   hrefLangOrigin?: string | Translations;
 };
 
+type RouterType = {
+  match: (req: RequestContext) => {
+    route: MatchedRoute | null;
+    isReservedPathname: boolean;
+  };
+  reservedRoutes: Record<string, MatchedRoute | null>;
+};
+
 export type Translate = <T extends unknown = string>(
   i18nKey: string | TemplateStringsArray,
   query?: TranslationQuery | null,

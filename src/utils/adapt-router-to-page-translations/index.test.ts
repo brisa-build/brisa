@@ -114,7 +114,7 @@ describe("utils", () => {
     describe("given a mock router", () => {
       it("should detect all the translated routes", () => {
         const mockRouter = {
-          match: (v) =>
+          match: (v: RequestContext) =>
             typeof v.url === "string" ? new URL(v.url).pathname : null,
         };
         const mockPages = {
@@ -127,26 +127,29 @@ describe("utils", () => {
             es: "/usuario/[username]/configuracion/[id]",
           },
         };
-        const { match } = adaptRouterToPageTranslations(mockPages, mockRouter);
+        const { match } = adaptRouterToPageTranslations(
+          mockPages,
+          mockRouter as any,
+        );
 
         expect(match(createRequest("https://example.com/alguna-pagina"))).toBe(
           "/somepage",
         );
         expect(match(createRequest("https://example.com/usuario/aral"))).toBe(
-          "/user/[username]",
+          "/user/aral",
         );
         expect(match(createRequest("https://example.com/algo/1/2/3"))).toBe(
-          "/some/[...slug]",
+          "/some/1/2/3",
         );
         expect(
           match(createRequest("https://example.com/otra-cosa/1/2/3")),
-        ).toBe("/another/[[...catchall]]");
+        ).toBe("/another/1/2/3");
         expect(match(createRequest("https://example.com/"))).toBe("/");
         expect(
           match(
             createRequest("https://example.com/usuario/aral/configuracion/1"),
           ),
-        ).toBe("/user/[username]/settings/[id]");
+        ).toBe("/user/aral/settings/1");
 
         // not untranslated because is not in the current locale "es"
         expect(
@@ -169,20 +172,23 @@ describe("utils", () => {
             es: "/usuario/[username]/configuracion/[id]",
           },
         };
-        const { match } = adaptRouterToPageTranslations(mockPages, mockRouter);
+        const { match } = adaptRouterToPageTranslations(
+          mockPages,
+          mockRouter as any,
+        );
 
         expect(
           match(createRequest("https://example.com/es/alguna-pagina")),
         ).toBe("/somepage");
         expect(
           match(createRequest("https://example.com/es/usuario/aral")),
-        ).toBe("/user/[username]");
+        ).toBe("/user/aral");
         expect(match(createRequest("https://example.com/es/algo/1/2/3"))).toBe(
-          "/some/[...slug]",
+          "/some/1/2/3",
         );
         expect(
           match(createRequest("https://example.com/es/otra-cosa/1/2/3")),
-        ).toBe("/another/[[...catchall]]");
+        ).toBe("/another/1/2/3");
         expect(match(createRequest("https://example.com/es"))).toBe("/");
         expect(
           match(
@@ -190,7 +196,7 @@ describe("utils", () => {
               "https://example.com/es/usuario/aral/configuracion/1",
             ),
           ),
-        ).toBe("/user/[username]/settings/[id]");
+        ).toBe("/user/aral/settings/1");
 
         // not untranslated because is not in the current locale "es"
         expect(
@@ -214,20 +220,23 @@ describe("utils", () => {
           },
           "/somepage-without-spanish": { it: "/qualsiasi/" },
         };
-        const { match } = adaptRouterToPageTranslations(mockPages, mockRouter);
+        const { match } = adaptRouterToPageTranslations(
+          mockPages,
+          mockRouter as any,
+        );
 
         expect(
           match(createRequest("https://example.com/es/alguna-pagina/")),
         ).toBe("/somepage");
         expect(
           match(createRequest("https://example.com/es/usuario/aral/")),
-        ).toBe("/user/[username]");
+        ).toBe("/user/aral");
         expect(match(createRequest("https://example.com/es/algo/1/2/3/"))).toBe(
-          "/some/[...slug]",
+          "/some/1/2/3",
         );
         expect(
           match(createRequest("https://example.com/es/otra-cosa/1/2/3/")),
-        ).toBe("/another/[[...catchall]]");
+        ).toBe("/another/1/2/3");
         expect(match(createRequest("https://example.com/es/"))).toBe("/");
         expect(
           match(
@@ -235,7 +244,7 @@ describe("utils", () => {
               "https://example.com/es/usuario/aral/configuracion/1/",
             ),
           ),
-        ).toBe("/user/[username]/settings/[id]");
+        ).toBe("/user/aral/settings/1");
 
         // not untranslated because is not in the current locale "es"
         expect(

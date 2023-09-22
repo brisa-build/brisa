@@ -1,10 +1,11 @@
 import { MatchedRoute } from "bun";
+import { RouterType } from "../../types";
 
 export default function getRouteMatcher(
   dir: string,
   reservedPathnames: string[] = [],
   locale?: string,
-) {
+): RouterType {
   const router = new Bun.FileSystemRouter({
     style: "nextjs",
     dir,
