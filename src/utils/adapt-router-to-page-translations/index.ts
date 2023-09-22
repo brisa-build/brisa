@@ -1,16 +1,23 @@
 import { RequestContext } from "../../bunrise";
+import { I18nConfig, RouterType, Translations } from "../../types";
 import routeMatchPathname from "../route-match-pathname";
+import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
 const regexTrailingSlash = /\/$/;
 
-export default function adaptRouterToPageTranslations(pages, pagesRouter) {
-  const pageEntries = Object.entries(pages);
+export default function adaptRouterToPageTranslations(
+  pages: I18nConfig["pages"],
+  pagesRouter: RouterType,
+) {
+  const pageEntries = Object.entries(pages ?? {});
   const translationsEntries = pageEntries.flatMap(toTranslationEntries);
   const translations = Object.fromEntries(translationsEntries);
 
   const match = (req: RequestContext) => {
     const url = new URL(req.url);
     const userLocale = req.i18n?.locale;
+    const newReq = (url: string) =>
+      new RequestContext(new Request(url, req), req.route);
 
     url.pathname = url.pathname
       .replace(`/${userLocale}`, "")
@@ -21,7 +28,7 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
 
       if (locale !== userLocale) continue;
 
-      const hasLocale = userLocale && pages[route][userLocale];
+      const hasLocale = userLocale && pages?.[route][userLocale];
       const translationIsDifferentFromPage = translation !== route;
 
       if (
@@ -33,18 +40,18 @@ export default function adaptRouterToPageTranslations(pages, pagesRouter) {
       }
 
       if (routeMatchPathname(translation, url.pathname)) {
-        url.pathname = route;
-        return pagesRouter.match(new Request(url.toString(), req));
+        url.pathname = substituteI18nRouteValues(route, url.pathname);
+        return pagesRouter.match(newReq(url.toString()));
       }
     }
 
-    return pagesRouter.match(new Request(url.toString(), req));
+    return pagesRouter.match(newReq(url.toString()));
   };
 
   return { match, reservedRoutes: pagesRouter.reservedRoutes };
 }
 
-function toTranslationEntries([path, translations]) {
+function toTranslationEntries([path, translations]: [string, Translations]) {
   return Object.entries(translations ?? {}).map(([locale, translation]) => [
     translation,
     { locale, route: path },

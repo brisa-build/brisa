@@ -415,7 +415,7 @@ describe("utils", () => {
       );
     });
 
-    it('should not generate hrefLang on 404 page (reserved pages)', () => {
+    it("should not generate hrefLang on 404 page (reserved pages)", () => {
       globalThis.mockConstants = {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
@@ -444,6 +444,6 @@ describe("utils", () => {
       const output = generateHrefLang(input);
 
       expect(output).toBe("");
-    })
+    });
   });
 });
