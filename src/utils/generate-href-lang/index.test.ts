@@ -414,5 +414,36 @@ describe("utils", () => {
         ].join(""),
       );
     });
+
+    it('should not generate hrefLang on 404 page (reserved pages)', () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        LOCALES_SET: new Set(["es", "en"]),
+        I18N_CONFIG: {
+          defaultLocale: "en",
+          locales: ["en", "es"],
+          pages: {
+            "/a": {
+              en: "/about-us",
+              es: "/sobre-nosotros",
+            },
+          },
+          hrefLangOrigin: "https://test.com",
+        },
+      };
+
+      const input = new RequestContext(
+        new Request("https://test.com/es/not-found"),
+        { name: "/_404" } as MatchedRoute,
+      );
+      input.i18n = {
+        ...getConstants().I18N_CONFIG,
+        locale: "es",
+      };
+
+      const output = generateHrefLang(input);
+
+      expect(output).toBe("");
+    })
   });
 });
