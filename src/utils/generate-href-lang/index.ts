@@ -4,7 +4,7 @@ import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
 export default function generateHrefLang(request: RequestContext) {
   const { locale } = request.i18n ?? {};
-  const { I18N_CONFIG, RESERVED_PAGES } = getConstants();
+  const { I18N_CONFIG, RESERVED_PAGES, CONFIG } = getConstants();
   const { locales, hrefLangOrigin } = I18N_CONFIG ?? {};
   const pageRoute = request.route?.name || "";
 
@@ -20,8 +20,10 @@ export default function generateHrefLang(request: RequestContext) {
       if (!domain) return "";
 
       const url = getURLInAnotherLang(domain, lang, request);
+      const urlWithoutTrailingSlash = url.toString().replace(/\/$/, "");
+      const finalUrl = `${urlWithoutTrailingSlash}${CONFIG.trailingSlash ? "/" : ""}`;
 
-      return `<link rel="alternate" hreflang="${lang}" href="${url.toString()}" />`;
+      return `<link rel="alternate" hreflang="${lang}" href="${finalUrl}" />`;
     })
     .join("");
 }
