@@ -474,19 +474,134 @@ describe("utils", () => {
         },
       };
 
-      const input = new RequestContext(
+      const i18n = {
+        ...globalThis.mockConstants.I18N_CONFIG,
+        locale: "en",
+      }
+      const home = new RequestContext(
+        new Request("https://www.example.com/en/"),
+        { name: "/" } as MatchedRoute,
+      );
+      const homeWithoutTrailingSlash = new RequestContext(
+        new Request("https://www.example.com/en"),
+        { name: "/" } as MatchedRoute,
+      );
+      const withTrailingSlash = new RequestContext(
         new Request("https://www.example.com/en/somepage/1/settings/2/3/"),
         { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       );
-      input.i18n = {
-        ...globalThis.mockConstants.I18N_CONFIG,
-        locale: "en",
-      };
-      const output = generateHrefLang(input);
-      expect(output).toBe(
+      const withoutTrailingSlash = new RequestContext(
+        new Request("https://www.example.com/en/somepage/1/settings/2/3"),
+        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      );
+
+      home.i18n = i18n;
+      withTrailingSlash.i18n = i18n;
+      withoutTrailingSlash.i18n = i18n;
+      homeWithoutTrailingSlash.i18n = i18n;
+
+      expect(generateHrefLang(home)).toBe(
+        [
+          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/" />`,
+        ].join(""),
+      );
+      expect(generateHrefLang(homeWithoutTrailingSlash)).toBe(
+        [
+          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/" />`,
+        ].join(""),
+      );
+      expect(generateHrefLang(withTrailingSlash)).toBe(
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3/" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3/" />`,
+        ].join(""),
+      );
+      expect(generateHrefLang(withoutTrailingSlash)).toBe(
+        [
+          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3/" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3/" />`,
+        ].join(""),
+      );
+    });
+
+    it("should work with trailingSlash=false in the configuration", () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          trailingSlash: false,
+        },
+        LOCALES_SET: new Set(["es", "en", "fr", "de"]),
+        I18N_CONFIG: {
+          locales: ["es", "en", "fr", "de"],
+          pages: {
+            "/somepage/[id]/settings/[...rest]": {
+              es: "/alguna-pagina/[id]/settings/[...rest]",
+              en: "/somepage/[id]/settings/[...rest]",
+              fr: "/quelquepage/[id]/parametres/[...rest]",
+              it: "/qualchepagina/[id]/impostazioni/[...rest]",
+              de: "/irgendwelcheseite/[id]/einstellungen/[...rest]",
+            },
+          },
+          hrefLangOrigin: {
+            es: "https://www.example.com",
+            en: "https://www.example.co.uk",
+            fr: "https://www.example.fr",
+            it: "https://www.example.it", // not supported
+            // de -> not defined
+          },
+        },
+      };
+
+      const i18n = {
+        ...globalThis.mockConstants.I18N_CONFIG,
+        locale: "en",
+      }
+      const home = new RequestContext(
+        new Request("https://www.example.com/en/"),
+        { name: "/" } as MatchedRoute,
+      );
+      const homeWithoutTrailingSlash = new RequestContext(
+        new Request("https://www.example.com/en"),
+        { name: "/" } as MatchedRoute,
+      );
+      const withTrailingSlash = new RequestContext(
+        new Request("https://www.example.com/en/somepage/1/settings/2/3/"),
+        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      );
+      const withoutTrailingSlash = new RequestContext(
+        new Request("https://www.example.com/en/somepage/1/settings/2/3"),
+        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      );
+
+      home.i18n = i18n;
+      withTrailingSlash.i18n = i18n;
+      withoutTrailingSlash.i18n = i18n;
+      homeWithoutTrailingSlash.i18n = i18n;
+
+      expect(generateHrefLang(home)).toBe(
+        [
+          `<link rel="alternate" hreflang="es" href="https://www.example.com/es" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr" />`,
+        ].join(""),
+      );
+      expect(generateHrefLang(homeWithoutTrailingSlash)).toBe(
+        [
+          `<link rel="alternate" hreflang="es" href="https://www.example.com/es" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr" />`,
+        ].join(""),
+      );
+      expect(generateHrefLang(withTrailingSlash)).toBe(
+        [
+          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
+        ].join(""),
+      );
+      expect(generateHrefLang(withoutTrailingSlash)).toBe(
+        [
+          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
         ].join(""),
       );
     });
