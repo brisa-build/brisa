@@ -14,6 +14,10 @@ type Child = JSXNode | Child[];
 
 export type Type = string | number | ComponentType | Promise<ComponentType>;
 
+export type Configuration = {
+  trailingSlash?: boolean;
+};
+
 export type JSXElement = {
   type: Type;
   props: Props;

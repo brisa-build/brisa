@@ -10,18 +10,21 @@ export default function handleI18n(req: RequestContext): {
   pagesRouter?: ReturnType<typeof getRouteMatcher>;
   rootRouter?: ReturnType<typeof getRouteMatcher>;
 } {
-  const { PAGES_DIR, ROOT_DIR, RESERVED_PAGES, I18N_CONFIG } = getConstants();
+  const { PAGES_DIR, ROOT_DIR, RESERVED_PAGES, I18N_CONFIG, CONFIG } =
+    getConstants();
   const { locales, defaultLocale, pages } = I18N_CONFIG || {};
+  const trailingSlashSymbol = CONFIG.trailingSlash ? "/" : "";
 
   if (!defaultLocale || !locales?.length) return {};
 
   const locale = getLocaleFromRequest(req);
   const url = new URL(req.url);
   const [, localeFromUrl] = url.pathname.split("/");
+  const pathname = url.pathname.replace(/\/$/, "");
 
   // Redirect to default locale if there is no locale in the URL
   if (localeFromUrl !== locale) {
-    const location = `/${locale}${url.pathname}${url.search}${url.hash}`;
+    const location = `/${locale}${pathname}${url.search}${url.hash}${trailingSlashSymbol}`;
 
     return {
       response: new Response(null, {

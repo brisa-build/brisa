@@ -4,9 +4,10 @@ import getImportableFilepath from "../get-importable-filepath";
 const rootDir = getRootDir();
 
 export default async function importFileIfExists(
-  filename: "middleware" | "i18n",
+  filename: "middleware" | "i18n" | "bunrise.config",
+  dir = rootDir,
 ) {
-  const path = getImportableFilepath(filename, rootDir);
+  const path = getImportableFilepath(filename, dir);
 
   if (!path) return null;
 

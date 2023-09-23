@@ -9,6 +9,7 @@ import { MatchedRoute, ServerWebSocket } from "bun";
 import importFileIfExists from "../utils/import-file-if-exists";
 import getConstants from "../constants";
 import handleI18n from "../utils/handle-i18n";
+import redirectTrailingSlash from "../utils/redirect-trailing-slash";
 
 const {
   IS_PRODUCTION,
@@ -38,7 +39,7 @@ if (!fs.existsSync(PAGES_DIR)) {
   process.exit(1);
 }
 
-const customMiddleware = await importFileIfExists("middleware");
+const customMiddleware = await importFileIfExists("middleware", ROOT_DIR);
 let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
 let rootRouter = getRouteMatcher(ROOT_DIR);
 
@@ -56,7 +57,10 @@ Bun.serve({
   async fetch(req: Request, server) {
     if (server.upgrade(req)) return;
     const request = new RequestContext(req);
-    const i18nRes = handleI18n(request);
+    const url = new URL(request.url);
+    const assetPath = path.join(ASSETS_DIR, url.pathname);
+    const isAnAsset = fs.existsSync(assetPath);
+    const i18nRes = isAnAsset ? {} : handleI18n(request);
 
     if (i18nRes.response) return i18nRes.response;
     if (i18nRes.pagesRouter && i18nRes.rootRouter) {
@@ -64,8 +68,13 @@ Bun.serve({
       rootRouter = i18nRes.rootRouter;
     }
 
+    if (!isAnAsset) {
+      const redirect = redirectTrailingSlash(request);
+      if (redirect) return redirect;
+    }
+
     return (
-      handleRequest(request)
+      handleRequest(request, isAnAsset)
         // 500 page
         .catch((error) => {
           const route500 = pagesRouter.reservedRoutes[PAGE_500];
@@ -100,17 +109,13 @@ console.log(
 ////////////////////// HELPERS ///////////////////////
 ///////////////////////////////////////////////////////
 
-async function handleRequest(req: RequestContext) {
+async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   const locale = req.i18n?.locale;
   const url = new URL(req.url);
   const pathname = url.pathname;
   const { route, isReservedPathname } = pagesRouter.match(req);
   const isApi = pathname.startsWith(locale ? `/${locale}/api/` : "/api/");
-  const pathnameWithoutLocale = locale
-    ? pathname.replace(`/${locale}`, "")
-    : pathname;
   const api = isApi ? rootRouter.match(req) : null;
-  const assetPath = path.join(ASSETS_DIR, pathnameWithoutLocale);
 
   // Middleware
   if (customMiddleware) {
@@ -136,7 +141,8 @@ async function handleRequest(req: RequestContext) {
   }
 
   // Assets
-  if (fs.existsSync(assetPath)) {
+  if (isAnAsset) {
+    const assetPath = path.join(ASSETS_DIR, url.pathname);
     const isGzip =
       IS_PRODUCTION && req.headers.get("accept-encoding")?.includes?.("gzip");
 
