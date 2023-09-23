@@ -1,11 +1,18 @@
 import path from "node:path";
 import getRootDir from "./utils/get-root-dir";
 import importFileIfExists from "./utils/import-file-if-exists";
+import { Configuration } from "./types";
 
 const rootDir = getRootDir();
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
-const I18N_CONFIG = await importFileIfExists("i18n");
+const I18N_CONFIG = await importFileIfExists("i18n", rootDir);
+const CONFIG_DIR = path.join(rootDir, "..");
+const CONFIG = (await importFileIfExists("bunrise.config", CONFIG_DIR)) ?? {};
+
+const defaultConfig = {
+  trailingSlash: false,
+};
 
 const constants = {
   PAGE_404,
@@ -18,6 +25,7 @@ const constants = {
   PAGES_DIR: path.join(rootDir, "pages"),
   I18N_CONFIG,
   LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
+  CONFIG: { ...defaultConfig, ...CONFIG } as Configuration,
   REGEX: {
     CATCH_ALL: /\[\[\.{3}.*?\]\]/g,
     DYNAMIC: /\[.*?\]/g,

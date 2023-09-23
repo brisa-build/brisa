@@ -45,11 +45,12 @@ export function renderI18nHrefAttribute(
   pagePathname: string,
   request: RequestContext,
 ) {
-  const { I18N_CONFIG } = getConstants();
+  const { I18N_CONFIG, CONFIG } = getConstants();
   const { pages } = I18N_CONFIG ?? {};
   const { locale, locales } = request.i18n ?? {};
   const isExternalUrl = URL.canParse(pagePathname);
-  let pathname = pagePathname;
+  const trailingSlashSymbol = CONFIG.trailingSlash ? "/" : "";
+  let pathname = pagePathname.replace(/\/$/, "");
 
   if (isExternalUrl || !locale) return pagePathname;
 
@@ -62,7 +63,7 @@ export function renderI18nHrefAttribute(
   }
 
   if (!locales?.some((locale) => pathname?.split("/")?.[1] === locale)) {
-    return `/${locale}${pathname === "/" ? "" : pathname}`;
+    return `/${locale}${pathname}${trailingSlashSymbol}`;
   }
 
   return pathname;

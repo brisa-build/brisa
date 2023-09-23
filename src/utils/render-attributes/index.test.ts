@@ -103,6 +103,7 @@ describe("utils", () => {
           type: "a",
         });
 
+      expect(hrefOfATag("/")).toBe(' href="/es"');
       expect(hrefOfATag("/some-page")).toBe(' href="/es/alguna-pagina"');
       expect(hrefOfATag("/user/aral")).toBe(' href="/es/usuario/aral"');
       expect(hrefOfATag("https://example.com")).toBe(
@@ -113,6 +114,69 @@ describe("utils", () => {
       );
       expect(hrefOfATag("/dynamic/1/catch/first/second")).toBe(
         ' href="/es/dinamico/1/atrapar/first/second"',
+      );
+    });
+
+    it("should work with trailing slash enable in the config", () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          trailingSlash: true,
+        },
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "en",
+          pages: {
+            "/some-page": {
+              es: "/alguna-pagina",
+            },
+            "/user/[id]": {
+              es: "/usuario/[id]",
+            },
+            "/catch/[[...catchAll]]": {
+              es: "/atrapar/[[...catchAll]]",
+            },
+            "/dynamic/[id]/catch/[...rest]": {
+              es: "/dinamico/[id]/atrapar/[...rest]",
+            },
+          },
+        },
+      };
+
+      const request = new RequestContext(new Request("https://example.com/es"));
+
+      request.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+        t: () => "",
+      };
+
+      const hrefOfATag = (href: string) =>
+        renderAttributes({
+          props: {
+            href,
+          },
+          request,
+          type: "a",
+        });
+
+      expect(hrefOfATag("/")).toBe(' href="/es/"');
+      expect(hrefOfATag("/some-page")).toBe(' href="/es/alguna-pagina/"');
+      expect(hrefOfATag("/some-page/")).toBe(' href="/es/alguna-pagina/"');
+      expect(hrefOfATag("/user/aral")).toBe(' href="/es/usuario/aral/"');
+      expect(hrefOfATag("/user/aral/")).toBe(' href="/es/usuario/aral/"');
+      expect(hrefOfATag("/catch/first/second")).toBe(
+        ' href="/es/atrapar/first/second/"',
+      );
+      expect(hrefOfATag("/catch/first/second/")).toBe(
+        ' href="/es/atrapar/first/second/"',
+      );
+      expect(hrefOfATag("/dynamic/1/catch/first/second")).toBe(
+        ' href="/es/dinamico/1/atrapar/first/second/"',
+      );
+      expect(hrefOfATag("/dynamic/1/catch/first/second/")).toBe(
+        ' href="/es/dinamico/1/atrapar/first/second/"',
       );
     });
   });
