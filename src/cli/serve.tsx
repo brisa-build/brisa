@@ -59,7 +59,8 @@ Bun.serve({
     const request = new RequestContext(req);
     const url = new URL(request.url);
     const assetPath = path.join(ASSETS_DIR, url.pathname);
-    const isAnAsset = fs.existsSync(assetPath);
+    const isHome = url.pathname === "/";
+    const isAnAsset = !isHome && fs.existsSync(assetPath);
     const i18nRes = isAnAsset ? {} : handleI18n(request);
 
     if (i18nRes.response) return i18nRes.response;

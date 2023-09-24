@@ -92,10 +92,10 @@ async function enqueueDuringRendering(
       );
     }
 
-    const attributes = renderAttributes({ props, request, type });
-
     if (controller.insideHeadTag && controller.hasId(props.id)) return;
     if (controller.insideHeadTag && props.id) controller.addId(props.id);
+
+    const attributes = renderAttributes({ props, request, type });
 
     controller.startTag(
       isFragment ? null : `<${type}${attributes}>`,
