@@ -14,7 +14,7 @@
     "downlevelIteration": true,
     "skipLibCheck": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "bunrise",
+    "jsxImportSource": "brisa",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
