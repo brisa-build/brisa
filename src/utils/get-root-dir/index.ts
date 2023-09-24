@@ -5,7 +5,7 @@ export default function getRootDir(
   dir = import.meta.dir,
 ) {
   const projectDir = dir.replace(
-    /(\/|\\)node_modules(\/|\\)bunrise(\/|\\).*/,
+    /(\/|\\)node_modules(\/|\\)brisa(\/|\\).*/,
     "",
   );
   const folder = env === "production" ? "build" : "src";

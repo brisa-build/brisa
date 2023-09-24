@@ -1,4 +1,4 @@
-import { RequestContext } from "../../bunrise";
+import { RequestContext } from "../../brisa";
 import getConstants from "../../constants";
 
 export default function redirectTrailingSlash(

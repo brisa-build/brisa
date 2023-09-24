@@ -1,7 +1,7 @@
 import { describe, it, expect } from "bun:test";
 import RequestContext from ".";
 
-describe("bunrise core", () => {
+describe("brisa core", () => {
   describe("RequestContext", () => {
     it("should create a new RequestContext", () => {
       const request = new Request("https://example.com");

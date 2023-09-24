@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import LoadLayout from ".";
 import path from "node:path";
-import { RequestContext, renderToReadableStream } from "../../bunrise";
+import { RequestContext, renderToReadableStream } from "../../brisa";
 import streamToText from "../../__fixtures__/stream-to-text";
 
 const join = path.join;
@@ -21,7 +21,7 @@ describe("utils", () => {
         testRequest,
       );
       const result = await streamToText(stream);
-      expect(result).toContain("<title>Bunrise</title>");
+      expect(result).toContain("<title>Brisa</title>");
     });
 
     it('should return custom layout if "layout.tsx" exists', async () => {

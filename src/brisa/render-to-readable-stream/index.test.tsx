@@ -7,11 +7,11 @@ import getConstants from "../../constants";
 import { ComponentType } from "../../types";
 
 const testRequest = new RequestContext(new Request("http://test.com/"));
-const mockConsoleError = mock(() => {});
+const mockConsoleError = mock(() => { });
 const consoleError = console.error;
 console.error = mockConsoleError;
 
-describe("bunrise core", () => {
+describe("brisa core", () => {
   afterEach(() => {
     mockConsoleError.mockClear();
     globalThis.mockConstants = undefined;
@@ -100,7 +100,7 @@ describe("bunrise core", () => {
     });
 
     it("should be possible to provide and consume context", async () => {
-      const ComponentChild = ({}, request: RequestContext) => (
+      const ComponentChild = ({ }, request: RequestContext) => (
         <div>Hello {request.context.get("testData").testName}</div>
       );
 
