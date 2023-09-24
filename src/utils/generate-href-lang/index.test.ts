@@ -477,7 +477,7 @@ describe("utils", () => {
       const i18n = {
         ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
-      }
+      };
       const home = new RequestContext(
         new Request("https://www.example.com/en/"),
         { name: "/" } as MatchedRoute,
@@ -557,7 +557,7 @@ describe("utils", () => {
       const i18n = {
         ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
-      }
+      };
       const home = new RequestContext(
         new Request("https://www.example.com/en/"),
         { name: "/" } as MatchedRoute,

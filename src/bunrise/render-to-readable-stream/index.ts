@@ -14,10 +14,11 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
 export default function renderToReadableStream(
   element: JSX.Element,
   request: RequestContext,
+  head?: ComponentType,
 ) {
   return new ReadableStream({
     async start(controller) {
-      const extendedController = extendStreamController(controller);
+      const extendedController = extendStreamController(controller, head);
 
       await enqueueDuringRendering(element, request, extendedController).catch(
         (e) => controller.error(e),
@@ -93,10 +94,23 @@ async function enqueueDuringRendering(
 
     const attributes = renderAttributes({ props, request, type });
 
+    if (controller.insideHeadTag && controller.hasId(props.id)) return;
+    if (controller.insideHeadTag && props.id) controller.addId(props.id);
+
     controller.startTag(
       isFragment ? null : `<${type}${attributes}>`,
       suspenseId,
     );
+
+    if (type === "head" && controller.head) {
+      controller.insideHeadTag = true;
+      await enqueueComponent(
+        { component: controller.head, props: {} },
+        request,
+        controller,
+        suspenseId,
+      );
+    }
 
     // Node Content
     await enqueueChildren(props.children, request, controller, suspenseId);
@@ -107,6 +121,7 @@ async function enqueueDuringRendering(
 
       controller.enqueue(codeToInject, suspenseId);
       controller.hasHeadTag = true;
+      controller.insideHeadTag = false;
     }
 
     // Node tag end

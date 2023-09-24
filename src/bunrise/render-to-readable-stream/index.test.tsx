@@ -4,6 +4,7 @@ import { RequestContext } from "..";
 import streamToText from "../../__fixtures__/stream-to-text";
 import dangerHTML from "../danger-html";
 import getConstants from "../../constants";
+import { ComponentType } from "../../types";
 
 const testRequest = new RequestContext(new Request("http://test.com/"));
 const mockConsoleError = mock(() => {});
@@ -643,6 +644,77 @@ describe("bunrise core", () => {
       const stream = renderToReadableStream(element, testRequest);
       const result = await streamToText(stream);
       expect(result).toEqual(`<script>alert('test')</script>`);
+    });
+
+    it("should render the head element with the canonical", () => {
+      const req = new RequestContext(new Request(testRequest));
+      const element = (
+        <html>
+          <head>
+            <title>Test</title>
+          </head>
+          <body></body>
+        </html>
+      );
+
+      function Head() {
+        return <link rel="canonical" href="/" />;
+      }
+
+      const stream = renderToReadableStream(
+        element,
+        req,
+        Head as unknown as ComponentType,
+      );
+      const result = streamToText(stream);
+      expect(result).resolves.toMatch(
+        /<html><head><link rel="canonical" href="\/"><\/link><title>Test<\/title><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
+      );
+    });
+
+    it("should render the head element with the title replacing the original title", () => {
+      const req = new RequestContext(new Request(testRequest));
+      const element = (
+        <html>
+          <head>
+            <title id="title">Test</title>
+          </head>
+          <body></body>
+        </html>
+      );
+
+      function Head() {
+        return <title id="title">Test 2</title>;
+      }
+
+      const stream = renderToReadableStream(
+        element,
+        req,
+        Head as unknown as ComponentType,
+      );
+      const result = streamToText(stream);
+      expect(result).resolves.toMatch(
+        /<html><head><title id="title">Test 2<\/title><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
+      );
+    });
+
+    it("should allow multiple ids outside the head (not ideal but should not break the render)", () => {
+      const req = new RequestContext(new Request(testRequest));
+      const element = (
+        <html>
+          <head></head>
+          <body>
+            <h1 id="a">A</h1>
+            <h1 id="a">B</h1>
+          </body>
+        </html>
+      );
+
+      const stream = renderToReadableStream(element, req);
+      const result = streamToText(stream);
+      expect(result).resolves.toMatch(
+        /<html><head><script>[\s\S]+<\/script><\/head><body><h1 id="a">A<\/h1><h1 id="a">B<\/h1><\/body><\/html>/gm,
+      );
     });
   });
 });
