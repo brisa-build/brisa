@@ -16,9 +16,9 @@ describe("utils", () => {
     it("should return all files from a directory", async () => {
       const output = await getFilesFromDir(assetsPath);
       const expected = [
-        `${assetsPath}/favicon.ico`,
-        `${assetsPath}/some-dir/some-img.png`,
-        `${assetsPath}/some-dir/some-text.txt`,
+        path.join(assetsPath, 'favicon.ico'),
+        path.join(assetsPath, 'some-dir', 'some-img.png'),
+        path.join(assetsPath, 'some-dir', 'some-text.txt'),
       ];
 
       expect(output).toEqual(expected);
