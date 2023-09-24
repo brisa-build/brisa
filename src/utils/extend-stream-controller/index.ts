@@ -1,3 +1,5 @@
+import { ComponentType } from "../../types";
+
 export type ChunksOptions = {
   chunk: string;
   suspenseId?: number;
@@ -5,13 +7,17 @@ export type ChunksOptions = {
 
 export type Controller = {
   enqueue(chunk: string, suspenseId?: number): void;
+  head?: ComponentType;
   nextSuspenseIndex(): number;
   suspensePromise(promise: Promise<void>): void;
   waitSuspensedPromises(): Promise<void>;
   startTag(chunk: string | null, suspenseId?: number): void;
   endTag(chunk: string | null, suspenseId?: number): void;
   flushAllReady(): void;
+  addId(id: string): void;
+  hasId(id: string): boolean;
   hasHeadTag: boolean;
+  insideHeadTag: boolean;
 };
 
 type SuspensedState = {
@@ -25,7 +31,9 @@ const wrapSuspenseTag = (chunk: string, id: number) =>
 
 export default function extendStreamController(
   controller: ReadableStreamDefaultController<string>,
+  head?: ComponentType,
 ): Controller {
+  const ids = new Set<string>();
   const suspensePromises: Promise<void>[] = [];
   const suspensedMap = new Map<number, SuspensedState>();
   const getSuspensedState = (id: number) =>
@@ -35,7 +43,15 @@ export default function extendStreamController(
   let noSuspensedCloseTags = 0;
 
   return {
+    head,
     hasHeadTag: false,
+    insideHeadTag: false,
+    addId(id) {
+      ids.add(id);
+    },
+    hasId(id) {
+      return ids.has(id);
+    },
     startTag(chunk, suspenseId) {
       if (!suspenseId) {
         noSuspensedOpenTags++;
