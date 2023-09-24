@@ -1,6 +1,6 @@
-import dangerHTML from "../bunrise/danger-html";
+import dangerHTML from "../brisa/danger-html";
 
-const LIVE_RELOAD_WEBSOCKET_PATH = "__bunrise_live_reload__";
+const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
 const LIVE_RELOAD_COMMAND = "reload";
 
 globalThis.ws?.send?.(LIVE_RELOAD_COMMAND);

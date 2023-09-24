@@ -1,4 +1,4 @@
-import { RequestContext } from "../../bunrise";
+import { RequestContext } from "../../brisa";
 import getLocaleFromRequest from "../get-locale-from-request";
 import getRouteMatcher from "../get-route-matcher";
 import getConstants from "../../constants";

@@ -1,9 +1,9 @@
 {
-  "name": "bunrise",
-  "module": "./out/bunrise/index.js",
-  "main": "./out/bunrise/index.js",
-  "types": "./out/bunrise/index.d.ts",
-  "version": "0.1.0-alpha.121",
+  "name": "brisa",
+  "module": "./out/brisa/index.js",
+  "main": "./out/brisa/index.js",
+  "types": "./out/brisa/index.d.ts",
+  "version": "0.0.1",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/aralroca/bunrise.git"
+    "url": "https://github.com/aralroca/brisa.git"
   },
   "files": [
     "out",
@@ -23,8 +23,8 @@
   ],
   "exports": {
     ".": {
-      "import": "./out/bunrise/index.js",
-      "require": "./out/bunrise/index.js"
+      "import": "./out/brisa/index.js",
+      "require": "./out/brisa/index.js"
     },
     "./jsx-runtime": {
       "import": "./jsx-runtime/index.js",
@@ -40,8 +40,8 @@
     }
   },
   "scripts": {
-    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:bunrise",
-    "build:bunrise": "bun build --minify --target=bun --outdir=out/bunrise src/bunrise/index.ts && bun run build:cli && cp src/types/index.d.ts out/bunrise/index.d.ts",
+    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:brisa",
+    "build:brisa": "bun build --minify --target=bun --outdir=out/brisa src/brisa/index.ts && bun run build:cli && cp src/types/index.d.ts out/brisa/index.d.ts",
     "build:cli": "NODE_ENV=production bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/serve.tsx && NODE_ENV=development bun build --minify --target=bun --outdir=out/cli/dev src/cli/serve.tsx",
     "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-runtime/index.d.ts",
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
@@ -52,12 +52,12 @@
     "format": "bunx prettier --write ."
   },
   "bin": {
-    "bunrise": "./cli.sh"
+    "brisa": "./cli.sh"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "12.0.1",
     "bun-types": "1.0.2",
-    "bunrise": "0.1.0-alpha.117"
+    "brisa": "0.1.0-alpha.1"
   },
   "peerDependencies": {
     "typescript": "5.2.2"

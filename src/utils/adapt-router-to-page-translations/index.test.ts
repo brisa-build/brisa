@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach, afterEach } from "bun:test";
 import path from "node:path";
 import adaptRouterToPageTranslations from ".";
 import getRouteMatcher from "../get-route-matcher";
-import { RequestContext } from "../../bunrise";
+import { RequestContext } from "../../brisa";
 import getConstants from "../../constants";
 
 const PAGES_DIR = path.join(

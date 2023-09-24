@@ -14,7 +14,7 @@ export default async function LoadLayout({
     return (
       <html>
         <head>
-          <title>Bunrise</title>
+          <title>Brisa</title>
         </head>
         <body>{children}</body>
       </html>

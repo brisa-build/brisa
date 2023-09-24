@@ -3,7 +3,7 @@ import path from "node:path";
 
 import LoadLayout from "../utils/load-layout";
 import getRouteMatcher from "../utils/get-route-matcher";
-import { RequestContext, renderToReadableStream } from "../bunrise";
+import { RequestContext, renderToReadableStream } from "../brisa";
 import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
 import importFileIfExists from "../utils/import-file-if-exists";
@@ -27,13 +27,13 @@ declare global {
 }
 
 if (IS_PRODUCTION && !fs.existsSync(ROOT_DIR)) {
-  console.error('Not exist "build" yet. Please run "bunrise build" first');
+  console.error('Not exist "build" yet. Please run "brisa build" first');
   process.exit(1);
 }
 
 if (!fs.existsSync(PAGES_DIR)) {
   const path = IS_PRODUCTION ? "build/pages" : "src/pages";
-  const cli = IS_PRODUCTION ? "bunrise start" : "bunrise dev";
+  const cli = IS_PRODUCTION ? "brisa start" : "brisa dev";
 
   console.error(`Not exist ${path}" directory. It\'s required to run "${cli}"`);
   process.exit(1);

@@ -22,7 +22,7 @@ export default function getLocaleFromRequest(request: Request): string {
 
 function getLocaleFromCookie(request: Request): string | undefined {
   const cookies = request.headers.get("Cookie");
-  const cookie = cookies?.match(/BUNRISE_LOCALE=(?<locale>\w+)/);
+  const cookie = cookies?.match(/BRISA_LOCALE=(?<locale>\w+)/);
 
   return cookie?.groups?.locale;
 }

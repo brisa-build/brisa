@@ -1,4 +1,4 @@
-import { RequestContext } from "../../bunrise";
+import { RequestContext } from "../../brisa";
 import getConstants from "../../constants";
 import { I18nConfig, Props, Translations } from "../../types";
 import routeMatchPathname from "../route-match-pathname";

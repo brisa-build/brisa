@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
-import { RequestContext } from "../../bunrise";
+import { RequestContext } from "../../brisa";
 import getLocaleFromRequest from ".";
 
 describe("utils", () => {
@@ -76,12 +76,12 @@ describe("utils", () => {
       expect(locale).toBe("ru");
     });
 
-    it("should return the BUNRISE_LOCALE cookie as default locale if locale is not supported", () => {
+    it("should return the BRISA_LOCALE cookie as default locale if locale is not supported", () => {
       const request = new RequestContext(
         new Request("https://example.com/ua", {
           headers: {
             "Accept-Language": "es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7",
-            Cookie: "BUNRISE_LOCALE=ru",
+            Cookie: "BRISA_LOCALE=ru",
           },
         }),
       );
@@ -90,12 +90,12 @@ describe("utils", () => {
       expect(locale).toBe("ru");
     });
 
-    it("should return the browser language if the BUNRISE_LOCALE cookie is not supported locale", () => {
+    it("should return the browser language if the BRISA_LOCALE cookie is not supported locale", () => {
       const request = new RequestContext(
         new Request("https://example.com/ua", {
           headers: {
             "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-            Cookie: "BUNRISE_LOCALE=ua",
+            Cookie: "BRISA_LOCALE=ua",
           },
         }),
       );
