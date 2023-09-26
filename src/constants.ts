@@ -12,6 +12,7 @@ const CONFIG = (await importFileIfExists("brisa.config", CONFIG_DIR)) ?? {};
 
 const defaultConfig = {
   trailingSlash: false,
+  assetPrefix: "",
 };
 
 const constants = {

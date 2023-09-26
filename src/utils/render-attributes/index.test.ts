@@ -179,5 +179,227 @@ describe("utils", () => {
         ' href="/es/dinamico/1/atrapar/first/second/"',
       );
     });
+
+    it('should add the assetPrefix to the "src" attribute when the asset attribute is in production', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: true,
+        CONFIG: {
+          assetPrefix: "https://cdn.test.com",
+        },
+      };
+
+      const request = new RequestContext(new Request("https://example.com"));
+
+      const imgSrc = (src: string) =>
+        renderAttributes({
+          props: {
+            src,
+          },
+          request,
+          type: "img",
+        });
+      const scriptSrc = (src: string) =>
+        renderAttributes({
+          props: {
+            src,
+          },
+          request,
+          type: "script",
+        });
+
+      expect(imgSrc("https://example.com/some-image.png")).toBe(
+        ' src="https://example.com/some-image.png"',
+      );
+
+      expect(imgSrc("/some-image.png")).toBe(
+        ' src="https://cdn.test.com/some-image.png"',
+      );
+
+      expect(scriptSrc("https://example.com/some-script.js")).toBe(
+        ' src="https://example.com/some-script.js"',
+      );
+
+      expect(scriptSrc("/some-script.js")).toBe(
+        ' src="https://cdn.test.com/some-script.js"',
+      );
+    });
+
+    it('should NOT add the assetPrefix to the "src" attribute when the asset attribute is in development', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: false,
+        CONFIG: {
+          assetPrefix: "https://cdn.test.com",
+        },
+      };
+
+      const request = new RequestContext(new Request("https://example.com"));
+
+      const imgSrc = (src: string) =>
+        renderAttributes({
+          props: {
+            src,
+          },
+          request,
+          type: "img",
+        });
+      const scriptSrc = (src: string) =>
+        renderAttributes({
+          props: {
+            src,
+          },
+          request,
+          type: "script",
+        });
+
+      expect(imgSrc("https://example.com/some-image.png")).toBe(
+        ' src="https://example.com/some-image.png"',
+      );
+
+      expect(imgSrc("/some-image.png")).toBe(' src="/some-image.png"');
+
+      expect(scriptSrc("https://example.com/some-script.js")).toBe(
+        ' src="https://example.com/some-script.js"',
+      );
+
+      expect(scriptSrc("/some-script.js")).toBe(' src="/some-script.js"');
+    });
+
+    it('should move to assets the "script" src attribute when the asset attribute is in production', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: true,
+      };
+
+      const request = new RequestContext(new Request("https://example.com"));
+
+      const srcOfScriptTag = (src: string) =>
+        renderAttributes({
+          props: {
+            src,
+            asset: true,
+          },
+          request,
+          type: "script",
+        });
+
+      expect(srcOfScriptTag("https://example.com/some-script.js")).toBe(
+        ' src="/_scripts/some-script.js"',
+      );
+      expect(srcOfScriptTag("https://example.com/some-script.js?foo=bar")).toBe(
+        ' src="/_scripts/some-script.js?foo=bar"',
+      );
+      expect(srcOfScriptTag("https://example.com/some-script.js#foo")).toBe(
+        ' src="/_scripts/some-script.js#foo"',
+      );
+      expect(
+        srcOfScriptTag("https://example.com/some-script.js?foo=bar#foo"),
+      ).toBe(' src="/_scripts/some-script.js?foo=bar#foo"');
+      expect(srcOfScriptTag("/some-script.js")).toBe(' src="/some-script.js"');
+    });
+
+    it('should move to assets the "script" src attribute with the correct assetPrefix when the asset attribute is in production', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: true,
+        CONFIG: {
+          assetPrefix: "https://cdn.test.com",
+        },
+      };
+
+      const request = new RequestContext(new Request("https://example.com"));
+
+      const srcOfScriptTag = (src: string) =>
+        renderAttributes({
+          props: {
+            src,
+            asset: true,
+          },
+          request,
+          type: "script",
+        });
+
+      expect(srcOfScriptTag("https://example.com/some-script.js")).toBe(
+        ' src="https://cdn.test.com/_scripts/some-script.js"',
+      );
+      expect(srcOfScriptTag("https://example.com/some-script.js?foo=bar")).toBe(
+        ' src="https://cdn.test.com/_scripts/some-script.js?foo=bar"',
+      );
+      expect(srcOfScriptTag("https://example.com/some-script.js#foo")).toBe(
+        ' src="https://cdn.test.com/_scripts/some-script.js#foo"',
+      );
+      expect(
+        srcOfScriptTag("https://example.com/some-script.js?foo=bar#foo"),
+      ).toBe(' src="https://cdn.test.com/_scripts/some-script.js?foo=bar#foo"');
+      expect(srcOfScriptTag("/some-script.js")).toBe(
+        ' src="https://cdn.test.com/some-script.js"',
+      );
+    });
+
+    it('should NOT move to assets the "script" src attribute WITHOUT the asset attribute, in production', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: true,
+      };
+
+      const request = new RequestContext(new Request("https://example.com"));
+
+      const srcOfScriptTag = (src: string) =>
+        renderAttributes({
+          props: {
+            src,
+          },
+          request,
+          type: "script",
+        });
+
+      expect(srcOfScriptTag("https://example.com/some-script.js")).toBe(
+        ' src="https://example.com/some-script.js"',
+      );
+      expect(srcOfScriptTag("https://example.com/some-script.js?foo=bar")).toBe(
+        ' src="https://example.com/some-script.js?foo=bar"',
+      );
+      expect(srcOfScriptTag("https://example.com/some-script.js#foo")).toBe(
+        ' src="https://example.com/some-script.js#foo"',
+      );
+      expect(
+        srcOfScriptTag("https://example.com/some-script.js?foo=bar#foo"),
+      ).toBe(' src="https://example.com/some-script.js?foo=bar#foo"');
+      expect(srcOfScriptTag("/some-script.js")).toBe(' src="/some-script.js"');
+    });
+
+    it('should NOT move to assets the "script" src attribute when the asset attribute is in development', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: false,
+      };
+
+      const request = new RequestContext(new Request("https://example.com"));
+
+      const srcOfScriptTag = (src: string) =>
+        renderAttributes({
+          props: {
+            src,
+            asset: true,
+          },
+          request,
+          type: "script",
+        });
+
+      expect(srcOfScriptTag("https://example.com/some-script.js")).toBe(
+        ' src="https://example.com/some-script.js"',
+      );
+      expect(srcOfScriptTag("https://example.com/some-script.js?foo=bar")).toBe(
+        ' src="https://example.com/some-script.js?foo=bar"',
+      );
+      expect(srcOfScriptTag("https://example.com/some-script.js#foo")).toBe(
+        ' src="https://example.com/some-script.js#foo"',
+      );
+      expect(
+        srcOfScriptTag("https://example.com/some-script.js?foo=bar#foo"),
+      ).toBe(' src="https://example.com/some-script.js?foo=bar#foo"');
+      expect(srcOfScriptTag("/some-script.js")).toBe(' src="/some-script.js"');
+    });
   });
 });
