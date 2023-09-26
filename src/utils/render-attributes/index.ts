@@ -13,12 +13,38 @@ export default function renderAttributes({
   request: RequestContext;
   type: string;
 }): string {
+  const { IS_PRODUCTION, CONFIG } = getConstants();
   let attributes = "";
 
   for (const prop in props) {
-    const value = props[prop];
+    let value = props[prop];
 
     if (prop === "children" || (type === "html" && prop === "lang")) continue;
+    if (prop === "asset" && type === "script") continue;
+
+    // Use assetPrefix in production in scripts with "asset" attribute
+    if (
+      IS_PRODUCTION &&
+      prop === "src" &&
+      type === "script" &&
+      "asset" in props &&
+      URL.canParse(value as string)
+    ) {
+      const url = new URL(value as string);
+      value = `${CONFIG.assetPrefix}/_scripts${
+        url.pathname + url.search + url.hash
+      }`;
+    }
+
+    // Add the assetPrefix to internal assets (img, picture, video, audio, script)
+    if (
+      IS_PRODUCTION &&
+      prop === "src" &&
+      CONFIG.assetPrefix &&
+      !URL.canParse(value as string)
+    ) {
+      value = `${CONFIG.assetPrefix}${value}`;
+    }
 
     // i18n navigation
     if (

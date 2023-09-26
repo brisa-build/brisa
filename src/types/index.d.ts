@@ -16,6 +16,8 @@ export type Type = string | number | ComponentType | Promise<ComponentType>;
 
 export type Configuration = {
   trailingSlash?: boolean;
+  assetPrefix?: string;
+  basePath?: string;
 };
 
 export type JSXElement = {
