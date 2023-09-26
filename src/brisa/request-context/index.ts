@@ -1,4 +1,4 @@
-import { MatchedRoute } from "bun";
+import { MatchedRoute, ServerWebSocket } from "bun";
 import { I18nFromRequest } from "../../types";
 
 export default class RequestContext extends Request {
@@ -6,9 +6,11 @@ export default class RequestContext extends Request {
     super(request);
     this.route = route;
     this.context = new Map<string, any>();
+    this.ws = globalThis.ws;
   }
 
   route?: MatchedRoute;
   context: Map<string, any>;
   i18n?: I18nFromRequest;
+  ws?: ServerWebSocket<unknown>;
 }

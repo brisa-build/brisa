@@ -10,6 +10,7 @@ import importFileIfExists from "../utils/import-file-if-exists";
 import getConstants from "../constants";
 import handleI18n from "../utils/handle-i18n";
 import redirectTrailingSlash from "../utils/redirect-trailing-slash";
+import getImportableFilepath from "../utils/get-importable-filepath";
 
 const {
   IS_PRODUCTION,
@@ -21,6 +22,9 @@ const {
   PAGES_DIR,
   ASSETS_DIR,
 } = getConstants();
+
+const WEBSOCKET_PATH = getImportableFilepath("websocket", ROOT_DIR);
+const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
@@ -92,13 +96,18 @@ Bun.serve({
   websocket: {
     open: (ws: ServerWebSocket<unknown>) => {
       globalThis.ws = ws;
+      wsModule?.open?.(ws);
     },
-    close: () => {
+    close: (...args) => {
       globalThis.ws = undefined;
+      wsModule?.close?.(...args);
     },
-    message: () => {
-      /* void */
+    message: (ws, message) => {
+      wsModule?.message?.(ws, message);
     },
+    drain: (ws) => {
+      wsModule?.drain?.(ws);
+    }
   },
 });
 

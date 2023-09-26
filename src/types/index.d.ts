@@ -2,6 +2,7 @@ export interface RequestContext extends Request {
   context: Map<string, any>;
   route?: MatchedRoute;
   i18n?: I18nFromRequest;
+  ws?: ServerWebSocket<unknown>;
 }
 
 type Props = Record<string, unknown> & {
