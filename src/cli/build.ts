@@ -6,18 +6,19 @@ import byteSizeToString from "../utils/byte-size-to-string";
 import precompressAssets from "../utils/precompress-assets";
 import getEntrypoints from "../utils/get-entrypoints";
 import getImportableFilepath from "../utils/get-importable-filepath";
+import getConstants from "../constants";
 
-const srcDir = getRootDir("development");
-const pagesDir = path.join(srcDir, "pages");
-const apiDir = path.join(srcDir, "api");
+const { SRC_DIR, CONFIG } = getConstants();
+const pagesDir = path.join(SRC_DIR, "pages");
+const apiDir = path.join(SRC_DIR, "api");
 let outdir = getRootDir("production");
 const outAssetsDir = path.join(outdir, "public");
-const inAssetsDir = path.join(srcDir, "public");
+const inAssetsDir = path.join(SRC_DIR, "public");
 const pagesEntrypoints = getEntrypoints(pagesDir);
 const apiEntrypoints = getEntrypoints(apiDir);
-const middlewarePath = getImportableFilepath("middleware", srcDir);
-const layoutPath = getImportableFilepath("layout", srcDir);
-const i18nPath = getImportableFilepath("i18n", srcDir);
+const middlewarePath = getImportableFilepath("middleware", SRC_DIR);
+const layoutPath = getImportableFilepath("layout", SRC_DIR);
+const i18nPath = getImportableFilepath("i18n", SRC_DIR);
 const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
 
 if (middlewarePath) entrypoints.push(middlewarePath);
@@ -32,12 +33,15 @@ if (entrypoints.length === 1) {
   outdir = path.join(outdir, subfolder);
 }
 
+console.log("🚀  Building your app...\n");
+
 const { success, logs, outputs } = await Bun.build({
   entrypoints,
   outdir,
-  root: srcDir,
+  root: SRC_DIR,
   minify: true,
   splitting: true,
+  plugins: [...CONFIG.plugins ?? []],
 });
 
 if (!success) {

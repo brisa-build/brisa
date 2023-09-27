@@ -1,3 +1,5 @@
+import { BunPlugin } from "bun";
+
 export interface RequestContext extends Request {
   context: Map<string, any>;
   route?: MatchedRoute;
@@ -18,6 +20,7 @@ export type Type = string | number | ComponentType | Promise<ComponentType>;
 export type Configuration = {
   trailingSlash?: boolean;
   assetPrefix?: string;
+  plugins?: BunPlugin[];
   basePath?: string;
 };
 
