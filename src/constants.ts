@@ -4,15 +4,17 @@ import importFileIfExists from "./utils/import-file-if-exists";
 import { Configuration } from "./types";
 
 const rootDir = getRootDir();
+const srcDir = getRootDir("development");
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
 const I18N_CONFIG = await importFileIfExists("i18n", rootDir);
-const CONFIG_DIR = path.join(rootDir, "..");
+const CONFIG_DIR = path.join(srcDir, "..");
 const CONFIG = (await importFileIfExists("brisa.config", CONFIG_DIR)) ?? {};
 
 const defaultConfig = {
   trailingSlash: false,
   assetPrefix: "",
+  plugins: [],
 };
 
 const constants = {
@@ -22,6 +24,7 @@ const constants = {
   IS_PRODUCTION: process.env.NODE_ENV === "production",
   PORT: parseInt(process.argv[2]) || 3000,
   ROOT_DIR: rootDir,
+  SRC_DIR: srcDir,
   ASSETS_DIR: path.join(rootDir, "public"),
   PAGES_DIR: path.join(rootDir, "pages"),
   I18N_CONFIG,
