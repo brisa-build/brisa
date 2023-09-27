@@ -11,6 +11,11 @@ type Props = Record<string, unknown> & {
   children?: Child;
 };
 
+export type ResponseHeaders = (
+  req: RequestContext,
+  status: number,
+) => HeadersInit;
+
 export type JSXNode = string | number | JSXElement;
 
 type Child = JSXNode | Child[];

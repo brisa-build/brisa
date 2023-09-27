@@ -24,7 +24,7 @@ const {
 } = getConstants();
 
 const WEBSOCKET_PATH = getImportableFilepath("websocket", ROOT_DIR);
-const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null
+const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
 
 declare global {
   var ws: ServerWebSocket<unknown> | undefined;
@@ -107,7 +107,7 @@ Bun.serve({
     },
     drain: (ws) => {
       wsModule?.drain?.(ws);
-    }
+    },
   },
 });
 
@@ -183,18 +183,25 @@ async function responseRenderedPage({
 }) {
   const module = await import(route.filePath);
   const PageComponent = module.default;
+  const layoutPath = getImportableFilepath("layout", ROOT_DIR);
+  const layoutModule = layoutPath ? await import(layoutPath) : undefined;
 
   req.route = route;
 
   const pageElement = (
-    <PageLayout>
+    <PageLayout layoutModule={layoutModule}>
       <PageComponent error={error} />
     </PageLayout>
   );
 
+  const layoutResponseHeaders =
+    layoutModule?.responseHeaders?.(req, status) ?? {};
+  const pageResponseHeaders = module.responseHeaders?.(req, status) ?? {};
   const htmlStream = renderToReadableStream(pageElement, req, module.Head);
   const responseOptions = {
     headers: {
+      ...layoutResponseHeaders,
+      ...pageResponseHeaders,
       "transfer-encoding": "chunked",
       vary: "Accept-Encoding",
       "content-type": "text/html; charset=utf-8",
@@ -205,12 +212,22 @@ async function responseRenderedPage({
   return new Response(htmlStream, responseOptions);
 }
 
-function PageLayout({ children }: { children: JSX.Element }) {
+function PageLayout({
+  children,
+  layoutModule,
+}: {
+  children: JSX.Element;
+  layoutModule?: { default: (props: { children: JSX.Element }) => JSX.Element };
+}) {
   const childrenWithLiveReload = IS_PRODUCTION ? (
     children
   ) : (
     <LiveReloadScript port={PORT}>{children}</LiveReloadScript>
   );
 
-  return <LoadLayout>{childrenWithLiveReload}</LoadLayout>;
+  return (
+    <LoadLayout layoutModule={layoutModule}>
+      {childrenWithLiveReload}
+    </LoadLayout>
+  );
 }

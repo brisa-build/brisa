@@ -3,6 +3,8 @@ import LoadLayout from ".";
 import path from "node:path";
 import { RequestContext, renderToReadableStream } from "../../brisa";
 import streamToText from "../../__fixtures__/stream-to-text";
+import getImportableFilepath from "../get-importable-filepath";
+import getRootDir from "../get-root-dir";
 
 const join = path.join;
 const testRequest = new RequestContext(new Request("https://test.com"));
@@ -14,8 +16,10 @@ describe("utils", () => {
 
   describe("LoadLayout", () => {
     it('should return default layout if "layout.tsx" does not exist', async () => {
+      const layoutPath = getImportableFilepath("layout", getRootDir());
+      const layoutModule = layoutPath ? await import(layoutPath) : undefined;
       const stream = renderToReadableStream(
-        <LoadLayout>
+        <LoadLayout layoutModule={layoutModule}>
           <div>Hello world</div>
         </LoadLayout>,
         testRequest,
@@ -28,8 +32,10 @@ describe("utils", () => {
       path.join = () =>
         join(import.meta.dir, "..", "..", "__fixtures__", "layout");
 
+      const layoutPath = getImportableFilepath("layout", getRootDir());
+      const layoutModule = layoutPath ? await import(layoutPath) : undefined;
       const stream = renderToReadableStream(
-        <LoadLayout>
+        <LoadLayout layoutModule={layoutModule}>
           <div>Hello world</div>
         </LoadLayout>,
         testRequest,
