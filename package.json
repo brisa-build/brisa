@@ -3,7 +3,7 @@
   "module": "./out/brisa/index.js",
   "main": "./out/brisa/index.js",
   "types": "./out/brisa/index.d.ts",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
