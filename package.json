@@ -19,8 +19,7 @@
     "out",
     "jsx-runtime",
     "jsx-dev-runtime",
-    "cli.sh",
-    "create-brisa-app.sh"
+    "cli.sh"
   ],
   "exports": {
     ".": {
@@ -48,6 +47,7 @@
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
     "test": "bun test",
     "test:coverage": "bun test --coverage",
+    "release-create-brisa-app": "cd src/create-brisa-app && npm publish --tag next && cd ../..",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",
     "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli",
     "format": "bunx prettier --write ."
