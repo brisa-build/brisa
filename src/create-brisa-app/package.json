@@ -1,0 +1,15 @@
+{
+  "name": "create-brisa-app",
+  "version": "0.1.0-alpha.5",
+  "license": "MIT",
+  "author": {
+    "name": "Aral Roca Gòmez",
+    "email": "contact@aralroca.com"
+  },
+  "files": [
+    "create-brisa-app.sh"
+  ],
+  "bin": {
+    "create-brisa-app": "./create-brisa-app.sh"
+  }
+}
