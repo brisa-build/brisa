@@ -8,12 +8,13 @@ export default function redirectTrailingSlash(
   const { trailingSlash } = CONFIG;
   const url = new URL(request.url);
   const { pathname } = url;
+  const isHome = pathname === "/"
 
-  if (trailingSlash && !pathname.endsWith("/")) {
+  if (trailingSlash && !pathname.endsWith("/") && !isHome) {
     return redirect(new URL(pathname + "/", url).toString());
   }
 
-  if (!trailingSlash && pathname.endsWith("/")) {
+  if (!trailingSlash && pathname.endsWith("/") && !isHome) {
     return redirect(new URL(pathname.slice(0, -1), url).toString());
   }
 }
