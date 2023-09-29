@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import renderAttributes from ".";
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 import getConstants from "../../constants";
 
 describe("utils", () => {

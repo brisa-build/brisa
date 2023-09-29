@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import redirectTrailingSlash from ".";
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 
 describe("utils", () => {
   describe("redirectTrailingSlash", () => {

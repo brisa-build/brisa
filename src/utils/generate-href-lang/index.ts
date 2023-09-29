@@ -1,4 +1,4 @@
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 import getConstants from "../../constants";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
@@ -21,9 +21,8 @@ export default function generateHrefLang(request: RequestContext) {
 
       const url = getURLInAnotherLang(domain, lang, request);
       const urlWithoutTrailingSlash = url.toString().replace(/\/$/, "");
-      const finalUrl = `${urlWithoutTrailingSlash}${
-        CONFIG.trailingSlash ? "/" : ""
-      }`;
+      const finalUrl = `${urlWithoutTrailingSlash}${CONFIG.trailingSlash ? "/" : ""
+        }`;
 
       return `<link rel="alternate" hreflang="${lang}" href="${finalUrl}" />`;
     })

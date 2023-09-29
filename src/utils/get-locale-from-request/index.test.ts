@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 import getLocaleFromRequest from ".";
 
 describe("utils", () => {

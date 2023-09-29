@@ -1,4 +1,4 @@
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 import getLocaleFromRequest from "../get-locale-from-request";
 import getRouteMatcher from "../get-route-matcher";
 import getConstants from "../../constants";

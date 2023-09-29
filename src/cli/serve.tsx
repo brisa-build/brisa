@@ -3,7 +3,7 @@ import path from "node:path";
 
 import LoadLayout from "../utils/load-layout";
 import getRouteMatcher from "../utils/get-route-matcher";
-import { RequestContext, renderToReadableStream } from "../brisa";
+import { RequestContext, renderToReadableStream } from "../core";
 import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
 import importFileIfExists from "../utils/import-file-if-exists";
