@@ -3,7 +3,7 @@
   "module": "./out/core/index.js",
   "main": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
   "license": "MIT",
   "type": "module",
@@ -19,7 +19,8 @@
     "out",
     "jsx-runtime",
     "jsx-dev-runtime",
-    "cli.sh"
+    "cli.sh",
+    "create-brisa-app.sh"
   ],
   "exports": {
     ".": {
@@ -52,7 +53,8 @@
     "format": "bunx prettier --write ."
   },
   "bin": {
-    "brisa": "./cli.sh"
+    "brisa": "./cli.sh",
+    "create-brisa-app": "./create-brisa-app.sh"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "12.0.1",
