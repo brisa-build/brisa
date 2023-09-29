@@ -1,7 +1,7 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
 import generateHrefLang from ".";
 import getConstants from "../../constants";
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 import { MatchedRoute } from "bun";
 
 const warn = console.warn.bind(console);

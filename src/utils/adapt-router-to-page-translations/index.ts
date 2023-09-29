@@ -1,4 +1,4 @@
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 import { I18nConfig, RouterType, Translations } from "../../types";
 import routeMatchPathname from "../route-match-pathname";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";

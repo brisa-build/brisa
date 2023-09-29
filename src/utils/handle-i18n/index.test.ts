@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import path from "node:path";
 import handleI18n from ".";
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 
 const rootDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const pagesDir = path.join(rootDir, "pages");

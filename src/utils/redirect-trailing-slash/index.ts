@@ -1,4 +1,4 @@
-import { RequestContext } from "../../brisa";
+import { RequestContext } from "../../core";
 import getConstants from "../../constants";
 
 export default function redirectTrailingSlash(

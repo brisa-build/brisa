@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import LoadLayout from ".";
 import path from "node:path";
-import { RequestContext, renderToReadableStream } from "../../brisa";
+import { RequestContext, renderToReadableStream } from "../../core";
 import streamToText from "../../__fixtures__/stream-to-text";
 import getImportableFilepath from "../get-importable-filepath";
 import getRootDir from "../get-root-dir";
