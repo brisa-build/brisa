@@ -1,10 +1,15 @@
 {
   "name": "create-brisa-app",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
+  "type": "module",
   "author": {
     "name": "Aral Roca Gòmez",
     "email": "contact@aralroca.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aralroca/brisa.git"
   },
   "files": [
     "create-brisa-app.sh"
