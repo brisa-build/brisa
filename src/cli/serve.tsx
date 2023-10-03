@@ -78,6 +78,8 @@ Bun.serve({
       if (redirect) return redirect;
     }
 
+    request.getIP = () => server.requestIP(req);
+
     return (
       handleRequest(request, isAnAsset)
         // 500 page
