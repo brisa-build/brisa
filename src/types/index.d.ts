@@ -5,6 +5,7 @@ export interface RequestContext extends Request {
   route?: MatchedRoute;
   i18n: I18nFromRequest;
   ws?: ServerWebSocket<unknown>;
+  getIP: () => SocketAddress | null;
 }
 
 type Props = Record<string, unknown> & {
