@@ -7,14 +7,14 @@ API routes provide a solution to build a **public API** with Brisa.
 
 Any file inside the folder `src/api` is mapped to `/api/*` and will be treated as an API endpoint. They are server-side only bundles and won't increase your client-side bundle size.
 
-You can export any lowercase [request method](https://en.wikipedia.org/wiki/HTTP#Request_methods): `get`, `post`, `patch`, `put`, `delete`, etc.
+You can export any uppercase [request method](https://en.wikipedia.org/wiki/HTTP#Request_methods): `GET`, `POST`, `PATCH`, `PUT`, `DELETE`, etc.
 
-For example, the following API `get` endpoint returns a JSON response with a status code of `200`:
+For example, the following API `GET` endpoint returns a JSON response with a status code of `200`:
 
 ```ts filename="src/api/hello.ts" switcher
 import { type RequestContext } from "brisa";
 
-export function get(request: RequestContext) {
+export function GET(request: RequestContext) {
   const responseData = JSON.stringify({
     message: "Hello world from Brisa!"
   })
@@ -38,7 +38,7 @@ We have access to the route through the `RequestContext` and we can access both 
 ```ts filename="src/api/user/[username].ts" switcher
 import { type RequestContext } from "brisa";
 
-export function get({ route: { query, params } }: RequestContext) {
+export function GET({ route: { query, params } }: RequestContext) {
   const { id } = params
   return new Response(`Hello world ${query.username} with id=${id}!`);
 }
@@ -64,7 +64,7 @@ Example:
 ```ts filename="src/api/user/[username].ts" switcher
 import { type RequestContext } from "brisa";
 
-export function get({ i18n, route: { query, params } }: RequestContext) {
+export function GET({ i18n, route: { query, params } }: RequestContext) {
   const { id } = params
   return new Response(i18n.t('hello', { name: params.username, id }));
 }
@@ -114,7 +114,7 @@ Catch all routes can be made optional by including the parameter in double brack
 You can set CORS headers on a `Response` using the standard Web API methods:
 
 ```ts
-export async function get(request: Request) {
+export async function GET(request: Request) {
   return new Response('Hello, Brisa!', {
     status: 200,
     headers: {

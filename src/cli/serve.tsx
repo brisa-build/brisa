@@ -143,11 +143,13 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   // API
   if (isApi && api?.route && !api?.isReservedPathname) {
     const module = await import(api.route.filePath);
-    const method = req.method.toLowerCase();
+    const method = req.method.toUpperCase();
 
     req.route = api.route;
 
-    return module[method]?.(req);
+    const response = module[method]?.(req)
+
+    if (response) return response;
   }
 
   // Assets
