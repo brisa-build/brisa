@@ -7,10 +7,16 @@ export default class RequestContext extends Request {
     this.route = route;
     this.context = new Map<string, any>();
     this.ws = globalThis.ws;
+    this.i18n = {
+      defaultLocale: '',
+      locales: [],
+      locale: '',
+      t: () => '',
+    }
   }
 
   route?: MatchedRoute;
   context: Map<string, any>;
-  i18n?: I18nFromRequest;
+  i18n: I18nFromRequest;
   ws?: ServerWebSocket<unknown>;
 }
