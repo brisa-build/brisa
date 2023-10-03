@@ -120,7 +120,7 @@ console.log(
 ///////////////////////////////////////////////////////
 
 async function handleRequest(req: RequestContext, isAnAsset: boolean) {
-  const locale = req.i18n?.locale;
+  const locale = req.i18n.locale;
   const url = new URL(req.url);
   const pathname = url.pathname;
   const { route, isReservedPathname } = pagesRouter.match(req);
