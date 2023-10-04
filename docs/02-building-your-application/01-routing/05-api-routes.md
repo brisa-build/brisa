@@ -54,15 +54,15 @@ You can read the `Request` body using the standard Web API methods:
 
 ```ts filename="src/api/items/route.ts" switcher
 export async function POST(request: RequestContext) {
-  const res = await request.json()
-  return new Response(JSON.stringify({ res }))
+  const res = await request.json();
+  return new Response(JSON.stringify({ res }));
 }
 ```
 
 ```js filename="src/api/items/route.js" switcher
 export async function POST(request) {
-  const res = await request.json()
-  return new Response(JSON.stringify({ res }))
+  const res = await request.json();
+  return new Response(JSON.stringify({ res }));
 }
 ```
 
@@ -72,19 +72,19 @@ You can read the `FormData` using the standard Web API methods:
 
 ```ts filename="src/api/items/route.ts" switcher
 export async function POST(request: RequestContext) {
-  const formData = await request.formData()
-  const name = formData.get('name')
-  const email = formData.get('email')
-  return new Response(JSON.stringify({ name, email }))
+  const formData = await request.formData();
+  const name = formData.get("name");
+  const email = formData.get("email");
+  return new Response(JSON.stringify({ name, email }));
 }
 ```
 
 ```js filename="src/api/items/route.js" switcher
 export async function POST(request) {
-  const formData = await request.formData()
-  const name = formData.get('name')
-  const email = formData.get('email')
-  return new Response(JSON.stringify({ name, email }))
+  const formData = await request.formData();
+  const name = formData.get("name");
+  const email = formData.get("email");
+  return new Response(JSON.stringify({ name, email }));
 }
 ```
 
@@ -198,18 +198,18 @@ You can add the `Cache-Control` headers to the response. By default is not using
 
 ```ts filename="app/items/route.ts" switcher
 export async function GET() {
-  const data = await getSomeData()
-  const res = new Response(JSON.stringify(data))
+  const data = await getSomeData();
+  const res = new Response(JSON.stringify(data));
 
-  res.headers.set("Cache-Control", "max-age=86400")
+  res.headers.set("Cache-Control", "max-age=86400");
 
-  return res
+  return res;
 }
 ```
 
 ## Headers and Cookies
 
-You can read headers and cookies from the [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) and write headers and cookies to the [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) using Web APIs. 
+You can read headers and cookies from the [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) and write headers and cookies to the [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) using Web APIs.
 
 Example reading/writing cookies:
 
@@ -217,20 +217,20 @@ Example reading/writing cookies:
 import { type RequestContext } from "brisa";
 
 export async function GET(request: RequestContext) {
-  const cookies = request.headers.get('cookie')
-  const res = new Response('Hello, Brisa!');
+  const cookies = request.headers.get("cookie");
+  const res = new Response("Hello, Brisa!");
 
   if (cookies) {
-    res.headers.set('set-cookie', cookies)
+    res.headers.set("set-cookie", cookies);
   }
 
-  return res
+  return res;
 }
 ```
 
 ## Streaming
 
- You can use the Web APIs to create a [stream](https://bun.sh/docs/api/streams) and then return it inside the `Response`:
+You can use the Web APIs to create a [stream](https://bun.sh/docs/api/streams) and then return it inside the `Response`:
 
 ```ts
 export async function GET() {
@@ -243,7 +243,7 @@ export async function GET() {
     },
   });
 
-  return new Response(stream) // Hello Brisa!
+  return new Response(stream); // Hello Brisa!
 }
 ```
 

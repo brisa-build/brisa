@@ -45,7 +45,8 @@ if (!fs.existsSync(PAGES_DIR)) {
   process.exit(1);
 }
 
-const customMiddleware = await importFileIfExists("middleware", ROOT_DIR);
+const middlewareModule = await importFileIfExists("middleware", ROOT_DIR);
+const customMiddleware = middlewareModule?.default;
 let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
 let rootRouter = getRouteMatcher(ROOT_DIR);
 
@@ -122,7 +123,6 @@ console.log(
 ///////////////////////////////////////////////////////
 ////////////////////// HELPERS ///////////////////////
 ///////////////////////////////////////////////////////
-
 async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   const locale = req.i18n.locale;
   const url = new URL(req.finalURL);
@@ -131,11 +131,14 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   const isApi = pathname.startsWith(locale ? `/${locale}/api/` : "/api/");
   const api = isApi ? rootRouter.match(req) : null;
 
+  req.route = isApi ? api?.route : route;
+
   // Middleware
   if (customMiddleware) {
     const middlewareResponse = await Promise.resolve().then(() =>
       customMiddleware(req),
     );
+
     if (middlewareResponse) return middlewareResponse;
   }
 
@@ -148,9 +151,6 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   if (isApi && api?.route && !api?.isReservedPathname) {
     const module = await import(api.route.filePath);
     const method = req.method.toUpperCase();
-
-    req.route = api.route;
-
     const response = module[method]?.(req);
 
     if (response) return response;
@@ -192,20 +192,21 @@ async function responseRenderedPage({
   const layoutPath = getImportableFilepath("layout", ROOT_DIR);
   const layoutModule = layoutPath ? await import(layoutPath) : undefined;
 
-  req.route = route;
-
   const pageElement = (
     <PageLayout layoutModule={layoutModule}>
       <PageComponent error={error} />
     </PageLayout>
   );
 
+  const middlewareResponseHeaders =
+    middlewareModule?.responseHeaders?.(req, status) ?? {};
   const layoutResponseHeaders =
     layoutModule?.responseHeaders?.(req, status) ?? {};
   const pageResponseHeaders = module.responseHeaders?.(req, status) ?? {};
   const htmlStream = renderToReadableStream(pageElement, req, module.Head);
   const responseOptions = {
     headers: {
+      ...middlewareResponseHeaders,
       ...layoutResponseHeaders,
       ...pageResponseHeaders,
       "transfer-encoding": "chunked",

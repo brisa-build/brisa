@@ -107,3 +107,36 @@ export default async function Layout({ children }: { children: JSX.Element }, { 
 ```
 
 The `fetch` is directly native and has no wrapper to control the cache. We recommend that you do not do the same `fetch` in several places, but use the [`context`](/docs/building-your-application/data-fetching/request-context) to store the data and consume it from any component.
+
+## Response headers in layouts and pages
+
+The `responseHeaders` function can be exported inside the `layout` and inside any `page`. In the same way that is possible to export it also in the [`middleware`](docs/building-your-application/routing/middleware).
+
+All `responseHeaders` will be mixed in this order:
+
+1. `middleware` response headers
+2. `layout` response headers (can crush the middleware response headers)
+3. `page` response headers (both middleware and layout response headers can be mixed).
+
+```ts filename="middleware.ts" switcher
+import { type RequestContext } from "brisa";
+
+export function responseHeaders(
+  request: RequestContext,
+  responseStatus: number,
+) {
+  return {
+    "Cache-Control": "public, max-age=3600",
+    "X-Example": "This header is added from layout",
+  };
+}
+```
+
+```js filename="middleware.js" switcher
+export function responseHeaders(request, responseStatus) {
+  return {
+    "Cache-Control": "public, max-age=3600",
+    "X-Example": "This header is added from layout",
+  };
+}
+```
