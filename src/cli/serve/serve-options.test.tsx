@@ -9,19 +9,18 @@ import {
   afterAll,
 } from "bun:test";
 import getConstants from "../../constants";
-import { Serve, gc } from "bun";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
-
 const PAGES_DIR = path.join(ROOT_DIR, "pages");
 const ASSETS_DIR = path.join(ROOT_DIR, "assets");
-let serveOptions: Serve;
 
-function testRequest(request: Request): Response {
+async function testRequest(request: Request): Promise<Response> {
+  const serveOptions = (await import("./serve-options")).serveOptions;
+
   return (
     // @ts-ignore
-    (serveOptions.fetch(request, { requestIP: () => {}, upgrade: () => {} }) ||
+    (await serveOptions.fetch(request, { requestIP: () => { }, upgrade: () => { } }) ||
       new Response()) as Response
   );
 }
@@ -47,12 +46,10 @@ describe("CLI: serve", () => {
         defaultLocale: "es",
       },
     };
-    serveOptions = (await import("./serve-options")).serveOptions;
   });
 
   afterEach(() => {
     globalThis.mockConstants = undefined;
-    gc(true);
   });
 
   it("should return 404 page", async () => {
