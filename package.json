@@ -57,9 +57,9 @@
     "create-brisa-app": "./create-brisa-app.sh"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "12.7.0",
-    "bun-types": "1.0.4-canary.20231003T140149",
-    "brisa": "0.0.3"
+    "@happy-dom/global-registrator": "12.8.0",
+    "bun-types": "1.0.4-canary.20231004T140131",
+    "brisa": "0.0.4"
   },
   "peerDependencies": {
     "typescript": "5.2.2"
