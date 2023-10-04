@@ -17,7 +17,7 @@ For example, a blog could include the following route `src/pages/blog/[slug].js`
 
 ```jsx
 export default function Page(props, { route }) {
-  return <p>Post: {route.query.slug}</p>
+  return <p>Post: {route.query.slug}</p>;
 }
 ```
 

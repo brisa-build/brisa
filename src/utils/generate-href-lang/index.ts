@@ -1,5 +1,5 @@
-import { RequestContext } from "../../core";
 import getConstants from "../../constants";
+import { RequestContext } from "../../types";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
 export default function generateHrefLang(request: RequestContext) {
@@ -21,8 +21,9 @@ export default function generateHrefLang(request: RequestContext) {
 
       const url = getURLInAnotherLang(domain, lang, request);
       const urlWithoutTrailingSlash = url.toString().replace(/\/$/, "");
-      const finalUrl = `${urlWithoutTrailingSlash}${CONFIG.trailingSlash ? "/" : ""
-        }`;
+      const finalUrl = `${urlWithoutTrailingSlash}${
+        CONFIG.trailingSlash ? "/" : ""
+      }`;
 
       return `<link rel="alternate" hreflang="${lang}" href="${finalUrl}" />`;
     })
@@ -56,7 +57,7 @@ function getURLInAnotherLang(
   request: RequestContext,
 ) {
   const { I18N_CONFIG, LOCALES_SET } = getConstants();
-  const paths = new URL(request.url).pathname.split("/");
+  const paths = new URL(request.finalURL).pathname.split("/");
   const page = LOCALES_SET.has(paths[1])
     ? paths.join("/").slice(3)
     : paths.join("/");

@@ -2,8 +2,9 @@ import { describe, expect, it, beforeEach, afterEach } from "bun:test";
 import path from "node:path";
 import adaptRouterToPageTranslations from ".";
 import getRouteMatcher from "../get-route-matcher";
-import { RequestContext } from "../../core";
 import getConstants from "../../constants";
+import extendRequestContext from "../extend-request-context";
+import { RequestContext } from "../../types";
 
 const PAGES_DIR = path.join(
   import.meta.dir,
@@ -26,7 +27,7 @@ const pages = {
 const router = getRouteMatcher(PAGES_DIR, ["/_404"]);
 
 const createRequest = (url: string) => {
-  const request = new RequestContext(new Request(url));
+  const request = extendRequestContext({ originalRequest: new Request(url) });
   request.i18n = {
     locale: "es",
     defaultLocale: "es",
@@ -115,7 +116,9 @@ describe("utils", () => {
       it("should detect all the translated routes", () => {
         const mockRouter = {
           match: (v: RequestContext) =>
-            typeof v.url === "string" ? new URL(v.url).pathname : null,
+            typeof v.finalURL === "string"
+              ? new URL(v.finalURL).pathname
+              : null,
         };
         const mockPages = {
           "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },
@@ -160,7 +163,9 @@ describe("utils", () => {
       it("should detect all the translated routes with locale prefix", () => {
         const mockRouter = {
           match: (v) =>
-            typeof v.url === "string" ? new URL(v.url).pathname : null,
+            typeof v.finalURL === "string"
+              ? new URL(v.finalURL).pathname
+              : null,
         };
         const mockPages = {
           "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },
@@ -207,7 +212,9 @@ describe("utils", () => {
       it("should detect all the translated routes with trailingSlash", () => {
         const mockRouter = {
           match: (v) =>
-            typeof v.url === "string" ? new URL(v.url).pathname : null,
+            typeof v.finalURL === "string"
+              ? new URL(v.finalURL).pathname
+              : null,
         };
         const mockPages = {
           "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },

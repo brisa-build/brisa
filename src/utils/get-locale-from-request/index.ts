@@ -1,9 +1,9 @@
 import getConstants from "../../constants";
-import { I18nConfig } from "../../types";
+import { I18nConfig, RequestContext } from "../../types";
 
-export default function getLocaleFromRequest(request: Request): string {
+export default function getLocaleFromRequest(request: RequestContext): string {
   const { I18N_CONFIG = {}, LOCALES_SET } = getConstants();
-  const { pathname } = new URL(request.url);
+  const { pathname } = new URL(request.finalURL);
   const [, locale] = pathname.split("/");
 
   if (LOCALES_SET.has(locale)) return locale;
@@ -33,8 +33,11 @@ function getLocalesFromAcceptLanguage(request: Request): string[] | undefined {
   return acceptLanguage?.split(",").map((locale) => locale.split(";")[0]);
 }
 
-function getDefaultLocale(request: Request, I18N_CONFIG: I18nConfig): string {
-  const domain = new URL(request.url).hostname;
+function getDefaultLocale(
+  request: RequestContext,
+  I18N_CONFIG: I18nConfig,
+): string {
+  const domain = new URL(request.finalURL).hostname;
   const domainDefaultLocale = I18N_CONFIG.domains?.[domain]?.defaultLocale;
 
   return domainDefaultLocale ?? I18N_CONFIG.defaultLocale;

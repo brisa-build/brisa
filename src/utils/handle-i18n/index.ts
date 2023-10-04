@@ -1,9 +1,9 @@
-import { RequestContext } from "../../core";
 import getLocaleFromRequest from "../get-locale-from-request";
 import getRouteMatcher from "../get-route-matcher";
 import getConstants from "../../constants";
 import translateCore from "../translate-core";
 import adaptRouterToPageTranslations from "../adapt-router-to-page-translations";
+import { RequestContext } from "../../types";
 
 export default function handleI18n(req: RequestContext): {
   response?: Response;
@@ -18,7 +18,7 @@ export default function handleI18n(req: RequestContext): {
   if (!defaultLocale || !locales?.length) return {};
 
   const locale = getLocaleFromRequest(req);
-  const url = new URL(req.url);
+  const url = new URL(req.finalURL);
   const [, localeFromUrl] = url.pathname.split("/");
   const pathname = url.pathname.replace(/\/$/, "");
 

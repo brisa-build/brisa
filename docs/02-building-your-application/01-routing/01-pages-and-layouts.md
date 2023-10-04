@@ -13,7 +13,7 @@ In Brisa framework, a **page** is a [Brisa Component](/docs/components-details) 
 
 ```jsx
 export default function About() {
-  return <div>About</div>
+  return <div>About</div>;
 }
 ```
 
@@ -42,7 +42,6 @@ Brisa supports pages with dynamic routes. For example, if you create a file call
 ## Layout
 
 The global layout is defined inside `/src/layout/index`. By default Brisa supports a default layout, but you can modify it here.
-
 
 ```jsx filename="src/layout/index.js"
 import { RequestContext } from "brisa";
