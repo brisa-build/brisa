@@ -1,4 +1,12 @@
-import { describe, it, expect, afterEach } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  afterEach,
+  beforeEach,
+  beforeAll,
+  afterAll,
+} from "bun:test";
 import LoadLayout from ".";
 import path from "node:path";
 import { renderToReadableStream } from "../../core";
@@ -43,7 +51,7 @@ describe("utils", () => {
         testRequest,
       );
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toContain("<title>CUSTOM LAYOUT</title>");
+      expect(result).toContain('<title id="title">CUSTOM LAYOUT</title>');
     });
   });
 });

@@ -1,7 +1,8 @@
 /// <reference lib="dom" />
 
 import path from "node:path";
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect, beforeAll, afterAll } from "bun:test";
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const filePathname = path.join(import.meta.dir, "unsuspense.ts");
 const fileToTest = Bun.file(filePathname);
@@ -20,6 +21,13 @@ function inlineHTML(html: string) {
 }
 
 describe("unsuspense window.u$", () => {
+  beforeAll(() => {
+    GlobalRegistrator.register();
+  });
+  afterAll(() => {
+    GlobalRegistrator.unregister();
+  });
+
   it("should replace pending to success nodes", async () => {
     document.body.innerHTML = inlineHTML(`
       <body id="test_1">
