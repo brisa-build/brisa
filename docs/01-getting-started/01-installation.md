@@ -10,13 +10,12 @@ related:
 
 ### System Requirements
 
-- Bun [1.0.4]( https://bun.sh/) or later
+- Bun [1.0.4](https://bun.sh/) or later
 - macOS, Windows (including WSL), and Linux are supported.
-
 
 ### Automatic Installation
 
-We recommend starting a new Brisa app using `create-brisa-app``, which sets up everything automatically for you. 
+We recommend starting a new Brisa app using `create-brisa-app``, which sets up everything automatically for you.
 
 ```sh
 npx create-brisa-app
@@ -55,9 +54,9 @@ You need to add the jsx-runtime of Brisa in your `tsconfig.json` file:
 ```json
 {
   "compilerOptions": {
-     // ...rest
+    // ...rest
     "jsx": "react-jsx",
-    "jsxImportSource": "brisa", 
+    "jsxImportSource": "brisa"
   }
 }
 ```
@@ -70,7 +69,7 @@ Then, add an `index.tsx` file inside your `src/pages` folder. This will be your 
 
 ```tsx
 export default function Page() {
-  return <h1>Hello, Brisa!</h1>
+  return <h1>Hello, Brisa!</h1>;
 }
 ```
 

@@ -8,33 +8,29 @@ This page provides an overview of the file and folder structure of a Brisa proje
 
 ## `src`-level folders
 
-|                                                                          |                                    |
-| ------------------------------------------------------------------------ | ---------------------------------- |
-| [`pages`](/docs/building-your-application/routing#pages)                 | Pages Router                       |
-| [`api`](/docs/building-your-application/routing#api)                 | Api Router                       |
-| [`public`](/docs/building-your-application/optimizing/static-assets) | Static assets to be served         |
-| [`middleware`](/docs/building-your-application/configuring/middleware)   | Middleware |
-| [`layout`](/docs/building-your-application/configuring/layout)   | Layout / Layouts |
-| [`websocket`](/docs/building-your-application/configuring/websocket)   | Websocket |
-| [`i18n`](/docs/building-your-application/configuring/i18n)   | Internationalization routing & translations |
-
-
+|                                                                        |                                             |
+| ---------------------------------------------------------------------- | ------------------------------------------- |
+| [`pages`](/docs/building-your-application/routing#pages)               | Pages Router                                |
+| [`api`](/docs/building-your-application/routing#api)                   | Api Router                                  |
+| [`public`](/docs/building-your-application/optimizing/static-assets)   | Static assets to be served                  |
+| [`middleware`](/docs/building-your-application/configuring/middleware) | Middleware                                  |
+| [`layout`](/docs/building-your-application/configuring/layout)         | Layout / Layouts                            |
+| [`websocket`](/docs/building-your-application/configuring/websocket)   | Websocket                                   |
+| [`i18n`](/docs/building-your-application/configuring/i18n)             | Internationalization routing & translations |
 
 ## Top-level files
 
-|                                                                                             |                                         |
-| ------------------------------------------------------------------------------------------- | --------------------------------------- |
-|                                                                             |                                         |
-| [`brisa.config.js`](/docs/app/api-reference/brisa-config-js)                                  | Configuration file for Next.
-
-
+|                                                              |                              |
+| ------------------------------------------------------------ | ---------------------------- |
+|                                                              |                              |
+| [`brisa.config.js`](/docs/app/api-reference/brisa-config-js) | Configuration file for Next. |
 
 ### Special Files in `src/pages`
 
-|                                                                                                             |                     |                   |
-| ----------------------------------------------------------------------------------------------------------- | ------------------- | ----------------- |
-| [`_404`](/docs/pages/building-your-application/routing/custom-error#404-page)                                | `.js` `.jsx` `.tsx` | 404 Error Page    |
-| [`_500`](/docs/pages/building-your-application/routing/custom-error#500-page)                                | `.js` `.jsx` `.tsx` | 500 Error Page    |
+|                                                                               |                     |                |
+| ----------------------------------------------------------------------------- | ------------------- | -------------- |
+| [`_404`](/docs/pages/building-your-application/routing/custom-error#404-page) | `.js` `.jsx` `.tsx` | 404 Error Page |
+| [`_500`](/docs/pages/building-your-application/routing/custom-error#500-page) | `.js` `.jsx` `.tsx` | 500 Error Page |
 
 ### Routes
 

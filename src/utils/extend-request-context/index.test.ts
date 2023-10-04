@@ -1,16 +1,19 @@
 import { describe, it, expect } from "bun:test";
-import RequestContext from ".";
+import extendRequestContext from ".";
 
 describe("brisa core", () => {
-  describe("RequestContext", () => {
-    it("should create a new RequestContext", () => {
+  describe("extend request context", () => {
+    it("should extent the request", () => {
       const request = new Request("https://example.com");
       const route = {
         path: "/",
       } as any;
-      const requestContext = new RequestContext(request, route);
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
       expect(requestContext.route).toEqual(route);
-      expect(requestContext.url).toEqual(request.url);
+      expect(requestContext.finalURL).toEqual(request.finalURL);
       expect(requestContext.context).toBeInstanceOf(Map);
     });
 
@@ -19,7 +22,10 @@ describe("brisa core", () => {
       const route = {
         path: "/",
       } as any;
-      const requestContext = new RequestContext(request, route);
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
       requestContext.context.set("foo", "bar");
       expect(requestContext.context.get("foo")).toBe("bar");
     });

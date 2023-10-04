@@ -1,6 +1,5 @@
-import { RequestContext } from "../../core";
 import getConstants from "../../constants";
-import { I18nConfig, Props, Translations } from "../../types";
+import { I18nConfig, Props, RequestContext, Translations } from "../../types";
 import routeMatchPathname from "../route-match-pathname";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";
 

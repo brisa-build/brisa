@@ -1,12 +1,14 @@
 import { describe, it, expect, mock, afterEach, afterAll } from "bun:test";
 import renderToReadableStream from ".";
-import { RequestContext } from "..";
 import streamToText from "../../__fixtures__/stream-to-text";
 import dangerHTML from "../danger-html";
 import getConstants from "../../constants";
-import { ComponentType } from "../../types";
+import { ComponentType, RequestContext } from "../../types";
+import extendRequestContext from "../../utils/extend-request-context";
 
-const testRequest = new RequestContext(new Request("http://test.com/"));
+const testRequest = extendRequestContext({
+  originalRequest: new Request("http://test.com/"),
+});
 const mockConsoleError = mock(() => {});
 const consoleError = console.error;
 console.error = mockConsoleError;
@@ -84,11 +86,11 @@ describe("brisa core", () => {
     it("should be possible to access to the request object inside components", async () => {
       const Component = (
         { name, title }: { name: string; title: string },
-        request: Request,
+        request: RequestContext,
       ) => (
         <div title={title}>
           <h1>Hello {name}</h1>
-          <p>The URL is: {request.url}</p>
+          <p>The URL is: {request.finalURL}</p>
         </div>
       );
       const element = <Component name="World" title="Test" />;
@@ -108,7 +110,7 @@ describe("brisa core", () => {
         { name }: { name: string },
         request: RequestContext,
       ) => {
-        const url = new URL(request.url);
+        const url = new URL(request.finalURL);
         const query = new URLSearchParams(url.search);
         const testName = query.get("name") || name;
 
@@ -123,7 +125,9 @@ describe("brisa core", () => {
 
       const stream2 = await renderToReadableStream(
         element,
-        new RequestContext(new Request("http://test.com/?name=Test")),
+        extendRequestContext({
+          originalRequest: new Request("http://test.com/?name=Test"),
+        }),
       );
       const result2 = await streamToText(stream2);
       const expected2 = "<div>Hello Test</div>";
@@ -302,7 +306,9 @@ describe("brisa core", () => {
     });
 
     it("should inject the hrefLang attributes if the i18n is enabled and have hrefLangOrigin defined", () => {
-      const req = new RequestContext(new Request(testRequest));
+      const req = extendRequestContext({
+        originalRequest: new Request(testRequest),
+      });
       const i18n = {
         locale: "es",
         locales: ["en", "es"],
@@ -578,7 +584,7 @@ describe("brisa core", () => {
       const element = <a href="mailto:test@test.com">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
       const result = await streamToText(stream);
-      testRequest.i18n = undefined;
+      testRequest.i18n = {} as any;
       expect(result).toEqual(`<a href="mailto:test@test.com">Test</a>`);
     });
 
@@ -592,7 +598,7 @@ describe("brisa core", () => {
       const element = <a href="/en/test">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
       const result = await streamToText(stream);
-      testRequest.i18n = undefined;
+      testRequest.i18n = undefined as any;
       expect(result).toEqual(`<a href="/en/test">Test</a>`);
     });
 
@@ -647,7 +653,9 @@ describe("brisa core", () => {
     });
 
     it("should render the head element with the canonical", () => {
-      const req = new RequestContext(new Request(testRequest));
+      const req = extendRequestContext({
+        originalRequest: new Request(testRequest),
+      });
       const element = (
         <html>
           <head>
@@ -673,7 +681,9 @@ describe("brisa core", () => {
     });
 
     it("should render the head element with the title replacing the original title", () => {
-      const req = new RequestContext(new Request(testRequest));
+      const req = extendRequestContext({
+        originalRequest: new Request(testRequest),
+      });
       const element = (
         <html>
           <head>
@@ -699,7 +709,9 @@ describe("brisa core", () => {
     });
 
     it("should allow multiple ids outside the head (not ideal but should not break the render)", () => {
-      const req = new RequestContext(new Request(testRequest));
+      const req = extendRequestContext({
+        originalRequest: new Request(testRequest),
+      });
       const element = (
         <html>
           <head></head>

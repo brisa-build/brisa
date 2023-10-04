@@ -1,5 +1,5 @@
 import { MatchedRoute } from "bun";
-import { RouterType } from "../../types";
+import { RequestContext, RouterType } from "../../types";
 
 export default function getRouteMatcher(
   dir: string,
@@ -11,8 +11,8 @@ export default function getRouteMatcher(
     dir,
   });
   const reservedPathnamesSet = new Set(reservedPathnames);
-  const routeMatcher = (req: Request) => {
-    const url = new URL(req.url);
+  const routeMatcher = (req: RequestContext) => {
+    const url = new URL(req.finalURL);
 
     if (locale) {
       url.pathname = url.pathname.replace(`/${locale}`, "");

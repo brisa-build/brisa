@@ -1,14 +1,14 @@
-import { RequestContext } from "../../core";
 import getConstants from "../../constants";
+import { RequestContext } from "../../types";
 
 export default function redirectTrailingSlash(
   request: RequestContext,
 ): Response | undefined {
   const { CONFIG } = getConstants();
   const { trailingSlash } = CONFIG;
-  const url = new URL(request.url);
+  const url = new URL(request.finalURL);
   const { pathname } = url;
-  const isHome = pathname === "/"
+  const isHome = pathname === "/";
 
   if (trailingSlash && !pathname.endsWith("/") && !isHome) {
     return redirect(new URL(pathname + "/", url).toString());

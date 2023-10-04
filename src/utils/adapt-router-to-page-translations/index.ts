@@ -1,5 +1,10 @@
-import { RequestContext } from "../../core";
-import { I18nConfig, RouterType, Translations } from "../../types";
+import extendRequestContext from "../extend-request-context";
+import {
+  I18nConfig,
+  RequestContext,
+  RouterType,
+  Translations,
+} from "../../types";
 import routeMatchPathname from "../route-match-pathname";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
@@ -14,10 +19,10 @@ export default function adaptRouterToPageTranslations(
   const translations = Object.fromEntries(translationsEntries);
 
   const match = (req: RequestContext) => {
-    const url = new URL(req.url);
+    const url = new URL(req.finalURL);
     const userLocale = req.i18n?.locale;
     const newReq = (url: string) =>
-      new RequestContext(new Request(url, req), req.route);
+      extendRequestContext({ originalRequest: req, finalURL: url });
 
     url.pathname = url.pathname
       .replace(`/${userLocale}`, "")

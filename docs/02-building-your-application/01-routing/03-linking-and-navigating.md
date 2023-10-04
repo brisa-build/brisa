@@ -19,7 +19,7 @@ export default function Home() {
         <a href="/blog/hello-world">Blog Post</a>
       </li>
     </ul>
-  )
+  );
 }
 ```
 
@@ -28,7 +28,6 @@ The example above uses multiple `a` tags. Each one maps a path (`href`) to a kno
 - `/` → `src/pages/index.js`
 - `/about` → `src/pages/about.js`
 - `/blog/hello-world` → `src/pages/blog/[slug].js`
-
 
 ## Navigation to dynamic paths
 
@@ -40,18 +39,15 @@ export default function Posts({ posts }) {
     <ul>
       {posts.map((post) => (
         <li>
-          <a href={`/blog/${encodeURIComponent(post.slug)}`}>
-            {post.title}
-          </a>
+          <a href={`/blog/${encodeURIComponent(post.slug)}`}>{post.title}</a>
         </li>
       ))}
     </ul>
-  )
+  );
 }
 ```
 
 > [`encodeURIComponent`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) is used in the example to keep the path utf-8 compatible.
-
 
 ## I18n navigation
 
@@ -59,7 +55,7 @@ If you have [i18n routing](/docs/routing/internationalization) enabled, during n
 
 ```jsx
 export default function Home() {
-  return <a href="/about">About Us</a>
+  return <a href="/about">About Us</a>;
 }
 ```
 
@@ -77,7 +73,7 @@ It is always possible to force a specific route in case you want to change the l
 
 ```jsx
 export default function Home() {
-  return <a href="/es/sobre-nosotros">About Us in Spanish</a>
+  return <a href="/es/sobre-nosotros">About Us in Spanish</a>;
 }
 ```
 
