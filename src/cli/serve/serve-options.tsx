@@ -2,17 +2,21 @@ import fs from "node:fs";
 import path from "node:path";
 
 import LoadLayout from "../../utils/load-layout";
-import getRouteMatcher from "../../utils/get-route-matcher";
-import { renderToReadableStream } from "../../core";
-import { LiveReloadScript } from "../dev-live-reload";
-import { MatchedRoute, Serve, Server, ServerWebSocket } from "bun";
-import importFileIfExists from "../../utils/import-file-if-exists";
-import getConstants from "../../constants";
-import handleI18n from "../../utils/handle-i18n";
-import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
-import getImportableFilepath from "../../utils/get-importable-filepath";
 import extendRequestContext from "../../utils/extend-request-context";
+import getConstants from "../../constants";
+import getImportableFilepath from "../../utils/get-importable-filepath";
+import getRouteMatcher from "../../utils/get-route-matcher";
+import handleI18n from "../../utils/handle-i18n";
+import importFileIfExists from "../../utils/import-file-if-exists";
+import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
+import { LiveReloadScript } from "../dev-live-reload";
+import { MatchedRoute, Serve, ServerWebSocket } from "bun";
 import { RequestContext } from "../../types";
+import { renderToReadableStream } from "../../core";
+
+declare global {
+  var ws: ServerWebSocket<unknown> | undefined;
+}
 
 const {
   IS_PRODUCTION,
@@ -25,17 +29,14 @@ const {
   ASSETS_DIR,
 } = getConstants();
 
-const WEBSOCKET_PATH = getImportableFilepath("websocket", ROOT_DIR);
-const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
-
-declare global {
-  var ws: ServerWebSocket<unknown> | undefined;
-}
-
-const middlewareModule = await importFileIfExists("middleware", ROOT_DIR);
-const customMiddleware = middlewareModule?.default;
 let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
 let rootRouter = getRouteMatcher(ROOT_DIR);
+
+const WEBSOCKET_PATH = getImportableFilepath("websocket", ROOT_DIR);
+const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
+const route404 = pagesRouter.reservedRoutes[PAGE_404];
+const middlewareModule = await importFileIfExists("middleware", ROOT_DIR);
+const customMiddleware = middlewareModule?.default;
 
 const responseInitWithGzip = {
   headers: {
@@ -57,7 +58,35 @@ export const serveOptions: Serve = {
     const isAnAsset = !isHome && fs.existsSync(assetPath);
     const i18nRes = isAnAsset ? {} : handleI18n(request);
 
-    if (i18nRes.response) return i18nRes.response;
+    const isResponseLocationValidRoute = (response: Response) => {
+      const location = response.headers.get("Location") ?? "";
+
+      url.pathname = URL.canParse(location)
+        ? new URL(location).pathname
+        : location;
+
+      const req = extendRequestContext({
+        originalRequest: request,
+        finalURL: url.toString(),
+      });
+
+      return pagesRouter.match(req).route || rootRouter.match(req).route;
+    };
+
+    // 404 page
+    const return404Error = () =>
+      route404
+        ? responseRenderedPage({ req: request, route: route404, status: 404 })
+        : new Response("Not found", { status: 404 });
+
+    if (i18nRes.response) {
+      // Redirect to the locale
+      if (isResponseLocationValidRoute(i18nRes.response))
+        return i18nRes.response;
+
+      return return404Error();
+    }
+
     if (i18nRes.pagesRouter && i18nRes.rootRouter) {
       pagesRouter = i18nRes.pagesRouter;
       rootRouter = i18nRes.rootRouter;
@@ -65,7 +94,9 @@ export const serveOptions: Serve = {
 
     if (!isAnAsset) {
       const redirect = redirectTrailingSlash(request);
-      if (redirect) return redirect;
+
+      if (redirect && isResponseLocationValidRoute(redirect)) return redirect;
+      if (redirect) return return404Error();
     }
 
     request.getIP = () => server.requestIP(req);
@@ -152,8 +183,6 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   }
 
   // 404 page
-  const route404 = pagesRouter.reservedRoutes[PAGE_404];
-
   return route404
     ? responseRenderedPage({ req, route: route404, status: 404 })
     : new Response("Not found", { status: 404 });
