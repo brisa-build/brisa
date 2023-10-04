@@ -140,3 +140,43 @@ export function responseHeaders(request, responseStatus) {
   };
 }
 ```
+
+## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders`
+
+You can share data between different parts of the application using the [`request context`](/docs/building-your-application/data-fetching/request-context).
+
+```tsx filename="layout/index.tsx" switcher
+import { type RequestContext } from "brisa";
+
+export default async function Layout({}, request: RequestContext) {
+  const data = await getData(request);
+
+  request.context.set("data", data);
+
+  return (
+    <html>
+      <head>
+        <title id="title">My page</title>
+        <link rel="icon" href="favicon.ico" />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```tsx filename="components/some-component.tsx" switcher
+import { type RequestContext } from "brisa";
+
+type Props = {
+  name: string;
+};
+
+export default function SomeComponent(props: Props, request: RequestContext) {
+  const data = request.context.get("data");
+
+  return <h1>Hello {data[props.name]}</h1>;
+}
+```
+
+If you want to know more [check this out](<(/docs/building-your-application/data-fetching/request-context)>).
