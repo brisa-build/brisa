@@ -83,7 +83,7 @@ Bun.serve({
     request.getIP = () => server.requestIP(req);
 
     return (
-      handleRequest(request, isAnAsset, req)
+      handleRequest(request, isAnAsset)
         // 500 page
         .catch((error) => {
           const route500 = pagesRouter.reservedRoutes[PAGE_500];
@@ -126,7 +126,6 @@ console.log(
 async function handleRequest(
   req: RequestContext,
   isAnAsset: boolean,
-  originalReq: Request,
 ) {
   const locale = req.i18n.locale;
   const url = new URL(req.finalURL);
