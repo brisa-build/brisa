@@ -92,12 +92,15 @@ describe("utils", () => {
       });
 
       request.headers.set("Cookie", "BRISA_LOCALE=ru");
-      request.headers.set("Accept-Language", "es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7");
+      request.headers.set(
+        "Accept-Language",
+        "es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7",
+      );
 
       const locale = getLocaleFromRequest(request);
 
       expect(locale).toBe("ru");
-    })
+    });
 
     it("should return the browser language if the BRISA_LOCALE cookie is not supported locale", () => {
       const request = extendRequestContext({
@@ -105,7 +108,10 @@ describe("utils", () => {
       });
 
       request.headers.set("Cookie", "BRISA_LOCALE=ua");
-      request.headers.set("Accept-Language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
+      request.headers.set(
+        "Accept-Language",
+        "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+      );
 
       const locale = getLocaleFromRequest(request);
 

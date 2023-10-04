@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import path from "node:path";
 import getRouteMatcher from ".";
+import extendRequestContext from "../extend-request-context";
 
 const PAGES_DIR = path.join(
   import.meta.dir,
@@ -31,7 +32,9 @@ describe("utils", () => {
     it("should return null if the route is reserved", () => {
       const { match, reservedRoutes } = getRouteMatcher(PAGES_DIR, ["/_404"]);
       const { route, isReservedPathname } = match(
-        new Request("https://example.com/_404"),
+        extendRequestContext({
+          originalRequest: new Request("https://example.com/_404"),
+        }),
       );
       expect(route).not.toBe(null);
       expect(isReservedPathname).toBe(true);
@@ -41,7 +44,9 @@ describe("utils", () => {
     it("should return a route if the route is not reserved", () => {
       const { match, reservedRoutes } = getRouteMatcher(PAGES_DIR, ["/_404"]);
       const { route, isReservedPathname } = match(
-        new Request("https://example.com/somepage"),
+        extendRequestContext({
+          originalRequest: new Request("https://example.com/somepage"),
+        }),
       );
       expect(route).not.toBe(null);
       expect(isReservedPathname).toBe(false);

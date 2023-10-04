@@ -2,7 +2,6 @@ import { describe, it, expect, afterEach } from "bun:test";
 import LoadLayout from ".";
 import path from "node:path";
 import { renderToReadableStream } from "../../core";
-import streamToText from "../../__fixtures__/stream-to-text";
 import getImportableFilepath from "../get-importable-filepath";
 import getRootDir from "../get-root-dir";
 import extendRequestContext from "../extend-request-context";
@@ -27,7 +26,7 @@ describe("utils", () => {
         </LoadLayout>,
         testRequest,
       );
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toContain("<title>Brisa</title>");
     });
 
@@ -43,7 +42,7 @@ describe("utils", () => {
         </LoadLayout>,
         testRequest,
       );
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toContain("<title>CUSTOM LAYOUT</title>");
     });
   });
