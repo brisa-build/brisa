@@ -7,9 +7,9 @@ const rootDir = getRootDir();
 const srcDir = getRootDir("development");
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
-const I18N_CONFIG = await importFileIfExists("i18n", rootDir);
+const I18N_CONFIG = (await importFileIfExists("i18n", rootDir))?.default;
 const CONFIG_DIR = path.join(srcDir, "..");
-const CONFIG = (await importFileIfExists("brisa.config", CONFIG_DIR)) ?? {};
+const CONFIG = (await importFileIfExists("brisa.config", CONFIG_DIR))?.default ?? {};
 
 const defaultConfig = {
   trailingSlash: false,
