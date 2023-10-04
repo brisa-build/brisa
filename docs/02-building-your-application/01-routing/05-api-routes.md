@@ -44,9 +44,51 @@ export function GET({ route: { query, params } }: RequestContext) {
 }
 ```
 
-## Request param
+## Request params
 
 The request that arrives is an extension of the native [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from having everything that the request has, it has extra information of the request, such as the `i18n`, the `route` and more. If you want to know more take a look at [`request context`](/docs/building-your-application/data-fetching/request-context).
+
+## Request Body
+
+You can read the `Request` body using the standard Web API methods:
+
+```ts filename="src/api/items/route.ts" switcher
+export async function POST(request: RequestContext) {
+  const res = await request.json()
+  return new Response(JSON.stringify({ res }))
+}
+```
+
+```js filename="src/api/items/route.js" switcher
+export async function POST(request) {
+  const res = await request.json()
+  return new Response(JSON.stringify({ res }))
+}
+```
+
+## Request Body FormData
+
+You can read the `FormData` using the standard Web API methods:
+
+```ts filename="src/api/items/route.ts" switcher
+export async function POST(request: RequestContext) {
+  const formData = await request.formData()
+  const name = formData.get('name')
+  const email = formData.get('email')
+  return new Response(JSON.stringify({ name, email }))
+}
+```
+
+```js filename="src/api/items/route.js" switcher
+export async function POST(request) {
+  const formData = await request.formData()
+  const name = formData.get('name')
+  const email = formData.get('email')
+  return new Response(JSON.stringify({ name, email }))
+}
+```
+
+Since `formData` data are all strings, you may want to use [`zod-form-data`](https://www.npmjs.com/zod-form-data) to validate the request and retrieve data in the format you prefer (e.g. `number`).
 
 ## Response
 
