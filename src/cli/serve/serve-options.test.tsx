@@ -37,6 +37,54 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = undefined;
   });
 
+  it("should return 404 page without redirect to the locale if the page doesn't exist", async () => {
+    const response = await testRequest(
+      new Request("http://localhost:1234/not-found-page"),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(html).toContain('<title id="title">Page not found</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain("<h1>Page not found 404</h1>");
+  });
+
+  it("should return 404 page without redirect to the trailingSlash if the page doesn't exist", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        trailingSlash: true,
+      },
+    };
+    const response = await testRequest(
+      new Request("http://localhost:1234/es/not-found-page"),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(html).toContain('<title id="title">Page not found</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain("<h1>Page not found 404</h1>");
+  });
+
+  it("should return 404 page without redirect to the locale and trailingSlash if the page doesn't exist", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        trailingSlash: true,
+      },
+    };
+    const response = await testRequest(
+      new Request("http://localhost:1234/not-found-page"),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(html).toContain('<title id="title">Page not found</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain("<h1>Page not found 404</h1>");
+  });
+
   it("should return 404 page", async () => {
     const response = await testRequest(
       new Request("http://localhost:1234/es/not-found-page"),
@@ -47,6 +95,30 @@ describe("CLI: serve", () => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Page not found 404</h1>");
+  });
+
+  it("should redirect to the correct locale", async () => {
+    const response = await testRequest(
+      new Request(`http://localhost:1234/somepage`),
+    );
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe("/es/somepage");
+  });
+
+  it("should redirect with trailingSlash", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        trailingSlash: true,
+      },
+    };
+    const response = await testRequest(
+      new Request(`http://localhost:1234/es/somepage`),
+    );
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe(
+      "http://localhost:1234/es/somepage/",
+    );
   });
 
   it("should return a page with layout and i18n", async () => {
@@ -86,5 +158,31 @@ describe("CLI: serve", () => {
 
     expect(response.status).toBe(200);
     expect(json).toEqual({ name: "Brisa", email: "test@brisa.com" });
+  });
+
+  it("should return 404 page if the api route does not exist", async () => {
+    const response = await testRequest(
+      new Request(`http:///localhost:1234/es/api/not-found`),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(html).toContain('<title id="title">Page not found</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain("<h1>Page not found 404</h1>");
+  });
+
+  it("should return 404 page if the api route exist but the method does not", async () => {
+    const response = await testRequest(
+      new Request(`http:///localhost:1234/es/api/example`, {
+        method: "PUT",
+      }),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(html).toContain('<title id="title">Page not found</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain("<h1>Page not found 404</h1>");
   });
 });
