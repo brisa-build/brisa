@@ -1,8 +1,12 @@
-import type { Props, ComponentType, JSXNode } from "../../types";
+import type {
+  Props,
+  ComponentType,
+  JSXNode,
+  RequestContext,
+} from "../../types";
 import extendStreamController, {
   Controller,
 } from "../../utils/extend-stream-controller";
-import RequestContext from "../request-context";
 import { injectUnsuspenseScript } from "../inject-unsuspense-script" assert { type: "macro" };
 import renderAttributes from "../../utils/render-attributes";
 import generateHrefLang from "../../utils/generate-href-lang";

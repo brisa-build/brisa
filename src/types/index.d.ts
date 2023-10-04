@@ -6,6 +6,7 @@ export interface RequestContext extends Request {
   i18n: I18nFromRequest;
   ws?: ServerWebSocket<unknown>;
   getIP: () => SocketAddress | null;
+  finalURL: string;
 }
 
 type Props = Record<string, unknown> & {

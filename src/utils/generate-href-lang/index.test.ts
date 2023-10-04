@@ -1,8 +1,8 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
 import generateHrefLang from ".";
 import getConstants from "../../constants";
-import { RequestContext } from "../../core";
 import { MatchedRoute } from "bun";
+import extendRequestContext from "../extend-request-context";
 
 const warn = console.warn.bind(console);
 
@@ -29,10 +29,10 @@ describe("utils", () => {
           },
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage"),
-        { name: "/somepage" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/somepage"),
+        route: { name: "/somepage" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "es",
@@ -62,10 +62,10 @@ describe("utils", () => {
       };
       const mockWarn = mock((v) => v);
       console.warn = mockWarn;
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage"),
-        { name: "/somepage" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/somepage"),
+        route: { name: "/somepage" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "es",
@@ -91,10 +91,10 @@ describe("utils", () => {
           hrefLangOrigin: "https://www.example.com",
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage"),
-        { name: "/somepage" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/somepage"),
+        route: { name: "/somepage" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "es",
@@ -119,10 +119,10 @@ describe("utils", () => {
           hrefLangOrigin: "https://www.example.com",
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage/1"),
-        { name: "/somepage/[id]" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/somepage/1"),
+        route: { name: "/somepage/[id]" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "es",
@@ -148,10 +148,10 @@ describe("utils", () => {
           hrefLangOrigin: "https://www.example.com",
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage/1"),
-        { name: "/somepage/[id]" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/somepage/1"),
+        route: { name: "/somepage/[id]" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "en",
@@ -176,10 +176,10 @@ describe("utils", () => {
           hrefLangOrigin: "https://www.example.com",
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage"),
-        { name: "/somepage" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/somepage"),
+        route: { name: "/somepage" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: undefined,
@@ -203,10 +203,10 @@ describe("utils", () => {
           hrefLangOrigin: "https://www.example.com",
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage/1/2/3"),
-        { name: "/somepage/[[...catchAll]]" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/somepage/1/2/3"),
+        route: { name: "/somepage/[[...catchAll]]" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "en",
@@ -232,10 +232,12 @@ describe("utils", () => {
           hrefLangOrigin: "https://www.example.com",
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage/1/settings/2/3"),
-        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request(
+          "https://www.example.com/somepage/1/settings/2/3",
+        ),
+        route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "en",
@@ -264,10 +266,10 @@ describe("utils", () => {
           hrefLangOrigin: "https://www.example.com",
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage"),
-        { name: "/somepage" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/somepage"),
+        route: { name: "/somepage" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "en",
@@ -302,10 +304,12 @@ describe("utils", () => {
           },
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/somepage/1/settings/2/3"),
-        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request(
+          "https://www.example.com/somepage/1/settings/2/3",
+        ),
+        route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "en",
@@ -345,10 +349,12 @@ describe("utils", () => {
           },
         },
       };
-      const input = new RequestContext(
-        new Request("https://www.example.com/en/somepage/1/settings/2/3"),
-        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request(
+          "https://www.example.com/en/somepage/1/settings/2/3",
+        ),
+        route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      });
       input.i18n = {
         ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
@@ -397,10 +403,10 @@ describe("utils", () => {
         },
       };
 
-      const input = new RequestContext(
-        new Request("https://test.com/es/sobre-nosotros"),
-        { name: "/a" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://test.com/es/sobre-nosotros"),
+        route: { name: "/a" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "es",
@@ -432,10 +438,10 @@ describe("utils", () => {
         },
       };
 
-      const input = new RequestContext(
-        new Request("https://test.com/es/not-found"),
-        { name: "/_404" } as MatchedRoute,
-      );
+      const input = extendRequestContext({
+        originalRequest: new Request("https://test.com/es/not-found"),
+        route: { name: "/_404" } as MatchedRoute,
+      });
       input.i18n = {
         ...getConstants().I18N_CONFIG,
         locale: "es",
@@ -478,22 +484,26 @@ describe("utils", () => {
         ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
       };
-      const home = new RequestContext(
-        new Request("https://www.example.com/en/"),
-        { name: "/" } as MatchedRoute,
-      );
-      const homeWithoutTrailingSlash = new RequestContext(
-        new Request("https://www.example.com/en"),
-        { name: "/" } as MatchedRoute,
-      );
-      const withTrailingSlash = new RequestContext(
-        new Request("https://www.example.com/en/somepage/1/settings/2/3/"),
-        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
-      );
-      const withoutTrailingSlash = new RequestContext(
-        new Request("https://www.example.com/en/somepage/1/settings/2/3"),
-        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
-      );
+      const home = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/en/"),
+        route: { name: "/" } as MatchedRoute,
+      });
+      const homeWithoutTrailingSlash = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/en"),
+        route: { name: "/" } as MatchedRoute,
+      });
+      const withTrailingSlash = extendRequestContext({
+        originalRequest: new Request(
+          "https://www.example.com/en/somepage/1/settings/2/3/",
+        ),
+        route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      });
+      const withoutTrailingSlash = extendRequestContext({
+        originalRequest: new Request(
+          "https://www.example.com/en/somepage/1/settings/2/3",
+        ),
+        route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      });
 
       home.i18n = i18n;
       withTrailingSlash.i18n = i18n;
@@ -558,22 +568,26 @@ describe("utils", () => {
         ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
       };
-      const home = new RequestContext(
-        new Request("https://www.example.com/en/"),
-        { name: "/" } as MatchedRoute,
-      );
-      const homeWithoutTrailingSlash = new RequestContext(
-        new Request("https://www.example.com/en"),
-        { name: "/" } as MatchedRoute,
-      );
-      const withTrailingSlash = new RequestContext(
-        new Request("https://www.example.com/en/somepage/1/settings/2/3/"),
-        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
-      );
-      const withoutTrailingSlash = new RequestContext(
-        new Request("https://www.example.com/en/somepage/1/settings/2/3"),
-        { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
-      );
+      const home = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/en/"),
+        route: { name: "/" } as MatchedRoute,
+      });
+      const homeWithoutTrailingSlash = extendRequestContext({
+        originalRequest: new Request("https://www.example.com/en"),
+        route: { name: "/" } as MatchedRoute,
+      });
+      const withTrailingSlash = extendRequestContext({
+        originalRequest: new Request(
+          "https://www.example.com/en/somepage/1/settings/2/3/",
+        ),
+        route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      });
+      const withoutTrailingSlash = extendRequestContext({
+        originalRequest: new Request(
+          "https://www.example.com/en/somepage/1/settings/2/3",
+        ),
+        route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
+      });
 
       home.i18n = i18n;
       withTrailingSlash.i18n = i18n;

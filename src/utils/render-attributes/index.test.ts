@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import renderAttributes from ".";
-import { RequestContext } from "../../core";
 import getConstants from "../../constants";
+import extendRequestContext from "../extend-request-context";
 
 describe("utils", () => {
   describe("renderAttributes", () => {
@@ -10,7 +10,9 @@ describe("utils", () => {
     });
 
     it("should render attributes", () => {
-      const request = new RequestContext(new Request("https://example.com"));
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
       const attributes = renderAttributes({
         props: {
           foo: "bar",
@@ -23,7 +25,9 @@ describe("utils", () => {
     });
 
     it('should render the "a" href attribute with the locale as prefix', () => {
-      const request = new RequestContext(new Request("https://example.com/ru"));
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/ru"),
+      });
 
       request.i18n = {
         locale: "ru",
@@ -44,7 +48,9 @@ describe("utils", () => {
     });
 
     it('should add the lang attribute in the "html" tag', () => {
-      const request = new RequestContext(new Request("https://example.com/ru"));
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/ru"),
+      });
 
       request.i18n = {
         locale: "ru",
@@ -85,7 +91,9 @@ describe("utils", () => {
         },
       };
 
-      const request = new RequestContext(new Request("https://example.com/es"));
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/es"),
+      });
 
       request.i18n = {
         locale: "es",
@@ -143,7 +151,9 @@ describe("utils", () => {
         },
       };
 
-      const request = new RequestContext(new Request("https://example.com/es"));
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/es"),
+      });
 
       request.i18n = {
         locale: "es",
@@ -189,7 +199,9 @@ describe("utils", () => {
         },
       };
 
-      const request = new RequestContext(new Request("https://example.com"));
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
 
       const imgSrc = (src: string) =>
         renderAttributes({
@@ -234,7 +246,9 @@ describe("utils", () => {
         },
       };
 
-      const request = new RequestContext(new Request("https://example.com"));
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
 
       const imgSrc = (src: string) =>
         renderAttributes({

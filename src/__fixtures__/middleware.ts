@@ -1,5 +1,7 @@
-export default async function middleware(request: Request) {
-  const url = new URL(request.url);
+import { RequestContext } from "../types";
+
+export default async function middleware(request: RequestContext) {
+  const url = new URL(request.finalURL);
 
   if (url.pathname !== "/test") return;
 

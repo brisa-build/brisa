@@ -3,7 +3,7 @@ import path from "node:path";
 
 import LoadLayout from "../utils/load-layout";
 import getRouteMatcher from "../utils/get-route-matcher";
-import { RequestContext, renderToReadableStream } from "../core";
+import { renderToReadableStream } from "../core";
 import { LiveReloadScript } from "./dev-live-reload";
 import { MatchedRoute, ServerWebSocket } from "bun";
 import importFileIfExists from "../utils/import-file-if-exists";
@@ -11,6 +11,8 @@ import getConstants from "../constants";
 import handleI18n from "../utils/handle-i18n";
 import redirectTrailingSlash from "../utils/redirect-trailing-slash";
 import getImportableFilepath from "../utils/get-importable-filepath";
+import extendRequestContext from "../utils/extend-request-context";
+import { RequestContext } from "../types";
 
 const {
   IS_PRODUCTION,
@@ -60,8 +62,8 @@ Bun.serve({
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
     if (server.upgrade(req)) return;
-    const request = new RequestContext(req);
-    const url = new URL(request.url);
+    const request = extendRequestContext({ originalRequest: req });
+    const url = new URL(request.finalURL);
     const assetPath = path.join(ASSETS_DIR, url.pathname);
     const isHome = url.pathname === "/";
     const isAnAsset = !isHome && fs.existsSync(assetPath);
@@ -81,7 +83,7 @@ Bun.serve({
     request.getIP = () => server.requestIP(req);
 
     return (
-      handleRequest(request, isAnAsset)
+      handleRequest(request, isAnAsset, req)
         // 500 page
         .catch((error) => {
           const route500 = pagesRouter.reservedRoutes[PAGE_500];
@@ -121,9 +123,13 @@ console.log(
 ////////////////////// HELPERS ///////////////////////
 ///////////////////////////////////////////////////////
 
-async function handleRequest(req: RequestContext, isAnAsset: boolean) {
+async function handleRequest(
+  req: RequestContext,
+  isAnAsset: boolean,
+  originalReq: Request,
+) {
   const locale = req.i18n.locale;
-  const url = new URL(req.url);
+  const url = new URL(req.finalURL);
   const pathname = url.pathname;
   const { route, isReservedPathname } = pagesRouter.match(req);
   const isApi = pathname.startsWith(locale ? `/${locale}/api/` : "/api/");
@@ -149,7 +155,7 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
 
     req.route = api.route;
 
-    const response = module[method]?.(req)
+    const response = module[method]?.(req);
 
     if (response) return response;
   }

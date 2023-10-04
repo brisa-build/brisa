@@ -16,21 +16,21 @@ import { type RequestContext } from "brisa";
 
 export function GET(request: RequestContext) {
   const responseData = JSON.stringify({
-    message: "Hello world from Brisa!"
-  })
+    message: "Hello world from Brisa!",
+  });
 
   const responseOptions = {
-    headers: { "content-type": "application/json" }
-  }
+    headers: { "content-type": "application/json" },
+  };
 
   return new Response(responseData, responseOptions);
 }
 ```
 
-
 ## Query and parameters
 
 If we want for example to use a dynamic route for users and know which username it is:
+
 - `/api/user/aralroca?id=3` → `src/api/user/[username].ts`
 
 We have access to the route through the `RequestContext` and we can access both the parameters and the query.
@@ -39,7 +39,7 @@ We have access to the route through the `RequestContext` and we can access both 
 import { type RequestContext } from "brisa";
 
 export function GET({ route: { query, params } }: RequestContext) {
-  const { id } = params
+  const { id } = params;
   return new Response(`Hello world ${query.username} with id=${id}!`);
 }
 ```
@@ -47,7 +47,6 @@ export function GET({ route: { query, params } }: RequestContext) {
 ## Request param
 
 The request that arrives is an extension of the native [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from having everything that the request has, it has extra information of the request, such as the `i18n`, the `route` and more. If you want to know more take a look at [`request context`](/docs/building-your-application/data-fetching/request-context).
-
 
 ## Response
 
@@ -65,27 +64,26 @@ Example:
 import { type RequestContext } from "brisa";
 
 export function GET({ i18n, route: { query, params } }: RequestContext) {
-  const { id } = params
-  return new Response(i18n.t('hello', { name: params.username, id }));
+  const { id } = params;
+  return new Response(i18n.t("hello", { name: params.username, id }));
 }
 ```
 
 And this inside `src/i18n/index.ts` or `src/i18n.ts` file:
 
-
 ```ts filename="src/i18n/index.ts" switcher
 export default {
-  locales: ['en', 'es'],
-  defaultLocale: 'en',
+  locales: ["en", "es"],
+  defaultLocale: "en",
   messages: {
     en: {
-      hello: 'Hello {{name}} with id={{id}}!',
+      hello: "Hello {{name}} with id={{id}}!",
     },
     es: {
-      hello: '¡Hola {{name}} con id={{id}}!',
+      hello: "¡Hola {{name}} con id={{id}}!",
     },
   },
-}
+};
 ```
 
 ## Dynamic routes, catch all and optional catch all routes
@@ -97,15 +95,14 @@ API Routes support [dynamic routes](/docs/building-your-application/routing/dyna
 It can be extended to catch all paths by adding three dots (`...`) inside the brackets. For example:
 
 - `/api/post/a` → `pages/api/post/[...slug].js`
-- `/api/post/a/b`  → `pages/api/post/[...slug].js`
- `/api/post/a/b/c` and so on.  → `pages/api/post/[...slug].js`
+- `/api/post/a/b` → `pages/api/post/[...slug].js`
+  `/api/post/a/b/c` and so on. → `pages/api/post/[...slug].js`
 
 Catch all routes can be made optional by including the parameter in double brackets (`[[...slug]]`).
 
-- `/api/post` → `pages/api/post/[[...slug]].js` 
-- `/api/post/a` → `pages/api/post/[[...slug]].js` 
-- `/api/post/a/b`, and so on. → `pages/api/post/[[...slug]].js` 
-
+- `/api/post` → `pages/api/post/[[...slug]].js`
+- `/api/post/a` → `pages/api/post/[[...slug]].js`
+- `/api/post/a/b`, and so on. → `pages/api/post/[[...slug]].js`
 
 > **Good to know**: You can use names other than `slug`, such as: `[[...param]]`
 
@@ -115,14 +112,14 @@ You can set CORS headers on a `Response` using the standard Web API methods:
 
 ```ts
 export async function GET(request: Request) {
-  return new Response('Hello, Brisa!', {
+  return new Response("Hello, Brisa!", {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
-  })
+  });
 }
 ```
 
