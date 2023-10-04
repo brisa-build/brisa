@@ -97,6 +97,24 @@ describe("CLI: serve", () => {
     expect(html).toContain("<h1>Page not found 404</h1>");
   });
 
+  it("should redirect the home to the correct locale", async () => {
+    const response = await testRequest(new Request("http://localhost:1234"));
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe("/es");
+  });
+
+  it("should redirect the home to the correct locale and trailingSlash", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        trailingSlash: true,
+      },
+    };
+    const response = await testRequest(new Request("http://localhost:1234/"));
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe("/es/");
+  });
+
   it("should redirect to the correct locale", async () => {
     const response = await testRequest(
       new Request(`http://localhost:1234/somepage`),
@@ -119,6 +137,20 @@ describe("CLI: serve", () => {
     expect(response.headers.get("Location")).toBe(
       "http://localhost:1234/es/somepage/",
     );
+  });
+
+  it("should redirect with locale and trailingSlash", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        trailingSlash: true,
+      },
+    };
+    const response = await testRequest(
+      new Request(`http://localhost:1234/somepage`),
+    );
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe("/es/somepage/");
   });
 
   it("should return a page with layout and i18n", async () => {
