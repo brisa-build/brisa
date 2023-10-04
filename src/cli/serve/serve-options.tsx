@@ -58,33 +58,20 @@ export const serveOptions: Serve = {
     const isAnAsset = !isHome && fs.existsSync(assetPath);
     const i18nRes = isAnAsset ? {} : handleI18n(request);
 
-    const isResponseLocationValidRoute = (response: Response) => {
-      const location = response.headers.get("Location") ?? "";
-
-      url.pathname = URL.canParse(location)
-        ? new URL(location).pathname
-        : location;
-
-      const req = extendRequestContext({
-        originalRequest: request,
-        finalURL: url.toString(),
-      });
-
-      return pagesRouter.match(req).route || rootRouter.match(req).route;
+    const isValidRoute = () => {
+      return (
+        pagesRouter.match(request).route || rootRouter.match(request).route
+      );
     };
 
     // 404 page
-    const return404Error = () =>
+    const error404 = () =>
       route404
         ? responseRenderedPage({ req: request, route: route404, status: 404 })
         : new Response("Not found", { status: 404 });
 
     if (i18nRes.response) {
-      // Redirect to the locale
-      if (isResponseLocationValidRoute(i18nRes.response))
-        return i18nRes.response;
-
-      return return404Error();
+      return isValidRoute() ? i18nRes.response : error404();
     }
 
     if (i18nRes.pagesRouter && i18nRes.rootRouter) {
@@ -95,8 +82,7 @@ export const serveOptions: Serve = {
     if (!isAnAsset) {
       const redirect = redirectTrailingSlash(request);
 
-      if (redirect && isResponseLocationValidRoute(redirect)) return redirect;
-      if (redirect) return return404Error();
+      if (redirect) return isValidRoute() ? redirect : error404();
     }
 
     request.getIP = () => server.requestIP(req);
