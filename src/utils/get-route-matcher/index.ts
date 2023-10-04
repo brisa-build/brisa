@@ -18,7 +18,7 @@ export default function getRouteMatcher(
       url.pathname = url.pathname.replace(`/${locale}`, "");
     }
 
-    const route = router.match(new Request(url, req));
+    const route = router.match(url.toString());
 
     return {
       route,

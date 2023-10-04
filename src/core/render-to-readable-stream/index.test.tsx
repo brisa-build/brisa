@@ -1,6 +1,5 @@
 import { describe, it, expect, mock, afterEach, afterAll } from "bun:test";
 import renderToReadableStream from ".";
-import streamToText from "../../__fixtures__/stream-to-text";
 import dangerHTML from "../danger-html";
 import getConstants from "../../constants";
 import { ComponentType, RequestContext } from "../../types";
@@ -25,7 +24,7 @@ describe("brisa core", () => {
     it("should render a simple JSX element", async () => {
       const element = <div class="test">Hello World</div>;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
 
       const expected = `<div class="test">Hello World</div>`;
       expect(result).toEqual(expected);
@@ -42,7 +41,7 @@ describe("brisa core", () => {
         </html>
       );
       const stream = renderToReadableStream(element, testRequest);
-      await streamToText(stream);
+      await Bun.readableStreamToText(stream);
       expect(mockConsoleError.mock.calls.length).toEqual(0);
     });
 
@@ -55,7 +54,7 @@ describe("brisa core", () => {
       );
       const element = <Component name="World" title="Test" />;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello World</h1><p>This is a paragraph</p></div>';
       expect(result).toEqual(expected);
@@ -77,7 +76,7 @@ describe("brisa core", () => {
         <AsyncComponent title="Test" />,
         testRequest,
       );
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>';
       expect(result).toEqual(expected);
@@ -95,7 +94,7 @@ describe("brisa core", () => {
       );
       const element = <Component name="World" title="Test" />;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello World</h1><p>The URL is: http://test.com/</p></div>';
       expect(result).toEqual(expected);
@@ -120,7 +119,7 @@ describe("brisa core", () => {
 
       const element = <Component name="World" />;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       const expected = "<div>Hello World</div>";
 
       const stream2 = await renderToReadableStream(
@@ -129,7 +128,7 @@ describe("brisa core", () => {
           originalRequest: new Request("http://test.com/?name=Test"),
         }),
       );
-      const result2 = await streamToText(stream2);
+      const result2 = await Bun.readableStreamToText(stream2);
       const expected2 = "<div>Hello Test</div>";
 
       expect(result).toEqual(expected);
@@ -156,7 +155,7 @@ describe("brisa core", () => {
       Component.error = () => <div>Error</div>;
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual("<div>Error</div>");
     });
 
@@ -177,7 +176,7 @@ describe("brisa core", () => {
       };
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         "<div><h1>Parent component</h1><div>Error</div></div>",
       );
@@ -200,7 +199,7 @@ describe("brisa core", () => {
         </Component>,
         testRequest,
       );
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         "<div><h1>another component</h1><script>alert(&#x27;test&#x27;)</script></div>",
       );
@@ -223,7 +222,7 @@ describe("brisa core", () => {
         </>,
         testRequest,
       );
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual("This is a <b>test</b>");
     });
 
@@ -245,7 +244,7 @@ describe("brisa core", () => {
         </Component>,
         testRequest,
       );
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         "<b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>",
       );
@@ -262,7 +261,7 @@ describe("brisa core", () => {
       );
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual("<div>TRUE</div><div>TRUE</div>0");
     });
 
@@ -274,7 +273,7 @@ describe("brisa core", () => {
       );
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual("<div>This is 1 example</div>");
     });
 
@@ -286,7 +285,7 @@ describe("brisa core", () => {
       );
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual("This is 1 example");
     });
 
@@ -299,7 +298,7 @@ describe("brisa core", () => {
       );
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         '<div class="empty"></div><div class="empty"></div>',
       );
@@ -330,7 +329,7 @@ describe("brisa core", () => {
         </html>
       );
       const stream = renderToReadableStream(element, req);
-      const result = streamToText(stream);
+      const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html lang="es"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
       );
@@ -344,7 +343,7 @@ describe("brisa core", () => {
         </html>
       );
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toMatch(
         /<html><head><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
       );
@@ -359,7 +358,7 @@ describe("brisa core", () => {
       Component.suspense = () => <b>Loading...</b>;
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(
         `<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
       );
@@ -383,7 +382,7 @@ describe("brisa core", () => {
       );
 
       const stream = renderToReadableStream(<Page />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(
         `<div id="S:1"><b>Loading...</b></div><h2>Another</h2><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
       );
@@ -399,7 +398,7 @@ describe("brisa core", () => {
       Component.suspense = () => <b>Loading...</b>;
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>This is 1 example</div></template><script id="R:1">u$(\'1\')</script>',
       );
@@ -415,7 +414,7 @@ describe("brisa core", () => {
       Component.suspense = () => <b>Loading...</b>;
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is 1 example</template><script id="R:1">u$(\'1\')</script>',
       );
@@ -432,7 +431,7 @@ describe("brisa core", () => {
       Component.suspense = () => <b>Loading...</b>;
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is <b>1</b> example</template><script id="R:1">u$(\'1\')</script>',
       );
@@ -449,7 +448,7 @@ describe("brisa core", () => {
       Component.suspense = () => <b>Loading...</b>;
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is 1 example</template><script id="R:1">u$(\'1\')</script>',
       );
@@ -467,7 +466,7 @@ describe("brisa core", () => {
       Component.suspense = () => <b>Loading...</b>;
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>This is <b>is </b><i>an </i><b>example</b></div></template><script id="R:1">u$(\'1\')</script>',
       );
@@ -487,7 +486,7 @@ describe("brisa core", () => {
         </html>
       );
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = undefined;
       expect(result).toStartWith(`<html lang="en"><head>`);
     });
@@ -506,7 +505,7 @@ describe("brisa core", () => {
         </html>
       );
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = undefined;
       expect(result).toStartWith(`<html lang="es"><head>`);
     });
@@ -518,13 +517,13 @@ describe("brisa core", () => {
         defaultLocale: "en",
         t: () => "",
       };
-      const home = await streamToText(
+      const home = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/">Test</a>, testRequest),
       );
-      const withParam = await streamToText(
+      const withParam = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/test?some=true">Test</a>, testRequest),
       );
-      const withHash = await streamToText(
+      const withHash = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/test#some">Test</a>, testRequest),
       );
 
@@ -541,16 +540,16 @@ describe("brisa core", () => {
         defaultLocale: "en",
         t: () => "",
       };
-      const essencePage = await streamToText(
+      const essencePage = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence">Test</a>, testRequest),
       );
-      const withParam = await streamToText(
+      const withParam = await Bun.readableStreamToText(
         renderToReadableStream(
           <a href="/essence?some=true">Test</a>,
           testRequest,
         ),
       );
-      const withHash = await streamToText(
+      const withHash = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence#some">Test</a>, testRequest),
       );
 
@@ -569,7 +568,7 @@ describe("brisa core", () => {
       };
       const element = <a href="http://test.com/test">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = undefined;
       expect(result).toEqual(`<a href="http://test.com/test">Test</a>`);
     });
@@ -583,7 +582,7 @@ describe("brisa core", () => {
       };
       const element = <a href="mailto:test@test.com">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = {} as any;
       expect(result).toEqual(`<a href="mailto:test@test.com">Test</a>`);
     });
@@ -597,7 +596,7 @@ describe("brisa core", () => {
       };
       const element = <a href="/en/test">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = undefined as any;
       expect(result).toEqual(`<a href="/en/test">Test</a>`);
     });
@@ -605,7 +604,7 @@ describe("brisa core", () => {
     it("should not be possible to inject HTML as string directly in the JSX element", async () => {
       const element = <div>{`<script>alert('test')</script>`}</div>;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         `<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`,
       );
@@ -619,7 +618,7 @@ describe("brisa core", () => {
         </div>
       );
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         `<div><h1>Example</h1>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`,
       );
@@ -628,7 +627,7 @@ describe("brisa core", () => {
     it('should be possible to inject HTML as string in the JSX using the "dangerHTML" helper', async () => {
       const element = <div>{dangerHTML(`<script>alert('test')</script>`)}</div>;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(`<div><script>alert('test')</script></div>`);
     });
 
@@ -636,7 +635,7 @@ describe("brisa core", () => {
       const Component = () => <>{`<script>alert('test')</script>`}</>;
       const element = <Component />;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
         `&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`,
       );
@@ -648,7 +647,7 @@ describe("brisa core", () => {
       );
       const element = <Component />;
       const stream = renderToReadableStream(element, testRequest);
-      const result = await streamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(`<script>alert('test')</script>`);
     });
 
@@ -674,7 +673,7 @@ describe("brisa core", () => {
         req,
         Head as unknown as ComponentType,
       );
-      const result = streamToText(stream);
+      const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html><head><link rel="canonical" href="\/"><\/link><title>Test<\/title><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
       );
@@ -702,7 +701,7 @@ describe("brisa core", () => {
         req,
         Head as unknown as ComponentType,
       );
-      const result = streamToText(stream);
+      const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html><head><title id="title">Test 2<\/title><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
       );
@@ -723,7 +722,7 @@ describe("brisa core", () => {
       );
 
       const stream = renderToReadableStream(element, req);
-      const result = streamToText(stream);
+      const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html><head><script>[\s\S]+<\/script><\/head><body><h1 id="a">A<\/h1><h1 id="a">B<\/h1><\/body><\/html>/gm,
       );

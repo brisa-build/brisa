@@ -123,10 +123,7 @@ console.log(
 ////////////////////// HELPERS ///////////////////////
 ///////////////////////////////////////////////////////
 
-async function handleRequest(
-  req: RequestContext,
-  isAnAsset: boolean,
-) {
+async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   const locale = req.i18n.locale;
   const url = new URL(req.finalURL);
   const pathname = url.pathname;
