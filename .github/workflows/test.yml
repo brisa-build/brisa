@@ -8,14 +8,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v3
       - name: Bunjs
         uses: oven-sh/setup-bun@v1
         with:
-          version: 1.0.3
+          version: 1.0.4
       - name: Install dependencies
         run: bun install
       - run: bun run build
