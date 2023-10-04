@@ -111,7 +111,9 @@ Catch all routes can be made optional by including the parameter in double brack
 You can set CORS headers on a `Response` using the standard Web API methods:
 
 ```ts
-export async function GET(request: Request) {
+import { type RequestContext } from "brisa";
+
+export async function GET(request: RequestContext) {
   return new Response("Hello, Brisa!", {
     status: 200,
     headers: {
@@ -123,9 +125,85 @@ export async function GET(request: Request) {
 }
 ```
 
+## Redirects to a specified path or URL
+
+Taking a form as an example, you may want to redirect your client to a specified path or URL once they have submitted the form.
+
+The following example redirects the client to the `/` path if the form is successfully submitted:
+
+```ts filename="/api/hello.ts" switcher
+import { type RequestContext } from "brisa";
+
+export async function POST(req: RequestContext) {
+  const { name, message }  = await req.json()
+
+  try {
+    await handleFormInputAsync({ name, message })
+    return new Response("", {
+      status: 307,
+      headers: {
+        Location: "/",
+      },
+    })
+  } catch (err) {
+    return new Response("Failed to fetch data", { status: 500 })
+  }
+```
+
+## Cache-Control
+
+You can add the `Cache-Control` headers to the response. By default is not using any cache.
+
+```ts filename="app/items/route.ts" switcher
+export async function GET() {
+  const data = await getSomeData()
+  const res = new Response(JSON.stringify(data))
+
+  res.headers.set("Cache-Control", "max-age=86400")
+
+  return res
+}
+```
+
+## Headers and Cookies
+
+You can read headers and cookies from the [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) and write headers and cookies to the [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) using Web APIs. 
+
+Example reading/writing cookies:
+
+```ts filename="api/route.ts" switcher
+import { type RequestContext } from "brisa";
+
+export async function GET(request: RequestContext) {
+  const cookies = request.headers.get('cookie')
+  const res = new Response('Hello, Brisa!');
+
+  if (cookies) {
+    res.headers.set('set-cookie', cookies)
+  }
+
+  return res
+}
+```
+
 ## Streaming
 
-TODO
+ You can use the Web APIs to create a [stream](https://bun.sh/docs/api/streams) and then return it inside the `Response`:
+
+```ts
+export async function GET() {
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue("Hello");
+      controller.enqueue(" ");
+      controller.enqueue("Brisa!");
+      controller.close();
+    },
+  });
+
+  return new Response(stream) // Hello Brisa!
+}
+```
 
 ## Edge API Routes
 
