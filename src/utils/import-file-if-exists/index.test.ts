@@ -11,8 +11,8 @@ describe("utils", () => {
 
   describe("importFileIfExists", () => {
     it("should return null if there is not a custom middleware", async () => {
-      const middleware = await importFileIfExists("middleware");
-      expect(middleware).toBeNull();
+      const middlewareModule = await importFileIfExists("middleware");
+      expect(middlewareModule).toBeNull();
     });
 
     it('should return custom middleware if "middleware.ts" exists', async () => {
@@ -20,7 +20,7 @@ describe("utils", () => {
         join(import.meta.dir, "..", "..", "__fixtures__", "middleware");
 
       const middleware = await importFileIfExists("middleware");
-      expect(middleware).toBeFunction();
+      expect(middleware?.default).toBeFunction();
     });
 
     it("should return null if there is not a custom i18n", async () => {
@@ -33,7 +33,7 @@ describe("utils", () => {
         join(import.meta.dir, "..", "..", "__fixtures__", "i18n");
 
       const i18n = await importFileIfExists("i18n");
-      expect(i18n).toEqual({
+      expect(i18n?.default).toEqual({
         defaultLocale: "en",
         locales: ["en", "fr"],
         messages: {

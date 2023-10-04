@@ -11,7 +11,5 @@ export default async function importFileIfExists(
 
   if (!path) return null;
 
-  const middlewareModule = await import(path);
-
-  return middlewareModule.default;
+  return await import(path);
 }
