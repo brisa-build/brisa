@@ -1,18 +1,18 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import LoadLayout from "../utils/load-layout";
-import getRouteMatcher from "../utils/get-route-matcher";
-import { renderToReadableStream } from "../core";
-import { LiveReloadScript } from "./dev-live-reload";
-import { MatchedRoute, ServerWebSocket } from "bun";
-import importFileIfExists from "../utils/import-file-if-exists";
-import getConstants from "../constants";
-import handleI18n from "../utils/handle-i18n";
-import redirectTrailingSlash from "../utils/redirect-trailing-slash";
-import getImportableFilepath from "../utils/get-importable-filepath";
-import extendRequestContext from "../utils/extend-request-context";
-import { RequestContext } from "../types";
+import LoadLayout from "../../utils/load-layout";
+import getRouteMatcher from "../../utils/get-route-matcher";
+import { renderToReadableStream } from "../../core";
+import { LiveReloadScript } from "../dev-live-reload";
+import { MatchedRoute, Serve, Server, ServerWebSocket } from "bun";
+import importFileIfExists from "../../utils/import-file-if-exists";
+import getConstants from "../../constants";
+import handleI18n from "../../utils/handle-i18n";
+import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
+import getImportableFilepath from "../../utils/get-importable-filepath";
+import extendRequestContext from "../../utils/extend-request-context";
+import { RequestContext } from "../../types";
 
 const {
   IS_PRODUCTION,
@@ -32,19 +32,6 @@ declare global {
   var ws: ServerWebSocket<unknown> | undefined;
 }
 
-if (IS_PRODUCTION && !fs.existsSync(ROOT_DIR)) {
-  console.error('Not exist "build" yet. Please run "brisa build" first');
-  process.exit(1);
-}
-
-if (!fs.existsSync(PAGES_DIR)) {
-  const path = IS_PRODUCTION ? "build/pages" : "src/pages";
-  const cli = IS_PRODUCTION ? "brisa start" : "brisa dev";
-
-  console.error(`Not exist ${path}" directory. It\'s required to run "${cli}"`);
-  process.exit(1);
-}
-
 const middlewareModule = await importFileIfExists("middleware", ROOT_DIR);
 const customMiddleware = middlewareModule?.default;
 let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
@@ -57,8 +44,8 @@ const responseInitWithGzip = {
   },
 };
 
-// Start server
-Bun.serve({
+// Options to start server
+export const serveOptions: Serve = {
   port: PORT,
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
@@ -114,11 +101,7 @@ Bun.serve({
       wsModule?.drain?.(ws);
     },
   },
-});
-
-console.log(
-  `Listening on http://localhost:${PORT} (${process.env.NODE_ENV})...`,
-);
+};
 
 ///////////////////////////////////////////////////////
 ////////////////////// HELPERS ///////////////////////
