@@ -1,15 +1,6 @@
 import path from "node:path";
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  beforeAll,
-  afterAll,
-} from "bun:test";
+import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import getConstants from "../../constants";
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(ROOT_DIR, "pages");
@@ -20,20 +11,14 @@ async function testRequest(request: Request): Promise<Response> {
 
   return (
     // @ts-ignore
-    (await serveOptions.fetch(request, { requestIP: () => { }, upgrade: () => { } }) ||
-      new Response()) as Response
+    ((await serveOptions.fetch(request, {
+      requestIP: () => {},
+      upgrade: () => {},
+    })) || new Response()) as Response
   );
 }
 
 describe("CLI: serve", () => {
-  beforeAll(() => {
-    GlobalRegistrator.unregister();
-  });
-
-  afterAll(() => {
-    GlobalRegistrator.register();
-  });
-
   beforeEach(async () => {
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),

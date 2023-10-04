@@ -1,4 +1,12 @@
-import { describe, it, expect, mock, afterEach, afterAll } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  mock,
+  afterEach,
+  afterAll,
+  beforeAll,
+} from "bun:test";
 import renderToReadableStream from ".";
 import dangerHTML from "../danger-html";
 import getConstants from "../../constants";
@@ -17,9 +25,11 @@ describe("brisa core", () => {
     mockConsoleError.mockClear();
     globalThis.mockConstants = undefined;
   });
+
   afterAll(() => {
     console.error = consoleError;
   });
+
   describe("renderToReadableStream", () => {
     it("should render a simple JSX element", async () => {
       const element = <div class="test">Hello World</div>;
