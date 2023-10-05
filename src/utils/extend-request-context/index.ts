@@ -45,6 +45,7 @@ export default function extendRequestContext({
       locales: [],
       locale: "",
       t: () => "",
+      pages: {},
     };
 
   return originalRequest as RequestContext;

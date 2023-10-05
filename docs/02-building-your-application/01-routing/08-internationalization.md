@@ -109,7 +109,8 @@ You can access the locale information via the [`request context`](/docs/building
 - `locale` contains the currently active locale.
 - `locales` contains all configured locales.
 - `defaultLocale` contains the configured default locale.
-- `t` function to consume translations
+- `pages` contains the configured pages.
+- `t` function to consume translations.
 
 Example in a page:
 
@@ -568,9 +569,49 @@ The key of each page item will be the name of the route. It works also with dyna
 
 It will automatically be taken into account in redirects, navigation and the `hrefLang` generation (see [here](#activate-automatic-hreflang) how to active `hrefLang`).
 
+## Navigation
+
+During navigation you do **not** have to add the locale in the `href` of the `a` tag, if you add it it will not do any conversion.
+
+The fact of not adding the locale Brisa takes care of transforming the link:
+
+```js
+function MyComponent({}, { i18n: { t } }) {
+  return <a href="/about-us">{t("about-us")}</a>;
+}
+```
+
+Will be transformed to this HTML in `es`:
+
+```html
+<a href="/es/sobre-nosotros">Sobre nosotros</a>
+```
+
 ## Transition between locales
 
-TODO
+As long as you do not put the locale in the `href` of `a` tag, then no conversion is done. It is useful to change the language:
+
+```tsx filename="src/components/change-locale.tsx" switcher
+export function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
+  const { locales, locale, pages, t } = i18n;
+
+  return (
+    <ul>
+      {locales.map((lang) => {
+        const pathname = pages[route.name]?.[lang] ?? route.pathname;
+
+        if (lang === locale) return null;
+
+        return (
+          <li>
+            <a href={`/${lang}${pathname}`}>{t(`change-to-${lang}`)}</a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+```
 
 ## Leveraging the `BRISA_LOCALE` cookie
 
