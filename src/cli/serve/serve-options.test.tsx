@@ -201,6 +201,77 @@ describe("CLI: serve", () => {
     );
   });
 
+  it("should redirect to the correct browser locale changing the subdomain and the page route name", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      I18N_CONFIG: {
+        locales: ["en", "es"],
+        defaultLocale: "es",
+        domains: {
+          "en.test.com": {
+            defaultLocale: "en",
+          },
+          "es.test.com": {
+            defaultLocale: "es",
+          },
+        },
+        pages: {
+          "/somepage": {
+            en: "/somepage-en",
+          },
+        },
+      },
+    };
+
+    const req = new Request("https://es.test.com/somepage");
+
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+    const response = await testRequest(req);
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe(
+      "https://en.test.com/en/somepage-en",
+    );
+  });
+
+  it("should redirect to the correct browser locale changing the subdomain, adding trailing slash and translating the route name", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      CONFIG: {
+        trailingSlash: true,
+      },
+      I18N_CONFIG: {
+        locales: ["en", "es"],
+        defaultLocale: "es",
+        domains: {
+          "en.test.com": {
+            defaultLocale: "en",
+          },
+          "es.test.com": {
+            defaultLocale: "es",
+          },
+        },
+        pages: {
+          "/somepage": {
+            en: "/somepage-en",
+          },
+        },
+      },
+    };
+
+    const req = new Request("https://es.test.com/somepage");
+
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+    const response = await testRequest(req);
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe(
+      "https://en.test.com/en/somepage-en/",
+    );
+  });
+
   it("should redirect to the correct browser locale without changing the subdomain in development", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
