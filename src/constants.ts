@@ -1,13 +1,14 @@
 import path from "node:path";
 import getRootDir from "./utils/get-root-dir";
 import importFileIfExists from "./utils/import-file-if-exists";
-import { Configuration } from "./types";
+import { Configuration, I18nConfig } from "./types";
 
 const rootDir = getRootDir();
 const srcDir = getRootDir("development");
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
-const I18N_CONFIG = (await importFileIfExists("i18n", rootDir))?.default;
+const I18N_CONFIG = (await importFileIfExists("i18n", rootDir))
+  ?.default as I18nConfig;
 const CONFIG_DIR = path.join(srcDir, "..");
 const CONFIG =
   (await importFileIfExists("brisa.config", CONFIG_DIR))?.default ?? {};
