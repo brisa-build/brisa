@@ -129,6 +129,152 @@ describe("handleI18n util", () => {
       expect(pagesRoute).toBeDefined();
       expect(pagesRoute?.filePath).toBe(path.join(pagesDir, "somepage.tsx"));
     });
+    it("should redirect to the correct browser locale", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe("/en/somepage");
+    });
+
+    it("should redirect to the correct default locale of the subdomain", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: true,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+              protocol: "https",
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+              protocol: "http",
+            },
+          },
+        },
+      };
+
+      const { response } = handleI18n(
+        extendRequestContext({
+          originalRequest: new Request("https://en.test.com/somepage"),
+        }),
+      );
+
+      const { response: responseEs } = handleI18n(
+        extendRequestContext({
+          originalRequest: new Request("https://es.test.com/somepage"),
+        }),
+      );
+
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe(
+        "https://en.test.com/en/somepage",
+      );
+      expect(responseEs?.status).toBe(301);
+      expect(responseEs?.headers.get("Location")).toBe(
+        "http://es.test.com/es/somepage",
+      );
+    });
+
+    it("should redirect to the correct browser locale changing the subdomain", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: true,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+            },
+          },
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("https://es.test.com/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe(
+        "https://en.test.com/en/somepage",
+      );
+    });
+
+    it("should redirect to the correct browser locale without changing the subdomain in development", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: false,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+            },
+          },
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe("/en/somepage");
+    });
+
+    it("should redirect to the correct browser locale and changing the subdomain in development", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: false,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+              dev: true,
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+              dev: true,
+            },
+          },
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe(
+        "https://en.test.com/en/somepage",
+      );
+    });
   });
   describe("with trailing slash", () => {
     beforeEach(() => {
@@ -201,6 +347,153 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
       expect(response?.headers.get("location")).toBe("/ru/");
+    });
+
+    it("should redirect to the correct browser locale", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe("/en/somepage/");
+    });
+
+    it("should redirect to the correct default locale of the subdomain", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: true,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+              protocol: "https",
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+              protocol: "http",
+            },
+          },
+        },
+      };
+
+      const { response } = handleI18n(
+        extendRequestContext({
+          originalRequest: new Request("https://en.test.com/somepage"),
+        }),
+      );
+
+      const { response: responseEs } = handleI18n(
+        extendRequestContext({
+          originalRequest: new Request("https://es.test.com/somepage"),
+        }),
+      );
+
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe(
+        "https://en.test.com/en/somepage/",
+      );
+      expect(responseEs?.status).toBe(301);
+      expect(responseEs?.headers.get("Location")).toBe(
+        "http://es.test.com/es/somepage/",
+      );
+    });
+
+    it("should redirect to the correct browser locale changing the subdomain", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: true,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+            },
+          },
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("https://es.test.com/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe(
+        "https://en.test.com/en/somepage/",
+      );
+    });
+
+    it("should redirect to the correct browser locale without changing the subdomain in development", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: false,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+            },
+          },
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe("/en/somepage/");
+    });
+
+    it("should redirect to the correct browser locale and changing the subdomain in development", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: false,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+              dev: true,
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+              dev: true,
+            },
+          },
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe(
+        "https://en.test.com/en/somepage/",
+      );
     });
   });
 });

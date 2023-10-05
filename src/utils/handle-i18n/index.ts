@@ -10,9 +10,15 @@ export default function handleI18n(req: RequestContext): {
   pagesRouter?: ReturnType<typeof getRouteMatcher>;
   rootRouter?: ReturnType<typeof getRouteMatcher>;
 } {
-  const { PAGES_DIR, ROOT_DIR, RESERVED_PAGES, I18N_CONFIG, CONFIG } =
-    getConstants();
-  const { locales, defaultLocale, pages } = I18N_CONFIG || {};
+  const {
+    PAGES_DIR,
+    ROOT_DIR,
+    RESERVED_PAGES,
+    I18N_CONFIG,
+    CONFIG,
+    IS_PRODUCTION,
+  } = getConstants();
+  const { locales, defaultLocale, pages, domains } = I18N_CONFIG || {};
   const trailingSlashSymbol = CONFIG.trailingSlash ? "/" : "";
 
   if (!defaultLocale || !locales?.length) return {};
@@ -24,7 +30,16 @@ export default function handleI18n(req: RequestContext): {
 
   // Redirect to default locale if there is no locale in the URL
   if (localeFromUrl !== locale) {
-    const location = `/${locale}${pathname}${url.search}${url.hash}${trailingSlashSymbol}`;
+    const [domain, domainConf] =
+      Object.entries(domains || {}).find(
+        ([, domainConf]) => domainConf.defaultLocale === locale,
+      ) ?? [];
+
+    const finalPathname = `/${locale}${pathname}${url.search}${url.hash}${trailingSlashSymbol}`;
+    const applyDomain = domain && (IS_PRODUCTION || domainConf?.dev);
+    const location = applyDomain
+      ? `${domainConf?.protocol || "https"}://${domain}${finalPathname}`
+      : finalPathname;
 
     return {
       response: new Response(null, {

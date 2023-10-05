@@ -53,15 +53,16 @@ export type Translations = {
   [locale: string]: string;
 };
 
+export type I18nDomainConfig = {
+  defaultLocale: string;
+  protocol?: "http" | "https";
+  dev?: boolean;
+};
+
 export type I18nConfig = {
   defaultLocale: string;
   locales: string[];
-  domains?: Record<
-    string,
-    {
-      defaultLocale: string;
-    }
-  >;
+  domains?: Record<string, I18nDomainConfig>;
   messages?: Record<string, I18nDictionary>;
   interpolation?: {
     prefix: string;
