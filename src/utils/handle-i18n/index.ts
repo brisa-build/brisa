@@ -28,14 +28,21 @@ export default function handleI18n(req: RequestContext): {
   const [, localeFromUrl] = url.pathname.split("/");
   const pathname = url.pathname.replace(/\/$/, "");
 
+  const routers = {
+    pagesRouter: getRouteMatcher(PAGES_DIR, RESERVED_PAGES, locale),
+    rootRouter: getRouteMatcher(ROOT_DIR, undefined, locale),
+  };
+
   // Redirect to default locale if there is no locale in the URL
   if (localeFromUrl !== locale) {
+    const { route } = routers.pagesRouter.match(req);
+    const translatedRoute = pages?.[route?.name]?.[locale] ?? pathname;
     const [domain, domainConf] =
       Object.entries(domains || {}).find(
         ([, domainConf]) => domainConf.defaultLocale === locale,
       ) ?? [];
 
-    const finalPathname = `/${locale}${pathname}${url.search}${url.hash}${trailingSlashSymbol}`;
+    const finalPathname = `/${locale}${translatedRoute}${url.search}${url.hash}${trailingSlashSymbol}`;
     const applyDomain = domain && (IS_PRODUCTION || domainConf?.dev);
     const location = applyDomain
       ? `${domainConf?.protocol || "https"}://${domain}${finalPathname}`
@@ -61,11 +68,6 @@ export default function handleI18n(req: RequestContext): {
     locales,
     locale,
     t: translateCore(locale),
-  };
-
-  const routers = {
-    pagesRouter: getRouteMatcher(PAGES_DIR, RESERVED_PAGES, locale),
-    rootRouter: getRouteMatcher(ROOT_DIR, undefined, locale),
   };
 
   if (pages) {

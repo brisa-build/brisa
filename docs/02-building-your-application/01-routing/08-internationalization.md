@@ -76,6 +76,8 @@ export default {
     },
     "example.nl": {
       defaultLocale: "nl-NL",
+      protocol: "http", // by default is https
+      dev: true, // by default is false
     },
   },
 };
@@ -540,9 +542,31 @@ export default {
 
 Now `t('hello')` returns `"hello"` instead of an empty string `""`.
 
-## Translate the page route
+## Translate page pathname
 
-TODO
+Many times we want the URL to be different in different languages. For example:
+
+- `/en/about-us` → `src/pages/about-us.tsx`
+- `/es/sobre-nosotros` → `src/pages/about-us.tsx`
+
+```js filename="src/i18n.js"
+export default {
+  locales: ["en-US", "es"],
+  defaultLocale: "en-US",
+  pages: {
+    "/about-us": {
+      es: "/sobre-nosotros",
+    },
+    "/user/[username]": {
+      es: "/usuario/[username]",
+    },
+  },
+};
+```
+
+The key of each page item will be the name of the route. It works also with dynamic and catch-all routes.
+
+It will automatically be taken into account in redirects, navigation and the `hrefLang` generation (see [here](#activate-automatic-hreflang) how to active `hrefLang`).
 
 ## Transition between locales
 

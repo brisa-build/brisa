@@ -141,6 +141,42 @@ describe("handleI18n util", () => {
       expect(response?.headers.get("Location")).toBe("/en/somepage");
     });
 
+    it("should redirect to the correct browser locale changing the subdomain and the page route name", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: true,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+            },
+          },
+          pages: {
+            "/somepage": {
+              en: "/somepage-en",
+            },
+          },
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("https://es.test.com/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe(
+        "https://en.test.com/en/somepage-en",
+      );
+    });
+
     it("should redirect to the correct default locale of the subdomain", async () => {
       globalThis.mockConstants = {
         ...globalThis.mockConstants,
@@ -400,6 +436,42 @@ describe("handleI18n util", () => {
       expect(responseEs?.status).toBe(301);
       expect(responseEs?.headers.get("Location")).toBe(
         "http://es.test.com/es/somepage/",
+      );
+    });
+
+    it("should redirect to the correct browser locale changing the subdomain and the page route name", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_PRODUCTION: true,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          domains: {
+            "en.test.com": {
+              defaultLocale: "en",
+            },
+            "es.test.com": {
+              defaultLocale: "es",
+            },
+          },
+          pages: {
+            "/somepage": {
+              en: "/somepage-en",
+            },
+          },
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("https://es.test.com/somepage"),
+      });
+
+      req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get("Location")).toBe(
+        "https://en.test.com/en/somepage-en/",
       );
     });
 
