@@ -5,6 +5,13 @@ import { MatchedRoute } from "bun";
 import extendRequestContext from "../extend-request-context";
 
 const warn = console.warn.bind(console);
+const emptyI18n = {
+  defaultLocale: "",
+  locales: [],
+  locale: "",
+  t: () => "",
+  pages: {},
+};
 
 describe("utils", () => {
   afterEach(() => {
@@ -17,6 +24,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en"],
           pages: {
             "/somepage": {
@@ -34,6 +42,7 @@ describe("utils", () => {
         route: { name: "/somepage" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "es",
       };
@@ -48,6 +57,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en"],
           pages: {
             "/somepage": {
@@ -67,6 +77,7 @@ describe("utils", () => {
         route: { name: "/somepage" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "es",
       };
@@ -82,6 +93,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en"],
           pages: {
             "/somepage": {
@@ -96,6 +108,7 @@ describe("utils", () => {
         route: { name: "/somepage" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "es",
       };
@@ -110,6 +123,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en"],
           pages: {
             "/somepage/[id]": {
@@ -124,6 +138,7 @@ describe("utils", () => {
         route: { name: "/somepage/[id]" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "es",
       };
@@ -138,6 +153,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en"],
           pages: {
             "/somepage/[id]": {
@@ -153,6 +169,7 @@ describe("utils", () => {
         route: { name: "/somepage/[id]" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "en",
       };
@@ -167,6 +184,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en"],
           pages: {
             "/somepage": {
@@ -181,8 +199,9 @@ describe("utils", () => {
         route: { name: "/somepage" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
-        locale: undefined,
+        locale: "",
       };
       const output = generateHrefLang(input);
       expect(output).toBe("");
@@ -193,6 +212,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en"],
           pages: {
             "/somepage/[[...catchAll]]": {
@@ -208,6 +228,7 @@ describe("utils", () => {
         route: { name: "/somepage/[[...catchAll]]" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "en",
       };
@@ -222,6 +243,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en"],
           pages: {
             "/somepage/[id]/settings/[...rest]": {
@@ -239,6 +261,7 @@ describe("utils", () => {
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "en",
       };
@@ -253,6 +276,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en", "fr"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en", "fr"],
           pages: {
             "/somepage": {
@@ -271,6 +295,7 @@ describe("utils", () => {
         route: { name: "/somepage" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "en",
       };
@@ -285,6 +310,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en", "fr", "it", "de"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en", "fr", "it", "de"],
           pages: {
             "/somepage/[id]/settings/[...rest]": {
@@ -311,6 +337,7 @@ describe("utils", () => {
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "en",
       };
@@ -330,6 +357,7 @@ describe("utils", () => {
         ...getConstants(),
         LOCALES_SET: new Set(["es", "en", "fr", "de"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en", "fr", "de"],
           pages: {
             "/somepage/[id]/settings/[...rest]": {
@@ -356,6 +384,7 @@ describe("utils", () => {
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
       };
@@ -408,6 +437,7 @@ describe("utils", () => {
         route: { name: "/a" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "es",
       };
@@ -443,6 +473,7 @@ describe("utils", () => {
         route: { name: "/_404" } as MatchedRoute,
       });
       input.i18n = {
+        ...emptyI18n,
         ...getConstants().I18N_CONFIG,
         locale: "es",
       };
@@ -460,6 +491,7 @@ describe("utils", () => {
         },
         LOCALES_SET: new Set(["es", "en", "fr", "de"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en", "fr", "de"],
           pages: {
             "/somepage/[id]/settings/[...rest]": {
@@ -481,6 +513,7 @@ describe("utils", () => {
       };
 
       const i18n = {
+        ...emptyI18n,
         ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
       };
@@ -544,6 +577,7 @@ describe("utils", () => {
         },
         LOCALES_SET: new Set(["es", "en", "fr", "de"]),
         I18N_CONFIG: {
+          defaultLocale: "en",
           locales: ["es", "en", "fr", "de"],
           pages: {
             "/somepage/[id]/settings/[...rest]": {
@@ -565,6 +599,7 @@ describe("utils", () => {
       };
 
       const i18n = {
+        ...emptyI18n,
         ...globalThis.mockConstants.I18N_CONFIG,
         locale: "en",
       };

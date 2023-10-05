@@ -627,4 +627,38 @@ Since Brisa knows what language the user is visiting it will automatically add t
 
 Brisa by default doesn't add the `hreflang` meta tags, but you can activate it to automatic generate the `hrefLang`.
 
-TODO
+To activate the generation of `hrefLang` you need the `hrefLangOrigin` property to specify one or more origins.
+
+For one origin:
+
+```js filename="src/i18n.js"
+export default {
+  locales: ["en-US", "es"],
+  defaultLocale: "en-US",
+  hrefLangOrigin: "https://www.example.com",
+};
+```
+
+For multi-origins:
+
+```js filename="src/i18n.js"
+export default {
+  locales: ["en-US", "es"],
+  defaultLocale: "en-US",
+  hrefLangOrigin: {
+    es: "https://www.example.com",
+    en: "https://www.example.co.uk",
+  },
+};
+```
+
+In the case of using [domain routing](#domain-routing), maybe you wonder why you have to repeat domains and origins? 🤔
+
+- `domains` defines the default language per domain for routing and language detection.
+- `hrefLangOrigin` defines the origin/domain to use in the href attribute of hreflang for each language.
+
+The main difference between them is that you can have multiple domains in `domains` with the same `defaultLocale`, but in `hrefLangOrigin` you want to prioritize a specific one per language. Besides, you may not have `domains` defined but want to use the `hrefLangOrigin` to only 1 origin.
+
+`hrefLang` is automatic managed by Brisa, however `rel=canonical` links not.
+
+For these [`domains`](<(#domain-routing)>) that have the same `defaultLocale` we recommend to manage in the [layout](/docs/building-your-application/routing/pages-and-layouts#layout) the [canonical](https://en.wikipedia.org/wiki/Canonical_link_element) links in order to prevent duplicate content issues in search engine optimization.
