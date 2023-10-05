@@ -1,17 +1,18 @@
-import {
-  describe,
-  it,
-  expect,
-  mock,
-  afterEach,
-  afterAll,
-  beforeAll,
-} from "bun:test";
+import { describe, it, expect, mock, afterEach, afterAll } from "bun:test";
 import renderToReadableStream from ".";
 import dangerHTML from "../danger-html";
 import getConstants from "../../constants";
-import { ComponentType, RequestContext } from "../../types";
+import { ComponentType, RequestContext, Translate } from "../../types";
 import extendRequestContext from "../../utils/extend-request-context";
+
+const emptyI18n = {
+  locale: "",
+  defaultLocale: "",
+  locales: [],
+  t: () => "",
+  pages: {},
+};
+const toInline = (s: string) => s.replace(/\s*\n\s*/g, "");
 
 const testRequest = extendRequestContext({
   originalRequest: new Request("http://test.com/"),
@@ -323,7 +324,7 @@ describe("brisa core", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
       };
-      req.i18n = { ...i18n, t: () => "" };
+      req.i18n = { ...i18n, t: () => "", pages: {} };
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
@@ -478,7 +479,14 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual(
-        '<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>This is <b>is </b><i>an </i><b>example</b></div></template><script id="R:1">u$(\'1\')</script>',
+        toInline(`
+        <div id="S:1">
+          <b>Loading...</b>
+        </div>
+        <template id="U:1">
+          <div>This is <b>is </b><i>an </i><b>example</b></div>
+        </template>
+        <script id="R:1">u$(\'1\')</script>`),
       );
     });
 
@@ -488,6 +496,7 @@ describe("brisa core", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        pages: {},
       };
       const element = (
         <html>
@@ -497,8 +506,73 @@ describe("brisa core", () => {
       );
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      testRequest.i18n = undefined;
+      testRequest.i18n = emptyI18n;
       expect(result).toStartWith(`<html lang="en"><head>`);
+    });
+
+    it("should translate the URLs to the correct path", async () => {
+      testRequest.i18n = {
+        locale: "en",
+        locales: ["en", "es", "it", "fr", "de"],
+        defaultLocale: "en",
+        t: ((v: string) => v.toUpperCase()) as Translate,
+        pages: {
+          "/about-us": {
+            en: "/about-us",
+            es: "/sobre-nosotros",
+            it: "/chi-siamo",
+            fr: "/a-propos",
+            de: "/uber-uns",
+          },
+        },
+      };
+
+      testRequest.route = {
+        name: "/about-us",
+        pathname: "/about-us",
+      };
+
+      function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
+        const { locales, locale, pages, t } = i18n;
+
+        return (
+          <ul>
+            {locales.map((lang) => {
+              const pathname = pages[route.name]?.[lang] ?? route.pathname;
+
+              if (lang === locale) return null;
+
+              return (
+                <li>
+                  <a href={`/${lang}${pathname}`}>{t(lang)}</a>
+                </li>
+              );
+            })}
+          </ul>
+        );
+      }
+
+      const stream = renderToReadableStream(<ChangeLocale />, testRequest);
+      const result = await Bun.readableStreamToText(stream);
+      testRequest.i18n = emptyI18n;
+      expect(result).toBe(
+        toInline(`
+          <ul>
+            <li>
+              <a href="/es/sobre-nosotros">ES</a>
+            </li>
+            <li>
+              <a href="/it/chi-siamo">IT</a>
+            </li>
+            <li>
+              <a href="/fr/a-propos">FR</a>
+            </li>
+            <li>
+              <a href="/de/uber-uns">DE</a>
+            </li>
+          </ul>
+        `),
+      );
     });
 
     it("should replace the lang attribute inside the html tag when i18n locale exist", async () => {
@@ -507,6 +581,7 @@ describe("brisa core", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        pages: {},
       };
       const element = (
         <html lang="en">
@@ -516,7 +591,7 @@ describe("brisa core", () => {
       );
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      testRequest.i18n = undefined;
+      testRequest.i18n = emptyI18n;
       expect(result).toStartWith(`<html lang="es"><head>`);
     });
 
@@ -526,6 +601,7 @@ describe("brisa core", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        pages: {},
       };
       const home = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/">Test</a>, testRequest),
@@ -537,7 +613,7 @@ describe("brisa core", () => {
         renderToReadableStream(<a href="/test#some">Test</a>, testRequest),
       );
 
-      testRequest.i18n = undefined;
+      testRequest.i18n = emptyI18n;
       expect(home).toEqual(`<a href="/es">Test</a>`);
       expect(withParam).toEqual(`<a href="/es/test?some=true">Test</a>`);
       expect(withHash).toEqual(`<a href="/es/test#some">Test</a>`);
@@ -549,6 +625,7 @@ describe("brisa core", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        pages: {},
       };
       const essencePage = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence">Test</a>, testRequest),
@@ -563,7 +640,7 @@ describe("brisa core", () => {
         renderToReadableStream(<a href="/essence#some">Test</a>, testRequest),
       );
 
-      testRequest.i18n = undefined;
+      testRequest.i18n = emptyI18n;
       expect(essencePage).toEqual(`<a href="/es/essence">Test</a>`);
       expect(withParam).toEqual(`<a href="/es/essence?some=true">Test</a>`);
       expect(withHash).toEqual(`<a href="/es/essence#some">Test</a>`);
@@ -575,20 +652,21 @@ describe("brisa core", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        pages: {},
       };
       const element = <a href="http://test.com/test">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      testRequest.i18n = undefined;
+      testRequest.i18n = emptyI18n;
       expect(result).toEqual(`<a href="http://test.com/test">Test</a>`);
     });
 
     it('should NOT render the "a" tag with the locale if the url is external and mailto protocol', async () => {
       testRequest.i18n = {
+        ...emptyI18n,
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
-        t: () => "",
       };
       const element = <a href="mailto:test@test.com">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
@@ -599,15 +677,15 @@ describe("brisa core", () => {
 
     it('should NOT render the "a" tag with the locale if the i18n is enabled and the link already has some locale', async () => {
       testRequest.i18n = {
+        ...emptyI18n,
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
-        t: () => "",
       };
       const element = <a href="/en/test">Test</a>;
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      testRequest.i18n = undefined as any;
+      testRequest.i18n = emptyI18n;
       expect(result).toEqual(`<a href="/en/test">Test</a>`);
     });
 

@@ -59,6 +59,10 @@ export type I18nDomainConfig = {
   dev?: boolean;
 };
 
+type i18nPages = {
+  [pageName: string]: Translations;
+};
+
 export type I18nConfig = {
   defaultLocale: string;
   locales: string[];
@@ -71,9 +75,7 @@ export type I18nConfig = {
   };
   allowEmptyStrings?: boolean;
   keySeparator?: string;
-  pages?: {
-    [pageName: string]: Translations;
-  };
+  pages?: i18nPages;
   hrefLangOrigin?: string | Translations;
 };
 
@@ -100,6 +102,7 @@ export type I18nFromRequest = {
   locale: string;
   defaultLocale: string;
   locales: string[];
+  pages: i18nPages;
   t: Translate;
 };
 
