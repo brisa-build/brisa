@@ -24,7 +24,7 @@ echo "{
     \"start\": \"brisa start\"
   },
   \"dependencies\": {
-    \"brisa\": \"0.0.2\"
+    \"brisa\": \"0.0.6\"
   },
   \"devDependencies\": {
     \"bun-types\": \"latest\"
