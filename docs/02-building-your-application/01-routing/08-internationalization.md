@@ -654,7 +654,31 @@ Will be transformed to this HTML in `es`:
 As long as you do not put the locale in the `href` of `a` tag, then no conversion is done. It is useful to change the language:
 
 ```tsx filename="src/components/change-locale.tsx" switcher
+import { type RequestContext } from "brisa";
+
 export function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
+  const { locales, locale, pages, t } = i18n;
+
+  return (
+    <ul>
+      {locales.map((lang) => {
+        const pathname = pages[route.name]?.[lang] ?? route.pathname;
+
+        if (lang === locale) return null;
+
+        return (
+          <li>
+            <a href={`/${lang}${pathname}`}>{t(`change-to-${lang}`)}</a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+```
+
+```js filename="src/components/change-locale.js" switcher
+export function ChangeLocale(props: {}, { i18n, route }) {
   const { locales, locale, pages, t } = i18n;
 
   return (
