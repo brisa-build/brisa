@@ -10,9 +10,9 @@ cd $PROJECT_NAME
 
 $BRISA_VERSION="0.0.6"
 
-echo "Creating package.json"
-
-echo "Installing brisa"
+echo ""
+echo "🛠️ Installing brisa..."
+echo ""
 
 echo "{
   \"name\": \"$PROJECT_NAME\",
@@ -69,9 +69,9 @@ echo "{
 
 echo "# $PROJECT_NAME
 
-## Getting Started
+Project created with [Brisa](https://github.com/aralroca/brisa) v$BRISA_VERSION
 
-Project created with [Brisa](https://github.com/aralroca/brisa) v$BRISA_VERSION.
+## Getting Started
 
 ### Installation
 
@@ -115,5 +115,7 @@ bun install
 
 cd ..
 
-echo "Project created successfully"
-echo "Run: cd $PROJECT_NAME && bun dev"
+echo ""
+echo "✨ Project created successfully"
+echo ""
+echo "📀 Run: cd $PROJECT_NAME && bun dev"
