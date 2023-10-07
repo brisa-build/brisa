@@ -36,6 +36,7 @@ echo "{
 
 echo "{
   \"compilerOptions\": {
+    \"baseUrl\": \".\",
     \"lib\": [
       \"ESNext\"
     ],
@@ -56,7 +57,12 @@ echo "{
     \"allowJs\": true,
     \"types\": [
       \"bun-types\" // add Bun global
-    ]
+    ],
+    // Please, do not modify this path alias configuration.
+    // It's internally used in Brisa "types.ts" file to enable type-safe
+    \"paths\": {
+      \"@/*\": [\"src/*\"],
+    }
   }
 }" > tsconfig.json
 
