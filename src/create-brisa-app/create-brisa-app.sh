@@ -11,7 +11,7 @@ cd $PROJECT_NAME
 $BRISA_VERSION="0.0.6"
 
 echo ""
-echo "🛠️ Installing brisa..."
+echo "🛠️  Installing brisa..."
 echo ""
 
 echo "{
@@ -69,7 +69,7 @@ echo "{
 
 echo "# $PROJECT_NAME
 
-Project created with [Brisa](https://github.com/aralroca/brisa) v$BRISA_VERSION
+Project created with [Brisa](https://github.com/aralroca/brisa).
 
 ## Getting Started
 
