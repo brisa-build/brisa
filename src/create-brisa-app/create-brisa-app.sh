@@ -8,9 +8,9 @@ mkdir $PROJECT_NAME
 
 cd $PROJECT_NAME
 
-echo "Creating package.json"
+$BRISA_VERSION="0.0.6"
 
-bun init -y
+echo "Creating package.json"
 
 echo "Installing brisa"
 
@@ -24,7 +24,7 @@ echo "{
     \"start\": \"brisa start\"
   },
   \"dependencies\": {
-    \"brisa\": \"0.0.6\"
+    \"brisa\": \"$BRISA_VERSION\"
   },
   \"devDependencies\": {
     \"bun-types\": \"latest\"
@@ -67,6 +67,39 @@ echo "{
 }" > tsconfig.json
 
 
+echo "# $PROJECT_NAME
+
+## Getting Started
+
+Project created with [Brisa](https://github.com/aralroca/brisa) v$BRISA_VERSION.
+
+### Installation
+
+\`\`\`bash
+bun install
+\`\`\`
+
+### Development
+
+\`\`\`bash
+bun dev
+\`\`\`
+
+### Build
+
+\`\`\`bash
+bun build
+\`\`\`
+
+### Start
+
+\`\`\`bash
+bun start
+\`\`\`
+
+
+" > README.md
+
 mkdir src
 mkdir src/pages
 touch src/pages/index.tsx
@@ -81,3 +114,6 @@ echo "export default function Homepage() {
 bun install
 
 cd ..
+
+echo "Project created successfully"
+echo "Run: cd $PROJECT_NAME && bun dev"
