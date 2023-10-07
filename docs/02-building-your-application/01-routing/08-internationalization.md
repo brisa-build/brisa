@@ -20,7 +20,32 @@ Generally a Locale Identifier is made up of a language, region, and script separ
 If user locale is `nl-BE` and it is not listed in your configuration, they will be redirected to `nl` if available, or to the default locale otherwise.
 If you don't plan to support all regions of a country, it is therefore a good practice to include country locales that will act as fallbacks.
 
-```js filename="src/i18n.js"
+```ts filename="src/i18n.ts" switcher
+import { I18nConfig } from "brisa";
+
+const i18nConfig: I18nConfig = {
+  // These are all the locales you want to support in
+  // your application
+  locales: ["en-US", "fr", "nl-NL"],
+  // This is the default locale you want to be used when visiting
+  // a non-locale prefixed path e.g. `/hello`
+  defaultLocale: "en-US",
+  // This is a list of locale domains and the default locale they
+  // should handle (these are only required when setting up domain routing)
+  domains: {
+    "example.com": {
+      defaultLocale: "en-US",
+    },
+    "example.nl": {
+      defaultLocale: "nl-NL",
+    },
+  },
+};
+
+export default i18nConfig;
+```
+
+```js filename="src/i18n.js" switcher
 export default {
   // These are all the locales you want to support in
   // your application
@@ -170,14 +195,18 @@ Brisa supports to consume translations inspired by libraries such as [i18next](h
 In order to consume translations, you need first to define the `messages` property in `src/i18n.js` file:
 
 ```ts filename="src/i18n/index.ts" switcher
+import { I18nConfig } from "brisa";
+
 import en from "./messages/en.json";
 import es from "./messages/es.json";
 
-export default {
+const i18nConfig: I18nConfig<typeof en> = {
   defaultLocale: "en",
   locales: ["en", "es"],
   messages: { en, es },
 };
+
+export default i18nConfig;
 ```
 
 ```json filename="src/i18n/messages/en.json" switcher
@@ -195,6 +224,10 @@ export default {
 ```
 
 After this, you can consume translations in every part of your app through the [request context](/docs/building-your-application/data-fetching/request-context): `middleware`, `api` routes, `page` routes, all page components, `responseHeaders`, `layout`, `Head` of each page...
+
+> **Important in TypeScript**: The generic type `<typeof en>` in `I18nConfig` enables type-safe consumption of translations with the `t` function by resolving the keys, keys with plurals and nested keys from the preferred locale. This allows IDE autocompletion and type checking of translation keys throughout the codebase, improving productivity and avoiding translation bugs due to typos or invalid keys.
+
+The generic `I18nConfig<typeof en>` allows you to activate type-safe consuming translations with the `t` function. Displaying to you all the keys from the preferred locale messages, resolving plurals and nested values.
 
 Example in a component:
 
@@ -296,13 +329,34 @@ For example it helps to transform values with decimals, currencies, etc, dependi
 
 Sample adding the `number` format:
 
-```js filename="src/i18n.js"
+```ts filename="src/i18n.ts" switcher
+import { I18nConfig } from "brisa";
+
 const formatters = {
   es: new Intl.NumberFormat("es-ES"),
   en: new Intl.NumberFormat("en-EN"),
 };
 
-return {
+const i18nConfig: I18nConfig = {
+  // ...
+  interpolation: {
+    format: (value, format, lang) => {
+      if (format === "number") return formatters[lang].format(value);
+      return value;
+    },
+  },
+};
+
+export default i18nConfig;
+```
+
+```js filename="src/i18n.js" switcher
+const formatters = {
+  es: new Intl.NumberFormat("es-ES"),
+  en: new Intl.NumberFormat("en-EN"),
+};
+
+export default {
   // ...
   interpolation: {
     format: (value, format, lang) => {
@@ -534,11 +588,19 @@ If omitted or passed as `true` _(By default is `true`)_, it returns an empty str
 If passed as `false`, returns the key name itself.
 
 ```ts filename="src/i18n/index.ts"
-export default {
+import { I18nConfig } from "brisa";
+
+import en from './messages/en.json';
+import es from './messages/es.json';
+
+const i18nConfig: I18nConfig<typeof en> = {
   defaultLocale: "en",
   locales: ["en", "es"],
+  messages: { en, es }
   allowEmptyStrings: false,
 };
+
+export default i18nConfig;
 ```
 
 Now `t('hello')` returns `"hello"` instead of an empty string `""`.

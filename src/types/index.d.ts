@@ -63,11 +63,11 @@ type i18nPages = {
   [pageName: string]: Translations;
 };
 
-export type I18nConfig = {
+export type I18nConfig<T = I18nDictionary> = {
   defaultLocale: string;
   locales: string[];
   domains?: Record<string, I18nDomainConfig>;
-  messages?: Record<string, I18nDictionary>;
+  messages?: Record<string, T>;
   interpolation?: {
     prefix: string;
     suffix: string;
@@ -87,8 +87,37 @@ type RouterType = {
   reservedRoutes: Record<string, MatchedRoute | null>;
 };
 
+type RemovePlural<Key extends string> = Key extends `${infer Prefix}${
+  | "_zero"
+  | "_one"
+  | "_two"
+  | "_few"
+  | "_many"
+  | "_other"
+  | `_${number}`}`
+  ? Prefix
+  : Key;
+
+type Join<S1, S2> = S1 extends string
+  ? S2 extends string
+    ? `${S1}.${S2}`
+    : never
+  : never;
+
+export type Paths<T> = RemovePlural<
+  {
+    [K in Extract<keyof T, string>]: T[K] extends Record<string, unknown>
+      ? Join<K, Paths<T[K]>>
+      : K;
+  }[Extract<keyof T, string>]
+>;
+
+type I18nKey = typeof import("@/i18n").default extends I18nConfig<infer T>
+  ? Paths<T extends object ? T : I18nDictionary>
+  : string;
+
 export type Translate = <T extends unknown = string>(
-  i18nKey: string | TemplateStringsArray,
+  i18nKey: I18nKey | TemplateStringsArray,
   query?: TranslationQuery | null,
   options?: {
     returnObjects?: boolean;
