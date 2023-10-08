@@ -10,6 +10,8 @@ import extendStreamController, {
 import { injectUnsuspenseScript } from "../inject-unsuspense-script" assert { type: "macro" };
 import renderAttributes from "../../utils/render-attributes";
 import generateHrefLang from "../../utils/generate-href-lang";
+import getConstants from "../../constants";
+import compileWebComponent from "../../utils/compile-web-component";
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const unsuspenseScriptCode = await injectUnsuspenseScript();
@@ -47,6 +49,7 @@ async function enqueueDuringRendering(
   controller: Controller,
   suspenseId?: number,
 ): Promise<void> {
+  const { WEB_COMPONENTS } = getConstants();
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
 
@@ -100,6 +103,17 @@ async function enqueueDuringRendering(
     if (controller.insideHeadTag && props.id) controller.addId(props.id);
 
     const attributes = renderAttributes({ props, request, type });
+    const webComponent = WEB_COMPONENTS[type];
+
+    if (webComponent && !controller.isWebComponentLoaded(type)) {
+      const webComponentCode = await compileWebComponent(type);
+
+      controller.registerWebComponent(type, webComponentCode);
+
+      if (webComponentCode) {
+        controller.enqueue(`<script>${webComponentCode}</script>`, suspenseId);
+      }
+    }
 
     controller.startTag(
       isFragment ? null : `<${type}${attributes}>`,

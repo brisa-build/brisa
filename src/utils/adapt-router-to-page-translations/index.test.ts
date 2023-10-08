@@ -33,6 +33,7 @@ const createRequest = (url: string) => {
     defaultLocale: "es",
     t: (v) => "",
     locales: ["en", "es"],
+    pages: {},
   };
   return request;
 };
@@ -162,7 +163,7 @@ describe("utils", () => {
 
       it("should detect all the translated routes with locale prefix", () => {
         const mockRouter = {
-          match: (v) =>
+          match: (v: any) =>
             typeof v.finalURL === "string"
               ? new URL(v.finalURL).pathname
               : null,
@@ -211,7 +212,7 @@ describe("utils", () => {
 
       it("should detect all the translated routes with trailingSlash", () => {
         const mockRouter = {
-          match: (v) =>
+          match: (v: any) =>
             typeof v.finalURL === "string"
               ? new URL(v.finalURL).pathname
               : null,
