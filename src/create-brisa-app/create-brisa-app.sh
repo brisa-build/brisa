@@ -36,7 +36,7 @@ echo "{
 
 echo "{
   \"compilerOptions\": {
-    \"baseUrl\": \".\",
+    \"baseUrl\": \"./src\",
     \"lib\": [
       \"ESNext\"
     ],
@@ -61,7 +61,7 @@ echo "{
     // Please, do not modify this path alias configuration.
     // It's internally used in Brisa "types.ts" file to enable type-safe
     \"paths\": {
-      \"@/*\": [\"src/*\"],
+      \"@/*\": [\"*\"],
     }
   }
 }" > tsconfig.json

@@ -25,6 +25,14 @@ describe("CLI: serve", () => {
       PAGES_DIR,
       ROOT_DIR,
       SRC_DIR: ROOT_DIR,
+      WEB_COMPONENTS: {
+        "native-some-example": path.join(
+          ROOT_DIR,
+          "web-components",
+          "@native",
+          "some-example.tsx",
+        ),
+      },
       ASSETS_DIR,
       LOCALES_SET: new Set(["en", "es"]),
       I18N_CONFIG: {
@@ -96,6 +104,21 @@ describe("CLI: serve", () => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Page not found 404</h1>");
+  });
+
+  it("should return 200 page with web component", async () => {
+    const response = await testRequest(
+      new Request("http://localhost:1234/es/page-with-web-component"),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+
+    expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain('customElements.define("native-some-example",');
+    expect(html).toContain(
+      '<native-some-example name="web component"></native-some-example>',
+    );
   });
 
   it("should redirect the home to the correct locale", async () => {

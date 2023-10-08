@@ -50,7 +50,7 @@ export default function Layout({ children }: { children: JSX.Element }, { route 
   return (
     <html>
       <head>
-        <title id="title">My layout</title>
+        <title>My layout</title>
         <link rel="icon" href="favicon.ico" />
       </head>
       <body>
@@ -95,7 +95,7 @@ export default async function Layout({ children }: { children: JSX.Element }, { 
   return (
     <html>
       <head>
-        <title id="title">My layout</title>
+        <title>My layout</title>
         <link rel="icon" href="favicon.ico" />
       </head>
       <body>
@@ -156,7 +156,7 @@ export default async function Layout({}, request: RequestContext) {
   return (
     <html>
       <head>
-        <title id="title">My page</title>
+        <title>My page</title>
         <link rel="icon" href="favicon.ico" />
       </head>
       <body>{children}</body>

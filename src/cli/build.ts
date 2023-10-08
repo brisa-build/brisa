@@ -41,7 +41,7 @@ const { success, logs, outputs } = await Bun.build({
   root: SRC_DIR,
   minify: true,
   splitting: true,
-  plugins: [...(CONFIG.plugins ?? [])],
+  plugins: [...(CONFIG?.plugins ?? [])],
 });
 
 if (!success) {

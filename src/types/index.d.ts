@@ -41,6 +41,15 @@ export type JSXComponent = (
   request: RequestContext,
 ) => JSXNode | Promise<JSXNode>;
 
+export interface ParsedFilePkg {
+  program: ts.Program;
+  checker: ts.TypeChecker;
+  sourceFile: ts.SourceFile;
+  fileSymbol?: ts.Symbol;
+  transform: (transformer: Transformer) => void;
+  getCode: () => string;
+}
+
 export interface I18nDictionary {
   [key: string]: string | I18nDictionary;
 }

@@ -58,10 +58,14 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "12.8.0",
-    "bun-types": "1.0.4-canary.20231004T140131",
-    "brisa": "0.0.5"
+    "brisa": "0.0.6",
+    "bun-types": "1.0.4-canary.20231004T140131"
   },
   "peerDependencies": {
     "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "astring": "1.8.6",
+    "meriyah": "4.3.7"
   }
 }

@@ -16,6 +16,7 @@ describe("utils", () => {
       const entrypoints = getEntrypoints(pagesDir);
       const expected = [
         "_404.tsx",
+        "page-with-web-component.tsx",
         "somepage.tsx",
         "/index.tsx",
         "user/[username].tsx",
