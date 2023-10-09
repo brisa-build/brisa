@@ -1,11 +1,10 @@
+import path from "node:path";
 import getRootDir from "../get-root-dir";
 import getImportableFilepath from "../get-importable-filepath";
 
-const rootDir = getRootDir();
-
 export default async function importFileIfExists(
   filename: "middleware" | "i18n" | "brisa.config",
-  dir = rootDir,
+  dir = path.join(getRootDir(), "build"),
 ) {
   const path = getImportableFilepath(filename, dir);
 

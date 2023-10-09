@@ -8,7 +8,7 @@ const assetsPath = path.join(
   "..",
   "..",
   "__fixtures__",
-  "assets",
+  "public",
 );
 
 describe("utils", () => {

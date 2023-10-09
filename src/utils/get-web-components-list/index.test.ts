@@ -7,7 +7,7 @@ const fixturesDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
 describe("utils", () => {
   describe("getWebComponentsList", () => {
     it("should return a list of web components", async () => {
-      const result = getWebComponentsList(fixturesDir);
+      const result = await getWebComponentsList(fixturesDir);
 
       expect(result).toEqual({
         "native-some-example": path.join(

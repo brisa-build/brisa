@@ -1,7 +1,7 @@
 import path from "node:path";
 
 // Should be used via macro
-export async function injectUnsuspenseScript() {
+export async function injectUnsuspenseCode() {
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [path.join(import.meta.dir, "unsuspense.ts")],
     outdir: path.join(import.meta.dir, "out"),
@@ -11,7 +11,5 @@ export async function injectUnsuspenseScript() {
 
   if (!success) console.error(logs);
 
-  const code = (await outputs?.[0]?.text?.()) ?? "";
-
-  return `<script>${code}</script>`;
+  return (await outputs?.[0]?.text?.()) ?? "";
 }

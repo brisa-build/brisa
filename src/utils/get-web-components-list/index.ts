@@ -1,9 +1,9 @@
 import path from "node:path";
 import fs from "node:fs";
 
-export default function getWebComponentsList(
+export default async function getWebComponentsList(
   dir: string,
-): Record<string, string> {
+): Promise<Record<string, string>> {
   const webDir = path.join(dir, "web-components");
 
   if (!fs.existsSync(webDir)) return {};

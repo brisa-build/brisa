@@ -27,11 +27,11 @@ if [ "$1" = "dev" ]; then
     esac
     shift
   done
-  NODE_ENV=development $BUN_EXEC --hot node_modules/brisa/out/cli/dev/index.js $PORT
+  NODE_ENV=development $BUN_EXEC node_modules/brisa/out/cli/build.js && NODE_ENV=development $BUN_EXEC node_modules/brisa/out/cli/serve/index.js $PORT
 
 # brisa build
 elif [ "$1" = "build" ]; then
-  NODE_ENV=production $BUN_EXEC node_modules/brisa/out/cli/build.js  
+  NODE_ENV=production $BUN_EXEC node_modules/brisa/out/cli/build.js PROD
 
 # brisa start
 elif [ "$1" = "start" ]; then
@@ -54,7 +54,7 @@ elif [ "$1" = "start" ]; then
     esac
     shift
   done
-  NODE_ENV=production $BUN_EXEC node_modules/brisa/out/cli/serve/index.js $PORT
+  NODE_ENV=production $BUN_EXEC node_modules/brisa/out/cli/serve/index.js $PORT PROD
 
 # brisa --help
 else

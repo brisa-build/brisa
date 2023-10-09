@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import type {
   Props,
   ComponentType,
@@ -7,14 +8,10 @@ import type {
 import extendStreamController, {
   Controller,
 } from "../../utils/extend-stream-controller";
-import { injectUnsuspenseScript } from "../inject-unsuspense-script" assert { type: "macro" };
 import renderAttributes from "../../utils/render-attributes";
 import generateHrefLang from "../../utils/generate-href-lang";
-import getConstants from "../../constants";
-import compileWebComponent from "../../utils/compile-web-component";
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
-const unsuspenseScriptCode = await injectUnsuspenseScript();
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export default function renderToReadableStream(
@@ -49,7 +46,6 @@ async function enqueueDuringRendering(
   controller: Controller,
   suspenseId?: number,
 ): Promise<void> {
-  const { WEB_COMPONENTS } = getConstants();
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
 
@@ -103,17 +99,6 @@ async function enqueueDuringRendering(
     if (controller.insideHeadTag && props.id) controller.addId(props.id);
 
     const attributes = renderAttributes({ props, request, type });
-    const webComponent = WEB_COMPONENTS[type];
-
-    if (webComponent && !controller.isWebComponentLoaded(type)) {
-      const webComponentCode = await compileWebComponent(type);
-
-      controller.registerWebComponent(type, webComponentCode);
-
-      if (webComponentCode) {
-        controller.enqueue(`<script>${webComponentCode}</script>`, suspenseId);
-      }
-    }
 
     controller.startTag(
       isFragment ? null : `<${type}${attributes}>`,
@@ -134,8 +119,15 @@ async function enqueueDuringRendering(
     await enqueueChildren(props.children, request, controller, suspenseId);
 
     if (type === "head") {
-      const optionalHrefLang = generateHrefLang(request);
-      const codeToInject = `${optionalHrefLang}${unsuspenseScriptCode}`;
+      const clientFile = request.route?.filePath?.replace(
+        "/pages",
+        "/pages-client",
+      );
+      let codeToInject = generateHrefLang(request);
+
+      if (fs.existsSync(clientFile)) {
+        codeToInject += `<script>${await Bun.file(clientFile).text()}</script>`;
+      }
 
       controller.enqueue(codeToInject, suspenseId);
       controller.hasHeadTag = true;

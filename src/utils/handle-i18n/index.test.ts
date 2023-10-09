@@ -3,8 +3,8 @@ import path from "node:path";
 import handleI18n from ".";
 import extendRequestContext from "../extend-request-context";
 
-const rootDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
-const pagesDir = path.join(rootDir, "pages");
+const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const pagesDir = path.join(BUILD_DIR, "pages");
 
 describe("handleI18n util", () => {
   describe("without trailing slash", () => {
@@ -18,7 +18,7 @@ describe("handleI18n util", () => {
           defaultLocale: "en",
         },
         LOCALES_SET: new Set(["en", "ru"]),
-        ROOT_DIR: rootDir,
+        BUILD_DIR,
         PAGES_DIR: pagesDir,
         RESERVED_PAGES: ["/_404", "/_500"],
       };
@@ -323,7 +323,7 @@ describe("handleI18n util", () => {
           defaultLocale: "en",
         },
         LOCALES_SET: new Set(["en", "ru"]),
-        ROOT_DIR: rootDir,
+        BUILD_DIR: BUILD_DIR,
         PAGES_DIR: pagesDir,
         RESERVED_PAGES: ["/_404", "/_500"],
       };

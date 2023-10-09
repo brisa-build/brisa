@@ -1,18 +1,17 @@
 import path from "node:path";
-import getWebComponentsList from "./utils/get-web-components-list";
 import getRootDir from "./utils/get-root-dir";
 import importFileIfExists from "./utils/import-file-if-exists";
 import { Configuration, I18nConfig } from "./types";
 
 const rootDir = getRootDir();
-const srcDir = getRootDir("development");
+const srcDir = path.join(rootDir, "src");
+const buildDir = path.join(rootDir, "build");
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
-const I18N_CONFIG = (await importFileIfExists("i18n", rootDir))
+const I18N_CONFIG = (await importFileIfExists("i18n", buildDir))
   ?.default as I18nConfig;
-const CONFIG_DIR = path.join(srcDir, "..");
 const CONFIG =
-  (await importFileIfExists("brisa.config", CONFIG_DIR))?.default ?? {};
+  (await importFileIfExists("brisa.config", rootDir))?.default ?? {};
 
 const defaultConfig = {
   trailingSlash: false,
@@ -24,14 +23,22 @@ const constants = {
   PAGE_404,
   PAGE_500,
   RESERVED_PAGES: [PAGE_404, PAGE_500],
-  IS_PRODUCTION: process.env.NODE_ENV === "production",
+  IS_PRODUCTION:
+    process.argv.some((t) => t == "PROD") ||
+    process.env.NODE_ENV === "production",
   PORT: parseInt(process.argv[2]) || 0,
+  BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,
   SRC_DIR: srcDir,
-  ASSETS_DIR: path.join(rootDir, "public"),
-  PAGES_DIR: path.join(rootDir, "pages"),
+  ASSETS_DIR: path.join(buildDir, "public"),
+  PAGES_DIR: path.join(buildDir, "pages"),
   I18N_CONFIG,
-  WEB_COMPONENTS: getWebComponentsList(srcDir),
+  LOG_PREFIX: {
+    WAIT: Bun.enableANSIColors ? `[ \x1b[36mwait\x1b[0m ]  ` : "[ wait ] ",
+    READY: Bun.enableANSIColors ? `[ \x1b[32mready\x1b[0m ] ` : "[ ready ] ",
+    INFO: Bun.enableANSIColors ? `[ \x1b[34minfo\x1b[0m ]  ` : "[ info ] ",
+    ERROR: Bun.enableANSIColors ? `[ \x1b[31merror\x1b[0m ] ` : "[ error ] ",
+  },
   LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
   CONFIG: { ...defaultConfig, ...CONFIG } as Configuration,
   REGEX: {

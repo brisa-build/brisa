@@ -9,24 +9,26 @@ describe("utils", () => {
   });
   describe("logTable", () => {
     it("should log a table", () => {
+      const info = "[ \u001B[34minfo\u001B[0m ]  ";
       const data = [
         { name: "John", age: "23" },
         { name: "Jane", age: "42" },
       ];
 
-      const expected = [
-        "name | age",
-        "------------",
-        "John | 23",
-        "Jane | 42",
-      ].join("\n");
+      const expected =
+        `${info}\n` +
+        [" name | age", " -------------", " John | 23 ", " Jane | 42 "]
+          .map((t) => info + t)
+          .join("\n");
 
-      const mockLog = mock((v) => v);
-
+      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
       console.log = mockLog;
 
       logTable(data);
-      expect(mockLog.mock.results[0].value).toBe(expected);
+
+      const output = mockLog.mock.results.map((t) => t.value).join("\n");
+
+      expect(output).toBe(expected);
     });
   });
 });

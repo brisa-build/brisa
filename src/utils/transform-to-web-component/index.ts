@@ -4,12 +4,11 @@ import { JavaScriptLoader } from "bun";
 import getConstants from "../../constants";
 import fromNative from "./from-native";
 
-export default async function compileWebComponent(name: string) {
-  const { SRC_DIR, CONFIG, WEB_COMPONENTS } = getConstants();
-  const webEntrypoint = WEB_COMPONENTS[name];
-
-  if (!webEntrypoint) return null;
-
+export default async function transformToWebComponent(
+  name: string,
+  webEntrypoint: string,
+) {
+  const { SRC_DIR, CONFIG } = getConstants();
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [webEntrypoint],
     root: SRC_DIR,
@@ -37,5 +36,5 @@ export default async function compileWebComponent(name: string) {
     return null;
   }
 
-  return outputs[0].text();
+  return { code: await outputs[0].text(), size: outputs[0].size };
 }
