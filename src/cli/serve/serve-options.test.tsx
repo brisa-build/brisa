@@ -1,10 +1,20 @@
 import path from "node:path";
-import { describe, it, expect, beforeEach, afterEach } from "bun:test";
+import fs from "node:fs";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  spyOn,
+  mock,
+} from "bun:test";
 import getConstants from "../../constants";
+import { BunFile } from "bun";
 
-const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
-const PAGES_DIR = path.join(ROOT_DIR, "pages");
-const ASSETS_DIR = path.join(ROOT_DIR, "assets");
+const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const PAGES_DIR = path.join(BUILD_DIR, "pages");
+const ASSETS_DIR = path.join(BUILD_DIR, "public");
 
 async function testRequest(request: Request): Promise<Response> {
   const serveOptions = (await import("./serve-options")).serveOptions;
@@ -23,16 +33,8 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
-      ROOT_DIR,
-      SRC_DIR: ROOT_DIR,
-      WEB_COMPONENTS: {
-        "native-some-example": path.join(
-          ROOT_DIR,
-          "web-components",
-          "@native",
-          "some-example.tsx",
-        ),
-      },
+      BUILD_DIR,
+      SRC_DIR: BUILD_DIR,
       ASSETS_DIR,
       LOCALES_SET: new Set(["en", "es"]),
       I18N_CONFIG: {
@@ -107,15 +109,25 @@ describe("CLI: serve", () => {
   });
 
   it("should return 200 page with web component", async () => {
+    const mockFs = spyOn(fs, "existsSync").mockImplementation(() => true);
+    const mockFile = spyOn(Bun, "file").mockImplementation(
+      () =>
+        ({
+          text: () => Promise.resolve("I am a web component JS code"),
+        }) as BunFile,
+    );
+
     const response = await testRequest(
       new Request("http://localhost:1234/es/page-with-web-component"),
     );
     const html = await response.text();
 
-    expect(response.status).toBe(200);
+    mockFs.mockRestore();
+    mockFile.mockRestore();
 
+    expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('customElements.define("native-some-example",');
+    expect(html).toContain("<script>I am a web component JS code</script>");
     expect(html).toContain(
       '<native-some-example name="web component"></native-some-example>',
     );

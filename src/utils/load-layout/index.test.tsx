@@ -1,12 +1,4 @@
-import {
-  describe,
-  it,
-  expect,
-  afterEach,
-  beforeEach,
-  beforeAll,
-  afterAll,
-} from "bun:test";
+import { describe, it, expect, afterEach } from "bun:test";
 import LoadLayout from ".";
 import path from "node:path";
 import { renderToReadableStream } from "../../core";
@@ -14,6 +6,7 @@ import getImportableFilepath from "../get-importable-filepath";
 import getRootDir from "../get-root-dir";
 import extendRequestContext from "../extend-request-context";
 
+const buildDir = path.join(getRootDir(), "build");
 const join = path.join;
 const testRequest = extendRequestContext({
   originalRequest: new Request("https://test.com"),
@@ -26,7 +19,7 @@ describe("utils", () => {
 
   describe("LoadLayout", () => {
     it('should return default layout if "layout.tsx" does not exist', async () => {
-      const layoutPath = getImportableFilepath("layout", getRootDir());
+      const layoutPath = getImportableFilepath("layout", buildDir);
       const layoutModule = layoutPath ? await import(layoutPath) : undefined;
       const stream = renderToReadableStream(
         <LoadLayout layoutModule={layoutModule}>
@@ -42,7 +35,7 @@ describe("utils", () => {
       path.join = () =>
         join(import.meta.dir, "..", "..", "__fixtures__", "layout");
 
-      const layoutPath = getImportableFilepath("layout", getRootDir());
+      const layoutPath = getImportableFilepath("layout", buildDir);
       const layoutModule = layoutPath ? await import(layoutPath) : undefined;
       const stream = renderToReadableStream(
         <LoadLayout layoutModule={layoutModule}>

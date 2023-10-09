@@ -14,8 +14,6 @@ export type Controller = {
   startTag(chunk: string | null, suspenseId?: number): void;
   endTag(chunk: string | null, suspenseId?: number): void;
   flushAllReady(): void;
-  isWebComponentLoaded(name: string): boolean;
-  registerWebComponent(name: string, code: string | null): void;
   addId(id: string): void;
   hasId(id: string): boolean;
   hasHeadTag: boolean;
@@ -37,7 +35,6 @@ export default function extendStreamController(
 ): Controller {
   const ids = new Set<string>();
   const suspensePromises: Promise<void>[] = [];
-  const webComponents = new Map<string, string | null>();
   const suspensedMap = new Map<number, SuspensedState>();
   const getSuspensedState = (id: number) =>
     suspensedMap.get(id) ?? { chunk: "", openTags: 0, closeTags: 0 };
@@ -49,12 +46,6 @@ export default function extendStreamController(
     head,
     hasHeadTag: false,
     insideHeadTag: false,
-    isWebComponentLoaded(name) {
-      return webComponents.has(name);
-    },
-    registerWebComponent(name, code) {
-      webComponents.set(name, code);
-    },
     addId(id) {
       ids.add(id);
     },

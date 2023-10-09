@@ -342,7 +342,7 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, req);
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
-        /<html lang="es"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
+        /<html lang="es"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><\/head><body><\/body><\/html>/gm,
       );
     });
 
@@ -355,9 +355,7 @@ describe("brisa core", () => {
       );
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toMatch(
-        /<html><head><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
-      );
+      expect(result).toMatch(/<html><head><\/head><body><\/body><\/html>/gm);
     });
 
     it("should render the suspense component before if the async component support it", async () => {
@@ -763,7 +761,7 @@ describe("brisa core", () => {
       );
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
-        /<html><head><link rel="canonical" href="\/"><\/link><title>Test<\/title><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
+        /<html><head><link rel="canonical" href="\/"><\/link><title>Test<\/title><\/head><body><\/body><\/html>/gm,
       );
     });
 
@@ -791,7 +789,7 @@ describe("brisa core", () => {
       );
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
-        /<html><head><title id="title">Test 2<\/title><script>[\s\S]+<\/script><\/head><body><\/body><\/html>/gm,
+        /<html><head><title id="title">Test 2<\/title><\/head><body><\/body><\/html>/gm,
       );
     });
 
@@ -812,7 +810,7 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, req);
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
-        /<html><head><script>[\s\S]+<\/script><\/head><body><h1 id="a">A<\/h1><h1 id="a">B<\/h1><\/body><\/html>/gm,
+        /<html><head><\/head><body><h1 id="a">A<\/h1><h1 id="a">B<\/h1><\/body><\/html>/gm,
       );
     });
   });

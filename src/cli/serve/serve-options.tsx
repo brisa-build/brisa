@@ -23,19 +23,19 @@ const {
   PAGE_404,
   PAGE_500,
   RESERVED_PAGES,
-  ROOT_DIR,
+  BUILD_DIR,
   PORT,
   PAGES_DIR,
   ASSETS_DIR,
 } = getConstants();
 
 let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
-let rootRouter = getRouteMatcher(ROOT_DIR);
+let rootRouter = getRouteMatcher(BUILD_DIR);
 
-const WEBSOCKET_PATH = getImportableFilepath("websocket", ROOT_DIR);
+const WEBSOCKET_PATH = getImportableFilepath("websocket", BUILD_DIR);
 const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
 const route404 = pagesRouter.reservedRoutes[PAGE_404];
-const middlewareModule = await importFileIfExists("middleware", ROOT_DIR);
+const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
 const customMiddleware = middlewareModule?.default;
 
 const responseInitWithGzip = {
@@ -159,9 +159,7 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   // Assets
   if (isAnAsset) {
     const assetPath = path.join(ASSETS_DIR, url.pathname);
-    const isGzip =
-      IS_PRODUCTION && req.headers.get("accept-encoding")?.includes?.("gzip");
-
+    const isGzip = req.headers.get("accept-encoding")?.includes?.("gzip");
     const file = Bun.file(isGzip ? `${assetPath}.gz` : assetPath);
     const responseOptions = isGzip ? responseInitWithGzip : {};
 
@@ -187,7 +185,7 @@ async function responseRenderedPage({
 }) {
   const module = await import(route.filePath);
   const PageComponent = module.default;
-  const layoutPath = getImportableFilepath("layout", ROOT_DIR);
+  const layoutPath = getImportableFilepath("layout", BUILD_DIR);
   const layoutModule = layoutPath ? await import(layoutPath) : undefined;
 
   const pageElement = (

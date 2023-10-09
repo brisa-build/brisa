@@ -12,7 +12,7 @@ export default function handleI18n(req: RequestContext): {
 } {
   const {
     PAGES_DIR,
-    ROOT_DIR,
+    BUILD_DIR,
     RESERVED_PAGES,
     I18N_CONFIG,
     CONFIG,
@@ -30,7 +30,7 @@ export default function handleI18n(req: RequestContext): {
 
   const routers = {
     pagesRouter: getRouteMatcher(PAGES_DIR, RESERVED_PAGES, locale),
-    rootRouter: getRouteMatcher(ROOT_DIR, undefined, locale),
+    rootRouter: getRouteMatcher(BUILD_DIR, undefined, locale),
   };
 
   // Redirect to default locale if there is no locale in the URL
