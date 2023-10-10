@@ -10,7 +10,7 @@ import handleI18n from "../../utils/handle-i18n";
 import importFileIfExists from "../../utils/import-file-if-exists";
 import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
 import { LiveReloadScript } from "../dev-live-reload";
-import { MatchedRoute, Serve, ServerWebSocket } from "bun";
+import { MatchedRoute, ServeOptions, ServerWebSocket } from "bun";
 import { RequestContext } from "../../types";
 import { renderToReadableStream } from "../../core";
 
@@ -46,7 +46,7 @@ const responseInitWithGzip = {
 };
 
 // Options to start server
-export const serveOptions: Serve = {
+export const serveOptions: ServeOptions = {
   port: PORT,
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import getConstants from "../../constants";
 import { serveOptions } from "./serve-options";
+import { ServeOptions } from "bun";
 
 const { IS_PRODUCTION, BUILD_DIR, PAGES_DIR, LOG_PREFIX } = getConstants();
 
@@ -17,9 +18,25 @@ if (!fs.existsSync(PAGES_DIR)) {
   process.exit(1);
 }
 
-const server = Bun.serve(serveOptions);
+function init(options: ServeOptions) {
+  try {
+    const server = Bun.serve(options);
 
-console.log(
-  LOG_PREFIX.READY,
-  `listening on http://${server.hostname}:${server.port}...`,
-);
+    console.log(
+      LOG_PREFIX.READY,
+      `listening on http://${server.hostname}:${server.port}...`,
+    );
+  } catch (error) {
+    const { message } = error as Error;
+
+    if (message?.includes(`Is port ${options.port} in use?`)) {
+      console.log(LOG_PREFIX.ERROR, message);
+      init({ ...options, port: 0 });
+    } else {
+      console.error(LOG_PREFIX.ERROR, message ?? "Error on start server");
+      process.exit(1);
+    }
+  }
+}
+
+init(serveOptions);
