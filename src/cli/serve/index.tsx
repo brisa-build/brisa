@@ -6,7 +6,10 @@ import { ServeOptions } from "bun";
 const { IS_PRODUCTION, BUILD_DIR, PAGES_DIR, LOG_PREFIX } = getConstants();
 
 if (IS_PRODUCTION && !fs.existsSync(BUILD_DIR)) {
-  console.log(LOG_PREFIX.ERROR, 'Not exist "build" yet. Please run "brisa build" first');
+  console.log(
+    LOG_PREFIX.ERROR,
+    'Not exist "build" yet. Please run "brisa build" first',
+  );
   process.exit(1);
 }
 
@@ -14,7 +17,10 @@ if (!fs.existsSync(PAGES_DIR)) {
   const path = IS_PRODUCTION ? "build/pages" : "src/pages";
   const cli = IS_PRODUCTION ? "brisa start" : "brisa dev";
 
-  console.log(LOG_PREFIX.ERROR, `Not exist ${path}" directory. It\'s required to run "${cli}"`);
+  console.log(
+    LOG_PREFIX.ERROR,
+    `Not exist ${path}" directory. It\'s required to run "${cli}"`,
+  );
   process.exit(1);
 }
 
