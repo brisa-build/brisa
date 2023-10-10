@@ -43,7 +43,7 @@ function recompile(filename: string) {
     return;
   }
 
-  console.log(LOG_PREFIX.READY, `recompiled successfully in ${ms}ms`);
+  console.log(LOG_PREFIX.READY, `hot reloaded successfully in ${ms}ms`);
   globalThis?.ws?.send(LIVE_RELOAD_COMMAND);
   if (waitFilename) {
     let popFilename = waitFilename;
