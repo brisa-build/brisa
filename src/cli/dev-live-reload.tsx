@@ -2,10 +2,24 @@ import { watch } from "node:fs";
 import path from "node:path";
 import dangerHTML from "../core/danger-html";
 import getConstants from "../constants";
+import { SpawnOptions } from "bun";
+
+type Spawn = SpawnOptions.OptionsObject<
+  SpawnOptions.Writable,
+  SpawnOptions.Readable,
+  SpawnOptions.Readable
+> & { cmd: string[] };
 
 const { LOG_PREFIX, SRC_DIR, IS_PRODUCTION } = getConstants();
 const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
 const LIVE_RELOAD_COMMAND = "reload";
+const buildPath = path.join(import.meta.dir, "..", "build.js");
+const spawnOptions: Spawn = {
+  cmd: [process.execPath, buildPath],
+  env: process.env,
+  stderr: "pipe",
+};
+
 let semaphore = false;
 let waitFilename = "";
 
@@ -13,9 +27,8 @@ if (!IS_PRODUCTION) {
   console.log(LOG_PREFIX.INFO, "hot reloading enabled");
   watch(SRC_DIR, { recursive: true }, async (event, filename) => {
     const filePath = path.join(SRC_DIR, filename as string);
-    const createdOrRemoved = Bun.file(filePath).size === 0;
 
-    if (!createdOrRemoved && event !== "change") return;
+    if (event !== "change" && Bun.file(filePath).size !== 0) return;
 
     console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
     if (semaphore) waitFilename = filename as string;
@@ -28,11 +41,7 @@ function recompile(filename: string) {
   globalThis.Loader.registry.clear();
 
   const nsStart = Bun.nanoseconds();
-  const { exitCode, stderr } = Bun.spawnSync({
-    cmd: [process.execPath, path.join(import.meta.dir, "..", "build.js")],
-    env: process.env,
-    stderr: "pipe",
-  });
+  const { exitCode, stderr } = Bun.spawnSync(spawnOptions);
   const nsEnd = Bun.nanoseconds();
   const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
 
