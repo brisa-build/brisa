@@ -9,9 +9,10 @@ console.log(
     ? "🚀 building your Brisa app..."
     : "starting the development server...",
 );
-
+const start = Bun.nanoseconds();
 const success = await compileAll();
-const ms = (Bun.nanoseconds() / 1000000).toFixed(2);
+const end = Bun.nanoseconds();
+const ms = ((end - start) / 1e6).toFixed(2);
 
 if (!success) process.exit(1);
 
