@@ -12,7 +12,10 @@ let waitFilename = "";
 if (!IS_PRODUCTION) {
   console.log(LOG_PREFIX.INFO, "hot reloading enabled");
   watch(SRC_DIR, { recursive: true }, async (event, filename) => {
-    if (event !== "change") return;
+    const filePath = path.join(SRC_DIR, filename as string);
+    const createdOrRemoved = Bun.file(filePath).size === 0;
+
+    if (!createdOrRemoved && event !== "change") return;
 
     console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
     if (semaphore) waitFilename = filename as string;
