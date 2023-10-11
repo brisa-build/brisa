@@ -12,6 +12,10 @@ export default async function compileAssets(
   const outAssetsDir = path.join(outdir, "public");
   const inAssetsDir = path.join(SRC_DIR, "public");
 
+  if (!fs.existsSync(outAssetsDir)) {
+    fs.mkdirSync(outAssetsDir, { recursive: true });
+  }
+
   if (fs.existsSync(inAssetsDir)) {
     // Copy all assets to the build directory
     fs.cpSync(inAssetsDir, outAssetsDir, { recursive: true });

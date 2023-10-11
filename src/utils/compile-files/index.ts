@@ -1,12 +1,15 @@
-import path from "node:path";
 import fs from "node:fs";
+import path from "node:path";
+import { BuildArtifact } from "bun";
+
+import byteSizeToString from "../byte-size-to-string";
+import getClientCodeInPage from "../get-client-code-in-page";
 import getConstants from "../../constants";
 import getEntrypoints from "../get-entrypoints";
 import getImportableFilepath from "../get-importable-filepath";
 import getRootDir from "../get-root-dir";
+import getWebComponentsList from "../get-web-components-list";
 import logTable from "../log-table";
-import byteSizeToString from "../byte-size-to-string";
-import getClientCodeInPage from "../get-client-code-in-page";
 
 export default async function compileFiles(
   outdir = path.join(getRootDir(), "build"),
@@ -45,26 +48,10 @@ export default async function compileFiles(
 
   if (!success) return { success, logs };
 
-  fs.mkdirSync(path.join(outdir, "pages-client"));
+  const clientSizesPerPage = await compileWebComponents(outdir, outputs);
 
-  const clientSizesPerPage: Record<string, Blob["size"]> = {};
-
-  for (const output of outputs) {
-    const route = output.path.replace(outdir, "");
-    const pagePath = path.join(outdir, output.path.replace(outdir, ""));
-    const clientCodePath = pagePath.replace("pages", "pages-client");
-    const pageCode = await getClientCodeInPage(pagePath);
-
-    if (!pageCode)
-      return { success: false, logs: [`Error compiling ${route}`] };
-
-    const { size, code } = pageCode;
-
-    clientSizesPerPage[route] = size;
-
-    if (!code) continue;
-
-    fs.writeFileSync(clientCodePath, code);
+  if (!clientSizesPerPage) {
+    return { success: false, logs: ["Error compiling web components"] };
   }
 
   if (!IS_PRODUCTION) return { success, logs };
@@ -102,4 +89,49 @@ export default async function compileFiles(
   console.log(LOG_PREFIX.INFO);
 
   return { success, logs };
+}
+
+async function compileWebComponents(outdir: string, pages: BuildArtifact[]) {
+  const { SRC_DIR } = getConstants();
+  const clientCodePath = path.join(outdir, "pages-client");
+  const internalPath = path.join(outdir, "_brisa");
+
+  if (!fs.existsSync(clientCodePath)) fs.mkdirSync(clientCodePath);
+  if (!fs.existsSync(internalPath)) fs.mkdirSync(internalPath);
+
+  const clientSizesPerPage: Record<string, Blob["size"]> = {};
+  const allWebComponents = await getWebComponentsList(SRC_DIR);
+
+  for (const page of pages) {
+    const route = page.path.replace(outdir, "");
+    const pagePath = path.join(outdir, page.path.replace(outdir, ""));
+    const clientCodePath = pagePath.replace("pages", "pages-client");
+    const pageCode = await getClientCodeInPage(pagePath, allWebComponents);
+
+    if (!pageCode) return null;
+
+    const { size, code } = pageCode;
+
+    clientSizesPerPage[route] = size;
+
+    if (!code) continue;
+
+    fs.writeFileSync(clientCodePath, code);
+  }
+
+  const intrinsicCustomElements = `export interface IntrinsicCustomElements {
+  ${Object.entries(allWebComponents)
+    .map(
+      ([name, location]) =>
+        `'${name}': HTMLAttributes<typeof import("${location}")>;`,
+    )
+    .join("\n")}
+}`;
+
+  fs.writeFileSync(
+    path.join(internalPath, "types.ts"),
+    intrinsicCustomElements,
+  );
+
+  return clientSizesPerPage;
 }

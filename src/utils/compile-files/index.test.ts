@@ -48,6 +48,7 @@ describe("utils", () => {
       expect(console.log).toHaveBeenCalledTimes(0);
       expect(files).toEqual([
         "pages-client",
+        "_brisa",
         "pages",
         "chunk-e209715fdb13aa54.js",
       ]);
@@ -59,6 +60,7 @@ describe("utils", () => {
     const PAGES_DIR = path.join(BUILD_DIR, "pages");
     const ASSETS_DIR = path.join(BUILD_DIR, "public");
     const OUT_DIR = path.join(BUILD_DIR, "out");
+    const TYPES = path.join(OUT_DIR, "_brisa", "types.ts");
 
     console.log = mock((v) => v);
     globalThis.mockConstants = {
@@ -73,6 +75,11 @@ describe("utils", () => {
     const { success, logs } = await compileFiles(OUT_DIR);
     const files = fs.readdirSync(OUT_DIR);
 
+    expect(fs.existsSync(TYPES)).toBe(true);
+    expect(fs.readFileSync(TYPES).toString()).toBe(
+      `export interface IntrinsicCustomElements {\n  'native-some-example': HTMLAttributes<typeof import("${BUILD_DIR}/web-components/@native/some-example.tsx")>;\n}`,
+    );
+
     fs.rmSync(OUT_DIR, { recursive: true });
     expect(logs).toEqual([]);
     expect(success).toBe(true);
@@ -80,6 +87,7 @@ describe("utils", () => {
     expect(files).toEqual([
       "pages-client",
       "layout.js",
+      "_brisa",
       "middleware.js",
       "api",
       "pages",
