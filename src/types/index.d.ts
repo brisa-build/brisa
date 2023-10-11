@@ -1,4 +1,5 @@
 import { BunPlugin } from "bun";
+import { IntrinsicCustomElements } from "@/../build/_brisa/types";
 
 export interface RequestContext extends Request {
   context: Map<string, any>;
@@ -167,7 +168,7 @@ declare global {
     interface ElementChildrenAttribute {
       children: Child;
     }
-    interface IntrinsicElements {
+    interface IntrinsicElements extends IntrinsicCustomElements {
       // HTML
       a: HTMLAttributes<HTMLAnchorElement>;
       abbr: HTMLAttributes<HTMLElement>;

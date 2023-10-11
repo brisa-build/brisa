@@ -1,17 +1,16 @@
-import getConstants from "../../constants";
 import { injectUnsuspenseCode } from "../../core/inject-unsuspense-code" assert { type: "macro" };
 import AST from "../ast";
-import getWebComponentsList from "../get-web-components-list";
 import transformToWebComponent from "../transform-to-web-component";
 
 const ASTUtil = AST("js");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
 
-export default async function getClientCodeInPage(pagepath: string) {
-  const { SRC_DIR } = getConstants();
+export default async function getClientCodeInPage(
+  pagepath: string,
+  allWebComponents: Record<string, string> = {},
+) {
   const file = Bun.file(pagepath);
   const ast = ASTUtil.parseCodeToAST(await file.text());
-  const allWebComponents = await getWebComponentsList(SRC_DIR);
   const webComponents = new Map<string, string>();
   let useSuspense = false;
   let size = 0;
