@@ -51,7 +51,6 @@ describe("utils", () => {
 
     it("should return client code in page with web components", async () => {
       const input = path.join(pages, "page-with-web-component.tsx");
-      console.log({ allWebComponents });
       const output = await getClientCodeInPage(input, allWebComponents);
       const expected = {
         code: 'function r(d){return jsxDEV("h1",{children:["Hello ",d]},void 0,!0,void 0,this)}customElements.define("native-some-example",class d extends HTMLElement{constructor(){super();this.attachShadow({mode:"open"})}render(u="World"){if(!this.shadowRoot)return;this.shadowRoot.innerHTML="<h2>NATIVE WEB COMPONENT "+this.getAttribute("name")+"</h2>"+u}connectedCallback(){console.log("connected",this.getAttribute("name"))}disconnectedCallback(){console.log("disconnected")}attributeChangedCallback(){this.render()}adoptedCallback(){console.log("adopted")}static get observedAttributes(){return["name"]}});export{r as HelloWorld};\n',
