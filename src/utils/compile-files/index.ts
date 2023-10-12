@@ -28,14 +28,6 @@ export default async function compileFiles(
   if (layoutPath) entrypoints.push(layoutPath);
   if (i18nPath) entrypoints.push(i18nPath);
 
-  // This fix Bun build with only one entrypoint because it doesn't create the subfolder
-  if (entrypoints.length === 1) {
-    const subfolder = entrypoints[0].includes(path.join(outdir, "api"))
-      ? "api"
-      : "pages";
-    outdir = path.join(outdir, subfolder);
-  }
-
   const { success, logs, outputs } = await Bun.build({
     entrypoints,
     outdir,
