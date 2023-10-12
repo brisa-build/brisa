@@ -4,7 +4,7 @@
   "main": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
   "version": "0.0.6",
-  "description": "lightweight and flexible front-end library based on Bun.js for modern web apps",
+  "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
   "author": {
@@ -57,9 +57,9 @@
     "create-brisa-app": "./create-brisa-app.sh"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "12.8.0",
+    "@happy-dom/global-registrator": "12.9.1",
     "brisa": "0.0.6",
-    "bun-types": "1.0.4-canary.20231004T140131"
+    "bun-types": "1.0.5"
   },
   "peerDependencies": {
     "typescript": "5.2.2"
