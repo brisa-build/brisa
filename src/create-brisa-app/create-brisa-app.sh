@@ -8,7 +8,7 @@ mkdir $PROJECT_NAME
 
 cd $PROJECT_NAME
 
-$BRISA_VERSION="0.0.7"
+$BRISA_VERSION="0.0.8"
 
 echo ""
 echo "🛠️  Installing brisa..."
@@ -58,7 +58,7 @@ echo "{
       \"brisa\", // add dom and dom.iterable support
     ],
     // Please, do not modify this path alias configuration.
-    // It's internally used in Brisa "types.ts" file to enable type-safe
+    // It's internally used in Brisa \"types.ts\" file to enable type-safe
     \"paths\": {
       \"@/*\": [\"*\"],
     }
@@ -109,6 +109,11 @@ echo "export default function Homepage() {
     </div>
   );
 }" > src/pages/index.tsx
+
+
+
+echo "build
+node_modules" > .gitignore
 
 bun install
 
