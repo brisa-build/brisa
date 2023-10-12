@@ -13,7 +13,7 @@ export default function fromNative({
   code: string;
   loader: JavaScriptLoader;
 }) {
-  const { IS_PRODUCTION } = getConstants();
+  const { IS_PRODUCTION, LOG_PREFIX } = getConstants();
   const ASTUtil = AST(loader);
   const ast = ASTUtil.parseCodeToAST(code);
   const exportDefaultIndex = ast.body.findIndex(
@@ -25,14 +25,14 @@ export default function fromNative({
 
   if (!exportDefault) {
     if (!IS_PRODUCTION) {
-      console.warn(`The web component ${name} doesn't have a default export`);
+      console.info(LOG_PREFIX.WARN, `The web component ${name} doesn't have a default export`);
     }
     return { contents: code, loader };
   }
 
   if (exportDefault.declaration.type !== "ClassDeclaration") {
     if (!IS_PRODUCTION) {
-      console.warn(`The web component ${name} default export is not a class`);
+      console.info(LOG_PREFIX.WARN, `The web component ${name} default export is not a class`);
     }
     return { contents: code, loader };
   }

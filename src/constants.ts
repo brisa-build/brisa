@@ -38,6 +38,7 @@ const constants = {
     READY: Bun.enableANSIColors ? `[ \x1b[32mready\x1b[0m ] ` : "[ ready ] ",
     INFO: Bun.enableANSIColors ? `[ \x1b[34minfo\x1b[0m ]  ` : "[ info ] ",
     ERROR: Bun.enableANSIColors ? `[ \x1b[31merror\x1b[0m ] ` : "[ error ] ",
+    WARN: Bun.enableANSIColors ? `[ \x1b[33mwarn\x1b[0m ]  ` : "[ warn ] ",
   },
   LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
   CONFIG: { ...defaultConfig, ...CONFIG } as Configuration,
