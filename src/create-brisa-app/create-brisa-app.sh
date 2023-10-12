@@ -37,9 +37,7 @@ echo "{
 echo "{
   \"compilerOptions\": {
     \"baseUrl\": \"./src\",
-    \"lib\": [
-      \"ESNext\"
-    ],
+    \"lib\": [\"dom\", \"dom.iterable\", \"esnext\"],
     \"module\": \"esnext\",
     \"target\": \"esnext\",
     \"moduleResolution\": \"bundler\",
@@ -56,7 +54,8 @@ echo "{
     \"forceConsistentCasingInFileNames\": true,
     \"allowJs\": true,
     \"types\": [
-      \"bun-types\" // add Bun global
+      \"bun-types\", // add Bun global
+      \"brisa\", // add dom and dom.iterable support
     ],
     // Please, do not modify this path alias configuration.
     // It's internally used in Brisa "types.ts" file to enable type-safe
