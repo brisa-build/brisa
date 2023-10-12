@@ -41,6 +41,7 @@ describe("utils", () => {
 
       const { success, logs } = await compileFiles(OUT_DIR);
       const files = fs.readdirSync(OUT_DIR);
+      const brisaInternals = fs.readdirSync(path.join(OUT_DIR, "_brisa"));
 
       fs.rmSync(OUT_DIR, { recursive: true });
       expect(logs).toEqual([]);
@@ -52,6 +53,8 @@ describe("utils", () => {
         "pages",
         "chunk-e209715fdb13aa54.js",
       ]);
+
+      expect(brisaInternals).toEqual(["types.ts"]);
     });
   });
 
