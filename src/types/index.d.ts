@@ -1,3 +1,8 @@
+/// <reference no-default-lib="true" />
+/// <reference lib="esnext" />
+/// <reference lib="dom" />
+/// <reference lib="dom.iterable" />
+
 import { BunPlugin } from "bun";
 import { IntrinsicCustomElements } from "@/../build/_brisa/types";
 
