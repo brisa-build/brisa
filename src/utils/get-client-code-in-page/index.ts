@@ -31,7 +31,6 @@ export default async function getClientCodeInPage(
 
     useSuspense ||=
       value?.type === "ExpressionStatement" &&
-      value?.expression?.left?.object?.name?.match(/^[A-Z]/) &&
       value?.expression?.operator === "=" &&
       value?.expression?.left?.property?.name === "suspense";
 
