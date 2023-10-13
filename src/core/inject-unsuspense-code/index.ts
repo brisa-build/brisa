@@ -5,6 +5,7 @@ export async function injectUnsuspenseCode() {
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [path.join(import.meta.dir, "unsuspense.ts")],
     outdir: path.join(import.meta.dir, "out"),
+    target: "browser",
     minify: true,
   });
 
