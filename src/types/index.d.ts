@@ -102,8 +102,7 @@ type RouterType = {
   reservedRoutes: Record<string, MatchedRoute | null>;
 };
 
-type RemovePlural<Key extends string> = Key extends `${infer Prefix}${
-  | "_zero"
+type RemovePlural<Key extends string> = Key extends `${infer Prefix}${| "_zero"
   | "_one"
   | "_two"
   | "_few"
@@ -115,15 +114,15 @@ type RemovePlural<Key extends string> = Key extends `${infer Prefix}${
 
 type Join<S1, S2> = S1 extends string
   ? S2 extends string
-    ? `${S1}.${S2}`
-    : never
+  ? `${S1}.${S2}`
+  : never
   : never;
 
 export type Paths<T> = RemovePlural<
   {
     [K in Extract<keyof T, string>]: T[K] extends Record<string, unknown>
-      ? Join<K, Paths<T[K]>>
-      : K;
+    ? Join<K, Paths<T[K]>>
+    : K;
   }[Extract<keyof T, string>]
 >;
 
