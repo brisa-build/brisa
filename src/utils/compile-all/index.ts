@@ -1,24 +1,22 @@
 import fs from "node:fs";
-import path from "node:path";
 import compileAssets from "../compile-assets";
 import compileFiles from "../compile-files";
-import getRootDir from "../get-root-dir";
+import getConstants from "../../constants";
 
-export default async function compileAll(
-  outdir = path.join(getRootDir(), "build"),
-) {
-  if (fs.existsSync(outdir)) {
-    fs.rmSync(outdir, { recursive: true });
+export default async function compileAll() {
+  const { BUILD_DIR } = getConstants();
+  if (fs.existsSync(BUILD_DIR)) {
+    fs.rmSync(BUILD_DIR, { recursive: true });
   }
 
-  const { success, logs } = await compileFiles(outdir);
+  const { success, logs } = await compileFiles();
 
   if (!success) {
     logs.forEach((log) => console.error(log));
     return false;
   }
 
-  await compileAssets(outdir);
+  await compileAssets();
 
   return true;
 }

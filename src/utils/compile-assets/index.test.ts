@@ -12,18 +12,18 @@ import {
 import compileAssets from ".";
 import getConstants from "../../constants";
 
-const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const SRC_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const BUILD_DIR = path.join(SRC_DIR, "build");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
-const OUT_DIR = path.join(BUILD_DIR, "out");
 
 describe("compileAssets", () => {
   beforeAll(() => {
-    fs.mkdirSync(OUT_DIR);
+    fs.mkdirSync(BUILD_DIR);
   });
 
   afterAll(() => {
-    fs.rmSync(OUT_DIR, { recursive: true });
+    fs.rmSync(BUILD_DIR, { recursive: true });
   });
 
   beforeEach(async () => {
@@ -31,7 +31,7 @@ describe("compileAssets", () => {
       ...(getConstants() ?? {}),
       PAGES_DIR,
       BUILD_DIR,
-      SRC_DIR: BUILD_DIR,
+      SRC_DIR,
       ASSETS_DIR,
     };
   });
@@ -41,14 +41,14 @@ describe("compileAssets", () => {
   });
 
   it("should compile fixtures assets correctly", async () => {
-    await compileAssets(OUT_DIR);
-    expect(fs.readdirSync(OUT_DIR)).toEqual(["public"]);
-    expect(fs.readdirSync(path.join(OUT_DIR, "public"))).toEqual([
+    await compileAssets();
+    expect(fs.readdirSync(BUILD_DIR)).toEqual(["public"]);
+    expect(fs.readdirSync(path.join(BUILD_DIR, "public"))).toEqual([
       "favicon.ico",
       "favicon.ico.gz",
       "some-dir",
     ]);
-    expect(fs.readdirSync(path.join(OUT_DIR, "public", "some-dir"))).toEqual([
+    expect(fs.readdirSync(path.join(BUILD_DIR, "public", "some-dir"))).toEqual([
       "some-text.txt.gz",
       "some-img.png.gz",
       "some-img.png",

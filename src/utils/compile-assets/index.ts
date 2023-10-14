@@ -2,14 +2,11 @@ import path from "node:path";
 import fs from "node:fs";
 
 import getConstants from "../../constants";
-import getRootDir from "../get-root-dir";
 import precompressAssets from "../precompress-assets";
 
-export default async function compileAssets(
-  outdir = path.join(getRootDir(), "build"),
-) {
-  const { SRC_DIR } = getConstants();
-  const outAssetsDir = path.join(outdir, "public");
+export default async function compileAssets() {
+  const { SRC_DIR, BUILD_DIR } = getConstants();
+  const outAssetsDir = path.join(BUILD_DIR, "public");
   const inAssetsDir = path.join(SRC_DIR, "public");
 
   if (!fs.existsSync(outAssetsDir)) {
