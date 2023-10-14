@@ -1,5 +1,11 @@
 import type { Type, Props } from "../types/index";
 
+// function escapeHTML(unsafeText: string) {
+//   let div = document.createElement('div');
+//   div.innerText = unsafeText;
+//   return div.innerHTML;
+// }
+
 const Fragment = (props: Props) => props.children;
 const createNode = (type: Type, props: Props) => {
   if (typeof window === "undefined") return { type, props };
@@ -12,6 +18,9 @@ const createNode = (type: Type, props: Props) => {
     .join(" ");
 
   if (attributes) attributes = " " + attributes;
+
+  // @ts-ignore
+  if (type.__isFragment) return childrenString;
 
   return `<${type}${attributes}>${childrenString}</${type}>`;
 };

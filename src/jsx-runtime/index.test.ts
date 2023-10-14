@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "bun:test";
-import { jsx } from ".";
+import { jsx, jsxDEV, Fragment } from ".";
 
 describe("utils", () => {
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe("utils", () => {
     it("should convert a nested node to object node in server-side", () => {
       const node = jsx("div", {
         id: "test",
-        children: jsx("span", { children: "Hello World" }),
+        children: jsx("span", { children: "Hello World" }) as any,
       });
 
       expect(node).toEqual({
@@ -42,10 +42,24 @@ describe("utils", () => {
       globalThis.window = {} as any;
       const node = jsx("div", {
         id: "test",
-        children: jsx("span", { children: "Hello World" }),
+        children: jsx("span", { children: "Hello World" }) as any,
       });
 
       expect(node).toBe('<div id="test"><span>Hello World</span></div>');
+    });
+
+    it("should convert a nested fragment to string node in client-side", () => {
+      globalThis.window = {} as any;
+      const node = jsxDEV(Fragment as any, {
+        children: [
+          jsxDEV("h1", {
+            children: "Hello",
+          }) as any,
+          "World",
+        ],
+      });
+
+      expect(node).toBe("<h1>Hello</h1>World");
     });
   });
 });
