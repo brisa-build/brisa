@@ -8,6 +8,7 @@ node_modules
 **/__fixtures__/out*
 /jsx-runtime/
 /jsx-dev-runtime/
+/client/
 cli-build
 cli-start
 cli-dev
