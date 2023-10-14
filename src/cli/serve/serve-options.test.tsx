@@ -1,14 +1,6 @@
 import path from "node:path";
 import fs from "node:fs";
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  spyOn,
-  mock,
-} from "bun:test";
+import { describe, it, expect, beforeEach, afterEach, spyOn } from "bun:test";
 import getConstants from "../../constants";
 import { BunFile } from "bun";
 

@@ -7,14 +7,12 @@ import getClientCodeInPage from "../get-client-code-in-page";
 import getConstants from "../../constants";
 import getEntrypoints from "../get-entrypoints";
 import getImportableFilepath from "../get-importable-filepath";
-import getRootDir from "../get-root-dir";
 import getWebComponentsList from "../get-web-components-list";
 import logTable from "../log-table";
 
-export default async function compileFiles(
-  outdir = path.join(getRootDir(), "build"),
-) {
-  const { SRC_DIR, CONFIG, IS_PRODUCTION, LOG_PREFIX } = getConstants();
+export default async function compileFiles() {
+  const { SRC_DIR, BUILD_DIR, CONFIG, IS_PRODUCTION, LOG_PREFIX } =
+    getConstants();
   const pagesDir = path.join(SRC_DIR, "pages");
   const apiDir = path.join(SRC_DIR, "api");
   const pagesEntrypoints = getEntrypoints(pagesDir);
@@ -30,7 +28,7 @@ export default async function compileFiles(
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints,
-    outdir,
+    outdir: BUILD_DIR,
     sourcemap: IS_PRODUCTION ? undefined : "inline",
     root: SRC_DIR,
     minify: true,
@@ -40,7 +38,7 @@ export default async function compileFiles(
 
   if (!success) return { success, logs };
 
-  const clientSizesPerPage = await compileWebComponents(outdir, outputs);
+  const clientSizesPerPage = await compileClientCodePage(outputs);
 
   if (!clientSizesPerPage) {
     return { success: false, logs: ["Error compiling web components"] };
@@ -50,7 +48,7 @@ export default async function compileFiles(
 
   logTable(
     outputs.map((output) => {
-      const route = output.path.replace(outdir, "");
+      const route = output.path.replace(BUILD_DIR, "");
       const isChunk = route.startsWith("/chunk-");
       let symbol = "λ";
 
@@ -83,10 +81,10 @@ export default async function compileFiles(
   return { success, logs };
 }
 
-async function compileWebComponents(outdir: string, pages: BuildArtifact[]) {
-  const { SRC_DIR } = getConstants();
-  const clientCodePath = path.join(outdir, "pages-client");
-  const internalPath = path.join(outdir, "_brisa");
+async function compileClientCodePage(pages: BuildArtifact[]) {
+  const { SRC_DIR, BUILD_DIR } = getConstants();
+  const clientCodePath = path.join(BUILD_DIR, "pages-client");
+  const internalPath = path.join(BUILD_DIR, "_brisa");
 
   if (!fs.existsSync(clientCodePath)) fs.mkdirSync(clientCodePath);
   if (!fs.existsSync(internalPath)) fs.mkdirSync(internalPath);
@@ -95,8 +93,8 @@ async function compileWebComponents(outdir: string, pages: BuildArtifact[]) {
   const allWebComponents = await getWebComponentsList(SRC_DIR);
 
   for (const page of pages) {
-    const route = page.path.replace(outdir, "");
-    const pagePath = path.join(outdir, page.path.replace(outdir, ""));
+    const route = page.path.replace(BUILD_DIR, "");
+    const pagePath = path.join(BUILD_DIR, page.path.replace(BUILD_DIR, ""));
     const clientCodePath = pagePath.replace("pages", "pages-client");
     const pageCode = await getClientCodeInPage(pagePath, allWebComponents);
 
