@@ -1,7 +1,7 @@
 import type { Type, Props } from "../types/index";
 
 function escapeHTML(unsafeText: unknown) {
-  if (typeof unsafeText !== 'string') return unsafeText;
+  if (typeof unsafeText !== 'string') return unsafeText ?? "";
   let div = document.createElement('div');
   div.innerText = unsafeText;
   return div.innerHTML;
