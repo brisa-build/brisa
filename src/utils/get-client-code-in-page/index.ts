@@ -70,7 +70,12 @@ async function transformToWebComponents(
     .join("\n");
 
   const customElementsDefinitions = Object.keys(webComponentsList)
-    .map((k) => `customElements.define("${k}", ${snakeToCamelCase(k)});`)
+    .map(
+      (k) =>
+        `if(${snakeToCamelCase(
+          k,
+        )}) customElements.define("${k}", ${snakeToCamelCase(k)});`,
+    )
     .join("\n");
 
   await writeFile(webEntrypoint, `${imports}\n${customElementsDefinitions}`);
@@ -84,7 +89,26 @@ async function transformToWebComponents(
     // https://bun.sh/docs/bundler#format
     plugins: [
       ...(CONFIG?.plugins ?? []),
-      // TODO: Add plugin to transform no-native web components
+      {
+        name: "web-components-transformer",
+        setup(build) {
+          build.onLoad(
+            { filter: /.*web-components.*/ },
+            async ({ path, loader }) => {
+              let code = await Bun.file(path).text();
+
+              if (!code.includes("export default")) {
+                code += `\nexport default null;`;
+              }
+
+              return {
+                contents: code,
+                loader,
+              };
+            },
+          );
+        },
+      },
     ],
   });
 
