@@ -43,7 +43,7 @@ describe("compileAll", () => {
   // TODO: there is a bug in Bun compiling multiple-times the same entrypoints.
   // This test pass in isolation but not running the whole tests
   it.skip("should compile everything in fixtures correctly", async () => {
-    const succes = await compileAll(OUT_DIR);
+    const succes = await compileAll();
     expect(succes).toEqual(true);
     expect(fs.readdirSync(OUT_DIR)).toEqual([
       "pages-client",
