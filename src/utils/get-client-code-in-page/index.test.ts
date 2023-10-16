@@ -63,7 +63,7 @@ describe("utils", () => {
       const output = await getClientCodeInPage(input, allWebComponents);
       const expected = {
         code: 'var h=(d)=>d.children;h.__isFragment=!0;class c extends HTMLElement{constructor(){super();this.attachShadow({mode:"open"})}render(d="World"){if(!this.shadowRoot)return;this.shadowRoot.innerHTML="<h2>NATIVE WEB COMPONENT "+this.getAttribute("name")+"</h2>"+d}connectedCallback(){console.log("connected",this.getAttribute("name"))}disconnectedCallback(){console.log("disconnected")}attributeChangedCallback(){this.render()}adoptedCallback(){console.log("adopted")}static get observedAttributes(){return["name"]}}customElements.define("native-some-example",c);\n',
-        size: 558,
+        size: 563,
       };
       expect(output).toEqual(expected);
     });
