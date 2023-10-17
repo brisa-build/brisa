@@ -56,7 +56,13 @@ function recompile(filename: string) {
   }
 
   console.log(LOG_PREFIX.READY, `hot reloaded successfully in ${ms}ms`);
-  globalThis?.ws?.send(LIVE_RELOAD_COMMAND);
+
+  if (!globalThis.sockets) return;
+
+  for (let [, ws] of globalThis.sockets) {
+    ws.send(LIVE_RELOAD_COMMAND);
+  }
+
   if (waitFilename) {
     let popFilename = waitFilename;
     waitFilename = "";

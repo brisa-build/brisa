@@ -1,7 +1,10 @@
-import { describe, it, expect, mock } from "bun:test";
+import { describe, it, expect, mock, afterEach } from "bun:test";
 import extendRequestContext from ".";
 
 describe("brisa core", () => {
+  afterEach(() => {
+    globalThis.sockets = undefined;
+  });
   describe("extend request context", () => {
     it("should extent the request", () => {
       const request = new Request("https://example.com");
@@ -54,7 +57,11 @@ describe("brisa core", () => {
     });
 
     it("should be linked with websockets", () => {
-      globalThis.ws = { send: mock(() => "some message") } as any;
+      const requestId = "some-id";
+
+      globalThis.sockets = new Map();
+      globalThis.sockets.set(requestId, { send: mock(() => "some message") });
+
       const request = new Request("https://example.com");
       const route = {
         path: "/",
@@ -62,6 +69,7 @@ describe("brisa core", () => {
       const requestContext = extendRequestContext({
         originalRequest: request,
         route,
+        id: requestId,
       });
 
       expect(requestContext.ws.send()).toBe("some message");
