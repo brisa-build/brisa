@@ -50,8 +50,14 @@ export const serveOptions: ServeOptions = {
   port: PORT,
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
-    if (server.upgrade(req)) return;
-    const request = extendRequestContext({ originalRequest: req });
+    const requestId = crypto.randomUUID();
+
+    if (server.upgrade(req, { data: { id: requestId } })) return;
+
+    const request = extendRequestContext({
+      originalRequest: req,
+      id: requestId,
+    });
     const url = new URL(request.finalURL);
     const assetPath = path.join(ASSETS_DIR, url.pathname);
     const isHome = url.pathname === "/";
@@ -103,18 +109,19 @@ export const serveOptions: ServeOptions = {
     );
   },
   websocket: {
-    open: (ws: ServerWebSocket<unknown>) => {
-      globalThis.ws = ws;
+    open: (ws: ServerWebSocket<{ id: string }>) => {
+      if (!globalThis.sockets) globalThis.sockets = new Map();
+      globalThis.sockets.set(ws.data.id, ws);
       wsModule?.open?.(ws);
     },
-    close: (...args) => {
-      globalThis.ws = undefined;
-      wsModule?.close?.(...args);
+    close: (ws: ServerWebSocket<{ id: string }>) => {
+      globalThis.sockets?.delete?.(ws.data.id);
+      wsModule?.close?.(ws);
     },
-    message: (ws, message) => {
+    message: (ws: ServerWebSocket<{ id: string }>, message: string) => {
       wsModule?.message?.(ws, message);
     },
-    drain: (ws) => {
+    drain: (ws: ServerWebSocket<{ id: string }>) => {
       wsModule?.drain?.(ws);
     },
   },
@@ -233,4 +240,8 @@ function PageLayout({
       {childrenWithLiveReload}
     </LoadLayout>
   );
+}
+
+declare global {
+  var sockets: Map<string, ServerWebSocket<unknown>> | undefined;
 }

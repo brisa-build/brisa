@@ -13,6 +13,7 @@ export interface RequestContext extends Request {
   ws?: ServerWebSocket<unknown>;
   getIP: () => SocketAddress | null;
   finalURL: string;
+  id: string;
 }
 
 type Props = Record<string, unknown> & {
