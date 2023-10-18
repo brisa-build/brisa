@@ -96,6 +96,7 @@ describe("utils", () => {
       "pages-client",
       "layout.js",
       "_brisa",
+      "websocket.js",
       "middleware.js",
       "api",
       "pages",
@@ -106,29 +107,30 @@ describe("utils", () => {
     const logOutput = minifyText(
       (console.log as any).mock.calls.flat().join("\n"),
     );
-    expect(logOutput).toBe(
-      minifyText(`
-        ${info}
-        ${info}Route                               | Size | Client size  
-        ${info}------------------------------------------------------------
-        ${info}λ /pages/_404.js                    | 261 B | 0 B 
-        ${info}λ /pages/page-with-web-component.js | 273 B | 563 B 
-        ${info}λ /pages/somepage.js                | 151 B | 0 B
-        ${info}λ /pages/index.js                   | 233 B | 258 B 
-        ${info}λ /pages/user/[username].js         | 144 B | 0 B 
-        ${info}λ /api/example.js                   | 275 B | 0 B 
-        ${info}ƒ /middleware.js                    | 151 B | 0 B 
-        ${info}Ω /i18n.js                          | 154 B | 0 B 
-        ${info}Δ /layout.js                        | 307 B | 0 B
-        ${info}Φ /chunk-e209715fdb13aa54.js        | 85 B  | 0 B
-        ${info}
-        ${info}λ Server entry-points
-        ${info}Δ Layout
-        ${info}ƒ Middleware
-        ${info}Ω i18n
-        ${info}Φ JS shared by all
-        ${info}
-      `),
-    );
+    const expected = minifyText(`
+    ${info}
+    ${info}Route                               | Size | Client size  
+    ${info}------------------------------------------------------------
+    ${info}λ /pages/_404.js                    | 261 B | 0 B 
+    ${info}λ /pages/page-with-web-component.js | 273 B | 563 B 
+    ${info}λ /pages/somepage.js                | 151 B | 0 B
+    ${info}λ /pages/index.js                   | 233 B | 258 B 
+    ${info}λ /pages/user/[username].js         | 144 B | 0 B 
+    ${info}λ /api/example.js                   | 275 B | 0 B 
+    ${info}ƒ /middleware.js                    | 151 B | 0 B
+    ${info}Ω /i18n.js                          | 154 B | 0 B
+    ${info}Δ /layout.js                        | 307 B | 0 B
+    ${info}Ψ /websocket.js                     | 199 B | 0 B
+    ${info}Φ /chunk-e209715fdb13aa54.js        | 85 B  | 0 B
+    ${info}
+    ${info}λ Server entry-points
+    ${info}Δ Layout
+    ${info}ƒ Middleware
+    ${info}Ω i18n
+    ${info}Ψ Websocket
+    ${info}Φ JS shared by all
+    ${info}
+  `);
+    expect(logOutput).toBe(expected);
   });
 });
