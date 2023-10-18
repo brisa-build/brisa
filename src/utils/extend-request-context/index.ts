@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { MatchedRoute } from "bun";
 import { I18nFromRequest, RequestContext } from "../../types";
-import getConstants from "../../constants";
 
 type ExtendRequestContext = {
   originalRequest: Request;
@@ -20,8 +19,6 @@ export default function extendRequestContext({
   finalURL,
   id,
 }: ExtendRequestContext): RequestContext {
-  const { IS_PRODUCTION } = getConstants();
-
   // finalURL
   originalRequest.finalURL =
     currentRequestContext?.finalURL ??
@@ -44,9 +41,7 @@ export default function extendRequestContext({
 
   // ws
   originalRequest.ws = globalThis.sockets?.get(originalRequest.id) ?? null;
-
-  // in DEV we are not cleaning because we broadcast to all clients in hot-reload
-  if (IS_PRODUCTION) globalThis.sockets?.delete(originalRequest.id);
+  globalThis.sockets?.delete(originalRequest.id);
 
   // i18n
   originalRequest.i18n = currentRequestContext?.i18n ??

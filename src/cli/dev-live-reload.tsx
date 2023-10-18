@@ -57,11 +57,9 @@ function recompile(filename: string) {
 
   console.log(LOG_PREFIX.READY, `hot reloaded successfully in ${ms}ms`);
 
-  if (!globalThis.sockets) return;
+  if (!globalThis.brisaServer) return;
 
-  for (let [, ws] of globalThis.sockets) {
-    ws.send(LIVE_RELOAD_COMMAND);
-  }
+  globalThis.brisaServer.publish("hot-reload", LIVE_RELOAD_COMMAND);
 
   if (waitFilename) {
     let popFilename = waitFilename;
