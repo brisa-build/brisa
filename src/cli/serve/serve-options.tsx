@@ -14,10 +14,6 @@ import { MatchedRoute, ServeOptions, ServerWebSocket } from "bun";
 import { RequestContext } from "../../types";
 import { renderToReadableStream } from "../../core";
 
-declare global {
-  var ws: ServerWebSocket<unknown> | undefined;
-}
-
 const {
   IS_PRODUCTION,
   PAGE_404,
@@ -32,6 +28,7 @@ const {
 let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
 let rootRouter = getRouteMatcher(BUILD_DIR);
 
+const HOT_RELOAD_TOPIC = "hot-reload";
 const WEBSOCKET_PATH = getImportableFilepath("websocket", BUILD_DIR);
 const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
 const route404 = pagesRouter.reservedRoutes[PAGE_404];
@@ -112,10 +109,12 @@ export const serveOptions: ServeOptions = {
     open: (ws: ServerWebSocket<{ id: string }>) => {
       if (!globalThis.sockets) globalThis.sockets = new Map();
       globalThis.sockets.set(ws.data.id, ws);
+      if (!IS_PRODUCTION) ws.subscribe(HOT_RELOAD_TOPIC);
       wsModule?.open?.(ws);
     },
     close: (ws: ServerWebSocket<{ id: string }>) => {
       globalThis.sockets?.delete?.(ws.data.id);
+      if (!IS_PRODUCTION) ws.unsubscribe(HOT_RELOAD_TOPIC);
       wsModule?.close?.(ws);
     },
     message: (ws: ServerWebSocket<{ id: string }>, message: string) => {

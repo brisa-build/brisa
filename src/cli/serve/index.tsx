@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import getConstants from "../../constants";
 import { serveOptions } from "./serve-options";
-import { ServeOptions } from "bun";
+import { ServeOptions, Server } from "bun";
 
 const { IS_PRODUCTION, BUILD_DIR, PAGES_DIR, LOG_PREFIX } = getConstants();
 
@@ -28,6 +28,7 @@ function init(options: ServeOptions) {
   try {
     const server = Bun.serve(options);
 
+    globalThis.brisaServer = server;
     console.log(
       LOG_PREFIX.READY,
       `listening on http://${server.hostname}:${server.port}...`,
@@ -46,3 +47,7 @@ function init(options: ServeOptions) {
 }
 
 init(serveOptions);
+
+declare global {
+  var brisaServer: Server;
+}
