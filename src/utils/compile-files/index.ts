@@ -18,6 +18,7 @@ export default async function compileFiles() {
   const pagesEntrypoints = getEntrypoints(pagesDir);
   const apiEntrypoints = getEntrypoints(apiDir);
   const middlewarePath = getImportableFilepath("middleware", SRC_DIR);
+  const websocketPath = getImportableFilepath("websocket", SRC_DIR);
   const layoutPath = getImportableFilepath("layout", SRC_DIR);
   const i18nPath = getImportableFilepath("i18n", SRC_DIR);
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
@@ -25,6 +26,7 @@ export default async function compileFiles() {
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
   if (i18nPath) entrypoints.push(i18nPath);
+  if (websocketPath) entrypoints.push(websocketPath);
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints,
@@ -60,6 +62,8 @@ export default async function compileFiles() {
         symbol = "Δ";
       } else if (route.startsWith("/i18n")) {
         symbol = "Ω";
+      } else if (route.startsWith("/websocket")) {
+        symbol = "Ψ";
       }
 
       return {
@@ -75,6 +79,7 @@ export default async function compileFiles() {
   if (layoutPath) console.log(LOG_PREFIX.INFO, "Δ  Layout");
   if (middlewarePath) console.log(LOG_PREFIX.INFO, "ƒ  Middleware");
   if (i18nPath) console.log(LOG_PREFIX.INFO, "Ω  i18n");
+  if (websocketPath) console.log(LOG_PREFIX.INFO, "Ψ  Websocket");
   console.log(LOG_PREFIX.INFO, "Φ  JS shared by all");
   console.log(LOG_PREFIX.INFO);
 
@@ -111,11 +116,11 @@ async function compileClientCodePage(pages: BuildArtifact[]) {
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
   ${Object.entries(allWebComponents)
-    .map(
-      ([name, location]) =>
-        `'${name}': HTMLAttributes<typeof import("${location}")>;`,
-    )
-    .join("\n")}
+      .map(
+        ([name, location]) =>
+          `'${name}': HTMLAttributes<typeof import("${location}")>;`,
+      )
+      .join("\n")}
 }`;
 
   fs.writeFileSync(
