@@ -116,11 +116,11 @@ async function compileClientCodePage(pages: BuildArtifact[]) {
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
   ${Object.entries(allWebComponents)
-      .map(
-        ([name, location]) =>
-          `'${name}': HTMLAttributes<typeof import("${location}")>;`,
-      )
-      .join("\n")}
+    .map(
+      ([name, location]) =>
+        `'${name}': HTMLAttributes<typeof import("${location}")>;`,
+    )
+    .join("\n")}
 }`;
 
   fs.writeFileSync(
