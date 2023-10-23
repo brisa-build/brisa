@@ -17,7 +17,7 @@ const PAGES_DIR = path.join(ROOT_DIR, "pages");
 const ASSETS_DIR = path.join(ROOT_DIR, "public");
 const OUT_DIR = path.join(ROOT_DIR, "out");
 
-describe("compileAll", () => {
+describe.skip("compileAll", () => {
   beforeAll(() => {
     fs.mkdirSync(OUT_DIR);
   });
@@ -42,7 +42,7 @@ describe("compileAll", () => {
 
   // TODO: there is a bug in Bun compiling multiple-times the same entrypoints.
   // This test pass in isolation but not running the whole tests
-  it.skip("should compile everything in fixtures correctly", async () => {
+  it("should compile everything in fixtures correctly", async () => {
     const succes = await compileAll();
     expect(succes).toEqual(true);
     expect(fs.readdirSync(OUT_DIR)).toEqual([

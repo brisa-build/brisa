@@ -21,6 +21,8 @@ export default function renderToReadableStream(
 ) {
   return new ReadableStream({
     async start(controller) {
+      request.signal.addEventListener("abort", () => controller.close());
+
       const extendedController = extendStreamController(controller, head);
 
       await enqueueDuringRendering(element, request, extendedController).catch(

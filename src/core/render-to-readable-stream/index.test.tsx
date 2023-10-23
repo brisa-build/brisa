@@ -813,5 +813,41 @@ describe("brisa core", () => {
         /<html><head><\/head><body><h1 id="a">A<\/h1><h1 id="a">B<\/h1><\/body><\/html>/gm,
       );
     });
+
+    it("should not finish the stream if the request is aborted", async () => {
+      const originalRequest = new Request(testRequest, {
+        signal: new AbortController().signal,
+      });
+      const req = extendRequestContext({ originalRequest });
+      const SlowComponent = async () => {
+        await Bun.sleep(1000);
+        return <div>Test</div>;
+      };
+
+      const element = (
+        <html>
+          <head></head>
+          <body>
+            <SlowComponent />
+          </body>
+        </html>
+      );
+
+      const stream = renderToReadableStream(element, req);
+
+      // wait the first chunk
+      const reader = stream.getReader();
+      const { done, value } = await reader.read();
+
+      expect(done).toBe(false);
+      expect(value).toBe("<html>");
+
+      // abort the request
+      req.signal.dispatchEvent(new Event("abort"));
+
+      const { done: done2, value: value2 } = await reader.read();
+      expect(done2).toBe(true);
+      expect(value2).toBe(undefined);
+    });
   });
 });
