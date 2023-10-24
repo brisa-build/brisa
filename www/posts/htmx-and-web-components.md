@@ -3,63 +3,63 @@ title: "Brisa: HTMX & Web Components"
 description: Algorithm to transform Brisa components to similar behavior of HTMX and to Web Components
 ---
 
-Este post es para contar un poco el enfoque que se ha sacado para hacer los algoritmos para poder trabajar con componentes parecidos a React y con un framework parecido a Next.js (Brisa), pero a la vez tenga un comportamiento más inspirado por librerias como HTMX y Lit Element.
+This post explains the approach taken to develop algorithms that allow components similar to React and a framework like Next.js (Brisa) to also have behavior more inspired by libraries like HTMX and LitElement.
 
-Digamos que Brisa framework ha estado fuertamente inspirado por: Next.js (React), HTMX y Lit Element.
+The Brisa framework has been strongly inspired by: Next.js (React), HTMX and LitElement.
 
-En Brisa, los componentes por defecto son server-components. Y es posible que puedas tener más server-components ya que el enfoque es que puedas usar estado y eventos dentro de ellos! Si, lo has escuchado bien, en principio podrias usar una SPA interactiva solo usando server-components.
+In Brisa, components are server-components by default. And it is possible to have more server-components since the focus is for you to be able to use state and events within them! Yes, you heard that right, in principle you could use an interactive SPA using only server-components.
 
-No obstante, no siempre es recomendado usar server-components y va bien tener tambien client-components.
+However, it is not always recommended to use server-components and it is good to also have client-components.
 
-## Cuando usar client-components (web-components)
+## When to use client-components (web-components)
 
-Hay dos puntos importantes que harán que tengas que usar los client-components:
+There are two important points that will make you need to use client-components:
 
-- Cuando necesites interactuar con la Web API
-- Por interacciones que no requieran hacer peticiones al servidor. Por ejemplo no tendria sentido usar un server-component para una celda de un spreadsheet.
+- When you need to interact with the Web API
+- For interactions that do not require making requests to the server. For example, it would not make sense to use a server-component for a spreadsheet cell.
 
-## Cuando usar server-components
+## When to use server-components
 
-Siempre que no se necesite interactuar con la Web API, y cuando las interacciones requieran interacción con el servidor.
+Whenever interaction with the Web API is not required, and when interactions require interaction with the server.
 
-## Next.js (React) inspiración
+## Next.js (React) inspiration
 
-React cuando salió y cuando el concepto de "componentes" salió hizo una revolución a como se construye la web. El concepto de trabajar con componentes permite que puedas reusar código facilmente y cada componente tenga una sola resposabilidad y la puedas testear bien. El hecho de usar JSX permitió tener en un solo sitio pequeño (componente) tanto el JS, HTML y CSS para realizar la funcionalidad del componente. Así que Brisa una de sus motivaciones es de que los desarroyadores sigan haciendo sus proyectos usado componentes funcionales con JSX.
+When React came out and the concept of "components" emerged, it revolutionized how the web is built. The concept of working with components allows you to easily reuse code and each component has a single responsibility that can be tested properly. The fact of using JSX allowed having the JS, HTML and CSS to perform the component's functionality all in one small place (component). So one of Brisa's motivations is for developers to continue making their projects using functional components with JSX.
 
-Next.js inspiró mucho su forma de gestionar el SSR con React y como tener ficheros isomorphicos que se puedan usar tanto en el lado del servidor como el del cliente.
+Next.js inspired a lot its way of managing SSR with React and how to have isomorphic files that can be used both on the server side and the client side.
 
-Brisa se ha inspirado con el enrutado estilo Next.js (pages router) para definir las paginas pero con un enfoque parecido a app router, ya que por defecto todos los componentes son server-components.
+Brisa has been inspired by the Next.js-style routing (pages router) to define pages but with an approach similar to app router, since by default all components are server-components.
 
-## HTMX inspiración
+## HTMX inspiration
 
-Pensando en los server-components, nos preguntamos porqué no podria tener estado y eventos, y que esta interacción se hiciera parecida a como lo hace HTMX. HTMX extende los controles hypermedia para que sean más de 2 (`a` y `form`) y la comunicación servidor-cliente es via `text/html`.
+When thinking about server-components, we wondered why they could not have state and events, and why this interaction could not be made similar to how HTMX does it. HTMX extends hypermedia controls so that there are more than 2 (a and form) and server-client communication is via text/html.
 
-Para facilitar la integración de la idea HTMX pero usando un comportamiento parecido a los componentes de React sin tener que manualmente añadir estos hypermedia controles y llevar el mínimo código posible en el cliente, Brisa lo que hace es cambiar el enfoque de implementación.
+To facilitate the integration of the HTMX idea but using behavior similar to React components without having to manually add these hypermedia controls and minimize code on the client, what Brisa does is change the implementation approach.
 
-Comunicarse con HTML de hecho es uno de los principios por los que se crearon protocolos como HTTP (Hypertext Transfer Protocol). Más adelante se añadió soporte para transmitir JSON y con los últimos años y la revolución de React se tendió mucho a hacer lo siguiente:
+Communicating with HTML is in fact one of the principles on which protocols like HTTP (Hypertext Transfer Protocol) were created. Later, support was added to transmit JSON and in recent years with the React revolution there was a strong tendency to do the following:
 
-1. Hacer una acción desde el lado del cliente
-2. Capturar el evento y procesar datos
-3. Hacer una petición al servidor
-4. Recibir un JSON del servidor
-5. Procesar el JSON
-6. Renderizar nuevo HTML
+1. Perform an action from the client side
+2. Capture the event and process data
+3. Make a request to the server
+4. Receive a JSON from the server
+5. Process the JSON
+6. Render new HTML
 
-HTMX propone solucionar estas peticiones por controles de hypermedia y simplificarlo a:
+HTMX proposes to solve these requests through hypermedia controls and simplify it to:
 
-1. Hacer una acción desde el lado del cliente
-2. Automaticamente se haga la petición al servidor por el hypermedia control
-3. El servidor devuelve el HTML y el hypermedia control reemplaze la parte de la web que toca por el HTML recibido
+1. Perform an action from the client side
+2. Automatically make the request to the server via the hypermedia control
+3. The server returns the HTML and the hypermedia control replaces the part of the web that corresponds with the HTML received
 
-Por parte de los desarroyadores para implementar una acción solo se necesita definir en los atributos de HTML su comportamiento y el hypermedia-control lo hace solo sin tener que implementar todo esto. Cosa que es un beneficio porque reduce mucho el código del cliente, lo único que se necesita es la libreria de HTMX para que haga el manejo de estos controles. Si algún dia esto se establece como especificación de HTML entonces no habrá nada de código de cliente, pero ahora mismo si se necesita una libreria que lo gestione por ti.
+For developers, to implement an action, you only need to define its behavior in the HTML attributes and the hypermedia-control does it automatically without having to implement all of this. This is beneficial because it greatly reduces client-side code, the only thing needed is the HTMX library to handle these controls. If one day this becomes an HTML specification then there won't be any client-side code needed, but right now a library is still required to manage it for you.
 
-Con Brisa, queremos hacer algo parecido, aunque no igual. Queremos mantener el concepto de reducir el trabajo de los desarroyadores de una forma parecida a HTMX para que no tengan que implementar estas acciones desde el cliente y ya que estamos trabajando con server-components que se haga allí y asi no haga falta comunicarse con ningún servidor porque todo se hará desde el servidor. Con esto quiero decir que en los server-componentes tenemos un estado y podemos modificarlo desde un handler, entonces se hace un rerender del componente desde el servidor y se manda este codigo al cliente. Naturalmente la acción inicial se hará desde el cliente porque se necesita interactividad del usuario, pero se traslada la implementación en el servidor.
+With Brisa, we want to do something similar, although not identical. We want to maintain the concept of reducing developer effort in a way similar to HTMX so they don't have to implement these actions from the client and since we are working with server-components, it is done there so there is no need to communicate with any server because everything will be done from the server. What I mean by this is that in server-components we have state and we can modify it from a handler, then a rerender of the component is made from the server and this code is sent to the client. Of course, the initial action will be made from the client because user interactivity is needed, but the implementation is moved to the server.
 
-De esta forma, quedaria así:
+This way, it would be:
 
-1. Hacer acción desde el lado del cliente
-2. Automaticamente se haga la petición al servidor y Brisa ejecuta la acción y rerender el componente
-3. El servidor devuelve el HTML y Brisa-cliente lo reemplaza por la parte de la web que toca por el HTML recibido
+1. Perform action from client side
+2. Automatically make request to server and Brisa executes action and rerenders component
+3. Server returns HTML and Brisa-client replaces corresponding part of web with received HTML
 
 ```js
 import { Database } from "bun:sqlite";
@@ -98,11 +98,11 @@ UserInfo.error = ({ error }, { i18n: { t } }) => {
 };
 ```
 
-Aquí lo que cambia, es que el hypermedia-control no existe a nivel de atributo de HTML. Es más, el cliente recibe el HTML nuevo y lo reemplaza automaticamente, pero realmente no recibe el HTML en formato texto, sino que el cliente recibe las operaciones del DOM que debe de realizar para alterar lo mínimo posible el HTML y de esta forma parte del analisis se haga desde el servidor.
+What changes here is that the hypermedia-control does not exist at the HTML attribute level. Furthermore, the client receives the new HTML and replaces it automatically, but it doesn't really receive the HTML in text format, rather the client receives the DOM operations that must be performed to minimally alter the HTML and in this way part of the analysis is done from the server side.
 
-Por lo tanto, no podemos decir que Brisa usa el hypermedia para enviar HTML en formato texto, sino que enviamos texto en streaming de las operaciones de DOM junto los selectores de HTML al cual aplicar estas operaciones.
+Therefore, we cannot say that Brisa uses hypermedia to send HTML in text format, rather we send streaming text of the DOM operations along with the HTML selectors to apply these operations.
 
-Un ejemplo de chunks que puede recibir durante el streaming de la respuesta:
+An example of chunks that can be received during the streaming response:
 
 Chunk 1:
 
@@ -150,22 +150,22 @@ Chunk 3:
 }
 ```
 
-Sólo 4 operaciones soportadas por todos los navegadores: `setAttribute`, `removeAttribute`, `remove`, `insertAdjacentHTML`, `innerHTML`. Con estas 4 operaciones se puede modificar el DOM de forma delicada sin alterar estados ni eventos registrados por la parte de cliente.
+Only 4 operations supported by all browsers: `setAttribute`, `removeAttribute`, `remove`, `insertAdjacentHTML`, `innerHTML`. With these 4 operations the DOM can be modified delicately without altering states or events registered by the client portion.
 
-Los motivos de elegir JSON otra vez en vez de HTML (me refiero a otra vez porque la web se inventó para transferir HTML, añadimos soporte a transferir JSON para hacer cosas más complejas desde el cliente y luego recapacitamos con HTMX para ampliar el uso de HTML para evitar complejidades innecesarias):
+The reasons for choosing JSON again instead of HTML (I'm referring to again because the web was invented to transfer HTML, we added support to transfer JSON to do more complex things from the client and then re-thought it with HTMX to expand the use of HTML to avoid unnecessary complexities):
 
-- Procesar de una forma más simple desde el cliente, haciendo que no haga falta casi llevar Bytes en el cliente para gestionar esto.
-- Operar directamente con el DOM para actualizar solo la parte del HTML que cambia y mantener la que tenemos exactamente igual, evitando que se pierdan estados y eventos de web-components.
+- Process more simply from the client, making it so there is hardly any need to bring Bytes in the client to manage this.
+- Operate directly with the DOM to update only the part of the HTML that changes and maintain exactly the same one, avoiding loss of states and events from web-components.
 
-## Eventos y estado en el servidor
+## Events and state on the server
 
 ### 1. Build process
 
-Durante el build se detectan todos los eventos que hay en JSX y se hace lo siguiente:
+During the build all events in JSX are detected and the following is done:
 
-#### Transformar componente original
+#### Transform original component
 
-Se crea un index en hexadecimal del componente que tiene >= 1 evento, por ejemplo si ya hay 1003 componentes con eventos en todo el proyecto, tendria el id `3eb`:
+A hexadecimal index of the component that has >= 1 event is created, for example if there are already 1003 components with events throughout the project, it would have the id `3eb`:
 
 ```jsx
 function SomeComponent({ name }) {
@@ -181,7 +181,7 @@ function SomeComponent({ name }) {
 }
 ```
 
-Se pone el id en el componente original y se sustituye el evento por la ejecución de la action `$a(idComp, idAction)` mientras se conserva el evento original añadiendo `$` al final:
+The id is placed in the original component and the event is replaced by executing the action `$a(idComp, idAction)` while the original event is preserved by adding `$` at the end:
 
 ```jsx
 function SomeComponent({ name }) {
@@ -200,7 +200,7 @@ function SomeComponent({ name }) {
 SomeComponent._id = "3eb";
 ```
 
-De esta forma quedaria solventado tambien si tenemos el evento en forma prop drilling:
+This would also solve it if we have the event in prop drilling form:
 
 ```jsx
 function SomeComponent({ name }) {
@@ -217,9 +217,9 @@ function SomeComponent({ name }) {
 SomeComponent._id = "3eb";
 ```
 
-Ya que se pasaria la ejecución del valor estàtico `$a('3eb', 1)` a donde se tiene que ejecutar.
+Since the execution of the static value `$a('3eb', 1)` would be passed to where it needs to be executed.
 
-No obstante, este componente no recibe ninguna transformación:
+However, this component does not receive any transformation:
 
 ```jsx
 function ButtonComponent({ onClick, children }) {
@@ -227,7 +227,7 @@ function ButtonComponent({ onClick, children }) {
 }
 ```
 
-De igual forma que si tenemos un evento de cliente (string) desde un server-component tampoco se transforma:
+Similarly, if we have a client event (string) from a server-component it is also not transformed:
 
 ```js
 function Example() {
@@ -237,9 +237,9 @@ function Example() {
 }
 ```
 
-#### Crear la action (post build)
+#### Create the action (post build)
 
-Basado en el original:
+Based on the original:
 
 ```jsx
 function SomeComponent({ name }) {
@@ -255,7 +255,7 @@ function SomeComponent({ name }) {
 }
 ```
 
-Creamos una version nueva dentro de `/_actions/3eb.js`, transformando el fichero original a esto:
+We create a new version inside `/_actions/3eb.js`, transforming the original file to this:
 
 ```jsx
 export default function ({ name }) {
@@ -280,7 +280,7 @@ export default function ({ name }) {
 }
 ```
 
-En caso de consumir signals y tener más logica en el componente:
+In case of consuming signals and having more logic in the component:
 
 ```jsx
 function SomeComponent({ name }, { i18n, useSignal }) {
@@ -308,7 +308,7 @@ function SomeComponent({ name }, { i18n, useSignal }) {
 }
 ```
 
-Se moveria a `/_actions/3eb.js` transformandolo por:
+It would move to `/_actions/3eb.js` transforming it to:
 
 ```jsx
 export default function ({ name }, { i18n, useSignal }) {
@@ -353,7 +353,7 @@ export default function ({ name }, { i18n, useSignal }) {
 }
 ```
 
-En el caso de tener cosas raras como:
+In the case of having weird things like:
 
 ```jsx
 const btnFn = (name) =>
@@ -366,7 +366,7 @@ function SomeComponent({ name }) {
 }
 ```
 
-Como se hace esta transformación durante el post-build, ya primero se habrá hecho una optimización al componente de la pagina así que tendriamos algo parecido a esto:
+Since this transformation is done during post-build, an optimization would have already been done to the page component so we would have something like this:
 
 ```jsx
 function SomeComponent({ name }) {
@@ -378,7 +378,7 @@ function SomeComponent({ name }) {
 }
 ```
 
-Y por lo tanto podemos aplicar la misma regla de transformación post-build:
+And therefore we can apply the same post-build transformation rule:
 
 ```jsx
 export default function ({ name }) {
@@ -397,9 +397,9 @@ export default function ({ name }) {
 
 ### 2. Runtime process
 
-Durante el método `renderToReadableStream` la idea es ver que componentes tienen el `._id`, y entonces esto significa que hay que wrapear el HTML que devuelva el componente con un comentario que tenga los valores de las props y de los signals (al pasar la request en cada componente podemos acceder para obtener los valores de las signals).
+During the `renderToReadableStream` method, the idea is to see which components have `._id`, and then this means that the HTML returned by the component must be wrapped with a comment that has the prop values ​​and signals (by passing the request in each component we can access to obtain the signal values).
 
-Este componente sin signals:
+This component without signals:
 
 ```jsx
 function SomeComponent({ name }) {
@@ -409,16 +409,16 @@ function SomeComponent({ name }) {
 SomeComponent._id = "3eb";
 ```
 
-Se printaria en html como:
+Would be printed in html as:
 
 ```html
 <!--BC-3eb name="Aral"--><button onClick="$a('3eb', 1)">Click</button
 ><!--/BC-3eb-->
 ```
 
-La idea de hacerlo así es de no introducir nodos nuevos para no sobrecargar el DOM y a parte que luego al llamar a la acción, se pasa el trozo de HTML que hay entre este comentario ya que es el HTML actual del componente y luego durante la acción del servidor analizará los cambios con el nuevo HTML para devolver las operaciones de DOM necesarias.
+The idea of ​​doing it this way is to not introduce new nodes to avoid overloading the DOM and also so that when calling the action, the piece of HTML between this comment is passed since it is the current HTML of the component and then during the server action it will analyze the changes with the new HTML to return the necessary DOM operations.
 
-Y con signals:
+And with signals:
 
 ```jsx
 function SomeComponent({ name }, { i18n, useSignal }) {
@@ -441,7 +441,7 @@ function SomeComponent({ name }, { i18n, useSignal }) {
 SomeComponent._id = "3eb";
 ```
 
-Se printaria en html como:
+It would be printed in html as:
 
 ```html
 <!--BC-3eb name="Aral" _signals=[0]-->
@@ -451,7 +451,17 @@ Se printaria en html como:
 <!--/BC-3eb-->
 ```
 
-Los valores de las `props` SÓLO cuando un componente usa eventos pasan a ser visibles en el HTML, y los valores de los signals SIEMPRE. Esto es muy importante tener-lo en cuenta para no exponer datos delicados. Si un componente necesita dados delicados se puede pasar a través del request context y exponer dentro de un signal solo la parte no delicada que se quiere como estado:
+If there are multiple identical components, the component id is added with `:index``:
+
+```html
+<!--BC-3eb:2 name="Aral" _signals=[0]-->
+<button onClick="$a('3eb:2', 1)">Increment</button>
+0
+<button onClick="$a('3eb:2', 2)">Decrement</button>
+<!--/BC-3eb:2-->
+```
+
+The `props` values ​​ONLY when a component uses events become visible in the HTML, and the signal values ​​ALWAYS. This is very important to keep in mind so as not to expose sensitive data. If a component needs sensitive data it can be passed through the request context and expose within a signal only the non-sensitive part that is wanted as state:
 
 ```jsx
 function SomeComponent({}, { i18n, useSignal, context, rerender }) {
@@ -480,13 +490,207 @@ function SomeComponent({}, { i18n, useSignal, context, rerender }) {
 }
 ```
 
-### 3. Consumir la action
+### 3. Consuming the action
 
-Se hace de esta forma porque la idea para consumir esta action seria:
+It is done in this way because the idea to consume this action would be:
 
-1. Se recibiria en la petición el HTML actual junto con las props y los signals
-2. Montar la request context primero inicializando los signals a los últimos valores. Los signals se guardan dentro del HTML, así que la al llamar a `$a(idComp, idAction)` esta función se encarga de hacer la petición pasando los ultimos valores de los signals para que el server pueda tener el contexto.
-3. Se llamaria al `events` y se ejecutaria el evento de la action.
-4. Se llamaria al `render` y se obtendria el HTML
+1. The current HTML together with the props and the signals would be received in the request.
+2. To mount the request context first initializing the signals to the last values. The signals are stored inside the HTML, so when calling `$a(idComp, idAction)` this function is in charge of making the request passing the last values of the signals so that the server can have the context.
+3. The `events` would be called and the event of the action would be executed.
+4. The `render` would be called and the HTML would be obtained.
 
-De esta parte, la más importante es cómo obtener las operacions del DOM tras comparar ambos HTMLs. Aquí es donde entra en juego el algoritmo
+Of this part, the most important is how to obtain the DOM operations after comparing both HTMLs. This is where the algorithm comes into play.
+
+## Events and state on the client
+
+On the client, the idea is to create web-components in a similar way to server-components, but there the events run on the client, being able to access the Web API:
+
+```tsx
+import { onMount, onUnmount } from 'brisa';
+
+export default function UserInfo({ firstName, lastName, ranking, onSave }, { i18n: { t }, useSignal, ws }) {
+  const newRanking = useSignal(ranking);
+  const onMessage = (message) => alert(message)
+
+  onMount(() => {
+    ws.addEventListener('message', onMessage);
+  })
+
+  onUnmount(() => {
+    ws.removeEventListener('message', onMessage);
+  })
+
+  const inc = () => {
+    newRanking.value++
+    alert(t('increased-ranking-to', { to: newRanking.value }))
+  }
+
+  return (
+    <>
+      <h1>{t("hello", { firstName, lastName })}</h1>
+      <p>{t('ranking', { ranking: newRanking.value })}</p>
+      <button onClick={(inc}>{t("increase-ranking")}</button>
+      <button onClick={() => onSave(newRanking.value)}>{t("save-ranking")}</button>
+    </>
+  );
+}
+```
+
+In this example, we have a `/web-component/user-info.tsx` where everything that happens here is part of the client and therefore we can do the `alert` without problems. However, we can communicate web-component events with server-components like the `onSave` example, which if the parent component is a server-component can have the event implemented there:
+
+server-component:
+
+```tsx
+export default function ServerComponent({ user }, { rerender, ws, i18n }) {
+  const onSave = async (ranking) => {
+    await db`UPDATE users SET ranking = ${ranking} WHERE id = ${user.id}`;
+    ws.send(i18n.t("saved-new-ranking", { ranking }));
+  };
+
+  return (
+    <user-info
+      firstName={user.firstName}
+      lastName={user.lastName}
+      ranking={user.ranking}
+      onSave={onSave}
+    />
+  );
+}
+```
+
+In this example it uses WebSockets to communicate with web-components after having saved, in case any web-component needs to make any update using the Web API.
+
+### Transformation to web-component
+
+During client code build that has the following component is transformed:
+
+```tsx
+import { connectedCallback, disconnectedCallback } from 'brisa';
+
+export default function UserInfo({ firstName, lastName, ranking, onSave }, { i18n: { t }, useSignal, ws }) {
+  const newRanking = useSignal(ranking);
+  const onMessage = (message) => alert(message)
+
+  connectedCallback(() => {
+    ws.addEventListener('message', onMessage);
+  })
+
+  disconnectedCallback(() => {
+    ws.removeEventListener('message', onMessage);
+  })
+
+  const inc = () => {
+    newRanking.value++
+    alert(t('increased-ranking-to', { to: newRanking.value }))
+  }
+
+  return (
+    <>
+      <h1>{t("hello", { firstName, lastName })}</h1>
+      <p>{t('ranking', { ranking: newRanking.value })}</p>
+      <button onClick={(inc}>{t("increase-ranking")}</button>
+      <button onClick={() => onSave(newRanking.value)}>{t("save-ranking")}</button>
+    </>
+  );
+}
+```
+
+to this web-component:
+
+```tsx
+const {
+  i18n: { t },
+  useSignal,
+  ws,
+} = window.__brisa__;
+
+customElements.define(
+  "user-name",
+  class extends BrisaElement {
+    constructor() {
+      super();
+    }
+
+    render() {
+      const { firstName, lastName, ranking, onSave } = this.attributes;
+      const newRanking = useSignal(ranking);
+      const onMessage = (message) => alert(message);
+
+      this.connectedCallbacks.add(() => {
+        ws.addEventListener("message", onMessage);
+      });
+
+      this.disconnectedCallbacks.add(() => {
+        ws.removeEventListener("message", onMessage);
+      });
+
+      const inc = () => {
+        this.newRanking.value++;
+        alert(t("increased-ranking-to", { to: this.newRanking.value }));
+      };
+
+      this.element("h1", null, t("hello", { firstName, lastName }));
+      this.element("p", null, t("ranking", { ranking: newRanking.value }));
+      const b1 = this.element("button", ":first-child", t("increase-ranking"));
+      const b2 = this.element("button", ":last-child", t("save-ranking"));
+
+      const s = () => onSave(newRanking.value);
+      const ev = () => {
+        b1.addEventListener("click", inc);
+        b2.addEventListener("click", s);
+      };
+      const rm = () => {
+        b1.removeEventListener("click", inc);
+        b2.removeEventListener("click", s);
+      };
+
+      this.connectedCallbacks.add(ev);
+      this.disconnectedCallbacks.add(rm);
+      ev();
+    }
+
+    static get observedAttributes() {
+      return ["firstName", "lastName", "ranking", "onSave"];
+    }
+  },
+);
+```
+
+And `BrisaElement` is:
+
+```tsx
+class BrisaElement extends HTMLElement {
+  constructor() {
+    super();
+    this.connectedCallbacks = new Set();
+    this.disconnectedCallbacks = new Set();
+    this.render();
+  }
+
+  connectedCallback() {
+    this.connectedCallbacks.forEach((cb) => cb());
+  }
+
+  disconnectedCallback() {
+    this.disconnectedCallbacks.forEach((cb) => cb());
+  }
+
+  render() {}
+
+  attributeChangedCallback() {
+    this.render();
+  }
+
+  element(name, query = name, children) {
+    let el = this.querySelector(query);
+    const elNew = el === null;
+    el = document.createElement(name);
+    const elChange = el.innerHTML !== children;
+
+    if (el) this.appendChild(el);
+    else if (elChange) this.replaceChild(el, children);
+
+    return el;
+  }
+}
+```
