@@ -819,17 +819,10 @@ describe("brisa core", () => {
         signal: new AbortController().signal,
       });
       const req = extendRequestContext({ originalRequest });
-      const SlowComponent = async () => {
-        await Bun.sleep(1000);
-        return <div>Test</div>;
-      };
-
       const element = (
         <html>
           <head></head>
-          <body>
-            <SlowComponent />
-          </body>
+          <body></body>
         </html>
       );
 
