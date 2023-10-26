@@ -565,132 +565,94 @@ In this example it uses WebSockets to communicate with web-components after havi
 During client code build that has the following component is transformed:
 
 ```tsx
-import { connectedCallback, disconnectedCallback } from 'brisa';
-
-export default function UserInfo({ firstName, lastName, ranking, onSave }, { i18n: { t }, useSignal, ws }) {
-  const newRanking = useSignal(ranking);
-  const onMessage = (message) => alert(message)
-
-  connectedCallback(() => {
-    ws.addEventListener('message', onMessage);
-  })
-
-  disconnectedCallback(() => {
-    ws.removeEventListener('message', onMessage);
-  })
-
-  const inc = () => {
-    newRanking.value++
-    alert(t('increased-ranking-to', { to: newRanking.value }))
-  }
+export default function Count({ name }, { $state }) {
+  const count = $state(0);
 
   return (
-    <>
-      <h1>{t("hello", { firstName, lastName })}</h1>
-      <p>{t('ranking', { ranking: newRanking.value })}</p>
-      <button onClick={(inc}>{t("increase-ranking")}</button>
-      <button onClick={() => onSave(newRanking.value)}>{t("save-ranking")}</button>
-    </>
-  );
+    <p>
+      <button onClick={() => count.value++}>+</button>
+      <span>{` ${name} ${count.value} `}</span>
+      <button onClick={() => count.value++}>-</button>
+    </p>
+  )
 }
 ```
 
 to this web-component:
 
 ```tsx
-const {
-  i18n: { t },
-  useSignal,
-  ws,
-} = window.__brisa__;
+export default class Counter extends BrisaElement {
+  static get observedAttributes() {
+    return ['name'];
+  }
+  r({ name }, { $state, $effect, c }) {
+    const count = $state(0);
+    const inc = c('button');
+    inc.textContent = '+';
+    inc.addEventListener('click', () => count.value++)
 
-customElements.define(
-  "user-name",
-  class extends BrisaElement {
-    constructor() {
-      super();
-    }
+    const countEl = c('span');
+    $effect(() => countEl.textContent = ` ${name.value} ${count.value} `);
 
-    render() {
-      const { firstName, lastName, ranking, onSave } = this.attributes;
-      const newRanking = useSignal(ranking);
-      const onMessage = (message) => alert(message);
+    const dec = c('button');
+    dec.textContent = '-';
+    dec.addEventListener('click', () => count.value--);
 
-      this.connectedCallbacks.add(() => {
-        ws.addEventListener("message", onMessage);
-      });
+    const p = c('p');
+    p.appendChild(inc);
+    p.appendChild(countEl);
+    p.appendChild(dec);
 
-      this.disconnectedCallbacks.add(() => {
-        ws.removeEventListener("message", onMessage);
-      });
-
-      const inc = () => {
-        this.newRanking.value++;
-        alert(t("increased-ranking-to", { to: this.newRanking.value }));
-      };
-
-      this.element("h1", null, t("hello", { firstName, lastName }));
-      this.element("p", null, t("ranking", { ranking: newRanking.value }));
-      const b1 = this.element("button", ":first-child", t("increase-ranking"));
-      const b2 = this.element("button", ":last-child", t("save-ranking"));
-
-      const s = () => onSave(newRanking.value);
-      const ev = () => {
-        b1.addEventListener("click", inc);
-        b2.addEventListener("click", s);
-      };
-      const rm = () => {
-        b1.removeEventListener("click", inc);
-        b2.removeEventListener("click", s);
-      };
-
-      this.connectedCallbacks.add(ev);
-      this.disconnectedCallbacks.add(rm);
-      ev();
-    }
-
-    static get observedAttributes() {
-      return ["firstName", "lastName", "ranking", "onSave"];
-    }
-  },
-);
+    this.els = [p];
+  }
+}
 ```
 
-And `BrisaElement` is:
+Where `BrisaElement` is:
 
-```tsx
+```ts
+function requestContext() {
+  let current = 0
+
+  return {
+    $state<T>(initialValue: T): { value: T } {
+      const effects = new Set()
+      return {
+        get value() {
+          if (current) effects.add(current)
+          return initialValue
+        },
+        set value(v) {
+          initialValue = v
+          effects.forEach((effect) => effect())
+        }
+      }
+    },
+    $effect(fn: () => void) {
+      current = fn
+      fn()
+      current = 0
+    },
+    c: document.createElement.bind(document)
+  }
+}
+
 class BrisaElement extends HTMLElement {
-  constructor() {
-    super();
-    this.connectedCallbacks = new Set();
-    this.disconnectedCallbacks = new Set();
-    this.render();
-  }
-
   connectedCallback() {
-    this.connectedCallbacks.forEach((cb) => cb());
+    const ctx = requestContext()
+    this.p = {};
+
+    for (let attr of this.constructor.observedAttributes || []) {
+      this.p[attr] = ctx.$state(this.getAttribute(attr));
+    };
+
+    this.r(this.p, ctx)
+    this.els.forEach((el) => this.appendChild(el));
   }
 
-  disconnectedCallback() {
-    this.disconnectedCallbacks.forEach((cb) => cb());
-  }
-
-  render() {}
-
-  attributeChangedCallback() {
-    this.render();
-  }
-
-  element(name, query = name, children) {
-    let el = this.querySelector(query);
-    const elNew = el === null;
-    el = document.createElement(name);
-    const elChange = el.innerHTML !== children;
-
-    if (el) this.appendChild(el);
-    else if (elChange) this.replaceChild(el, children);
-
-    return el;
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (!this.p || oldValue === newValue) return;
+    this.p[name].value = newValue;
   }
 }
 ```
