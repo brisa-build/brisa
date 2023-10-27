@@ -592,7 +592,7 @@ export default class Counter extends BrisaElement {
     inc.addEventListener('click', () => count.value++)
 
     const countEl = c('span');
-    $effect(() => countEl.textContent = ` ${name.value} ${count.value} `);
+    $effect(() => countEl.textContent = ` ${name.value} ${count.value.toString()} `);
 
     const dec = c('button');
     dec.textContent = '-';
@@ -601,6 +601,7 @@ export default class Counter extends BrisaElement {
     const p = c('p');
     p.appendChild(inc);
     p.appendChild(countEl);
+    p.appendChild(c('slot')); // children
     p.appendChild(dec);
 
     this.els = [p];
@@ -646,8 +647,9 @@ class BrisaElement extends HTMLElement {
       this.p[attr] = ctx.$state(this.getAttribute(attr));
     };
 
+    const shadowRoot = this.attachShadow({ mode: "open" });
     this.r(this.p, ctx)
-    this.els.forEach((el) => this.appendChild(el));
+    this.els.forEach((el) => shadowRoot.appendChild(el));
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
