@@ -592,7 +592,7 @@ export default class Counter extends BrisaElement {
     inc.addEventListener('click', () => count.value++)
 
     const countEl = c('span');
-    $effect(() => countEl.textContent = ` ${name.value} ${count.value.toString()} `);
+    $effect(() => countEl.textContent = ` ${name.value} ${count.value} `);
 
     const dec = c('button');
     dec.textContent = '-';
