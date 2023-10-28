@@ -283,8 +283,8 @@ export default function ({ name }) {
 In case of consuming signals and having more logic in the component:
 
 ```jsx
-function SomeComponent({ name }, { i18n, useSignal }) {
-  const count = useSignal(0);
+function SomeComponent({ name }, { i18n, state }) {
+  const count = state(0);
   const [firstName] = name.split(" ");
   const incEl = (
     <button onClick={inc}>{i18n.t("increment", { firstName })}</button>
@@ -311,7 +311,7 @@ function SomeComponent({ name }, { i18n, useSignal }) {
 It would move to `/_actions/3eb.js` transforming it to:
 
 ```jsx
-export default function ({ name }, { i18n, useSignal }) {
+export default function ({ name }, { i18n, state }) {
   const _events = new Set();
   const _action = (handler) => {
     _events.add(handler);
@@ -322,7 +322,7 @@ export default function ({ name }, { i18n, useSignal }) {
     render: () => {
       _events.clear();
 
-      const count = useSignal(0);
+      const count = state(0);
       const [firstName] = name.split(" ");
       const incEl = (
         <button onClick={_action(inc)}>
@@ -421,8 +421,8 @@ The idea of ​​doing it this way is to not introduce new nodes to avoid overl
 And with signals:
 
 ```jsx
-function SomeComponent({ name }, { i18n, useSignal }) {
-  const count = useSignal(0);
+function SomeComponent({ name }, { i18n, state }) {
+  const count = state(0);
   const [firstName] = name.split(" ");
   const incEl = (
     <button onClick="$a('3eb', 1)">{i18n.t("increment", { firstName })}</button>
@@ -464,9 +464,9 @@ If there are multiple identical components, the component id is added with `:ind
 The `props` values ​​ONLY when a component uses events become visible in the HTML, and the signal values ​​ALWAYS. This is very important to keep in mind so as not to expose sensitive data. If a component needs sensitive data it can be passed through the request context and expose within a signal only the non-sensitive part that is wanted as state:
 
 ```jsx
-function SomeComponent({}, { i18n, useSignal, context, rerender }) {
+function SomeComponent({}, { i18n, state, context, rerender }) {
   const user = context.get("user"); // Some user data is delicated
-  const firstName = useSignal(user.firstName); // add this signal to HTML to use it in events
+  const firstName = state(user.firstName); // add this signal to HTML to use it in events
   const incEl = (
     <button onClick={inc}>{i18n.t("increment", { firstName })}</button>
   );
@@ -508,8 +508,8 @@ On the client, the idea is to create web-components in a similar way to server-c
 ```tsx
 import { onMount, onUnmount } from 'brisa';
 
-export default function UserInfo({ firstName, lastName, ranking, onSave }, { i18n: { t }, useSignal, ws }) {
-  const newRanking = useSignal(ranking);
+export default function UserInfo({ firstName, lastName, ranking, onSave }, { i18n: { t }, state, ws }) {
+  const newRanking = state(ranking);
   const onMessage = (message) => alert(message)
 
   onMount(() => {
@@ -565,11 +565,20 @@ In this example it uses WebSockets to communicate with web-components after havi
 During client code build that has the following component is transformed:
 
 ```tsx
-export default function Count({ name }, { $state }) {
-  const count = $state(0);
+export default function Count({ name }, { state, css }) {
+  const count = state(0);
+
+  css`
+    p {
+      color: red;
+    }
+    .even {
+      color: blue;
+    }
+  `
 
   return (
-    <p>
+    <p class={count.value % 2 === 0 ? 'even' : ''}>
       <button onClick={() => count.value++}>+</button>
       <span>{` ${name} ${count.value} `}</span>
       <button onClick={() => count.value++}>-</button>
@@ -585,26 +594,24 @@ export default class Counter extends BrisaElement {
   static get observedAttributes() {
     return ['name'];
   }
-  r({ name }, { $state, $effect, c }) {
-    const count = $state(0);
-    const inc = c('button');
-    inc.textContent = '+';
-    inc.addEventListener('click', () => count.value++)
+  r({ name, children }, { state, css, h }) {
+    const count = state(0);
 
-    const countEl = c('span');
-    $effect(() => countEl.textContent = ` ${name.value} ${count.value} `);
+    css`
+      p {
+        color: red;
+      }
+      .even {
+        color: blue;
+      }
+    `
 
-    const dec = c('button');
-    dec.textContent = '-';
-    dec.addEventListener('click', () => count.value--);
-
-    const p = c('p');
-    p.appendChild(inc);
-    p.appendChild(countEl);
-    p.appendChild(c('slot')); // children
-    p.appendChild(dec);
-
-    this.els = [p];
+    return [h('p', { class: () => count.value % 2 === 0 ? 'even' : '' }, [
+      h('button', { onClick: () => count.value++ }, '+'),
+      h('span', {}, () => ` ${name.value} ${count.value} `),
+      h('button', { onClick: () => count.value-- }, '-'),
+      children,
+    ])]
   }
 }
 ```
@@ -612,7 +619,7 @@ export default class Counter extends BrisaElement {
 Where `BrisaElement` is:
 
 ```ts
-function requestContext() {
+function signals() {
   let current = 0
 
   return {
@@ -634,22 +641,66 @@ function requestContext() {
       fn()
       current = 0
     },
-    c: document.createElement.bind(document)
   }
 }
 
 class BrisaElement extends HTMLElement {
   connectedCallback() {
-    const ctx = requestContext()
-    this.p = {};
+    const c = document.createElement.bind(document)
+    const ctx = signals()
+    this.p = { children: c('slot') };
 
     for (let attr of this.constructor.observedAttributes || []) {
       this.p[attr] = ctx.$state(this.getAttribute(attr));
     };
 
     const shadowRoot = this.attachShadow({ mode: "open" });
-    this.r(this.p, ctx)
-    this.els.forEach((el) => shadowRoot.appendChild(el));
+    const els = this.r(this.p, {
+      ...ctx,
+      h: (tagName, attributes, children) => {
+        if (!tagName) {
+          const text = c('span');
+
+          if (typeof children === 'function') {
+            ctx.$effect(() => text.textContent = children());
+          } else {
+            text.textContent = children;
+          }
+
+          return text;
+        }
+
+        const el = c(tagName);
+        Object.entries(attributes).forEach(([key, value]) => {
+          const isEvent = key.startsWith('on');
+          if (isEvent) {
+            el.addEventListener(key.slice(2).toLowerCase(), value);
+          } else if (typeof value === 'function' && !isEvent) {
+            ctx.$effect(() => el.setAttribute(key, value()));
+          } else {
+            el.setAttribute(key, value)
+          }
+        });
+
+        if (children) {
+          if (Array.isArray(children)) {
+            children.forEach((child) => el.appendChild(child));
+          } else if (typeof children === 'string') {
+            el.textContent = children;
+          } else {
+            el.appendChild(children);
+          }
+        }
+
+        return el;
+      },
+      $css: (strings, ...values) => {
+        const style = c('style');
+        style.textContent = strings[0] + values.join('');
+        shadowRoot.appendChild(style);
+      }
+    });
+    els.forEach((el) => shadowRoot.appendChild(el));
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
