@@ -590,40 +590,109 @@ export default function Count({ name }, { state, css }) {
 to this web-component:
 
 ```tsx
-export default class Counter extends BrisaElement {
-  static get observedAttributes() {
-    return ['name'];
-  }
-  r({ name, children }, { state, css, h }) {
-    const count = state(0);
+function Counter({ name, children }, { state, css, h }) {
+  const count = state(0);
 
-    css`
-      p {
-        color: red;
-      }
-      .even {
-        color: blue;
-      }
-    `
+  css`
+    p {
+      color: red;
+    }
+    .even {
+      color: blue;
+    }
+  `
 
-    return [h('p', { class: () => count.value % 2 === 0 ? 'even' : '' }, [
-      h('button', { onClick: () => count.value++ }, '+'),
-      h('span', {}, () => ` ${name.value} ${count.value} `),
-      h('button', { onClick: () => count.value-- }, '-'),
-      children,
-    ])]
+  return [h('p', { class: () => count.value % 2 === 0 ? 'even' : '' }, [
+    h('button', { onClick: () => count.value++ }, '+'),
+    h('span', {}, () => ` ${name.value} ${count.value} `),
+    h('button', { onClick: () => count.value-- }, '-'),
+    children,
+  ])]
+}
+
+export default brisaElement(Counter, ['name'])
+```
+
+Where `brisaElement` is:
+
+```ts
+export default function brisaElement(render, observedAttributes = []) {
+  return class extends HTMLElement {
+    static get observedAttributes() {
+      return observedAttributes;
+    }
+    connectedCallback() {
+      const c = document.createElement.bind(document)
+      const ctx = signals()
+      this.p = { children: c('slot') };
+
+      for (let attr of this.constructor.observedAttributes || []) {
+        this.p[attr] = ctx.state(this.getAttribute(attr));
+      };
+
+      const shadowRoot = this.attachShadow({ mode: "open" });
+      const els = render(this.p, {
+        ...ctx,
+        h(tagName, attributes, children) {
+          let el = tagName ? c(tagName) : document.createDocumentFragment();
+
+          Object.entries(attributes).forEach(([key, value]) => {
+            const isEvent = key.startsWith('on');
+            if (isEvent) {
+              el.addEventListener(key.slice(2).toLowerCase(), value);
+            } else if (typeof value === 'function' && !isEvent) {
+              ctx.effect(() => el.setAttribute(key, value()));
+            } else {
+              el.setAttribute(key, value)
+            }
+          });
+
+          if (children) {
+            if (Array.isArray(children)) {
+              children.forEach((child) => el.appendChild(child));
+            } else if (typeof children === 'string') {
+              el.textContent = children;
+            } else if (typeof children === 'function') {
+              ctx.effect(() => {
+                const child = children();
+                if (Array.isArray(child)) {
+                  child.forEach(c => el.appendChild(c));
+                }
+                else el.textContent = child;
+              });
+            }
+            else {
+              el.appendChild(children);
+            }
+          }
+
+          return el;
+        },
+        css(strings, ...values) {
+          const style = c('style');
+          style.textContent = strings[0] + values.join('');
+          shadowRoot.appendChild(style);
+        }
+      });
+      els.forEach((el) => shadowRoot.appendChild(el));
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+      if (!this.p || oldValue === newValue) return;
+      this.p[name].value = newValue;
+    }
   }
 }
 ```
 
-Where `BrisaElement` is:
+and `signals`:
 
-```ts
+```tsx
 function signals() {
   let current = 0
 
   return {
-    $state<T>(initialValue: T): { value: T } {
+    state<T>(initialValue: T): { value: T } {
       const effects = new Set()
       return {
         get value() {
@@ -636,76 +705,11 @@ function signals() {
         }
       }
     },
-    $effect(fn: () => void) {
+    effect(fn: () => void) {
       current = fn
       fn()
       current = 0
     },
   }
 }
-
-class BrisaElement extends HTMLElement {
-  connectedCallback() {
-    const c = document.createElement.bind(document)
-    const ctx = signals()
-    this.p = { children: c('slot') };
-
-    for (let attr of this.constructor.observedAttributes || []) {
-      this.p[attr] = ctx.$state(this.getAttribute(attr));
-    };
-
-    const shadowRoot = this.attachShadow({ mode: "open" });
-    const els = this.r(this.p, {
-      ...ctx,
-      h: (tagName, attributes, children) => {
-        if (!tagName) {
-          const text = c('span');
-
-          if (typeof children === 'function') {
-            ctx.$effect(() => text.textContent = children());
-          } else {
-            text.textContent = children;
-          }
-
-          return text;
-        }
-
-        const el = c(tagName);
-        Object.entries(attributes).forEach(([key, value]) => {
-          const isEvent = key.startsWith('on');
-          if (isEvent) {
-            el.addEventListener(key.slice(2).toLowerCase(), value);
-          } else if (typeof value === 'function' && !isEvent) {
-            ctx.$effect(() => el.setAttribute(key, value()));
-          } else {
-            el.setAttribute(key, value)
-          }
-        });
-
-        if (children) {
-          if (Array.isArray(children)) {
-            children.forEach((child) => el.appendChild(child));
-          } else if (typeof children === 'string') {
-            el.textContent = children;
-          } else {
-            el.appendChild(children);
-          }
-        }
-
-        return el;
-      },
-      $css: (strings, ...values) => {
-        const style = c('style');
-        style.textContent = strings[0] + values.join('');
-        shadowRoot.appendChild(style);
-      }
-    });
-    els.forEach((el) => shadowRoot.appendChild(el));
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (!this.p || oldValue === newValue) return;
-    this.p[name].value = newValue;
-  }
-}
-```
+````
