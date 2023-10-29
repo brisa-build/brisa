@@ -10,7 +10,7 @@ describe("utils", () => {
     afterAll(() => {
       GlobalRegistrator.unregister();
     });
-    it("should work a counter", () => {
+    it("should work props and state with a counter", () => {
       type Props = { name: { value: string }; children: Node };
       function Counter({ name, children }: Props, { state, h }: any) {
         const count = state(0);
@@ -48,9 +48,13 @@ describe("utils", () => {
       expect(counter?.shadowRoot?.innerHTML).toBe(
         '<p class=""><button>+</button><span> Aral 1 </span><button>-</button><slot></slot></p>',
       );
+      counter.setAttribute("name", "Another name");
+      expect(counter?.shadowRoot?.innerHTML).toBe(
+        '<p class=""><button>+</button><span> Another name 1 </span><button>-</button><slot></slot></p>',
+      );
       dec.click();
       expect(counter?.shadowRoot?.innerHTML).toBe(
-        '<p class="even"><button>+</button><span> Aral 0 </span><button>-</button><slot></slot></p>',
+        '<p class="even"><button>+</button><span> Another name 0 </span><button>-</button><slot></slot></p>',
       );
     });
   });
