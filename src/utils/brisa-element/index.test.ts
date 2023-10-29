@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll } from "bun:test";
-import brisaElement from ".";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
+
+let brisaElement: any;
 
 describe("utils", () => {
   describe("brisa-element", () => {
-    beforeAll(() => {
+    beforeAll(async () => {
       GlobalRegistrator.register();
+      brisaElement = (await import(".")).default;
     });
     afterAll(() => {
       GlobalRegistrator.unregister();
@@ -55,6 +57,93 @@ describe("utils", () => {
       dec.click();
       expect(counter?.shadowRoot?.innerHTML).toBe(
         '<p class="even"><button>+</button><span> Another name 0 </span><button>-</button><slot></slot></p>',
+      );
+    });
+
+    it("should work with conditional rendering inside span node", () => {
+      type Props = { name: { value: string }; children: Node };
+      function ConditionalRender({ name, children }: Props, { h }: any) {
+        return [
+          h("h2", {}, [
+            h("b", {}, () => "Hello " + name.value),
+            h("span", {}, () =>
+              name.value === "Barbara" ? [h("b", {}, "!! 🥳")] : "🥴",
+            ),
+          ]),
+          children,
+        ];
+      }
+
+      customElements.define(
+        "conditional-render",
+        brisaElement(ConditionalRender as any, ["name"]),
+      );
+
+      document.body.innerHTML = `
+        <conditional-render name="Aral">
+          <span>test</span>
+        </conditional-render>
+      `;
+
+      const conditionalRender = document.querySelector(
+        "conditional-render",
+      ) as HTMLElement;
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "<h2><b>Hello Aral</b><span>🥴</span></h2><slot></slot>",
+      );
+
+      conditionalRender.setAttribute("name", "Barbara");
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "<h2><b>Hello Barbara</b><span><b>!! 🥳</b></span></h2><slot></slot>",
+      );
+
+      conditionalRender.setAttribute("name", "Aral");
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "<h2><b>Hello Aral</b><span>🥴</span></h2><slot></slot>",
+      );
+    });
+
+    it("should work with conditional rendering inside text node", () => {
+      type Props = { name: { value: string }; children: Node };
+      function ConditionalRender({ name, children }: Props, { h }: any) {
+        return [
+          h("h2", {}, [
+            h("b", {}, () => "Hello " + name.value),
+            h(null, {}, () =>
+              name.value === "Barbara" ? [h("b", {}, "!! 🥳")] : "🥴",
+            ),
+          ]),
+          children,
+        ];
+      }
+
+      customElements.define(
+        "conditional-render",
+        brisaElement(ConditionalRender as any, ["name"]),
+      );
+
+      document.body.innerHTML = `
+        <conditional-render name="Aral">
+          <span>test</span>
+        </conditional-render>
+      `;
+
+      const conditionalRender = document.querySelector(
+        "conditional-render",
+      ) as HTMLElement;
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "<h2><b>Hello Aral</b>🥴</h2><slot></slot>",
+      );
+
+      conditionalRender.setAttribute("name", "Barbara");
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "",
+        // '<h2><b>Hello Barbara</b><b>!! 🥳</b></h2><slot></slot>',
       );
     });
   });
