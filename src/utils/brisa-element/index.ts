@@ -9,6 +9,9 @@ type Render = (
   },
 ) => Node[];
 
+const c = document.createElement.bind(document);
+const f = document.createDocumentFragment.bind(document);
+
 export default function brisaElement(
   render: Render,
   observedAttributes: string[] = [],
@@ -21,7 +24,6 @@ export default function brisaElement(
     }
 
     connectedCallback() {
-      const c = document.createElement.bind(document);
       const ctx = signals();
       this.p = {};
 
@@ -35,16 +37,18 @@ export default function brisaElement(
         {
           ...ctx,
           h(tagName: string, attributes: Attr, children: unknown) {
-            let el = tagName ? c(tagName) : document.createDocumentFragment();
+            const fragment = f();
+            let el: Node = tagName ? c(tagName) : f();
 
             Object.entries(attributes).forEach(([key, value]) => {
               const isEvent = key.startsWith("on");
+
               if (isEvent) {
                 el.addEventListener(
                   key.slice(2).toLowerCase(),
                   value as EventListener,
                 );
-              } else if (typeof value === "function" && !isEvent) {
+              } else if (!isEvent && typeof value === "function") {
                 ctx.effect(() =>
                   (el as HTMLElement).setAttribute(key, value()),
                 );
@@ -53,21 +57,28 @@ export default function brisaElement(
               }
             });
 
-            if (children) {
-              if (Array.isArray(children)) {
-                children.forEach((child) => el.appendChild(child));
-              } else if (typeof children === "string") {
-                el.textContent = children;
-              } else if (typeof children === "function") {
-                ctx.effect(() => {
-                  const child = children();
-                  if (Array.isArray(child)) {
-                    child.forEach((c) => el.appendChild(c));
-                  } else el.textContent = child;
-                });
-              } else {
-                el.appendChild(children as Node);
-              }
+            if (!children) return el;
+
+            if (Array.isArray(children)) {
+              children.forEach((child) => fragment.appendChild(child));
+              el.appendChild(fragment);
+            } else if (typeof children === "string") {
+              el.textContent = children;
+            } else if (typeof children === "function") {
+              ctx.effect(() => {
+                const child = children();
+
+                if (Array.isArray(child)) {
+                  child.forEach((c) => fragment.appendChild(c));
+
+                  (el as HTMLElement).innerHTML = "";
+                  el.appendChild(fragment);
+                } else {
+                  el.textContent = child;
+                }
+              });
+            } else {
+              el.appendChild(children as Node);
             }
 
             return el;
@@ -79,7 +90,9 @@ export default function brisaElement(
           },
         },
       );
-      els.forEach((el) => shadowRoot.appendChild(el));
+      const fragment = f();
+      els.forEach((el) => fragment.appendChild(el));
+      shadowRoot.appendChild(fragment);
     }
 
     attributeChangedCallback(
