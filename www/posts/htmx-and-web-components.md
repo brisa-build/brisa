@@ -575,15 +575,15 @@ export default function Count({ name }, { state, css }) {
     .even {
       color: blue;
     }
-  `
+  `;
 
   return (
-    <p class={count.value % 2 === 0 ? 'even' : ''}>
+    <p class={count.value % 2 === 0 ? "even" : ""}>
       <button onClick={() => count.value++}>+</button>
       <span>{` ${name} ${count.value} `}</span>
       <button onClick={() => count.value++}>-</button>
     </p>
-  )
+  );
 }
 ```
 
@@ -600,17 +600,19 @@ function Counter({ name, children }, { state, css, h }) {
     .even {
       color: blue;
     }
-  `
+  `;
 
-  return [h('p', { class: () => count.value % 2 === 0 ? 'even' : '' }, [
-    h('button', { onClick: () => count.value++ }, '+'),
-    h('span', {}, () => ` ${name.value} ${count.value} `),
-    h('button', { onClick: () => count.value-- }, '-'),
-    children,
-  ])]
+  return [
+    h("p", { class: () => (count.value % 2 === 0 ? "even" : "") }, [
+      h("button", { onClick: () => count.value++ }, "+"),
+      h("span", {}, () => ` ${name.value} ${count.value} `),
+      h("button", { onClick: () => count.value-- }, "-"),
+      children,
+    ]),
+  ];
 }
 
-export default brisaElement(Counter, ['name'])
+export default brisaElement(Counter, ["name"]);
 ```
 
 Where `brisaElement` is:
@@ -622,13 +624,13 @@ export default function brisaElement(render, observedAttributes = []) {
       return observedAttributes;
     }
     connectedCallback() {
-      const c = document.createElement.bind(document)
-      const ctx = signals()
-      this.p = { children: c('slot') };
+      const c = document.createElement.bind(document);
+      const ctx = signals();
+      this.p = { children: c("slot") };
 
       for (let attr of this.constructor.observedAttributes || []) {
         this.p[attr] = ctx.state(this.getAttribute(attr));
-      };
+      }
 
       const shadowRoot = this.attachShadow({ mode: "open" });
       const els = render(this.p, {
@@ -637,31 +639,29 @@ export default function brisaElement(render, observedAttributes = []) {
           let el = tagName ? c(tagName) : document.createDocumentFragment();
 
           Object.entries(attributes).forEach(([key, value]) => {
-            const isEvent = key.startsWith('on');
+            const isEvent = key.startsWith("on");
             if (isEvent) {
               el.addEventListener(key.slice(2).toLowerCase(), value);
-            } else if (typeof value === 'function' && !isEvent) {
+            } else if (typeof value === "function" && !isEvent) {
               ctx.effect(() => el.setAttribute(key, value()));
             } else {
-              el.setAttribute(key, value)
+              el.setAttribute(key, value);
             }
           });
 
           if (children) {
             if (Array.isArray(children)) {
               children.forEach((child) => el.appendChild(child));
-            } else if (typeof children === 'string') {
+            } else if (typeof children === "string") {
               el.textContent = children;
-            } else if (typeof children === 'function') {
+            } else if (typeof children === "function") {
               ctx.effect(() => {
                 const child = children();
                 if (Array.isArray(child)) {
-                  child.forEach(c => el.appendChild(c));
-                }
-                else el.textContent = child;
+                  child.forEach((c) => el.appendChild(c));
+                } else el.textContent = child;
               });
-            }
-            else {
+            } else {
               el.appendChild(children);
             }
           }
@@ -669,10 +669,10 @@ export default function brisaElement(render, observedAttributes = []) {
           return el;
         },
         css(strings, ...values) {
-          const style = c('style');
-          style.textContent = strings[0] + values.join('');
+          const style = c("style");
+          style.textContent = strings[0] + values.join("");
           shadowRoot.appendChild(style);
-        }
+        },
       });
       els.forEach((el) => shadowRoot.appendChild(el));
     }
@@ -681,7 +681,7 @@ export default function brisaElement(render, observedAttributes = []) {
       if (!this.p || oldValue === newValue) return;
       this.p[name].value = newValue;
     }
-  }
+  };
 }
 ```
 
@@ -689,27 +689,27 @@ and `signals`:
 
 ```tsx
 function signals() {
-  let current = 0
+  let current = 0;
 
   return {
     state<T>(initialValue: T): { value: T } {
-      const effects = new Set()
+      const effects = new Set();
       return {
         get value() {
-          if (current) effects.add(current)
-          return initialValue
+          if (current) effects.add(current);
+          return initialValue;
         },
         set value(v) {
-          initialValue = v
-          effects.forEach((effect) => effect())
-        }
-      }
+          initialValue = v;
+          effects.forEach((effect) => effect());
+        },
+      };
     },
     effect(fn: () => void) {
-      current = fn
-      fn()
-      current = 0
+      current = fn;
+      fn();
+      current = 0;
     },
-  }
+  };
 }
-````
+```
