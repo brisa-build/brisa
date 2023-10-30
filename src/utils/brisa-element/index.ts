@@ -40,6 +40,7 @@ export default function brisaElement(
             const fragment = f();
             let el: Node = tagName ? c(tagName) : f();
 
+            // Handle attributes
             Object.entries(attributes).forEach(([key, value]) => {
               const isEvent = key.startsWith("on");
 
@@ -59,6 +60,7 @@ export default function brisaElement(
 
             if (!children) return el;
 
+            // Handle children
             if (Array.isArray(children)) {
               children.forEach((child) => fragment.appendChild(child));
               el.appendChild(fragment);
@@ -83,6 +85,7 @@ export default function brisaElement(
 
             return el;
           },
+          // Handle CSS
           css(strings: string[], ...values: string[]) {
             const style = c("style");
             style.textContent = strings[0] + values.join("");
@@ -100,6 +103,7 @@ export default function brisaElement(
       oldValue: unknown,
       newValue: unknown,
     ) {
+      // Handle component props
       if (!this.p || oldValue === newValue) return;
       this.p[name].value = newValue;
     }
