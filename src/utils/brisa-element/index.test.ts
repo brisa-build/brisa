@@ -61,7 +61,7 @@ describe("utils", () => {
     it("should work with conditional rendering inside span node", () => {
       type Props = { name: { value: string }; children: Node };
       function ConditionalRender({ name, children }: Props, { h }: any) {
-        return h(null, {}, [
+        return h('', {}, [
           [
             "h2",
             {},
@@ -116,7 +116,7 @@ describe("utils", () => {
         return h("h2", {}, [
           ["b", {}, () => "Hello " + name.value],
           [
-            null,
+            '',
             {},
             () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
           ],
@@ -153,14 +153,14 @@ describe("utils", () => {
     it("should work with conditional rendering inside text node and fragment", () => {
       type Props = { name: { value: string }; children: Node };
       function ConditionalRender({ name, children }: Props, { h }: any) {
-        return h(null, {}, [
+        return h('', {}, [
           [
             "h2",
             {},
             [
               ["b", {}, () => "Hello " + name.value],
               [
-                null,
+                '',
                 {},
                 () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
               ],
@@ -202,7 +202,7 @@ describe("utils", () => {
         return h("h2", {}, [
           ["b", {}, () => "Hello " + name.value],
           [
-            null,
+            '',
             {},
             () =>
               name.value === "Barbara"
@@ -240,7 +240,7 @@ describe("utils", () => {
     });
 
     it("should work with empty nodes", () => {
-      function EmptyNodes({}, { h }: any) {
+      function EmptyNodes({ }, { h }: any) {
         return h("div", {}, ["span", {}, ""]);
       }
 
