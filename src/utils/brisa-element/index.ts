@@ -10,9 +10,10 @@ type Render = (
 ) => Node[];
 type Children = unknown[] | string | (() => Children);
 
-const c = document.createElement.bind(document);
-const isPrimary = (el: unknown) =>
-  typeof el === "string" || typeof el === "number" || typeof el === "boolean";
+const createElement = document.createElement.bind(document);
+const createTextNode = document.createTextNode.bind(document);
+const isArray = Array.isArray;
+const arr = Array.from;
 
 export default function brisaElement(
   render: Render,
@@ -41,7 +42,7 @@ export default function brisaElement(
         children: Children,
         parent: HTMLElement | DocumentFragment = shadowRoot,
       ) {
-        const el = (tagName ? c(tagName) : parent) as HTMLElement;
+        const el = (tagName ? createElement(tagName) : parent) as HTMLElement;
 
         // Handle attributes
         for (let [key, value] of Object.entries(attributes)) {
@@ -59,16 +60,14 @@ export default function brisaElement(
           }
         }
 
-        if (!children) return;
-
         // Handle children
         if (children === "slot") {
-          el.appendChild(c("slot"));
-        } else if (Array.isArray(children)) {
-          if (Array.isArray(children[0])) {
-            (children as Children[]).forEach((child) =>
-              hyperScript(null, {}, child, el),
-            );
+          el.appendChild(createElement("slot"));
+        } else if (isArray(children)) {
+          if (isArray(children[0])) {
+            for (let child of children as Children[]) {
+              hyperScript(null, {}, child, el);
+            }
           } else {
             hyperScript(...(children as [string, Attr, Children]), el);
           }
@@ -85,33 +84,33 @@ export default function brisaElement(
           ctx.effect(() => {
             const child = children();
 
-            if (isPrimary(child)) {
-              const textNode = document.createTextNode(child as string);
-
-              insertOrUpdate(textNode);
-
-              lastNodes = [textNode];
-            } else if (Array.isArray(child)) {
-              let currentElNodes = Array.from(el.childNodes);
+            if (isArray(child)) {
+              let currentElNodes = arr(el.childNodes);
               const fragment = document.createDocumentFragment();
 
-              if (Array.isArray(child[0])) {
-                (child as Children[]).forEach((c) =>
-                  hyperScript(null, {}, c, fragment),
-                );
+              if (isArray(child[0])) {
+                for (let c of child as Children[]) {
+                  hyperScript(null, {}, c, fragment);
+                }
               } else {
                 hyperScript(...(child as [string, Attr, Children]), fragment);
               }
 
               insertOrUpdate(fragment);
 
-              lastNodes = Array.from(el.childNodes).filter(
+              lastNodes = arr(el.childNodes).filter(
                 (node) => !currentElNodes.includes(node),
               );
+            } else {
+              const textNode = createTextNode(child.toString());
+
+              insertOrUpdate(textNode);
+
+              lastNodes = [textNode];
             }
           });
         } else {
-          el.appendChild(document.createTextNode(children));
+          el.appendChild(createTextNode(children));
         }
 
         if (tagName) parent.appendChild(el);
@@ -124,7 +123,7 @@ export default function brisaElement(
           h: hyperScript,
           // Handle CSS
           css(strings: string[], ...values: string[]) {
-            const style = c("style");
+            const style = createElement("style");
             style.textContent = strings[0] + values.join("");
             shadowRoot.appendChild(style);
           },

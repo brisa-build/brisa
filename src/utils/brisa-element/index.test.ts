@@ -239,6 +239,22 @@ describe("utils", () => {
       );
     });
 
-    // it('should work with conditional rendering inside text node and fragment with "slot" keyword', () => { });
+    it("should work with empty nodes", () => {
+      function EmptyNodes({}, { h }: any) {
+        return h("div", {}, ["span", {}, ""]);
+      }
+
+      customElements.define("empty-nodes", brisaElement(EmptyNodes as any));
+
+      document.body.innerHTML = `
+        <empty-nodes></empty-nodes>
+      `;
+
+      const emptyNodes = document.querySelector("empty-nodes") as HTMLElement;
+
+      expect(emptyNodes?.shadowRoot?.innerHTML).toBe(
+        "<div><span></span></div>",
+      );
+    });
   });
 });
