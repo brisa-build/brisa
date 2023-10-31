@@ -5,12 +5,14 @@ type Render = (
   props: Record<string, unknown>,
   ctx: ReturnType<typeof signals> & {
     css(strings: string[], ...values: string[]): void;
-    h(tagName: string, attributes: Attr, children: unknown): Node;
+    h(tagName: string, attributes: Attr, children: unknown): void;
   },
 ) => Node[];
+type Children = unknown[] | string | (() => Children);
 
 const c = document.createElement.bind(document);
-const f = document.createDocumentFragment.bind(document);
+const isPrimary = (el: unknown) =>
+  typeof el === "string" || typeof el === "number" || typeof el === "boolean";
 
 export default function brisaElement(
   render: Render,
@@ -25,66 +27,94 @@ export default function brisaElement(
 
     connectedCallback() {
       const ctx = signals();
+      const shadowRoot = this.attachShadow({ mode: "open" });
+
       this.p = {};
 
       for (let attr of observedAttributes) {
         this.p[attr] = ctx.state(this.getAttribute(attr));
       }
 
-      const shadowRoot = this.attachShadow({ mode: "open" });
-      const els = render(
-        { children: c("slot"), ...this.p },
+      function hyperScript(
+        tagName: string | null,
+        attributes: Attr,
+        children: Children,
+        parent: HTMLElement | DocumentFragment = shadowRoot,
+      ) {
+        const el = (tagName ? c(tagName) : parent) as HTMLElement;
+
+        if (tagName) parent.appendChild(el);
+
+        // Handle attributes
+        for (let [key, value] of Object.entries(attributes)) {
+          const isEvent = key.startsWith("on");
+
+          if (isEvent) {
+            el.addEventListener(
+              key.slice(2).toLowerCase(),
+              value as EventListener,
+            );
+          } else if (!isEvent && typeof value === "function") {
+            ctx.effect(() => el.setAttribute(key, (value as () => string)()));
+          } else {
+            (el as HTMLElement).setAttribute(key, value as string);
+          }
+        }
+
+        if (!children) return;
+
+        // Handle children
+        if (children === "slot") {
+          el.appendChild(c("slot"));
+        } else if (Array.isArray(children)) {
+          if (Array.isArray(children[0])) {
+            children.forEach((child) => hyperScript(null, {}, child, el));
+          } else {
+            hyperScript(...(children as [string, Attr, Children]), el);
+          }
+        } else if (typeof children === "function") {
+          let lastNodes: ChildNode[] | undefined;
+
+          const insertOrUpdate = (e: ChildNode | DocumentFragment) => {
+            if (lastNodes) {
+              el.insertBefore(e, lastNodes[0]);
+              lastNodes.forEach((node) => node?.remove());
+            } else el.appendChild(e);
+          };
+
+          ctx.effect(() => {
+            const child = children();
+
+            if (isPrimary(child)) {
+              const textNode = document.createTextNode(child as string);
+
+              insertOrUpdate(textNode);
+
+              lastNodes = [textNode];
+            } else {
+              const [t, a, c] = child as [string, Attr, Children];
+              let currentElNodes = Array.from(el.childNodes);
+              const fragment = document.createDocumentFragment();
+
+              hyperScript(t, a, c, fragment);
+
+              insertOrUpdate(fragment);
+
+              lastNodes = Array.from(el.childNodes).filter(
+                (node) => !currentElNodes.includes(node),
+              );
+            }
+          });
+        } else {
+          el.appendChild(document.createTextNode(children));
+        }
+      }
+
+      render(
+        { children: "slot", ...this.p },
         {
           ...ctx,
-          h(tagName: string, attributes: Attr, children: unknown) {
-            const fragment = f();
-            let el: Node = tagName ? c(tagName) : f();
-
-            // Handle attributes
-            Object.entries(attributes).forEach(([key, value]) => {
-              const isEvent = key.startsWith("on");
-
-              if (isEvent) {
-                el.addEventListener(
-                  key.slice(2).toLowerCase(),
-                  value as EventListener,
-                );
-              } else if (!isEvent && typeof value === "function") {
-                ctx.effect(() =>
-                  (el as HTMLElement).setAttribute(key, value()),
-                );
-              } else {
-                (el as HTMLElement).setAttribute(key, value as string);
-              }
-            });
-
-            if (!children) return el;
-
-            // Handle children
-            if (Array.isArray(children)) {
-              children.forEach((child) => fragment.appendChild(child));
-              el.appendChild(fragment);
-            } else if (typeof children === "string") {
-              el.textContent = children;
-            } else if (typeof children === "function") {
-              ctx.effect(() => {
-                const child = children();
-
-                if (Array.isArray(child)) {
-                  child.forEach((c) => fragment.appendChild(c));
-
-                  (el as HTMLElement).innerHTML = "";
-                  el.appendChild(fragment);
-                } else {
-                  el.textContent = child;
-                }
-              });
-            } else {
-              el.appendChild(children as Node);
-            }
-
-            return el;
-          },
+          h: hyperScript,
           // Handle CSS
           css(strings: string[], ...values: string[]) {
             const style = c("style");
@@ -93,9 +123,6 @@ export default function brisaElement(
           },
         },
       );
-      const fragment = f();
-      els.forEach((el) => fragment.appendChild(el));
-      shadowRoot.appendChild(fragment);
     }
 
     attributeChangedCallback(
