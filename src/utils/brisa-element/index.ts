@@ -77,7 +77,7 @@ export default function brisaElement(
           const insertOrUpdate = (e: ChildNode | DocumentFragment) => {
             if (lastNodes) {
               el.insertBefore(e, lastNodes[0]);
-              lastNodes.forEach((node) => node?.remove());
+              for (let node of lastNodes) node?.remove();
             } else el.appendChild(e);
           };
 
