@@ -195,5 +195,50 @@ describe("utils", () => {
         "<h2><b>Hello Barbara</b><b>!! 🥳</b></h2><slot></slot>",
       );
     });
+
+    it("should work with conditional rendering with multiple nodes", () => {
+      type Props = { name: { value: string }; children: Node };
+      function ConditionalRender({ name, children }: Props, { h }: any) {
+        return h("h2", {}, [
+          ["b", {}, () => "Hello " + name.value],
+          [
+            null,
+            {},
+            () =>
+              name.value === "Barbara"
+                ? [["b", {}, "!! 🥳"], ["i", {}, " this is a "], " test"]
+                : "🥴",
+          ],
+          children,
+        ]);
+      }
+
+      customElements.define(
+        "conditional-render",
+        brisaElement(ConditionalRender as any, ["name"]),
+      );
+
+      document.body.innerHTML = `
+          <conditional-render name="Aral">
+            <span>test</span>
+          </conditional-render>
+        `;
+
+      const conditionalRender = document.querySelector(
+        "conditional-render",
+      ) as HTMLElement;
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "<h2><b>Hello Aral</b>🥴<slot></slot></h2>",
+      );
+
+      conditionalRender.setAttribute("name", "Barbara");
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "<h2><b>Hello Barbara</b><b>!! 🥳</b><i> this is a </i> test<slot></slot></h2>",
+      );
+    });
+
+    // it('should work with conditional rendering inside text node and fragment with "slot" keyword', () => { });
   });
 });
