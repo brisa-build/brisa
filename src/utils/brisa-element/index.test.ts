@@ -17,14 +17,12 @@ describe("utils", () => {
       function Counter({ name, children }: Props, { state, h }: any) {
         const count = state(0);
 
-        return [
-          h("p", { class: () => (count.value % 2 === 0 ? "even" : "") }, [
-            h("button", { onClick: () => count.value++ }, "+"),
-            h("span", {}, () => ` ${name.value} ${count.value} `),
-            h("button", { onClick: () => count.value-- }, "-"),
-            children,
-          ]),
-        ];
+        return h("p", { class: () => (count.value % 2 === 0 ? "even" : "") }, [
+          ["button", { onClick: () => count.value++ }, "+"],
+          ["span", {}, () => ` ${name.value} ${count.value} `],
+          ["button", { onClick: () => count.value-- }, "-"],
+          children,
+        ]);
       }
 
       customElements.define(
@@ -63,15 +61,21 @@ describe("utils", () => {
     it("should work with conditional rendering inside span node", () => {
       type Props = { name: { value: string }; children: Node };
       function ConditionalRender({ name, children }: Props, { h }: any) {
-        return [
-          h("h2", {}, [
-            h("b", {}, () => "Hello " + name.value),
-            h("span", {}, () =>
-              name.value === "Barbara" ? [h("b", {}, "!! 🥳")] : "🥴",
-            ),
-          ]),
+        return h(null, {}, [
+          [
+            "h2",
+            {},
+            [
+              ["b", {}, () => "Hello " + name.value],
+              [
+                "span",
+                {},
+                () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+              ],
+            ],
+          ],
           children,
-        ];
+        ]);
       }
 
       customElements.define(
@@ -109,15 +113,61 @@ describe("utils", () => {
     it("should work with conditional rendering inside text node", () => {
       type Props = { name: { value: string }; children: Node };
       function ConditionalRender({ name, children }: Props, { h }: any) {
-        return [
-          h("h2", {}, [
-            h("b", {}, () => "Hello " + name.value),
-            h(null, {}, () =>
-              name.value === "Barbara" ? [h("b", {}, "!! 🥳")] : "🥴",
-            ),
-          ]),
+        return h("h2", {}, [
+          ["b", {}, () => "Hello " + name.value],
+          [
+            null,
+            {},
+            () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+          ],
           children,
-        ];
+        ]);
+      }
+
+      customElements.define(
+        "conditional-render",
+        brisaElement(ConditionalRender as any, ["name"]),
+      );
+
+      document.body.innerHTML = `
+        <conditional-render name="Aral">
+          <span>test</span>
+        </conditional-render>
+      `;
+
+      const conditionalRender = document.querySelector(
+        "conditional-render",
+      ) as HTMLElement;
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "<h2><b>Hello Aral</b>🥴<slot></slot></h2>",
+      );
+
+      conditionalRender.setAttribute("name", "Barbara");
+
+      expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
+        "<h2><b>Hello Barbara</b><b>!! 🥳</b><slot></slot></h2>",
+      );
+    });
+
+    it("should work with conditional rendering inside text node and fragment", () => {
+      type Props = { name: { value: string }; children: Node };
+      function ConditionalRender({ name, children }: Props, { h }: any) {
+        return h(null, {}, [
+          [
+            "h2",
+            {},
+            [
+              ["b", {}, () => "Hello " + name.value],
+              [
+                null,
+                {},
+                () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+              ],
+            ],
+          ],
+          children,
+        ]);
       }
 
       customElements.define(
@@ -142,8 +192,7 @@ describe("utils", () => {
       conditionalRender.setAttribute("name", "Barbara");
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "",
-        // '<h2><b>Hello Barbara</b><b>!! 🥳</b></h2><slot></slot>',
+        "<h2><b>Hello Barbara</b><b>!! 🥳</b></h2><slot></slot>",
       );
     });
   });
