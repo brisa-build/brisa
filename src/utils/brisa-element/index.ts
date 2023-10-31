@@ -43,8 +43,6 @@ export default function brisaElement(
       ) {
         const el = (tagName ? c(tagName) : parent) as HTMLElement;
 
-        if (tagName) parent.appendChild(el);
-
         // Handle attributes
         for (let [key, value] of Object.entries(attributes)) {
           const isEvent = key.startsWith("on");
@@ -68,7 +66,9 @@ export default function brisaElement(
           el.appendChild(c("slot"));
         } else if (Array.isArray(children)) {
           if (Array.isArray(children[0])) {
-            children.forEach((child) => hyperScript(null, {}, child, el));
+            (children as Children[]).forEach((child) =>
+              hyperScript(null, {}, child, el),
+            );
           } else {
             hyperScript(...(children as [string, Attr, Children]), el);
           }
@@ -91,12 +91,17 @@ export default function brisaElement(
               insertOrUpdate(textNode);
 
               lastNodes = [textNode];
-            } else {
-              const [t, a, c] = child as [string, Attr, Children];
+            } else if (Array.isArray(child)) {
               let currentElNodes = Array.from(el.childNodes);
               const fragment = document.createDocumentFragment();
 
-              hyperScript(t, a, c, fragment);
+              if (Array.isArray(child[0])) {
+                (child as Children[]).forEach((c) =>
+                  hyperScript(null, {}, c, fragment),
+                );
+              } else {
+                hyperScript(...(child as [string, Attr, Children]), fragment);
+              }
 
               insertOrUpdate(fragment);
 
@@ -108,6 +113,8 @@ export default function brisaElement(
         } else {
           el.appendChild(document.createTextNode(children));
         }
+
+        if (tagName) parent.appendChild(el);
       }
 
       render(
