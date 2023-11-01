@@ -23,13 +23,15 @@ export default function brisaElement(
 ) {
   return class extends HTMLElement {
     p: Record<string, { value: unknown } | Event> | undefined;
+    ctx: ReturnType<typeof signals> | undefined;
 
     static get observedAttributes() {
       return observedAttributes;
     }
 
     connectedCallback() {
-      const ctx = signals();
+      this.ctx = signals();
+      const { state, effect } = this.ctx;
       const shadowRoot = this.attachShadow({ mode: "open" });
 
       this.p = {};
@@ -37,7 +39,7 @@ export default function brisaElement(
       for (let attr of observedAttributes) {
         this.p[attr] = attr.startsWith("on")
           ? this.e(attr)
-          : ctx.state(deserialize(this.getAttribute(attr)));
+          : state(deserialize(this.getAttribute(attr)));
       }
 
       function hyperScript(
@@ -58,7 +60,7 @@ export default function brisaElement(
               (e) => value((e as CustomEvent)?.detail ?? e) as EventListener,
             );
           } else if (!isEvent && typeof value === "function") {
-            ctx.effect(() => el.setAttribute(key, (value as () => string)()));
+            effect(() => el.setAttribute(key, (value as () => string)()));
           } else {
             (el as HTMLElement).setAttribute(key, value as string);
           }
@@ -85,7 +87,7 @@ export default function brisaElement(
             } else el.appendChild(e);
           };
 
-          ctx.effect(() => {
+          effect(() => {
             const child = children();
 
             if (isArray(child)) {
@@ -123,7 +125,7 @@ export default function brisaElement(
       render(
         { children: "slot", ...this.p },
         {
-          ...ctx,
+          ...this.ctx,
           h: hyperScript,
           // Handle CSS
           css(strings: string[], ...values: string[]) {
@@ -135,6 +137,13 @@ export default function brisaElement(
       );
     }
 
+    // Clean up signals on disconnection
+    disconnectedCallback() {
+      this.ctx?.cleanAll();
+      delete this.ctx;
+    }
+
+    // Handle events
     e(attribute: string) {
       return (e: any) => {
         const ev = new CustomEvent(attribute.slice(2).toLowerCase(), {

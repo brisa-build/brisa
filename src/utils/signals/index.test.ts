@@ -49,4 +49,25 @@ describe("signals", () => {
     expect(mockEffect.mock.calls[2][0]).toBe(updatedCount);
     expect(mockEffect.mock.calls[2][1]).toBe(updatedUsername);
   });
+
+  it("should unregister events registered inside an effect using the cleanup method", () => {
+    const { state, effect, cleanup } = signals();
+    const count = state(0);
+
+    const mockEffect = mock<(count: number) => void>(() => {});
+    const mockCleanup = mock<() => void>(() => {});
+
+    effect(() => {
+      mockEffect(count.value);
+      cleanup(mockCleanup);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockCleanup).toHaveBeenCalledTimes(0);
+
+    count.value = 1;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockCleanup).toHaveBeenCalledTimes(1);
+  });
 });
