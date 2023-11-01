@@ -61,7 +61,7 @@ describe("utils", () => {
     it("should work with conditional rendering inside span node", () => {
       type Props = { name: { value: string }; children: Node };
       function ConditionalRender({ name, children }: Props, { h }: any) {
-        return h('', {}, [
+        return h("", {}, [
           [
             "h2",
             {},
@@ -116,7 +116,7 @@ describe("utils", () => {
         return h("h2", {}, [
           ["b", {}, () => "Hello " + name.value],
           [
-            '',
+            "",
             {},
             () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
           ],
@@ -153,14 +153,14 @@ describe("utils", () => {
     it("should work with conditional rendering inside text node and fragment", () => {
       type Props = { name: { value: string }; children: Node };
       function ConditionalRender({ name, children }: Props, { h }: any) {
-        return h('', {}, [
+        return h("", {}, [
           [
             "h2",
             {},
             [
               ["b", {}, () => "Hello " + name.value],
               [
-                '',
+                "",
                 {},
                 () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
               ],
@@ -202,7 +202,7 @@ describe("utils", () => {
         return h("h2", {}, [
           ["b", {}, () => "Hello " + name.value],
           [
-            '',
+            "",
             {},
             () =>
               name.value === "Barbara"
@@ -240,7 +240,7 @@ describe("utils", () => {
     });
 
     it("should work with empty nodes", () => {
-      function EmptyNodes({ }, { h }: any) {
+      function EmptyNodes({}, { h }: any) {
         return h("div", {}, ["span", {}, ""]);
       }
 
@@ -254,6 +254,110 @@ describe("utils", () => {
 
       expect(emptyNodes?.shadowRoot?.innerHTML).toBe(
         "<div><span></span></div>",
+      );
+    });
+
+    it("should display a component to display a series of images in a sliding carousel", () => {
+      type Props = { images: { value: string[] } };
+      function Carousel({ images }: Props, { state, h }: any) {
+        const index = state(0);
+        const next = () => {
+          index.value = (index.value + 1) % images.value.length;
+        };
+        const prev = () => {
+          index.value =
+            (index.value - 1 + images.value.length) % images.value.length;
+        };
+        return h("div", {}, [
+          ["button", { onClick: prev }, "prev"],
+          ["img", { src: () => images.value[index.value] }, ""],
+          ["button", { onClick: next }, "next"],
+        ]);
+      }
+
+      customElements.define(
+        "carousel-images",
+        brisaElement(Carousel as any, ["images"]),
+      );
+
+      document.body.innerHTML = `
+        <carousel-images images="['https://picsum.photos/200/300', 'https://picsum.photos/200/300?grayscale']" />
+      `;
+
+      const carousel = document.querySelector("carousel-images") as HTMLElement;
+      const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
+        "button",
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(carousel?.shadowRoot?.innerHTML).toBe(
+        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>',
+      );
+      next.click();
+      expect(carousel?.shadowRoot?.innerHTML).toBe(
+        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
+      );
+      next.click();
+      expect(carousel?.shadowRoot?.innerHTML).toBe(
+        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>',
+      );
+      prev.click();
+      expect(carousel?.shadowRoot?.innerHTML).toBe(
+        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
+      );
+    });
+
+    it("should display a component to display a series of images in a sliding carousel receiving images inside an object", () => {
+      type Props = { images: { value: { url: string }[] } };
+      function Carousel({ images }: Props, { state, h }: any) {
+        const index = state(0);
+        const next = () => {
+          index.value = (index.value + 1) % images.value.length;
+        };
+        const prev = () => {
+          index.value =
+            (index.value - 1 + images.value.length) % images.value.length;
+        };
+        return h("div", {}, [
+          ["button", { onClick: prev }, "prev"],
+          [
+            "img",
+            {
+              src: () => images.value[index.value]?.url,
+            },
+            "",
+          ],
+          ["button", { onClick: next }, "next"],
+        ]);
+      }
+
+      customElements.define(
+        "carousel-images",
+        brisaElement(Carousel as any, ["images"]),
+      );
+
+      document.body.innerHTML = `
+        <carousel-images images="[{'url':'https://picsum.photos/200/300'},{'url':'https://picsum.photos/200/300?grayscale'}]" />
+      `;
+
+      const carousel = document.querySelector("carousel-images") as HTMLElement;
+      const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
+        "button",
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(carousel?.shadowRoot?.innerHTML).toBe(
+        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>',
+      );
+      next.click();
+      expect(carousel?.shadowRoot?.innerHTML).toBe(
+        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
+      );
+      next.click();
+      expect(carousel?.shadowRoot?.innerHTML).toBe(
+        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>',
+      );
+      prev.click();
+      expect(carousel?.shadowRoot?.innerHTML).toBe(
+        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
       );
     });
   });
