@@ -1,3 +1,4 @@
+// TODO: new method: cleanup, and effect depending on another effect instead of a state/props
 export default function signals() {
   let current: (() => void) | 0 = 0;
 

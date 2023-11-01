@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { on } from "events";
 
 let brisaElement: any;
 
@@ -497,18 +496,26 @@ describe("utils", () => {
       expect(onClickMock.mock.calls[0].at(0)).toBe("TEST");
     });
 
-    it('should display a color selector component', () => {
+    it("should display a color selector component", () => {
       type Props = { color: { value: string } };
       function ColorSelector({ color }: Props, { h }: any) {
-        return h('div', {}, [
-          ['input', { type: 'color', value: () => color.value, onInput: (e: any) => color.value = e.target.value }, ''],
-          ['span', { style: () => `color:${color.value}` }, () => color.value],
+        return h("div", {}, [
+          [
+            "input",
+            {
+              type: "color",
+              value: () => color.value,
+              onInput: (e: any) => (color.value = e.target.value),
+            },
+            "",
+          ],
+          ["span", { style: () => `color:${color.value}` }, () => color.value],
         ]);
       }
 
       customElements.define(
-        'color-selector',
-        brisaElement(ColorSelector as any, ['color']),
+        "color-selector",
+        brisaElement(ColorSelector as any, ["color"]),
       );
 
       document.body.innerHTML = `
@@ -516,23 +523,379 @@ describe("utils", () => {
       `;
 
       const colorSelector = document.querySelector(
-        'color-selector',
+        "color-selector",
       ) as HTMLElement;
 
       const input = colorSelector?.shadowRoot?.querySelector(
-        'input',
+        "input",
       ) as HTMLInputElement;
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
         '<div><input type="color" value="#000000"><span style="color:#000000">#000000</span></div>',
       );
 
-      input.value = '#ffffff';
+      input.value = "#ffffff";
 
-      input.dispatchEvent(new Event('input'));
+      input.dispatchEvent(new Event("input"));
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
         '<div><input type="color" value="#ffffff"><span style="color:#ffffff">#ffffff</span></div>',
+      );
+    });
+
+    it("should render a TodoList component from props", () => {
+      type Props = { todos: { value: string[] } };
+      function TodoList({ todos }: Props, { h }: any) {
+        return h("ul", {}, () =>
+          todos.value.map((todo: string) => ["li", {}, todo]),
+        );
+      }
+
+      document.body.innerHTML = `
+        <todo-list todos="['todo 1', 'todo 2', 'todo 3']" />
+      `;
+
+      customElements.define(
+        "todo-list",
+        brisaElement(TodoList as any, ["todos"]),
+      );
+
+      const todoList = document.querySelector("todo-list") as HTMLElement;
+
+      expect(todoList?.shadowRoot?.innerHTML).toBe(
+        "<ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul>",
+      );
+
+      todoList.setAttribute("todos", '["todo 4", "todo 5"]');
+
+      expect(todoList?.shadowRoot?.innerHTML).toBe(
+        "<ul><li>todo 4</li><li>todo 5</li></ul>",
+      );
+    });
+
+    it("should work an interactive TodoList with state", () => {
+      function TodoList({ }, { state, h }: any) {
+        const todos = state(["todo 1", "todo 2", "todo 3"]);
+        const newTodo = state("");
+        const addTodo = () => {
+          todos.value = [...todos.value, newTodo.value];
+          newTodo.value = "";
+        };
+
+        return h("div", {}, [
+          [
+            "input",
+            {
+              value: () => newTodo.value,
+              onInput: (e: any) => (newTodo.value = e.target.value),
+            },
+            "",
+          ],
+          ["button", { onClick: addTodo }, "Add"],
+          ["ul", {}, () => todos.value.map((todo: string) => ["li", {}, todo])],
+        ]);
+      }
+
+      customElements.define("todo-list", brisaElement(TodoList as any));
+      document.body.innerHTML = "<todo-list />";
+
+      const todoList = document.querySelector("todo-list") as HTMLElement;
+
+      const input = todoList?.shadowRoot?.querySelector(
+        "input",
+      ) as HTMLInputElement;
+
+      const button = todoList?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      expect(todoList?.shadowRoot?.innerHTML).toBe(
+        '<div><input value=""><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul></div>',
+      );
+
+      input.value = "todo 4";
+
+      input.dispatchEvent(new Event("input"));
+
+      expect(todoList?.shadowRoot?.innerHTML).toBe(
+        '<div><input value="todo 4"><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul></div>',
+      );
+
+      button.click();
+
+      expect(todoList?.shadowRoot?.innerHTML).toBe(
+        '<div><input value=""><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li><li>todo 4</li></ul></div>',
+      );
+    });
+
+    it("should be possible to change an static src attribute using the onerror event from img", () => {
+      function Image({ }, { h }: any) {
+        return h(
+          "img",
+          {
+            src: "https://test.com/image.png",
+            onError: (e: any) => {
+              e.target.src = "https://test.com/error.png";
+            },
+          },
+          "",
+        );
+      }
+
+      customElements.define("test-image", brisaElement(Image));
+      document.body.innerHTML = "<test-image />";
+
+      const testImage = document.querySelector("test-image") as HTMLElement;
+      const img = testImage?.shadowRoot?.querySelector(
+        "img",
+      ) as HTMLImageElement;
+
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/image.png">',
+      );
+      img.dispatchEvent(new Event("error"));
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/error.png">',
+      );
+    });
+
+    it("should be possible to change a dynamic src attribute using the onerror event from img", () => {
+      function Image({ }, { state, h }: any) {
+        const src = state("https://test.com/image.png");
+
+        return h(
+          "img",
+          {
+            src: () => src.value,
+            onError: () => {
+              src.value = "https://test.com/error.png";
+            },
+          },
+          "",
+        );
+      }
+
+      customElements.define("test-image", brisaElement(Image));
+      document.body.innerHTML = "<test-image />";
+
+      const testImage = document.querySelector("test-image") as HTMLElement;
+      const img = testImage?.shadowRoot?.querySelector(
+        "img",
+      ) as HTMLImageElement;
+
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/image.png">',
+      );
+      img.dispatchEvent(new Event("error"));
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/error.png">',
+      );
+    });
+
+    it("should unregister effects when the component is disconnected", () => {
+      const mockEffect = mock((n: number) => { });
+      let interval: any;
+
+      function Test({ }, { state, effect, h }: any) {
+        const count = state(0);
+
+        interval = setInterval(() => {
+          count.value++;
+        }, 1);
+
+        effect(() => {
+          mockEffect(count.value);
+        });
+
+        return h("div", {}, () => count.value);
+      }
+
+      customElements.define("test-component", brisaElement(Test));
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>0</div>");
+      expect(mockEffect).toHaveBeenCalledTimes(1);
+
+      setTimeout(() => {
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
+        expect(mockEffect).toHaveBeenCalledTimes(2);
+        testComponent.remove();
+      }, 1);
+
+      setTimeout(() => {
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+        expect(mockEffect).toHaveBeenCalledTimes(2);
+        clearInterval(interval);
+      }, 2);
+    });
+
+    it("should reset the state when some props change via effect", () => {
+      function Test({ count }: any, { state, effect, h }: any) {
+        const lastCount = state(0);
+        const countState = state(count);
+
+        effect(() => {
+          if (lastCount.value !== count.value) {
+            countState.value = count.value;
+            lastCount.value = count.value;
+          }
+        });
+
+        return h("", {}, [
+          ["div", {}, () => countState.value],
+          ["button", { onClick: () => countState.value++ }, "increment"],
+        ]);
+      }
+
+      customElements.define("test-component", brisaElement(Test, ["count"]));
+      document.body.innerHTML = "<test-component count='1' />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      const button = testComponent?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>1</div><button>increment</button>",
+      );
+
+      button.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>2</div><button>increment</button>",
+      );
+
+      testComponent.setAttribute("count", "3");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>3</div><button>increment</button>",
+      );
+    });
+
+    it('should work an async web-component', async () => {
+      async function AsyncComponent({ }, { state, h }: any) {
+        const count = state(await Promise.resolve(42));
+
+        return h("div", {}, () => count.value);
+      }
+
+      customElements.define("async-component", brisaElement(AsyncComponent));
+      document.body.innerHTML = "<async-component />";
+
+      const asyncComponent = document.querySelector(
+        "async-component",
+      ) as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(asyncComponent?.shadowRoot?.innerHTML).toBe("<div>42</div>");
+    })
+
+    it('should work an async effect inside a web-component', async () => {
+      async function AsyncComponent({ }, { state, effect, h }: any) {
+        const count = state(0);
+
+        effect(async () => {
+          await Bun.sleep(0);
+          count.value = 42;
+        });
+
+        return h("div", {}, () => count.value);
+      }
+
+      customElements.define("async-component", brisaElement(AsyncComponent));
+      document.body.innerHTML = "<async-component />";
+
+      const asyncComponent = document.querySelector(
+        "async-component",
+      ) as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(asyncComponent?.shadowRoot?.innerHTML).toBe("<div>42</div>");
+    })
+
+    it.todo("should work with reactivity props in a SVG component", () => {
+      function ColorSVG(
+        { firstColor, secondColor, thirdColor }: any,
+        { h }: any,
+      ) {
+        return h("svg", { width: "12cm", height: "12cm" }, [
+          [
+            "g",
+            {
+              style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
+            },
+            [
+              [
+                "circle",
+                {
+                  cx: "6cm",
+                  cy: "2cm",
+                  r: "100",
+                  fill: () => firstColor.value,
+                  transform: "translate(0,50)",
+                },
+                "",
+              ],
+              [
+                "circle",
+                {
+                  cx: "6cm",
+                  cy: "2cm",
+                  r: "100",
+                  fill: () => secondColor.value,
+                  transform: "translate(70,150)",
+                },
+                "",
+              ],
+              [
+                "circle",
+                {
+                  cx: "6cm",
+                  cy: "2cm",
+                  r: "100",
+                  fill: () => thirdColor.value,
+                  transform: "translate(-70,150)",
+                },
+                "",
+              ],
+            ],
+          ],
+        ]);
+      }
+
+      customElements.define(
+        "color-svg",
+        brisaElement(ColorSVG as any, [
+          "firstColor",
+          "secondColor",
+          "thirdColor",
+        ]),
+      );
+
+      document.body.innerHTML = `
+        <color-svg firstColor="#ff0000" secondColor="#00ff00" thirdColor="#0000ff" />
+      `;
+
+      const colorSVG = document.querySelector("color-svg") as HTMLElement;
+
+      expect(colorSVG?.shadowRoot?.innerHTML).toBe(
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
+      );
+
+      colorSVG.setAttribute("firstColor", "#0000ff");
+      colorSVG.setAttribute("secondColor", "#ff0000");
+      colorSVG.setAttribute("thirdColor", "#00ff00");
+
+      expect(colorSVG?.shadowRoot?.innerHTML).toBe(
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(-70,150)"></circle></g></svg>',
       );
     });
   });
