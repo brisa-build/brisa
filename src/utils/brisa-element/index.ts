@@ -33,7 +33,7 @@ export default function brisaElement(
       this.p = {};
 
       for (let attr of observedAttributes) {
-        this.p[attr] = ctx.state(this.getAttribute(attr));
+        this.p[attr] = ctx.state(deserialize(this.getAttribute(attr)));
       }
 
       function hyperScript(
@@ -133,12 +133,21 @@ export default function brisaElement(
 
     attributeChangedCallback(
       name: string,
-      oldValue: unknown,
-      newValue: unknown,
+      oldValue: string | null,
+      newValue: string | null,
     ) {
       // Handle component props
       if (!this.p || oldValue === newValue) return;
-      this.p[name].value = newValue;
+      this.p[name].value = deserialize(newValue);
     }
   };
+}
+
+function deserialize(str: string | null): string {
+  if (!str) return "";
+  try {
+    return JSON.parse(str.replaceAll("'", '"'));
+  } catch (e) {
+    return str;
+  }
 }
