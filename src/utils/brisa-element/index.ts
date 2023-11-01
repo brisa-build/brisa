@@ -1,13 +1,14 @@
 import signals from "../signals";
 
 type Attr = Record<string, unknown>;
-type Render = (
+type RenderFn = (
   props: Record<string, unknown>,
   ctx: ReturnType<typeof signals> & {
     css(strings: string[], ...values: string[]): void;
     h(tagName: string, attributes: Attr, children: unknown): void;
   },
 ) => Node[];
+type Render = RenderFn | Promise<RenderFn>;
 type Children = unknown[] | string | (() => Children);
 type Event = (e: unknown) => void;
 
@@ -54,7 +55,7 @@ export default function brisaElement(
           if (isEvent) {
             el.addEventListener(
               key.slice(2).toLowerCase(),
-              (e) => value(e?.detail ?? e) as EventListener,
+              (e) => value((e as CustomEvent)?.detail ?? e) as EventListener,
             );
           } else if (!isEvent && typeof value === "function") {
             ctx.effect(() => el.setAttribute(key, (value as () => string)()));
