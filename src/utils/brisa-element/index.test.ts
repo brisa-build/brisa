@@ -247,7 +247,7 @@ describe("utils", () => {
     });
 
     it("should work with empty nodes", () => {
-      function EmptyNodes({}, { h }: any) {
+      function EmptyNodes({ }, { h }: any) {
         return h("div", {}, ["span", {}, ""]);
       }
 
@@ -369,7 +369,7 @@ describe("utils", () => {
     });
 
     it("should render a timer component", () => {
-      function Timer({}, { state, h }: any) {
+      function Timer({ }, { state, h }: any) {
         const time = state(0);
         const interval = setInterval(() => {
           time.value++;
@@ -420,7 +420,7 @@ describe("utils", () => {
         "test-button",
         brisaElement(Button as any, ["onAfterClick"]),
       );
-      const onAfterClickMock = mock(() => {});
+      const onAfterClickMock = mock(() => { });
 
       window.onAfterClick = onAfterClickMock;
       document.body.innerHTML = `
@@ -438,9 +438,9 @@ describe("utils", () => {
     });
 
     it("should trigger events in different web-components", () => {
-      const onClickMock = mock(() => {});
+      const onClickMock = mock(() => { });
 
-      function Parent({}, { h }: any) {
+      function Parent({ }, { h }: any) {
         return h("first-component", { onClickMe: onClickMock }, "click me");
       }
 
@@ -495,6 +495,45 @@ describe("utils", () => {
 
       expect(onClickMock).toHaveBeenCalled();
       expect(onClickMock.mock.calls[0].at(0)).toBe("TEST");
+    });
+
+    it('should display a color selector component', () => {
+      type Props = { color: { value: string } };
+      function ColorSelector({ color }: Props, { h }: any) {
+        return h('div', {}, [
+          ['input', { type: 'color', value: () => color.value, onInput: (e: any) => color.value = e.target.value }, ''],
+          ['span', { style: () => `color:${color.value}` }, () => color.value],
+        ]);
+      }
+
+      customElements.define(
+        'color-selector',
+        brisaElement(ColorSelector as any, ['color']),
+      );
+
+      document.body.innerHTML = `
+        <color-selector color="#000000" />
+      `;
+
+      const colorSelector = document.querySelector(
+        'color-selector',
+      ) as HTMLElement;
+
+      const input = colorSelector?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
+
+      expect(colorSelector?.shadowRoot?.innerHTML).toBe(
+        '<div><input type="color" value="#000000"><span style="color:#000000">#000000</span></div>',
+      );
+
+      input.value = '#ffffff';
+
+      input.dispatchEvent(new Event('input'));
+
+      expect(colorSelector?.shadowRoot?.innerHTML).toBe(
+        '<div><input type="color" value="#ffffff"><span style="color:#ffffff">#ffffff</span></div>',
+      );
     });
   });
 });
