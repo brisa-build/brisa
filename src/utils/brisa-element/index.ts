@@ -9,6 +9,7 @@ type Render = (
   },
 ) => Node[];
 type Children = unknown[] | string | (() => Children);
+type Event = (e: unknown) => void;
 
 const createElement = document.createElement.bind(document);
 const createTextNode = document.createTextNode.bind(document);
@@ -20,7 +21,7 @@ export default function brisaElement(
   observedAttributes: string[] = [],
 ) {
   return class extends HTMLElement {
-    p: Record<string, { value: unknown }> | undefined;
+    p: Record<string, { value: unknown } | Event> | undefined;
 
     static get observedAttributes() {
       return observedAttributes;
@@ -33,7 +34,9 @@ export default function brisaElement(
       this.p = {};
 
       for (let attr of observedAttributes) {
-        this.p[attr] = ctx.state(deserialize(this.getAttribute(attr)));
+        this.p[attr] = attr.startsWith("on")
+          ? this.e(attr)
+          : ctx.state(deserialize(this.getAttribute(attr)));
       }
 
       function hyperScript(
@@ -51,7 +54,7 @@ export default function brisaElement(
           if (isEvent) {
             el.addEventListener(
               key.slice(2).toLowerCase(),
-              value as EventListener,
+              (e) => value(e?.detail ?? e) as EventListener,
             );
           } else if (!isEvent && typeof value === "function") {
             ctx.effect(() => el.setAttribute(key, (value as () => string)()));
@@ -131,6 +134,15 @@ export default function brisaElement(
       );
     }
 
+    e(attribute: string) {
+      return (e: any) => {
+        const ev = new CustomEvent(attribute.slice(2).toLowerCase(), {
+          detail: e?.detail ?? e,
+        });
+        this.dispatchEvent(ev);
+      };
+    }
+
     attributeChangedCallback(
       name: string,
       oldValue: string | null,
@@ -138,7 +150,7 @@ export default function brisaElement(
     ) {
       // Handle component props
       if (!this.p || oldValue === newValue) return;
-      this.p[name].value = deserialize(newValue);
+      if (!name.startsWith("on")) this.p[name].value = deserialize(newValue);
     }
   };
 }
