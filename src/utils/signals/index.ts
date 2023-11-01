@@ -1,8 +1,16 @@
-// TODO: new method: cleanup, and effect depending on another effect instead of a state/props
+type Fn = () => void | Promise<() => void>;
+
 export default function signals() {
+  const cleanups = new Map<Fn, Fn[]>();
   let current: (() => void) | 0 = 0;
 
   return {
+    cleanAll() {
+      for (let effect of cleanups.keys()) {
+        const cleans = cleanups.get(effect) ?? [];
+        for (let clean of cleans) clean();
+      }
+    },
     state<T>(initialValue: T): { value: T } {
       const effects = new Set<() => void>();
       return {
@@ -12,7 +20,12 @@ export default function signals() {
         },
         set value(v) {
           initialValue = v;
-          effects.forEach((effect) => effect());
+
+          for (let effect of effects) {
+            const cleans = cleanups.get(effect) ?? [];
+            for (let clean of cleans) clean();
+            effect();
+          }
         },
       };
     },
@@ -20,6 +33,11 @@ export default function signals() {
       current = fn;
       fn();
       current = 0;
+    },
+    cleanup(fn: () => void) {
+      const cleans = current ? cleanups.get(current) ?? [] : [];
+      cleans.push(fn);
+      if (current) cleanups.set(current, cleans);
     },
   };
 }
