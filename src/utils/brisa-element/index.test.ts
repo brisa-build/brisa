@@ -891,6 +891,65 @@ describe("utils", () => {
       expect(mockCleanup).toHaveBeenCalledTimes(1);
     });
 
+    it("should cleanup async cleanups when the web-component is unmount", async () => {
+      const mockEffect = mock(() => {});
+      const mockCleanup = mock(() => {});
+
+      function Test({}, { effect, cleanup, h }: any) {
+        effect(async () => {
+          mockEffect();
+          cleanup(async () => mockCleanup());
+        });
+
+        return h("div", {}, "");
+      }
+
+      customElements.define("test-component", brisaElement(Test));
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(mockEffect).toHaveBeenCalledTimes(1);
+      expect(mockCleanup).toHaveBeenCalledTimes(0);
+
+      testComponent.remove();
+
+      expect(mockEffect).toHaveBeenCalledTimes(1);
+      expect(mockCleanup).toHaveBeenCalledTimes(1);
+    });
+
+    it("should cleanup multi cleanups inside an effect when the web-component is unmount", async () => {
+      const mockEffect = mock(() => {});
+      const mockCleanup = mock(() => {});
+
+      function Test({}, { effect, cleanup, h }: any) {
+        effect(async () => {
+          mockEffect();
+          cleanup(async () => mockCleanup());
+          cleanup(async () => mockCleanup());
+        });
+
+        return h("div", {}, "");
+      }
+
+      customElements.define("test-component", brisaElement(Test));
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(mockEffect).toHaveBeenCalledTimes(1);
+      expect(mockCleanup).toHaveBeenCalledTimes(0);
+
+      testComponent.remove();
+
+      expect(mockEffect).toHaveBeenCalledTimes(1);
+      expect(mockCleanup).toHaveBeenCalledTimes(2);
+    });
+
     it.todo("should work with reactivity props in a SVG component", () => {
       function ColorSVG(
         { firstColor, secondColor, thirdColor }: any,
