@@ -1,7 +1,14 @@
-import { describe, it, expect, beforeAll, afterAll } from "bun:test";
+import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { on } from "events";
 
 let brisaElement: any;
+
+declare global {
+  interface Window {
+    onAfterClick: () => void;
+  }
+}
 
 describe("utils", () => {
   describe("brisa-element", () => {
@@ -359,6 +366,135 @@ describe("utils", () => {
       expect(carousel?.shadowRoot?.innerHTML).toBe(
         '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
       );
+    });
+
+    it("should render a timer component", () => {
+      function Timer({}, { state, h }: any) {
+        const time = state(0);
+        const interval = setInterval(() => {
+          time.value++;
+        }, 1);
+
+        return h("div", {}, [
+          ["span", {}, () => `Time: ${time.value}`],
+          ["button", { onClick: () => clearInterval(interval) }, "stop"],
+        ]);
+      }
+
+      customElements.define("timer-component", brisaElement(Timer));
+
+      document.body.innerHTML = `
+        <timer-component></timer-component>
+      `;
+
+      const timer = document.querySelector("timer-component") as HTMLElement;
+      const button = timer?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      expect(timer?.shadowRoot?.innerHTML).toBe(
+        "<div><span>Time: 0</span><button>stop</button></div>",
+      );
+
+      setTimeout(() => {
+        expect(timer?.shadowRoot?.innerHTML).toBe(
+          "<div><span>Time: 1</span><button>stop</button></div>",
+        );
+      }, 1);
+
+      button.click();
+
+      setTimeout(() => {
+        expect(timer?.shadowRoot?.innerHTML).toBe(
+          "<div><span>Time: 1</span><button>stop</button></div>",
+        );
+      }, 1);
+    });
+
+    it("should trigger an event when clicking on a button and can be handled via props", () => {
+      function Button({ onAfterClick }: any, { h }: any) {
+        return h("button", { onClick: onAfterClick }, "click me");
+      }
+
+      customElements.define(
+        "test-button",
+        brisaElement(Button as any, ["onAfterClick"]),
+      );
+      const onAfterClickMock = mock(() => {});
+
+      window.onAfterClick = onAfterClickMock;
+      document.body.innerHTML = `
+        <test-button onAfterClick="window.onAfterClick()"></test-button>
+      `;
+
+      const testButton = document.querySelector("test-button") as HTMLElement;
+      const button = testButton?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(onAfterClickMock).toHaveBeenCalled();
+    });
+
+    it("should trigger events in different web-components", () => {
+      const onClickMock = mock(() => {});
+
+      function Parent({}, { h }: any) {
+        return h("first-component", { onClickMe: onClickMock }, "click me");
+      }
+
+      function FirstComponent({ onClickMe, children }: any, { h }: any) {
+        return h("second-component", { onClickMe }, children);
+      }
+
+      function SecondComponent({ onClickMe, children }: any, { h }: any) {
+        return h("button", { onClick: () => onClickMe("TEST") }, children);
+      }
+
+      customElements.define(
+        "second-component",
+        brisaElement(SecondComponent, ["onClickMe"]),
+      );
+      customElements.define(
+        "first-component",
+        brisaElement(FirstComponent, ["onClickMe"]),
+      );
+      customElements.define("parent-component", brisaElement(Parent));
+      document.body.innerHTML = "<parent-component />";
+
+      const parentComponent = document.querySelector(
+        "parent-component",
+      ) as HTMLElement;
+
+      const firstComponent = parentComponent?.shadowRoot?.querySelector(
+        "first-component",
+      ) as HTMLElement;
+
+      const secondComponent = firstComponent?.shadowRoot?.querySelector(
+        "second-component",
+      ) as HTMLElement;
+
+      expect(parentComponent?.shadowRoot?.innerHTML).toBe(
+        "<first-component>click me</first-component>",
+      );
+
+      expect(firstComponent?.shadowRoot?.innerHTML).toBe(
+        "<second-component><slot></slot></second-component>",
+      );
+
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe(
+        "<button><slot></slot></button>",
+      );
+
+      const button = secondComponent?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(onClickMock).toHaveBeenCalled();
+      expect(onClickMock.mock.calls[0].at(0)).toBe("TEST");
     });
   });
 });
