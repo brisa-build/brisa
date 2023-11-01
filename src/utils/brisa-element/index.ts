@@ -1,14 +1,14 @@
 import signals from "../signals";
 
 type Attr = Record<string, unknown>;
-type RenderFn = (
+type StateSignal = { value: unknown };
+type Render = (
   props: Record<string, unknown>,
   ctx: ReturnType<typeof signals> & {
     css(strings: string[], ...values: string[]): void;
     h(tagName: string, attributes: Attr, children: unknown): void;
   },
 ) => Node[];
-type Render = RenderFn | Promise<RenderFn>;
 type Children = unknown[] | string | (() => Children);
 type Event = (e: unknown) => void;
 
@@ -22,7 +22,7 @@ export default function brisaElement(
   observedAttributes: string[] = [],
 ) {
   return class extends HTMLElement {
-    p: Record<string, { value: unknown } | Event> | undefined;
+    p: Record<string, StateSignal | Event> | undefined;
     ctx: ReturnType<typeof signals> | undefined;
 
     static get observedAttributes() {
@@ -55,9 +55,10 @@ export default function brisaElement(
           const isEvent = key.startsWith("on");
 
           if (isEvent) {
-            el.addEventListener(
-              key.slice(2).toLowerCase(),
-              (e) => value((e as CustomEvent)?.detail ?? e) as EventListener,
+            el.addEventListener(key.slice(2).toLowerCase(), (e) =>
+              (value as (detail: unknown) => EventListener)(
+                (e as CustomEvent)?.detail ?? e,
+              ),
             );
           } else if (!isEvent && typeof value === "function") {
             effect(() => el.setAttribute(key, (value as () => string)()));
@@ -160,12 +161,14 @@ export default function brisaElement(
     ) {
       // Handle component props
       if (!this.p || oldValue === newValue) return;
-      if (!name.startsWith("on")) this.p[name].value = deserialize(newValue);
+      if (!name.startsWith("on")) {
+        (this.p[name] as StateSignal).value = deserialize(newValue);
+      }
     }
   };
 }
 
-function deserialize(str: string | null): string {
+function deserialize(str: string | null): unknown {
   if (!str) return "";
   try {
     return JSON.parse(str.replaceAll("'", '"'));
