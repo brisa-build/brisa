@@ -19,6 +19,7 @@ const XLINK_NAMESPACE = `${W3}1999/xlink`;
 const createTextNode = document.createTextNode.bind(document);
 const isArray = Array.isArray;
 const arr = Array.from;
+const lowercase = (str: string) => str.toLowerCase();
 
 const createElement = (
   tagName: string,
@@ -46,12 +47,21 @@ export default function brisaElement(
   render: Render,
   observedAttributes: string[] = [],
 ) {
+  const attributesLowercase: string[] = [];
+  const attributesObj: Record<string, string> = {};
+
+  for (let attr of observedAttributes) {
+    const lowercaseAttr = lowercase(attr);
+    attributesObj[lowercaseAttr] = attributesObj[attr] = attr;
+    attributesLowercase.push(lowercaseAttr);
+  }
+
   return class extends HTMLElement {
     p: Record<string, StateSignal | Event> | undefined;
     ctx: ReturnType<typeof signals> | undefined;
 
     static get observedAttributes() {
-      return observedAttributes;
+      return attributesLowercase;
     }
 
     connectedCallback() {
@@ -62,7 +72,7 @@ export default function brisaElement(
       this.p = {};
 
       for (let attr of observedAttributes) {
-        this.p[attr] = attr.startsWith("on")
+        this.p[attributesObj[attr]] = attr.startsWith("on")
           ? this.e(attr)
           : state(deserialize(this.getAttribute(attr)));
       }
@@ -82,7 +92,7 @@ export default function brisaElement(
           const isEvent = key.startsWith("on");
 
           if (isEvent) {
-            el.addEventListener(key.slice(2).toLowerCase(), (e) =>
+            el.addEventListener(lowercase(key.slice(2)), (e) =>
               (value as (detail: unknown) => EventListener)(
                 (e as CustomEvent)?.detail ?? e,
               ),
@@ -174,7 +184,7 @@ export default function brisaElement(
     // Handle events
     e(attribute: string) {
       return (e: any) => {
-        const ev = new CustomEvent(attribute.slice(2).toLowerCase(), {
+        const ev = new CustomEvent(lowercase(attribute.slice(2)), {
           detail: e?.detail ?? e,
         });
         this.dispatchEvent(ev);
@@ -188,7 +198,8 @@ export default function brisaElement(
     ) {
       // Handle component props
       if (this.p && oldValue !== newValue && !name.startsWith("on")) {
-        (this.p[name] as StateSignal).value = deserialize(newValue);
+        (this.p[attributesObj[name]] as StateSignal).value =
+          deserialize(newValue);
       }
     }
   };
