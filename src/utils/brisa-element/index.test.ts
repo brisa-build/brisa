@@ -1041,5 +1041,10 @@ describe("utils", () => {
       "should reactively update the DOM after adding a new property to the web-component",
       () => {},
     );
+
+    it.todo(
+      "should work reactivity with default props and then with a new prop value",
+      () => {},
+    );
   });
 });
