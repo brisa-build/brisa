@@ -31,8 +31,10 @@ const createElement = (
 };
 
 const setAttribute = (el: HTMLElement, key: string, value: string) => {
-  const isSvg = el.namespaceURI === SVG_NAMESPACE;
-  const isWithNamespace = isSvg && (key.startsWith("xlink:") || key === "href");
+  const isWithNamespace =
+    el.namespaceURI === SVG_NAMESPACE &&
+    (key.startsWith("xlink:") || key === "href");
+
   if (isWithNamespace) {
     el.setAttributeNS(XLINK_NAMESPACE, key, value);
   } else {

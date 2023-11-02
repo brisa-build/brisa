@@ -246,7 +246,7 @@ describe("utils", () => {
     });
 
     it("should work with empty nodes", () => {
-      function EmptyNodes({}, { h }: any) {
+      function EmptyNodes({ }, { h }: any) {
         return h("div", {}, ["span", {}, ""]);
       }
 
@@ -368,7 +368,7 @@ describe("utils", () => {
     });
 
     it("should render a timer component", () => {
-      function Timer({}, { state, h }: any) {
+      function Timer({ }, { state, h }: any) {
         const time = state(0);
         const interval = setInterval(() => {
           time.value++;
@@ -419,7 +419,7 @@ describe("utils", () => {
         "test-button",
         brisaElement(Button as any, ["onAfterClick"]),
       );
-      const onAfterClickMock = mock(() => {});
+      const onAfterClickMock = mock(() => { });
 
       window.onAfterClick = onAfterClickMock;
       document.body.innerHTML = `
@@ -437,9 +437,9 @@ describe("utils", () => {
     });
 
     it("should trigger events in different web-components", () => {
-      const onClickMock = mock(() => {});
+      const onClickMock = mock(() => { });
 
-      function Parent({}, { h }: any) {
+      function Parent({ }, { h }: any) {
         return h("first-component", { onClickMe: onClickMock }, "click me");
       }
 
@@ -574,7 +574,7 @@ describe("utils", () => {
     });
 
     it("should work an interactive TodoList with state", () => {
-      function TodoList({}, { state, h }: any) {
+      function TodoList({ }, { state, h }: any) {
         const todos = state(["todo 1", "todo 2", "todo 3"]);
         const newTodo = state("");
         const addTodo = () => {
@@ -629,7 +629,7 @@ describe("utils", () => {
     });
 
     it("should be possible to change an static src attribute using the onerror event from img", () => {
-      function Image({}, { h }: any) {
+      function Image({ }, { h }: any) {
         return h(
           "img",
           {
@@ -660,7 +660,7 @@ describe("utils", () => {
     });
 
     it("should be possible to change a dynamic src attribute using the onerror event from img", () => {
-      function Image({}, { state, h }: any) {
+      function Image({ }, { state, h }: any) {
         const src = state("https://test.com/image.png");
 
         return h(
@@ -693,10 +693,10 @@ describe("utils", () => {
     });
 
     it("should unregister effects when the component is disconnected", () => {
-      const mockEffect = mock((n: number) => {});
+      const mockEffect = mock((n: number) => { });
       let interval: any;
 
-      function Test({}, { state, effect, h }: any) {
+      function Test({ }, { state, effect, h }: any) {
         const count = state(0);
 
         interval = setInterval(() => {
@@ -779,7 +779,7 @@ describe("utils", () => {
     });
 
     it("should work an async web-component", async () => {
-      async function AsyncComponent({}, { state, h }: any) {
+      async function AsyncComponent({ }, { state, h }: any) {
         const count = state(await Promise.resolve(42));
 
         return h("div", {}, () => count.value);
@@ -798,7 +798,7 @@ describe("utils", () => {
     });
 
     it("should work an async effect inside a web-component", async () => {
-      async function AsyncComponent({}, { state, effect, h }: any) {
+      async function AsyncComponent({ }, { state, effect, h }: any) {
         const count = state(0);
 
         effect(async () => {
@@ -822,10 +822,10 @@ describe("utils", () => {
     });
 
     it("should cleanup everytime an effect is re-called", () => {
-      const mockEffect = mock((num: number) => {});
-      const mockCleanup = mock(() => {});
+      const mockEffect = mock((num: number) => { });
+      const mockCleanup = mock(() => { });
 
-      function Test({}, { state, effect, cleanup, h }: any) {
+      function Test({ }, { state, effect, cleanup, h }: any) {
         const count = state(0);
 
         effect(() => {
@@ -863,10 +863,10 @@ describe("utils", () => {
     });
 
     it("should cleanup everytime the web-component is unmount", () => {
-      const mockEffect = mock(() => {});
-      const mockCleanup = mock(() => {});
+      const mockEffect = mock(() => { });
+      const mockCleanup = mock(() => { });
 
-      function Test({}, { effect, cleanup, h }: any) {
+      function Test({ }, { effect, cleanup, h }: any) {
         effect(() => {
           mockEffect();
           cleanup(() => mockCleanup());
@@ -892,10 +892,10 @@ describe("utils", () => {
     });
 
     it("should cleanup async cleanups when the web-component is unmount", async () => {
-      const mockEffect = mock(() => {});
-      const mockCleanup = mock(() => {});
+      const mockEffect = mock(() => { });
+      const mockCleanup = mock(() => { });
 
-      function Test({}, { effect, cleanup, h }: any) {
+      function Test({ }, { effect, cleanup, h }: any) {
         effect(async () => {
           mockEffect();
           cleanup(async () => mockCleanup());
@@ -921,10 +921,10 @@ describe("utils", () => {
     });
 
     it("should cleanup multi cleanups inside an effect when the web-component is unmount", async () => {
-      const mockEffect = mock(() => {});
-      const mockCleanup = mock(() => {});
+      const mockEffect = mock(() => { });
+      const mockCleanup = mock(() => { });
 
-      function Test({}, { effect, cleanup, h }: any) {
+      function Test({ }, { effect, cleanup, h }: any) {
         effect(async () => {
           mockEffect();
           cleanup(async () => mockCleanup());
@@ -950,7 +950,7 @@ describe("utils", () => {
       expect(mockCleanup).toHaveBeenCalledTimes(2);
     });
 
-    it.todo("should work with reactivity props in a SVG component", () => {
+    it("should work with reactivity props in a SVG component", () => {
       function ColorSVG(
         { firstColor, secondColor, thirdColor }: any,
         { h }: any,
@@ -1034,12 +1034,12 @@ describe("utils", () => {
 
     it.todo(
       "should SVG work with foreingObject setting correctly the namespace outside the foreingObject node",
-      () => {},
+      () => { },
     );
 
     it.todo(
       "should reactively update the DOM after adding a new property to the web-component",
-      () => {},
+      () => { },
     );
   });
 });
