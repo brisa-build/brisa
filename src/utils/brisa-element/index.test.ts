@@ -1025,90 +1025,83 @@ describe("utils", () => {
       );
     });
 
-    it.todo(
-      "should work reactivity if props that are written in camelCase",
-      () => {
-        function ColorSVG(
-          { firstColor, secondColor, thirdColor }: any,
-          { h }: any,
-        ) {
-          return h("svg", { width: "12cm", height: "12cm" }, [
+    it("should work reactivity if props that are written in camelCase", () => {
+      function ColorSVG(
+        { firstColor, secondColor, thirdColor }: any,
+        { h }: any,
+      ) {
+        return h("svg", { width: "12cm", height: "12cm" }, [
+          [
+            "g",
+            {
+              style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
+            },
             [
-              "g",
-              {
-                style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
-              },
               [
-                [
-                  "circle",
-                  {
-                    cx: "6cm",
-                    cy: "2cm",
-                    r: "100",
-                    fill: () => firstColor.value,
-                    transform: "translate(0,50)",
-                  },
-                  "",
-                ],
-                [
-                  "circle",
-                  {
-                    cx: "6cm",
-                    cy: "2cm",
-                    r: "100",
-                    fill: () => secondColor.value,
-                    transform: "translate(70,150)",
-                  },
-                  "",
-                ],
-                [
-                  "circle",
-                  {
-                    cx: "6cm",
-                    cy: "2cm",
-                    r: "100",
-                    fill: () => thirdColor.value,
-                    transform: "translate(-70,150)",
-                  },
-                  "",
-                ],
+                "circle",
+                {
+                  cx: "6cm",
+                  cy: "2cm",
+                  r: "100",
+                  fill: () => firstColor.value,
+                  transform: "translate(0,50)",
+                },
+                "",
+              ],
+              [
+                "circle",
+                {
+                  cx: "6cm",
+                  cy: "2cm",
+                  r: "100",
+                  fill: () => secondColor.value,
+                  transform: "translate(70,150)",
+                },
+                "",
+              ],
+              [
+                "circle",
+                {
+                  cx: "6cm",
+                  cy: "2cm",
+                  r: "100",
+                  fill: () => thirdColor.value,
+                  transform: "translate(-70,150)",
+                },
+                "",
               ],
             ],
-          ]);
-        }
+          ],
+        ]);
+      }
 
-        document.body.innerHTML = `
-        <color-svg firstColor="#ff0000" secondColor="#00ff00" thirdColor="#0000ff" />
-      `;
+      customElements.define(
+        "color-svg",
+        brisaElement(ColorSVG as any, [
+          "firstColor",
+          "secondColor",
+          "thirdColor",
+        ]),
+      );
 
-        customElements.define(
-          "color-svg",
-          brisaElement(ColorSVG as any, [
-            "firstColor",
-            "secondColor",
-            "thirdColor",
-          ]),
-        );
+      document.body.innerHTML = `
+          <color-svg firstColor="#ff0000" secondColor="#00ff00" thirdColor="#0000ff" />
+        `;
 
-        const colorSVG = document.querySelector("color-svg") as HTMLElement;
+      const colorSVG = document.querySelector("color-svg") as HTMLElement;
 
-        colorSVG?.shadowRoot?.querySelectorAll("*").forEach((node) => {
-          expect(node.namespaceURI).toBe("http://www.w3.org/2000/svg");
-        });
+      expect(colorSVG?.shadowRoot?.innerHTML).toBe(
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>',
+      );
 
-        expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-          '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
-        );
+      colorSVG.setAttribute("firstColor", "#0000ff");
+      colorSVG.setAttribute("secondColor", "#ff0000");
+      colorSVG.setAttribute("thirdColor", "#00ff00");
 
-        colorSVG.setAttribute("firstColor", "#0000ff");
-        colorSVG.setAttribute("secondColor", "#ff0000");
-        colorSVG.setAttribute("thirdColor", "#00ff00");
-
-        expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-          '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(-70,150)"></circle></g></svg>',
-        );
-      },
-    );
+      expect(colorSVG?.shadowRoot?.innerHTML).toBe(
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+      );
+    });
 
     it.todo(
       "should SVG work with foreingObject setting correctly the namespace outside the foreingObject node",
