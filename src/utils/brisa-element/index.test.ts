@@ -1140,5 +1140,20 @@ describe("utils", () => {
       "should work reactivity with default props and then with a new prop value",
       () => {},
     );
+
+    it.todo(
+      "should alert in DEV mode when is consuming a server component inside a web-component",
+      () => {},
+    );
+
+    it.todo(
+      "should not alert in PROD mode when is consuming a server component inside a web-component",
+      () => {},
+    );
+
+    it.todo(
+      "should serialize the props consuming another web-component",
+      () => {},
+    );
   });
 });

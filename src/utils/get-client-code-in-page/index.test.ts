@@ -78,5 +78,10 @@ describe("utils", () => {
       };
       expect(output).toEqual(expected);
     });
+
+    it.todo(
+      "should return 2 web components in page if there is 1 web component and another one inside",
+      () => {},
+    );
   });
 });
