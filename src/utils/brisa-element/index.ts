@@ -26,7 +26,8 @@ const createElement = (
   parent?: HTMLElement | DocumentFragment,
 ) => {
   return tagName === "svg" ||
-    (parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE
+    ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
+      lowercase((parent as HTMLElement).tagName) !== "foreignobject")
     ? document.createElementNS(SVG_NAMESPACE, tagName)
     : document.createElement(tagName);
 };

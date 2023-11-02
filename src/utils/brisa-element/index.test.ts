@@ -1103,10 +1103,33 @@ describe("utils", () => {
       );
     });
 
-    it.todo(
-      "should SVG work with foreingObject setting correctly the namespace outside the foreingObject node",
-      () => {},
-    );
+    it("should SVG work with foreingObject setting correctly the namespace outside the foreingObject node", () => {
+      function SVG({}, { h }: any) {
+        return h("svg", { width: "12cm", height: "12cm" }, [
+          "foreignObject",
+          { width: "100%", height: "100%" },
+          ["div", { xmlns: "http://www.w3.org/1999/xhtml" }, "test"],
+        ]);
+      }
+
+      customElements.define("test-svg", brisaElement(SVG));
+      document.body.innerHTML = "<test-svg />";
+
+      const testSVG = document.querySelector("test-svg") as HTMLElement;
+      const svg = testSVG?.shadowRoot?.querySelector("svg") as SVGElement;
+      const foreignObject = testSVG?.shadowRoot?.querySelector(
+        "foreignObject",
+      ) as SVGElement;
+      const div = testSVG?.shadowRoot?.querySelector("div") as HTMLElement;
+
+      expect(svg.namespaceURI).toBe("http://www.w3.org/2000/svg");
+      expect(foreignObject.namespaceURI).toBe("http://www.w3.org/2000/svg");
+      expect(div.namespaceURI).toBe("http://www.w3.org/1999/xhtml");
+
+      expect(testSVG?.shadowRoot?.innerHTML).toBe(
+        '<svg width="12cm" height="12cm"><foreignobject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">test</div></foreignobject></svg>',
+      );
+    });
 
     it.todo(
       "should reactively update the DOM after adding a new property to the web-component",

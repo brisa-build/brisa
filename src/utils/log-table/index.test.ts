@@ -1,7 +1,9 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
 import logTable from ".";
+import getConstants from "../../constants";
 
 const originalConsoleLog = console.log;
+const { LOG_PREFIX } = getConstants();
 
 describe("utils", () => {
   afterEach(() => {
@@ -9,7 +11,7 @@ describe("utils", () => {
   });
   describe("logTable", () => {
     it("should log a table", () => {
-      const info = "[ \u001B[34minfo\u001B[0m ]  ";
+      const info = LOG_PREFIX.INFO;
       const data = [
         { name: "John", age: "23" },
         { name: "Jane", age: "42" },
