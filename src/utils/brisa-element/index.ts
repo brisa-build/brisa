@@ -12,10 +12,33 @@ type Render = (
 type Children = unknown[] | string | (() => Children);
 type Event = (e: unknown) => void;
 
-const createElement = document.createElement.bind(document);
+const W3 = "http://www.w3.org/";
+const SVG_NAMESPACE = `${W3}2000/svg`;
+const XLINK_NAMESPACE = `${W3}1999/xlink`;
+
 const createTextNode = document.createTextNode.bind(document);
 const isArray = Array.isArray;
 const arr = Array.from;
+
+const createElement = (
+  tagName: string,
+  parent?: HTMLElement | DocumentFragment,
+) => {
+  return tagName === "svg" ||
+    (parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE
+    ? document.createElementNS(SVG_NAMESPACE, tagName)
+    : document.createElement(tagName);
+};
+
+const setAttribute = (el: HTMLElement, key: string, value: string) => {
+  const isSvg = el.namespaceURI === SVG_NAMESPACE;
+  const isWithNamespace = isSvg && (key.startsWith("xlink:") || key === "href");
+  if (isWithNamespace) {
+    el.setAttributeNS(XLINK_NAMESPACE, key, value);
+  } else {
+    el.setAttribute(key, value);
+  }
+};
 
 export default function brisaElement(
   render: Render,
@@ -48,7 +71,9 @@ export default function brisaElement(
         children: Children,
         parent: HTMLElement | DocumentFragment = shadowRoot,
       ) {
-        const el = (tagName ? createElement(tagName) : parent) as HTMLElement;
+        const el = (
+          tagName ? createElement(tagName, parent) : parent
+        ) as HTMLElement;
 
         // Handle attributes
         for (let [key, value] of Object.entries(attributes)) {
@@ -61,9 +86,9 @@ export default function brisaElement(
               ),
             );
           } else if (!isEvent && typeof value === "function") {
-            effect(() => el.setAttribute(key, (value as () => string)()));
+            effect(() => setAttribute(el, key, (value as () => string)()));
           } else {
-            (el as HTMLElement).setAttribute(key, value as string);
+            setAttribute(el, key, value as string);
           }
         }
 
@@ -160,8 +185,7 @@ export default function brisaElement(
       newValue: string | null,
     ) {
       // Handle component props
-      if (!this.p || oldValue === newValue) return;
-      if (!name.startsWith("on")) {
+      if (this.p && oldValue !== newValue && !name.startsWith("on")) {
         (this.p[name] as StateSignal).value = deserialize(newValue);
       }
     }

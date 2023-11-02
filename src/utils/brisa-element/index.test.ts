@@ -1000,6 +1000,10 @@ describe("utils", () => {
         ]);
       }
 
+      document.body.innerHTML = `
+        <color-svg firstColor="#ff0000" secondColor="#00ff00" thirdColor="#0000ff" />
+      `;
+
       customElements.define(
         "color-svg",
         brisaElement(ColorSVG as any, [
@@ -1009,11 +1013,11 @@ describe("utils", () => {
         ]),
       );
 
-      document.body.innerHTML = `
-        <color-svg firstColor="#ff0000" secondColor="#00ff00" thirdColor="#0000ff" />
-      `;
-
       const colorSVG = document.querySelector("color-svg") as HTMLElement;
+
+      colorSVG?.shadowRoot?.querySelectorAll("*").forEach((node) => {
+        expect(node.namespaceURI).toBe("http://www.w3.org/2000/svg");
+      });
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
         '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
@@ -1027,5 +1031,15 @@ describe("utils", () => {
         '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(-70,150)"></circle></g></svg>',
       );
     });
+
+    it.todo(
+      "should SVG work with foreingObject setting correctly the namespace outside the foreingObject node",
+      () => {},
+    );
+
+    it.todo(
+      "should reactively update the DOM after adding a new property to the web-component",
+      () => {},
+    );
   });
 });
