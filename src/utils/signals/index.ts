@@ -1,8 +1,9 @@
-type Fn = () => void | Promise<() => void>;
+type Effect = () => void | Promise<() => void>;
+type Cleanup = Effect;
 
 export default function signals() {
-  const cleanups = new Map<Fn, Fn[]>();
-  let current: (() => void) | 0 = 0;
+  let cleanups = new Map<Effect, Cleanup[]>();
+  let current: Effect | 0 = 0;
 
   return {
     cleanAll() {
@@ -12,7 +13,7 @@ export default function signals() {
       }
     },
     state<T>(initialValue: T): { value: T } {
-      const effects = new Set<() => void>();
+      const effects = new Set<Effect>();
       return {
         get value() {
           if (current) effects.add(current);
@@ -29,12 +30,12 @@ export default function signals() {
         },
       };
     },
-    effect(fn: () => void) {
+    effect(fn: Effect) {
       current = fn;
       fn();
       current = 0;
     },
-    cleanup(fn: () => void) {
+    cleanup(fn: Cleanup) {
       const cleans = current ? cleanups.get(current) ?? [] : [];
       cleans.push(fn);
       if (current) cleanups.set(current, cleans);
