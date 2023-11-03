@@ -1226,14 +1226,25 @@ describe("utils", () => {
       );
 
       // Deleting the last item
-      const deleteButton = [
-        ...(magicList?.shadowRoot?.querySelectorAll(
-          "button",
-        ) as NodeListOf<HTMLButtonElement>),
-      ].at(-2) as HTMLButtonElement;
-      deleteButton.click();
+      const deleteLast = () =>
+        (
+          [
+            ...(magicList?.shadowRoot?.querySelectorAll(
+              "button",
+            ) as NodeListOf<HTMLButtonElement>),
+          ].at(-2) as HTMLButtonElement
+        ).click();
+      deleteLast();
       expect(magicList?.shadowRoot?.innerHTML).toBe(
         '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>test</li></ul></div>',
+      );
+
+      // Deleting all items
+      deleteLast();
+      deleteLast();
+
+      expect(magicList?.shadowRoot?.innerHTML).toBe(
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul></ul></div>',
       );
     });
 
