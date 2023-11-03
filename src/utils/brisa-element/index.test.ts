@@ -1486,6 +1486,277 @@ describe("utils", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>test work</div>");
     });
 
+    it("should be possible to create a collapsible content section with an accordion", () => {
+      function Accordion({}: any, { state, h }: any) {
+        const active = state(0);
+
+        return h("div", {}, [
+          [
+            "button",
+            {
+              onClick: () => {
+                active.value = active.value === 0 ? 1 : 0;
+              },
+            },
+            "toggle",
+          ],
+          [
+            "div",
+            {
+              style: () => `display:${active.value === 0 ? "none" : "block"}`,
+            },
+            "content",
+          ],
+        ]);
+      }
+
+      customElements.define("accordion-element", brisaElement(Accordion));
+
+      document.body.innerHTML = "<accordion-element />";
+
+      const accordion = document.querySelector(
+        "accordion-element",
+      ) as HTMLElement;
+      const button = accordion?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      expect(accordion?.shadowRoot?.innerHTML).toBe(
+        '<div><button>toggle</button><div style="display:none">content</div></div>',
+      );
+
+      button.click();
+
+      expect(accordion?.shadowRoot?.innerHTML).toBe(
+        '<div><button>toggle</button><div style="display:block">content</div></div>',
+      );
+
+      button.click();
+
+      expect(accordion?.shadowRoot?.innerHTML).toBe(
+        '<div><button>toggle</button><div style="display:none">content</div></div>',
+      );
+    });
+
+    it("should display additional information on hover with a tooltip", () => {
+      function Tooltip({}, { state, h }: any) {
+        const visible = state(false);
+
+        return h("div", {}, [
+          [
+            "span",
+            {
+              onMouseOver: () => {
+                visible.value = true;
+              },
+              onMouseOut: () => {
+                visible.value = false;
+              },
+              style: "position:relative;",
+            },
+            [
+              [
+                "span",
+                {
+                  style: () =>
+                    `position:absolute; visibility:${
+                      visible.value ? "visible" : "hidden"
+                    };`,
+                },
+                "Tooltip text",
+              ],
+              "Hover over me",
+            ],
+          ],
+        ]);
+      }
+
+      customElements.define("tooltip-element", brisaElement(Tooltip));
+
+      document.body.innerHTML = "<tooltip-element />";
+
+      const tooltip = document.querySelector("tooltip-element") as HTMLElement;
+      const span = tooltip?.shadowRoot?.querySelector(
+        "span",
+      ) as HTMLSpanElement;
+
+      expect(tooltip?.shadowRoot?.innerHTML).toBe(
+        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
+      );
+
+      span.dispatchEvent(new Event("mouseover"));
+
+      expect(tooltip?.shadowRoot?.innerHTML).toBe(
+        '<div><span style="position:relative;"><span style="position:absolute; visibility:visible;">Tooltip text</span>Hover over me</span></div>',
+      );
+
+      span.dispatchEvent(new Event("mouseout"));
+
+      expect(tooltip?.shadowRoot?.innerHTML).toBe(
+        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
+      );
+    });
+
+    it("should work a conditional render with different web-components", () => {
+      function WebComponent1({}, { state, h }: any) {
+        const name = state("WebComponent1");
+        return h(
+          "div",
+          {
+            onClick: () => {
+              name.value = "WebComponent1 updated";
+            },
+          },
+          () => name.value,
+        );
+      }
+      function WebComponent2({}, { state, h }: any) {
+        const name = state("WebComponent2");
+        return h(
+          "div",
+          {
+            onClick: () => {
+              name.value = "WebComponent2 updated";
+            },
+          },
+          () => name.value,
+        );
+      }
+      function ParentWebComponent({ name }: any, { state, h }: any) {
+        return h(null, {}, () =>
+          name.value === "WebComponent1"
+            ? ["web-component-1", {}, ""]
+            : ["web-component-2", {}, ""],
+        );
+      }
+
+      customElements.define("web-component-1", brisaElement(WebComponent1));
+      customElements.define("web-component-2", brisaElement(WebComponent2));
+      customElements.define(
+        "parent-web-component",
+        brisaElement(ParentWebComponent, ["name"]),
+      );
+
+      document.body.innerHTML = '<parent-web-component name="WebComponent1" />';
+
+      const parentWebComponent = document.querySelector(
+        "parent-web-component",
+      ) as HTMLElement;
+      const firstWebComponent = parentWebComponent?.shadowRoot?.querySelector(
+        "web-component-1",
+      ) as HTMLElement;
+      const firstDiv = firstWebComponent?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLElement;
+
+      // The first component should be mounted
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        "<web-component-1></web-component-1>",
+      );
+      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>WebComponent1</div>",
+      );
+
+      // The first component should be updated
+      firstDiv.click();
+      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>WebComponent1 updated</div>",
+      );
+
+      // Changing the conditional render on the parent component
+      parentWebComponent.setAttribute("name", "WebComponent2");
+      const secondWebComponent = parentWebComponent?.shadowRoot?.querySelector(
+        "web-component-2",
+      ) as HTMLElement;
+      const secondDiv = secondWebComponent?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLElement;
+
+      // The second component should be mounted
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        "<web-component-2></web-component-2>",
+      );
+      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>WebComponent2</div>",
+      );
+
+      // The second component should be updated
+      secondDiv.click();
+      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>WebComponent2 updated</div>",
+      );
+
+      // Changing the conditional render on the parent component again to the first component
+      parentWebComponent.setAttribute("name", "WebComponent1");
+      const firstComponent = parentWebComponent?.shadowRoot?.querySelector(
+        "web-component-1",
+      ) as HTMLElement;
+
+      // The first component should be unmounted and the state should be reset
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        "<web-component-1></web-component-1>",
+      );
+      expect(firstComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>WebComponent1</div>",
+      );
+    });
+
+    it('should open/close a custom dialog with a "open" attribute', () => {
+      function Dialog({}, { state, h, _on, _off }: any) {
+        const open = state(false);
+
+        return h("div", {}, [
+          [
+            "button",
+            {
+              onClick: () => {
+                open.value = !open.value;
+              },
+            },
+            "open",
+          ],
+          [
+            "dialog",
+            {
+              open: () => (open.value ? _on : _off),
+              onClick: () => {
+                open.value = false;
+              },
+            },
+            "dialog",
+          ],
+        ]);
+      }
+
+      customElements.define("dialog-element", brisaElement(Dialog));
+
+      document.body.innerHTML = "<dialog-element />";
+
+      const dialog = document.querySelector("dialog-element") as HTMLElement;
+      const button = dialog?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+      const dialogElement = dialog?.shadowRoot?.querySelector(
+        "dialog",
+      ) as HTMLDialogElement;
+
+      expect(dialog?.shadowRoot?.innerHTML).toBe(
+        "<div><button>open</button><dialog>dialog</dialog></div>",
+      );
+
+      button.click();
+
+      expect(dialog?.shadowRoot?.innerHTML).toBe(
+        '<div><button>open</button><dialog open="">dialog</dialog></div>',
+      );
+
+      dialogElement.click();
+
+      expect(dialog?.shadowRoot?.innerHTML).toBe(
+        "<div><button>open</button><dialog>dialog</dialog></div>",
+      );
+    });
+
     it.todo(
       "should serialize the props consuming another web-component",
       () => {},

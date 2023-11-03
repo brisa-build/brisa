@@ -113,7 +113,21 @@ describe("signals", () => {
     expect(mockEffect.mock.calls[1][0]).toBe(1);
   });
 
-  it.todo("should log an alert in DEV when using nested effects", () => {});
+  it("should work an state inside another state", () => {
+    const { state } = signals();
+    const age = state(33);
+    const name = state("Aral");
+    const user = state({ age, name });
 
-  it.todo("should work an state inside another state", () => {});
+    expect(user.value.age.value).toEqual(33);
+    expect(user.value.name.value).toEqual("Aral");
+
+    age.value = 35;
+    name.value = "Barbara";
+
+    expect(user.value.age.value).toEqual(35);
+    expect(user.value.name.value).toEqual("Barbara");
+  });
+
+  it.todo("should log an alert in DEV when using nested effects", () => {});
 });

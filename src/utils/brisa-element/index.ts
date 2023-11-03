@@ -7,6 +7,8 @@ type Render = (
   ctx: ReturnType<typeof signals> & {
     css(strings: string[], ...values: string[]): void;
     h(tagName: string, attributes: Attr, children: unknown): void;
+    _on: symbol;
+    _off: symbol;
   },
 ) => Node[];
 type Children = unknown[] | string | (() => Children);
@@ -15,6 +17,8 @@ type Event = (e: unknown) => void;
 const W3 = "http://www.w3.org/";
 const SVG_NAMESPACE = `${W3}2000/svg`;
 const XLINK_NAMESPACE = `${W3}1999/xlink`;
+const _on = Symbol("on");
+const _off = Symbol("off");
 
 const createTextNode = (text: string) =>
   document.createTextNode((text ?? "").toString());
@@ -34,14 +38,18 @@ const createElement = (
 };
 
 const setAttribute = (el: HTMLElement, key: string, value: string) => {
+  const on = (value as unknown as symbol) === _on;
+  const off = (value as unknown as symbol) === _off;
   const isWithNamespace =
     el.namespaceURI === SVG_NAMESPACE &&
     (key.startsWith("xlink:") || key === "href");
 
   if (isWithNamespace) {
-    el.setAttributeNS(XLINK_NAMESPACE, key, value);
+    if (off) el.removeAttributeNS(XLINK_NAMESPACE, key);
+    else el.setAttributeNS(XLINK_NAMESPACE, key, on ? "" : value);
   } else {
-    el.setAttribute(key, value);
+    if (off) el.removeAttribute(key);
+    else el.setAttribute(key, on ? "" : value);
   }
 };
 
@@ -172,6 +180,8 @@ export default function brisaElement(
         {
           ...this.ctx,
           h: hyperScript,
+          _on,
+          _off,
           // Handle CSS
           css(strings: string[], ...values: string[]) {
             const style = createElement("style");
