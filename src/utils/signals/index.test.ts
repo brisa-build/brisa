@@ -90,6 +90,29 @@ describe("signals", () => {
     expect(mockEffect.mock.calls[1][0]).toBe(1);
   });
 
+  it("should work async/await inside an effect", async () => {
+    const { state, effect } = signals();
+    const count = state(42);
+    const mockEffect = mock<(count: number) => void>(() => {});
+
+    effect(async () => {
+      await Promise.resolve();
+      mockEffect(count.value);
+    });
+
+    await Bun.sleep(0);
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0][0]).toBe(42);
+
+    count.value = 1;
+
+    await Bun.sleep(0);
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[1][0]).toBe(1);
+  });
+
   it.todo("should log an alert in DEV when using nested effects", () => {});
 
   it.todo("should work an state inside another state", () => {});

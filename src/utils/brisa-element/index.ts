@@ -128,32 +128,37 @@ export default function brisaElement(
           };
 
           effect(() => {
-            const child = children();
+            const childOrPromise = children();
 
-            if (isArray(child)) {
-              let currentElNodes = arr(el.childNodes);
-              const fragment = document.createDocumentFragment();
+            function startEffect(child: Children) {
+              if (isArray(child)) {
+                let currentElNodes = arr(el.childNodes);
+                const fragment = document.createDocumentFragment();
 
-              if (isArray(child[0])) {
-                for (let c of child as Children[]) {
-                  hyperScript(null, {}, c, fragment);
+                if (isArray(child[0])) {
+                  for (let c of child as Children[]) {
+                    hyperScript(null, {}, c, fragment);
+                  }
+                } else {
+                  hyperScript(...(child as [string, Attr, Children]), fragment);
                 }
+
+                insertOrUpdate(fragment);
+
+                lastNodes = arr(el.childNodes).filter(
+                  (node) => !currentElNodes.includes(node),
+                );
               } else {
-                hyperScript(...(child as [string, Attr, Children]), fragment);
+                const textNode = createTextNode(child as string);
+
+                insertOrUpdate(textNode);
+
+                lastNodes = [textNode];
               }
-
-              insertOrUpdate(fragment);
-
-              lastNodes = arr(el.childNodes).filter(
-                (node) => !currentElNodes.includes(node),
-              );
-            } else {
-              const textNode = createTextNode(child as string);
-
-              insertOrUpdate(textNode);
-
-              lastNodes = [textNode];
             }
+            if (childOrPromise instanceof Promise)
+              childOrPromise.then(startEffect);
+            else startEffect(childOrPromise);
           });
         } else {
           el.appendChild(createTextNode(children));
