@@ -1,4 +1,4 @@
-type Effect = () => void | Promise<() => void>;
+type Effect = () => void | Promise<void>;
 type Cleanup = Effect;
 
 export default function signals() {
@@ -32,8 +32,9 @@ export default function signals() {
     },
     effect(fn: Effect) {
       current = fn;
-      fn();
-      current = 0;
+      const p = fn();
+      if (p?.then) p.then(() => (current = 0));
+      else current = 0;
     },
     cleanup(fn: Cleanup) {
       const cleans = current ? cleanups.get(current) ?? [] : [];

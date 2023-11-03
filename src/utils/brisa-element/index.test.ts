@@ -1240,7 +1240,9 @@ describe("utils", () => {
     it("should reactively update the DOM after adding a new property to the web-component", () => {
       type Props = { count: { value: number } };
       function Test({ count }: Props, { h }: any) {
-        return h("div", {}, () => count?.value ?? 1);
+        // This is the code line after compiling: function Test({ count = 1 })
+        if (count.value == null) count.value = 1;
+        return h("div", {}, () => count?.value);
       }
 
       customElements.define(
@@ -1260,20 +1262,218 @@ describe("utils", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
     });
 
-    it.todo(
-      "should work reactivity with default props and then with a new prop value",
-      () => {},
-    );
+    it("should work multi conditionals renders", () => {
+      type Props = { count: { value: number } };
+      function Test({ count }: Props, { h }: any) {
+        return h("div", {}, [
+          [
+            null,
+            {},
+            () =>
+              count.value === 1
+                ? ["span", {}, "one"]
+                : count.value === 2
+                ? ["span", {}, "two"]
+                : ["span", {}, "three"],
+          ],
+        ]);
+      }
 
-    it.todo(
-      "should alert in DEV mode when is consuming a server component inside a web-component",
-      () => {},
-    );
+      customElements.define(
+        "test-component",
+        brisaElement(Test as any, ["count"]),
+      );
+      document.body.innerHTML = "<test-component count='1' />";
 
-    it.todo(
-      "should not alert in PROD mode when is consuming a server component inside a web-component",
-      () => {},
-    );
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>one</span></div>",
+      );
+
+      testComponent.setAttribute("count", "2");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>two</span></div>",
+      );
+
+      testComponent.setAttribute("count", "3");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>three</span></div>",
+      );
+    });
+
+    it("should work nested conditionals renders", () => {
+      function Test({ first, second, third }: any, { h }: any) {
+        return h("div", {}, [
+          null,
+          {},
+          () =>
+            first.value === 1
+              ? [
+                  "div",
+                  {},
+                  () =>
+                    second.value === 2
+                      ? [
+                          "span",
+                          {},
+                          () => (third.value === 3 ? "test work" : "no-third"),
+                        ]
+                      : "no-second",
+                ]
+              : "no-first",
+        ]);
+      }
+
+      customElements.define(
+        "test-component",
+        brisaElement(Test as any, ["first", "second", "third"]),
+      );
+
+      document.body.innerHTML =
+        "<test-component first='1' second='2' third='3' />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><div><span>test work</span></div></div>",
+      );
+
+      testComponent.setAttribute("first", "2");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>no-first</div>");
+
+      testComponent.setAttribute("first", "1");
+      testComponent.setAttribute("second", "3");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><div>no-second</div></div>",
+      );
+
+      testComponent.setAttribute("second", "2");
+      testComponent.setAttribute("third", "4");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><div><span>no-third</span></div></div>",
+      );
+
+      testComponent.setAttribute("third", "3");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><div><span>test work</span></div></div>",
+      );
+    });
+
+    it("should allow async/await conditional renders from state", async () => {
+      function Test({}: any, { state, h }: any) {
+        const first = state(1);
+        const second = state(2);
+        const third = state(3);
+
+        return h("div", { onClick: () => (second.value = 42) }, async () => {
+          if (first.value === 1) {
+            if (second.value === 2) {
+              if (third.value === 3) {
+                return "test work";
+              } else {
+                return "no-third";
+              }
+            } else {
+              return `no-second ${second.value}`;
+            }
+          } else {
+            return "no-first";
+          }
+        });
+      }
+
+      customElements.define("test-component", brisaElement(Test as any));
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>test work</div>");
+
+      (testComponent.shadowRoot?.firstChild as HTMLElement).click();
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>no-second 42</div>",
+      );
+    });
+
+    it("should allow async/await conditional renders from props", async () => {
+      function Test({ first, second, third }: any, { h }: any) {
+        return h("div", {}, async () => {
+          if (first.value === 1) {
+            if (second.value === 2) {
+              if (third.value === 3) {
+                return "test work";
+              } else {
+                return "no-third";
+              }
+            } else {
+              return "no-second";
+            }
+          } else {
+            return "no-first";
+          }
+        });
+      }
+
+      document.body.innerHTML = "<test-async first='1' second='2' third='3' />";
+
+      customElements.define(
+        "test-async",
+        brisaElement(Test as any, ["first", "second", "third"]),
+      );
+
+      const testComponent = document.querySelector("test-async") as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>test work</div>");
+
+      testComponent.setAttribute("first", "2");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>no-first</div>");
+
+      testComponent.setAttribute("first", "1");
+      testComponent.setAttribute("second", "3");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>no-second</div>");
+
+      testComponent.setAttribute("second", "2");
+      testComponent.setAttribute("third", "4");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>no-third</div>");
+
+      await Bun.sleep(0);
+
+      testComponent.setAttribute("third", "3");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>test work</div>");
+    });
 
     it.todo(
       "should serialize the props consuming another web-component",
