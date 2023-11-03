@@ -26,7 +26,6 @@ const createElement = (
   tagName: string,
   parent?: HTMLElement | DocumentFragment,
 ) => {
-  if (typeof tagName !== "string") return tagName;
   return tagName === "svg" ||
     ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
       lowercase((parent as HTMLElement).tagName) !== "foreignobject")
@@ -91,7 +90,7 @@ export default function brisaElement(
         ) as HTMLElement;
 
         // Handle attributes
-        for (let [key, value] of Object.entries(attributes ?? {})) {
+        for (let [key, value] of Object.entries(attributes)) {
           const isEvent = key.startsWith("on");
 
           if (isEvent) {
@@ -140,7 +139,7 @@ export default function brisaElement(
                   for (let c of child as Children[]) {
                     hyperScript(null, {}, c, fragment);
                   }
-                } else {
+                } else if (child.length) {
                   hyperScript(...(child as [string, Attr, Children]), fragment);
                 }
 
