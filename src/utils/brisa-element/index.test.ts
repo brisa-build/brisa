@@ -276,21 +276,23 @@ describe("utils", () => {
         };
         return h("div", {}, [
           ["button", { onClick: prev }, "prev"],
-          ["img", { src: () => images.value[index.value] }, ""],
+          ["img", { src: () => images?.value?.[index.value] }, ""],
           ["button", { onClick: next }, "next"],
         ]);
       }
 
+      document.body.innerHTML = `
+        <sliding-carousel images="['https://picsum.photos/200/300', 'https://picsum.photos/200/300?grayscale']" />
+      `;
+
       customElements.define(
-        "carousel-images",
+        "sliding-carousel",
         brisaElement(Carousel as any, ["images"]),
       );
 
-      document.body.innerHTML = `
-        <carousel-images images="['https://picsum.photos/200/300', 'https://picsum.photos/200/300?grayscale']" />
-      `;
-
-      const carousel = document.querySelector("carousel-images") as HTMLElement;
+      const carousel = document.querySelector(
+        "sliding-carousel",
+      ) as HTMLElement;
       const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
         "button",
       ) as NodeListOf<HTMLButtonElement>;
@@ -328,7 +330,7 @@ describe("utils", () => {
           [
             "img",
             {
-              src: () => images.value[index.value]?.url,
+              src: () => images.value[index.value].url,
             },
             "",
           ],
@@ -336,14 +338,14 @@ describe("utils", () => {
         ]);
       }
 
+      document.body.innerHTML = `
+        <carousel-images images="[{'url':'https://picsum.photos/200/300'},{'url':'https://picsum.photos/200/300?grayscale'}]" />
+      `;
+
       customElements.define(
         "carousel-images",
         brisaElement(Carousel as any, ["images"]),
       );
-
-      document.body.innerHTML = `
-        <carousel-images images="[{'url':'https://picsum.photos/200/300'},{'url':'https://picsum.photos/200/300?grayscale'}]" />
-      `;
 
       const carousel = document.querySelector("carousel-images") as HTMLElement;
       const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
@@ -1131,10 +1133,132 @@ describe("utils", () => {
       );
     });
 
-    it.todo(
-      "should reactively update the DOM after adding a new property to the web-component",
-      () => {},
-    );
+    it("should work a web-component that enables the addition, removal, and repositioning of items in a list", () => {
+      function MagicList({}, { state, h }: any) {
+        const list = state(["some", "another"]);
+
+        const addItem = (e: any) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          list.value = [...list.value, formData.get("item")];
+        };
+
+        const deleteItem = (index: number) => {
+          list.value = list.value.filter((_: string, i: number) => i !== index);
+        };
+
+        const moveItemUp = (index: number) => {
+          if (index === 0) return;
+          const item = list.value[index];
+          list.value = list.value.filter((_: string, i: number) => i !== index);
+          list.value = [
+            ...list.value.slice(0, index - 1),
+            item,
+            ...list.value.slice(index - 1),
+          ];
+        };
+
+        return h("div", {}, [
+          [
+            "form",
+            { onSubmit: addItem },
+            [
+              [
+                "input",
+                { name: "item", id: "item", placeholder: "Add item" },
+                "",
+              ],
+              ["button", {}, "add"],
+            ],
+          ],
+          [
+            "ul",
+            {},
+            () =>
+              list.value.map((item: string, index: number) => [
+                "li",
+                {},
+                [
+                  ["button", { onClick: () => deleteItem(index) }, "delete"],
+                  ["button", { onClick: () => moveItemUp(index) }, "move up"],
+                  item,
+                ],
+              ]),
+          ],
+        ]);
+      }
+
+      customElements.define(
+        "magic-list",
+        brisaElement(MagicList as any, ["items"]),
+      );
+
+      document.body.innerHTML = "<magic-list />";
+
+      const magicList = document.querySelector("magic-list") as HTMLElement;
+      const form = magicList?.shadowRoot?.querySelector(
+        "form",
+      ) as HTMLFormElement;
+      const input = magicList?.shadowRoot?.querySelector(
+        "input",
+      ) as HTMLInputElement;
+
+      expect(magicList?.shadowRoot?.innerHTML).toBe(
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>another</li></ul></div>',
+      );
+
+      // Adding a new item
+      input.value = "test";
+      form.dispatchEvent(new Event("submit"));
+      expect(magicList?.shadowRoot?.innerHTML).toBe(
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>another</li><li><button>delete</button><button>move up</button>test</li></ul></div>',
+      );
+
+      // Moving up the last item
+      const moveUpButton = [
+        ...(magicList?.shadowRoot?.querySelectorAll(
+          "button",
+        ) as NodeListOf<HTMLButtonElement>),
+      ].at(-1) as HTMLButtonElement;
+      moveUpButton.click();
+      expect(magicList?.shadowRoot?.innerHTML).toBe(
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>test</li><li><button>delete</button><button>move up</button>another</li></ul></div>',
+      );
+
+      // Deleting the last item
+      const deleteButton = [
+        ...(magicList?.shadowRoot?.querySelectorAll(
+          "button",
+        ) as NodeListOf<HTMLButtonElement>),
+      ].at(-2) as HTMLButtonElement;
+      deleteButton.click();
+      expect(magicList?.shadowRoot?.innerHTML).toBe(
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>test</li></ul></div>',
+      );
+    });
+
+    it("should reactively update the DOM after adding a new property to the web-component", () => {
+      type Props = { count: { value: number } };
+      function Test({ count }: Props, { h }: any) {
+        return h("div", {}, () => count?.value ?? 1);
+      }
+
+      customElements.define(
+        "test-component",
+        brisaElement(Test as any, ["count"]),
+      );
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
+
+      testComponent.setAttribute("count", "2");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
+    });
 
     it.todo(
       "should work reactivity with default props and then with a new prop value",
@@ -1153,6 +1277,16 @@ describe("utils", () => {
 
     it.todo(
       "should serialize the props consuming another web-component",
+      () => {},
+    );
+
+    it.todo(
+      "should work dangerHTML to inject HTML in a web-component",
+      () => {},
+    );
+
+    it.todo(
+      "should not be possible to inject HTML without dangerHTML",
       () => {},
     );
   });
