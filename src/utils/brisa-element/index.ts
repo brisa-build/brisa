@@ -16,7 +16,8 @@ const W3 = "http://www.w3.org/";
 const SVG_NAMESPACE = `${W3}2000/svg`;
 const XLINK_NAMESPACE = `${W3}1999/xlink`;
 
-const createTextNode = document.createTextNode.bind(document);
+const createTextNode = (text: string) =>
+  document.createTextNode((text ?? "").toString());
 const isArray = Array.isArray;
 const arr = Array.from;
 const lowercase = (str: string) => str.toLowerCase();
@@ -147,7 +148,7 @@ export default function brisaElement(
                 (node) => !currentElNodes.includes(node),
               );
             } else {
-              const textNode = createTextNode(child.toString());
+              const textNode = createTextNode(child as string);
 
               insertOrUpdate(textNode);
 
@@ -207,7 +208,7 @@ export default function brisaElement(
 }
 
 function deserialize(str: string | null): unknown {
-  if (!str) return "";
+  if (!str) return str;
   try {
     return JSON.parse(str.replaceAll("'", '"'));
   } catch (e) {

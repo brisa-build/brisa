@@ -70,4 +70,27 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockCleanup).toHaveBeenCalledTimes(1);
   });
+
+  it('should be possible to initialize an state with "undefined"', () => {
+    const mockEffect = mock<(count: number | undefined) => void>(() => {});
+    const { state, effect } = signals();
+    const count = state<number | undefined>(undefined);
+    expect(count.value).toBe(undefined);
+
+    effect(() => {
+      mockEffect(count.value);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0][0]).toBe(undefined);
+
+    count.value = 1;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[1][0]).toBe(1);
+  });
+
+  it.todo("should log an alert in DEV when using nested effects", () => {});
+
+  it.todo("should work an state inside another state", () => {});
 });
