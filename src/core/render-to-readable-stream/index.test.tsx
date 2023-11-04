@@ -886,5 +886,12 @@ describe("brisa core", () => {
       const result = await Bun.readableStreamToText(stream);
       expect(result).toEqual("<dialog><h1>Test</h1></dialog>");
     });
+
+    it("should serialize an attribute that is an object as a string", async () => {
+      const element = <div data-test={{ a: 1, b: 2 }} />;
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toEqual(`<div data-test="{'a':1,'b':2}"></div>`);
+    });
   });
 });
