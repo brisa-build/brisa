@@ -1,6 +1,7 @@
 import getConstants from "../../constants";
 import { I18nConfig, Props, RequestContext, Translations } from "../../types";
 import routeMatchPathname from "../route-match-pathname";
+import { serialize } from "../serialization";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
 export default function renderAttributes({
@@ -34,6 +35,12 @@ export default function renderAttributes({
     // Example <dialog open> => <dialog>
     if (typeof value === "boolean" && BOOLEANS_IN_HTML.has(key)) {
       if (value) attributes += ` ${key}`;
+      continue;
+    }
+
+    // Example data-test={ bar: "foo" } => <div data-test="{'bar':'foo'}">
+    if (typeof value === "object") {
+      attributes += ` ${key}="${serialize(value)}"`;
       continue;
     }
 

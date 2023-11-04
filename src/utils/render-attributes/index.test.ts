@@ -315,5 +315,23 @@ describe("utils", () => {
 
       expect(attributes).toBe("");
     });
+
+    it("should serialize an attribute with an object value", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          foo: {
+            bar: "baz",
+          },
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(" foo=\"{'bar':'baz'}\"");
+    });
   });
 });
