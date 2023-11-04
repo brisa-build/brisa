@@ -842,5 +842,49 @@ describe("brisa core", () => {
       expect(done2).toBe(true);
       expect(value2).toBe(undefined);
     });
+
+    it('should render "open" attribute without content in the "dialog" tag when open={true}', async () => {
+      const element = (
+        <dialog open={true}>
+          <h1>Test</h1>
+        </dialog>
+      );
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toEqual("<dialog open><h1>Test</h1></dialog>");
+    });
+
+    it('should render "open" attribute without content in the "dialog" tag when opEN={true} (no lowercase)', async () => {
+      const element = (
+        <dialog open={true}>
+          <h1>Test</h1>
+        </dialog>
+      );
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toEqual("<dialog open><h1>Test</h1></dialog>");
+    });
+
+    it('should not render "open" attribute in the "dialog" tag when opEN={false} (no lowercase)', async () => {
+      const element = (
+        <dialog open={false}>
+          <h1>Test</h1>
+        </dialog>
+      );
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toEqual("<dialog><h1>Test</h1></dialog>");
+    });
+
+    it('should not render "open" attribute in the "dialog" tag when open={false}', async () => {
+      const element = (
+        <dialog open={false}>
+          <h1>Test</h1>
+        </dialog>
+      );
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toEqual("<dialog><h1>Test</h1></dialog>");
+    });
   });
 });
