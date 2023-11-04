@@ -1,3 +1,4 @@
+import { deserialize, serialize } from "../serialization";
 import signals from "../signals";
 
 type Attr = Record<string, unknown>;
@@ -40,16 +41,17 @@ const createElement = (
 const setAttribute = (el: HTMLElement, key: string, value: string) => {
   const on = (value as unknown as symbol) === _on;
   const off = (value as unknown as symbol) === _off;
+  const serializedValue = serialize(value);
   const isWithNamespace =
     el.namespaceURI === SVG_NAMESPACE &&
     (key.startsWith("xlink:") || key === "href");
 
   if (isWithNamespace) {
     if (off) el.removeAttributeNS(XLINK_NAMESPACE, key);
-    else el.setAttributeNS(XLINK_NAMESPACE, key, on ? "" : value);
+    else el.setAttributeNS(XLINK_NAMESPACE, key, on ? "" : serializedValue);
   } else {
     if (off) el.removeAttribute(key);
-    else el.setAttribute(key, on ? "" : value);
+    else el.setAttribute(key, on ? "" : serializedValue);
   }
 };
 
@@ -220,13 +222,4 @@ export default function brisaElement(
       }
     }
   };
-}
-
-function deserialize(str: string | null): unknown {
-  if (!str) return str;
-  try {
-    return JSON.parse(str.replaceAll("'", '"'));
-  } catch (e) {
-    return str;
-  }
 }
