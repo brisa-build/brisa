@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { serialize } from "../serialization";
 
 let brisaElement: any;
 
@@ -1701,7 +1702,7 @@ describe("utils", () => {
       );
     });
 
-    it('should open/close a custom dialog with a "open" attribute', () => {
+    it('should open/close a dialog with the "open" attribute', () => {
       function Dialog({}, { state, h, _on, _off }: any) {
         const open = state(false);
 
@@ -1757,10 +1758,41 @@ describe("utils", () => {
       );
     });
 
-    it.todo(
-      "should serialize the props consuming another web-component",
-      () => {},
-    );
+    it("should serialize the props consuming another web-component", () => {
+      function Test({}, { h }: any) {
+        return h("web-component", { user: { name: "Aral" } }, "");
+      }
+      function WebComponent({ user }: any, { h }: any) {
+        return h("div", {}, () => user.value.name);
+      }
+
+      customElements.define("test-component", brisaElement(Test));
+      customElements.define(
+        "web-component",
+        brisaElement(WebComponent, ["user"]),
+      );
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+      const webComponent = testComponent?.shadowRoot?.querySelector(
+        "web-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        `<web-component user="{'name':'Aral'}"></web-component>`,
+      );
+      expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Aral</div>`);
+
+      webComponent.setAttribute("user", serialize({ name: "Barbara" }));
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        `<web-component user="{'name':'Barbara'}"></web-component>`,
+      );
+      expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Barbara</div>`);
+    });
 
     it.todo(
       "should work dangerHTML to inject HTML in a web-component",
