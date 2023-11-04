@@ -12,10 +12,11 @@ export default function renderAttributes({
   request: RequestContext;
   type: string;
 }): string {
-  const { IS_PRODUCTION, CONFIG } = getConstants();
+  const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
   let attributes = "";
 
   for (const prop in props) {
+    const key = prop.toLowerCase();
     let value = props[prop];
 
     if (prop === "children" || (type === "html" && prop === "lang")) continue;
@@ -30,6 +31,12 @@ export default function renderAttributes({
       value = `${CONFIG.assetPrefix}${value}`;
     }
 
+    // Example <dialog open> => <dialog>
+    if (typeof value === "boolean" && BOOLEANS_IN_HTML.has(key)) {
+      if (value) attributes += ` ${key}`;
+      continue;
+    }
+
     // i18n navigation
     if (
       type === "a" &&
@@ -37,11 +44,11 @@ export default function renderAttributes({
       request.i18n?.locale &&
       typeof value === "string"
     ) {
-      attributes += ` ${prop}="${renderI18nHrefAttribute(value, request)}"`;
+      attributes += ` ${key}="${renderI18nHrefAttribute(value, request)}"`;
       continue;
     }
 
-    attributes += ` ${prop}="${value}"`;
+    attributes += ` ${key}="${value}"`;
   }
 
   if (type === "html" && request.i18n?.locale) {

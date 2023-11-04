@@ -33,6 +33,7 @@ describe("utils", () => {
         locale: "ru",
         locales: ["en", "ru"],
         defaultLocale: "en",
+        pages: {},
         t: () => "",
       };
 
@@ -56,6 +57,7 @@ describe("utils", () => {
         locale: "ru",
         locales: ["en", "ru"],
         defaultLocale: "en",
+        pages: {},
         t: () => "",
       };
 
@@ -99,6 +101,7 @@ describe("utils", () => {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
+        pages: {},
         t: () => "",
       };
 
@@ -159,6 +162,7 @@ describe("utils", () => {
         locale: "es",
         locales: ["en", "es"],
         defaultLocale: "en",
+        pages: {},
         t: () => "",
       };
 
@@ -278,6 +282,38 @@ describe("utils", () => {
       );
 
       expect(scriptSrc("/some-script.js")).toBe(' src="/some-script.js"');
+    });
+
+    it('should add "open" attribute to the "dialog" tag without the boolean content when open=true', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          open: true,
+        },
+        request,
+        type: "dialog",
+      });
+
+      expect(attributes).toBe(" open");
+    });
+
+    it('should not return "open" attribute to the "dialog" tag when open=false', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          open: false,
+        },
+        request,
+        type: "dialog",
+      });
+
+      expect(attributes).toBe("");
     });
   });
 });
