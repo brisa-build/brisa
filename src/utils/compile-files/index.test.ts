@@ -68,8 +68,9 @@ describe("utils", () => {
   describe("compileFiles PRODUCTION", () => {
     it("should compile fixtures routes correctly", async () => {
       console.log = mock((v) => v);
+      const constants = getConstants();
       globalThis.mockConstants = {
-        ...(getConstants() ?? {}),
+        ...constants,
         PAGES_DIR,
         BUILD_DIR,
         IS_PRODUCTION: true,
@@ -100,7 +101,7 @@ describe("utils", () => {
       expect(files[7]).toBe("pages-client");
       expect(files[8]).toBe("websocket.js");
 
-      const info = `[ \x1b[34minfo\x1b[0m ]  `;
+      const info = constants.LOG_PREFIX.INFO;
       const logOutput = minifyText(
         (console.log as any).mock.calls.flat().join("\n"),
       );
