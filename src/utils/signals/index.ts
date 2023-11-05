@@ -1,9 +1,10 @@
 type Effect = () => void | Promise<void>;
 type Cleanup = Effect;
+type Current = Effect | 0 | undefined;
 
 export default function signals() {
-  let cleanups = new Map<Effect, Cleanup[]>();
-  let current: Effect | 0 = 0;
+  let cleanups = new Map<Current, Cleanup[]>();
+  let current: Current;
 
   return {
     cleanAll() {
@@ -37,9 +38,9 @@ export default function signals() {
       else current = 0;
     },
     cleanup(fn: Cleanup) {
-      const cleans = current ? cleanups.get(current) ?? [] : [];
+      const cleans = cleanups.get(current) ?? [];
       cleans.push(fn);
-      if (current) cleanups.set(current, cleans);
+      cleanups.set(current, cleans);
     },
   };
 }

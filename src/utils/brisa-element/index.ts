@@ -6,6 +6,7 @@ type StateSignal = { value: unknown };
 type Render = (
   props: Record<string, unknown>,
   ctx: ReturnType<typeof signals> & {
+    onMount(cb: () => void): void;
     css(strings: string[], ...values: string[]): void;
     h(tagName: string, attributes: Attr, children: unknown): void;
     _on: symbol;
@@ -46,7 +47,9 @@ const setAttribute = (el: HTMLElement, key: string, value: string) => {
     el.namespaceURI === SVG_NAMESPACE &&
     (key.startsWith("xlink:") || key === "href");
 
-  if (isWithNamespace) {
+  if (key === "ref") {
+    (value as unknown as StateSignal).value = el;
+  } else if (isWithNamespace) {
     if (off) el.removeAttributeNS(XLINK_NAMESPACE, key);
     else el.setAttributeNS(XLINK_NAMESPACE, key, on ? "" : serializedValue);
   } else {
@@ -76,10 +79,11 @@ export default function brisaElement(
       return attributesLowercase;
     }
 
-    connectedCallback() {
+    async connectedCallback() {
       this.ctx = signals();
       const { state, effect } = this.ctx;
       const shadowRoot = this.attachShadow({ mode: "open" });
+      const fnToExecuteAfterMount: (() => void)[] = [];
 
       this.p = {};
 
@@ -177,13 +181,16 @@ export default function brisaElement(
         if (tagName) parent.appendChild(el);
       }
 
-      render(
+      await render(
         { children: "slot", ...this.p },
         {
           ...this.ctx,
           h: hyperScript,
           _on,
           _off,
+          onMount(cb: () => void) {
+            fnToExecuteAfterMount.push(cb);
+          },
           // Handle CSS
           css(strings: string[], ...values: string[]) {
             const style = createElement("style");
@@ -192,6 +199,7 @@ export default function brisaElement(
           },
         },
       );
+      for (const fn of fnToExecuteAfterMount) fn();
     }
 
     // Clean up signals on disconnection
