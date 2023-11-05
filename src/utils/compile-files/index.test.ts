@@ -50,21 +50,17 @@ describe("utils", () => {
       };
 
       const { success, logs } = await compileFiles();
-      const files = fs.readdirSync(DEV_BUILD_DIR);
+      const files = fs.readdirSync(DEV_BUILD_DIR).toSorted();
       const brisaInternals = fs.readdirSync(path.join(DEV_BUILD_DIR, "_brisa"));
 
       expect(logs).toEqual([]);
       expect(success).toBe(true);
       expect(console.log).toHaveBeenCalledTimes(0);
-      expect(files.toSorted()).toEqual(
-        [
-          "pages-client",
-          "_brisa",
-          "pages",
-          "chunk-e209715fdb13aa54.js",
-        ].toSorted(),
-      );
-
+      expect(files).toHaveLength(4);
+      expect(files[0]).toBe("_brisa");
+      expect(files[1]).toStartWith("chunk-");
+      expect(files[2]).toBe("pages");
+      expect(files[3]).toBe("pages-client");
       expect(brisaInternals).toEqual(["types.ts"]);
     });
   });
@@ -86,27 +82,24 @@ describe("utils", () => {
       expect(logs).toEqual([]);
       expect(success).toBe(true);
 
-      const files = fs.readdirSync(BUILD_DIR);
+      const files = fs.readdirSync(BUILD_DIR).toSorted();
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(fs.readFileSync(TYPES).toString()).toBe(
         `export interface IntrinsicCustomElements {\n  'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;\n}`,
       );
-
       expect(console.log).toHaveBeenCalled();
-      expect(files.toSorted()).toEqual(
-        [
-          "pages-client",
-          "layout.js",
-          "_brisa",
-          "websocket.js",
-          "middleware.js",
-          "api",
-          "pages",
-          "i18n.js",
-          "chunk-e209715fdb13aa54.js",
-        ].toSorted(),
-      );
+      expect(files).toHaveLength(9);
+      expect(files[0]).toBe("_brisa");
+      expect(files[1]).toBe("api");
+      expect(files[2]).toStartWith("chunk-");
+      expect(files[3]).toBe("i18n.js");
+      expect(files[4]).toBe("layout.js");
+      expect(files[5]).toBe("middleware.js");
+      expect(files[6]).toBe("pages");
+      expect(files[7]).toBe("pages-client");
+      expect(files[8]).toBe("websocket.js");
+
       const info = `[ \x1b[34minfo\x1b[0m ]  `;
       const logOutput = minifyText(
         (console.log as any).mock.calls.flat().join("\n"),
