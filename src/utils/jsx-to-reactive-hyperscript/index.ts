@@ -7,6 +7,7 @@ const { parseCodeToAST, generateCodeFromAST } = AST(loader);
 const WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
 const ALTERNATIVE_FOLDER_REGEX = new RegExp(".*/web-components/@.*?/");
 const JSX_NAME = new Set(["jsx", "jsxDEV"]);
+const NO_REACTIVE_CHILDREN_EXPRESSION = new Set(["Literal", "ArrayExpression"]);
 
 /**
  * jsxToReactiveHyperscript
@@ -128,18 +129,35 @@ function convertFirstArrayFromReturnToHyperScript(
 }
 
 function wrapSignalsWithFn(children: any, params: any[]) {
-  if (!children || !params.length || children.type === "Literal")
+  if (
+    !children ||
+    !params.length ||
+    NO_REACTIVE_CHILDREN_EXPRESSION.has(children.type)
+  ) {
     return children;
+  }
 
   const [props] = params;
-  let newChildren = children;
+  const childrenWithCorrectProperties = getChildrenWithCorrectProperties(
+    props,
+    children,
+  );
 
+  return {
+    type: "ArrowFunctionExpression",
+    expression: true,
+    params: [],
+    body: childrenWithCorrectProperties,
+  };
+}
+
+function getChildrenWithCorrectProperties(props: any, children: any) {
   if (
     props.type === "Identifier" &&
     children.object?.type === "Identifier" &&
     props.name === children.object?.name
   ) {
-    newChildren = {
+    return {
       type: "MemberExpression",
       object: {
         type: "MemberExpression",
@@ -158,10 +176,21 @@ function wrapSignalsWithFn(children: any, params: any[]) {
     };
   }
 
-  return {
-    type: "ArrowFunctionExpression",
-    expression: true,
-    params: [],
-    body: newChildren,
-  };
+  if (props.type === "ObjectPattern" && children.type === "Identifier") {
+    for (const prop of props.properties) {
+      if (prop.value.name === children.name) {
+        return {
+          type: "MemberExpression",
+          object: children,
+          property: {
+            type: "Identifier",
+            name: "value",
+          },
+          computed: false,
+        };
+      }
+    }
+  }
+
+  return children;
 }
