@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  mock,
+  afterEach,
+} from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { serialize } from "../serialization";
 
@@ -1794,14 +1802,50 @@ describe("utils", () => {
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Barbara</div>`);
     });
 
-    it.todo(
-      "should work dangerHTML to inject HTML in a web-component",
-      () => {},
-    );
+    it("should work with booleans and numbers in the same way than React", () => {
+      const Component = ({}, { h }: any) =>
+        h(null, {}, [
+          [null, {}, () => true && ["div", {}, "TRUE"]],
+          [null, {}, () => false && ["div", {}, "FALSE"]],
+          [null, {}, () => 1 && ["div", {}, "TRUE"]],
+          [null, {}, () => 0 && ["div", {}, "FALSE"]],
+        ]);
 
-    it.todo(
-      "should not be possible to inject HTML without dangerHTML",
-      () => {},
-    );
+      customElements.define("bool-component", brisaElement(Component));
+
+      document.body.innerHTML = "<bool-component />";
+      const boolComponent = document.querySelector(
+        "bool-component",
+      ) as HTMLElement;
+
+      expect(boolComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>TRUE</div><div>TRUE</div>0",
+      );
+    });
+
+    it("should work with booleans and numbers from props in the same way than React", () => {
+      const Component = ({ first, second, third, fourth }: any, { h }: any) =>
+        h(null, {}, [
+          [null, {}, () => first.value && ["div", {}, "TRUE"]],
+          [null, {}, () => second.value && ["div", {}, "FALSE"]],
+          [null, {}, () => third.value && ["div", {}, "TRUE"]],
+          [null, {}, () => fourth.value && ["div", {}, "FALSE"]],
+        ]);
+
+      customElements.define(
+        "bool-component",
+        brisaElement(Component, ["first", "second", "third", "fourth"]),
+      );
+
+      document.body.innerHTML =
+        "<bool-component first='true' second='false' third='1' fourth='0' />";
+      const boolComponent = document.querySelector(
+        "bool-component",
+      ) as HTMLElement;
+
+      expect(boolComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>TRUE</div><div>TRUE</div>0",
+      );
+    });
   });
 });

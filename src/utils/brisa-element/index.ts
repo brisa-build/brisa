@@ -158,7 +158,7 @@ export default function brisaElement(
                 lastNodes = arr(el.childNodes).filter(
                   (node) => !currentElNodes.includes(node),
                 );
-              } else {
+              } else if ((child as unknown as boolean) !== false) {
                 const textNode = createTextNode(child as string);
 
                 insertOrUpdate(textNode);
@@ -170,7 +170,7 @@ export default function brisaElement(
               childOrPromise.then(startEffect);
             else startEffect(childOrPromise);
           });
-        } else {
+        } else if ((children as unknown as boolean) !== false) {
           el.appendChild(createTextNode(children));
         }
 

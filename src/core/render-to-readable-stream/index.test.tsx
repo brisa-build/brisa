@@ -39,9 +39,9 @@ describe("brisa core", () => {
 
       const expected = `<div class="test">Hello World</div>`;
       expect(result).toEqual(expected);
-      expect(mockConsoleError.mock.calls[0]).toEqual([
+      expect(mockConsoleError.mock.calls[0].at(0) as unknown as string).toEqual(
         "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
-      ]);
+      );
     });
 
     it("should not console.error when it has a <head> tag", async () => {
