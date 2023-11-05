@@ -45,34 +45,40 @@ describe.skip("compileAll", () => {
   it("should compile everything in fixtures correctly", async () => {
     const succes = await compileAll();
     expect(succes).toEqual(true);
-    expect(fs.readdirSync(OUT_DIR)).toEqual([
-      "pages-client",
-      "layout.js",
-      "public",
-      "middleware.js",
-      "api",
-      "pages",
-      "i18n.js",
-      "chunk-e209715fdb13aa54.js",
-    ]);
-    expect(fs.readdirSync(path.join(OUT_DIR, "pages"))).toEqual([
-      "somepage.js",
-      "index.js",
-      "user",
-      "_404.js",
-      "page-with-web-component.js",
-    ]);
+    expect(fs.readdirSync(OUT_DIR).toSorted()).toEqual(
+      [
+        "pages-client",
+        "layout.js",
+        "public",
+        "middleware.js",
+        "api",
+        "pages",
+        "i18n.js",
+        "chunk-e209715fdb13aa54.js",
+      ].toSorted(),
+    );
+    expect(fs.readdirSync(path.join(OUT_DIR, "pages")).toSorted()).toEqual(
+      [
+        "somepage.js",
+        "index.js",
+        "user",
+        "_404.js",
+        "page-with-web-component.js",
+      ].toSorted(),
+    );
     expect(fs.readdirSync(path.join(OUT_DIR, "api"))).toEqual(["example.js"]);
-    expect(fs.readdirSync(path.join(OUT_DIR, "public"))).toEqual([
-      "favicon.ico",
-      "favicon.ico.gz",
-      "some-dir",
-    ]);
-    expect(fs.readdirSync(path.join(OUT_DIR, "public", "some-dir"))).toEqual([
-      "some-text.txt.gz",
-      "some-img.png.gz",
-      "some-img.png",
-      "some-text.txt",
-    ]);
+    expect(fs.readdirSync(path.join(OUT_DIR, "public")).toSorted()).toEqual(
+      ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted(),
+    );
+    expect(
+      fs.readdirSync(path.join(OUT_DIR, "public", "some-dir")).toSorted(),
+    ).toEqual(
+      [
+        "some-text.txt.gz",
+        "some-img.png.gz",
+        "some-img.png",
+        "some-text.txt",
+      ].toSorted(),
+    );
   });
 });
