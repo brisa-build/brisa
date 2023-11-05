@@ -43,16 +43,18 @@ describe("compileAssets", () => {
   it("should compile fixtures assets correctly", async () => {
     await compileAssets();
     expect(fs.readdirSync(BUILD_DIR)).toEqual(["public"]);
-    expect(fs.readdirSync(path.join(BUILD_DIR, "public"))).toEqual([
-      "favicon.ico",
-      "favicon.ico.gz",
-      "some-dir",
-    ]);
-    expect(fs.readdirSync(path.join(BUILD_DIR, "public", "some-dir"))).toEqual([
-      "some-text.txt.gz",
-      "some-img.png.gz",
-      "some-img.png",
-      "some-text.txt",
-    ]);
+    expect(fs.readdirSync(path.join(BUILD_DIR, "public")).toSorted()).toEqual(
+      ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted(),
+    );
+    expect(
+      fs.readdirSync(path.join(BUILD_DIR, "public", "some-dir")).toSorted(),
+    ).toEqual(
+      [
+        "some-text.txt.gz",
+        "some-img.png.gz",
+        "some-img.png",
+        "some-text.txt",
+      ].toSorted(),
+    );
   });
 });
