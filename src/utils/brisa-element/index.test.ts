@@ -1,11 +1,4 @@
-import {
-  describe,
-  it,
-  expect,
-  beforeAll,
-  afterAll,
-  mock,
-} from "bun:test";
+import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { serialize } from "../serialization";
 
@@ -254,7 +247,7 @@ describe("utils", () => {
     });
 
     it("should work with empty nodes", () => {
-      function EmptyNodes({ }, { h }: any) {
+      function EmptyNodes({}, { h }: any) {
         return h("div", {}, ["span", {}, ""]);
       }
 
@@ -378,7 +371,7 @@ describe("utils", () => {
     });
 
     it("should render a timer component", () => {
-      function Timer({ }, { state, h }: any) {
+      function Timer({}, { state, h }: any) {
         const time = state(0);
         const interval = setInterval(() => {
           time.value++;
@@ -429,7 +422,7 @@ describe("utils", () => {
         "test-button",
         brisaElement(Button as any, ["onAfterClick"]),
       );
-      const onAfterClickMock = mock(() => { });
+      const onAfterClickMock = mock(() => {});
 
       window.onAfterClick = onAfterClickMock;
       document.body.innerHTML = `
@@ -447,9 +440,9 @@ describe("utils", () => {
     });
 
     it("should trigger events in different web-components", () => {
-      const onClickMock = mock(() => { });
+      const onClickMock = mock(() => {});
 
-      function Parent({ }, { h }: any) {
+      function Parent({}, { h }: any) {
         return h("first-component", { onClickMe: onClickMock }, "click me");
       }
 
@@ -584,7 +577,7 @@ describe("utils", () => {
     });
 
     it("should work an interactive TodoList with state", () => {
-      function TodoList({ }, { state, h }: any) {
+      function TodoList({}, { state, h }: any) {
         const todos = state(["todo 1", "todo 2", "todo 3"]);
         const newTodo = state("");
         const addTodo = () => {
@@ -639,7 +632,7 @@ describe("utils", () => {
     });
 
     it("should be possible to change an static src attribute using the onerror event from img", () => {
-      function Image({ }, { h }: any) {
+      function Image({}, { h }: any) {
         return h(
           "img",
           {
@@ -670,7 +663,7 @@ describe("utils", () => {
     });
 
     it("should be possible to change a dynamic src attribute using the onerror event from img", () => {
-      function Image({ }, { state, h }: any) {
+      function Image({}, { state, h }: any) {
         const src = state("https://test.com/image.png");
 
         return h(
@@ -703,10 +696,10 @@ describe("utils", () => {
     });
 
     it("should unregister effects when the component is disconnected", () => {
-      const mockEffect = mock((n: number) => { });
+      const mockEffect = mock((n: number) => {});
       let interval: any;
 
-      function Test({ }, { state, effect, h }: any) {
+      function Test({}, { state, effect, h }: any) {
         const count = state(0);
 
         interval = setInterval(() => {
@@ -789,7 +782,7 @@ describe("utils", () => {
     });
 
     it("should work an async web-component", async () => {
-      async function AsyncComponent({ }, { state, h }: any) {
+      async function AsyncComponent({}, { state, h }: any) {
         const count = state(await Promise.resolve(42));
 
         return h("div", {}, () => count.value);
@@ -808,7 +801,7 @@ describe("utils", () => {
     });
 
     it("should work an async effect inside a web-component", async () => {
-      async function AsyncComponent({ }, { state, effect, h }: any) {
+      async function AsyncComponent({}, { state, effect, h }: any) {
         const count = state(0);
 
         effect(async () => {
@@ -832,10 +825,10 @@ describe("utils", () => {
     });
 
     it("should cleanup everytime an effect is re-called", () => {
-      const mockEffect = mock((num: number) => { });
-      const mockCleanup = mock(() => { });
+      const mockEffect = mock((num: number) => {});
+      const mockCleanup = mock(() => {});
 
-      function Test({ }, { state, effect, cleanup, h }: any) {
+      function Test({}, { state, effect, cleanup, h }: any) {
         const count = state(0);
 
         effect(() => {
@@ -873,10 +866,10 @@ describe("utils", () => {
     });
 
     it("should cleanup everytime the web-component is unmount", () => {
-      const mockEffect = mock(() => { });
-      const mockCleanup = mock(() => { });
+      const mockEffect = mock(() => {});
+      const mockCleanup = mock(() => {});
 
-      function Test({ }, { effect, cleanup, h }: any) {
+      function Test({}, { effect, cleanup, h }: any) {
         effect(() => {
           mockEffect();
           cleanup(() => mockCleanup());
@@ -902,10 +895,10 @@ describe("utils", () => {
     });
 
     it("should cleanup async cleanups when the web-component is unmount", async () => {
-      const mockEffect = mock(() => { });
-      const mockCleanup = mock(() => { });
+      const mockEffect = mock(() => {});
+      const mockCleanup = mock(() => {});
 
-      function Test({ }, { effect, cleanup, h }: any) {
+      function Test({}, { effect, cleanup, h }: any) {
         effect(async () => {
           mockEffect();
           cleanup(async () => mockCleanup());
@@ -931,10 +924,10 @@ describe("utils", () => {
     });
 
     it("should cleanup multi cleanups inside an effect when the web-component is unmount", async () => {
-      const mockEffect = mock(() => { });
-      const mockCleanup = mock(() => { });
+      const mockEffect = mock(() => {});
+      const mockCleanup = mock(() => {});
 
-      function Test({ }, { effect, cleanup, h }: any) {
+      function Test({}, { effect, cleanup, h }: any) {
         effect(async () => {
           mockEffect();
           cleanup(async () => mockCleanup());
@@ -1114,7 +1107,7 @@ describe("utils", () => {
     });
 
     it("should SVG work with foreingObject setting correctly the namespace outside the foreingObject node", () => {
-      function SVG({ }, { h }: any) {
+      function SVG({}, { h }: any) {
         return h("svg", { width: "12cm", height: "12cm" }, [
           "foreignObject",
           { width: "100%", height: "100%" },
@@ -1142,7 +1135,7 @@ describe("utils", () => {
     });
 
     it("should work a web-component that enables the addition, removal, and repositioning of items in a list", () => {
-      function MagicList({ }, { state, h }: any) {
+      function MagicList({}, { state, h }: any) {
         const list = state(["some", "another"]);
 
         const addItem = (e: any) => {
@@ -1292,8 +1285,8 @@ describe("utils", () => {
               count.value === 1
                 ? ["span", {}, "one"]
                 : count.value === 2
-                  ? ["span", {}, "two"]
-                  : ["span", {}, "three"],
+                ? ["span", {}, "two"]
+                : ["span", {}, "three"],
           ],
         ]);
       }
@@ -1333,17 +1326,17 @@ describe("utils", () => {
           () =>
             first.value === 1
               ? [
-                "div",
-                {},
-                () =>
-                  second.value === 2
-                    ? [
-                      "span",
-                      {},
-                      () => (third.value === 3 ? "test work" : "no-third"),
-                    ]
-                    : "no-second",
-              ]
+                  "div",
+                  {},
+                  () =>
+                    second.value === 2
+                      ? [
+                          "span",
+                          {},
+                          () => (third.value === 3 ? "test work" : "no-third"),
+                        ]
+                      : "no-second",
+                ]
               : "no-first",
         ]);
       }
@@ -1390,7 +1383,7 @@ describe("utils", () => {
     });
 
     it("should allow async/await conditional renders from state", async () => {
-      function Test({ }: any, { state, h }: any) {
+      function Test({}: any, { state, h }: any) {
         const first = state(1);
         const second = state(2);
         const third = state(3);
@@ -1495,7 +1488,7 @@ describe("utils", () => {
     });
 
     it("should be possible to create a collapsible content section with an accordion", () => {
-      function Accordion({ }: any, { state, h }: any) {
+      function Accordion({}: any, { state, h }: any) {
         const active = state(0);
 
         return h("div", {}, [
@@ -1547,7 +1540,7 @@ describe("utils", () => {
     });
 
     it("should display additional information on hover with a tooltip", () => {
-      function Tooltip({ }, { state, h }: any) {
+      function Tooltip({}, { state, h }: any) {
         const visible = state(false);
 
         return h("div", {}, [
@@ -1567,7 +1560,8 @@ describe("utils", () => {
                 "span",
                 {
                   style: () =>
-                    `position:absolute; visibility:${visible.value ? "visible" : "hidden"
+                    `position:absolute; visibility:${
+                      visible.value ? "visible" : "hidden"
                     };`,
                 },
                 "Tooltip text",
@@ -1605,7 +1599,7 @@ describe("utils", () => {
     });
 
     it("should work a conditional render with different web-components", () => {
-      function WebComponent1({ }, { state, h }: any) {
+      function WebComponent1({}, { state, h }: any) {
         const name = state("WebComponent1");
         return h(
           "div",
@@ -1617,7 +1611,7 @@ describe("utils", () => {
           () => name.value,
         );
       }
-      function WebComponent2({ }, { state, h }: any) {
+      function WebComponent2({}, { state, h }: any) {
         const name = state("WebComponent2");
         return h(
           "div",
@@ -1709,7 +1703,7 @@ describe("utils", () => {
     });
 
     it('should open/close a dialog with the "open" attribute', () => {
-      function Dialog({ }, { state, h, _on, _off }: any) {
+      function Dialog({}, { state, h, _on, _off }: any) {
         const open = state(false);
 
         return h("div", {}, [
@@ -1765,7 +1759,7 @@ describe("utils", () => {
     });
 
     it("should serialize the props consuming another web-component", () => {
-      function Test({ }, { h }: any) {
+      function Test({}, { h }: any) {
         return h("web-component", { user: { name: "Aral" } }, "");
       }
       function WebComponent({ user }: any, { h }: any) {
@@ -1801,7 +1795,7 @@ describe("utils", () => {
     });
 
     it("should work with booleans and numbers in the same way than React", () => {
-      const Component = ({ }, { h }: any) =>
+      const Component = ({}, { h }: any) =>
         h(null, {}, [
           [null, {}, () => true && ["div", {}, "TRUE"]],
           [null, {}, () => false && ["div", {}, "FALSE"]],
@@ -1847,7 +1841,7 @@ describe("utils", () => {
     });
 
     it("should be possible to render undefined and null", () => {
-      const Component = ({ }, { h }: any) =>
+      const Component = ({}, { h }: any) =>
         h(null, {}, [
           ["div", { class: "empty" }, undefined],
           ["div", { class: "empty" }, null],
@@ -1866,7 +1860,7 @@ describe("utils", () => {
     });
 
     it("should not be possible to inject HTML as string directly", () => {
-      const Component = ({ }, { h }: any) =>
+      const Component = ({}, { h }: any) =>
         h(null, {}, '<script>alert("test")</script>');
 
       customElements.define("test-component", brisaElement(Component));
@@ -1889,8 +1883,8 @@ describe("utils", () => {
     });
 
     it("should handle keyboard events", () => {
-      const mockAlert = mock((s: string) => { });
-      const Component = ({ }, { h }: any) =>
+      const mockAlert = mock((s: string) => {});
+      const Component = ({}, { h }: any) =>
         h("input", {
           onKeydown: () => {
             mockAlert("Enter to onKeydown");
@@ -1920,7 +1914,7 @@ describe("utils", () => {
     it("should handle asynchronous updates", async () => {
       const fetchData = () =>
         Promise.resolve({ json: () => Promise.resolve({ name: "Barbara" }) });
-      const Component = ({ }, { state, h }: any) => {
+      const Component = ({}, { state, h }: any) => {
         const user = state({ name: "Aral" });
 
         h(null, {}, [
@@ -1967,7 +1961,7 @@ describe("utils", () => {
     });
 
     it("should update all items from a list consuming the same state signal at the same time", () => {
-      const Component = ({ }, { state, h }: any) => {
+      const Component = ({}, { state, h }: any) => {
         const list = state(["one", "two", "three"]);
 
         return h(null, {}, [
@@ -2009,7 +2003,7 @@ describe("utils", () => {
     });
 
     it("should be possible to update a rendered DOM element after mount via ref", async () => {
-      const Component = ({ }, { onMount, state, h }: any) => {
+      const Component = ({}, { onMount, state, h }: any) => {
         const ref = state(null);
 
         onMount(() => {
@@ -2035,9 +2029,9 @@ describe("utils", () => {
     });
 
     it("should be possible to execute different onMount callbacks", async () => {
-      const mockFirstCallback = mock((s: string) => { });
-      const mockSecondCallback = mock((s: string) => { });
-      const Component = ({ }, { onMount, h }: any) => {
+      const mockFirstCallback = mock((s: string) => {});
+      const mockSecondCallback = mock((s: string) => {});
+      const Component = ({}, { onMount, h }: any) => {
         onMount(() => {
           mockFirstCallback("first");
         });
@@ -2060,8 +2054,8 @@ describe("utils", () => {
     });
 
     it("should cleanup an event registered on onMount when the component is unmounted", async () => {
-      const mockCallback = mock((s: string) => { });
-      const Component = ({ }, { onMount, cleanup, h }: any) => {
+      const mockCallback = mock((s: string) => {});
+      const Component = ({}, { onMount, cleanup, h }: any) => {
         onMount(() => {
           const onClick = () => mockCallback("click");
           document.addEventListener("click", onClick);
@@ -2098,8 +2092,8 @@ describe("utils", () => {
     });
 
     it("should cleanup on unmount if a cleanup callback is registered in the root of the component", () => {
-      const mockCallback = mock((s: string) => { });
-      const Component = ({ }, { cleanup, h }: any) => {
+      const mockCallback = mock((s: string) => {});
+      const Component = ({}, { cleanup, h }: any) => {
         cleanup(() => {
           mockCallback("cleanup");
         });
@@ -2122,8 +2116,8 @@ describe("utils", () => {
     });
 
     it("should cleanup on unmount if a cleanup callback is registered in a nested component", () => {
-      const mockCallback = mock((s: string) => { });
-      const Component = ({ }, { cleanup, h }: any) => {
+      const mockCallback = mock((s: string) => {});
+      const Component = ({}, { cleanup, h }: any) => {
         cleanup(() => {
           mockCallback("cleanup");
         });
@@ -2131,7 +2125,7 @@ describe("utils", () => {
         return h(null, {}, null);
       };
 
-      const ParentComponent = ({ }, { h }: any) => {
+      const ParentComponent = ({}, { h }: any) => {
         return h(null, {}, [["test-component", {}, null]]);
       };
 
