@@ -56,7 +56,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component jsx to reactive-hyperscript", () => {
+      it("should transform a basic web-component", () => {
         const input = `
             export default function MyComponent() {
               return <div>foo</div>
@@ -76,7 +76,27 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component with props to jsx to reactive-hyperscript", () => {
+      it("should transform a basic web-component with node children", () => {
+        const input = `
+            export default function MyComponent() {
+              return <div><b>foo</b></div>
+            }
+          `;
+        const output = toInline(
+          jsxToReactiveHyperscript(
+            input,
+            "src/web-components/my-component.tsx",
+          ),
+        );
+        const expected = toInline(`
+            export default function MyComponent({}, {h}) {
+              return h('div', {}, ['b', {}, 'foo']);
+            }
+          `);
+        expect(output).toBe(expected);
+      });
+
+      it("should transform a basic web-component with props", () => {
         const input = `
             export default function MyComponent(props) {
               return <div>{props.someProp}</div>
@@ -91,6 +111,46 @@ describe("utils", () => {
         const expected = toInline(`
             export default function MyComponent(props, {h}) {
               return h('div', {}, () => props.someProp.value);
+            }
+          `);
+        expect(output).toBe(expected);
+      });
+
+      it("should transform a basic web-component with destructuring props", () => {
+        const input = `
+            export default function MyComponent({someProp}) {
+              return <div>{someProp}</div>
+            }
+          `;
+        const output = toInline(
+          jsxToReactiveHyperscript(
+            input,
+            "src/web-components/my-component.tsx",
+          ),
+        );
+        const expected = toInline(`
+            export default function MyComponent({someProp}, {h}) {
+              return h('div', {}, () => someProp.value);
+            }
+          `);
+        expect(output).toBe(expected);
+      });
+
+      it("should transform a basic web-component with renamed destructuring props", () => {
+        const input = `
+            export default function MyComponent({someProp: somePropRenamed}) {
+              return <div>{somePropRenamed}</div>
+            }
+          `;
+        const output = toInline(
+          jsxToReactiveHyperscript(
+            input,
+            "src/web-components/my-component.tsx",
+          ),
+        );
+        const expected = toInline(`
+            export default function MyComponent({someProp: somePropRenamed}, {h}) {
+              return h('div', {}, () => somePropRenamed.value);
             }
           `);
         expect(output).toBe(expected);
