@@ -4,7 +4,7 @@ import AST from "../ast";
 // TSX loader also works for JSX/TS/JS
 const loader = "tsx";
 const { parseCodeToAST, generateCodeFromAST } = AST(loader);
-const IS_WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
+const WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
 const ALTERNATIVE_FOLDER_REGEX = new RegExp(".*/web-components/@.*?/");
 const JSX_NAME = new Set(["jsx", "jsxDEV"]);
 
@@ -23,7 +23,7 @@ export default function jsxToReactiveHyperscript(
   const ast = parseCodeToAST(code);
   const astWithoutJSX = replaceJSXToArray(ast);
 
-  if (!path.match(IS_WEB_COMPONENT_REGEX))
+  if (!path.match(WEB_COMPONENT_REGEX))
     return generateCodeFromAST(astWithoutJSX);
 
   const exportDefault = astWithoutJSX.body.find(
@@ -111,7 +111,8 @@ function declareH(componentAST: any) {
 function convertFirstArrayFromReturnToHyperScript(
   defaultExport: ESTree.ExportDefaultDeclaration,
 ) {
-  const returnStatement = (defaultExport.declaration as any).body.body.find(
+  const component = defaultExport.declaration as any;
+  const returnStatement = component.body.body.find(
     (node: any) => node.type === "ReturnStatement",
   );
   const [tagName, props, children] = returnStatement?.argument?.elements ?? [];
@@ -122,6 +123,45 @@ function convertFirstArrayFromReturnToHyperScript(
       type: "Identifier",
       name: "h",
     },
-    arguments: [tagName, props, children],
+    arguments: [tagName, props, wrapSignalsWithFn(children, component.params)],
+  };
+}
+
+function wrapSignalsWithFn(children: any, params: any[]) {
+  if (!children || !params.length || children.type === "Literal")
+    return children;
+
+  const [props] = params;
+  let newChildren = children;
+
+  if (
+    props.type === "Identifier" &&
+    children.object?.type === "Identifier" &&
+    props.name === children.object?.name
+  ) {
+    newChildren = {
+      type: "MemberExpression",
+      object: {
+        type: "MemberExpression",
+        object: props,
+        property: {
+          type: "Identifier",
+          name: "someProp",
+        },
+        computed: false,
+      },
+      property: {
+        type: "Identifier",
+        name: "value",
+      },
+      computed: false,
+    };
+  }
+
+  return {
+    type: "ArrowFunctionExpression",
+    expression: true,
+    params: [],
+    body: newChildren,
   };
 }
