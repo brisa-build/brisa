@@ -25,7 +25,7 @@ function minifyText(text: string) {
 }
 
 describe("utils", () => {
-  describe("compileFiles", () => {
+  describe("compileFiles DEVELOPMENT", () => {
     afterEach(() => {
       console.log = originalConsoleLog;
       globalThis.mockConstants = undefined;
@@ -38,8 +38,7 @@ describe("utils", () => {
         fs.rmSync(BUILD_DIR, { recursive: true });
       }
     });
-
-    it("should compile fixtures routes correctly in DEVELOPMENT", async () => {
+    it("should compile fixtures routes correctly", async () => {
       console.log = mock((v) => v);
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
@@ -57,57 +56,62 @@ describe("utils", () => {
       expect(logs).toEqual([]);
       expect(success).toBe(true);
       expect(console.log).toHaveBeenCalledTimes(0);
-      expect(files).toEqual([
-        "pages-client",
-        "_brisa",
-        "pages",
-        "chunk-e209715fdb13aa54.js",
-      ]);
+      expect(files.toSorted()).toEqual(
+        [
+          "pages-client",
+          "_brisa",
+          "pages",
+          "chunk-e209715fdb13aa54.js",
+        ].toSorted(),
+      );
 
       expect(brisaInternals).toEqual(["types.ts"]);
     });
   });
 
-  it("should compile fixtures routes correctly in PRODUCTION", async () => {
-    console.log = mock((v) => v);
-    globalThis.mockConstants = {
-      ...(getConstants() ?? {}),
-      PAGES_DIR,
-      BUILD_DIR,
-      IS_PRODUCTION: true,
-      SRC_DIR,
-      ASSETS_DIR,
-    };
+  describe("compileFiles PRODUCTION", () => {
+    it("should compile fixtures routes correctly", async () => {
+      console.log = mock((v) => v);
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        PAGES_DIR,
+        BUILD_DIR,
+        IS_PRODUCTION: true,
+        SRC_DIR,
+        ASSETS_DIR,
+      };
 
-    const { success, logs } = await compileFiles();
+      const { success, logs } = await compileFiles();
 
-    expect(logs).toEqual([]);
-    expect(success).toBe(true);
+      expect(logs).toEqual([]);
+      expect(success).toBe(true);
 
-    const files = fs.readdirSync(BUILD_DIR);
+      const files = fs.readdirSync(BUILD_DIR);
 
-    expect(fs.existsSync(TYPES)).toBe(true);
-    expect(fs.readFileSync(TYPES).toString()).toBe(
-      `export interface IntrinsicCustomElements {\n  'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;\n}`,
-    );
+      expect(fs.existsSync(TYPES)).toBe(true);
+      expect(fs.readFileSync(TYPES).toString()).toBe(
+        `export interface IntrinsicCustomElements {\n  'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;\n}`,
+      );
 
-    expect(console.log).toHaveBeenCalled();
-    expect(files).toEqual([
-      "pages-client",
-      "layout.js",
-      "_brisa",
-      "websocket.js",
-      "middleware.js",
-      "api",
-      "pages",
-      "i18n.js",
-      "chunk-e209715fdb13aa54.js",
-    ]);
-    const info = `[ \x1b[34minfo\x1b[0m ]  `;
-    const logOutput = minifyText(
-      (console.log as any).mock.calls.flat().join("\n"),
-    );
-    const expected = minifyText(`
+      expect(console.log).toHaveBeenCalled();
+      expect(files.toSorted()).toEqual(
+        [
+          "pages-client",
+          "layout.js",
+          "_brisa",
+          "websocket.js",
+          "middleware.js",
+          "api",
+          "pages",
+          "i18n.js",
+          "chunk-e209715fdb13aa54.js",
+        ].toSorted(),
+      );
+      const info = `[ \x1b[34minfo\x1b[0m ]  `;
+      const logOutput = minifyText(
+        (console.log as any).mock.calls.flat().join("\n"),
+      );
+      const expected = minifyText(`
     ${info}
     ${info}Route                               | Size | Client size  
     ${info}------------------------------------------------------------
@@ -131,6 +135,7 @@ describe("utils", () => {
     ${info}Φ JS shared by all
     ${info}
   `);
-    expect(logOutput).toBe(expected);
+      expect(logOutput).toBe(expected);
+    });
   });
 });
