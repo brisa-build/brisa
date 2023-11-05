@@ -75,14 +75,14 @@ describe("signals", () => {
     const mockEffect = mock<(count: number | undefined) => void>(() => {});
     const { state, effect } = signals();
     const count = state<number | undefined>(undefined);
-    expect(count.value).toBe(undefined);
+    expect(count.value).not.toBeDefined();
 
     effect(() => {
       mockEffect(count.value);
     });
 
     expect(mockEffect).toHaveBeenCalledTimes(1);
-    expect(mockEffect.mock.calls[0][0]).toBe(undefined);
+    expect(mockEffect.mock.calls[0][0]).not.toBeDefined();
 
     count.value = 1;
 

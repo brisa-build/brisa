@@ -1847,5 +1847,309 @@ describe("utils", () => {
         "<div>TRUE</div><div>TRUE</div>0",
       );
     });
+
+    it("should be possible to render undefined and null", () => {
+      const Component = ({}, { h }: any) =>
+        h(null, {}, [
+          ["div", { class: "empty" }, undefined],
+          ["div", { class: "empty" }, null],
+        ]);
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div class="empty"></div><div class="empty"></div>',
+      );
+    });
+
+    it("should not be possible to inject HTML as string directly", () => {
+      const Component = ({}, { h }: any) =>
+        h(null, {}, '<script>alert("test")</script>');
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<script>alert("test")</script>',
+      );
+
+      const script = document.querySelector("script");
+
+      expect(script).toBeNull();
+      expect(
+        testComponent?.shadowRoot?.firstChild?.nodeType === Node.TEXT_NODE,
+      ).toBeTruthy();
+    });
+
+    it("should handle keyboard events", () => {
+      const mockAlert = mock((s: string) => {});
+      const Component = ({}, { h }: any) =>
+        h("input", {
+          onKeydown: () => {
+            mockAlert("Enter to onKeydown");
+          },
+        });
+
+      customElements.define("keyboard-events", brisaElement(Component));
+
+      document.body.innerHTML = "<keyboard-events />";
+      const keyboardEventEl = document.querySelector(
+        "keyboard-events",
+      ) as HTMLElement;
+
+      expect(keyboardEventEl?.shadowRoot?.innerHTML).toBe("<input>");
+
+      const input = keyboardEventEl?.shadowRoot?.querySelector(
+        "input",
+      ) as HTMLInputElement;
+
+      input.dispatchEvent(new KeyboardEvent("keydown"));
+
+      expect(keyboardEventEl?.shadowRoot?.innerHTML).toBe("<input>");
+      expect(mockAlert).toHaveBeenCalledTimes(1);
+      expect(mockAlert.mock.calls[0][0]).toBe("Enter to onKeydown");
+    });
+
+    it("should handle asynchronous updates", async () => {
+      const fetchData = () =>
+        Promise.resolve({ json: () => Promise.resolve({ name: "Barbara" }) });
+      const Component = ({}, { state, h }: any) => {
+        const user = state({ name: "Aral" });
+
+        h(null, {}, [
+          [
+            "button",
+            {
+              onClick: async () => {
+                const response = await fetchData();
+                user.value = await response.json();
+              },
+            },
+            "fetch",
+          ],
+          ["div", {}, () => user.value.name],
+        ]);
+      };
+
+      customElements.define("async-updates", brisaElement(Component));
+
+      document.body.innerHTML = "<async-updates />";
+      const asyncUpdatesComp = document.querySelector(
+        "async-updates",
+      ) as HTMLElement;
+
+      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
+        "<button>fetch</button><div>Aral</div>",
+      );
+
+      const button = asyncUpdatesComp?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
+        "<button>fetch</button><div>Aral</div>",
+      );
+
+      await Bun.sleep(0);
+
+      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
+        "<button>fetch</button><div>Barbara</div>",
+      );
+    });
+
+    it("should update all items from a list consuming the same state signal at the same time", () => {
+      const Component = ({}, { state, h }: any) => {
+        const list = state(["one", "two", "three"]);
+
+        return h(null, {}, [
+          [
+            "button",
+            {
+              onClick: () => {
+                list.value = list.value.map((item: string) =>
+                  item.toUpperCase(),
+                );
+              },
+            },
+            "uppercase",
+          ],
+          ["ul", {}, () => list.value.map((item: string) => ["li", {}, item])],
+        ]);
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<button>uppercase</button><ul><li>one</li><li>two</li><li>three</li></ul>",
+      );
+
+      const button = testComponent?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<button>uppercase</button><ul><li>ONE</li><li>TWO</li><li>THREE</li></ul>",
+      );
+    });
+
+    it("should be possible to update a rendered DOM element after mount via ref", async () => {
+      const Component = ({}, { onMount, state, h }: any) => {
+        const ref = state(null);
+
+        onMount(() => {
+          // Is not a good practice but is just for testing
+          ref.value.innerHTML = "test";
+        });
+
+        return h(null, {}, [["div", { ref }, "original"]]);
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>original</div>");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>test</div>");
+    });
+
+    it("should be possible to execute different onMount callbacks", async () => {
+      const mockFirstCallback = mock((s: string) => {});
+      const mockSecondCallback = mock((s: string) => {});
+      const Component = ({}, { onMount, h }: any) => {
+        onMount(() => {
+          mockFirstCallback("first");
+        });
+        onMount(() => {
+          mockSecondCallback("second");
+        });
+
+        return h(null, {}, null);
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+      document.body.innerHTML = "<test-component />";
+
+      await Bun.sleep(0);
+
+      expect(mockFirstCallback).toHaveBeenCalledTimes(1);
+      expect(mockFirstCallback.mock.calls[0][0]).toBe("first");
+      expect(mockSecondCallback).toHaveBeenCalledTimes(1);
+      expect(mockSecondCallback.mock.calls[0][0]).toBe("second");
+    });
+
+    it("should cleanup an event registered on onMount when the component is unmounted", async () => {
+      const mockCallback = mock((s: string) => {});
+      const Component = ({}, { onMount, cleanup, h }: any) => {
+        onMount(() => {
+          const onClick = () => mockCallback("click");
+          document.addEventListener("click", onClick);
+
+          cleanup(() => {
+            document.removeEventListener("click", onClick);
+          });
+        });
+
+        return h(null, {}, null);
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+
+      await Bun.sleep(0);
+
+      expect(mockCallback).toHaveBeenCalledTimes(0);
+
+      document.dispatchEvent(new Event("click"));
+
+      expect(mockCallback).toHaveBeenCalledTimes(1);
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      testComponent.remove();
+
+      document.dispatchEvent(new Event("click"));
+
+      expect(mockCallback).toHaveBeenCalledTimes(1);
+    });
+
+    it("should cleanup on unmount if a cleanup callback is registered in the root of the component", () => {
+      const mockCallback = mock((s: string) => {});
+      const Component = ({}, { cleanup, h }: any) => {
+        cleanup(() => {
+          mockCallback("cleanup");
+        });
+
+        return h(null, {}, null);
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      testComponent.remove();
+
+      expect(mockCallback).toHaveBeenCalledTimes(1);
+      expect(mockCallback.mock.calls[0][0]).toBe("cleanup");
+    });
+
+    it("should cleanup on unmount if a cleanup callback is registered in a nested component", () => {
+      const mockCallback = mock((s: string) => {});
+      const Component = ({}, { cleanup, h }: any) => {
+        cleanup(() => {
+          mockCallback("cleanup");
+        });
+
+        return h(null, {}, null);
+      };
+
+      const ParentComponent = ({}, { h }: any) => {
+        return h(null, {}, [["test-component", {}, null]]);
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+      customElements.define("parent-component", brisaElement(ParentComponent));
+
+      document.body.innerHTML = "<parent-component />";
+
+      const parentComponent = document.querySelector(
+        "parent-component",
+      ) as HTMLElement;
+
+      parentComponent.remove();
+
+      expect(mockCallback).toHaveBeenCalledTimes(1);
+      expect(mockCallback.mock.calls[0][0]).toBe("cleanup");
+    });
   });
 });
