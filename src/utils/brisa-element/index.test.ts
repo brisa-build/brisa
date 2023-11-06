@@ -1703,7 +1703,7 @@ describe("utils", () => {
     });
 
     it('should open/close a dialog with the "open" attribute', () => {
-      function Dialog({}, { state, h, _on, _off }: any) {
+      function Dialog({}, { state, h }: any) {
         const open = state(false);
 
         return h("div", {}, [
@@ -1719,7 +1719,7 @@ describe("utils", () => {
           [
             "dialog",
             {
-              open: () => (open.value ? _on : _off),
+              open: () => open.value,
               onClick: () => {
                 open.value = false;
               },
@@ -1755,6 +1755,36 @@ describe("utils", () => {
 
       expect(dialog?.shadowRoot?.innerHTML).toBe(
         "<div><button>open</button><dialog>dialog</dialog></div>",
+      );
+    });
+
+    it('should be possible to pass an attribute without content to the web-component and interpret it as "true"', () => {
+      function Test({ open }: any, { h }: any) {
+        return h(
+          "dialog",
+          {
+            open: () => open.value,
+          },
+          "dialog",
+        );
+      }
+
+      customElements.define("test-component", brisaElement(Test, ["open"]));
+
+      document.body.innerHTML = "<test-component open />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<dialog open="">dialog</dialog>',
+      );
+
+      testComponent.removeAttribute("open");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<dialog>dialog</dialog>",
       );
     });
 
