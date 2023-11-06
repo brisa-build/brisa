@@ -7,9 +7,9 @@ import type {
 } from "../../types";
 import extendStreamController, {
   Controller,
-} from "../../utils/extend-stream-controller";
-import renderAttributes from "../../utils/render-attributes";
-import generateHrefLang from "../../utils/generate-href-lang";
+} from "../extend-stream-controller";
+import renderAttributes from "../render-attributes";
+import generateHrefLang from "../generate-href-lang";
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const IS_PRODUCTION = process.env.NODE_ENV === "production";

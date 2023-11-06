@@ -3,7 +3,7 @@ import renderToReadableStream from ".";
 import dangerHTML from "../danger-html";
 import getConstants from "../../constants";
 import { ComponentType, RequestContext, Translate } from "../../types";
-import extendRequestContext from "../../utils/extend-request-context";
+import extendRequestContext from "../extend-request-context";
 
 const emptyI18n = {
   locale: "",

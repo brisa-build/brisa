@@ -1,4 +1,4 @@
-import renderToReadableStream from "./render-to-readable-stream";
-import dangerHTML from "./danger-html";
+import renderToReadableStream from "../utils/render-to-readable-stream";
+import dangerHTML from "../utils/danger-html";
 
 export { renderToReadableStream, dangerHTML };

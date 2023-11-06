@@ -1,7 +1,7 @@
 import getConstants from "../../constants";
 import { join } from "node:path";
-import { rm, writeFile, exists, mkdir } from "node:fs/promises";
-import { injectUnsuspenseCode } from "../../core/inject-unsuspense-code" assert { type: "macro" };
+import { rm, writeFile } from "node:fs/promises";
+import { injectUnsuspenseCode } from "../inject-unsuspense-code" assert { type: "macro" };
 import AST from "../ast";
 
 const ASTUtil = AST("js");

@@ -1,6 +1,6 @@
 import { watch } from "node:fs";
 import path from "node:path";
-import dangerHTML from "../core/danger-html";
+import dangerHTML from "../utils/danger-html";
 import getConstants from "../constants";
 import { SpawnOptions } from "bun";
 
