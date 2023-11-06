@@ -14,6 +14,9 @@ type Render = (
 type Children = unknown[] | string | (() => Children);
 type Event = (e: unknown) => void;
 
+export const _on = Symbol("on");
+export const _off = Symbol("off");
+
 const W3 = "http://www.w3.org/";
 const SVG_NAMESPACE = `${W3}2000/svg`;
 const XLINK_NAMESPACE = `${W3}1999/xlink`;
@@ -36,8 +39,8 @@ const createElement = (
 };
 
 const setAttribute = (el: HTMLElement, key: string, value: string) => {
-  const on = (value as unknown as true) === true;
-  const off = (value as unknown as false | null) === false || value == null;
+  const on = (value as unknown as symbol) === _on;
+  const off = (value as unknown as symbol) === _off;
   const serializedValue = serialize(value);
   const isWithNamespace =
     el.namespaceURI === SVG_NAMESPACE &&
