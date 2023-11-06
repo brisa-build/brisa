@@ -3,6 +3,7 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { serialize } from "../serialization";
 
 let brisaElement: any;
+let _on: symbol, _off: symbol;
 
 declare global {
   interface Window {
@@ -14,7 +15,10 @@ describe("utils", () => {
   describe("brisa-element", () => {
     beforeAll(async () => {
       GlobalRegistrator.register();
-      brisaElement = (await import(".")).default;
+      const module = await import(".");
+      brisaElement = module.default;
+      _on = module._on;
+      _off = module._off;
     });
     afterAll(() => {
       GlobalRegistrator.unregister();
@@ -1719,7 +1723,7 @@ describe("utils", () => {
           [
             "dialog",
             {
-              open: () => open.value,
+              open: () => (open.value ? _on : _off),
               onClick: () => {
                 open.value = false;
               },
@@ -1755,36 +1759,6 @@ describe("utils", () => {
 
       expect(dialog?.shadowRoot?.innerHTML).toBe(
         "<div><button>open</button><dialog>dialog</dialog></div>",
-      );
-    });
-
-    it('should be possible to pass an attribute without content to the web-component and interpret it as "true"', () => {
-      function Test({ open }: any, { h }: any) {
-        return h(
-          "dialog",
-          {
-            open: () => open.value,
-          },
-          "dialog",
-        );
-      }
-
-      customElements.define("test-component", brisaElement(Test, ["open"]));
-
-      document.body.innerHTML = "<test-component open />";
-
-      const testComponent = document.querySelector(
-        "test-component",
-      ) as HTMLElement;
-
-      expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        '<dialog open="">dialog</dialog>',
-      );
-
-      testComponent.removeAttribute("open");
-
-      expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<dialog>dialog</dialog>",
       );
     });
 
