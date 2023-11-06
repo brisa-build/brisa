@@ -9,8 +9,6 @@ type Render = (
     onMount(cb: () => void): void;
     css(strings: string[], ...values: string[]): void;
     h(tagName: string, attributes: Attr, children: unknown): void;
-    _on: symbol;
-    _off: symbol;
   },
 ) => Node[];
 type Children = unknown[] | string | (() => Children);
@@ -19,8 +17,6 @@ type Event = (e: unknown) => void;
 const W3 = "http://www.w3.org/";
 const SVG_NAMESPACE = `${W3}2000/svg`;
 const XLINK_NAMESPACE = `${W3}1999/xlink`;
-const _on = Symbol("on");
-const _off = Symbol("off");
 
 const createTextNode = (text: string) =>
   document.createTextNode((text ?? "").toString());
@@ -40,8 +36,8 @@ const createElement = (
 };
 
 const setAttribute = (el: HTMLElement, key: string, value: string) => {
-  const on = (value as unknown as symbol) === _on;
-  const off = (value as unknown as symbol) === _off;
+  const on = (value as unknown as true) === true;
+  const off = (value as unknown as false | null) === false || value == null;
   const serializedValue = serialize(value);
   const isWithNamespace =
     el.namespaceURI === SVG_NAMESPACE &&
@@ -186,8 +182,6 @@ export default function brisaElement(
         {
           ...this.ctx,
           h: hyperScript,
-          _on,
-          _off,
           onMount(cb: () => void) {
             fnToExecuteAfterMount.push(cb);
           },
