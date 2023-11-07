@@ -10,7 +10,7 @@ import { generate } from "astring";
 import { parseScript, ESTree } from "meriyah";
 import { JavaScriptLoader } from "bun";
 
-export default function AST(loader: JavaScriptLoader) {
+export default function AST(loader: JavaScriptLoader = "tsx") {
   const transpiler = new Bun.Transpiler({ loader });
 
   return {
