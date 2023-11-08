@@ -137,6 +137,30 @@ describe("utils", () => {
         `);
         expect(output).toBe(expected);
       });
+
+      it("should change signals to function if the signal state is used in an atributte", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { state }) {
+            const count = state(0);
+
+            return (
+              <div>
+                <span title={count.value}></span>
+              </div>
+            )
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = toInline(`
+          export default function MyComponent({}, {state}) {
+            const count = state(0);
+            return ['div', {}, ['span', {title: () => count.value}, '']];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
     });
   });
 });
