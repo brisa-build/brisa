@@ -444,6 +444,49 @@ describe("utils", () => {
 
         expect(output).toBe(expected);
       });
+
+      it("should be possible to return null as a child", () => {
+        const input = `
+            export default function MyComponent() {
+              return null
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            export default brisaElement(function MyComponent({}, {h}) {
+              return h(null, {}, '');
+            });
+          `);
+
+        expect(output).toBe(expected);
+      });
+      it("should be possible to return undefined as a child", () => {
+        const input = `
+            export default function MyComponent() {
+              return undefined
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            export default brisaElement(function MyComponent({}, {h}) {
+              return h(null, {}, '');
+            });
+          `);
+
+        expect(output).toBe(expected);
+      });
     });
   });
 });
