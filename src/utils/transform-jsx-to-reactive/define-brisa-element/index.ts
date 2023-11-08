@@ -82,17 +82,21 @@ function getReturnStatementWithHyperScript(
     !tagName &&
     !props &&
     !componentChildren &&
-    returnStatement?.argument?.type === "Literal"
+    (returnStatement?.argument == null ||
+      returnStatement?.argument?.type === "Literal")
   ) {
-    (tagName = {
+    tagName = {
       type: "Literal",
       value: null,
-    }),
-      (props = {
-        type: "ObjectExpression",
-        properties: [],
-      });
-    componentChildren = returnStatement?.argument;
+    };
+    props = {
+      type: "ObjectExpression",
+      properties: [],
+    };
+    componentChildren = {
+      type: "Literal",
+      value: returnStatement?.argument?.value ?? "",
+    };
   }
 
   const newReturnStatement = {
