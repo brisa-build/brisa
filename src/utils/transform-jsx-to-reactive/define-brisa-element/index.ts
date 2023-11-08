@@ -70,12 +70,30 @@ function getReturnStatementWithHyperScript(
     (node: any) => node.type === "ReturnStatement",
   );
   const returnStatement = componentBody[returnStatementIndex] as any;
-  const [tagName, props, children] = returnStatement?.argument?.elements ?? [];
+  let [tagName, props, children] = returnStatement?.argument?.elements ?? [];
   let componentChildren = convertPropsToReactiveProps(
     children,
     componentParams,
     propsNames,
   );
+
+  // Cases that the component return a literal, ex: return "foo"
+  if (
+    !tagName &&
+    !props &&
+    !componentChildren &&
+    returnStatement?.argument?.type === "Literal"
+  ) {
+    (tagName = {
+      type: "Literal",
+      value: null,
+    }),
+      (props = {
+        type: "ObjectExpression",
+        properties: [],
+      });
+    componentChildren = returnStatement?.argument;
+  }
 
   const newReturnStatement = {
     type: "ReturnStatement",
@@ -230,6 +248,8 @@ function convertPropsToReactivePropsForInnerTags(
   componentsParams: ESTree.Parameter[],
   propsNames: string[],
 ) {
+  if (!children) return children;
+
   return JSON.parse(JSON.stringify(children), (key, value) => {
     if (
       value?.type === "ArrayExpression" &&
