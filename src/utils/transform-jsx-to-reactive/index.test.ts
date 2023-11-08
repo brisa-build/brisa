@@ -422,6 +422,28 @@ describe("utils", () => {
 
         expect(output).toBe(expected);
       });
+
+      it("should be possible to return a string as a child", () => {
+        const input = `
+            export default function MyComponent() {
+              return 'foo'
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            export default brisaElement(function MyComponent({}, {h}) {
+              return h(null, {}, 'foo');
+            });
+          `);
+
+        expect(output).toBe(expected);
+      });
     });
   });
 });
