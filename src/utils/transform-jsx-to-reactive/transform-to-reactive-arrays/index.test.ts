@@ -1,7 +1,8 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it, spyOn } from "bun:test";
 import transformToReactiveArrays from ".";
 import AST from "../../ast";
 import { ESTree } from "meriyah";
+import getConstants from "../../../constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
@@ -204,6 +205,67 @@ describe("utils", () => {
           }
         `);
         expect(output).toBe(expected);
+      });
+
+      it("should ignore server-components as fragments and log with an error", () => {
+        const { LOG_PREFIX } = getConstants();
+        const input = parseCodeToAST(`
+            function Test(props) {
+              return (
+                <div>{props.children}</div>
+              )
+            }
+
+            export default function MyComponent() {
+              return (
+                <Test someProp={true}>
+                  <div>foo</div>
+                  <span>bar</span>
+                </Test>
+              )
+            }
+          `);
+        const logMock = spyOn(console, "log");
+        logMock.mockImplementation(() => {});
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = toInline(`
+            let Test = function (props) {
+              return ['div', {}, props.children];
+            };
+            export default function MyComponent() {
+              return [null, {}, [['div', {}, 'foo'], ['span', {}, 'bar']]];
+            }
+          `);
+        const logs = logMock.mock.calls.slice(0);
+
+        logMock.mockRestore();
+        expect(output).toBe(expected);
+        expect(logs[0]).toEqual([LOG_PREFIX.ERROR, `Ops! Error:`]);
+        expect(logs[1]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
+        expect(logs[2]).toEqual([
+          LOG_PREFIX.ERROR,
+          `You can't use "Test" variable as a tag name.`,
+        ]);
+        expect(logs[3]).toEqual([
+          LOG_PREFIX.ERROR,
+          `Please use a string instead. You cannot use server-components inside web-components directly.`,
+        ]);
+        expect(logs[4]).toEqual([
+          LOG_PREFIX.ERROR,
+          `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`,
+        ]);
+        expect(logs[5]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
+        expect(logs[6]).toEqual([
+          LOG_PREFIX.ERROR,
+          `Docs: https://brisa.dev/docs/component-details/web-components`,
+        ]);
       });
     });
   });

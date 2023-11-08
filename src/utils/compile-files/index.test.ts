@@ -1,6 +1,6 @@
 import path from "node:path";
 import fs from "node:fs";
-import { describe, it, expect, afterEach, mock } from "bun:test";
+import { describe, it, expect, afterEach, mock, spyOn } from "bun:test";
 import compileFiles from ".";
 import getConstants from "../../constants";
 
@@ -67,7 +67,7 @@ describe("utils", () => {
 
   describe("compileFiles PRODUCTION", () => {
     it("should compile fixtures routes correctly", async () => {
-      console.log = mock((v) => v);
+      const mockLog = spyOn(console, "log");
       const constants = getConstants();
       globalThis.mockConstants = {
         ...constants,
@@ -77,6 +77,8 @@ describe("utils", () => {
         SRC_DIR,
         ASSETS_DIR,
       };
+
+      mockLog.mockImplementation(() => {});
 
       const { success, logs } = await compileFiles();
 
@@ -103,9 +105,9 @@ describe("utils", () => {
 
       const info = constants.LOG_PREFIX.INFO;
       const generatedHash = files[2].replace("chunk-", "").replace(".js", "");
-      const logOutput = minifyText(
-        (console.log as any).mock.calls.flat().join("\n"),
-      );
+      const logOutput = minifyText(mockLog.mock.calls.flat().join("\n"));
+      mockLog.mockRestore();
+
       const expected = minifyText(`
     ${info}
     ${info}Route                               | Size | Client size  
