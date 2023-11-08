@@ -61,6 +61,82 @@ describe("utils", () => {
         `);
         expect(output).toBe(expected);
       });
+
+      it("should change signals to function if the signal state is used in a conditional", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { state }) {
+            const count = state(0);
+
+            return (
+              <div>
+                {count.value > 0 && <span>{count.value}</span>}
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = toInline(`
+          export default function MyComponent({}, {state}) {
+            const count = state(0);
+            return ['div', {}, () => count.value > 0 && ['span', {}, () => count.value]];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should not change signals to function if the signal state is used in an event", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { state }) {
+            const count = state(0);
+
+            function handleClick() {
+              console.log(count.value);
+            }
+
+            return (
+              <div>
+                <button onClick={handleClick}>Click</button>
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = toInline(`
+          export default function MyComponent({}, {state}) {
+            const count = state(0);
+            function handleClick() {
+              console.log(count.value);
+            }
+            return ['div', {}, ['button', {onClick: handleClick}, 'Click']];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should change signals to function if the signal state is used in a ternary", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { state }) {
+            const count = state(0);
+
+            return (
+              <div>
+                {count.value > 0 ? <span>{count.value}</span> : <span>0</span>}
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = toInline(`
+          export default function MyComponent({}, {state}) {
+            const count = state(0);
+            return ['div', {}, () => count.value > 0 ? ['span', {}, () => count.value] : ['span', {}, '0']];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
     });
   });
 });

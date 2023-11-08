@@ -53,6 +53,8 @@ function hasNodeASignal(node: ESTree.Node) {
       value?.object?.type === "Identifier" &&
       value?.property?.type === "Identifier" &&
       value?.property?.name === "value";
+
+    return value;
   });
 
   return hasSignal;
