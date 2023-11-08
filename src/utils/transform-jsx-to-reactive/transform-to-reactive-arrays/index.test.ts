@@ -161,6 +161,50 @@ describe("utils", () => {
         `);
         expect(output).toBe(expected);
       });
+
+      it("should work with fragments", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent() {
+            return (
+              <>
+                <div>foo</div>
+                <div>bar</div>
+              </>
+            )
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = toInline(`
+          export default function MyComponent() {
+            return [null, {}, [['div', {}, 'foo'], ['div', {}, 'bar']]];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should work with multiple fragments", () => {
+        const input = parseCodeToAST(`
+        export default function MyComponent() {
+          return (
+            <>
+              <>foo</>
+              <>bar</>
+            </>
+          )
+        }
+      `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = toInline(`
+          export default function MyComponent() {
+            return [null, {}, [[null, {}, "foo"], [null, {}, "bar"]]];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
     });
   });
 });

@@ -199,6 +199,56 @@ describe("utils", () => {
           `);
         expect(output).toBe(expected);
       });
+      it("should transform a basic web-component with fragments", () => {
+        const input = `
+            export default function MyComponent() {
+              return <>
+                <div>foo</div>
+                <span>bar</span>
+              </>
+            }
+          `;
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            export default brisaElement(function MyComponent({}, {h}) {
+              return h(null, {}, [['div', {}, 'foo'], ['span', {}, 'bar']]);
+            });
+          `);
+        expect(output).toBe(expected);
+      });
+      it("should transform a basic web-component with fragments and props", () => {
+        const input = `
+            export default function MyComponent(props) {
+              return <>
+                <div>{props.foo}</div>
+                <span>{props.bar}</span>
+              </>
+            }
+          `;
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            export default brisaElement(function MyComponent(props, {h}) {
+              return h(null, {}, [['div', {}, () => props.foo.value], ['span', {}, () => props.bar.value]]);
+            }, ['foo', 'bar']);
+          `);
+
+        expect(output).toBe(expected);
+      });
+
+      it.todo(
+        'should use a different name for the "h" function if there is a conflict with the name of a prop',
+      );
+      it.todo(
+        'should use a different name for the "h" function if there is a conflict with the name of a variable',
+      );
     });
   });
 });

@@ -68,6 +68,12 @@ function getReturnStatementWithHyperScript(
   );
   const returnStatement = componentBody[returnStatementIndex] as any;
   const [tagName, props, children] = returnStatement?.argument?.elements ?? [];
+  let componentChildren = convertPropsToReactiveProps(
+    children,
+    componentParams,
+    propsNames,
+  );
+
   const newReturnStatement = {
     type: "ReturnStatement",
     argument: {
@@ -79,7 +85,11 @@ function getReturnStatementWithHyperScript(
       arguments: [
         tagName,
         props,
-        convertPropsToReactiveProps(children, componentParams, propsNames),
+        convertPropsToReactivePropsForInnerTags(
+          componentChildren,
+          componentParams,
+          propsNames,
+        ),
       ],
     },
   };
@@ -175,7 +185,7 @@ function convertPropsToReactiveProps(
         object: props,
         property: {
           type: "Identifier",
-          name: "someProp",
+          name: children.property?.name,
         },
         computed: false,
       },
@@ -188,4 +198,25 @@ function convertPropsToReactiveProps(
   }
 
   return children;
+}
+
+function convertPropsToReactivePropsForInnerTags(
+  children: any,
+  componentsParams: ESTree.Parameter[],
+  propsNames: string[],
+) {
+  return JSON.parse(JSON.stringify(children), (key, value) => {
+    if (
+      value?.type === "ArrayExpression" &&
+      value?.elements?.length === 3 &&
+      !Array.isArray(value?.elements[0])
+    ) {
+      value.elements[2] = convertPropsToReactiveProps(
+        value.elements[2],
+        componentsParams,
+        propsNames,
+      );
+    }
+    return value;
+  });
 }

@@ -39,6 +39,33 @@ describe("utils", () => {
         `),
         );
       });
+
+      it("should work with fragments and props", () => {
+        const code = `
+          export default function MyComponent(props) {
+            return [null, {}, [["div", {}, props.foo], ["span", {}, props.bar]]]
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [component] = getWebComponentAst(ast) as [
+          ESTree.FunctionDeclaration,
+        ];
+        const propNames = getPropsNames(component);
+        const [importDeclaration, wrappedComponent] = defineBrisaElement(
+          component,
+          propNames,
+        );
+        expect(output(importDeclaration)).toBe(
+          'import {brisaElement} from "brisa/client";',
+        );
+        expect(output(wrappedComponent)).toBe(
+          toInline(`
+          brisaElement(function MyComponent(props, {h}) {
+              return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
+          }, ["foo", "bar"])
+        `),
+        );
+      });
     });
   });
 });

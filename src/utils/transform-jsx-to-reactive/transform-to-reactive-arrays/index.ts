@@ -48,7 +48,7 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
       elements: [
         {
           type: "Literal",
-          value: tagName,
+          value: tagName ?? null,
         },
         {
           type: "ObjectExpression",
