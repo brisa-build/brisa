@@ -267,6 +267,25 @@ describe("utils", () => {
           `Docs: https://brisa.dev/docs/component-details/web-components`,
         ]);
       });
+
+      it("should transform multi JSX interpolations like fragments", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent() {
+            const example = 'example';
+            return  <div>{'this'} {'is'} {1} {example}</div>
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = toInline(`
+          export default function MyComponent() {
+            const example = 'example';
+            return ['div', {}, ['this', ' ', 'is', ' ', 1, ' ', example].join('')];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
     });
   });
 });

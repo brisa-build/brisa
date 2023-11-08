@@ -59,13 +59,44 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
       restOfProps.push({ ...prop, value });
     }
 
-    let childrenNode = hasNodeASignal(children)
-      ? wrapWithArrowFn(children)
-      : children;
+    // <div>{'some'} {'example'}</div> -> ["div", {}, ["some", " ", "example"].join("")]
+    if (
+      children.type === "ArrayExpression" &&
+      children.elements.length &&
+      children.elements.every(
+        (el: any) =>
+          el.type !== "ObjectExpression" && el.type !== "ArrayExpression",
+      )
+    ) {
+      children = {
+        type: "CallExpression",
+        callee: {
+          type: "MemberExpression",
+          object: {
+            type: "ArrayExpression",
+            elements: children.elements,
+          },
+          computed: false,
+          property: {
+            type: "Identifier",
+            name: "join",
+          },
+        },
+        arguments: [
+          {
+            type: "Literal",
+            value: "",
+          },
+        ],
+      };
+    }
+
+    // <div>{someVar.value}</div> -> ["div", {}, () => someVar.value]
+    if (hasNodeASignal(children)) children = wrapWithArrowFn(children);
 
     // <span></span> -> ["span", {}, ""]
-    if (Array.isArray(childrenNode) && childrenNode.length === 0) {
-      childrenNode = {
+    if (Array.isArray(children) && children.length === 0) {
+      children = {
         type: "Literal",
         value: "",
       };
@@ -82,7 +113,7 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
           type: "ObjectExpression",
           properties: tagName == null ? {} : restOfProps,
         },
-        childrenNode,
+        children,
       ],
     };
   }) as ESTree.Program;

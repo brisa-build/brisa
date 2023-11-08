@@ -288,7 +288,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => { });
+        mockLog.mockImplementation(() => {});
 
         const input = `
             function Test(props) {
@@ -352,12 +352,76 @@ describe("utils", () => {
         ]);
       });
 
-      it.todo(
-        'should use a different name for the "h" function if there is a conflict with the name of a prop',
-      );
-      it.todo(
-        'should use a different name for the "h" function if there is a conflict with the name of a variable',
-      );
+      it('should use a different name for the "h" function if there is a conflict with the name of a prop', () => {
+        const input = `
+            export default function MyComponent({ h }) {
+              return <div>{h}</div>
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            export default brisaElement(function MyComponent({h}, {h: h$}) {
+              return h$('div', {}, () => h.value);
+            }, ['h']);
+          `);
+
+        expect(output).toBe(expected);
+      });
+      it('should use a different name for the "h" function if there is a conflict with the name of a variable', () => {
+        const input = `
+            export default function MyComponent({}, {state}) {
+              const h = state(3);
+              return <div>{h.value}</div>
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            export default brisaElement(function MyComponent({}, {state, h: h$}) {
+              const h = state(3);
+              return h$('div', {}, () => h.value);
+            });
+          `);
+
+        expect(output).toBe(expected);
+      });
+
+      it('should use a different name for the "h" function if there are multi conflict with the name of a variable', () => {
+        const input = `
+            export default function MyComponent({}, context) {
+              const h = context.state(3);
+              const h$ = "foo";
+              return <div>{h.value} {h$}</div>
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            export default brisaElement(function MyComponent({}, {h: h$$, ...context}) {
+              const h = context.state(3);
+              const h$ = "foo";
+              return h$$('div', {}, () => [h.value, ' ', h$].join(''));
+            });
+          `);
+
+        expect(output).toBe(expected);
+      });
     });
   });
 });

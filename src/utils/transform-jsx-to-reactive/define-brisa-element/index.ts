@@ -5,6 +5,7 @@ import wrapWithArrowFn from "../wrap-with-arrow-fn";
 export default function defineBrisaElement(
   component: ESTree.FunctionDeclaration,
   componentPropsNames: string[],
+  hyperScriptVarName: string = "h",
 ) {
   const componentParams = component.params;
   const componentBody = component?.body?.body as ESTree.Statement[];
@@ -13,6 +14,7 @@ export default function defineBrisaElement(
       componentBody,
       componentParams,
       componentPropsNames,
+      hyperScriptVarName,
     );
 
   const newComponentBody = componentBody.map((node, index) =>
@@ -31,7 +33,7 @@ export default function defineBrisaElement(
     async: false,
   };
 
-  declareH(newComponentAst);
+  declareH(newComponentAst, hyperScriptVarName);
 
   const args = [newComponentAst] as ESTree.Expression[];
 
@@ -62,6 +64,7 @@ function getReturnStatementWithHyperScript(
   componentBody: ESTree.Statement[],
   componentParams: ESTree.Parameter[],
   propsNames: string[],
+  hyperScriptVarName: string,
 ) {
   const returnStatementIndex = componentBody.findIndex(
     (node: any) => node.type === "ReturnStatement",
@@ -80,7 +83,7 @@ function getReturnStatementWithHyperScript(
       type: "CallExpression",
       callee: {
         type: "Identifier",
-        name: "h",
+        name: hyperScriptVarName,
       },
       arguments: [
         tagName,
@@ -97,7 +100,24 @@ function getReturnStatementWithHyperScript(
   return [newReturnStatement, returnStatementIndex];
 }
 
-function declareH(componentAST: any) {
+function declareH(componentAST: any, hyperScriptVarName: string) {
+  const hProperty = {
+    type: "Property",
+    key: {
+      type: "Identifier",
+      name: "h",
+    },
+    value: {
+      type: "Identifier",
+      name: hyperScriptVarName,
+    },
+    kind: "init",
+    computed: false,
+    method: false,
+    shorthand: hyperScriptVarName === "h",
+  };
+
+  // convert function () {} to function ({}) {}
   if (!componentAST.params.length) {
     componentAST.params.push({
       type: "ObjectPattern",
@@ -105,26 +125,31 @@ function declareH(componentAST: any) {
     });
   }
 
-  componentAST.params.push({
-    type: "ObjectPattern",
-    properties: [
-      {
-        type: "Property",
-        key: {
-          type: "Identifier",
-          name: "h",
+  // convert function ({}) {} to function ({}, { h }) {}
+  if (componentAST.params.length === 1) {
+    componentAST.params.push({
+      type: "ObjectPattern",
+      properties: [hProperty],
+    });
+  }
+  // convert function ({}, { state }) {} to function ({}, { state, h }) {}
+  else if (componentAST.params[1]?.type === "ObjectPattern") {
+    componentAST.params[1].properties.push(hProperty);
+  }
+  // convert function ({}, context) {} to function ({ h, ...context }) {}
+  else if (componentAST.params[1]?.type === "Identifier") {
+    const props = componentAST.params[1];
+    componentAST.params[1] = {
+      type: "ObjectPattern",
+      properties: [
+        hProperty,
+        {
+          type: "RestElement",
+          argument: props,
         },
-        value: {
-          type: "Identifier",
-          name: "h",
-        },
-        kind: "init",
-        computed: false,
-        method: false,
-        shorthand: true,
-      },
-    ],
-  });
+      ],
+    };
+  }
 }
 
 function convertPropsToReactiveProps(
