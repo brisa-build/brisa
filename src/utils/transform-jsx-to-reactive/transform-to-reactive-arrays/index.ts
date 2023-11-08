@@ -1,6 +1,6 @@
 import { ESTree } from "meriyah";
-
-const JSX_NAME = new Set(["jsx", "jsxDEV"]);
+import { JSX_NAME, NO_REACTIVE_CHILDREN_EXPRESSION } from "../constants";
+import wrapWithArrowFn from "../wrap-with-arrow-fn";
 
 export default function transformToReactiveArrays(ast: ESTree.Program) {
   return JSON.parse(JSON.stringify(ast), (key, value) => {
@@ -36,8 +36,24 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
           type: "ObjectExpression",
           properties: restOfProps,
         },
-        children,
+        hasNodeASignal(children) ? wrapWithArrowFn(children) : children,
       ],
     };
   }) as ESTree.Program;
+}
+
+function hasNodeASignal(node: ESTree.Node) {
+  let hasSignal = false;
+
+  if (NO_REACTIVE_CHILDREN_EXPRESSION.has(node.type)) return hasSignal;
+
+  JSON.stringify(node, (key, value) => {
+    hasSignal ||=
+      value?.type === "MemberExpression" &&
+      value?.object?.type === "Identifier" &&
+      value?.property?.type === "Identifier" &&
+      value?.property?.name === "value";
+  });
+
+  return hasSignal;
 }

@@ -1,28 +1,6 @@
 import { ESTree } from "meriyah";
-
-const NO_REACTIVE_CHILDREN_EXPRESSION = new Set(["Literal", "ArrayExpression"]);
-
-// import {brisaElement} from "brisa/client";
-const importDeclaration = {
-  type: "ImportDeclaration",
-  specifiers: [
-    {
-      type: "ImportSpecifier",
-      imported: {
-        type: "Identifier",
-        name: "brisaElement",
-      },
-      local: {
-        type: "Identifier",
-        name: "brisaElement",
-      },
-    },
-  ],
-  source: {
-    type: "Literal",
-    value: "brisa/client",
-  },
-} as ESTree.ImportDeclaration;
+import { BRISA_IMPORT, NO_REACTIVE_CHILDREN_EXPRESSION } from "../constants";
+import wrapWithArrowFn from "../wrap-with-arrow-fn";
 
 export default function defineBrisaElement(
   component: ESTree.FunctionDeclaration,
@@ -77,7 +55,7 @@ export default function defineBrisaElement(
     arguments: args,
   };
 
-  return [importDeclaration, newComponent];
+  return [BRISA_IMPORT, newComponent];
 }
 
 function getReturnStatementWithHyperScript(
@@ -153,15 +131,9 @@ function convertPropsToReactiveProps(
   }
 
   const props = componentsParams[0];
-  const arrowFn = (body: ESTree.ArrowFunctionExpression["body"]) => ({
-    type: "ArrowFunctionExpression",
-    expression: true,
-    params: [],
-    body: body,
-  });
 
   if (propsNames.includes(children?.name)) {
-    return arrowFn({
+    return wrapWithArrowFn({
       type: "MemberExpression",
       object: {
         type: "Identifier",
@@ -178,7 +150,7 @@ function convertPropsToReactiveProps(
   if (props.type === "ObjectPattern" && children.type === "Identifier") {
     for (const prop of props.properties) {
       if (prop.value.name === children.name) {
-        return arrowFn({
+        return wrapWithArrowFn({
           type: "MemberExpression",
           object: children,
           property: {
@@ -196,7 +168,7 @@ function convertPropsToReactiveProps(
     children.object?.type === "Identifier" &&
     props.name === children.object?.name
   ) {
-    return arrowFn({
+    return wrapWithArrowFn({
       type: "MemberExpression",
       object: {
         type: "MemberExpression",

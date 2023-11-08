@@ -56,6 +56,28 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should transform JSX to an array if is a variable", () => {
+        const input = `
+            const element = <div>foo</div>
+          `;
+        const output = toInline(
+          transformJSXToReactive(input, "/src/components/my-component.tsx"),
+        );
+        const expected = toInline(`const element = ['div', {}, 'foo'];`);
+        expect(output).toBe(expected);
+      });
+
+      it("should transform JSX to an array if is a variable with a function", () => {
+        const input = `
+            const element = () => <div>foo</div>
+          `;
+        const output = toInline(
+          transformJSXToReactive(input, "/src/components/my-component.tsx"),
+        );
+        const expected = toInline(`const element = () => ['div', {}, 'foo'];`);
+        expect(output).toBe(expected);
+      });
+
       it("should transform a basic web-component", () => {
         const input = `
             export default function MyComponent() {
