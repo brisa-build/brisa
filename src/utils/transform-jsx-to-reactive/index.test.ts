@@ -1,5 +1,6 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it, spyOn } from "bun:test";
 import transformJSXToReactive from ".";
+import getConstants from "../../constants";
 
 const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 
@@ -241,6 +242,114 @@ describe("utils", () => {
           `);
 
         expect(output).toBe(expected);
+      });
+
+      it("should transform a basic web-component with fragments and props with a conflict with another component", () => {
+        const input = `
+            function Test(props) {
+              return (
+                <>
+                  <div>{props.bla}</div>
+                  <span>{props.another}</span>
+                </>
+              )
+            }
+
+            export default function MyComponent(props) {
+              return (
+                <>
+                  <div>{props.foo}</div>
+                  <span>{props.bar}</span>
+                </>
+              )
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            let Test = function (props) {
+              return [null, {}, [['div', {}, props.bla], ['span', {}, props.another]]];
+            };
+
+            export default brisaElement(function MyComponent(props, {h}) {
+              return h(null, {}, [['div', {}, () => props.foo.value], ['span', {}, () => props.bar.value]]);
+            }, ['foo', 'bar']);
+          `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should not allow to consume web-components as server-components and log with an error", () => {
+        const { LOG_PREFIX } = getConstants();
+        const mockLog = spyOn(console, "log");
+
+        mockLog.mockImplementation(() => { });
+
+        const input = `
+            function Test(props) {
+              return (
+                <div>{props.children}</div>
+              )
+            }
+
+            export default function MyComponent(props) {
+              return (
+                <Test someProp={true}>
+                  <div>{props.foo}</div>
+                  <span>{props.bar}</span>
+                </Test>
+              )
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement} from "brisa/client";
+
+            let Test = function (props) {
+              return ['div', {}, props.children];
+            };
+
+            export default brisaElement(function MyComponent(props, {h}) {
+              return h(null, {}, [['div', {}, () => props.foo.value], ['span', {}, () => props.bar.value]]);
+            }, ['foo', 'bar']);
+          `);
+        const logs = mockLog.mock.calls.slice(0);
+        mockLog.mockRestore();
+        expect(output).toBe(expected);
+        expect(logs[0]).toEqual([LOG_PREFIX.ERROR, `Ops! Error:`]);
+        expect(logs[1]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
+        expect(logs[2]).toEqual([
+          LOG_PREFIX.ERROR,
+          `You can't use "Test" variable as a tag name.`,
+        ]);
+        expect(logs[3]).toEqual([
+          LOG_PREFIX.ERROR,
+          `Please use a string instead. You cannot use server-components inside web-components directly.`,
+        ]);
+        expect(logs[4]).toEqual([
+          LOG_PREFIX.ERROR,
+          `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`,
+        ]);
+        expect(logs[5]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
+        expect(logs[6]).toEqual([
+          LOG_PREFIX.ERROR,
+          `Docs: https://brisa.dev/docs/component-details/web-components`,
+        ]);
       });
 
       it.todo(
