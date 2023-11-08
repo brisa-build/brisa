@@ -21,8 +21,26 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
         children = prop.key.value ?? prop.value;
         continue;
       }
+      const isPropAnEvent = prop.key.name.startsWith("on");
 
-      restOfProps.push(prop);
+      value =
+        isPropAnEvent || !hasNodeASignal(prop.value)
+          ? prop.value
+          : wrapWithArrowFn(prop.value);
+
+      restOfProps.push({ ...prop, value });
+    }
+
+    let childrenNode = hasNodeASignal(children)
+      ? wrapWithArrowFn(children)
+      : children;
+
+    // <span></span> -> ["span", {}, ""]
+    if (Array.isArray(childrenNode) && childrenNode.length === 0) {
+      childrenNode = {
+        type: "Literal",
+        value: "",
+      };
     }
 
     return {
@@ -36,7 +54,7 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
           type: "ObjectExpression",
           properties: restOfProps,
         },
-        hasNodeASignal(children) ? wrapWithArrowFn(children) : children,
+        childrenNode,
       ],
     };
   }) as ESTree.Program;
