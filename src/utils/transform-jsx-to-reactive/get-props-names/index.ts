@@ -3,7 +3,7 @@ import { ESTree } from "meriyah";
 export default function getPropsNames(
   webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression,
 ) {
-  const propsAst = webComponentAst.params[0];
+  const propsAst = webComponentAst?.params?.[0];
 
   if (propsAst?.type === "ObjectPattern") {
     return propsAst.properties.map((prop) => (prop as any).key.name);
