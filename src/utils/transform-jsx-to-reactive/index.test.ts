@@ -571,6 +571,71 @@ describe("utils", () => {
       expect(output).toBe(expected);
     });
 
+    it("should wrap reactivity returning a string with a prop concatenated with +", () => {
+      const input = `
+          export default function MyComponent({foo}) {
+            return 'Hello ' + foo
+          }
+        `;
+
+      const output = toInline(
+        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+      );
+
+      const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo}, {h}) {
+            return h(null, {}, () => 'Hello ' + foo.value);
+          }, ['foo']);
+        `);
+
+      expect(output).toBe(expected);
+    });
+
+    it("should wrap reactivity returning a string with a prop concatenated with multiple +", () => {
+      const input = `
+          export default function MyComponent({foo, bar, baz}) {
+            return "Hello " + foo + " " + bar + " " +  baz
+          }
+        `;
+
+      const output = toInline(
+        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+      );
+
+      const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo, bar, baz}, {h}) {
+            return h(null, {}, () => 'Hello ' + foo.value + ' ' + bar.value + ' ' + baz.value);
+          }, ['foo', 'bar', 'baz']);
+        `);
+
+      expect(output).toBe(expected);
+    });
+
+    it.todo(
+      "should work with a component as an arrow function without blockstatement that return a string with a prop",
+      () => {
+        const input = `
+          export default (props) => 'Hello World' + props.foo
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function (props, {h}) {return h(null, {}, () => 'Hello ' + foo.value);});
+        `);
+
+        expect(output).toBe(expected);
+      },
+    );
+
     it("should not use HyperScript with a console.log in an arrow function with blockstatement", () => {
       const input = `
           export default (props) => { console.log('Hello World') }
@@ -717,30 +782,5 @@ describe("utils", () => {
     it.todo("should be possible to set default props inside arguments");
 
     it.todo("should be possible to set default props inside code");
-
-    it.todo(
-      "should wrap reactivity returning a string with a prop concatenated",
-      () => {
-        const input = `
-          export default function MyComponent({foo}) {
-            return 'Hello ' + foo
-          }
-        `;
-
-        const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-        );
-
-        const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function MyComponent({foo}, {h}) {
-            return h(null, {}, () => ['Hello ', foo.value].join(''));
-          }, ['foo']);
-        `);
-
-        expect(output).toBe(expected);
-      },
-    );
   });
 });

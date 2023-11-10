@@ -88,26 +88,44 @@ export default function getReactiveReturnStatement(
     );
   }
 
-  // Cases that the component return a literal, ex: return "foo"
+  // Cases that the component return a literal, ex: return "foo" or bynary expression, ex: return "foo" + "bar"
   else if (
     !tagName &&
     !props &&
     !componentChildren &&
     (returnStatement?.argument == null ||
-      returnStatement?.argument?.type === "Literal")
+      returnStatement?.argument?.type === "Literal" ||
+      returnStatement?.argument?.type === "BinaryExpression")
   ) {
-    tagName = {
-      type: "Literal",
-      value: null,
-    };
-    props = {
-      type: "ObjectExpression",
-      properties: [],
-    };
-    componentChildren = {
-      type: "Literal",
-      value: returnStatement?.argument?.value ?? "",
-    };
+    const children = returnStatement?.argument;
+
+    tagName = { type: "Literal", value: null };
+    props = { type: "ObjectExpression", properties: [] };
+    componentChildren = { type: "Literal", value: children?.value ?? "" };
+
+    // Transforming:
+    //  "SomeString" + props.foo + " " + props.bar
+    // to:
+    //   () => "SomeString" + props.foo.value + " " + props.bar.value
+    if (children?.type === "BinaryExpression" && children?.operator === "+") {
+      const reactiveBinaryExpression = (item: any): any => {
+        if (item?.type === "BinaryExpression") {
+          return {
+            ...item,
+            left: reactiveBinaryExpression(item.left),
+            right: reactiveBinaryExpression(item.right),
+          };
+        }
+
+        return transformToReactiveProps(item, {
+          componentParams,
+          propsNames,
+          applyArrowFn: false,
+        });
+      };
+
+      componentChildren = wrapWithArrowFn(reactiveBinaryExpression(children));
+    }
   }
 
   const newReturnStatement = {
