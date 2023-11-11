@@ -50,7 +50,7 @@ describe("utils", () => {
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(renamedOutput).toEqual(expected);
       });
       it("should return props names if the props are an identifier an are used in a conditional", () => {
         const [input] = inputCode(`
@@ -65,7 +65,7 @@ describe("utils", () => {
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(renamedOutput).toEqual(expected);
       });
       it("should return props names if the props are an identifier an are used in a function", () => {
         const [input] = inputCode(`
@@ -80,7 +80,7 @@ describe("utils", () => {
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(renamedOutput).toEqual(expected);
       });
       it("should return the unique props names if the props are an identifier an are used in different places", () => {
         const [input] = inputCode(`
@@ -95,7 +95,7 @@ describe("utils", () => {
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(renamedOutput).toEqual(expected);
       });
       it("should return props names if the props are destructured", () => {
         const [input] = inputCode(`
@@ -110,7 +110,7 @@ describe("utils", () => {
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(renamedOutput).toEqual(expected);
       });
 
       it("should return props names used with desctructuring and spread", () => {
@@ -126,7 +126,7 @@ describe("utils", () => {
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(renamedOutput).toEqual(expected);
       });
 
       it("should return props names used different tecniques", () => {
@@ -143,7 +143,23 @@ describe("utils", () => {
         const expected = ["name", "dog", "cat"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(renamedOutput).toEqual(expected);
+      });
+
+      it("should return propms names using variable declaration", () => {
+        const [input] = inputCode(`
+          export default function MyComponent(props) {
+            const renamedName = props.name;
+            return <div>{renamedName}</div>
+          }
+        `);
+        const [propNames, renamedOutput] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = ["name"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(["renamedName", "name"]);
       });
 
       it("should return props names without influence of other variables outside the component", () => {
@@ -164,7 +180,7 @@ describe("utils", () => {
         const expected = ["name", "dog", "cat"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(renamedOutput).toEqual(expected);
       });
     });
   });

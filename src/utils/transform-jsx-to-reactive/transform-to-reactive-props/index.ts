@@ -14,9 +14,17 @@ export default function transformToReactiveProps(
 
   const [propsNames, renamedPropsNames] = getPropsNames(component);
   const propsNamesSet = new Set([...propsNames, ...renamedPropsNames]);
+
   const componentBodyWithPropsDotValue = JSON.parse(
     JSON.stringify(component.body),
     (key, value) => {
+      // Avoid adding .value in props used inside a variable declaration
+      if (value?.type === "VariableDeclaration") {
+        return JSON.parse(JSON.stringify(value), (key, value) => {
+          return value.isSignal ? value.object : value;
+        });
+      }
+
       if (value?.type === "Identifier" && propsNamesSet.has(value?.name)) {
         return {
           type: "MemberExpression",
@@ -26,6 +34,7 @@ export default function transformToReactiveProps(
             name: "value",
           },
           computed: false,
+          isSignal: true,
         };
       }
 

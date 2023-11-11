@@ -10,9 +10,13 @@ export default function getPropsNames(
   if (propsAst?.type === "ObjectPattern") {
     for (const prop of propsAst.properties as any[]) {
       if (prop.type === "RestElement") {
-        propNames.push(
-          ...getPropsNamesFromIdentifier(prop.argument.name, webComponentAst),
+        const [names, renamedNames] = getPropsNamesFromIdentifier(
+          prop.argument.name,
+          webComponentAst,
         );
+
+        propNames.push(...names);
+        renamedPropNames.push(...renamedNames);
         continue;
       }
 
@@ -25,7 +29,7 @@ export default function getPropsNames(
 
   if (propsAst?.type === "Identifier") {
     const identifier = propsAst.name;
-    return [getPropsNamesFromIdentifier(identifier, webComponentAst), []];
+    return getPropsNamesFromIdentifier(identifier, webComponentAst);
   }
 
   return [[], []];
@@ -33,6 +37,7 @@ export default function getPropsNames(
 
 function getPropsNamesFromIdentifier(identifier: string, ast: any) {
   const propsNames = new Set<string>([]);
+  const renamedPropsNames = new Set<string>([]);
 
   JSON.stringify(ast, (key, value) => {
     // props.name
@@ -42,6 +47,7 @@ function getPropsNamesFromIdentifier(identifier: string, ast: any) {
       value?.property?.type === "Identifier"
     ) {
       propsNames.add(value?.property?.name);
+      renamedPropsNames.add(value?.property?.name);
     }
 
     // const { name } = props
@@ -51,13 +57,26 @@ function getPropsNamesFromIdentifier(identifier: string, ast: any) {
       value?.id?.properties
     ) {
       for (const prop of value.id.properties) {
-        // avoid spread props like: const { name, ...rest } = props
+        // spread props like: const { name, ...rest } = props
         if (prop?.key?.name) propsNames.add(prop.key.name);
+        // renamed props like: const { name: renamedName } = props
+        if (prop?.value?.name) renamedPropsNames.add(prop.value.name);
       }
+    }
+
+    // const foo = props.name
+    if (
+      value?.type === "VariableDeclarator" &&
+      value?.init?.object?.type === "Identifier" &&
+      value?.init?.object?.name === identifier &&
+      value?.init?.property?.type === "Identifier"
+    ) {
+      propsNames.add(value?.init?.property?.name);
+      renamedPropsNames.add(value?.id?.name);
     }
 
     return value;
   });
 
-  return [...propsNames];
+  return [[...propsNames], [...renamedPropsNames]];
 }

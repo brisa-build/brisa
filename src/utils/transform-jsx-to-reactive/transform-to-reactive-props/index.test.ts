@@ -138,6 +138,58 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
         expect(propNames).toEqual(["foo", "bar", "baz"]);
       });
+
+      it("should transform all renamed props via variable declaration", () => {
+        const code = `
+          export default function InsideWebComoponent(props) {
+            const foot = props.foo;
+            const bart = props.bar;
+            const bazt = props.baz;
+            console.log(foot);
+            if(bart) return <div>{bazt}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst, propNames] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          export default function InsideWebComoponent(props) {
+            const foot = props.foo;
+            const bart = props.bar;
+            const bazt = props.baz;
+            console.log(foot.value);
+            if (bart.value) return jsxDEV("div", {children: bazt.value}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(propNames).toEqual(["foo", "bar", "baz"]);
+      });
+
+      it("should transform all renamed props via variable declaration and destructuring", () => {
+        const code = `
+          export default function InsideWebComoponent(props) {
+            const { foo: foot, bar: bart, baz: bazt } = props;
+            console.log(foot);
+            if(bart) return <div>{bazt}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst, propNames] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          export default function InsideWebComoponent(props) {
+            const {foo: foot, bar: bart, baz: bazt} = props;
+            console.log(foot.value);
+            if (bart.value) return jsxDEV("div", {children: bazt.value}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(propNames).toEqual(["foo", "bar", "baz"]);
+      });
     });
   });
 });
