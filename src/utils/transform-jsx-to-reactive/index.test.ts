@@ -511,258 +511,11 @@ describe("utils", () => {
 
         expect(output).toBe(expected);
       });
-    });
 
-    it("should wrap conditional renders inside an hyperScript function", () => {
-      const input = `
-          export default function MyComponent({show}) {
-            return show ? <div>foo</div> : 'Empty'
-          }
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function MyComponent({show}, {h}) {
-            return h(null, {}, () => show.value ? ['div', {}, 'foo'] : 'Empty');
-          }, ['show']);
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should work with a component as an arrow function without blockstatement", () => {
-      const input = `
-          export default (props) => <div>{props.foo}</div>
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function (props, {h}) {return h('div', {}, () => props.foo.value);}, ['foo']);
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should work with a component as an arrow function without blockstatement that return a literal", () => {
-      const input = `
-          export default (props) => 'Hello World'
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function (props, {h}) {return h(null, {}, 'Hello World');});
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should wrap reactivity returning a string with a prop concatenated with +", () => {
-      const input = `
-          export default function MyComponent({foo}) {
-            return 'Hello ' + foo
-          }
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function MyComponent({foo}, {h}) {
-            return h(null, {}, () => 'Hello ' + foo.value);
-          }, ['foo']);
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should wrap reactivity returning a string with a prop concatenated with multiple +", () => {
-      const input = `
-          export default function MyComponent({foo, bar, baz}) {
-            return "Hello " + foo + " " + bar + " " +  baz
-          }
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function MyComponent({foo, bar, baz}, {h}) {
-            return h(null, {}, () => 'Hello ' + foo.value + ' ' + bar.value + ' ' + baz.value);
-          }, ['foo', 'bar', 'baz']);
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should wrap reactivity returning a string with a prop concatenated with multiple + and props without destructuring", () => {
-      const input = `
-          export default function MyComponent(props) {
-            return "Hello " + props.foo + " " + props.bar + " " +  props.baz
-          }
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function MyComponent(props, {h}) {
-            return h(null, {}, () => 'Hello ' + props.foo.value + ' ' + props.bar.value + ' ' + props.baz.value);
-          }, ['foo', 'bar', 'baz']);
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should wrap reactivity returning a string with a prop concatenated with multiple + and arrow fn", () => {
-      const input = `
-          export default (props) => {
-            return "Hello " + props.foo + " " + props.bar + " " +  props.baz
-          }
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function (props, {h}) {
-            return h(null, {}, () => 'Hello ' + props.foo.value + ' ' + props.bar.value + ' ' + props.baz.value);
-          }, ['foo', 'bar', 'baz']);
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should work with a component as an arrow function without blockstatement that return a string with a prop", () => {
-      const input = `
-          export default (props) => 'Hello World' + props.foo
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function (props, {h}) {return h(null, {}, () => 'Hello World' + props.foo.value);}, ['foo']);
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should not use HyperScript with a console.log in an arrow function with blockstatement", () => {
-      const input = `
-          export default (props) => { console.log('Hello World') }
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function (props, {h}) {console.log('Hello World');});
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should not use HyperScript with a console.log in an arrow function without blockstatement", () => {
-      const input = `
-          export default (props) => console.log('Hello World' + props.foo)
-        `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-          import {brisaElement} from "brisa/client";
-
-          export default brisaElement(function (props, {h}) {return h(null, {}, () => console.log('Hello World' + props.foo.value));}, ['foo']);
-        `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should work with a component as an arrow function with blockstatement and the default export on a different line", () => {
-      const input = `
-        const MyComponent = (props) => <div>{props.foo}</div>
-        export default MyComponent
-      `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-        import {brisaElement} from "brisa/client";
-
-        export default brisaElement(function (props, {h}) {return h('div', {}, () => props.foo.value);}, ['foo']);
-      `);
-
-      expect(output).toBe(expected);
-    });
-
-    it("should work default export on a different line in a function declaration", () => {
-      const input = `
-        function MyComponent(props) {
-          return <div>{props.foo}</div>
-        }
-        export default MyComponent
-      `;
-
-      const output = toInline(
-        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-      );
-
-      const expected = toInline(`
-        import {brisaElement} from "brisa/client";
-
-        export default brisaElement(function (props, {h}) {
-          return h('div', {}, () => props.foo.value);
-        }, ['foo']);
-      `);
-
-      expect(output).toBe(expected);
-    });
-
-    it.todo(
-      "should wrap conditional renders in different returns inside an hyperScript function",
-      () => {
+      it("should wrap conditional renders inside an hyperScript function", () => {
         const input = `
           export default function MyComponent({show}) {
-            if (show) return <div>foo</div>
-            const bar = <b>bar</b>
-            return <span>bar</span>
+            return show ? <div>foo</div> : 'Empty'
           }
         `;
 
@@ -774,6 +527,255 @@ describe("utils", () => {
           import {brisaElement} from "brisa/client";
 
           export default brisaElement(function MyComponent({show}, {h}) {
+            return h(null, {}, () => show.value ? ['div', {}, 'foo'] : 'Empty');
+          }, ['show']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should work with a component as an arrow function without blockstatement", () => {
+        const input = `
+          export default (props) => <div>{props.foo}</div>
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function (props, {h}) {return h('div', {}, () => props.foo.value);}, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should work with a component as an arrow function without blockstatement that return a literal", () => {
+        const input = `
+          export default (props) => 'Hello World'
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function (props, {h}) {return h(null, {}, 'Hello World');});
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should wrap reactivity returning a string with a prop concatenated with +", () => {
+        const input = `
+          export default function MyComponent({foo}) {
+            return 'Hello ' + foo
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo}, {h}) {
+            return h(null, {}, () => 'Hello ' + foo.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should wrap reactivity returning a string with a prop concatenated with multiple +", () => {
+        const input = `
+          export default function MyComponent({foo, bar, baz}) {
+            return "Hello " + foo + " " + bar + " " +  baz
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo, bar, baz}, {h}) {
+            return h(null, {}, () => 'Hello ' + foo.value + ' ' + bar.value + ' ' + baz.value);
+          }, ['foo', 'bar', 'baz']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should wrap reactivity returning a string with a prop concatenated with multiple + and props without destructuring", () => {
+        const input = `
+          export default function MyComponent(props) {
+            return "Hello " + props.foo + " " + props.bar + " " +  props.baz
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function MyComponent(props, {h}) {
+            return h(null, {}, () => 'Hello ' + props.foo.value + ' ' + props.bar.value + ' ' + props.baz.value);
+          }, ['foo', 'bar', 'baz']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should wrap reactivity returning a string with a prop concatenated with multiple + and arrow fn", () => {
+        const input = `
+          export default (props) => {
+            return "Hello " + props.foo + " " + props.bar + " " +  props.baz
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function (props, {h}) {
+            return h(null, {}, () => 'Hello ' + props.foo.value + ' ' + props.bar.value + ' ' + props.baz.value);
+          }, ['foo', 'bar', 'baz']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should work with a component as an arrow function without blockstatement that return a string with a prop", () => {
+        const input = `
+          export default (props) => 'Hello World' + props.foo
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function (props, {h}) {return h(null, {}, () => 'Hello World' + props.foo.value);}, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should not use HyperScript with a console.log in an arrow function with blockstatement", () => {
+        const input = `
+          export default (props) => { console.log('Hello World') }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function (props, {h}) {console.log('Hello World');});
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should not use HyperScript with a console.log in an arrow function without blockstatement", () => {
+        const input = `
+          export default (props) => console.log('Hello World' + props.foo)
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function (props, {h}) {return h(null, {}, () => console.log('Hello World' + props.foo.value));}, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should work with a component as an arrow function with blockstatement and the default export on a different line", () => {
+        const input = `
+        const MyComponent = (props) => <div>{props.foo}</div>
+        export default MyComponent
+      `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+        import {brisaElement} from "brisa/client";
+
+        export default brisaElement(function (props, {h}) {return h('div', {}, () => props.foo.value);}, ['foo']);
+      `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should work default export on a different line in a function declaration", () => {
+        const input = `
+        function MyComponent(props) {
+          return <div>{props.foo}</div>
+        }
+        export default MyComponent
+      `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+        import {brisaElement} from "brisa/client";
+
+        export default brisaElement(function (props, {h}) {
+          return h('div', {}, () => props.foo.value);
+        }, ['foo']);
+      `);
+
+        expect(output).toBe(expected);
+      });
+
+      it.todo(
+        "should wrap conditional renders in different returns inside an hyperScript function",
+        () => {
+          const input = `
+          export default function MyComponent({show}) {
+            if (show) return <div>foo</div>
+            const bar = <b>bar</b>
+            return <span>bar</span>
+          }
+        `;
+
+          const output = toInline(
+            transformJSXToReactive(
+              input,
+              "src/web-components/my-component.tsx",
+            ),
+          );
+
+          const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function MyComponent({show}, {h}) {
             return h(null, {}, () => {
               if (show.value) return ['div', {}, 'foo'];
               const bar = ['b', {}, 'bar'];
@@ -782,14 +784,14 @@ describe("utils", () => {
           }, ['show']);
         `);
 
-        expect(output).toBe(expected);
-      },
-    );
+          expect(output).toBe(expected);
+        },
+      );
 
-    it.todo(
-      "should wrap conditional renders using switch-case and different returns inside an hyperScript function",
-      () => {
-        const input = `
+      it.todo(
+        "should wrap conditional renders using switch-case and different returns inside an hyperScript function",
+        () => {
+          const input = `
           export default function MyComponent({show}) {
             switch (show) {
               case true:
@@ -802,11 +804,14 @@ describe("utils", () => {
           }
         `;
 
-        const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-        );
+          const output = toInline(
+            transformJSXToReactive(
+              input,
+              "src/web-components/my-component.tsx",
+            ),
+          );
 
-        const expected = toInline(`
+          const expected = toInline(`
           import {brisaElement} from "brisa/client";
 
           export default brisaElement(function MyComponent({show}, {h}) {
@@ -823,21 +828,18 @@ describe("utils", () => {
           }, ['show']);
         `);
 
-        expect(output).toBe(expected);
-      },
-    );
+          expect(output).toBe(expected);
+        },
+      );
 
-    it.todo(
-      "should work with attributes as boolean as <dialog open />",
-      () => {},
-    );
+      it.todo(
+        "should work with attributes as boolean as <dialog open />",
+        () => {},
+      );
 
-    it.todo(
-      "should add propName.value when is used whatever in the component code: inside an if/else, console.log, etc",
-    );
+      it.todo("should be possible to set default props inside arguments");
 
-    it.todo("should be possible to set default props inside arguments");
-
-    it.todo("should be possible to set default props inside code");
+      it.todo("should be possible to set default props inside code");
+    });
   });
 });
