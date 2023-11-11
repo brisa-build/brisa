@@ -17,7 +17,7 @@ export default function transformToReactiveProps(
 
   const componentBodyWithPropsDotValue = JSON.parse(
     JSON.stringify(component.body),
-    (key, value) => {
+    function (key, value) {
       // Avoid adding .value in props used inside a variable declaration
       if (value?.type === "VariableDeclaration") {
         return JSON.parse(JSON.stringify(value), (key, value) => {
@@ -25,7 +25,13 @@ export default function transformToReactiveProps(
         });
       }
 
-      if (value?.type === "Identifier" && propsNamesSet.has(value?.name)) {
+      const isObjectProperty = this?.type === "Property" && this?.key === value;
+
+      if (
+        value?.type === "Identifier" &&
+        propsNamesSet.has(value?.name) &&
+        !isObjectProperty
+      ) {
         return {
           type: "MemberExpression",
           object: value,

@@ -21,6 +21,28 @@ export const BRISA_IMPORT = {
         name: "brisaElement",
       },
     },
+    {
+      type: "ImportSpecifier",
+      imported: {
+        type: "Identifier",
+        name: "_on",
+      },
+      local: {
+        type: "Identifier",
+        name: "_on",
+      },
+    },
+    {
+      type: "ImportSpecifier",
+      imported: {
+        type: "Identifier",
+        name: "_off",
+      },
+      local: {
+        type: "Identifier",
+        name: "_off",
+      },
+    },
   ],
   source: {
     type: "Literal",
