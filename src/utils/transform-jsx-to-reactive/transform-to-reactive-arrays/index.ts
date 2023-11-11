@@ -4,7 +4,7 @@ import wrapWithArrowFn from "../wrap-with-arrow-fn";
 import getConstants from "../../../constants";
 
 export default function transformToReactiveArrays(ast: ESTree.Program) {
-  const { LOG_PREFIX } = getConstants();
+  const { LOG_PREFIX, BOOLEANS_IN_HTML } = getConstants();
 
   return JSON.parse(JSON.stringify(ast), (key, value) => {
     if (
@@ -44,12 +44,40 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
     const restOfProps = [];
     let children: any = [];
 
-    for (const prop of props) {
-      if (prop.key.name === "children" || prop.key.value === "children") {
+    for (let prop of props) {
+      const name = prop.key?.name ?? prop.key?.object?.name;
+
+      if (name === "children" || prop.key.value === "children") {
         children = prop.key.value ?? prop.value;
         continue;
       }
-      const isPropAnEvent = prop.key.name.startsWith("on");
+
+      // <div open={true} /> -> <div open />
+      if (BOOLEANS_IN_HTML.has(name)) {
+        prop.shorthand = false;
+
+        if (typeof prop.value?.value === "boolean") {
+          prop.value = {
+            type: "Identifier",
+            name: prop.value.value ? "_on" : "_off",
+          };
+        } else {
+          prop.value = {
+            type: "ConditionalExpression",
+            test: prop.value,
+            consequent: {
+              type: "Identifier",
+              name: "_on",
+            },
+            alternate: {
+              type: "Identifier",
+              name: "_off",
+            },
+          };
+        }
+      }
+
+      const isPropAnEvent = name.startsWith("on");
 
       value =
         isPropAnEvent || !hasNodeASignal(prop.value)

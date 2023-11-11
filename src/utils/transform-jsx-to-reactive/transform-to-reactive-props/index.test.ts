@@ -15,7 +15,7 @@ describe("utils", () => {
             if(props.bar) return props.baz;
           }
 
-          export default function InsideWebComoponent(props) {
+          export default function Component(props) {
             console.log(props.foo);
             if(props.bar) return <div>{props.baz}</div>;
           }
@@ -30,7 +30,7 @@ describe("utils", () => {
             if (props.bar) return props.baz;
           };
 
-          export default function InsideWebComoponent(props) {
+          export default function Component(props) {
             console.log(props.foo.value);
             if (props.bar.value) return jsxDEV("div", {children: props.baz.value}, undefined, false, undefined, this);
           }
@@ -42,7 +42,7 @@ describe("utils", () => {
 
       it("should transform all props from destructured props", () => {
         const code = `
-          export default function InsideWebComoponent({ foo, bar, baz }) {
+          export default function Component({ foo, bar, baz }) {
             console.log(foo);
             if(bar) return <div>{baz}</div>;
           }
@@ -52,7 +52,7 @@ describe("utils", () => {
         const outputCode = toInline(generateCodeFromAST(outputAst));
 
         const expectedCode = toInline(`
-          export default function InsideWebComoponent({foo, bar, baz}) {
+          export default function Component({foo, bar, baz}) {
             console.log(foo.value);
             if (bar.value) return jsxDEV("div", {children: baz.value}, undefined, false, undefined, this);
           }
@@ -64,7 +64,7 @@ describe("utils", () => {
 
       it("should transform all props from renamed destructured props", () => {
         const code = `
-          export default function InsideWebComoponent({ foo: foot, bar: bart, baz: bazt }) {
+          export default function Component({ foo: foot, bar: bart, baz: bazt }) {
             console.log(foot);
             if(bart) return <div>{bazt}</div>;
           }
@@ -74,7 +74,7 @@ describe("utils", () => {
         const outputCode = toInline(generateCodeFromAST(outputAst));
 
         const expectedCode = toInline(`
-          export default function InsideWebComoponent({foo: foot, bar: bart, baz: bazt}) {
+          export default function Component({foo: foot, bar: bart, baz: bazt}) {
             console.log(foot.value);
             if (bart.value) return jsxDEV("div", {children: bazt.value}, undefined, false, undefined, this);
           }
@@ -86,7 +86,7 @@ describe("utils", () => {
 
       it("should transform all props from destructured props with spread", () => {
         const code = `
-          export default function InsideWebComoponent({ foo, ...rest }) {
+          export default function Component({ foo, ...rest }) {
             console.log(foo);
             if(rest.bar) return <div>{rest.baz}</div>;
           }
@@ -96,7 +96,7 @@ describe("utils", () => {
         const outputCode = toInline(generateCodeFromAST(outputAst));
 
         const expectedCode = toInline(`
-          export default function InsideWebComoponent({foo, ...rest}) {
+          export default function Component({foo, ...rest}) {
             console.log(foo.value);
             if (rest.bar.value) return jsxDEV("div", {children: rest.baz.value}, undefined, false, undefined, this);
           }
@@ -141,7 +141,7 @@ describe("utils", () => {
 
       it("should transform all renamed props via variable declaration", () => {
         const code = `
-          export default function InsideWebComoponent(props) {
+          export default function Component(props) {
             const foot = props.foo;
             const bart = props.bar;
             const bazt = props.baz;
@@ -154,7 +154,7 @@ describe("utils", () => {
         const outputCode = toInline(generateCodeFromAST(outputAst));
 
         const expectedCode = toInline(`
-          export default function InsideWebComoponent(props) {
+          export default function Component(props) {
             const foot = props.foo;
             const bart = props.bar;
             const bazt = props.baz;
@@ -169,7 +169,7 @@ describe("utils", () => {
 
       it("should transform all renamed props via variable declaration and destructuring", () => {
         const code = `
-          export default function InsideWebComoponent(props) {
+          export default function Component(props) {
             const { foo: foot, bar: bart, baz: bazt } = props;
             console.log(foot);
             if(bart) return <div>{bazt}</div>;
@@ -180,7 +180,7 @@ describe("utils", () => {
         const outputCode = toInline(generateCodeFromAST(outputAst));
 
         const expectedCode = toInline(`
-          export default function InsideWebComoponent(props) {
+          export default function Component(props) {
             const {foo: foot, bar: bart, baz: bazt} = props;
             console.log(foot.value);
             if (bart.value) return jsxDEV("div", {children: bazt.value}, undefined, false, undefined, this);
@@ -198,7 +198,7 @@ describe("utils", () => {
             if(props.bar.name) return props.baz.name;
           }
 
-          export default function InsideWebComoponent(props) {
+          export default function Component(props) {
             console.log(props.foo.name);
             if(props.bar?.name) return <div>{props.baz.name}</div>;
           }
@@ -213,7 +213,7 @@ describe("utils", () => {
             if (props.bar.name) return props.baz.name;
           };
 
-          export default function InsideWebComoponent(props) {
+          export default function Component(props) {
             console.log(props.foo.value.name);
             if (props.bar.value?.name) return jsxDEV("div", {children: props.baz.value.name}, undefined, false, undefined, this);
           }
@@ -221,6 +221,25 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
         expect(propNames).toEqual(["foo", "bar", "baz"]);
+      });
+
+      it("should not add .value inside an attribute key, only in the value", () => {
+        const code = `
+          export default function Component({foo, bar}) {
+            return <div foo={bar}>test</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          export default function Component({foo, bar}) {
+            return jsxDEV("div", {foo: bar.value,children: "test"}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
       });
     });
   });

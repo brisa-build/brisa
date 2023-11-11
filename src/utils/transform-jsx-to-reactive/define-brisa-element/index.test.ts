@@ -29,7 +29,7 @@ describe("utils", () => {
           propNames,
         );
         expect(output(importDeclaration)).toBe(
-          'import {brisaElement} from "brisa/client";',
+          'import {brisaElement, _on, _off} from "brisa/client";',
         );
         expect(output(wrappedComponent)).toBe(
           toInline(`
@@ -56,7 +56,7 @@ describe("utils", () => {
           propNames,
         );
         expect(output(importDeclaration)).toBe(
-          'import {brisaElement} from "brisa/client";',
+          'import {brisaElement, _on, _off} from "brisa/client";',
         );
         expect(output(wrappedComponent)).toBe(
           toInline(`
