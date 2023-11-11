@@ -190,6 +190,38 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
         expect(propNames).toEqual(["foo", "bar", "baz"]);
       });
+
+      it("should work consuming a property of some props", () => {
+        const code = `
+          const outsideComponent = (props) => {
+            console.log(props.foo.name);
+            if(props.bar.name) return props.baz.name;
+          }
+
+          export default function InsideWebComoponent(props) {
+            console.log(props.foo.name);
+            if(props.bar?.name) return <div>{props.baz.name}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst, propNames] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          const outsideComponent = props => {
+            console.log(props.foo.name);
+            if (props.bar.name) return props.baz.name;
+          };
+
+          export default function InsideWebComoponent(props) {
+            console.log(props.foo.value.name);
+            if (props.bar.value?.name) return jsxDEV("div", {children: props.baz.value.name}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(propNames).toEqual(["foo", "bar", "baz"]);
+      });
     });
   });
 });

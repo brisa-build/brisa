@@ -6,6 +6,7 @@ import defineBrisaElement from "./define-brisa-element";
 import getComponentVariableNames from "./get-component-variable-names";
 import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 import transformToReactiveProps from "./transform-to-reactive-props";
+import transformToDirectExport from "./transform-to-direct-export";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
@@ -13,7 +14,9 @@ export default function transformJSXToReactive(code: string, path: string) {
   if (path.match(ALTERNATIVE_FOLDER_REGEX)) return code;
 
   const ast = parseCodeToAST(code);
-  const [astWithPropsDotValue, propNames] = transformToReactiveProps(ast);
+  const astWithDirectExport = transformToDirectExport(ast);
+  const [astWithPropsDotValue, propNames] =
+    transformToReactiveProps(astWithDirectExport);
   const reactiveAst = transformToReactiveArrays(astWithPropsDotValue);
   const [componentBranch, index] = getWebComponentAst(reactiveAst) as [
     ESTree.FunctionDeclaration,
