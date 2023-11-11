@@ -23,7 +23,7 @@ describe("utils", () => {
         const [component] = getWebComponentAst(ast) as [
           ESTree.FunctionDeclaration,
         ];
-        const propNames = getPropsNames(component);
+        const [propNames] = getPropsNames(component);
         const [importDeclaration, wrappedComponent] = defineBrisaElement(
           component,
           propNames,
@@ -43,14 +43,14 @@ describe("utils", () => {
       it("should work with fragments and props", () => {
         const code = `
           export default function MyComponent(props) {
-            return [null, {}, [["div", {}, props.foo], ["span", {}, props.bar]]]
+            return [null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]]
           }
         `;
         const ast = parseCodeToAST(code);
         const [component] = getWebComponentAst(ast) as [
           ESTree.FunctionDeclaration,
         ];
-        const propNames = getPropsNames(component);
+        const [propNames] = getPropsNames(component);
         const [importDeclaration, wrappedComponent] = defineBrisaElement(
           component,
           propNames,

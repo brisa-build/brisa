@@ -11,24 +11,10 @@ describe("utils", () => {
     describe("get-reactive-return-statement", () => {
       it("should return the reactive return statement", () => {
         const componentBody = parseCodeToAST(`
-          const a = (props) => ['div', { foo: props.bar }, 'baz']
+          const a = (props) => ['div', { foo: () => props.bar.value }, 'baz']
         `).body as ESTree.Statement[];
 
-        const componentParams: ESTree.Parameter[] = [
-          {
-            type: "Identifier",
-            name: "props",
-          },
-        ];
-
-        const propsNames = ["bar"];
-
-        const output = getReactiveReturnStatement(
-          componentBody,
-          componentParams,
-          propsNames,
-          "h",
-        );
+        const output = getReactiveReturnStatement(componentBody, "h");
 
         const expectedIndex = -1;
         const expectedCode = toInline(
