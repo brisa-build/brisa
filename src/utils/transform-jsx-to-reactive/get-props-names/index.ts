@@ -4,17 +4,31 @@ export default function getPropsNames(
   webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression,
 ) {
   const propsAst = webComponentAst?.params?.[0];
+  const propNames = [];
+  const renamedPropNames = [];
 
   if (propsAst?.type === "ObjectPattern") {
-    return propsAst.properties.map((prop) => (prop as any).key.name);
+    for (const prop of propsAst.properties as any[]) {
+      if (prop.type === "RestElement") {
+        propNames.push(
+          ...getPropsNamesFromIdentifier(prop.argument.name, webComponentAst),
+        );
+        continue;
+      }
+
+      renamedPropNames.push(prop.value.name ?? prop.key.name);
+      propNames.push(prop.key.name);
+    }
+
+    return [propNames, renamedPropNames];
   }
 
   if (propsAst?.type === "Identifier") {
     const identifier = propsAst.name;
-    return getPropsNamesFromIdentifier(identifier, webComponentAst);
+    return [getPropsNamesFromIdentifier(identifier, webComponentAst), []];
   }
 
-  return [];
+  return [[], []];
 }
 
 function getPropsNamesFromIdentifier(identifier: string, ast: any) {

@@ -13,12 +13,7 @@ export default function defineBrisaElement(
   ]) as ESTree.Statement[];
 
   const [returnWithHyperScript, returnStatementIndex] =
-    getReactiveReturnStatement(
-      componentBody,
-      componentParams,
-      componentPropsNames,
-      hyperScriptVarName,
-    );
+    getReactiveReturnStatement(componentBody, hyperScriptVarName);
 
   const newComponentBody = componentBody.map((node, index) =>
     index === returnStatementIndex ? returnWithHyperScript : node,

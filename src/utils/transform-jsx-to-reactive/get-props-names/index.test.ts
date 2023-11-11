@@ -16,12 +16,13 @@ describe("utils", () => {
             return <div>foo</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected: string[] = [];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
       it("should return the props names if the props are an object", () => {
         const [input] = inputCode(`
@@ -29,12 +30,13 @@ describe("utils", () => {
             return <div>foo</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
       });
       it("should return the props names if the props are an identifier", () => {
         const [input] = inputCode(`
@@ -42,12 +44,13 @@ describe("utils", () => {
             return <div>{props.name}</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
       it("should return props names if the props are an identifier an are used in a conditional", () => {
         const [input] = inputCode(`
@@ -56,12 +59,13 @@ describe("utils", () => {
             return <div>test</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
       it("should return props names if the props are an identifier an are used in a function", () => {
         const [input] = inputCode(`
@@ -70,12 +74,13 @@ describe("utils", () => {
             return <div>test</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
       it("should return the unique props names if the props are an identifier an are used in different places", () => {
         const [input] = inputCode(`
@@ -84,12 +89,13 @@ describe("utils", () => {
             return <div>{props.name}</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
       it("should return props names if the props are destructured", () => {
         const [input] = inputCode(`
@@ -98,12 +104,13 @@ describe("utils", () => {
             return <div>{name}</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
 
       it("should return props names used with desctructuring and spread", () => {
@@ -113,12 +120,13 @@ describe("utils", () => {
             return <div>{name}</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
 
       it("should return props names used different tecniques", () => {
@@ -129,12 +137,13 @@ describe("utils", () => {
             return <div>{props.cat}</div>
           }
         `);
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog", "cat"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
 
       it("should return props names without influence of other variables outside the component", () => {
@@ -149,12 +158,13 @@ describe("utils", () => {
           }
         `);
 
-        const output = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog", "cat"];
 
-        expect(output).toEqual(expected);
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual([]);
       });
     });
   });

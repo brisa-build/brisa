@@ -1,13 +1,11 @@
 import { ESTree } from "meriyah";
 import wrapWithArrowFn from "../wrap-with-arrow-fn";
-import transformToReactiveProps, {
-  transformToReactivePropsForInnerTags,
-} from "../transform-to-reactive-props";
+
+const FRAGMENT = { type: "Literal", value: null };
+const EMPTY_ATTRIBUTES = { type: "ObjectExpression", properties: [] };
 
 export default function getReactiveReturnStatement(
   componentBody: ESTree.Statement[],
-  componentParams: ESTree.Parameter[],
-  propsNames: string[],
   hyperScriptVarName: string,
 ) {
   const returnStatementIndex = componentBody.findIndex(
@@ -15,39 +13,26 @@ export default function getReactiveReturnStatement(
   );
   const returnStatement = componentBody[returnStatementIndex] as any;
   let [tagName, props, children] = returnStatement?.argument?.elements ?? [];
-  let componentChildren = transformToReactiveProps(children, {
-    componentParams,
-    propsNames,
-  });
+  let componentChildren = children;
+
+  if (returnStatement?.argument?.type === "CallExpression") {
+    tagName = FRAGMENT;
+    props = EMPTY_ATTRIBUTES;
+    componentChildren = wrapWithArrowFn(returnStatement.argument);
+  }
 
   // Transforming:
   //  "return conditional ? ['div', {}, ''] : ['span', {}, '']"
   // to:
   //  "return h(null, {}, () => conditional ? ['div', {}, ''] : ['span', {}, ''])"
   if (returnStatement?.argument?.type === "ConditionalExpression") {
-    tagName = {
-      type: "Literal",
-      value: null,
-    };
-    props = {
-      type: "ObjectExpression",
-      properties: [],
-    };
+    tagName = FRAGMENT;
+    props = EMPTY_ATTRIBUTES;
     componentChildren = wrapWithArrowFn({
       type: "ConditionalExpression",
-      test: transformToReactiveProps(returnStatement.argument.test, {
-        componentParams,
-        propsNames,
-        applyArrowFn: false,
-      }),
-      consequent: transformToReactiveProps(
-        returnStatement.argument.consequent,
-        { componentParams, propsNames },
-      ),
-      alternate: transformToReactiveProps(returnStatement.argument.alternate, {
-        componentParams,
-        propsNames,
-      }),
+      test: returnStatement.argument.test,
+      consequent: returnStatement.argument.consequent,
+      alternate: returnStatement.argument.alternate,
     });
   }
 
@@ -73,19 +58,13 @@ export default function getReactiveReturnStatement(
       type: "ObjectExpression",
       properties: (elements[1]?.properties ?? []).map((property: any) => ({
         ...property,
-        value: transformToReactiveProps(property.value, {
-          componentParams,
-          propsNames,
-        }),
+        value: property.value,
       })),
     };
-    componentChildren = transformToReactiveProps(
-      {
-        type: "Literal",
-        value: elements[2]?.value ?? "",
-      },
-      { componentParams, propsNames },
-    );
+    componentChildren = {
+      type: "Literal",
+      value: elements[2]?.value ?? "",
+    };
   }
 
   // Cases that the component return a literal, ex: return "foo" or bynary expression, ex: return "foo" + "bar"
@@ -99,8 +78,8 @@ export default function getReactiveReturnStatement(
   ) {
     const children = returnStatement?.argument;
 
-    tagName = { type: "Literal", value: null };
-    props = { type: "ObjectExpression", properties: [] };
+    tagName = FRAGMENT;
+    props = EMPTY_ATTRIBUTES;
     componentChildren = { type: "Literal", value: children?.value ?? "" };
 
     // Transforming:
@@ -117,11 +96,7 @@ export default function getReactiveReturnStatement(
           };
         }
 
-        return transformToReactiveProps(item, {
-          componentParams,
-          propsNames,
-          applyArrowFn: false,
-        });
+        return item;
       };
 
       componentChildren = wrapWithArrowFn(reactiveBinaryExpression(children));
@@ -136,14 +111,7 @@ export default function getReactiveReturnStatement(
         type: "Identifier",
         name: hyperScriptVarName,
       },
-      arguments: [
-        tagName,
-        props,
-        transformToReactivePropsForInnerTags(componentChildren, {
-          componentParams,
-          propsNames,
-        }),
-      ],
+      arguments: [tagName, props, componentChildren],
     },
   };
 

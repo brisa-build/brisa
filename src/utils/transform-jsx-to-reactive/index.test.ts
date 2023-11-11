@@ -615,26 +615,67 @@ describe("utils", () => {
       expect(output).toBe(expected);
     });
 
-    it.todo(
-      "should work with a component as an arrow function without blockstatement that return a string with a prop",
-      () => {
-        const input = `
+    it("should wrap reactivity returning a string with a prop concatenated with multiple + and props without destructuring", () => {
+      const input = `
+          export default function MyComponent(props) {
+            return "Hello " + props.foo + " " + props.bar + " " +  props.baz
+          }
+        `;
+
+      const output = toInline(
+        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+      );
+
+      const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function MyComponent(props, {h}) {
+            return h(null, {}, () => 'Hello ' + props.foo.value + ' ' + props.bar.value + ' ' + props.baz.value);
+          }, ['foo', 'bar', 'baz']);
+        `);
+
+      expect(output).toBe(expected);
+    });
+
+    it("should wrap reactivity returning a string with a prop concatenated with multiple + and arrow fn", () => {
+      const input = `
+          export default (props) => {
+            return "Hello " + props.foo + " " + props.bar + " " +  props.baz
+          }
+        `;
+
+      const output = toInline(
+        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+      );
+
+      const expected = toInline(`
+          import {brisaElement} from "brisa/client";
+
+          export default brisaElement(function (props, {h}) {
+            return h(null, {}, () => 'Hello ' + props.foo.value + ' ' + props.bar.value + ' ' + props.baz.value);
+          }, ['foo', 'bar', 'baz']);
+        `);
+
+      expect(output).toBe(expected);
+    });
+
+    it("should work with a component as an arrow function without blockstatement that return a string with a prop", () => {
+      const input = `
           export default (props) => 'Hello World' + props.foo
         `;
 
-        const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-        );
+      const output = toInline(
+        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+      );
 
-        const expected = toInline(`
+      const expected = toInline(`
           import {brisaElement} from "brisa/client";
 
-          export default brisaElement(function (props, {h}) {return h(null, {}, () => 'Hello ' + foo.value);});
+          export default brisaElement(function (props, {h}) {return h(null, {}, () => 'Hello World' + props.foo.value);}, ['foo']);
         `);
 
-        expect(output).toBe(expected);
-      },
-    );
+      expect(output).toBe(expected);
+    });
 
     it("should not use HyperScript with a console.log in an arrow function with blockstatement", () => {
       const input = `
@@ -654,26 +695,23 @@ describe("utils", () => {
       expect(output).toBe(expected);
     });
 
-    it.todo(
-      "should not use HyperScript with a console.log in an arrow function without blockstatement",
-      () => {
-        const input = `
-          export default (props) => console.log('Hello World')
+    it("should not use HyperScript with a console.log in an arrow function without blockstatement", () => {
+      const input = `
+          export default (props) => console.log('Hello World' + props.foo)
         `;
 
-        const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-        );
+      const output = toInline(
+        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+      );
 
-        const expected = toInline(`
+      const expected = toInline(`
           import {brisaElement} from "brisa/client";
 
-          export default brisaElement((props) => console.log('Hello World'));
+          export default brisaElement(function (props, {h}) {return h(null, {}, () => console.log('Hello World' + props.foo.value));}, ['foo']);
         `);
 
-        expect(output).toBe(expected);
-      },
-    );
+      expect(output).toBe(expected);
+    });
 
     it.todo(
       "should work with a component as an arrow function with blockstatement and the default export on a different line",
