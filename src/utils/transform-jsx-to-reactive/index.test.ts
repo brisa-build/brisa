@@ -713,28 +713,47 @@ describe("utils", () => {
       expect(output).toBe(expected);
     });
 
-    it.todo(
-      "should work with a component as an arrow function with blockstatement and the default export on a different line",
-      () => {
-        const input = `
+    it("should work with a component as an arrow function with blockstatement and the default export on a different line", () => {
+      const input = `
         const MyComponent = (props) => <div>{props.foo}</div>
         export default MyComponent
       `;
 
-        const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
-        );
+      const output = toInline(
+        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+      );
 
-        const expected = toInline(`
+      const expected = toInline(`
         import {brisaElement} from "brisa/client";
 
-        const MyComponent = (props, {h}) => h('div', {}, () => props.foo.value);
-        export default brisaElement(MyComponent, ['foo']);
+        export default brisaElement(function (props, {h}) {return h('div', {}, () => props.foo.value);}, ['foo']);
       `);
 
-        expect(output).toBe(expected);
-      },
-    );
+      expect(output).toBe(expected);
+    });
+
+    it("should work default export on a different line in a function declaration", () => {
+      const input = `
+        function MyComponent(props) {
+          return <div>{props.foo}</div>
+        }
+        export default MyComponent
+      `;
+
+      const output = toInline(
+        transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+      );
+
+      const expected = toInline(`
+        import {brisaElement} from "brisa/client";
+
+        export default brisaElement(function (props, {h}) {
+          return h('div', {}, () => props.foo.value);
+        }, ['foo']);
+      `);
+
+      expect(output).toBe(expected);
+    });
 
     it.todo(
       "should wrap conditional renders in different returns inside an hyperScript function",
