@@ -5,7 +5,7 @@ import getConstants from "../../constants";
 const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 
 describe("utils", () => {
-  describe("transformJSXToReactive", () => {
+  describe("transform-jsx-to-reactive", () => {
     describe("without transformation", () => {
       it("should not transform if is inside @react folder", () => {
         const input = `
@@ -1039,6 +1039,39 @@ describe("utils", () => {
       it.todo(
         'should be possible to define reactivity props using "export const props = []"',
       );
+    });
+
+    describe("web-components with some logic", () => {
+      it("should transform a web-component with conditional render inside the JSX", () => {
+        const input = `
+        export default function ConditionalRender({ name, children }: any) {
+          return (
+            <h2>
+              <b>Hello {name}</b>
+              {name === "Barbara" ? <b>!! 🥳</b> : "🥴"}
+              {children}
+            </h2>
+          )
+        }
+          `;
+        const output = toInline(
+          transformJSXToReactive(
+            input,
+            "src/web-components/conditional-render.tsx",
+          ),
+        );
+        const expected = toInline(`
+        import {brisaElement, _on, _off} from "brisa/client";
+
+        export default brisaElement(function ConditionalRender({name, children}, {h}) {
+          return h('h2', {}, [
+            ['b', {}, () => ['Hello ', name.value].join('')], [null, {}, () => name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'], [null, {}, children]
+          ]);
+        }, ['name']);
+        `);
+
+        expect(output).toBe(expected);
+      });
     });
   });
 });
