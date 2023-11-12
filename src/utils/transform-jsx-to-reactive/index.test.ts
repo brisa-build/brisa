@@ -842,6 +842,31 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should be possible to set default props inside arguments", () => {
+        const input = `
+          export default function MyComponent({foo = 'bar'}) {
+            const someVar = 'test';
+            return <div>{foo}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo}, {h}) {
+            if (foo.value == null) foo.value = 'bar';
+            const someVar = 'test';
+            return h('div', {}, () => foo.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
       it.todo(
         "should wrap conditional renders in different returns inside an hyperScript function",
         () => {
@@ -919,8 +944,6 @@ describe("utils", () => {
           expect(output).toBe(expected);
         },
       );
-
-      it.todo("should be possible to set default props inside arguments");
 
       it.todo("should be possible to set default props inside code");
 

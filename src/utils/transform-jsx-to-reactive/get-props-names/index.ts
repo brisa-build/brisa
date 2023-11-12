@@ -2,29 +2,35 @@ import { ESTree } from "meriyah";
 
 export default function getPropsNames(
   webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression,
-) {
+): [string[], string[], Record<string, ESTree.Literal>] {
   const propsAst = webComponentAst?.params?.[0];
   const propNames = [];
   const renamedPropNames = [];
+  let defaultPropsValues: Record<string, ESTree.Literal> = {};
 
   if (propsAst?.type === "ObjectPattern") {
     for (const prop of propsAst.properties as any[]) {
       if (prop.type === "RestElement") {
-        const [names, renamedNames] = getPropsNamesFromIdentifier(
+        const [names, renamedNames, defaultProps] = getPropsNamesFromIdentifier(
           prop.argument.name,
           webComponentAst,
         );
 
         propNames.push(...names);
         renamedPropNames.push(...renamedNames);
+        defaultPropsValues = { ...defaultPropsValues, ...defaultProps };
         continue;
       }
 
       renamedPropNames.push(prop.value.name ?? prop.key.name);
       propNames.push(prop.key.name);
+
+      if (prop.value?.type === "AssignmentPattern") {
+        defaultPropsValues[prop.key.name] = prop.value.right;
+      }
     }
 
-    return [propNames, renamedPropNames];
+    return [propNames, renamedPropNames, defaultPropsValues];
   }
 
   if (propsAst?.type === "Identifier") {
@@ -32,10 +38,13 @@ export default function getPropsNames(
     return getPropsNamesFromIdentifier(identifier, webComponentAst);
   }
 
-  return [[], []];
+  return [[], [], {}];
 }
 
-function getPropsNamesFromIdentifier(identifier: string, ast: any) {
+function getPropsNamesFromIdentifier(
+  identifier: string,
+  ast: any,
+): [string[], string[], Record<string, ESTree.Literal>] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
 
@@ -78,5 +87,5 @@ function getPropsNamesFromIdentifier(identifier: string, ast: any) {
     return value;
   });
 
-  return [[...propsNames], [...renamedPropsNames]];
+  return [[...propsNames], [...renamedPropsNames], {}];
 }
