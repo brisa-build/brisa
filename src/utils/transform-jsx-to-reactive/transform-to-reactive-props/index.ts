@@ -51,21 +51,24 @@ export default function transformToReactiveProps(
 
   // Remove props from component params
   for (let propParam of (component.params[0] as any)?.properties ?? []) {
-    const propName = propParam?.key?.name;
+    const propName =
+      propParam.value?.left?.name ??
+      propParam.value?.name ??
+      propParam.key?.name;
 
     if (
       propParam?.type !== "Property" ||
       !propName ||
       !propsNamesSet.has(propName) ||
-      !defaultPropsValues[propName]
+      !defaultPropsValues[propName] ||
+      propParam?.value?.right?.value !== defaultPropsValues[propName]?.value
     ) {
       continue;
     }
 
-    propParam.shorthand = true;
     propParam.value = {
       type: "Identifier",
-      name: propName,
+      name: propParam?.value?.left?.name,
     };
   }
 

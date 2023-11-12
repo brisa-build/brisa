@@ -921,6 +921,33 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should be possible to set default props inside arrow function renamed arguments and ndirect export default", () => {
+        const input = `
+          const Component = ({foo: renamedFoo = 'bar'}) => {
+            const someVar = 'test';
+            return <div>{renamedFoo}</div>
+          }
+
+          export default Component
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function ({foo: renamedFoo}, {h}) {
+            if (renamedFoo.value == null) renamedFoo.value = 'bar';
+            const someVar = 'test';
+            return h('div', {}, () => renamedFoo.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
       it.todo(
         "should wrap conditional renders in different returns inside an hyperScript function",
         () => {

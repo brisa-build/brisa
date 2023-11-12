@@ -212,6 +212,28 @@ describe("utils", () => {
         expect(renamedOutput).toEqual(expected);
         expect(defaultProps).toEqual({ name: expectedDefaultProps });
       });
+
+      it("should not return the renamed props values as default props", () => {
+        const [input] = inputCode(`
+          export default function MyComponent({ name: renamedName = 'foo' }) {
+            return <div>{renamedName}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = ["name"];
+        const expectedRenamed = ["renamedName"];
+        const expectedDefaultProps: ESTree.Literal = {
+          type: "Literal",
+          value: "foo",
+        };
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expectedRenamed);
+        expect(defaultProps).toEqual({ renamedName: expectedDefaultProps });
+      });
     });
   });
 });
