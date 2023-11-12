@@ -1,5 +1,7 @@
 import { ESTree } from "meriyah";
 
+const CHILDREN = "children";
+
 export default function getPropsNames(
   webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression,
 ): [string[], string[], Record<string, ESTree.Literal>] {
@@ -22,11 +24,15 @@ export default function getPropsNames(
         continue;
       }
 
-      const renamedPropName =
-        prop.value.left?.name ?? prop.value.name ?? prop.key.name;
+      const name = prop.key.name;
+      const renamedPropName = prop.value.left?.name ?? prop.value.name ?? name;
+
+      if (renamedPropName === CHILDREN && prop.key.name === CHILDREN) {
+        continue;
+      }
 
       renamedPropNames.push(renamedPropName);
-      propNames.push(prop.key.name);
+      propNames.push(name);
 
       if (prop.value?.type === "AssignmentPattern") {
         defaultPropsValues[renamedPropName] = prop.value.right;
@@ -58,8 +64,13 @@ function getPropsNamesFromIdentifier(
       value?.object?.name === identifier &&
       value?.property?.type === "Identifier"
     ) {
-      propsNames.add(value?.property?.name);
-      renamedPropsNames.add(value?.property?.name);
+      const name =
+        value?.property?.name !== CHILDREN ? value?.property?.name : null;
+
+      if (name) {
+        propsNames.add(name);
+        renamedPropsNames.add(name);
+      }
     }
 
     // const { name } = props
@@ -70,7 +81,8 @@ function getPropsNamesFromIdentifier(
     ) {
       for (const prop of value.id.properties) {
         // spread props like: const { name, ...rest } = props
-        if (prop?.key?.name) propsNames.add(prop.key.name);
+        if (prop?.key?.name && prop.key.name !== CHILDREN)
+          propsNames.add(prop.key.name);
         // renamed props like: const { name: renamedName } = props
         if (prop?.value?.name) renamedPropsNames.add(prop.value.name);
       }

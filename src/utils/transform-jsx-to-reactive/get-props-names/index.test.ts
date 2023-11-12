@@ -192,6 +192,50 @@ describe("utils", () => {
         expect(defaultProps).toEqual({});
       });
 
+      it("should not return props names named children as object statement", () => {
+        const [input] = inputCode(`
+          function AnotherComponent(props) {
+            return props.anotherComponentProp;
+          }
+          export default function MyComponent({ children, ...rest }) {
+            const { name } = rest;
+            console.log(rest.dog);
+            return <div>{children}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = ["name", "dog"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
+        expect(defaultProps).toEqual({});
+      });
+
+      it("should not return props names named children", () => {
+        const [input] = inputCode(`
+          function AnotherComponent(props) {
+            return props.anotherComponentProp;
+          }
+          export default function MyComponent(props) {
+            const { name, ...rest } = props;
+            console.log(props.dog);
+            return <div>{props.children}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = ["name", "dog"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
+        expect(defaultProps).toEqual({});
+      });
+
       it("should return the default props values in assignment pattern", () => {
         const [input] = inputCode(`
           export default function MyComponent({ name = 'foo' }) {
