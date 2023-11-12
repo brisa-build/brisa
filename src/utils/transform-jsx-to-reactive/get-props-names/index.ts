@@ -22,11 +22,14 @@ export default function getPropsNames(
         continue;
       }
 
-      renamedPropNames.push(prop.value.name ?? prop.key.name);
+      const renamedPropName =
+        prop.value.left?.name ?? prop.value.name ?? prop.key.name;
+
+      renamedPropNames.push(renamedPropName);
       propNames.push(prop.key.name);
 
       if (prop.value?.type === "AssignmentPattern") {
-        defaultPropsValues[prop.key.name] = prop.value.right;
+        defaultPropsValues[renamedPropName] = prop.value.right;
       }
     }
 
