@@ -966,15 +966,52 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it('should add the h function when there are more web context attributes', () => {
+        const input = `
+          export default function Component({ }, { effect, cleanup, state }: any) {
+            const someState = state(0);
+          
+            effect(() => {
+              console.log(someState.value)
+            })
+          
+            return (
+              <div>
+                {someState.value}
+              </div>
+            )
+          }        
+        `
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function Component({}, {effect, cleanup, state, h}) {
+            const someState = state(0);
+          
+            effect(() => {
+              console.log(someState.value);
+            });
+          
+            return h('div', {}, () => someState.value);
+          });`
+          );
+
+        expect(output).toBe(expected);
+      });
+
       it.todo(
         "should wrap conditional renders in different returns inside an hyperScript function",
         () => {
           const input = `
-          export default function MyComponent({show}) {
-            if (show) return <div>foo</div>
-            const bar = <b>bar</b>
-            return <span>bar</span>
-          }
+          export default function MyComponent({ show }) {
+          if (show) return <div>foo < /div>
+          const bar = <b>bar < /b>
+          return <span>bar < /span>
+        }
         `;
 
           const output = toInline(
@@ -985,15 +1022,15 @@ describe("utils", () => {
           );
 
           const expected = toInline(`
-          import {brisaElement, _on, _off} from "brisa/client";
+        import { brisaElement, _on, _off } from "brisa/client";
 
-          export default brisaElement(function MyComponent({show}, {h}) {
-            return h(null, {}, () => {
-              if (show.value) return ['div', {}, 'foo'];
-              const bar = ['b', {}, 'bar'];
-              return ['span', {}, 'bar'];
-            });
-          }, ['show']);
+        export default brisaElement(function MyComponent({ show }, { h }) {
+          return h(null, {}, () => {
+            if (show.value) return ['div', {}, 'foo'];
+            const bar = ['b', {}, 'bar'];
+            return ['span', {}, 'bar'];
+          });
+        }, ['show']);
         `);
 
           expect(output).toBe(expected);
@@ -1004,16 +1041,16 @@ describe("utils", () => {
         "should wrap conditional renders using switch-case and different returns inside an hyperScript function",
         () => {
           const input = `
-          export default function MyComponent({show}) {
-            switch (show) {
-              case true:
-                return <div>foo</div>
-              case false:
-                return <b>bar</b>
-              default:
-                return <span>bar</span>
-            }
+        export default function MyComponent({ show }) {
+          switch (show) {
+            case true:
+              return <div>foo < /div>
+            case false:
+              return <b>bar < /b>
+            default:
+              return <span>bar < /span>
           }
+        }
         `;
 
           const output = toInline(
@@ -1024,20 +1061,20 @@ describe("utils", () => {
           );
 
           const expected = toInline(`
-          import {brisaElement, _on, _off} from "brisa/client";
+        import { brisaElement, _on, _off } from "brisa/client";
 
-          export default brisaElement(function MyComponent({show}, {h}) {
-            return h(null, {}, () => {
-              switch (show.value) {
-                case true:
-                  return ['div', {}, 'foo'];
-                case false:
-                  return ['b', {}, 'bar'];
-                default:
-                  return ['span', {}, 'bar'];
-              }
-            });
-          }, ['show']);
+        export default brisaElement(function MyComponent({ show }, { h }) {
+          return h(null, {}, () => {
+            switch (show.value) {
+              case true:
+                return ['div', {}, 'foo'];
+              case false:
+                return ['b', {}, 'bar'];
+              default:
+                return ['span', {}, 'bar'];
+            }
+          });
+        }, ['show']);
         `);
 
           expect(output).toBe(expected);
@@ -1065,12 +1102,13 @@ describe("utils", () => {
         export default function ConditionalRender({ name, children }: any) {
           return (
             <h2>
-              <b>Hello {name}</b>
-              {name === "Barbara" ? <b>!! 🥳</b> : "🥴"}
-              {children}
+            <b>Hello { name }</b>
+          {
+            name === "Barbara" ? <b>!! 🥳</b> : "🥴"}
+            { children }
             </h2>
           )
-        }
+    }
           `;
         const output = toInline(
           transformJSXToReactive(
@@ -1079,17 +1117,64 @@ describe("utils", () => {
           ),
         );
         const expected = toInline(`
-        import {brisaElement, _on, _off} from "brisa/client";
+          import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function ConditionalRender({name, children}, {h}) {
-          return h('h2', {}, [
-            ['b', {}, () => ['Hello ', name.value].join('')], [null, {}, () => name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'], [null, {}, children]
-          ]);
-        }, ['name']);
-        `);
+          export default brisaElement(function ConditionalRender({name, children}, {h}) {
+            return h('h2', {}, [
+              ['b', {}, () => ['Hello ', name.value].join('')], [null, {}, () => name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'], [null, {}, children]
+            ]);
+          }, ['name']);
+      `);
 
         expect(output).toBe(expected);
       });
+
+      it('should transform a timer', () => {
+        const input = `
+          export default function Timer({ }, { effect, cleanup, state }: any) {
+            const time = state(0);
+            let interval: any;
+          
+            effect(() => {
+              interval = setInterval(() => {
+                time.value++;
+              }, 1);
+              cleanup(() => clearInterval(interval))
+            })
+          
+            return (
+              <div>
+                <span>Time: {time.value}</span>
+                <button onClick={() => clearInterval(interval)}>stop</button>
+              </div>
+            )
+          }        
+        `
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/timer.tsx"),
+        );
+
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function Timer({}, {effect, cleanup, state, h}) {
+            const time = state(0);
+            let interval;
+          
+            effect(() => {
+              interval = setInterval(() => {
+                time.value++;
+              }, 1);
+              cleanup(() => clearInterval(interval));
+            });
+          
+            return h('div', {}, [
+              ['span', {}, () => ['Time: ', time.value].join('')], ['button', {onClick: () => clearInterval(interval)}, 'stop']
+            ]);
+          });`
+          );
+      })
     });
   });
 });
