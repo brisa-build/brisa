@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { rm, writeFile } from "node:fs/promises";
 import { injectUnsuspenseCode } from "../inject-unsuspense-code" assert { type: "macro" };
 import AST from "../ast";
+import transformJSXToReactive from "../transform-jsx-to-reactive";
 
 const ASTUtil = AST("js");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
@@ -102,7 +103,7 @@ async function transformToWebComponents(
               }
 
               return {
-                contents: code,
+                contents: transformJSXToReactive(code, path),
                 loader,
               };
             },

@@ -2,6 +2,8 @@ import { ESTree } from "meriyah";
 import getWebComponentAst from "../get-web-component-ast";
 import getPropsNames from "../get-props-names";
 
+const CHILDREN = "children";
+
 export default function transformToReactiveProps(
   ast: ESTree.Program,
 ): [ESTree.Program, string[]] {

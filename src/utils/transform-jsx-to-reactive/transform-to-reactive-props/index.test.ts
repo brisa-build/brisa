@@ -262,6 +262,44 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
       });
+
+      it("should not transform to reactive if the prop name is children", () => {
+        const code = `
+          export default function Component({ children }) {
+            return <div>{children}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          export default function Component({children}) {
+            return jsxDEV("div", {children}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
+
+      it("should transform to reactive if some another prop is renamed to children", () => {
+        const code = `
+          export default function Component({ foo, bar: children }) {
+            return <div>{foo}{children}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          export default function Component({foo, bar: children}) {
+            return jsxDEV("div", {children: [foo.value, children.value]}, undefined, true, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
     });
   });
 });
