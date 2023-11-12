@@ -88,7 +88,8 @@ export default function transformToReactiveProps(
       if (
         value?.type === "Identifier" &&
         propsNamesSet.has(value?.name) &&
-        !isPropFromObjectExpression
+        !isPropFromObjectExpression &&
+        !value?.name?.startsWith("on")
       ) {
         // allow: console.log({ propName })
         // transforming to: console.log({ propName: propName.value })

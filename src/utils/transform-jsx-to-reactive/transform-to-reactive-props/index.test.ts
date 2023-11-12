@@ -321,6 +321,27 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
       });
+
+      it("should not transform to reactive the props that are events", () => {
+        const code = `
+          export default function Component(props) {
+            const { onClick, ...rest } = props;
+            return <div onClick={onClick}><div onClick={rest.onClickSpan}>Click</div></div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          export default function Component(props) {
+            const {onClick, ...rest} = props;
+            return jsxDEV("div", {onClick,children: jsxDEV("div", {onClick: rest.onClickSpan,children: "Click"}, undefined, false, undefined, this)}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
     });
   });
 });
