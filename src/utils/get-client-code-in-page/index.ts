@@ -62,7 +62,7 @@ export default async function getClientCodeInPage(
 async function transformToWebComponents(
   webComponentsList: Record<string, string>,
 ) {
-  const { SRC_DIR, BUILD_DIR, CONFIG } = getConstants();
+  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX } = getConstants();
   const internalDir = join(BUILD_DIR, "_brisa");
   const webEntrypoint = join(internalDir, `temp-${crypto.randomUUID()}.ts`);
 
@@ -102,8 +102,15 @@ async function transformToWebComponents(
                 code += `\nexport default null;`;
               }
 
+              try {
+                code = transformJSXToReactive(code, path);
+              } catch (error) {
+                console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
+                console.log(LOG_PREFIX.ERROR, (error as Error).message);
+              }
+
               return {
-                contents: transformJSXToReactive(code, path),
+                contents: code,
                 loader,
               };
             },
