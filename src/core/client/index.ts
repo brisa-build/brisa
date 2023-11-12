@@ -1,3 +1,3 @@
-import brisaElement from "../../utils/brisa-element/index.ts";
+import brisaElement, { _on, _off } from "../../utils/brisa-element/index.ts";
 
-export { brisaElement };
+export { brisaElement, _on, _off };

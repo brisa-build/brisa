@@ -92,7 +92,10 @@ function declareH(componentAST: any, hyperScriptVarName: string) {
   }
   // convert function ({}, { state }) {} to function ({}, { state, h }) {}
   else if (componentAST.params[1]?.type === "ObjectPattern") {
-    componentAST.params[1].properties.push(hProperty);
+    const existH = componentAST.params[1].properties.some(
+      (prop: any) => prop.key.name === "h",
+    );
+    if (!existH) componentAST.params[1].properties.push(hProperty);
   }
   // convert function ({}, context) {} to function ({ h, ...context }) {}
   else if (componentAST.params[1]?.type === "Identifier") {

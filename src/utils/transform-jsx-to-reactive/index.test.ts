@@ -312,7 +312,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => { });
+        mockLog.mockImplementation(() => {});
 
         const input = `
             function Test(props) {
@@ -966,7 +966,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it('should add the h function when there are more web context attributes', () => {
+      it("should add the h function when there are more web context attributes", () => {
         const input = `
           export default function Component({ }, { effect, cleanup, state }: any) {
             const someState = state(0);
@@ -981,7 +981,7 @@ describe("utils", () => {
               </div>
             )
           }        
-        `
+        `;
         const output = toInline(
           transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
@@ -997,8 +997,27 @@ describe("utils", () => {
             });
           
             return h('div', {}, () => someState.value);
-          });`
-          );
+          });`);
+
+        expect(output).toBe(expected);
+      });
+
+      it('should not transform a prop that starts with "on" as an event', () => {
+        const input = `
+          export default function Component({ onFoo }) {
+            return <div onClick={onFoo}>foo</div>
+          }
+        `;
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function Component({onFoo}, {h}) {
+            return h('div', {onClick: onFoo}, 'foo');
+          }, ['onFoo']);`);
 
         expect(output).toBe(expected);
       });
@@ -1129,7 +1148,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it('should transform a timer', () => {
+      it("should transform a timer", () => {
         const input = `
           export default function Timer({ }, { effect, cleanup, state }: any) {
             const time = state(0);
@@ -1149,7 +1168,7 @@ describe("utils", () => {
               </div>
             )
           }        
-        `
+        `;
 
         const output = toInline(
           transformJSXToReactive(input, "src/web-components/timer.tsx"),
@@ -1172,9 +1191,8 @@ describe("utils", () => {
             return h('div', {}, [
               ['span', {}, () => ['Time: ', time.value].join('')], ['button', {onClick: () => clearInterval(interval)}, 'stop']
             ]);
-          });`
-          );
-      })
+          });`);
+      });
     });
   });
 });
