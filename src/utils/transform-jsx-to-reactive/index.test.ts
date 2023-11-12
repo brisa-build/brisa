@@ -867,6 +867,60 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should be possible to set default props inside arrow function arguments and no-direct export default", () => {
+        const input = `
+          const Component = ({foo = 'bar'}) => {
+            const someVar = 'test';
+            return <div>{foo}</div>
+          }
+
+          export default Component
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function ({foo}, {h}) {
+            if (foo.value == null) foo.value = 'bar';
+            const someVar = 'test';
+            return h('div', {}, () => foo.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should be possible to set default props inside arrow function arguments and ndirect export default", () => {
+        const input = `
+          const Component = ({foo = 'bar'}) => {
+            const someVar = 'test';
+            return <div>{foo}</div>
+          }
+
+          export default Component
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function ({foo}, {h}) {
+            if (foo.value == null) foo.value = 'bar';
+            const someVar = 'test';
+            return h('div', {}, () => foo.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
       it.todo(
         "should wrap conditional renders in different returns inside an hyperScript function",
         () => {
@@ -946,6 +1000,10 @@ describe("utils", () => {
       );
 
       it.todo("should be possible to set default props inside code");
+
+      it.todo(
+        "should be possible to set default props from ...rest inside code",
+      );
 
       it.todo(
         "should log a warning when using spread props inside JSX that can lost the reactivity",
