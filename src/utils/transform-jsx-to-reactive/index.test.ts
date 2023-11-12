@@ -312,7 +312,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => {});
+        mockLog.mockImplementation(() => { });
 
         const input = `
             function Test(props) {
@@ -694,7 +694,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should not use HyperScript with a console.log in an arrow function without blockstatement", () => {
+      it("should use HyperScript with a console.log in an arrow function without blockstatement but with props", () => {
         const input = `
           export default (props) => console.log('Hello World' + props.foo)
         `;
@@ -707,6 +707,24 @@ describe("utils", () => {
           import {brisaElement, _on, _off} from "brisa/client";
 
           export default brisaElement(function (props, {h}) {return h(null, {}, () => console.log('Hello World' + props.foo.value));}, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should use HyperScript printing an object with the shorthand syntax of some prop", () => {
+        const input = `
+          export default ({ foo }) => console.log({ foo })
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function ({foo}, {h}) {return h(null, {}, () => console.log({foo: foo.value}));}, ['foo']);
         `);
 
         expect(output).toBe(expected);

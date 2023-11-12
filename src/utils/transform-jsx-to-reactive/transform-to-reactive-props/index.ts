@@ -84,13 +84,22 @@ export default function transformToReactiveProps(
         });
       }
 
-      const isObjectProperty = this?.type === "Property" && this?.key === value;
+      const isPropFromObjectExpression =
+        this?.type === "Property" && this?.key === value;
 
       if (
         value?.type === "Identifier" &&
         propsNamesSet.has(value?.name) &&
-        !isObjectProperty
+        !isPropFromObjectExpression
       ) {
+        // allow: console.log({ propName })
+        // transforming to: console.log({ propName: propName.value })
+        if (this?.type === "Property") this.shorthand = false;
+
+        // add signal, transforming:
+        //  <div>{propName}</div>
+        // to:
+        //  <div>{propName.value}</div>
         return {
           type: "MemberExpression",
           object: value,

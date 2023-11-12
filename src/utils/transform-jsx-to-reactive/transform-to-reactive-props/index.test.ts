@@ -300,6 +300,27 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
       });
+
+      it("should transform to reactive if is used inside a function call with a object expression", () => {
+        const code = `
+          const bar = (props) => <div>{props.baz}</div>;
+          export default function Component({ foo }) {
+            return <div>{bar({ foo })}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          const bar = props => jsxDEV("div", {children: props.baz}, undefined, false, undefined, this);
+          export default function Component({foo}) {
+            return jsxDEV("div", {children: bar({foo: foo.value})}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
     });
   });
 });
