@@ -241,6 +241,27 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
       });
+
+      it("should remove the default props from params and add them to the component body", () => {
+        const code = `
+          export default function Component({ foo, bar = "bar", baz = "baz" }) {
+            return <div>{foo}{bar}{baz}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          export default function Component({foo, bar, baz}) {
+            if (baz.value == null) baz.value = "baz";
+            if (bar.value == null) bar.value = "bar";
+            return jsxDEV("div", {children: [foo.value, bar.value, baz.value]}, undefined, true, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
     });
   });
 });

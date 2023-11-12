@@ -12,8 +12,62 @@ export default function transformToReactiveProps(
 
   if (!component) return [ast, []];
 
-  const [propsNames, renamedPropsNames] = getPropsNames(component);
+  const [propsNames, renamedPropsNames, defaultPropsValues] =
+    getPropsNames(component);
   const propsNamesSet = new Set([...propsNames, ...renamedPropsNames]);
+  const defaultPropsEntries = Object.entries(defaultPropsValues);
+
+  // Set default props values inside component body
+  for (let [propName, propValue] of defaultPropsEntries) {
+    if (component.body == null) continue;
+    component.body.body.unshift({
+      type: "IfStatement",
+      test: {
+        type: "BinaryExpression",
+        operator: "==",
+        left: {
+          type: "Identifier",
+          name: propName,
+        },
+        right: {
+          type: "Literal",
+          value: null,
+        },
+      },
+      consequent: {
+        type: "ExpressionStatement",
+        expression: {
+          type: "AssignmentExpression",
+          operator: "=",
+          left: {
+            type: "Identifier",
+            name: propName,
+          },
+          right: propValue,
+        },
+      },
+    } as ESTree.IfStatement);
+  }
+
+  // Remove props from component params
+  for (let propParam of (component.params[0] as any)?.properties ?? []) {
+    const propName = propParam?.key?.name;
+
+    if (
+      propParam?.type !== "Property" ||
+      !propName ||
+      !propsNamesSet.has(propName) ||
+      !defaultPropsValues[propName]
+    ) {
+      continue;
+    }
+
+    propParam.shorthand = true;
+    propParam.value = {
+      type: "Identifier",
+      name: propName,
+    };
+  }
 
   const componentBodyWithPropsDotValue = JSON.parse(
     JSON.stringify(component.body),
