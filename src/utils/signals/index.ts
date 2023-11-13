@@ -1,10 +1,9 @@
 type Effect = () => void | Promise<void>;
 type Cleanup = Effect;
-type Current = Effect | 0 | undefined;
 
 export default function signals() {
-  let cleanups = new Map<Current, Cleanup[]>();
-  let current: Current;
+  const stack: Effect[] = [];
+  let cleanups = new Map<Effect, Cleanup[]>();
 
   return {
     cleanAll() {
@@ -17,7 +16,7 @@ export default function signals() {
       const effects = new Set<Effect>();
       return {
         get value() {
-          if (current) effects.add(current);
+          if (stack[0]) effects.add(stack[0]);
           return initialValue;
         },
         set value(v) {
@@ -32,15 +31,20 @@ export default function signals() {
       };
     },
     effect(fn: Effect) {
-      current = fn;
+      stack.unshift(fn);
       const p = fn();
-      if (p?.then) p.then(() => (current = 0));
-      else current = 0;
+      if (p?.then) p.then(() => removeFromStack(fn));
+      else removeFromStack(fn);
     },
     cleanup(fn: Cleanup) {
-      const cleans = cleanups.get(current) ?? [];
+      const cleans = cleanups.get(stack[0]) ?? [];
       cleans.push(fn);
-      cleanups.set(current, cleans);
+      cleanups.set(stack[0], cleans);
     },
   };
+
+  function removeFromStack(fn: Effect) {
+    const index = stack.lastIndexOf(fn);
+    if (index !== -1) stack.splice(index, 1);
+  }
 }
