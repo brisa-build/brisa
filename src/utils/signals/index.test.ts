@@ -7,7 +7,7 @@ describe("signals", () => {
     const initValue = 0;
     const updatedValue = 435;
     const count = state(initValue);
-    const mockEffect = mock<(val: number) => void>(() => {});
+    const mockEffect = mock<(val: number) => void>(() => { });
 
     effect(() => {
       mockEffect(count.value);
@@ -25,7 +25,7 @@ describe("signals", () => {
     const count = state(0);
     const username = state("Anonymous");
     const mockEffect = mock<(count: number, username: string) => void>(
-      () => {},
+      () => { },
     );
     const updatedCount = 435;
     const updatedUsername = "Aral";
@@ -54,8 +54,8 @@ describe("signals", () => {
     const { state, effect, cleanup } = signals();
     const count = state(0);
 
-    const mockEffect = mock<(count: number) => void>(() => {});
-    const mockCleanup = mock<() => void>(() => {});
+    const mockEffect = mock<(count: number) => void>(() => { });
+    const mockCleanup = mock<() => void>(() => { });
 
     effect(() => {
       mockEffect(count.value);
@@ -72,7 +72,7 @@ describe("signals", () => {
   });
 
   it('should be possible to initialize an state with "undefined"', () => {
-    const mockEffect = mock<(count: number | undefined) => void>(() => {});
+    const mockEffect = mock<(count: number | undefined) => void>(() => { });
     const { state, effect } = signals();
     const count = state<number | undefined>(undefined);
     expect(count.value).not.toBeDefined();
@@ -93,7 +93,7 @@ describe("signals", () => {
   it("should work async/await inside an effect", async () => {
     const { state, effect } = signals();
     const count = state(42);
-    const mockEffect = mock<(count: number) => void>(() => {});
+    const mockEffect = mock<(count: number) => void>(() => { });
 
     effect(async () => {
       await Promise.resolve();
@@ -129,5 +129,7 @@ describe("signals", () => {
     expect(user.value.name.value).toEqual("Barbara");
   });
 
-  it.todo("should log an alert in DEV when using nested effects", () => {});
+  it.todo("should log an alert in DEV when using nested effects", () => { });
+
+  it.todo('should work without race conditions between async effects and signals')
 });
