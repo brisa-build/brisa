@@ -30,11 +30,11 @@ export default function signals() {
         },
       };
     },
-    effect(fn: Effect) {
+    async effect(fn: Effect) {
       stack.unshift(fn);
       const p = fn();
-      if (p?.then) p.then(() => removeFromStack(fn));
-      else removeFromStack(fn);
+      if (p?.then) await p;
+      removeFromStack(fn);
     },
     cleanup(fn: Cleanup) {
       const cleans = cleanups.get(stack[0]) ?? [];
