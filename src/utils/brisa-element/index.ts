@@ -26,6 +26,9 @@ const createTextNode = (text: string) =>
 const isArray = Array.isArray;
 const arr = Array.from;
 const lowercase = (str: string) => str.toLowerCase();
+const isAttributeAnEvent = (key: string) => key.startsWith("on");
+const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
+  parent.appendChild(child);
 
 const createElement = (
   tagName: string,
@@ -87,7 +90,7 @@ export default function brisaElement(
       this.p = {};
 
       for (let attr of observedAttributes) {
-        this.p[attributesObj[attr]] = attr.startsWith("on")
+        this.p[attributesObj[attr]] = isAttributeAnEvent(attr)
           ? this.e(attr)
           : state(deserialize(this.getAttribute(attr)));
       }
@@ -103,25 +106,25 @@ export default function brisaElement(
         ) as HTMLElement;
 
         // Handle attributes
-        for (let [key, value] of Object.entries(attributes)) {
-          const isEvent = key.startsWith("on");
+        for (let [attribute, attrValue] of Object.entries(attributes)) {
+          const isEvent = isAttributeAnEvent(attribute);
 
           if (isEvent) {
-            el.addEventListener(lowercase(key.slice(2)), (e) =>
-              (value as (detail: unknown) => EventListener)(
+            el.addEventListener(lowercase(attribute.slice(2)), (e) =>
+              (attrValue as (detail: unknown) => EventListener)(
                 (e as CustomEvent)?.detail ?? e,
               ),
             );
-          } else if (!isEvent && typeof value === "function") {
-            effect(() => setAttribute(el, key, (value as () => string)()));
+          } else if (!isEvent && typeof attrValue === "function") {
+            effect(() => setAttribute(el, attribute, (attrValue as () => string)()));
           } else {
-            setAttribute(el, key, value as string);
+            setAttribute(el, attribute, attrValue as string);
           }
         }
 
         // Handle children
         if (children === "slot") {
-          el.appendChild(createElement("slot"));
+          appendChild(el, createElement("slot"));
         } else if (isArray(children)) {
           if (isArray(children[0])) {
             for (let child of children as Children[]) {
@@ -137,7 +140,7 @@ export default function brisaElement(
             if (lastNodes) {
               el.insertBefore(e, lastNodes[0]);
               for (let node of lastNodes) node?.remove();
-            } else el.appendChild(e);
+            } else appendChild(el, e);
           };
 
           effect(() => {
@@ -174,10 +177,10 @@ export default function brisaElement(
             else startEffect(childOrPromise);
           });
         } else if ((children as unknown as boolean) !== false) {
-          el.appendChild(createTextNode(children));
+          appendChild(el, createTextNode(children));
         }
 
-        if (tagName) parent.appendChild(el);
+        if (tagName) appendChild(parent, el);
       }
 
       await render(
@@ -192,7 +195,7 @@ export default function brisaElement(
           css(strings: string[], ...values: string[]) {
             const style = createElement("style");
             style.textContent = strings[0] + values.join("");
-            shadowRoot.appendChild(style);
+            appendChild(shadowRoot, style);
           },
         },
       );
@@ -221,7 +224,7 @@ export default function brisaElement(
       newValue: string | null,
     ) {
       // Handle component props
-      if (this.p && oldValue !== newValue && !name.startsWith("on")) {
+      if (this.p && oldValue !== newValue && !isAttributeAnEvent(name)) {
         (this.p[attributesObj[name]] as StateSignal).value =
           deserialize(newValue);
       }
