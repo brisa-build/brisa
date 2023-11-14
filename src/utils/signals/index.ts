@@ -5,6 +5,11 @@ export default function signals() {
   const stack: Effect[] = [];
   let cleanups = new Map<Effect, Cleanup[]>();
 
+  function removeFromStack(fn: Effect) {
+    const index = stack.indexOf(fn);
+    if (index > -1) stack.splice(index, 1);
+  }
+
   return {
     cleanAll() {
       for (let effect of cleanups.keys()) {
@@ -42,9 +47,4 @@ export default function signals() {
       cleanups.set(stack[0], cleans);
     },
   };
-
-  function removeFromStack(fn: Effect) {
-    const index = stack.lastIndexOf(fn);
-    if (index !== -1) stack.splice(index, 1);
-  }
 }
