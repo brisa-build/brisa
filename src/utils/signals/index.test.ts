@@ -129,8 +129,6 @@ describe("signals", () => {
     expect(user.value.name.value).toEqual("Barbara");
   });
 
-  it.todo("should log an alert in DEV when using nested effects", () => { });
-
   it('should work without race conditions between async effects and signals', async () => {
     const { state, effect } = signals();
     const count = state(0);
