@@ -76,7 +76,7 @@ export default function transformToReactiveProps(
     JSON.stringify(component.body),
     function (key, value) {
       // Avoid adding .value in props used inside a variable declaration
-      if (value?.type === "VariableDeclaration") {
+      if (value?.type === "VariableDeclarator" && value?.init?.type !== 'ArrowFunctionExpression') {
         return JSON.parse(JSON.stringify(value), (key, value) => {
           return value?.isSignal ? value.object : value;
         });
