@@ -7,6 +7,7 @@ import getComponentVariableNames from "./get-component-variable-names";
 import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 import transformToReactiveProps from "./transform-to-reactive-props";
 import transformToDirectExport from "./transform-to-direct-export";
+import { expect, it } from "bun:test";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
