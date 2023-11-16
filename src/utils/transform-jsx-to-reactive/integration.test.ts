@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, mock, beforeEach, afterEach } from "bun:test";
+import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { serialize } from "../serialization";
 import transformJSXToReactive from ".";
@@ -30,7 +30,7 @@ describe("integration", () => {
       window._on = module._on;
       window._off = module._off;
     })
-    afterEach(() => {
+    afterEach(async () => {
       if (typeof window !== 'undefined') GlobalRegistrator.unregister();
     })
     it("should work props and state with a counter", () => {
@@ -928,68 +928,22 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should work reactivity if props that are written in camelCase", () => {
-      function ColorSVG(
-        { firstColor, secondColor, thirdColor }: any,
-        { h }: any,
-      ) {
-        return h("svg", { width: "12cm", height: "12cm" }, [
-          [
-            "g",
-            {
-              style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
-            },
-            [
-              [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => firstColor.value,
-                  transform: "translate(0,50)",
-                },
-                "",
-              ],
-              [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => secondColor.value,
-                  transform: "translate(70,150)",
-                },
-                "",
-              ],
-              [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => thirdColor.value,
-                  transform: "translate(-70,150)",
-                },
-                "",
-              ],
-            ],
-          ],
-        ]);
-      }
+    it("should work reactivity if props that are written in camelCase", () => {
+      const code = `export default function ColorSVG({ firstColor, secondColor, thirdColor }) {
+        return (
+          <svg width="12cm" height="12cm">
+            <g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;">
+              <circle cx="6cm" cy="2cm" r="100" fill={firstColor} transform="translate(0,50)" />
+              <circle cx="6cm" cy="2cm" r="100" fill={secondColor} transform="translate(70,150)" />
+              <circle cx="6cm" cy="2cm" r="100" fill={thirdColor} transform="translate(-70,150)" />
+            </g>
+          </svg>
+        );
+      }`
 
-      customElements.define(
-        "color-svg",
-        brisaElement(ColorSVG as any, [
-          "firstColor",
-          "secondColor",
-          "thirdColor",
-        ]),
-      );
+      defineBrisaWebComponent(code, 'src/web-components/color-svg.tsx')
 
-      document.body.innerHTML = `
-          < color - svg firstColor = "#ff0000" secondColor = "#00ff00" thirdColor = "#0000ff" />
-            `;
+      document.body.innerHTML = `<color-svg firstColor="#ff0000" secondColor="#00ff00" thirdColor="#0000ff" />`;
 
       const colorSVG = document.querySelector("color-svg") as HTMLElement;
 
@@ -1006,16 +960,18 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should SVG work with foreingObject setting correctly the namespace outside the foreingObject node", () => {
-      function SVG({ }, { h }: any) {
-        return h("svg", { width: "12cm", height: "12cm" }, [
-          "foreignObject",
-          { width: "100%", height: "100%" },
-          ["div", { xmlns: "http://www.w3.org/1999/xhtml" }, "test"],
-        ]);
-      }
+    it("should SVG work with foreingObject setting correctly the namespace outside the foreingObject node", () => {
+      const code = `export default function SVG() {
+        return (
+          <svg width="12cm" height="12cm">
+            <foreignObject width="100%" height="100%">
+              <div xmlns="http://www.w3.org/1999/xhtml">test</div>
+            </foreignObject>
+          </svg>
+        );
+      }`
 
-      customElements.define("test-svg", brisaElement(SVG));
+      defineBrisaWebComponent(code, 'src/web-components/test-svg.tsx')
       document.body.innerHTML = "<test-svg />";
 
       const testSVG = document.querySelector("test-svg") as HTMLElement;
@@ -1034,8 +990,8 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should work a web-component that enables the addition, removal, and repositioning of items in a list", () => {
-      function MagicList({ }, { state, h }: any) {
+    it("should work a web-component that enables the addition, removal, and repositioning of items in a list", () => {
+      const code = `export default function MagicList({ }, { state }) {
         const list = state(["some", "another"]);
 
         const addItem = (e: any) => {
@@ -1059,41 +1015,26 @@ describe("integration", () => {
           ];
         };
 
-        return h("div", {}, [
-          [
-            "form",
-            { onSubmit: addItem },
-            [
-              [
-                "input",
-                { name: "item", id: "item", placeholder: "Add item" },
-                "",
-              ],
-              ["button", {}, "add"],
-            ],
-          ],
-          [
-            "ul",
-            {},
-            () =>
-              list.value.map((item: string, index: number) => [
-                "li",
-                {},
-                [
-                  ["button", { onClick: () => deleteItem(index) }, "delete"],
-                  ["button", { onClick: () => moveItemUp(index) }, "move up"],
-                  item,
-                ],
-              ]),
-          ],
-        ]);
-      }
+        return (
+          <div>
+            <form onSubmit={addItem}>
+              <input name="item" id="item" placeholder="Add item" />
+              <button>add</button>
+            </form>
+            <ul>
+              {list.value.map((item: string, index: number) => (
+                <li>
+                  <button onClick={() => deleteItem(index)}>delete</button>
+                  <button onClick={() => moveItemUp(index)}>move up</button>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      }`
 
-      customElements.define(
-        "magic-list",
-        brisaElement(MagicList as any, ["items"]),
-      );
-
+      defineBrisaWebComponent(code, 'src/web-components/magic-list.tsx')
       document.body.innerHTML = "<magic-list />";
 
       const magicList = document.querySelector("magic-list") as HTMLElement;
@@ -1149,18 +1090,12 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should reactively update the DOM after adding a new property to the web-component", () => {
-      type Props = { count: { value: number } };
-      function Test({ count }: Props, { h }: any) {
-        // This is the code line after compiling: function Test({ count = 1 })
-        if (count.value == null) count.value = 1;
-        return h("div", {}, () => count?.value);
-      }
+    it("should reactively update the DOM after adding a new property to the web-component", () => {
+      const code = `export default function Test({ count = 1 }: any) {
+        return <div>{count}</div>
+      }`
 
-      customElements.define(
-        "test-component",
-        brisaElement(Test as any, ["count"]),
-      );
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
@@ -1174,27 +1109,16 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
     });
 
-    it.todo("should work multi conditionals renders", () => {
-      type Props = { count: { value: number } };
-      function Test({ count }: Props, { h }: any) {
-        return h("div", {}, [
-          [
-            null,
-            {},
-            () =>
-              count.value === 1
-                ? ["span", {}, "one"]
-                : count.value === 2
-                  ? ["span", {}, "two"]
-                  : ["span", {}, "three"],
-          ],
-        ]);
-      }
+    it("should work multi conditionals renders", () => {
+      const code = `export default function Test({ count }: any) {
+        return (
+          <div>
+            {count === 1 ? <span>one</span> : count === 2 ? <span>two</span> : <span>three</span>}
+          </div>
+        );
+      }`
 
-      customElements.define(
-        "test-component",
-        brisaElement(Test as any, ["count"]),
-      );
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
       document.body.innerHTML = "<test-component count='1' />";
 
       const testComponent = document.querySelector(
@@ -1218,33 +1142,26 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should work nested conditionals renders", () => {
-      function Test({ first, second, third }: any, { h }: any) {
-        return h("div", {}, [
-          null,
-          {},
-          () =>
-            first.value === 1
-              ? [
-                "div",
-                {},
-                () =>
-                  second.value === 2
-                    ? [
-                      "span",
-                      {},
-                      () => (third.value === 3 ? "test work" : "no-third"),
-                    ]
-                    : "no-second",
-              ]
-              : "no-first",
-        ]);
-      }
+    it("should work nested conditionals renders", () => {
+      const code = `export default function Test({ first, second, third }: any) {
+        return (
+          <div>
+            {first === 1 ? (
+              <div>
+                {second === 2 ? (
+                  <span>{third === 3 ? "test work" : "no-third"}</span>
+                ) : (
+                  "no-second"
+                )}
+              </div>
+            ) : (
+              "no-first"
+            )}
+          </div>
+        );
+      }`
 
-      customElements.define(
-        "test-component",
-        brisaElement(Test as any, ["first", "second", "third"]),
-      );
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
 
       document.body.innerHTML =
         "<test-component first='1' second='2' third='3' />";
@@ -1282,31 +1199,33 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should allow async/await conditional renders from state", async () => {
-      function Test({ }: any, { state, h }: any) {
+    it("should allow async/await conditional renders from state", async () => {
+      const code = `export default function Test({ }: any, { state }: any) {
         const first = state(1);
         const second = state(2);
         const third = state(3);
 
-        return h("div", { onClick: () => (second.value = 42) }, async () => {
-          if (first.value === 1) {
-            if (second.value === 2) {
-              if (third.value === 3) {
-                return "test work";
-              } else {
-                return "no-third";
-              }
-            } else {
-              return `no-second ${second.value} `;
+        return (
+          <div onClick={() => second.value = 42}>
+            {first.value === 1 ? (
+              second.value === 2 ? (
+                third.value === 3 ? (
+                  "test work"
+                ) : (
+                  "no-third"
+                )
+              ) : (
+                \`no-second \${second.value}\`
+              )
+              ): (
+                "no-first"
+              )
             }
-          } else {
-            return "no-first";
-          }
-        });
-      }
+          </div>
+        );
+      }`
 
-      customElements.define("test-component", brisaElement(Test as any));
-
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
@@ -1326,31 +1245,32 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should allow async/await conditional renders from props", async () => {
-      function Test({ first, second, third }: any, { h }: any) {
-        return h("div", {}, async () => {
-          if (first.value === 1) {
-            if (second.value === 2) {
-              if (third.value === 3) {
-                return "test work";
+    it("should allow async/await conditional renders from props", async () => {
+      const code = `export default function Test({ first, second, third }: any) {
+        return (
+          <div>
+          {(async () => {
+            if (first === 1) {
+              if (second === 2) {
+                if (third === 3) {
+                  return "test work";
+                } else {
+                  return "no-third";
+                }
               } else {
-                return "no-third";
+                return "no-second";
               }
             } else {
-              return "no-second";
+              return "no-first";
             }
-          } else {
-            return "no-first";
-          }
-        });
-      }
+          })()}
+          </div>
+        );
+      }`
 
       document.body.innerHTML = "<test-async first='1' second='2' third='3' />";
 
-      customElements.define(
-        "test-async",
-        brisaElement(Test as any, ["first", "second", "third"]),
-      );
+      defineBrisaWebComponent(code, 'src/web-components/test-async.tsx')
 
       const testComponent = document.querySelector("test-async") as HTMLElement;
 
@@ -1387,31 +1307,19 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>test work</div>");
     });
 
-    it.todo("should be possible to create a collapsible content section with an accordion", () => {
-      function Accordion({ }: any, { state, h }: any) {
+    it("should be possible to create a collapsible content section with an accordion", () => {
+      const code = `export default function Accordion({ }: any, { state }: any) {
         const active = state(0);
 
-        return h("div", {}, [
-          [
-            "button",
-            {
-              onClick: () => {
-                active.value = active.value === 0 ? 1 : 0;
-              },
-            },
-            "toggle",
-          ],
-          [
-            "div",
-            {
-              style: () => `display:${active.value === 0 ? "none" : "block"} `,
-            },
-            "content",
-          ],
-        ]);
-      }
+        return (
+          <div>
+            <button onClick={() => active.value = active.value === 0 ? 1 : 0}>toggle</button>
+            <div style={\`display:\${active.value === 0 ? "none" : "block"}\`} >content</div>
+          </div>
+        );
+      }`
 
-      customElements.define("accordion-element", brisaElement(Accordion));
+      defineBrisaWebComponent(code, 'src/web-components/accordion-element.tsx')
 
       document.body.innerHTML = "<accordion-element />";
 
@@ -1439,39 +1347,21 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should display additional information on hover with a tooltip", () => {
-      function Tooltip({ }, { state, h }: any) {
+    it("should display additional information on hover with a tooltip", () => {
+      const code = `export default function Tooltip({ }, { state }: any) {
         const visible = state(false);
 
-        return h("div", {}, [
-          [
-            "span",
-            {
-              onMouseOver: () => {
-                visible.value = true;
-              },
-              onMouseOut: () => {
-                visible.value = false;
-              },
-              style: "position:relative;",
-            },
-            [
-              [
-                "span",
-                {
-                  style: () =>
-                    `position: absolute; visibility:${visible.value ? "visible" : "hidden"
-                    }; `,
-                },
-                "Tooltip text",
-              ],
-              "Hover over me",
-            ],
-          ],
-        ]);
-      }
+        return (
+          <div>
+            <span onMouseOver={() => visible.value = true} onMouseOut={() => visible.value = false} style="position:relative;">
+              <span style={\`position:absolute; visibility:\${visible.value ? "visible" : "hidden"};\`} >Tooltip text</span>
+              Hover over me
+            </span>
+          </div>
+        );
+      }`
 
-      customElements.define("tooltip-element", brisaElement(Tooltip));
+      defineBrisaWebComponent(code, 'src/web-components/tooltip-element.tsx')
 
       document.body.innerHTML = "<tooltip-element />";
 
@@ -1497,46 +1387,38 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should work a conditional render with different web-components", () => {
-      function WebComponent1({ }, { state, h }: any) {
+    it("should work a conditional render with different web-components", () => {
+      const wc1 = `export default function WebComponent1({ }, { state }: any) {
         const name = state("WebComponent1");
-        return h(
-          "div",
-          {
-            onClick: () => {
-              name.value = "WebComponent1 updated";
-            },
-          },
-          () => name.value,
+
+        return (
+          <div onClick={() => name.value = "WebComponent1 updated"}>
+            {name.value}
+          </div>
         );
-      }
-      function WebComponent2({ }, { state, h }: any) {
+      }`;
+
+      const wc2 = `export default function WebComponent2({ }, { state }: any) {
         const name = state("WebComponent2");
-        return h(
-          "div",
-          {
-            onClick: () => {
-              name.value = "WebComponent2 updated";
-            },
-          },
-          () => name.value,
-        );
-      }
-      function ParentWebComponent({ name }: any, { state, h }: any) {
-        return h(null, {}, () =>
-          name.value === "WebComponent1"
-            ? ["web-component-1", {}, ""]
-            : ["web-component-2", {}, ""],
-        );
-      }
 
-      customElements.define("web-component-1", brisaElement(WebComponent1));
-      customElements.define("web-component-2", brisaElement(WebComponent2));
-      customElements.define(
-        "parent-web-component",
-        brisaElement(ParentWebComponent, ["name"]),
-      );
+        return (
+          <div onClick={() => name.value = "WebComponent2 updated"}>
+            {name.value}
+          </div>
+        );
+      }`
 
+      const parent = `export default function ParentWebComponent({ name }: any, { state }: any) {
+        return (
+          <>
+            {name === "WebComponent1" ? <web-component-1 /> : <web-component-2 />}
+          </>
+        );
+      }`
+
+      defineBrisaWebComponent(wc1, 'src/web-components/web-component-1.tsx')
+      defineBrisaWebComponent(wc2, 'src/web-components/web-component-2.tsx')
+      defineBrisaWebComponent(parent, 'src/web-components/parent-web-component.tsx')
       document.body.innerHTML = '<parent-web-component name="WebComponent1" />';
 
       const parentWebComponent = document.querySelector(
@@ -1601,35 +1483,19 @@ describe("integration", () => {
       );
     });
 
-    it.todo('should open/close a dialog with the "open" attribute', () => {
-      function Dialog({ }, { state, h }: any) {
+    it('should open/close a dialog with the "open" attribute', () => {
+      const code = `export default function Dialog({ }, { state }: any) {
         const open = state(false);
 
-        return h("div", {}, [
-          [
-            "button",
-            {
-              onClick: () => {
-                open.value = !open.value;
-              },
-            },
-            "open",
-          ],
-          [
-            "dialog",
-            {
-              open: () => (open.value ? _on : _off),
-              onClick: () => {
-                open.value = false;
-              },
-            },
-            "dialog",
-          ],
-        ]);
-      }
+        return (
+          <div>
+            <button onClick={() => open.value = true}>open</button>
+            <dialog open={open.value} onClick={() => open.value = false}>dialog</dialog>
+          </div>
+        );
+      }`
 
-      customElements.define("dialog-element", brisaElement(Dialog));
-
+      defineBrisaWebComponent(code, 'src/web-components/dialog-element.tsx');
       document.body.innerHTML = "<dialog-element />";
 
       const dialog = document.querySelector("dialog-element") as HTMLElement;
@@ -1657,19 +1523,17 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should serialize the props consuming another web-component", () => {
-      function Test({ }, { h }: any) {
-        return h("web-component", { user: { name: "Aral" } }, "");
-      }
-      function WebComponent({ user }: any, { h }: any) {
-        return h("div", {}, () => user.value.name);
-      }
+    it("should serialize the props consuming another web-component", () => {
+      const testComp = `export default function Test({ }) {
+        return <web-component user={{ name: "Aral" }} />;
+      }`;
 
-      customElements.define("test-component", brisaElement(Test));
-      customElements.define(
-        "web-component",
-        brisaElement(WebComponent, ["user"]),
-      );
+      const wc = `export default function WebComponent({ user }) {
+        return <div>{user.name}</div>;
+      }`
+
+      defineBrisaWebComponent(testComp, 'src/web-components/test-component.tsx')
+      defineBrisaWebComponent(wc, 'src/web-components/web-component.tsx')
 
       document.body.innerHTML = "<test-component />";
 
@@ -1681,7 +1545,7 @@ describe("integration", () => {
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        `< web - component user = "{'name':'Aral'}" > </web-component>`,
+        `<web-component user="{'name':'Aral'}"></web-component>`,
       );
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Aral</div>`);
 
@@ -1693,16 +1557,17 @@ describe("integration", () => {
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Barbara</div>`);
     });
 
-    it.todo("should work with booleans and numbers in the same way than React", () => {
-      const Component = ({ }, { h }: any) =>
-        h(null, {}, [
-          [null, {}, () => true && ["div", {}, "TRUE"]],
-          [null, {}, () => false && ["div", {}, "FALSE"]],
-          [null, {}, () => 1 && ["div", {}, "TRUE"]],
-          [null, {}, () => 0 && ["div", {}, "FALSE"]],
-        ]);
+    it("should work with booleans and numbers in the same way than React", () => {
+      const code = `export default ({ }, { h }: any) => (
+        <>
+          {true && <div>TRUE</div>}
+          {false && <div>FALSE</div>}
+          {1 && <div>TRUE</div>}
+          {0 && <div>FALSE</div>}
+        </>
+      )`;
 
-      customElements.define("bool-component", brisaElement(Component));
+      defineBrisaWebComponent(code, 'src/web-components/bool-component.tsx')
 
       document.body.innerHTML = "<bool-component />";
       const boolComponent = document.querySelector(
@@ -1714,19 +1579,19 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should work with booleans and numbers from props in the same way than React", () => {
-      const Component = ({ first, second, third, fourth }: any, { h }: any) =>
-        h(null, {}, [
-          [null, {}, () => first.value && ["div", {}, "TRUE"]],
-          [null, {}, () => second.value && ["div", {}, "FALSE"]],
-          [null, {}, () => third.value && ["div", {}, "TRUE"]],
-          [null, {}, () => fourth.value && ["div", {}, "FALSE"]],
-        ]);
-
-      customElements.define(
-        "bool-component",
-        brisaElement(Component, ["first", "second", "third", "fourth"]),
+    it("should work with booleans and numbers from props in the same way than React", () => {
+      const code = `const Component = ({ first, second, third, fourth }) => (
+        <>
+          {first && <div>TRUE</div>}
+          {second && <div>FALSE</div>}
+          {third && <div>TRUE</div>}
+          {fourth && <div>FALSE</div>}
+        </>
       );
+
+      export default Component;`
+
+      defineBrisaWebComponent(code, 'src/web-components/bool-component.tsx')
 
       document.body.innerHTML =
         "<bool-component first='true' second='false' third='1' fourth='0' />";
@@ -1739,14 +1604,15 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should be possible to render undefined and null", () => {
-      const Component = ({ }, { h }: any) =>
-        h(null, {}, [
-          ["div", { class: "empty" }, undefined],
-          ["div", { class: "empty" }, null],
-        ]);
+    it("should be possible to render undefined and null", () => {
+      const code = `export default () => (
+        <> 
+          <div class="empty">{undefined}</div>
+          <div class="empty">{null}</div>
+        </>
+      );`
 
-      customElements.define("test-component", brisaElement(Component));
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
 
       document.body.innerHTML = "<test-component />";
       const testComponent = document.querySelector(
@@ -1758,13 +1624,16 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should not be possible to inject HTML as string directly", () => {
-      const Component = ({ }, { h }: any) =>
-        h(null, {}, '<script>alert("test")</script>');
+    it("should not be possible to inject HTML as string directly", () => {
+      const code = `export default () => (
+        <>
+          {'<script>alert("test")</script>'}
+        </>
+      );`
 
-      customElements.define("test-component", brisaElement(Component));
-
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
       document.body.innerHTML = "<test-component />";
+
       const testComponent = document.querySelector(
         "test-component",
       ) as HTMLElement;
@@ -1781,18 +1650,13 @@ describe("integration", () => {
       ).toBeTruthy();
     });
 
-    it.todo("should handle keyboard events", () => {
-      const mockAlert = mock((s: string) => { });
-      const Component = ({ }, { h }: any) =>
-        h("input", {
-          onKeydown: () => {
-            mockAlert("Enter to onKeydown");
-          },
-        });
+    it("should handle keyboard events", () => {
+      window.mockAlert = mock((s: string) => { });
+      const code = `export default () => <input onKeyDown={() => window.mockAlert("Enter to onKeyDown")} />;`
 
-      customElements.define("keyboard-events", brisaElement(Component));
-
+      defineBrisaWebComponent(code, 'src/web-components/keyboard-events.tsx')
       document.body.innerHTML = "<keyboard-events />";
+
       const keyboardEventEl = document.querySelector(
         "keyboard-events",
       ) as HTMLElement;
@@ -1806,34 +1670,35 @@ describe("integration", () => {
       input.dispatchEvent(new KeyboardEvent("keydown"));
 
       expect(keyboardEventEl?.shadowRoot?.innerHTML).toBe("<input>");
-      expect(mockAlert).toHaveBeenCalledTimes(1);
-      expect(mockAlert.mock.calls[0][0]).toBe("Enter to onKeydown");
+      expect(window.mockAlert).toHaveBeenCalledTimes(1);
+      expect(window.mockAlert.mock.calls[0][0]).toBe("Enter to onKeyDown");
     });
 
-    it.todo("should handle asynchronous updates", async () => {
+    it("should handle asynchronous updates", async () => {
+      const code = `
       const fetchData = () =>
         Promise.resolve({ json: () => Promise.resolve({ name: "Barbara" }) });
-      const Component = ({ }, { state, h }: any) => {
+
+      const Component = ({ }, { state }: any) => {
         const user = state({ name: "Aral" });
 
-        h(null, {}, [
-          [
-            "button",
-            {
-              onClick: async () => {
-                const response = await fetchData();
-                user.value = await response.json();
-              },
-            },
-            "fetch",
-          ],
-          ["div", {}, () => user.value.name],
-        ]);
+        return (
+          <>
+            <button onClick={async () => {
+              const response = await fetchData();
+              user.value = await response.json();
+            }}>fetch</button>
+            <div>{user.value.name}</div>
+          </>
+        );
       };
 
-      customElements.define("async-updates", brisaElement(Component));
+      export default Component;
+      `
 
+      defineBrisaWebComponent(code, 'src/web-components/async-updates.tsx')
       document.body.innerHTML = "<async-updates />";
+
       const asyncUpdatesComp = document.querySelector(
         "async-updates",
       ) as HTMLElement;
@@ -1859,29 +1724,25 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should update all items from a list consuming the same state signal at the same time", () => {
-      const Component = ({ }, { state, h }: any) => {
+    it("should update all items from a list consuming the same state signal at the same time", () => {
+      const code = `const Component = ({ }, { state }: any) => {
         const list = state(["one", "two", "three"]);
 
-        return h(null, {}, [
-          [
-            "button",
-            {
-              onClick: () => {
-                list.value = list.value.map((item: string) =>
-                  item.toUpperCase(),
-                );
-              },
-            },
-            "uppercase",
-          ],
-          ["ul", {}, () => list.value.map((item: string) => ["li", {}, item])],
-        ]);
+        return (
+          <>
+            <button onClick={() => {
+              list.value = list.value.map((item: string) => item.toUpperCase());
+            }}>uppercase</button>
+            <ul>{list.value.map((item: string) => <li>{item}</li>)}</ul>
+          </>
+        );
       };
 
-      customElements.define("test-component", brisaElement(Component));
+      export default Component;`
 
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
       document.body.innerHTML = "<test-component />";
+
       const testComponent = document.querySelector(
         "test-component",
       ) as HTMLElement;
@@ -1901,19 +1762,19 @@ describe("integration", () => {
       );
     });
 
-    it.todo("should be possible to update a rendered DOM element after mount via ref", async () => {
-      const Component = ({ }, { onMount, state, h }: any) => {
+    it("should be possible to update a rendered DOM element after mount via ref", async () => {
+      // Is not a good practice but is just for testing
+      const code = `export default ({ }, { onMount, state }: any) => {
         const ref = state(null);
 
         onMount(() => {
-          // Is not a good practice but is just for testing
           ref.value.innerHTML = "test";
         });
 
-        return h(null, {}, [["div", { ref }, "original"]]);
-      };
+        return <div ref={ref}>original</div>;
+      };`
 
-      customElements.define("test-component", brisaElement(Component));
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
@@ -1927,36 +1788,38 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>test</div>");
     });
 
-    it.todo("should be possible to execute different onMount callbacks", async () => {
-      const mockFirstCallback = mock((s: string) => { });
-      const mockSecondCallback = mock((s: string) => { });
-      const Component = ({ }, { onMount, h }: any) => {
+    it("should be possible to execute different onMount callbacks", async () => {
+      window.mockFirstCallback = mock((s: string) => { });
+      window.mockSecondCallback = mock((s: string) => { });
+
+      const code = `export default ({ }, { onMount }: any) => {
         onMount(() => {
-          mockFirstCallback("first");
+          window.mockFirstCallback("first");
         });
         onMount(() => {
-          mockSecondCallback("second");
+          window.mockSecondCallback("second");
         });
 
-        return h(null, {}, null);
-      };
+        return null
+      };`
 
-      customElements.define("test-component", brisaElement(Component));
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
       document.body.innerHTML = "<test-component />";
 
       await Bun.sleep(0);
 
-      expect(mockFirstCallback).toHaveBeenCalledTimes(1);
-      expect(mockFirstCallback.mock.calls[0][0]).toBe("first");
-      expect(mockSecondCallback).toHaveBeenCalledTimes(1);
-      expect(mockSecondCallback.mock.calls[0][0]).toBe("second");
+      expect(window.mockFirstCallback).toHaveBeenCalledTimes(1);
+      expect(window.mockFirstCallback.mock.calls[0][0]).toBe("first");
+      expect(window.mockSecondCallback).toHaveBeenCalledTimes(1);
+      expect(window.mockSecondCallback.mock.calls[0][0]).toBe("second");
     });
 
-    it.todo("should cleanup an event registered on onMount when the component is unmounted", async () => {
-      const mockCallback = mock((s: string) => { });
-      const Component = ({ }, { onMount, cleanup, h }: any) => {
+    it("should cleanup an event registered on onMount when the component is unmounted", async () => {
+      window.mockCallback = mock((s: string) => { });
+
+      const code = `export default ({}, { onMount, cleanup,  }: any) => {
         onMount(() => {
-          const onClick = () => mockCallback("click");
+          const onClick = () => window.mockCallback("click");
           document.addEventListener("click", onClick);
 
           cleanup(() => {
@@ -1964,20 +1827,20 @@ describe("integration", () => {
           });
         });
 
-        return h(null, {}, null);
-      };
+        return null
+      };`
 
-      customElements.define("test-component", brisaElement(Component));
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
 
       document.body.innerHTML = "<test-component />";
 
       await Bun.sleep(0);
 
-      expect(mockCallback).toHaveBeenCalledTimes(0);
+      expect(window.mockCallback).toHaveBeenCalledTimes(0);
 
       document.dispatchEvent(new Event("click"));
 
-      expect(mockCallback).toHaveBeenCalledTimes(1);
+      expect(window.mockCallback).toHaveBeenCalledTimes(1);
 
       const testComponent = document.querySelector(
         "test-component",
@@ -1987,21 +1850,21 @@ describe("integration", () => {
 
       document.dispatchEvent(new Event("click"));
 
-      expect(mockCallback).toHaveBeenCalledTimes(1);
+      expect(window.mockCallback).toHaveBeenCalledTimes(1);
     });
 
-    it.todo("should cleanup on unmount if a cleanup callback is registered in the root of the component", () => {
-      const mockCallback = mock((s: string) => { });
-      const Component = ({ }, { cleanup, h }: any) => {
+    it("should cleanup on unmount if a cleanup callback is registered in the root of the component", () => {
+      window.mockCallback = mock((s: string) => { });
+
+      const code = `export default ({ }, { cleanup }: any) => {
         cleanup(() => {
-          mockCallback("cleanup");
+          window.mockCallback("cleanup");
         });
 
-        return h(null, {}, null);
-      };
+        return null;
+      };`
 
-      customElements.define("test-component", brisaElement(Component));
-
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
@@ -2010,27 +1873,21 @@ describe("integration", () => {
 
       testComponent.remove();
 
-      expect(mockCallback).toHaveBeenCalledTimes(1);
-      expect(mockCallback.mock.calls[0][0]).toBe("cleanup");
+      expect(window.mockCallback).toHaveBeenCalledTimes(1);
+      expect(window.mockCallback.mock.calls[0][0]).toBe("cleanup");
     });
 
-    it.todo("should cleanup on unmount if a cleanup callback is registered in a nested component", () => {
-      const mockCallback = mock((s: string) => { });
-      const Component = ({ }, { cleanup, h }: any) => {
-        cleanup(() => {
-          mockCallback("cleanup");
-        });
+    it("should cleanup on unmount if a cleanup callback is registered in a nested component", () => {
+      window.mockCallback = mock((s: string) => { });
+      const testComp = `export default ({ }, { cleanup }: any) => {
+        cleanup(() => window.mockCallback("cleanup"));
+        return null;
+      };`
 
-        return h(null, {}, null);
-      };
+      const parentComp = `export default () => <test-component />;`
 
-      const ParentComponent = ({ }, { h }: any) => {
-        return h(null, {}, [["test-component", {}, null]]);
-      };
-
-      customElements.define("test-component", brisaElement(Component));
-      customElements.define("parent-component", brisaElement(ParentComponent));
-
+      defineBrisaWebComponent(testComp, 'src/web-components/test-component.tsx')
+      defineBrisaWebComponent(parentComp, 'src/web-components/parent-component.tsx')
       document.body.innerHTML = "<parent-component />";
 
       const parentComponent = document.querySelector(
@@ -2039,8 +1896,8 @@ describe("integration", () => {
 
       parentComponent.remove();
 
-      expect(mockCallback).toHaveBeenCalledTimes(1);
-      expect(mockCallback.mock.calls[0][0]).toBe("cleanup");
+      expect(window.mockCallback).toHaveBeenCalledTimes(1);
+      expect(window.mockCallback.mock.calls[0][0]).toBe("cleanup");
     });
   });
 });
