@@ -1255,9 +1255,9 @@ describe("utils", () => {
 
     it("should reactively update the DOM after adding a new property to the web-component", () => {
       type Props = { count: { value: number } };
-      function Test({ count }: Props, { h }: any) {
+      function Test({ count }: Props, { h, effect }: any) {
         // This is the code line after compiling: function Test({ count = 1 })
-        if (count.value == null) count.value = 1;
+        effect(() => (count.value ??= 1));
         return h("div", {}, () => count?.value);
       }
 

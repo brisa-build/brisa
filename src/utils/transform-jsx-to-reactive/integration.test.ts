@@ -1933,7 +1933,7 @@ describe("integration", () => {
       expect(window.mockCallback.mock.calls[0][0]).toBe("cleanup");
     });
 
-    it("should add a default value defined inside the body", () => {
+    it("should add a default value defined inside the body with || operator", () => {
       const code = `export default ({ name }: any) => {
         const superName = name || "Aral";
         return <div>{superName}</div>;
@@ -1947,6 +1947,84 @@ describe("integration", () => {
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.setAttribute("name", "");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should add a default value defined inside the body with props identifier and || operator", () => {
+      const code = `export default (props: any) => {
+        const superName = props.name || "Aral";
+        return <div>{superName}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.setAttribute("name", "");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should add a default value defined inside the body with ?? operator", () => {
+      const code = `export default ({ name }: any) => {
+        const superName = name ?? "Aral";
+        return <div>{superName}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.setAttribute("name", "");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+
+      testComponent.removeAttribute("name");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should add a default value defined inside the body with props identifier and ?? operator", () => {
+      const code = `export default (props: any) => {
+        const superName = props.name ?? "Aral";
+        return <div>{superName}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.setAttribute("name", "");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+
+      testComponent.removeAttribute("name");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
     });
 
     it("should NOT add a default value overwritting empty string using ?? operator", () => {
@@ -1956,7 +2034,7 @@ describe("integration", () => {
       }`;
 
       defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
-      document.body.innerHTML = "<test-component name='' />";
+      document.body.innerHTML = '<test-component name="" />';
 
       const testComponent = document.querySelector(
         "test-component"
@@ -1965,23 +2043,20 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
     });
 
-    it.todo(
-      "should add a default value overwritting empty string using || operator",
-      () => {
-        const code = `export default ({ name }: any) => {
-        const superName = name || "Aral";
-        return <div>{superName}</div>;
-      }`;
+    it("should add a default value overwritting empty string using || operator", () => {
+      const code = `export default ({ name }: any) => {
+          const superName = name || "Aral";
+          return <div>{superName}</div>;
+        }`;
 
-        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
-        document.body.innerHTML = "<test-component name='' />";
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = '<test-component name="" />';
 
-        const testComponent = document.querySelector(
-          "test-component"
-        ) as HTMLElement;
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
-      }
-    );
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
   });
 });

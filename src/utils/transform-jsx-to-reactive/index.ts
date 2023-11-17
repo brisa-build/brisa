@@ -7,7 +7,6 @@ import getComponentVariableNames from "./get-component-variable-names";
 import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 import transformToReactiveProps from "./transform-to-reactive-props";
 import transformToDirectExport from "./transform-to-direct-export";
-import { expect, it } from "bun:test";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
@@ -16,7 +15,7 @@ export default function transformJSXToReactive(code: string, path: string) {
 
   const ast = parseCodeToAST(code);
   const astWithDirectExport = transformToDirectExport(ast);
-  const [astWithPropsDotValue, propNames] =
+  const [astWithPropsDotValue, propNames, isAddedDefaultProps] =
     transformToReactiveProps(astWithDirectExport);
   const reactiveAst = transformToReactiveArrays(astWithPropsDotValue);
   const [componentBranch, index] = getWebComponentAst(reactiveAst) as [
@@ -31,13 +30,18 @@ export default function transformJSXToReactive(code: string, path: string) {
   const componentVariableNames = getComponentVariableNames(componentBranch);
   const allVariableNames = new Set([...propNames, ...componentVariableNames]);
   let hyperScriptVarName = "h";
+  let effectVarName = isAddedDefaultProps ? "effect" : undefined;
 
   while (allVariableNames.has(hyperScriptVarName)) hyperScriptVarName += "$";
+  if (effectVarName) {
+    while (allVariableNames.has(effectVarName)) effectVarName += "$";
+  }
 
   const [importDeclaration, brisaElement] = defineBrisaElement(
     componentBranch,
     propNames,
-    hyperScriptVarName
+    hyperScriptVarName,
+    effectVarName
   );
 
   // Wrap the component with brisaElement
