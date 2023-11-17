@@ -80,7 +80,7 @@ type Props = { name: string };
 
 export function ServerComponent(
   { name }: Props,
-  requestContext: RequestContext,
+  requestContext: RequestContext
 ) {
   return (
     <div>

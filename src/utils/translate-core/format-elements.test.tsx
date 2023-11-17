@@ -82,7 +82,7 @@ describe("utils", () => {
 
       const output = formatElements(
         "<a>this is a <b>test</b></a><c>!</c>",
-        elements,
+        elements
       );
       const elementA = output[0] as JSXElement;
       const elementB = elementA.props?.children as JSXElement;

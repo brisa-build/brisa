@@ -18,11 +18,11 @@ describe("utils", () => {
 
         const expectedIndex = -1;
         const expectedCode = toInline(
-          `return h('div', {foo: () => props.bar.value}, 'baz');`,
+          `return h('div', {foo: () => props.bar.value}, 'baz');`
         );
 
         expect(toInline(generateCodeFromAST(output[0] as any))).toBe(
-          expectedCode,
+          expectedCode
         );
         expect(output[1]).toBe(expectedIndex);
       });

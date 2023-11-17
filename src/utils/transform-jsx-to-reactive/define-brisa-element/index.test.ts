@@ -23,7 +23,7 @@ describe("utils", () => {
 
         const ast = parseCodeToAST(code);
         const [component] = getWebComponentAst(ast) as [
-          ESTree.FunctionDeclaration,
+          ESTree.FunctionDeclaration
         ];
         const [propNames] = getPropsNames(component);
         const [importDeclaration] = defineBrisaElement(component, propNames);
@@ -31,7 +31,7 @@ describe("utils", () => {
         (importDeclaration as ESTree.ImportDeclaration).specifiers.forEach(
           (specifier) => {
             expect((BRISA_CLIENT as any)[specifier.local.name]).toBeDefined();
-          },
+          }
         );
       });
       it("should wrap the web-component with brisaElement and return the import declaration", () => {
@@ -42,22 +42,22 @@ describe("utils", () => {
         `;
         const ast = parseCodeToAST(code);
         const [component] = getWebComponentAst(ast) as [
-          ESTree.FunctionDeclaration,
+          ESTree.FunctionDeclaration
         ];
         const [propNames] = getPropsNames(component);
         const [importDeclaration, wrappedComponent] = defineBrisaElement(
           component,
-          propNames,
+          propNames
         );
         expect(output(importDeclaration)).toBe(
-          'import {brisaElement, _on, _off} from "brisa/client";',
+          'import {brisaElement, _on, _off} from "brisa/client";'
         );
         expect(output(wrappedComponent)).toBe(
           toInline(`
           brisaElement(function MyComponent({exampleProp}, {h}) {
               return h("div", {}, () => exampleProp.value);
           }, ["exampleProp"])
-        `),
+        `)
         );
       });
 
@@ -69,22 +69,22 @@ describe("utils", () => {
         `;
         const ast = parseCodeToAST(code);
         const [component] = getWebComponentAst(ast) as [
-          ESTree.FunctionDeclaration,
+          ESTree.FunctionDeclaration
         ];
         const [propNames] = getPropsNames(component);
         const [importDeclaration, wrappedComponent] = defineBrisaElement(
           component,
-          propNames,
+          propNames
         );
         expect(output(importDeclaration)).toBe(
-          'import {brisaElement, _on, _off} from "brisa/client";',
+          'import {brisaElement, _on, _off} from "brisa/client";'
         );
         expect(output(wrappedComponent)).toBe(
           toInline(`
           brisaElement(function MyComponent(props, {h}) {
               return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
           }, ["foo", "bar"])
-        `),
+        `)
         );
       });
 
@@ -96,22 +96,22 @@ describe("utils", () => {
         `;
         const ast = parseCodeToAST(code);
         const [component] = getWebComponentAst(ast) as [
-          ESTree.FunctionDeclaration,
+          ESTree.FunctionDeclaration
         ];
         const [propNames] = getPropsNames(component);
         const [importDeclaration, wrappedComponent] = defineBrisaElement(
           component,
-          propNames,
+          propNames
         );
         expect(output(importDeclaration)).toBe(
-          'import {brisaElement, _on, _off} from "brisa/client";',
+          'import {brisaElement, _on, _off} from "brisa/client";'
         );
         expect(output(wrappedComponent)).toBe(
           toInline(`
           brisaElement(function MyComponent(props, {h}) {
               return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
           }, ["foo", "bar"])
-        `),
+        `)
         );
       });
     });

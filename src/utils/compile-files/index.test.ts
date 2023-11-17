@@ -89,7 +89,7 @@ describe("utils", () => {
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(fs.readFileSync(TYPES).toString()).toBe(
-        `export interface IntrinsicCustomElements {\n  'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;\n}`,
+        `export interface IntrinsicCustomElements {\n  'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;\n}`
       );
       expect(console.log).toHaveBeenCalled();
       expect(files).toHaveLength(9);

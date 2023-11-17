@@ -46,18 +46,19 @@ The global layout is defined inside `/src/layout/index`. By default Brisa suppor
 ```jsx filename="src/layout/index.js"
 import { RequestContext } from "brisa";
 
-export default function Layout({ children }: { children: JSX.Element }, { route }: RequestContext) {
+export default function Layout(
+  { children }: { children: JSX.Element },
+  { route }: RequestContext
+) {
   return (
     <html>
       <head>
         <title>My layout</title>
         <link rel="icon" href="favicon.ico" />
       </head>
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
-  )
+  );
 }
 ```
 
@@ -89,8 +90,11 @@ Inside your layout, you can fetch data directly with `fetch`, in the same way th
 ```jsx filename="src/layout/index.js"
 import { RequestContext } from "brisa";
 
-export default async function Layout({ children }: { children: JSX.Element }, { route }: RequestContext) {
-  const data = await fetch(/* data url */).then(r => r.json());
+export default async function Layout(
+  { children }: { children: JSX.Element },
+  { route }: RequestContext
+) {
+  const data = await fetch(/* data url */).then((r) => r.json());
 
   return (
     <html>
@@ -98,11 +102,9 @@ export default async function Layout({ children }: { children: JSX.Element }, { 
         <title>My layout</title>
         <link rel="icon" href="favicon.ico" />
       </head>
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
-  )
+  );
 }
 ```
 
@@ -123,7 +125,7 @@ import { type RequestContext } from "brisa";
 
 export function responseHeaders(
   request: RequestContext,
-  responseStatus: number,
+  responseStatus: number
 ) {
   return {
     "Cache-Control": "public, max-age=3600",

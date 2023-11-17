@@ -3,7 +3,7 @@ import { ESTree } from "meriyah";
 const CHILDREN = "children";
 
 export default function getPropsNames(
-  webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression,
+  webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression
 ): [string[], string[], Record<string, ESTree.Literal>] {
   const propsAst = webComponentAst?.params?.[0];
   const propNames = [];
@@ -15,7 +15,7 @@ export default function getPropsNames(
       if (prop.type === "RestElement") {
         const [names, renamedNames, defaultProps] = getPropsNamesFromIdentifier(
           prop.argument.name,
-          webComponentAst,
+          webComponentAst
         );
 
         propNames.push(...names);
@@ -39,7 +39,11 @@ export default function getPropsNames(
       }
     }
 
-    const [, renames, defaultProps] = getPropsNamesFromIdentifier('', webComponentAst, new Set(propNames))
+    const [, renames, defaultProps] = getPropsNamesFromIdentifier(
+      "",
+      webComponentAst,
+      new Set(propNames)
+    );
 
     renamedPropNames.push(...renames);
     defaultPropsValues = { ...defaultPropsValues, ...defaultProps };
@@ -58,7 +62,7 @@ export default function getPropsNames(
 function getPropsNamesFromIdentifier(
   identifier: string,
   ast: any,
-  currentPropsNames = new Set<string>([]),
+  currentPropsNames = new Set<string>([])
 ): [string[], string[], Record<string, ESTree.Literal>] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
@@ -110,7 +114,9 @@ function getPropsNamesFromIdentifier(
     // const foo = bar // bar is a prop
     if (
       value?.type === "VariableDeclarator" &&
-      currentPropsNames.has(value?.init?.left?.name ?? value?.init?.name ?? value?.id?.name)
+      currentPropsNames.has(
+        value?.init?.left?.name ?? value?.init?.name ?? value?.id?.name
+      )
     ) {
       renamedPropsNames.add(value?.id?.name);
     }

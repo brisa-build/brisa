@@ -9,7 +9,7 @@ type Render = (
     onMount(cb: () => void): void;
     css(strings: string[], ...values: string[]): void;
     h(tagName: string, attributes: Attr, children: unknown): void;
-  },
+  }
 ) => Node[];
 type Children = unknown[] | string | (() => Children);
 type Event = (e: unknown) => void;
@@ -32,7 +32,7 @@ const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
 
 const createElement = (
   tagName: string,
-  parent?: HTMLElement | DocumentFragment,
+  parent?: HTMLElement | DocumentFragment
 ) => {
   return tagName === "svg" ||
     ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
@@ -62,7 +62,7 @@ const setAttribute = (el: HTMLElement, key: string, value: string) => {
 
 export default function brisaElement(
   render: Render,
-  observedAttributes: string[] = [],
+  observedAttributes: string[] = []
 ) {
   const attributesLowercase: string[] = [];
   const attributesObj: Record<string, string> = {};
@@ -99,7 +99,7 @@ export default function brisaElement(
         tagName: string | null,
         attributes: Attr,
         children: Children,
-        parent: HTMLElement | DocumentFragment = shadowRoot,
+        parent: HTMLElement | DocumentFragment = shadowRoot
       ) {
         const el = (
           tagName ? createElement(tagName, parent) : parent
@@ -112,11 +112,13 @@ export default function brisaElement(
           if (isEvent) {
             el.addEventListener(lowercase(attribute.slice(2)), (e) =>
               (attrValue as (detail: unknown) => EventListener)(
-                (e as CustomEvent)?.detail ?? e,
-              ),
+                (e as CustomEvent)?.detail ?? e
+              )
             );
           } else if (!isEvent && typeof attrValue === "function") {
-            effect(() => setAttribute(el, attribute, (attrValue as () => string)()));
+            effect(() =>
+              setAttribute(el, attribute, (attrValue as () => string)())
+            );
           } else {
             setAttribute(el, attribute, attrValue as string);
           }
@@ -162,7 +164,7 @@ export default function brisaElement(
                 insertOrUpdate(fragment);
 
                 lastNodes = arr(el.childNodes).filter(
-                  (node) => !currentElNodes.includes(node),
+                  (node) => !currentElNodes.includes(node)
                 );
               } else if ((child as unknown as boolean) !== false) {
                 const textNode = createTextNode(child as string);
@@ -197,7 +199,7 @@ export default function brisaElement(
             style.textContent = strings[0] + values.join("");
             appendChild(shadowRoot, style);
           },
-        },
+        }
       );
       for (const fn of fnToExecuteAfterMount) fn();
     }
@@ -221,7 +223,7 @@ export default function brisaElement(
     attributeChangedCallback(
       name: string,
       oldValue: string | null,
-      newValue: string | null,
+      newValue: string | null
     ) {
       // Handle component props
       if (this.p && oldValue !== newValue && !isAttributeAnEvent(name)) {

@@ -38,7 +38,7 @@ describe("utils", () => {
           async text() {
             return transpiler.transform(fs.readFileSync(filepath), "tsx");
           },
-        }) as BunFile,
+        } as BunFile)
     );
   });
 
@@ -83,7 +83,7 @@ describe("utils", () => {
       "should return 2 web components in page if there is 1 web component and another one inside",
       () => {
         // TODO: This will make sense to do after doing the transformation from JSX to hyperscript, this way we can analyze the JSX directly
-      },
+      }
     );
   });
 });

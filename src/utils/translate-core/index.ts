@@ -29,7 +29,7 @@ export default function translateCore(locale: string) {
   const translate = (
     i18nKey: string | TemplateStringsArray = "",
     query,
-    options,
+    options
   ) => {
     const dic = config.messages?.[locale] || {};
     const keyWithPlural = plural(
@@ -37,7 +37,7 @@ export default function translateCore(locale: string) {
       dic,
       i18nKey as string,
       config,
-      query,
+      query
     );
     const dicValue = getDicValue(dic, keyWithPlural, config, options);
     const value =
@@ -103,7 +103,7 @@ function getDicValue(
   config: I18nConfig,
   options: { returnObjects?: boolean; fallback?: string | string[] } = {
     returnObjects: false,
-  },
+  }
 ): unknown | undefined {
   const { keySeparator = "." } = config || {};
   const keyParts = keySeparator ? key.split(keySeparator) : [key];
@@ -119,7 +119,7 @@ function getDicValue(
       // pass all truthy values or (empty) strings
       return res || (typeof res === "string" ? res : {});
     },
-    dic,
+    dic
   );
 
   if (
@@ -140,7 +140,7 @@ function plural(
   dic: I18nDictionary,
   key: string,
   config: I18nConfig,
-  query?: TranslationQuery | null,
+  query?: TranslationQuery | null
 ): string {
   if (!query || typeof query.count !== "number") return key;
 
@@ -190,7 +190,7 @@ function interpolation({
   return Object.keys(query).reduce((all, varKey) => {
     const regex = new RegExp(
       `${escapeRegex(prefix)}\\s*${varKey}${regexEnd}`,
-      "gm",
+      "gm"
     );
     // $1 is the first match group
     return all.replace(regex, (_match, $1) => {

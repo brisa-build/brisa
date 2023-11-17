@@ -10,7 +10,7 @@ const unsuspenseScriptCode = await injectUnsuspenseCode();
 
 export default async function getClientCodeInPage(
   pagepath: string,
-  allWebComponents: Record<string, string> = {},
+  allWebComponents: Record<string, string> = {}
 ) {
   const pageFile = Bun.file(pagepath);
   const ast = ASTUtil.parseCodeToAST(await pageFile.text());
@@ -60,7 +60,7 @@ export default async function getClientCodeInPage(
 }
 
 async function transformToWebComponents(
-  webComponentsList: Record<string, string>,
+  webComponentsList: Record<string, string>
 ) {
   const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX } = getConstants();
   const internalDir = join(BUILD_DIR, "_brisa");
@@ -74,8 +74,8 @@ async function transformToWebComponents(
     .map(
       (k) =>
         `if(${snakeToCamelCase(
-          k,
-        )}) customElements.define("${k}", ${snakeToCamelCase(k)});`,
+          k
+        )}) customElements.define("${k}", ${snakeToCamelCase(k)});`
     )
     .join("\n");
 
@@ -113,7 +113,7 @@ async function transformToWebComponents(
                 contents: code,
                 loader,
               };
-            },
+            }
           );
         },
       },
@@ -132,6 +132,6 @@ async function transformToWebComponents(
 
 function snakeToCamelCase(str: string) {
   return str.replace(/([-_][a-z])/g, (group) =>
-    group.toUpperCase().replace("-", "").replace("_", ""),
+    group.toUpperCase().replace("-", "").replace("_", "")
   );
 }
