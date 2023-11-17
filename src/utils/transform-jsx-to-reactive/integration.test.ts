@@ -1899,5 +1899,53 @@ describe("integration", () => {
       expect(window.mockCallback).toHaveBeenCalledTimes(1);
       expect(window.mockCallback.mock.calls[0][0]).toBe("cleanup");
     });
+
+    it('should add a default value defined inside the body', () => {
+      const code = `export default ({ name }: any) => {
+        const superName = name || "Aral";
+        return <div>{superName}</div>;
+      }`
+
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    })
+
+    it('should NOT add a default value overwritting empty string using ?? operator', () => {
+      const code = `export default ({ name }: any) => {
+        const superName = name ?? "Aral";
+        return <div>{superName}</div>;
+      }`
+
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
+      document.body.innerHTML = "<test-component name='' />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+    });
+
+    it.todo('should add a default value overwritting empty string using || operator', () => {
+      const code = `export default ({ name }: any) => {
+        const superName = name || "Aral";
+        return <div>{superName}</div>;
+      }`
+
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx')
+      document.body.innerHTML = "<test-component name='' />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
   });
 });

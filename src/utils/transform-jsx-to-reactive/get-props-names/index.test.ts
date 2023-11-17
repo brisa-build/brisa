@@ -278,6 +278,44 @@ describe("utils", () => {
         expect(renamedOutput).toEqual(expectedRenamed);
         expect(defaultProps).toEqual({ renamedName: expectedDefaultProps });
       });
+
+      it('should return the renamed name when a new variable is declared from a prop', () => {
+        const [input] = inputCode(`
+          export default function MyComponent({ name }) {
+            const renamedName = name;
+            return <div>{renamedName}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = ["name"];
+        const expectedRenamed = ["name", "renamedName"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expectedRenamed);
+        expect(defaultProps).toEqual({});
+      });
+
+      it('should return the renamed name when a new variable is declared from a prop expression', () => {
+        const [input] = inputCode(`
+          export default function MyComponent({ name }) {
+            const renamedName = name ?? 'foo';
+            return <div>{renamedName}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = ["name"];
+        const expectedRenamed = ["name", "renamedName"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expectedRenamed);
+        expect(defaultProps).toEqual({});
+      });
     });
   });
 });

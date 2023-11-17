@@ -312,7 +312,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => {});
+        mockLog.mockImplementation(() => { });
 
         const input = `
             function Test(props) {
@@ -1022,6 +1022,79 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should be possible to set default props inside code with || operator", () => {
+        const input = `
+          export default function MyComponent({foo}) {
+            const bar = foo || 'bar';
+            return <div>{bar}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo}, {h}) {
+            if (!foo.value) foo.value = 'bar';
+            const bar = foo;
+            return h('div', {}, () => bar.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should be possible to set default props inside code with ?? operator", () => {
+        const input = `
+          export default function MyComponent({foo}) {
+            const bar = foo ?? 'bar';
+            return <div>{bar}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo}, {h}) {
+            if (foo.value == null) foo.value = 'bar';
+            const bar = foo;
+            return h('div', {}, () => bar.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it.todo("should be possible to use props as conditional variables", () => {
+        const input = `
+          export default function MyComponent({foo, bar}) {
+            const baz = foo && bar;
+            return <div>{baz ? 'TRUE' : 'FALSE'}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo, bar}, {h}) {
+            const baz = foo.value && bar.value;
+            return h('div', {}, () => baz ? 'TRUE' : 'FALSE');
+          }, ['foo', 'bar']);}`);
+
+        expect(output).toBe(expected);
+      });
+
       it.todo(
         "should wrap conditional renders in different returns inside an hyperScript function",
         () => {
@@ -1099,8 +1172,6 @@ describe("utils", () => {
           expect(output).toBe(expected);
         },
       );
-
-      it.todo("should be possible to set default props inside code");
 
       it.todo(
         "should be possible to set default props from ...rest inside code",

@@ -2,6 +2,8 @@ import { ESTree } from "meriyah";
 import getWebComponentAst from "../get-web-component-ast";
 import getPropsNames from "../get-props-names";
 
+const SUPPORTED_DEFAULT_PROPS_OPERATORS = new Set(['??', '||']);
+
 export default function transformToReactiveProps(
   ast: ESTree.Program,
 ): [ESTree.Program, string[]] {
@@ -14,40 +16,12 @@ export default function transformToReactiveProps(
 
   const [propsNames, renamedPropsNames, defaultPropsValues] =
     getPropsNames(component);
-  const propsNamesSet = new Set([...propsNames, ...renamedPropsNames]);
+  const propsNamesAndRenamesSet = new Set([...propsNames, ...renamedPropsNames]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
+  const defaultPropsEntriesInnerCode: [string, ESTree.Literal, string][] = [];
 
   // Set default props values inside component body
-  for (let [propName, propValue] of defaultPropsEntries) {
-    if (component.body == null) continue;
-    component.body.body.unshift({
-      type: "IfStatement",
-      test: {
-        type: "BinaryExpression",
-        operator: "==",
-        left: {
-          type: "Identifier",
-          name: propName,
-        },
-        right: {
-          type: "Literal",
-          value: null,
-        },
-      },
-      consequent: {
-        type: "ExpressionStatement",
-        expression: {
-          type: "AssignmentExpression",
-          operator: "=",
-          left: {
-            type: "Identifier",
-            name: propName,
-          },
-          right: propValue,
-        },
-      },
-    } as ESTree.IfStatement);
-  }
+  addDefaultPropsToBody(defaultPropsEntries, component, false);
 
   // Remove props from component params
   for (let propParam of (component.params[0] as any)?.properties ?? []) {
@@ -59,7 +33,7 @@ export default function transformToReactiveProps(
     if (
       propParam?.type !== "Property" ||
       !propName ||
-      !propsNamesSet.has(propName) ||
+      !propsNamesAndRenamesSet.has(propName) ||
       !defaultPropsValues[propName] ||
       propParam?.value?.right?.value !== defaultPropsValues[propName]?.value
     ) {
@@ -75,6 +49,18 @@ export default function transformToReactiveProps(
   const componentBodyWithPropsDotValue = JSON.parse(
     JSON.stringify(component.body),
     function (key, value) {
+      const nameLeft = value?.left?.name ?? value?.left?.object?.name ?? value?.left?.property?.name
+
+      // default props values inside component body like:
+      // const foo = bar ?? 'default value';
+      if (value?.type === "LogicalExpression" && SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.operator) && propsNamesAndRenamesSet.has(nameLeft)) {
+        defaultPropsEntriesInnerCode.push([nameLeft, value.right, value?.operator]);
+        return {
+          type: "Identifier",
+          name: nameLeft,
+        };
+      }
+
       // Avoid adding .value in props used inside a variable declaration
       if (value?.type === "VariableDeclarator" && value?.init?.type !== 'ArrowFunctionExpression') {
         return JSON.parse(JSON.stringify(value), (key, value) => {
@@ -87,7 +73,7 @@ export default function transformToReactiveProps(
 
       if (
         value?.type === "Identifier" &&
-        propsNamesSet.has(value?.name) &&
+        propsNamesAndRenamesSet.has(value?.name) &&
         !isPropFromObjectExpression &&
         !value?.name?.startsWith("on")
       ) {
@@ -115,6 +101,9 @@ export default function transformToReactiveProps(
     },
   );
 
+  // Set default props values detected inside the body inside component body
+  addDefaultPropsToBody(defaultPropsEntriesInnerCode, componentBodyWithPropsDotValue, true);
+
   const newAst = {
     ...ast,
     body: ast.body.map((node, index) => {
@@ -131,4 +120,54 @@ export default function transformToReactiveProps(
   } as ESTree.Program;
 
   return [newAst, propsNames];
+}
+
+function addDefaultPropsToBody(defaultPropsEntries: [string, ESTree.Literal, string?][], component: ESTree.FunctionDeclaration, useSignalValueField: boolean) {
+  for (let [propName, propValue, operator = '??'] of defaultPropsEntries) {
+    if (component.body == null) continue;
+
+    const prop = useSignalValueField ? {
+      type: "MemberExpression",
+      object: {
+        type: "Identifier",
+        name: propName,
+      },
+      property: {
+        type: "Identifier",
+        name: "value",
+      },
+      computed: false,
+      isSignal: true,
+    } : {
+      type: "Identifier",
+      name: propName,
+    };
+
+    (component.body.body ?? component.body).unshift({
+      type: "IfStatement",
+      test: operator === '??' ? {
+        type: "BinaryExpression",
+        operator: "==",
+        left: prop,
+        right: {
+          type: "Literal",
+          value: null,
+        },
+      } : {
+        type: "UnaryExpression",
+        operator: "!",
+        prefix: true,
+        argument: prop,
+      },
+      consequent: {
+        type: "ExpressionStatement",
+        expression: {
+          type: "AssignmentExpression",
+          operator: "=",
+          left: prop,
+          right: propValue,
+        },
+      },
+    } as ESTree.IfStatement);
+  }
 }
