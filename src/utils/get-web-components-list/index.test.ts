@@ -14,19 +14,19 @@ describe("utils", () => {
           fixturesDir,
           "web-components",
           "@native",
-          "some-example.tsx",
+          "some-example.tsx"
         ),
       });
     });
 
     it.todo(
       "should alert in DEV if there is a web component with the same name, taking one the first one",
-      () => {},
+      () => {}
     );
 
     it.todo(
       "should not alert in PROD if there is a web component with the same name, taking one the first one",
-      () => {},
+      () => {}
     );
   });
 });

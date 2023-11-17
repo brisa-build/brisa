@@ -21,7 +21,7 @@ export default function transformJSXToReactive(code: string, path: string) {
   const reactiveAst = transformToReactiveArrays(astWithPropsDotValue);
   const [componentBranch, index] = getWebComponentAst(reactiveAst) as [
     ESTree.FunctionDeclaration,
-    number,
+    number
   ];
 
   if (!componentBranch || !path.match(WEB_COMPONENT_REGEX)) {
@@ -37,7 +37,7 @@ export default function transformJSXToReactive(code: string, path: string) {
   const [importDeclaration, brisaElement] = defineBrisaElement(
     componentBranch,
     propNames,
-    hyperScriptVarName,
+    hyperScriptVarName
   );
 
   // Wrap the component with brisaElement

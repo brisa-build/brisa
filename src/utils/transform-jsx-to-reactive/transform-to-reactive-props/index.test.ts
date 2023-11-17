@@ -343,7 +343,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
       });
 
-      it('should transform a default prop declaration inside the body of the component', () => {
+      it("should transform a default prop declaration inside the body of the component", () => {
         const code = `
           export default function Component({ foo }) {
             const bar = foo ?? "bar";

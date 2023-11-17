@@ -11,7 +11,7 @@ export function deserialize(str: string | null) {
 
   try {
     return JSON.parse(
-      str.replace(/'([^']+)':/g, '"$1":').replace(/'([^']+)'/g, '"$1"'),
+      str.replace(/'([^']+)':/g, '"$1":').replace(/'([^']+)'/g, '"$1"')
     );
   } catch (e) {
     return str;

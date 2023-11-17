@@ -6,10 +6,10 @@ const EMPTY_ATTRIBUTES = { type: "ObjectExpression", properties: [] };
 
 export default function getReactiveReturnStatement(
   componentBody: ESTree.Statement[],
-  hyperScriptVarName: string,
+  hyperScriptVarName: string
 ) {
   const returnStatementIndex = componentBody.findIndex(
-    (node: any) => node.type === "ReturnStatement",
+    (node: any) => node.type === "ReturnStatement"
   );
   const returnStatement = componentBody[returnStatementIndex] as any;
   let [tagName, props, children] = returnStatement?.argument?.elements ?? [];

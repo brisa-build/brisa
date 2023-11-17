@@ -29,7 +29,7 @@ describe("utils", () => {
         `);
         const [ast, index] = getWebComponentAst(input);
         const output = toInline(
-          generateCodeFromAST(ast as unknown as ESTree.Program),
+          generateCodeFromAST(ast as unknown as ESTree.Program)
         );
         const expected = toInline(`
           function MyComponent() {
@@ -52,7 +52,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = toInline(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program),
+          generateCodeFromAST(astOutput as unknown as ESTree.Program)
         );
         const expected = toInline(`
           let MyComponent = function () {
@@ -71,7 +71,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = toInline(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program),
+          generateCodeFromAST(astOutput as unknown as ESTree.Program)
         );
         const expected = toInline(`
           () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this)
@@ -88,7 +88,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = toInline(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program),
+          generateCodeFromAST(astOutput as unknown as ESTree.Program)
         );
         const expected = toInline(`
           props => jsxDEV("div", {children: props.someProp}, undefined, false, undefined, this)
@@ -108,7 +108,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = toInline(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program),
+          generateCodeFromAST(astOutput as unknown as ESTree.Program)
         );
         const expected = toInline(`
           const MyComponent = () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);

@@ -17,7 +17,7 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
 export default function renderToReadableStream(
   element: JSX.Element,
   request: RequestContext,
-  head?: ComponentType,
+  head?: ComponentType
 ) {
   return new ReadableStream({
     async start(controller) {
@@ -26,7 +26,7 @@ export default function renderToReadableStream(
       const extendedController = extendStreamController(controller, head);
 
       await enqueueDuringRendering(element, request, extendedController).catch(
-        (e) => controller.error(e),
+        (e) => controller.error(e)
       );
 
       await extendedController.waitSuspensedPromises();
@@ -35,7 +35,7 @@ export default function renderToReadableStream(
 
       if (!IS_PRODUCTION && !extendedController.hasHeadTag) {
         console.error(
-          "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
+          "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it."
         );
       }
     },
@@ -46,7 +46,7 @@ async function enqueueDuringRendering(
   element: JSXNode | Promise<JSXNode>,
   request: RequestContext,
   controller: Controller,
-  suspenseId?: number,
+  suspenseId?: number
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
@@ -79,13 +79,13 @@ async function enqueueDuringRendering(
           { component: type.suspense, props },
           request,
           controller,
-          suspenseId,
+          suspenseId
         );
 
         controller.endTag(`</div>`, suspenseId);
 
         return controller.suspensePromise(
-          enqueueComponent(componentContent, request, controller, id),
+          enqueueComponent(componentContent, request, controller, id)
         );
       }
 
@@ -93,7 +93,7 @@ async function enqueueDuringRendering(
         componentContent,
         request,
         controller,
-        suspenseId,
+        suspenseId
       );
     }
 
@@ -104,7 +104,7 @@ async function enqueueDuringRendering(
 
     controller.startTag(
       isFragment ? null : `<${type}${attributes}>`,
-      suspenseId,
+      suspenseId
     );
 
     if (type === "head" && controller.head) {
@@ -113,7 +113,7 @@ async function enqueueDuringRendering(
         { component: controller.head, props: {} },
         request,
         controller,
-        suspenseId,
+        suspenseId
       );
     }
 
@@ -123,7 +123,7 @@ async function enqueueDuringRendering(
     if (type === "head") {
       const clientFile = request.route?.filePath?.replace(
         "/pages",
-        "/pages-client",
+        "/pages-client"
       );
       let codeToInject = generateHrefLang(request);
 
@@ -145,14 +145,14 @@ async function enqueueComponent(
   { component, props }: { component: ComponentType; props: Props },
   request: RequestContext,
   controller: Controller,
-  suspenseId?: number,
+  suspenseId?: number
 ): Promise<void> {
   const componentValue = await getValueOfComponent(component, props, request);
 
   if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
     return controller.enqueue(
       Bun.escapeHTML(componentValue.toString()),
-      suspenseId,
+      suspenseId
     );
   }
 
@@ -164,7 +164,7 @@ async function enqueueComponent(
     componentValue,
     request,
     controller,
-    suspenseId,
+    suspenseId
   );
 }
 
@@ -172,7 +172,7 @@ async function enqueueChildren(
   children: JSXNode,
   request: RequestContext,
   controller: Controller,
-  suspenseId?: number,
+  suspenseId?: number
 ): Promise<void> {
   if (Array.isArray(children)) {
     for (const child of children) {
@@ -197,7 +197,7 @@ function isComponent(type: unknown): boolean {
 async function getValueOfComponent(
   componentFn: ComponentType,
   props: Props,
-  request: RequestContext,
+  request: RequestContext
 ) {
   return Promise.resolve()
     .then(() => componentFn(props, request) ?? "")

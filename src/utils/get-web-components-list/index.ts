@@ -2,7 +2,7 @@ import path from "node:path";
 import fs from "node:fs";
 
 export default async function getWebComponentsList(
-  dir: string,
+  dir: string
 ): Promise<Record<string, string>> {
   const webDir = path.join(dir, "web-components");
 
@@ -17,6 +17,6 @@ export default async function getWebComponentsList(
     Object.entries(webRouter.routes).map(([key, path]) => [
       key.replace(/^\/@?/g, "").replaceAll("/", "-"),
       path,
-    ]),
+    ])
   );
 }

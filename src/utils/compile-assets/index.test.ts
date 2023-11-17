@@ -44,17 +44,17 @@ describe("compileAssets", () => {
     await compileAssets();
     expect(fs.readdirSync(BUILD_DIR)).toEqual(["public"]);
     expect(fs.readdirSync(path.join(BUILD_DIR, "public")).toSorted()).toEqual(
-      ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted(),
+      ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted()
     );
     expect(
-      fs.readdirSync(path.join(BUILD_DIR, "public", "some-dir")).toSorted(),
+      fs.readdirSync(path.join(BUILD_DIR, "public", "some-dir")).toSorted()
     ).toEqual(
       [
         "some-text.txt.gz",
         "some-img.png.gz",
         "some-img.png",
         "some-text.txt",
-      ].toSorted(),
+      ].toSorted()
     );
   });
 });

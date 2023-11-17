@@ -14,7 +14,7 @@ u$ = (idSection: string) => {
   for (let id of l$) {
     const suspensedElement = document.getElementById(`S:${id}`);
     const ususpensedTemplate = document.getElementById(
-      `U:${id}`,
+      `U:${id}`
     ) as HTMLTemplateElement;
 
     if (!suspensedElement || !ususpensedTemplate) continue;

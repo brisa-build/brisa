@@ -22,10 +22,10 @@ const DIRECT_TYPES = new Set([
  * @returns {ESTree.Program}
  */
 export default function transformToDirectExport(
-  ast: ESTree.Program,
+  ast: ESTree.Program
 ): ESTree.Program {
   const defaultExportIndex = ast.body.findIndex(
-    (node) => node.type === "ExportDefaultDeclaration",
+    (node) => node.type === "ExportDefaultDeclaration"
   );
 
   if (defaultExportIndex === -1) return ast;

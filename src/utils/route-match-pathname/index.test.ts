@@ -24,7 +24,7 @@ describe("utils", () => {
     });
     it("should match nested dynamic routes", () => {
       expect(routeMatchPathname("/foo/[bar]/[bla]", "/foo/some/page")).toBe(
-        true,
+        true
       );
       expect(routeMatchPathname("/foo/[bar]/[bla]", "/foo")).toBe(false);
     });
@@ -34,19 +34,19 @@ describe("utils", () => {
     });
     it("should match nested rest dynamic routes", () => {
       expect(
-        routeMatchPathname("/foo/[bar]/[...bla]", "/foo/some/page/with/more"),
+        routeMatchPathname("/foo/[bar]/[...bla]", "/foo/some/page/with/more")
       ).toBe(true);
       expect(routeMatchPathname("/foo/[bar]/[...bla]", "/foo")).toBe(false);
     });
     it("should match catch all dynamic routes", () => {
       expect(routeMatchPathname("/foo/[[...bar]]", "/foo/some/page")).toBe(
-        true,
+        true
       );
       expect(routeMatchPathname("/foo/[[...bar]]", "/foo")).toBe(false);
     });
     it("should match nested catch all with dynamic routes", () => {
       expect(
-        routeMatchPathname("/foo/[bar]/[[...bla]]", "/foo/some/page/with/more"),
+        routeMatchPathname("/foo/[bar]/[[...bla]]", "/foo/some/page/with/more")
       ).toBe(true);
       expect(routeMatchPathname("/foo/[bar]/[[...bla]]", "/foo")).toBe(false);
     });

@@ -8,7 +8,7 @@ console.log(
   LOG_PREFIX.WAIT,
   IS_PRODUCTION
     ? "🚀 building your Brisa app..."
-    : "starting the development server...",
+    : "starting the development server..."
 );
 
 const start = Bun.nanoseconds();

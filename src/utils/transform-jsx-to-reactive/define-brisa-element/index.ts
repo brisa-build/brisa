@@ -5,7 +5,7 @@ import getReactiveReturnStatement from "../get-reactive-return-statement";
 export default function defineBrisaElement(
   component: ESTree.FunctionDeclaration,
   componentPropsNames: string[],
-  hyperScriptVarName: string = "h",
+  hyperScriptVarName: string = "h"
 ) {
   const componentParams = component.params;
   const componentBody = (component.body?.body ?? [
@@ -16,7 +16,7 @@ export default function defineBrisaElement(
     getReactiveReturnStatement(componentBody, hyperScriptVarName);
 
   const newComponentBody = componentBody.map((node, index) =>
-    index === returnStatementIndex ? returnWithHyperScript : node,
+    index === returnStatementIndex ? returnWithHyperScript : node
   );
 
   const newComponentAst = {
@@ -93,7 +93,7 @@ function declareH(componentAST: any, hyperScriptVarName: string) {
   // convert function ({}, { state }) {} to function ({}, { state, h }) {}
   else if (componentAST.params[1]?.type === "ObjectPattern") {
     const existH = componentAST.params[1].properties.some(
-      (prop: any) => prop.key.name === "h",
+      (prop: any) => prop.key.name === "h"
     );
     if (!existH) componentAST.params[1].properties.push(hProperty);
   }

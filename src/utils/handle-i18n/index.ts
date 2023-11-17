@@ -39,7 +39,7 @@ export default function handleI18n(req: RequestContext): {
     const translatedRoute = pages?.[route?.name]?.[locale] ?? pathname;
     const [domain, domainConf] =
       Object.entries(domains || {}).find(
-        ([, domainConf]) => domainConf.defaultLocale === locale,
+        ([, domainConf]) => domainConf.defaultLocale === locale
       ) ?? [];
 
     const finalPathname = `/${locale}${translatedRoute}${url.search}${url.hash}${trailingSlashSymbol}`;
@@ -74,7 +74,7 @@ export default function handleI18n(req: RequestContext): {
   if (pages) {
     routers.pagesRouter = adaptRouterToPageTranslations(
       pages,
-      routers.pagesRouter,
+      routers.pagesRouter
     );
   }
 

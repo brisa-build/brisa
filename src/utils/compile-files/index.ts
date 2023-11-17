@@ -71,7 +71,7 @@ export default async function compileFiles() {
         Size: byteSizeToString(output.size, 0),
         "Client size": byteSizeToString(clientSizesPerPage[route] ?? 0, 0),
       };
-    }),
+    })
   );
 
   console.log(LOG_PREFIX.INFO);
@@ -118,14 +118,14 @@ async function compileClientCodePage(pages: BuildArtifact[]) {
   ${Object.entries(allWebComponents)
     .map(
       ([name, location]) =>
-        `'${name}': HTMLAttributes<typeof import("${location}")>;`,
+        `'${name}': HTMLAttributes<typeof import("${location}")>;`
     )
     .join("\n")}
 }`;
 
   fs.writeFileSync(
     path.join(internalPath, "types.ts"),
-    intrinsicCustomElements,
+    intrinsicCustomElements
   );
 
   return clientSizesPerPage;

@@ -86,7 +86,7 @@ describe("utils", () => {
       const response = redirectTrailingSlash(request);
       expect(response?.status).toBe(301);
       expect(response?.headers.get("location")).toBe(
-        "https://example.com/foo/",
+        "https://example.com/foo/"
       );
     });
 

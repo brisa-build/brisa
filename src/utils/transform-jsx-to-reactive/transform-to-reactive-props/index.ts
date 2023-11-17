@@ -2,21 +2,24 @@ import { ESTree } from "meriyah";
 import getWebComponentAst from "../get-web-component-ast";
 import getPropsNames from "../get-props-names";
 
-const SUPPORTED_DEFAULT_PROPS_OPERATORS = new Set(['??', '||']);
+const SUPPORTED_DEFAULT_PROPS_OPERATORS = new Set(["??", "||"]);
 
 export default function transformToReactiveProps(
-  ast: ESTree.Program,
+  ast: ESTree.Program
 ): [ESTree.Program, string[]] {
   const [component, defaultExportIndex] = getWebComponentAst(ast) as [
     ESTree.FunctionDeclaration,
-    number,
+    number
   ];
 
   if (!component) return [ast, []];
 
   const [propsNames, renamedPropsNames, defaultPropsValues] =
     getPropsNames(component);
-  const propsNamesAndRenamesSet = new Set([...propsNames, ...renamedPropsNames]);
+  const propsNamesAndRenamesSet = new Set([
+    ...propsNames,
+    ...renamedPropsNames,
+  ]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
   const defaultPropsEntriesInnerCode: [string, ESTree.Literal, string][] = [];
 
@@ -49,12 +52,23 @@ export default function transformToReactiveProps(
   const componentBodyWithPropsDotValue = JSON.parse(
     JSON.stringify(component.body),
     function (key, value) {
-      const nameLeft = value?.left?.name ?? value?.left?.object?.name ?? value?.left?.property?.name
+      const nameLeft =
+        value?.left?.name ??
+        value?.left?.object?.name ??
+        value?.left?.property?.name;
 
       // default props values inside component body like:
       // const foo = bar ?? 'default value';
-      if (value?.type === "LogicalExpression" && SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.operator) && propsNamesAndRenamesSet.has(nameLeft)) {
-        defaultPropsEntriesInnerCode.push([nameLeft, value.right, value?.operator]);
+      if (
+        value?.type === "LogicalExpression" &&
+        SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.operator) &&
+        propsNamesAndRenamesSet.has(nameLeft)
+      ) {
+        defaultPropsEntriesInnerCode.push([
+          nameLeft,
+          value.right,
+          value?.operator,
+        ]);
         return {
           type: "Identifier",
           name: nameLeft,
@@ -62,7 +76,10 @@ export default function transformToReactiveProps(
       }
 
       // Avoid adding .value in props used inside a variable declaration
-      if (value?.type === "VariableDeclarator" && value?.init?.type !== 'ArrowFunctionExpression') {
+      if (
+        value?.type === "VariableDeclarator" &&
+        value?.init?.type !== "ArrowFunctionExpression"
+      ) {
         return JSON.parse(JSON.stringify(value), (key, value) => {
           return value?.isSignal ? value.object : value;
         });
@@ -98,11 +115,15 @@ export default function transformToReactiveProps(
       }
 
       return value;
-    },
+    }
   );
 
   // Set default props values detected inside the body inside component body
-  addDefaultPropsToBody(defaultPropsEntriesInnerCode, componentBodyWithPropsDotValue, true);
+  addDefaultPropsToBody(
+    defaultPropsEntriesInnerCode,
+    componentBodyWithPropsDotValue,
+    true
+  );
 
   const newAst = {
     ...ast,
@@ -122,43 +143,52 @@ export default function transformToReactiveProps(
   return [newAst, propsNames];
 }
 
-function addDefaultPropsToBody(defaultPropsEntries: [string, ESTree.Literal, string?][], component: ESTree.FunctionDeclaration, useSignalValueField: boolean) {
-  for (let [propName, propValue, operator = '??'] of defaultPropsEntries) {
+function addDefaultPropsToBody(
+  defaultPropsEntries: [string, ESTree.Literal, string?][],
+  component: ESTree.FunctionDeclaration,
+  useSignalValueField: boolean
+) {
+  for (let [propName, propValue, operator = "??"] of defaultPropsEntries) {
     if (component.body == null) continue;
 
-    const prop = useSignalValueField ? {
-      type: "MemberExpression",
-      object: {
-        type: "Identifier",
-        name: propName,
-      },
-      property: {
-        type: "Identifier",
-        name: "value",
-      },
-      computed: false,
-      isSignal: true,
-    } : {
-      type: "Identifier",
-      name: propName,
-    };
+    const prop = useSignalValueField
+      ? {
+          type: "MemberExpression",
+          object: {
+            type: "Identifier",
+            name: propName,
+          },
+          property: {
+            type: "Identifier",
+            name: "value",
+          },
+          computed: false,
+          isSignal: true,
+        }
+      : {
+          type: "Identifier",
+          name: propName,
+        };
 
     (component.body.body ?? component.body).unshift({
       type: "IfStatement",
-      test: operator === '??' ? {
-        type: "BinaryExpression",
-        operator: "==",
-        left: prop,
-        right: {
-          type: "Literal",
-          value: null,
-        },
-      } : {
-        type: "UnaryExpression",
-        operator: "!",
-        prefix: true,
-        argument: prop,
-      },
+      test:
+        operator === "??"
+          ? {
+              type: "BinaryExpression",
+              operator: "==",
+              left: prop,
+              right: {
+                type: "Literal",
+                value: null,
+              },
+            }
+          : {
+              type: "UnaryExpression",
+              operator: "!",
+              prefix: true,
+              argument: prop,
+            },
       consequent: {
         type: "ExpressionStatement",
         expression: {

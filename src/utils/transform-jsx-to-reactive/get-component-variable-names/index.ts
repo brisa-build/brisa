@@ -1,7 +1,7 @@
 import { ESTree } from "meriyah";
 
 export default function getComponentVariableNames(
-  componentBranch: ESTree.FunctionDeclaration,
+  componentBranch: ESTree.FunctionDeclaration
 ) {
   const varNames = new Set<string>([]);
 

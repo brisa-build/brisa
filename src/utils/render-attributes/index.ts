@@ -67,7 +67,7 @@ export default function renderAttributes({
 
 export function renderI18nHrefAttribute(
   pagePathname: string,
-  request: RequestContext,
+  request: RequestContext
 ) {
   const { I18N_CONFIG, CONFIG } = getConstants();
   const { pages } = I18N_CONFIG ?? {};

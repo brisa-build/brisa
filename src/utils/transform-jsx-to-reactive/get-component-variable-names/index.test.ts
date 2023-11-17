@@ -22,7 +22,7 @@ describe("utils", () => {
         const varNames = getVariableNames(componentBranch as any);
 
         expect(varNames.toSorted()).toEqual(
-          ["name", "age", "address", "rest", "props"].toSorted(),
+          ["name", "age", "address", "rest", "props"].toSorted()
         );
       });
     });

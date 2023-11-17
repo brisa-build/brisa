@@ -36,7 +36,7 @@ describe("handleI18n util", () => {
       };
       const req = new Request("https://example.com");
       const { response, pagesRouter, rootRouter } = handleI18n(
-        extendRequestContext({ originalRequest: req }),
+        extendRequestContext({ originalRequest: req })
       );
 
       expect(response).toBeUndefined();
@@ -173,7 +173,7 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
       expect(response?.headers.get("Location")).toBe(
-        "https://en.test.com/en/somepage-en",
+        "https://en.test.com/en/somepage-en"
       );
     });
 
@@ -200,22 +200,22 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(
         extendRequestContext({
           originalRequest: new Request("https://en.test.com/somepage"),
-        }),
+        })
       );
 
       const { response: responseEs } = handleI18n(
         extendRequestContext({
           originalRequest: new Request("https://es.test.com/somepage"),
-        }),
+        })
       );
 
       expect(response?.status).toBe(301);
       expect(response?.headers.get("Location")).toBe(
-        "https://en.test.com/en/somepage",
+        "https://en.test.com/en/somepage"
       );
       expect(responseEs?.status).toBe(301);
       expect(responseEs?.headers.get("Location")).toBe(
-        "http://es.test.com/es/somepage",
+        "http://es.test.com/es/somepage"
       );
     });
 
@@ -246,7 +246,7 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
       expect(response?.headers.get("Location")).toBe(
-        "https://en.test.com/en/somepage",
+        "https://en.test.com/en/somepage"
       );
     });
 
@@ -308,7 +308,7 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
       expect(response?.headers.get("Location")).toBe(
-        "https://en.test.com/en/somepage",
+        "https://en.test.com/en/somepage"
       );
     });
   });
@@ -341,7 +341,7 @@ describe("handleI18n util", () => {
       };
       const req = new Request("https://example.com");
       const { response, pagesRouter, rootRouter } = handleI18n(
-        extendRequestContext({ originalRequest: req }),
+        extendRequestContext({ originalRequest: req })
       );
 
       expect(response).toBeUndefined();
@@ -420,22 +420,22 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(
         extendRequestContext({
           originalRequest: new Request("https://en.test.com/somepage"),
-        }),
+        })
       );
 
       const { response: responseEs } = handleI18n(
         extendRequestContext({
           originalRequest: new Request("https://es.test.com/somepage"),
-        }),
+        })
       );
 
       expect(response?.status).toBe(301);
       expect(response?.headers.get("Location")).toBe(
-        "https://en.test.com/en/somepage/",
+        "https://en.test.com/en/somepage/"
       );
       expect(responseEs?.status).toBe(301);
       expect(responseEs?.headers.get("Location")).toBe(
-        "http://es.test.com/es/somepage/",
+        "http://es.test.com/es/somepage/"
       );
     });
 
@@ -471,7 +471,7 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
       expect(response?.headers.get("Location")).toBe(
-        "https://en.test.com/en/somepage-en/",
+        "https://en.test.com/en/somepage-en/"
       );
     });
 
@@ -502,7 +502,7 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
       expect(response?.headers.get("Location")).toBe(
-        "https://en.test.com/en/somepage/",
+        "https://en.test.com/en/somepage/"
       );
     });
 
@@ -564,7 +564,7 @@ describe("handleI18n util", () => {
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
       expect(response?.headers.get("Location")).toBe(
-        "https://en.test.com/en/somepage/",
+        "https://en.test.com/en/somepage/"
       );
     });
   });

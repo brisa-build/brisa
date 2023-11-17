@@ -118,13 +118,13 @@ describe("utils", () => {
       expect(hrefOfATag("/some-page")).toBe(' href="/es/alguna-pagina"');
       expect(hrefOfATag("/user/aral")).toBe(' href="/es/usuario/aral"');
       expect(hrefOfATag("https://example.com")).toBe(
-        ' href="https://example.com"',
+        ' href="https://example.com"'
       );
       expect(hrefOfATag("/catch/first/second")).toBe(
-        ' href="/es/atrapar/first/second"',
+        ' href="/es/atrapar/first/second"'
       );
       expect(hrefOfATag("/dynamic/1/catch/first/second")).toBe(
-        ' href="/es/dinamico/1/atrapar/first/second"',
+        ' href="/es/dinamico/1/atrapar/first/second"'
       );
     });
 
@@ -181,16 +181,16 @@ describe("utils", () => {
       expect(hrefOfATag("/user/aral")).toBe(' href="/es/usuario/aral/"');
       expect(hrefOfATag("/user/aral/")).toBe(' href="/es/usuario/aral/"');
       expect(hrefOfATag("/catch/first/second")).toBe(
-        ' href="/es/atrapar/first/second/"',
+        ' href="/es/atrapar/first/second/"'
       );
       expect(hrefOfATag("/catch/first/second/")).toBe(
-        ' href="/es/atrapar/first/second/"',
+        ' href="/es/atrapar/first/second/"'
       );
       expect(hrefOfATag("/dynamic/1/catch/first/second")).toBe(
-        ' href="/es/dinamico/1/atrapar/first/second/"',
+        ' href="/es/dinamico/1/atrapar/first/second/"'
       );
       expect(hrefOfATag("/dynamic/1/catch/first/second/")).toBe(
-        ' href="/es/dinamico/1/atrapar/first/second/"',
+        ' href="/es/dinamico/1/atrapar/first/second/"'
       );
     });
 
@@ -225,19 +225,19 @@ describe("utils", () => {
         });
 
       expect(imgSrc("https://example.com/some-image.png")).toBe(
-        ' src="https://example.com/some-image.png"',
+        ' src="https://example.com/some-image.png"'
       );
 
       expect(imgSrc("/some-image.png")).toBe(
-        ' src="https://cdn.test.com/some-image.png"',
+        ' src="https://cdn.test.com/some-image.png"'
       );
 
       expect(scriptSrc("https://example.com/some-script.js")).toBe(
-        ' src="https://example.com/some-script.js"',
+        ' src="https://example.com/some-script.js"'
       );
 
       expect(scriptSrc("/some-script.js")).toBe(
-        ' src="https://cdn.test.com/some-script.js"',
+        ' src="https://cdn.test.com/some-script.js"'
       );
     });
 
@@ -272,13 +272,13 @@ describe("utils", () => {
         });
 
       expect(imgSrc("https://example.com/some-image.png")).toBe(
-        ' src="https://example.com/some-image.png"',
+        ' src="https://example.com/some-image.png"'
       );
 
       expect(imgSrc("/some-image.png")).toBe(' src="/some-image.png"');
 
       expect(scriptSrc("https://example.com/some-script.js")).toBe(
-        ' src="https://example.com/some-script.js"',
+        ' src="https://example.com/some-script.js"'
       );
 
       expect(scriptSrc("/some-script.js")).toBe(' src="/some-script.js"');

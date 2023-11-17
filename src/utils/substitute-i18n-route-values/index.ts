@@ -11,7 +11,7 @@ import getConstants from "../../constants";
  */
 export default function substituteI18nRouteValues(
   route: string,
-  pathname: string,
+  pathname: string
 ) {
   const { REGEX } = getConstants();
 

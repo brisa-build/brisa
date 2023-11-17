@@ -30,20 +30,20 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
         console.log(LOG_PREFIX.ERROR, `--------------------------`);
         console.log(
           LOG_PREFIX.ERROR,
-          `You can't use "${value.arguments[0].name}" variable as a tag name.`,
+          `You can't use "${value.arguments[0].name}" variable as a tag name.`
         );
         console.log(
           LOG_PREFIX.ERROR,
-          `Please use a string instead. You cannot use server-components inside web-components directly.`,
+          `Please use a string instead. You cannot use server-components inside web-components directly.`
         );
         console.log(
           LOG_PREFIX.ERROR,
-          `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`,
+          `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`
         );
         console.log(LOG_PREFIX.ERROR, `--------------------------`);
         console.log(
           LOG_PREFIX.ERROR,
-          `Docs: https://brisa.dev/docs/component-details/web-components`,
+          `Docs: https://brisa.dev/docs/component-details/web-components`
         );
       }
 
@@ -170,7 +170,7 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
           children,
         ],
       };
-    }),
+    })
   ) as ESTree.Program;
 }
 

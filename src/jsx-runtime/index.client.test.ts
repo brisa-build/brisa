@@ -25,7 +25,7 @@ describe("utils", () => {
       });
       expect(typeof node).toBe("object");
       expect(node?.toString?.()).toBe(
-        '<div id="test"><span>Hello World</span></div>',
+        '<div id="test"><span>Hello World</span></div>'
       );
     });
 
