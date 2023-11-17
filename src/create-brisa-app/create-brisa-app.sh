@@ -8,7 +8,7 @@ mkdir $PROJECT_NAME
 
 cd $PROJECT_NAME
 
-$BRISA_VERSION="0.0.8"
+$BRISA_VERSION="0.0.9"
 
 echo ""
 echo "🛠️  Installing brisa..."
