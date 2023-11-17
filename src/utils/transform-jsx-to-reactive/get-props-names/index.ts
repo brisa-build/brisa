@@ -1,4 +1,5 @@
 import { ESTree } from "meriyah";
+import { SUPPORTED_DEFAULT_PROPS_OPERATORS } from "../constants";
 
 const CHILDREN = "children";
 
@@ -39,14 +40,13 @@ export default function getPropsNames(
       }
     }
 
-    const [, renames, defaultProps] = getPropsNamesFromIdentifier(
+    const [, renames] = getPropsNamesFromIdentifier(
       "",
       webComponentAst,
       new Set(propNames)
     );
 
     renamedPropNames.push(...renames);
-    defaultPropsValues = { ...defaultPropsValues, ...defaultProps };
 
     return [propNames, renamedPropNames, defaultPropsValues];
   }
@@ -85,7 +85,7 @@ function getPropsNamesFromIdentifier(
     }
 
     // const { name } = props
-    if (
+    else if (
       value?.init?.type === "Identifier" &&
       value?.init?.name === identifier &&
       value?.id?.properties
@@ -100,7 +100,7 @@ function getPropsNamesFromIdentifier(
     }
 
     // const foo = props.name
-    if (
+    else if (
       value?.type === "VariableDeclarator" &&
       value?.init?.object?.type === "Identifier" &&
       value?.init?.object?.name === identifier &&
@@ -110,9 +110,21 @@ function getPropsNamesFromIdentifier(
       renamedPropsNames.add(value?.id?.name);
     }
 
-    // Track renamed current props not from identifier
+    // const foo = props.name ?? 'default value'
+    else if (
+      value?.type === "VariableDeclarator" &&
+      value?.id?.type === "Identifier" &&
+      value?.init?.type === "LogicalExpression" &&
+      SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.init?.operator) &&
+      value?.init?.left?.object?.name === identifier
+    ) {
+      renamedPropsNames.add(value?.id?.name);
+      defaultPropsValues[`${identifier}.${value?.init?.left?.property?.name}`] =
+        { ...value.init.right, usedOperator: value.init.operator };
+    }
+
     // const foo = bar // bar is a prop
-    if (
+    else if (
       value?.type === "VariableDeclarator" &&
       currentPropsNames.has(
         value?.init?.left?.name ?? value?.init?.name ?? value?.id?.name

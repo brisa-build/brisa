@@ -1,18 +1,21 @@
 import { ESTree } from "meriyah";
 import getWebComponentAst from "../get-web-component-ast";
 import getPropsNames from "../get-props-names";
+import { SUPPORTED_DEFAULT_PROPS_OPERATORS } from "../constants";
 
-const SUPPORTED_DEFAULT_PROPS_OPERATORS = new Set(["??", "||"]);
+type Prop = (ESTree.MemberExpression | ESTree.Identifier) & {
+  isSignal?: true;
+};
 
 export default function transformToReactiveProps(
   ast: ESTree.Program
-): [ESTree.Program, string[]] {
+): [ESTree.Program, string[], boolean] {
   const [component, defaultExportIndex] = getWebComponentAst(ast) as [
     ESTree.FunctionDeclaration,
     number
   ];
 
-  if (!component) return [ast, []];
+  if (!component) return [ast, [], false];
 
   const [propsNames, renamedPropsNames, defaultPropsValues] =
     getPropsNames(component);
@@ -22,9 +25,14 @@ export default function transformToReactiveProps(
   ]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
   const defaultPropsEntriesInnerCode: [string, ESTree.Literal, string][] = [];
+  let isAddedDefaultProps = false;
 
   // Set default props values inside component body
-  addDefaultPropsToBody(defaultPropsEntries, component, false);
+  isAddedDefaultProps ||= addDefaultPropsToBody(
+    defaultPropsEntries,
+    component,
+    false
+  );
 
   // Remove props from component params
   for (let propParam of (component.params[0] as any)?.properties ?? []) {
@@ -53,6 +61,7 @@ export default function transformToReactiveProps(
     JSON.stringify(component.body),
     function (key, value) {
       const nameLeft =
+        value?.left?.property?.object?.name ??
         value?.left?.name ??
         value?.left?.object?.name ??
         value?.left?.property?.name;
@@ -64,15 +73,27 @@ export default function transformToReactiveProps(
         SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.operator) &&
         propsNamesAndRenamesSet.has(nameLeft)
       ) {
+        const propsIdentifier = value?.left?.object?.name;
+        const isPropsIdentifier = propsIdentifier !== nameLeft;
+        const property = { type: "Identifier", name: nameLeft };
+
         defaultPropsEntriesInnerCode.push([
-          nameLeft,
+          isPropsIdentifier ? `${propsIdentifier}.${nameLeft}` : nameLeft,
           value.right,
           value?.operator,
         ]);
-        return {
-          type: "Identifier",
-          name: nameLeft,
-        };
+
+        return isPropsIdentifier
+          ? {
+              type: "MemberExpression",
+              object: {
+                type: "Identifier",
+                name: propsIdentifier,
+              },
+              property,
+              computed: false,
+            }
+          : property;
       }
 
       // Avoid adding .value in props used inside a variable declaration
@@ -119,7 +140,7 @@ export default function transformToReactiveProps(
   );
 
   // Set default props values detected inside the body inside component body
-  addDefaultPropsToBody(
+  isAddedDefaultProps ||= addDefaultPropsToBody(
     defaultPropsEntriesInnerCode,
     componentBodyWithPropsDotValue,
     true
@@ -140,64 +161,87 @@ export default function transformToReactiveProps(
     }),
   } as ESTree.Program;
 
-  return [newAst, propsNames];
+  return [newAst, propsNames, isAddedDefaultProps];
 }
 
+// Set default props values inside component body
 function addDefaultPropsToBody(
   defaultPropsEntries: [string, ESTree.Literal, string?][],
   component: ESTree.FunctionDeclaration,
   useSignalValueField: boolean
 ) {
-  for (let [propName, propValue, operator = "??"] of defaultPropsEntries) {
+  let isAddedDefaultProps = false;
+
+  for (let [propName, propValue, usedOperator = "??"] of defaultPropsEntries) {
     if (component.body == null) continue;
 
-    const prop = useSignalValueField
+    const operator =
+      ((propValue as any)?.usedOperator ?? usedOperator) === "??"
+        ? "??="
+        : "||=";
+
+    let identifier;
+
+    if (propName.includes(".")) [identifier, propName] = propName.split(".");
+
+    let prop: Prop = identifier
       ? {
           type: "MemberExpression",
           object: {
             type: "Identifier",
-            name: propName,
+            name: identifier,
           },
           property: {
             type: "Identifier",
-            name: "value",
+            name: propName,
           },
           computed: false,
-          isSignal: true,
         }
       : {
           type: "Identifier",
           name: propName,
         };
 
-    (component.body.body ?? component.body).unshift({
-      type: "IfStatement",
-      test:
-        operator === "??"
-          ? {
-              type: "BinaryExpression",
-              operator: "==",
-              left: prop,
-              right: {
-                type: "Literal",
-                value: null,
-              },
-            }
-          : {
-              type: "UnaryExpression",
-              operator: "!",
-              prefix: true,
-              argument: prop,
-            },
-      consequent: {
-        type: "ExpressionStatement",
-        expression: {
-          type: "AssignmentExpression",
-          operator: "=",
-          left: prop,
-          right: propValue,
+    if (useSignalValueField) {
+      prop = {
+        type: "MemberExpression",
+        object: prop,
+        property: {
+          type: "Identifier",
+          name: "value",
         },
+        computed: false,
+        isSignal: true,
+      };
+    }
+
+    (component.body.body ?? component.body).unshift({
+      type: "ExpressionStatement",
+      expression: {
+        type: "CallExpression",
+        callee: {
+          type: "Identifier",
+          name: "effect",
+        },
+        arguments: [
+          {
+            type: "ArrowFunctionExpression",
+            params: [],
+            body: {
+              type: "AssignmentExpression",
+              left: prop,
+              operator,
+              right: propValue,
+            },
+            async: false,
+            expression: true,
+          },
+        ],
       },
-    } as ESTree.IfStatement);
+    } as ESTree.ExpressionStatement);
+
+    isAddedDefaultProps = true;
   }
+
+  return isAddedDefaultProps;
 }

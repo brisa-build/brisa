@@ -875,8 +875,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {h}) {
-            if (foo.value == null) foo.value = 'bar';
+          export default brisaElement(function MyComponent({foo}, {h, effect}) {
+            effect(() => foo.value ??= 'bar');
             const someVar = 'test';
             return h('div', {}, () => foo.value);
           }, ['foo']);
@@ -902,8 +902,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function ({foo}, {h}) {
-            if (foo.value == null) foo.value = 'bar';
+          export default brisaElement(function ({foo}, {h, effect}) {
+            effect(() => foo.value ??= 'bar');
             const someVar = 'test';
             return h('div', {}, () => foo.value);
           }, ['foo']);
@@ -929,8 +929,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function ({foo}, {h}) {
-            if (foo.value == null) foo.value = 'bar';
+          export default brisaElement(function ({foo}, {h, effect}) {
+            effect(() => foo.value ??= 'bar');
             const someVar = 'test';
             return h('div', {}, () => foo.value);
           }, ['foo']);
@@ -956,8 +956,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function ({foo: renamedFoo}, {h}) {
-            if (renamedFoo.value == null) renamedFoo.value = 'bar';
+          export default brisaElement(function ({foo: renamedFoo}, {h, effect}) {
+            effect(() => renamedFoo.value ??= 'bar');
             const someVar = 'test';
             return h('div', {}, () => renamedFoo.value);
           }, ['foo']);
@@ -1037,9 +1037,34 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {h}) {
-            if (!foo.value) foo.value = 'bar';
+          export default brisaElement(function MyComponent({foo}, {h, effect}) {
+            effect(() => foo.value ||= 'bar');
             const bar = foo;
+            return h('div', {}, () => bar.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should be possible to set default props inside code with props identifier and || operator", () => {
+        const input = `
+          export default function MyComponent(props) {
+            const bar = props.foo || 'bar';
+            return <div>{bar}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent(props, {h, effect}) {
+            effect(() => props.foo.value ||= 'bar');
+            const bar = props.foo;
             return h('div', {}, () => bar.value);
           }, ['foo']);
         `);
@@ -1062,9 +1087,61 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {h}) {
-            if (foo.value == null) foo.value = 'bar';
+          export default brisaElement(function MyComponent({foo}, {h, effect}) {
+            effect(() => foo.value ??= 'bar');
             const bar = foo;
+            return h('div', {}, () => bar.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should be possible to set default props inside code with props identifier and ?? operator", () => {
+        const input = `
+          export default function MyComponent(props) {
+            const bar = props.foo ?? 'bar';
+            return <div>{bar}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent(props, {h, effect}) {
+            effect(() => props.foo.value ??= 'bar');
+            const bar = props.foo;
+            return h('div', {}, () => bar.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should be possible to set default props inside code with ?? operator and some effect", () => {
+        const input = `
+          export default function MyComponent({foo}, {effect}) {
+            const bar = foo ?? 'bar';
+            effect(() => console.log(bar))
+            return <div>{bar}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo}, {effect, h}) {
+            effect(() => foo.value ??= 'bar');
+            const bar = foo;
+            effect(() => console.log(bar.value));
             return h('div', {}, () => bar.value);
           }, ['foo']);
         `);

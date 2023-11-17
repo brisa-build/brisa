@@ -5,7 +5,8 @@ import getReactiveReturnStatement from "../get-reactive-return-statement";
 export default function defineBrisaElement(
   component: ESTree.FunctionDeclaration,
   componentPropsNames: string[],
-  hyperScriptVarName: string = "h"
+  hyperScriptVarName: string = "h",
+  effectVarName?: string
 ) {
   const componentParams = component.params;
   const componentBody = (component.body?.body ?? [
@@ -31,7 +32,9 @@ export default function defineBrisaElement(
     async: component.async,
   };
 
-  declareH(newComponentAst, hyperScriptVarName);
+  declareWebContextField(newComponentAst, hyperScriptVarName, "h");
+  if (effectVarName)
+    declareWebContextField(newComponentAst, effectVarName, "effect");
 
   const args = [newComponentAst] as ESTree.Expression[];
 
@@ -58,21 +61,25 @@ export default function defineBrisaElement(
   return [BRISA_IMPORT, newComponent];
 }
 
-function declareH(componentAST: any, hyperScriptVarName: string) {
-  const hProperty = {
+function declareWebContextField(
+  componentAST: any,
+  fieldName: string,
+  originalFieldName: string
+) {
+  const property = {
     type: "Property",
     key: {
       type: "Identifier",
-      name: "h",
+      name: originalFieldName,
     },
     value: {
       type: "Identifier",
-      name: hyperScriptVarName,
+      name: fieldName,
     },
     kind: "init",
     computed: false,
     method: false,
-    shorthand: hyperScriptVarName === "h",
+    shorthand: fieldName === originalFieldName,
   };
 
   // convert function () {} to function ({}) {}
@@ -87,15 +94,15 @@ function declareH(componentAST: any, hyperScriptVarName: string) {
   if (componentAST.params?.length === 1) {
     componentAST.params.push({
       type: "ObjectPattern",
-      properties: [hProperty],
+      properties: [property],
     });
   }
   // convert function ({}, { state }) {} to function ({}, { state, h }) {}
   else if (componentAST.params[1]?.type === "ObjectPattern") {
     const existH = componentAST.params[1].properties.some(
-      (prop: any) => prop.key.name === "h"
+      (prop: any) => prop.key.name === originalFieldName
     );
-    if (!existH) componentAST.params[1].properties.push(hProperty);
+    if (!existH) componentAST.params[1].properties.push(property);
   }
   // convert function ({}, context) {} to function ({ h, ...context }) {}
   else if (componentAST.params[1]?.type === "Identifier") {
@@ -103,7 +110,7 @@ function declareH(componentAST: any, hyperScriptVarName: string) {
     componentAST.params[1] = {
       type: "ObjectPattern",
       properties: [
-        hProperty,
+        property,
         {
           type: "RestElement",
           argument: props,
