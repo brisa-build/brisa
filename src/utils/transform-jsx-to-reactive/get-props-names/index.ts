@@ -27,7 +27,7 @@ export default function getPropsNames(
       const name = prop.key.name;
       const renamedPropName = prop.value.left?.name ?? prop.value.name ?? name;
 
-      if (renamedPropName === CHILDREN && prop.key.name === CHILDREN) {
+      if (renamedPropName === CHILDREN && name === CHILDREN) {
         continue;
       }
 
@@ -38,6 +38,11 @@ export default function getPropsNames(
         defaultPropsValues[renamedPropName] = prop.value.right;
       }
     }
+
+    const [, renames, defaultProps] = getPropsNamesFromIdentifier('', webComponentAst, new Set(propNames))
+
+    renamedPropNames.push(...renames);
+    defaultPropsValues = { ...defaultPropsValues, ...defaultProps };
 
     return [propNames, renamedPropNames, defaultPropsValues];
   }
@@ -53,9 +58,11 @@ export default function getPropsNames(
 function getPropsNamesFromIdentifier(
   identifier: string,
   ast: any,
+  currentPropsNames = new Set<string>([]),
 ): [string[], string[], Record<string, ESTree.Literal>] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
+  let defaultPropsValues: Record<string, ESTree.Literal> = {};
 
   JSON.stringify(ast, (key, value) => {
     // props.name
@@ -99,8 +106,17 @@ function getPropsNamesFromIdentifier(
       renamedPropsNames.add(value?.id?.name);
     }
 
+    // Track renamed current props not from identifier
+    // const foo = bar // bar is a prop
+    if (
+      value?.type === "VariableDeclarator" &&
+      currentPropsNames.has(value?.init?.left?.name ?? value?.init?.name ?? value?.id?.name)
+    ) {
+      renamedPropsNames.add(value?.id?.name);
+    }
+
     return value;
   });
 
-  return [[...propsNames], [...renamedPropsNames], {}];
+  return [[...propsNames], [...renamedPropsNames], defaultPropsValues];
 }

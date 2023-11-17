@@ -342,6 +342,28 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
       });
+
+      it('should transform a default prop declaration inside the body of the component', () => {
+        const code = `
+          export default function Component({ foo }) {
+            const bar = foo ?? "bar";
+            return <div>{bar}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [outputAst] = transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+          export default function Component({foo}) {
+            if (foo.value == null) foo.value = "bar";
+            const bar = foo;
+            return jsxDEV("div", {children: bar.value}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
     });
   });
 });
