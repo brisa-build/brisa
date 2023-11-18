@@ -1122,6 +1122,33 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should be possible to set default props inside code with props identifier and ?? operator and effect variable", () => {
+        const input = `
+          export default function MyComponent(props) {
+            const effect = false;
+            const bar = props.foo ?? 'bar';
+            return <div>{bar}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent(props, {h, effect: effect$}) {
+            effect$(() => props.foo.value ??= 'bar');
+            const effect = false;
+            const bar = props.foo;
+            return h('div', {}, () => bar.value);
+          }, ['foo']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
       it("should be possible to set default props inside code with ?? operator and some effect", () => {
         const input = `
           export default function MyComponent({foo}, {effect}) {
