@@ -62,7 +62,9 @@ export default async function getClientCodeInPage(
 async function transformToWebComponents(
   webComponentsList: Record<string, string>
 ) {
-  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX } = getConstants();
+  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
+    getConstants();
+
   const internalDir = join(BUILD_DIR, "_brisa");
   const webEntrypoint = join(internalDir, `temp-${crypto.randomUUID()}.ts`);
 
@@ -85,7 +87,7 @@ async function transformToWebComponents(
     entrypoints: [webEntrypoint],
     root: SRC_DIR,
     target: "browser",
-    minify: true,
+    minify: IS_PRODUCTION,
     // TODO: format: "iife" when Bun support it
     // https://bun.sh/docs/bundler#format
     plugins: [
