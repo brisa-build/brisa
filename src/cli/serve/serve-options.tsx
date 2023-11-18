@@ -6,6 +6,7 @@ import extendRequestContext from "../../utils/extend-request-context";
 import getConstants from "../../constants";
 import getImportableFilepath from "../../utils/get-importable-filepath";
 import getRouteMatcher from "../../utils/get-route-matcher";
+import dangerHTML from "../../utils/danger-html";
 import handleI18n from "../../utils/handle-i18n";
 import importFileIfExists from "../../utils/import-file-if-exists";
 import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
@@ -195,9 +196,12 @@ async function responseRenderedPage({
   const layoutModule = layoutPath ? await import(layoutPath) : undefined;
 
   const pageElement = (
-    <PageLayout layoutModule={layoutModule}>
-      <PageComponent error={error} />
-    </PageLayout>
+    <>
+      {dangerHTML("<!DOCTYPE html>")}
+      <PageLayout layoutModule={layoutModule}>
+        <PageComponent error={error} />
+      </PageLayout>
+    </>
   );
 
   const middlewareResponseHeaders =
