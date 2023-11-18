@@ -142,23 +142,36 @@ export default function brisaElement(
         } else if (typeof children === "function") {
           let lastNodes: ChildNode[] | undefined;
 
-          const insertOrUpdate = (e: ChildNode | DocumentFragment) => {
+          const insertOrUpdate = (
+            element: (ChildNode | DocumentFragment)[]
+          ) => {
             if (lastNodes && el.contains(lastNodes[0])) {
-              el.insertBefore(e, lastNodes[0]);
+              for (let e of element) el.insertBefore(e, lastNodes[0]);
               for (let node of lastNodes) node?.remove();
-            } else appendChild(el, e);
+            } else for (let e of element) appendChild(el, e);
           };
 
           effect(() => {
             const childOrPromise = children();
 
             function startEffect(child: Children) {
-              // Reactive child node
-              if (isArray(child)) {
+              const isDangerHTML = (child as any)?.type === DANGER_HTML;
+
+              if (isDangerHTML || isArray(child)) {
                 let currentElNodes = arr(el.childNodes);
                 const fragment = document.createDocumentFragment();
 
-                if (isArray(child[0])) {
+                // Reactive injected danger HTML via dangerHTML() helper
+                if (isDangerHTML) {
+                  const div = createElement("div");
+                  div.innerHTML += (child as any).props.html as string;
+
+                  for (let node of arr(div.childNodes)) {
+                    appendChild(fragment, node);
+                  }
+                }
+                // Reactive child node
+                else if (isArray((child as any[])[0])) {
                   for (let c of child as Children[]) {
                     hyperScript(null, {}, c, fragment);
                   }
@@ -166,20 +179,7 @@ export default function brisaElement(
                   hyperScript(...(child as [string, Attr, Children]), fragment);
                 }
 
-                insertOrUpdate(fragment);
-
-                lastNodes = arr(el.childNodes).filter(
-                  (node) => !currentElNodes.includes(node)
-                );
-              }
-              // Reactive injected danger HTML via dangerHTML() helper
-              else if ((child as any)?.type === DANGER_HTML) {
-                let currentElNodes = arr(el.childNodes);
-                const div = createElement("div");
-
-                div.innerHTML += (child as any).props.html as string;
-
-                for (let node of arr(div.childNodes)) insertOrUpdate(node);
+                insertOrUpdate([fragment]);
 
                 lastNodes = arr(el.childNodes).filter(
                   (node) => !currentElNodes.includes(node)
@@ -189,7 +189,7 @@ export default function brisaElement(
               else if ((child as unknown as boolean) !== false) {
                 const textNode = createTextNode(child as string);
 
-                insertOrUpdate(textNode);
+                insertOrUpdate([textNode]);
 
                 lastNodes = [textNode];
               }
