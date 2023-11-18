@@ -257,6 +257,66 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should work with open attribute of a dialog from a prop", () => {
+        const input = parseCodeToAST(`
+          type RuntimeLogProps = {
+            error: { stack: string, message: string };
+            warning: string;
+          }
+          
+          export default function RuntimeLog({ error, warning }: RuntimeLogProps) {
+            return (
+              <dialog open={error}>
+                {error && \`Error: \${error.message}\`}
+                {error && <pre>{error.stack}</pre>}
+                {warning && \`Warning: \${warning}\`}
+              </dialog>
+            )
+          }      
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+
+        const expected = toInline(`
+          export default function RuntimeLog({error, warning}) {
+            return ['dialog', {open: error ? _on : _off}, [[null, {}, error && \`Error: \${error.message}\`], [null, {}, error && ['pre', {}, error.stack]], [null, {}, warning && \`Warning: \${warning}\`]]];
+          }
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should work with open attribute of a dialog from a prop with an expression", () => {
+        const input = parseCodeToAST(`
+          type RuntimeLogProps = {
+            error: { stack: string, message: string };
+            warning: string;
+          }
+          
+          export default function RuntimeLog({ error, warning }: RuntimeLogProps) {
+            return (
+              <dialog open={error || warning}>
+                {error && \`Error: \${error.message}\`}
+                {error && <pre>{error.stack}</pre>}
+                {warning && \`Warning: \${warning}\`}
+              </dialog>
+            )
+          }      
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+
+        const expected = toInline(`
+          export default function RuntimeLog({error, warning}) {
+            return ['dialog', {open: error || warning ? _on : _off}, [[null, {}, error && \`Error: \${error.message}\`], [null, {}, error && ['pre', {}, error.stack]], [null, {}, warning && \`Warning: \${warning}\`]]];
+          }
+        `);
+
+        expect(output).toBe(expected);
+      });
+
       it("should ignore server-components as fragments and log with an error", () => {
         const { LOG_PREFIX } = getConstants();
         const input = parseCodeToAST(`

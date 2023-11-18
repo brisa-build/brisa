@@ -74,6 +74,7 @@ export default function transformToReactiveProps(
       // const foo = bar ?? 'default value';
       if (
         value?.type === "LogicalExpression" &&
+        this?.type !== "Property" &&
         SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.operator) &&
         propsNamesAndRenamesSet.has(nameLeft)
       ) {

@@ -1255,6 +1255,11 @@ describe("utils", () => {
       });
 
       it.todo(
+        "should alert with a warning in DEV when consuming spread props inside JSX",
+        () => {}
+      );
+
+      it.todo(
         "should be possible to use props as conditional variables",
         () => {
           const input = `
