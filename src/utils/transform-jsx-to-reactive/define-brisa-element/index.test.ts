@@ -114,6 +114,64 @@ describe("utils", () => {
         `)
         );
       });
+
+      it("should declare the effect and h argument", () => {
+        const code = `
+          export default function MyComponent(props) {
+            return [null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]]
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [component] = getWebComponentAst(ast) as [
+          ESTree.FunctionDeclaration
+        ];
+        const [propNames] = getPropsNames(component);
+        const [importDeclaration, wrappedComponent] = defineBrisaElement(
+          component,
+          propNames,
+          "h",
+          "effect"
+        );
+        expect(output(importDeclaration)).toBe(
+          'import {brisaElement, _on, _off} from "brisa/client";'
+        );
+        expect(output(wrappedComponent)).toBe(
+          toInline(`
+          brisaElement(function MyComponent(props, {h, effect}) {
+              return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
+          }, ["foo", "bar"])
+        `)
+        );
+      });
+
+      it("should not declare the effect argument if it is already declared", () => {
+        const code = `
+          export default function MyComponent(props, { effect }) {
+            return [null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]]
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const [component] = getWebComponentAst(ast) as [
+          ESTree.FunctionDeclaration
+        ];
+        const [propNames] = getPropsNames(component);
+        const [importDeclaration, wrappedComponent] = defineBrisaElement(
+          component,
+          propNames,
+          "h",
+          "effect"
+        );
+        expect(output(importDeclaration)).toBe(
+          'import {brisaElement, _on, _off} from "brisa/client";'
+        );
+        expect(output(wrappedComponent)).toBe(
+          toInline(`
+          brisaElement(function MyComponent(props, {effect, h}) {
+              return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
+          }, ["foo", "bar"])
+        `)
+        );
+      });
     });
   });
 });
