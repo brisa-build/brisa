@@ -342,7 +342,38 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, req);
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
-        /<html lang="es"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><\/head><body><\/body><\/html>/gm
+        /<html lang="es" dir="ltr"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><\/head><body><\/body><\/html>/gm
+      );
+    });
+
+    it("should inject the hrefLang attributes for rtl if the i18n is enabled and have hrefLangOrigin defined", () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(testRequest),
+      });
+      const i18n = {
+        locale: "ar",
+        locales: ["en", "ar"],
+        defaultLocale: "en",
+      };
+      req.i18n = { ...i18n, t: () => "", pages: {} };
+      globalThis.mockConstants = {
+        ...getConstants(),
+        I18N_CONFIG: {
+          ...i18n,
+          hrefLangOrigin: "https://test.com",
+        },
+      };
+
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, req);
+      const result = Bun.readableStreamToText(stream);
+      expect(result).resolves.toMatch(
+        /<html lang="ar" dir="rtl"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><\/head><body><\/body><\/html>/gm
       );
     });
 
@@ -505,7 +536,7 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
-      expect(result).toStartWith(`<html lang="en"><head>`);
+      expect(result).toStartWith(`<html lang="en" dir="ltr"><head>`);
     });
 
     it("should translate the URLs to the correct path", async () => {
@@ -590,7 +621,7 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
-      expect(result).toStartWith(`<html lang="es"><head>`);
+      expect(result).toStartWith(`<html lang="es" dir="ltr"><head>`);
     });
 
     it('should render the "a" tag with the locale if the i18n is enabled and the link does not has locale', async () => {

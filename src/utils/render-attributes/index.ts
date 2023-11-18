@@ -60,6 +60,10 @@ export default function renderAttributes({
 
   if (type === "html" && request.i18n?.locale) {
     attributes += ` lang="${request.i18n?.locale}"`;
+    const { direction } = (
+      new Intl.Locale(request.i18n?.locale) as any
+    ).getTextInfo();
+    attributes += ` dir="${direction}"`;
   }
 
   return attributes;

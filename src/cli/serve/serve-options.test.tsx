@@ -426,7 +426,7 @@ describe("CLI: serve", () => {
     );
     const html = await response.text();
     expect(response.status).toBe(200);
-    expect(html).toContain('<html lang="es">');
+    expect(html).toContain('<html lang="es" dir="ltr">');
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Some page</h1>");
   });

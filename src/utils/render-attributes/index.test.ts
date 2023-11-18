@@ -48,7 +48,7 @@ describe("utils", () => {
       expect(attributes).toBe(' href="/ru/about"');
     });
 
-    it('should add the lang attribute in the "html" tag', () => {
+    it('should add the lang attribute in the "html" tag the ltr direction', () => {
       const request = extendRequestContext({
         originalRequest: new Request("https://example.com/ru"),
       });
@@ -67,7 +67,29 @@ describe("utils", () => {
         type: "html",
       });
 
-      expect(attributes).toBe(' lang="ru"');
+      expect(attributes).toBe(' lang="ru" dir="ltr"');
+    });
+
+    it('should add the lang attribute in the "html" tag with the rtl direction', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/ar"),
+      });
+
+      request.i18n = {
+        locale: "ar",
+        locales: ["en", "ar"],
+        defaultLocale: "en",
+        pages: {},
+        t: () => "",
+      };
+
+      const attributes = renderAttributes({
+        props: {},
+        request,
+        type: "html",
+      });
+
+      expect(attributes).toBe(' lang="ar" dir="rtl"');
     });
 
     it('should translate the "a" href attribute', () => {
