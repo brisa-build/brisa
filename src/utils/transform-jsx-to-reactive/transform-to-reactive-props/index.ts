@@ -217,6 +217,7 @@ function addDefaultPropsToBody(
 
     (component.body.body ?? component.body).unshift({
       type: "ExpressionStatement",
+      isEffect: true,
       expression: {
         type: "CallExpression",
         callee: {

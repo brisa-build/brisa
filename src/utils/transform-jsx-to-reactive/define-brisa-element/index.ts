@@ -118,6 +118,16 @@ function declareWebContextField(
       ],
     };
   }
+
+  // Replace all introduced effect calls by the compiler with the new field name (effect -> effect$)
+  // these cases are rare, but they can happen when the user uses some variable named "effect"
+  if (originalFieldName === "effect" && originalFieldName !== fieldName) {
+    for (let statement of componentAST.body.body) {
+      if (statement.isEffect) {
+        statement.expression.callee.name = fieldName;
+      }
+    }
+  }
 }
 
 function wrapWithReturnStatement(statement: ESTree.Statement) {
