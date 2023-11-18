@@ -72,16 +72,17 @@ async function transformToWebComponents(
     .map((e) => `import ${snakeToCamelCase(e[0])} from "${e[1]}";`)
     .join("\n");
 
+  const defineElement =
+    "const defineElement = (name, component) => name && customElements.define(name, component);";
+
   const customElementsDefinitions = Object.keys(webComponentsList)
-    .map(
-      (k) =>
-        `if(${snakeToCamelCase(
-          k
-        )}) customElements.define("${k}", ${snakeToCamelCase(k)});`
-    )
+    .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`)
     .join("\n");
 
-  await writeFile(webEntrypoint, `${imports}\n${customElementsDefinitions}`);
+  await writeFile(
+    webEntrypoint,
+    `${imports}\n${defineElement}\n${customElementsDefinitions}`
+  );
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [webEntrypoint],
