@@ -47,6 +47,7 @@ describe("CLI: serve", () => {
     const html = await response.text();
 
     expect(response.status).toBe(404);
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Page not found 404</h1>");
@@ -65,6 +66,7 @@ describe("CLI: serve", () => {
     const html = await response.text();
 
     expect(response.status).toBe(404);
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Page not found 404</h1>");
@@ -83,6 +85,7 @@ describe("CLI: serve", () => {
     const html = await response.text();
 
     expect(response.status).toBe(404);
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Page not found 404</h1>");
@@ -95,6 +98,7 @@ describe("CLI: serve", () => {
     const html = await response.text();
 
     expect(response.status).toBe(404);
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Page not found 404</h1>");
@@ -426,6 +430,7 @@ describe("CLI: serve", () => {
     );
     const html = await response.text();
     expect(response.status).toBe(200);
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<html lang="es" dir="ltr">');
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Some page</h1>");
