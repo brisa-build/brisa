@@ -1364,6 +1364,10 @@ describe("utils", () => {
       it.todo(
         "should log a warning when using spread props inside JSX that can lost the reactivity"
       );
+
+      it.todo(
+        'should only register the first effect signal on "<>sig.value && <div>{sig.value.message}</div>", the second one should be ignored'
+      );
     });
   });
 });
