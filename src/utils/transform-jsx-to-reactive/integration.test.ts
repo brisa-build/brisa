@@ -1557,8 +1557,7 @@ describe("integration", () => {
       export default function RuntimeLog({ error, warning }: RuntimeLogProps) {
         return (
           <dialog open={error || warning}>
-            {error && \`Error: \${error.message}\`}
-            {error && <pre>{error.stack}</pre>}
+            {error && <>{\`Error: \${error.message}\`}<pre>{error.stack}</pre></>}
             {warning && \`Warning: \${warning}\`}
           </dialog>
         )
