@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { serialize } from "../serialization";
+import dangerHTML from "../danger-html";
 
 let brisaElement: any;
 let _on: symbol, _off: symbol;
@@ -2146,6 +2147,29 @@ describe("utils", () => {
 
       expect(mockCallback).toHaveBeenCalledTimes(1);
       expect(mockCallback.mock.calls[0][0]).toBe("cleanup");
+    });
+
+    it("should be possible to inject html using the dangerHTML helper", () => {
+      const Component = ({}, { h }: any) => {
+        return h(null, {}, [
+          ["div", {}, () => dangerHTML("<script>alert('test')</script>")],
+        ]);
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><script>alert('test')</script></div>"
+      );
+
+      const script = testComponent?.shadowRoot?.querySelector("script");
+
+      expect(script).not.toBeNull();
     });
   });
 });

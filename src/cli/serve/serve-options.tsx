@@ -9,10 +9,10 @@ import getRouteMatcher from "../../utils/get-route-matcher";
 import handleI18n from "../../utils/handle-i18n";
 import importFileIfExists from "../../utils/import-file-if-exists";
 import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
+import renderToReadableStream from "../../utils/render-to-readable-stream";
 import { LiveReloadScript } from "../dev-live-reload";
 import { MatchedRoute, ServeOptions, ServerWebSocket } from "bun";
 import { RequestContext } from "../../types";
-import { renderToReadableStream } from "../../core";
 
 const {
   IS_PRODUCTION,

@@ -2,6 +2,7 @@ import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { serialize } from "../serialization";
 import transformJSXToReactive from ".";
+import dangerHTML from "../danger-html";
 
 declare global {
   interface Window {
@@ -29,6 +30,7 @@ describe("integration", () => {
       window.brisaElement = module.default;
       window._on = module._on;
       window._off = module._off;
+      window.dangerHTML = dangerHTML;
     });
     afterEach(async () => {
       if (typeof window !== "undefined") GlobalRegistrator.unregister();
@@ -2106,6 +2108,28 @@ describe("integration", () => {
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should be possible to use dangerHTML to render HTML as string directly", () => {
+      const code = `
+      export default () => {
+        return <div>{dangerHTML('<script>alert("test")</script>')}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><script>alert("test")</script></div>'
+      );
+
+      const script = testComponent?.shadowRoot?.querySelector("script");
+
+      expect(script).toBeDefined();
     });
   });
 });
