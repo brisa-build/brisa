@@ -32,9 +32,11 @@ export default function defineBrisaElement(
     async: component.async,
   };
 
-  declareWebContextField(newComponentAst, hyperScriptVarName, "h");
-  if (effectVarName)
-    declareWebContextField(newComponentAst, effectVarName, "effect");
+  manageWebContextField(newComponentAst, hyperScriptVarName, "h");
+
+  if (effectVarName) {
+    manageWebContextField(newComponentAst, effectVarName, "effect");
+  }
 
   const args = [newComponentAst] as ESTree.Expression[];
 
@@ -61,7 +63,7 @@ export default function defineBrisaElement(
   return [BRISA_IMPORT, newComponent];
 }
 
-function declareWebContextField(
+function manageWebContextField(
   componentAST: any,
   fieldName: string,
   originalFieldName: string
