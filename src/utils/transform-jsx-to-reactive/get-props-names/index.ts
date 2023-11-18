@@ -66,14 +66,15 @@ function getPropsNamesFromIdentifier(
 ): [string[], string[], Record<string, ESTree.Literal>] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
+  const identifiers = new Set<string>([identifier]);
   let defaultPropsValues: Record<string, ESTree.Literal> = {};
 
   JSON.stringify(ast, (key, value) => {
     // props.name
     if (
       value?.object?.type === "Identifier" &&
-      value?.object?.name === identifier &&
-      value?.property?.type === "Identifier"
+      value?.property?.type === "Identifier" &&
+      identifiers.has(value?.object?.name)
     ) {
       const name =
         value?.property?.name !== CHILDREN ? value?.property?.name : null;
@@ -87,13 +88,18 @@ function getPropsNamesFromIdentifier(
     // const { name } = props
     else if (
       value?.init?.type === "Identifier" &&
-      value?.init?.name === identifier &&
-      value?.id?.properties
+      value?.id?.properties &&
+      identifiers.has(value?.init?.name)
     ) {
       for (const prop of value.id.properties) {
         // spread props like: const { name, ...rest } = props
-        if (prop?.key?.name && prop.key.name !== CHILDREN)
+        if (prop?.key?.name && prop.key.name !== CHILDREN) {
           propsNames.add(prop.key.name);
+        }
+        // add as identifier the rest props like: const { ...rest } = props
+        if (prop?.type === "RestElement") {
+          identifiers.add(prop.argument.name);
+        }
         // renamed props like: const { name: renamedName } = props
         if (prop?.value?.name) renamedPropsNames.add(prop.value.name);
       }
@@ -103,8 +109,8 @@ function getPropsNamesFromIdentifier(
     else if (
       value?.type === "VariableDeclarator" &&
       value?.init?.object?.type === "Identifier" &&
-      value?.init?.object?.name === identifier &&
-      value?.init?.property?.type === "Identifier"
+      value?.init?.property?.type === "Identifier" &&
+      identifiers.has(value?.init?.object?.name)
     ) {
       propsNames.add(value?.init?.property?.name);
       renamedPropsNames.add(value?.id?.name);
@@ -116,11 +122,12 @@ function getPropsNamesFromIdentifier(
       value?.id?.type === "Identifier" &&
       value?.init?.type === "LogicalExpression" &&
       SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.init?.operator) &&
-      value?.init?.left?.object?.name === identifier
+      identifiers.has(value?.init?.left?.object?.name)
     ) {
       renamedPropsNames.add(value?.id?.name);
-      defaultPropsValues[`${identifier}.${value?.init?.left?.property?.name}`] =
-        { ...value.init.right, usedOperator: value.init.operator };
+      defaultPropsValues[
+        `${value?.init?.left?.object?.name}.${value?.init?.left?.property?.name}`
+      ] = { ...value.init.right, usedOperator: value.init.operator };
     }
 
     // const foo = bar // bar is a prop

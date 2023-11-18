@@ -359,32 +359,29 @@ describe("utils", () => {
         expect(isAddedDefaultProps).toBe(false);
       });
 
-      it.todo(
-        "should not transform to reactive the props that are events",
-        () => {
-          const code = `
+      it("should not transform to reactive the props that are events", () => {
+        const code = `
           export default function Component(props) {
             const { onClick, ...rest } = props;
             return <div onClick={onClick}><div onClick={rest.onClickSpan}>Click</div></div>;
           }
         `;
-          const ast = parseCodeToAST(code);
-          const [outputAst, propNames, isAddedDefaultProps] =
-            transformToReactiveProps(ast);
-          const outputCode = toInline(generateCodeFromAST(outputAst));
+        const ast = parseCodeToAST(code);
+        const [outputAst, propNames, isAddedDefaultProps] =
+          transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
 
-          const expectedCode = toInline(`
+        const expectedCode = toInline(`
           export default function Component(props) {
             const {onClick, ...rest} = props;
             return jsxDEV("div", {onClick,children: jsxDEV("div", {onClick: rest.onClickSpan,children: "Click"}, undefined, false, undefined, this)}, undefined, false, undefined, this);
           }
         `);
 
-          expect(outputCode).toBe(expectedCode);
-          expect(propNames).toEqual(["onClick", "onClickSpan"]);
-          expect(isAddedDefaultProps).toBe(false);
-        }
-      );
+        expect(outputCode).toBe(expectedCode);
+        expect(propNames).toEqual(["onClick", "onClickSpan"]);
+        expect(isAddedDefaultProps).toBe(false);
+      });
 
       it("should transform a default prop declaration inside the body of the component", () => {
         const code = `

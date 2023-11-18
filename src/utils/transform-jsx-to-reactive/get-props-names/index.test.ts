@@ -316,6 +316,26 @@ describe("utils", () => {
         expect(renamedOutput).toEqual(expectedRenamed);
         expect(defaultProps).toEqual({});
       });
+
+      it("should return the prop name when a new rest variable is declared and used to consume props", () => {
+        const [input] = inputCode(`
+          export default function MyComponent(props) {
+            const { foo, ...rest } = props;
+            console.log(foo);
+            return <div>{rest.bar}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration
+        );
+        const expected = ["foo", "bar"];
+        const expectedRenamed = ["foo", "bar"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expectedRenamed);
+        expect(defaultProps).toEqual({});
+      });
     });
   });
 });
