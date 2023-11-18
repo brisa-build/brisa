@@ -88,6 +88,9 @@ async function transformToWebComponents(
     root: SRC_DIR,
     target: "browser",
     minify: IS_PRODUCTION,
+    define: {
+      __DEV__: (!IS_PRODUCTION).toString(),
+    },
     // TODO: format: "iife" when Bun support it
     // https://bun.sh/docs/bundler#format
     plugins: [
