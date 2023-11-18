@@ -75,14 +75,24 @@ async function transformToWebComponents(
   const defineElement =
     "const defineElement = (name, component) => name && customElements.define(name, component);";
 
-  const customElementsDefinitions = Object.keys(webComponentsList)
-    .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`)
+  const customElementKeys = Object.keys(webComponentsList);
+  const numCustomElements = customElementKeys.length;
+  const customElementsDefinitions = customElementKeys
+    .map((k) =>
+      numCustomElements === 1
+        ? `if(${snakeToCamelCase(
+            k
+          )}) customElements.define("${k}", ${snakeToCamelCase(k)})`
+        : `defineElement("${k}", ${snakeToCamelCase(k)});`
+    )
     .join("\n");
 
-  await writeFile(
-    webEntrypoint,
-    `${imports}\n${defineElement}\n${customElementsDefinitions}`
-  );
+  const code =
+    numCustomElements === 1
+      ? `${imports}\n${customElementsDefinitions}`
+      : `${imports}\n${defineElement}\n${customElementsDefinitions}`;
+
+  await writeFile(webEntrypoint, code);
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [webEntrypoint],
