@@ -14,8 +14,8 @@ async function testRequest(request: Request): Promise<Response> {
   return (
     // @ts-ignore
     ((await serveOptions.fetch(request, {
-      requestIP: () => {},
-      upgrade: () => {},
+      requestIP: () => { },
+      upgrade: () => { },
     })) || new Response()) as Response
   );
 }
@@ -108,9 +108,9 @@ describe("CLI: serve", () => {
     const mockFs = spyOn(fs, "existsSync").mockImplementation(() => true);
     const mockFile = spyOn(Bun, "file").mockImplementation(
       () =>
-        ({
-          text: () => Promise.resolve("I am a web component JS code"),
-        } as BunFile)
+      ({
+        text: () => Promise.resolve("I am a web component JS code"),
+      } as BunFile)
     );
 
     const response = await testRequest(
@@ -123,7 +123,7 @@ describe("CLI: serve", () => {
 
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain("<script>I am a web component JS code</script>");
+    expect(html).toContain("<script defer>I am a web component JS code</script>");
     expect(html).toContain(
       '<native-some-example name="web component"></native-some-example>'
     );
