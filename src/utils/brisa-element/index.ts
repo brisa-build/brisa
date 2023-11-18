@@ -20,6 +20,8 @@ export const _off = Symbol("off");
 const W3 = "http://www.w3.org/";
 const SVG_NAMESPACE = `${W3}2000/svg`;
 const XLINK_NAMESPACE = `${W3}1999/xlink`;
+const DANGER_HTML = "danger-html";
+const SLOT_TAG = "slot";
 
 const createTextNode = (text: string) =>
   document.createTextNode((text ?? "").toString());
@@ -125,8 +127,10 @@ export default function brisaElement(
         }
 
         // Handle children
-        if (children === "slot") {
-          appendChild(el, createElement("slot"));
+        if ((children as any)?.type === DANGER_HTML) {
+          el.innerHTML += (children as any).props.html as string;
+        } else if (children === SLOT_TAG) {
+          appendChild(el, createElement(SLOT_TAG));
         } else if (isArray(children)) {
           if (isArray(children[0])) {
             for (let child of children as Children[]) {
@@ -149,6 +153,7 @@ export default function brisaElement(
             const childOrPromise = children();
 
             function startEffect(child: Children) {
+              // Reactive child node
               if (isArray(child)) {
                 let currentElNodes = arr(el.childNodes);
                 const fragment = document.createDocumentFragment();
@@ -166,7 +171,22 @@ export default function brisaElement(
                 lastNodes = arr(el.childNodes).filter(
                   (node) => !currentElNodes.includes(node)
                 );
-              } else if ((child as unknown as boolean) !== false) {
+              }
+              // Reactive injected danger HTML via dangerHTML() helper
+              else if ((child as any)?.type === DANGER_HTML) {
+                let currentElNodes = arr(el.childNodes);
+                const div = createElement("div");
+
+                div.innerHTML += (child as any).props.html as string;
+
+                for (let node of arr(div.childNodes)) insertOrUpdate(node);
+
+                lastNodes = arr(el.childNodes).filter(
+                  (node) => !currentElNodes.includes(node)
+                );
+              }
+              // Reactive text node
+              else if ((child as unknown as boolean) !== false) {
                 const textNode = createTextNode(child as string);
 
                 insertOrUpdate(textNode);
@@ -186,7 +206,7 @@ export default function brisaElement(
       }
 
       await render(
-        { children: "slot", ...this.p },
+        { children: SLOT_TAG, ...this.p },
         {
           ...this.ctx,
           h: hyperScript,

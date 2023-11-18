@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import LoadLayout from ".";
 import path from "node:path";
-import { renderToReadableStream } from "../../core";
+import renderToReadableStream from "../render-to-readable-stream";
 import getImportableFilepath from "../get-importable-filepath";
 import getRootDir from "../get-root-dir";
 import extendRequestContext from "../extend-request-context";
