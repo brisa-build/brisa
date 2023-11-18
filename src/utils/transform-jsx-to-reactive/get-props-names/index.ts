@@ -4,7 +4,8 @@ import { SUPPORTED_DEFAULT_PROPS_OPERATORS } from "../constants";
 const CHILDREN = "children";
 
 export default function getPropsNames(
-  webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression
+  webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression,
+  propNamesFromExport: string[] = []
 ): [string[], string[], Record<string, ESTree.Literal>] {
   const propsAst = webComponentAst?.params?.[0];
   const propNames = [];
@@ -48,15 +49,24 @@ export default function getPropsNames(
 
     renamedPropNames.push(...renames);
 
-    return [propNames, renamedPropNames, defaultPropsValues];
+    return [
+      unify(propNames, propNamesFromExport),
+      unify(renamedPropNames, propNamesFromExport),
+      defaultPropsValues,
+    ];
   }
 
   if (propsAst?.type === "Identifier") {
     const identifier = propsAst.name;
-    return getPropsNamesFromIdentifier(identifier, webComponentAst);
+    const res = getPropsNamesFromIdentifier(identifier, webComponentAst);
+    return [
+      unify(res[0], propNamesFromExport),
+      unify(res[1], propNamesFromExport),
+      res[2],
+    ];
   }
 
-  return [[], [], {}];
+  return [propNamesFromExport, propNamesFromExport, {}];
 }
 
 function getPropsNamesFromIdentifier(
@@ -144,4 +154,24 @@ function getPropsNamesFromIdentifier(
   });
 
   return [[...propsNames], [...renamedPropsNames], defaultPropsValues];
+}
+
+export function getPropNamesFromExport(ast: ESTree.Program) {
+  const exportProps = ast.body.find(
+    (node) =>
+      node.type === "ExportNamedDeclaration" &&
+      node.declaration?.type === "VariableDeclaration" &&
+      (node as any).declaration?.declarations?.[0]?.id?.name === "props"
+  ) as any;
+
+  return (
+    exportProps?.declaration?.declarations?.[0]?.init?.elements?.map(
+      (el: ESTree.Literal) => el.value
+    ) ?? []
+  );
+}
+
+function unify(arr1: string[], arr2: string[]) {
+  const set = new Set([...arr1, ...arr2]);
+  return [...set];
 }

@@ -1,6 +1,6 @@
 import { ESTree } from "meriyah";
 import getWebComponentAst from "../get-web-component-ast";
-import getPropsNames from "../get-props-names";
+import getPropsNames, { getPropNamesFromExport } from "../get-props-names";
 import { SUPPORTED_DEFAULT_PROPS_OPERATORS } from "../constants";
 
 type Prop = (ESTree.MemberExpression | ESTree.Identifier) & {
@@ -17,11 +17,15 @@ export default function transformToReactiveProps(
 
   if (!component) return [ast, [], false];
 
-  const [propsNames, renamedPropsNames, defaultPropsValues] =
-    getPropsNames(component);
+  const propNamesFromExport = getPropNamesFromExport(ast);
+  const [propsNames, renamedPropsNames, defaultPropsValues] = getPropsNames(
+    component,
+    propNamesFromExport
+  );
   const propsNamesAndRenamesSet = new Set([
     ...propsNames,
     ...renamedPropsNames,
+    ...propNamesFromExport,
   ]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
   const defaultPropsEntriesInnerCode: [string, ESTree.Literal, string][] = [];

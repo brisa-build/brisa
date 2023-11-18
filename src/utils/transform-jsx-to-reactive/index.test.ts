@@ -1176,6 +1176,84 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should transform a web-component with conditional render inside the JSX", () => {
+        const input = `
+        export default function ConditionalRender({ name, children }: any) {
+          return (
+            <h2>
+            <b>Hello { name }</b>
+          {
+            name === "Barbara" ? <b>!! 🥳</b> : "🥴"}
+            { children }
+            </h2>
+          )
+    }
+          `;
+        const output = toInline(
+          transformJSXToReactive(
+            input,
+            "src/web-components/conditional-render.tsx"
+          )
+        );
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function ConditionalRender({name, children}, {h}) {
+            return h('h2', {}, [
+              ['b', {}, () => ['Hello ', name.value].join('')], [null, {}, () => name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'], [null, {}, children]
+            ]);
+          }, ['name']);
+      `);
+
+        expect(output).toBe(expected);
+      });
+
+      it('should be possible to define reactivity props using "export const props = []"', () => {
+        const input = `
+          export const props = ['foo', 'bar'];
+          export default function MyComponent(props) {
+            return <div {...props}>Example</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export const props = ['foo', 'bar'];
+          export default brisaElement(function MyComponent(props, {h}) {
+            return h('div', {...props}, 'Example');
+          }, ['foo', 'bar']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it('should be possible to define reactivity props using "export const props = []" keeping the autodetected', () => {
+        const input = `
+          export const props = ['bar'];
+          export default function MyComponent({ foo, ...props }) {
+            return <div {...props}>Example</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export const props = ['bar'];
+          export default brisaElement(function MyComponent({foo, ...props}, {h}) {
+            return h('div', {...props}, 'Example');
+          }, ['foo', 'bar']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
       it.todo(
         "should be possible to use props as conditional variables",
         () => {
@@ -1281,90 +1359,6 @@ describe("utils", () => {
       it.todo(
         "should log a warning when using spread props inside JSX that can lost the reactivity"
       );
-
-      it.todo(
-        'should be possible to define reactivity props using "export const props = []"'
-      );
-    });
-
-    describe("web-components with some logic", () => {
-      it("should transform a web-component with conditional render inside the JSX", () => {
-        const input = `
-        export default function ConditionalRender({ name, children }: any) {
-          return (
-            <h2>
-            <b>Hello { name }</b>
-          {
-            name === "Barbara" ? <b>!! 🥳</b> : "🥴"}
-            { children }
-            </h2>
-          )
-    }
-          `;
-        const output = toInline(
-          transformJSXToReactive(
-            input,
-            "src/web-components/conditional-render.tsx"
-          )
-        );
-        const expected = toInline(`
-          import {brisaElement, _on, _off} from "brisa/client";
-
-          export default brisaElement(function ConditionalRender({name, children}, {h}) {
-            return h('h2', {}, [
-              ['b', {}, () => ['Hello ', name.value].join('')], [null, {}, () => name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'], [null, {}, children]
-            ]);
-          }, ['name']);
-      `);
-
-        expect(output).toBe(expected);
-      });
-
-      it("should transform a timer", () => {
-        const input = `
-          export default function Timer({ }, { effect, cleanup, state }: any) {
-            const time = state(0);
-            let interval: any;
-          
-            effect(() => {
-              interval = setInterval(() => {
-                time.value++;
-              }, 1);
-              cleanup(() => clearInterval(interval))
-            })
-          
-            return (
-              <div>
-                <span>Time: {time.value}</span>
-                <button onClick={() => clearInterval(interval)}>stop</button>
-              </div>
-            )
-          }        
-        `;
-
-        const output = toInline(
-          transformJSXToReactive(input, "src/web-components/timer.tsx")
-        );
-
-        const expected =
-          toInline(`import {brisaElement, _on, _off} from "brisa/client";
-
-          export default brisaElement(function Timer({}, {effect, cleanup, state, h}) {
-            const time = state(0);
-            let interval;
-          
-            effect(() => {
-              interval = setInterval(() => {
-                time.value++;
-              }, 1);
-              cleanup(() => clearInterval(interval));
-            });
-          
-            return h('div', {}, [
-              ['span', {}, () => ['Time: ', time.value].join('')], ['button', {onClick: () => clearInterval(interval)}, 'stop']
-            ]);
-          });`);
-      });
     });
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import getPropsNames from ".";
+import getPropsNames, { getPropNamesFromExport } from ".";
 import AST from "../../ast";
 import getWebComponentAst from "../get-web-component-ast";
 import { ESTree } from "meriyah";
@@ -334,6 +334,28 @@ describe("utils", () => {
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expectedRenamed);
+        expect(defaultProps).toEqual({});
+      });
+
+      it('should extend the props defined via "export const props = []" to the props names', () => {
+        const code = `
+          export const props = ['foo', 'baz'];
+          export default function MyComponent({ foo, bar }) {
+            return <div>{foo} {bar}</div>
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const input = getWebComponentAst(ast)[0] as ESTree.FunctionDeclaration;
+        const propsFromExport = getPropNamesFromExport(ast);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+          propsFromExport
+        );
+        const expected = ["foo", "bar", "baz"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
         expect(defaultProps).toEqual({});
       });
     });
