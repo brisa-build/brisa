@@ -383,6 +383,40 @@ describe("utils", () => {
         expect(isAddedDefaultProps).toBe(false);
       });
 
+      it("should transform props consumed in an expression inside an attribute value", () => {
+        const code = `
+            type RuntimeLogProps = {
+              error: { stack: string, message: string };
+              warning: string;
+            }
+            
+            export default function RuntimeLog({ error, warning }: RuntimeLogProps) {
+              return (
+                <dialog open={error || warning}>
+                  {error && \`Error: \${error.message}\`}
+                  {error && <pre>{error.stack}</pre>}
+                  {warning && \`Warning: \${warning}\`}
+                </dialog>
+              )
+            }      
+          `;
+
+        const ast = parseCodeToAST(code);
+        const [outputAst, propNames, isAddedDefaultProps] =
+          transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode = toInline(`
+            export default function RuntimeLog({error, warning}) {
+              return jsxDEV("dialog", {open: error.value || warning.value,children: [error.value && \`Error: \${error.value.message}\`, error.value && jsxDEV("pre", {children: error.value.stack}, undefined, false, undefined, this), warning.value && \`Warning: \${warning.value}\`]}, undefined, true, undefined, this);
+            }
+          `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(propNames).toEqual(["error", "warning"]);
+        expect(isAddedDefaultProps).toBe(false);
+      });
+
       it("should transform a default prop declaration inside the body of the component", () => {
         const code = `
           export default function Component({ foo }) {

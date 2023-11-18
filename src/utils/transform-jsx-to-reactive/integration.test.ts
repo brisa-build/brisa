@@ -1547,6 +1547,56 @@ describe("integration", () => {
       );
     });
 
+    it("should work an open attribute in a dialog composed with and expression", () => {
+      const code = `
+      type RuntimeLogProps = {
+        error: { stack: string, message: string };
+        warning: string;
+      }
+      
+      export default function RuntimeLog({ error, warning }: RuntimeLogProps) {
+        return (
+          <dialog open={error || warning}>
+            {error && \`Error: \${error.message}\`}
+            {error && <pre>{error.stack}</pre>}
+            {warning && \`Warning: \${warning}\`}
+          </dialog>
+        )
+      }      
+      `;
+
+      defineBrisaWebComponent(code, "src/web-components/runtime-log.tsx");
+
+      document.body.innerHTML = "<runtime-log />";
+
+      const runtimeLog = document.querySelector("runtime-log") as HTMLElement;
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe("<dialog></dialog>");
+
+      runtimeLog.setAttribute(
+        "error",
+        "{ 'stack': 'stack', 'message': 'message' }"
+      );
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
+        '<dialog open="">Error: message<pre>stack</pre></dialog>'
+      );
+
+      runtimeLog.removeAttribute("error");
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe("<dialog></dialog>");
+
+      runtimeLog.setAttribute("warning", "warning");
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
+        '<dialog open="">Warning: warning</dialog>'
+      );
+
+      runtimeLog.removeAttribute("warning");
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe("<dialog></dialog>");
+    });
+
     it("should serialize the props consuming another web-component", () => {
       const testComp = `export default function Test({ }) {
         return <web-component user={{ name: "Aral" }} />;
