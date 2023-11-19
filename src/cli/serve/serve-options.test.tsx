@@ -14,8 +14,8 @@ async function testRequest(request: Request): Promise<Response> {
   return (
     // @ts-ignore
     ((await serveOptions.fetch(request, {
-      requestIP: () => { },
-      upgrade: () => { },
+      requestIP: () => {},
+      upgrade: () => {},
     })) || new Response()) as Response
   );
 }
@@ -108,9 +108,9 @@ describe("CLI: serve", () => {
     const mockFs = spyOn(fs, "existsSync").mockImplementation(() => true);
     const mockFile = spyOn(Bun, "file").mockImplementation(
       () =>
-      ({
-        text: () => Promise.resolve("I am a web component JS code"),
-      } as BunFile)
+        ({
+          text: () => Promise.resolve("I am a web component JS code"),
+        } as BunFile)
     );
 
     const response = await testRequest(

@@ -15,6 +15,29 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
 
   return JSON.parse(
     JSON.stringify(ast, (key, value) => {
+      // return ['Hello', 'World'] -> return [null, {}, ['Hello', 'World'].join('')]
+      if (
+        value?.type === "ReturnStatement" &&
+        value?.argument?.type === "ArrayExpression"
+      ) {
+        const allAreLiterals = value.argument.elements.every(
+          (el: any) => el.type === "Literal"
+        );
+        if (!allAreLiterals) return value;
+
+        return {
+          type: "ReturnStatement",
+          argument: {
+            type: "ArrayExpression",
+            elements: [
+              { type: "Literal", value: null },
+              { type: "ObjectExpression", properties: [] },
+              joinArray(value.argument.elements),
+            ],
+          },
+        };
+      }
+
       if (
         value?.type !== "CallExpression" ||
         !JSX_NAME.has(value?.callee?.name ?? "")
@@ -101,27 +124,7 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
         children.elements.length &&
         children.elements.every((el: any) => TYPES_TO_JOIN.has(el.type))
       ) {
-        children = {
-          type: "CallExpression",
-          callee: {
-            type: "MemberExpression",
-            object: {
-              type: "ArrayExpression",
-              elements: children.elements,
-            },
-            computed: false,
-            property: {
-              type: "Identifier",
-              name: "join",
-            },
-          },
-          arguments: [
-            {
-              type: "Literal",
-              value: "",
-            },
-          ],
-        };
+        children = joinArray(children.elements);
       }
       // Transform: <div><span />{someVar ? <b /> : <i />}</div>
       // to: ["div", {}, [['span', {}, ''], [null, {}, () => someVar.value ? ["b", {}, ""] : ["i", {}, ""]]]
@@ -193,4 +196,28 @@ function hasNodeASignal(node: ESTree.Node) {
   });
 
   return hasSignal;
+}
+
+function joinArray(elements: ESTree.ArrayExpression["elements"]) {
+  return {
+    type: "CallExpression",
+    callee: {
+      type: "MemberExpression",
+      object: {
+        type: "ArrayExpression",
+        elements,
+      },
+      computed: false,
+      property: {
+        type: "Identifier",
+        name: "join",
+      },
+    },
+    arguments: [
+      {
+        type: "Literal",
+        value: "",
+      },
+    ],
+  };
 }

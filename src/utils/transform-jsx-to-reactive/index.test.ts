@@ -1285,25 +1285,23 @@ describe("utils", () => {
         }
       );
 
-      it.todo(
-        "should wrap conditional renders in different returns inside an hyperScript function",
-        () => {
-          const input = `
+      it("should wrap conditional renders in different returns inside an hyperScript function", () => {
+        const input = `
           export default function MyComponent({ show }) {
-          if (show) return <div>foo < /div>
-          const bar = <b>bar < /b>
-          return <span>bar < /span>
+          if (show) return <div>foo</div>
+          const bar = <b>bar</b>
+          return <span>bar</span>
         }
         `;
 
-          const output = toInline(
-            transformJSXToReactive(input, "src/web-components/my-component.tsx")
-          );
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
 
-          const expected = toInline(`
-        import { brisaElement, _on, _off } from "brisa/client";
+        const expected = toInline(`
+        import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function MyComponent({ show }, { h }) {
+        export default brisaElement(function MyComponent({show}, {h}) {
           return h(null, {}, () => {
             if (show.value) return ['div', {}, 'foo'];
             const bar = ['b', {}, 'bar'];
@@ -1312,50 +1310,43 @@ describe("utils", () => {
         }, ['show']);
         `);
 
-          expect(output).toBe(expected);
-        }
-      );
+        expect(output).toBe(expected);
+      });
 
-      it.todo(
-        "should wrap conditional renders using switch-case and different returns inside an hyperScript function",
-        () => {
-          const input = `
+      it("should wrap conditional renders using switch-case and different returns inside an hyperScript function", () => {
+        const input = `
         export default function MyComponent({ show }) {
           switch (show) {
             case true:
-              return <div>foo < /div>
+              return <div>foo</div>
             case false:
-              return <b>bar < /b>
+              return <b>bar</b>
             default:
-              return <span>bar < /span>
+              return <span>bar</span>
           }
         }
         `;
 
-          const output = toInline(
-            transformJSXToReactive(input, "src/web-components/my-component.tsx")
-          );
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
 
-          const expected = toInline(`
-        import { brisaElement, _on, _off } from "brisa/client";
+        const expected = toInline(`
+        import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function MyComponent({ show }, { h }) {
+        export default brisaElement(function MyComponent({show}, {h}) {
           return h(null, {}, () => {
             switch (show.value) {
-              case true:
-                return ['div', {}, 'foo'];
-              case false:
-                return ['b', {}, 'bar'];
-              default:
-                return ['span', {}, 'bar'];
+              case true:return ['div', {}, 'foo'];
+              case false:return ['b', {}, 'bar'];
+              default:return ['span', {}, 'bar'];
             }
           });
         }, ['show']);
         `);
 
-          expect(output).toBe(expected);
-        }
-      );
+        expect(output).toBe(expected);
+      });
 
       it.todo(
         "should be possible to set default props from ...rest inside code"

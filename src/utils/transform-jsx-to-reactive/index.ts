@@ -1,12 +1,14 @@
 import { ESTree } from "meriyah";
+
 import AST from "../ast";
-import getWebComponentAst from "./get-web-component-ast";
-import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import defineBrisaElement from "./define-brisa-element";
 import getComponentVariableNames from "./get-component-variable-names";
-import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
-import transformToReactiveProps from "./transform-to-reactive-props";
+import getWebComponentAst from "./get-web-component-ast";
+import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
 import transformToDirectExport from "./transform-to-direct-export";
+import transformToReactiveArrays from "./transform-to-reactive-arrays";
+import transformToReactiveProps from "./transform-to-reactive-props";
+import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
@@ -18,10 +20,12 @@ export default function transformJSXToReactive(code: string, path: string) {
   const [astWithPropsDotValue, propNames, isAddedDefaultProps] =
     transformToReactiveProps(astWithDirectExport);
   const reactiveAst = transformToReactiveArrays(astWithPropsDotValue);
-  const [componentBranch, index] = getWebComponentAst(reactiveAst) as [
+  let [componentBranch, index] = getWebComponentAst(reactiveAst) as [
     ESTree.FunctionDeclaration,
     number
   ];
+
+  componentBranch = mergeEarlyReturnsInOne(componentBranch);
 
   if (!componentBranch || !path.match(WEB_COMPONENT_REGEX)) {
     return generateCodeFromAST(reactiveAst);
