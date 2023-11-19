@@ -128,7 +128,7 @@ async function enqueueDuringRendering(
       let codeToInject = generateHrefLang(request);
 
       if (fs.existsSync(clientFile)) {
-        codeToInject += `<script defer>${await Bun.file(clientFile).text()}</script>`;
+        codeToInject += `<script>${await Bun.file(clientFile).text()}</script>`;
       }
 
       controller.enqueue(codeToInject, suspenseId);

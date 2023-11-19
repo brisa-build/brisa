@@ -123,7 +123,7 @@ describe("CLI: serve", () => {
 
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain("<script defer>I am a web component JS code</script>");
+    expect(html).toContain("<script>I am a web component JS code</script>");
     expect(html).toContain(
       '<native-some-example name="web component"></native-some-example>'
     );
