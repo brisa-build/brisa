@@ -35,6 +35,37 @@ describe("integration", () => {
     afterEach(async () => {
       if (typeof window !== "undefined") GlobalRegistrator.unregister();
     });
+    it("should work returning a text node", () => {
+      const code = `export default function Test() {
+        return 'Hello World';
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("Hello World");
+    });
+
+    it("should work returning an array of text nodes", () => {
+      const code = `export default function Test() {
+        return ['Hello', ' ', 'World'];
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("Hello World");
+    });
     it("should work props and state with a counter", () => {
       const path = "src/web-components/test-counter.tsx";
       const code = `
@@ -2130,6 +2161,113 @@ describe("integration", () => {
       const script = testComponent?.shadowRoot?.querySelector("script");
 
       expect(script).toBeDefined();
+    });
+
+    it("should be reactive returning a conditional early return", () => {
+      const code = `export default ({ name }) => {
+        if (name === "Aral") {
+          return <b>Aral</b>;
+        }
+
+        return <b>Barbara</b>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component name='Aral' />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Aral</b>");
+
+      testComponent.setAttribute("name", "Barbara");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Barbara</b>");
+    });
+
+    it("should be reactive returning a conditional expression", () => {
+      const code = `export default ({ name }) => {
+        return name === "Aral" ? <b>Aral</b> : <b>Barbara</b>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component name='Aral' />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Aral</b>");
+
+      testComponent.setAttribute("name", "Barbara");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Barbara</b>");
+    });
+
+    it("should be reactive with a switch statement", () => {
+      const code = `export default ({ name }) => {
+        switch (name) {
+          case "Aral":
+            return <b>Aral</b>;
+          case "Barbara":
+            return <b>Barbara</b>;
+          default:
+            return <b>Default</b>;
+        }
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component name='Aral' />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Aral</b>");
+
+      testComponent.setAttribute("name", "Barbara");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Barbara</b>");
+
+      testComponent.setAttribute("name", "Default");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Default</b>");
+    });
+
+    it.todo("should work reactivity returning a variable", () => {
+      const code = `
+        export default function Component({ propName }) {
+          let example = ['a', 'b', 'c'];
+
+          if (propName.value === 'a') {
+            example = example.map(item => {
+              return <b>{item}</b>
+            })
+          }
+        
+          return example
+        }
+      `;
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component propName='a' />";
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<b>a</b><b>b</b><b>c</b>"
+      );
+
+      testComponent.setAttribute("propName", "b");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("a,b,c");
+
+      testComponent.setAttribute("propName", "a");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<b>a</b><b>b</b><b>c</b>"
+      );
     });
   });
 });

@@ -396,6 +396,23 @@ describe("utils", () => {
         `);
         expect(output).toBe(expected);
       });
+
+      it("should allow returning an array of strings", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent() {
+            return ['Hello', ' ', 'World'];
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = toInline(`
+          export default function MyComponent() {
+            return [null, {}, ['Hello', ' ', 'World'].join('')];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
     });
   });
 });
