@@ -1,5 +1,4 @@
 import { ESTree } from "meriyah";
-import { SUPPORTED_DEFAULT_PROPS_OPERATORS } from "../constants";
 
 const CHILDREN = "children";
 
@@ -77,7 +76,6 @@ function getPropsNamesFromIdentifier(
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
   const identifiers = new Set<string>([identifier]);
-  let defaultPropsValues: Record<string, ESTree.Literal> = {};
 
   JSON.stringify(ast, (key, value) => {
     // props.name
@@ -123,37 +121,13 @@ function getPropsNamesFromIdentifier(
       identifiers.has(value?.init?.object?.name)
     ) {
       propsNames.add(value?.init?.property?.name);
-      renamedPropsNames.add(value?.id?.name);
-    }
-
-    // const foo = props.name ?? 'default value'
-    else if (
-      value?.type === "VariableDeclarator" &&
-      value?.id?.type === "Identifier" &&
-      value?.init?.type === "LogicalExpression" &&
-      SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.init?.operator) &&
-      identifiers.has(value?.init?.left?.object?.name)
-    ) {
-      renamedPropsNames.add(value?.id?.name);
-      defaultPropsValues[
-        `${value?.init?.left?.object?.name}.${value?.init?.left?.property?.name}`
-      ] = { ...value.init.right, usedOperator: value.init.operator };
-    }
-
-    // const foo = bar // bar is a prop
-    else if (
-      value?.type === "VariableDeclarator" &&
-      currentPropsNames.has(
-        value?.init?.left?.name ?? value?.init?.name ?? value?.id?.name
-      )
-    ) {
-      renamedPropsNames.add(value?.id?.name);
+      renamedPropsNames.add(value?.init?.property?.name);
     }
 
     return value;
   });
 
-  return [[...propsNames], [...renamedPropsNames], defaultPropsValues];
+  return [[...propsNames], [...renamedPropsNames], {}];
 }
 
 export function getPropNamesFromExport(ast: ESTree.Program) {

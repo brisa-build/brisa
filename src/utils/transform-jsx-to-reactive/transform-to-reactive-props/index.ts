@@ -1,7 +1,6 @@
 import { ESTree } from "meriyah";
-import getWebComponentAst from "../get-web-component-ast";
 import getPropsNames, { getPropNamesFromExport } from "../get-props-names";
-import { SUPPORTED_DEFAULT_PROPS_OPERATORS } from "../constants";
+import getWebComponentAst from "../get-web-component-ast";
 
 type Prop = (ESTree.MemberExpression | ESTree.Identifier) & {
   isSignal?: true;
@@ -28,11 +27,7 @@ export default function transformToReactiveProps(
     ...propNamesFromExport,
   ]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
-  const defaultPropsEntriesInnerCode: [string, ESTree.Literal, string][] = [];
-  let isAddedDefaultProps = false;
-
-  // Set default props values inside component body
-  isAddedDefaultProps ||= addDefaultPropsToBody(
+  const isAddedDefaultProps = addDefaultPropsToBody(
     defaultPropsEntries,
     component,
     false
@@ -64,48 +59,13 @@ export default function transformToReactiveProps(
   const componentBodyWithPropsDotValue = JSON.parse(
     JSON.stringify(component.body),
     function (key, value) {
-      const nameLeft =
-        value?.left?.property?.object?.name ??
-        value?.left?.name ??
-        value?.left?.object?.name ??
-        value?.left?.property?.name;
-
-      // default props values inside component body like:
-      // const foo = bar ?? 'default value';
-      if (
-        value?.type === "LogicalExpression" &&
-        this?.type !== "Property" &&
-        SUPPORTED_DEFAULT_PROPS_OPERATORS.has(value?.operator) &&
-        propsNamesAndRenamesSet.has(nameLeft)
-      ) {
-        const propsIdentifier = value?.left?.object?.name;
-        const isPropsIdentifier = propsIdentifier !== nameLeft;
-        const property = { type: "Identifier", name: nameLeft };
-
-        defaultPropsEntriesInnerCode.push([
-          isPropsIdentifier ? `${propsIdentifier}.${nameLeft}` : nameLeft,
-          value.right,
-          value?.operator,
-        ]);
-
-        return isPropsIdentifier
-          ? {
-              type: "MemberExpression",
-              object: {
-                type: "Identifier",
-                name: propsIdentifier,
-              },
-              property,
-              computed: false,
-            }
-          : property;
-      }
-
-      // Avoid adding .value in props used inside a variable declaration
-      if (
-        value?.type === "VariableDeclarator" &&
-        value?.init?.type !== "ArrowFunctionExpression"
-      ) {
+      // Avoid adding .value in:
+      //  const { foo: a, bar: b } = props
+      //  const a = props.foo
+      // We don't want this:
+      //  const { foo: a.value, bar: b.value } = props.value
+      //  const a = props.foo.value
+      if (this?.type === "VariableDeclarator" && this.id === value) {
         return JSON.parse(JSON.stringify(value), (key, value) => {
           return value?.isSignal ? value.object : value;
         });
@@ -144,13 +104,6 @@ export default function transformToReactiveProps(
     }
   );
 
-  // Set default props values detected inside the body inside component body
-  isAddedDefaultProps ||= addDefaultPropsToBody(
-    defaultPropsEntriesInnerCode,
-    componentBodyWithPropsDotValue,
-    true
-  );
-
   const newAst = {
     ...ast,
     body: ast.body.map((node, index) => {
@@ -186,8 +139,6 @@ function addDefaultPropsToBody(
         : "||=";
 
     let identifier;
-
-    if (propName.includes(".")) [identifier, propName] = propName.split(".");
 
     let prop: Prop = identifier
       ? {
