@@ -7,7 +7,7 @@ describe("signals", () => {
     const initValue = 0;
     const updatedValue = 435;
     const count = state(initValue);
-    const mockEffect = mock<(val: number) => void>(() => {});
+    const mockEffect = mock<(val?: number) => void>(() => {});
 
     effect(() => {
       mockEffect(count.value);
@@ -24,7 +24,7 @@ describe("signals", () => {
     const { state, effect } = signals();
     const count = state(0);
     const username = state("Anonymous");
-    const mockEffect = mock<(count: number, username: string) => void>(
+    const mockEffect = mock<(count?: number, username?: string) => void>(
       () => {}
     );
     const updatedCount = 435;
@@ -54,7 +54,7 @@ describe("signals", () => {
     const { state, effect, cleanup } = signals();
     const count = state(0);
 
-    const mockEffect = mock<(count: number) => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => {});
     const mockCleanup = mock<() => void>(() => {});
 
     effect(() => {
@@ -93,7 +93,7 @@ describe("signals", () => {
   it("should work async/await inside an effect", async () => {
     const { state, effect } = signals();
     const count = state(42);
-    const mockEffect = mock<(count: number) => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => {});
 
     effect(async () => {
       await Promise.resolve();
@@ -115,9 +115,9 @@ describe("signals", () => {
 
   it("should work an state inside another state", () => {
     const { state } = signals();
-    const age = state(33);
-    const name = state("Aral");
-    const user = state({ age, name });
+    const age = state<number>(33);
+    const name = state<string>("Aral");
+    const user = state<any>({ age, name });
 
     expect(user.value.age.value).toEqual(33);
     expect(user.value.name.value).toEqual("Aral");
@@ -131,13 +131,13 @@ describe("signals", () => {
 
   it("should work without race conditions between async effects and signals", async () => {
     const { state, effect } = signals();
-    const count = state(0);
+    const count = state<number>(0);
     const delay = Promise.resolve();
     let lastSeen = -1;
 
     effect(async () => {
       await delay;
-      lastSeen = count.value;
+      lastSeen = count.value!;
     });
 
     effect(() => {});
@@ -147,5 +147,30 @@ describe("signals", () => {
     count.value = 1;
     await delay;
     expect(lastSeen).toBe(1);
+  });
+
+  it('should work with "derived" method', () => {
+    const { state, derived } = signals();
+    const count = state<number>(0);
+    const double = derived<number>(() => count.value * 2);
+
+    expect(double.value).toBe(0);
+
+    count.value = 1;
+
+    expect(double.value).toBe(2);
+  });
+
+  it("should work a derived state inside another derived state", () => {
+    const { state, derived } = signals();
+    const count = state<number>(0);
+    const double = derived<number>(() => count.value * 2);
+    const triple = derived<number>(() => double.value * 3);
+
+    expect(triple.value).toBe(0);
+
+    count.value = 1;
+
+    expect(triple.value).toBe(6);
   });
 });
