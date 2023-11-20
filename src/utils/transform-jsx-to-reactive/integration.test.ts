@@ -2329,5 +2329,50 @@ describe("integration", () => {
         "<b>a</b><b>b</b><b>c</b>"
       );
     });
+
+    it.todo(
+      "should call the inner signal only when the signal exists",
+      async () => {
+        window.mockSignalParent = mock((s: string) => true);
+        window.mockSignalChild = mock((s: string) => "");
+
+        const code = `
+        export default function Component({ user }) {
+          return (
+            <>
+             {window.mockSignalParent() && user ? <b>{window.mockSignalChild() || user.name}</b> : 'EMPTY'}
+            </>
+          )
+        }
+      `;
+
+        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+        document.body.innerHTML = "<test-component />";
+
+        expect(window.mockSignalParent).toHaveBeenCalledTimes(1);
+        expect(window.mockSignalChild).toHaveBeenCalledTimes(0);
+
+        const testComponent = document.querySelector(
+          "test-component"
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
+
+        testComponent.setAttribute("user", "{ 'name': 'Aral' }");
+
+        expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
+        expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Aral</b>");
+
+        testComponent.setAttribute("user", "");
+
+        expect(window.mockSignalParent).toHaveBeenCalledTimes(3);
+        expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
+      }
+    );
   });
 });
