@@ -1,7 +1,7 @@
 import path from "node:path";
+import { Configuration, I18nConfig } from "./types";
 import getRootDir from "./utils/get-root-dir";
 import importFileIfExists from "./utils/import-file-if-exists";
-import { Configuration, I18nConfig } from "./types";
 
 const rootDir = getRootDir();
 const srcDir = path.join(rootDir, "src");
@@ -51,8 +51,11 @@ const constants = {
   PAGE_500,
   RESERVED_PAGES: [PAGE_404, PAGE_500],
   IS_PRODUCTION:
-    process.argv.some((t) => t == "PROD") ||
+    process.argv.some((t) => t === "PROD") ||
     process.env.NODE_ENV === "production",
+  IS_DEVELOPMENT:
+    process.argv.some((t) => t === "DEV") ||
+    process.env.NODE_ENV === "development",
   PORT: parseInt(process.argv[2]) || 0,
   BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,

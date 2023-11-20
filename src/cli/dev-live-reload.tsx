@@ -1,8 +1,8 @@
+import { SpawnOptions } from "bun";
 import { watch } from "node:fs";
 import path from "node:path";
-import dangerHTML from "../utils/danger-html";
 import getConstants from "../constants";
-import { SpawnOptions } from "bun";
+import dangerHTML from "../utils/danger-html";
 
 type Spawn = SpawnOptions.OptionsObject<
   SpawnOptions.Writable,
@@ -10,7 +10,7 @@ type Spawn = SpawnOptions.OptionsObject<
   SpawnOptions.Readable
 > & { cmd: string[] };
 
-const { LOG_PREFIX, SRC_DIR, IS_PRODUCTION } = getConstants();
+const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT } = getConstants();
 const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
 const LIVE_RELOAD_COMMAND = "reload";
 const buildPath = path.join(import.meta.dir, "..", "build.js");
@@ -23,7 +23,7 @@ const spawnOptions: Spawn = {
 let semaphore = false;
 let waitFilename = "";
 
-if (!IS_PRODUCTION) {
+if (IS_DEVELOPMENT) {
   console.log(LOG_PREFIX.INFO, "hot reloading enabled");
   watch(SRC_DIR, { recursive: true }, async (event, filename) => {
     const filePath = path.join(SRC_DIR, filename as string);
