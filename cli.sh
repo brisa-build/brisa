@@ -27,7 +27,7 @@ if [ "$1" = "dev" ]; then
     esac
     shift
   done
-  NODE_ENV=development $BUN_EXEC node_modules/brisa/out/cli/build.js && NODE_ENV=development $BUN_EXEC node_modules/brisa/out/cli/serve/index.js $PORT
+  NODE_ENV=development $BUN_EXEC node_modules/brisa/out/cli/build.js DEV && NODE_ENV=development $BUN_EXEC node_modules/brisa/out/cli/serve/index.js $PORT DEV
 
 # brisa build
 elif [ "$1" = "build" ]; then

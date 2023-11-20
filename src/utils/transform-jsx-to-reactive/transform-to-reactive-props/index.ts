@@ -61,10 +61,8 @@ export default function transformToReactiveProps(
     function (key, value) {
       // Avoid adding .value in:
       //  const { foo: a, bar: b } = props
-      //  const a = props.foo
       // We don't want this:
       //  const { foo: a.value, bar: b.value } = props.value
-      //  const a = props.foo.value
       if (this?.type === "VariableDeclarator" && this.id === value) {
         return JSON.parse(JSON.stringify(value), (key, value) => {
           return value?.isSignal ? value.object : value;
