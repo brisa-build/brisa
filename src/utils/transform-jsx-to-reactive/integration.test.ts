@@ -1,8 +1,8 @@
-import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { serialize } from "../serialization";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import transformJSXToReactive from ".";
 import dangerHTML from "../danger-html";
+import { serialize } from "../serialization";
 
 declare global {
   interface Window {
@@ -2015,8 +2015,102 @@ describe("integration", () => {
       expect(window.mockCallback.mock.calls[0][0]).toBe("cleanup");
     });
 
-    it("should add a default value defined inside the body with || operator", () => {
-      const code = `export default ({ name }: any) => {
+    it("should be possible to use derived to default props with || operator", () => {
+      const code = `export default ({ name }, { derived }) => {
+        const superName = derived(() => name || "Aral");
+        return <div>{superName.value}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.setAttribute("name", "");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should be possible to use derived to default props with || operator and props object", () => {
+      const code = `export default (props, { derived }) => {
+        const superName = derived(() => props.name || "Aral");
+        return <div>{superName.value}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.setAttribute("name", "");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should be possible to use derived to default props with ?? operator", () => {
+      const code = `export default ({ name }, { derived }) => {
+        const superName = derived(() => name ?? "Aral");
+        return <div>{superName.value}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.setAttribute("name", "");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+
+      testComponent.removeAttribute("name");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should be possible to use derived to default props with ?? operator and props object", () => {
+      const code = `export default (props, { derived }) => {
+        const superName = derived(() => props.name ?? "Aral");
+        return <div>{superName.value}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.setAttribute("name", "");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+
+      testComponent.removeAttribute("name");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should LOSE REACTIVITY trying a default prop in a variable without derived and || operator", () => {
+      const code = `export default ({ name }) => {
         const superName = name || "Aral";
         return <div>{superName}</div>;
       }`;
@@ -2031,14 +2125,11 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.setAttribute("name", "Barbara");
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
-
-      testComponent.setAttribute("name", "");
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
     });
 
-    it("should add a default value defined inside the body with props identifier and || operator", () => {
-      const code = `export default (props: any) => {
+    it("should LOSE REACTIVITY trying a default prop in a variable without derived and || operator and props object", () => {
+      const code = `export default (props) => {
         const superName = props.name || "Aral";
         return <div>{superName}</div>;
       }`;
@@ -2053,14 +2144,14 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.setAttribute("name", "Barbara");
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.setAttribute("name", "");
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
     });
 
-    it("should add a default value defined inside the body with ?? operator", () => {
-      const code = `export default ({ name }: any) => {
+    it("should LOSE REACTIVITY trying a default prop in a variable without derived and ?? operator", () => {
+      const code = `export default ({ name }) => {
         const superName = name ?? "Aral";
         return <div>{superName}</div>;
       }`;
@@ -2075,22 +2166,23 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.setAttribute("name", "Barbara");
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.setAttribute("name", "");
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.removeAttribute("name");
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
     });
 
-    it("should add a default value defined inside the body with props identifier and ?? operator", () => {
-      const code = `export default (props: any) => {
+    it("should LOSE REACTIVITY trying a default prop in a variable without derived and ?? operator and props object", () => {
+      const code = `export default (props) => {
         const superName = props.name ?? "Aral";
         return <div>{superName}</div>;
       }`;
 
       defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
@@ -2100,44 +2192,12 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.setAttribute("name", "Barbara");
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.setAttribute("name", "");
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
       testComponent.removeAttribute("name");
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
-    });
-
-    it("should NOT add a default value overwritting empty string using ?? operator", () => {
-      const code = `export default ({ name }: any) => {
-        const superName = name ?? "Aral";
-        return <div>{superName}</div>;
-      }`;
-
-      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
-      document.body.innerHTML = '<test-component name="" />';
-
-      const testComponent = document.querySelector(
-        "test-component"
-      ) as HTMLElement;
-
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
-    });
-
-    it("should add a default value overwritting empty string using || operator", () => {
-      const code = `export default ({ name }: any) => {
-          const superName = name || "Aral";
-          return <div>{superName}</div>;
-        }`;
-
-      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
-      document.body.innerHTML = '<test-component name="" />';
-
-      const testComponent = document.querySelector(
-        "test-component"
-      ) as HTMLElement;
-
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
     });
 

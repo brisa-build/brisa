@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
+import { ESTree } from "meriyah";
 import getPropsNames, { getPropNamesFromExport } from ".";
 import AST from "../../ast";
 import getWebComponentAst from "../get-web-component-ast";
-import { ESTree } from "meriyah";
 
 const { parseCodeToAST } = AST("tsx");
 const inputCode = (code: string) => getWebComponentAst(parseCodeToAST(code));
@@ -153,23 +153,6 @@ describe("utils", () => {
         expect(defaultProps).toEqual({});
       });
 
-      it("should return propms names using variable declaration", () => {
-        const [input] = inputCode(`
-          export default function MyComponent(props) {
-            const renamedName = props.name;
-            return <div>{renamedName}</div>
-          }
-        `);
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
-        );
-        const expected = ["name"];
-
-        expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual(["renamedName", "name"]);
-        expect(defaultProps).toEqual({});
-      });
-
       it("should return props names without influence of other variables outside the component", () => {
         const [input] = inputCode(`
           function AnotherComponent(props) {
@@ -257,7 +240,7 @@ describe("utils", () => {
         expect(defaultProps).toEqual({ name: expectedDefaultProps });
       });
 
-      it("should not return the renamed props values as default props", () => {
+      it("should return the renamed props if is renamed inside the arguments", () => {
         const [input] = inputCode(`
           export default function MyComponent({ name: renamedName = 'foo' }) {
             return <div>{renamedName}</div>
@@ -279,11 +262,11 @@ describe("utils", () => {
         expect(defaultProps).toEqual({ renamedName: expectedDefaultProps });
       });
 
-      it("should return the renamed name when a new variable is declared from a prop", () => {
+      it("should NOT return the renamed name when lose the reactivity without a derived", () => {
         const [input] = inputCode(`
           export default function MyComponent({ name }) {
-            const renamedName = name;
-            return <div>{renamedName}</div>
+            const notDerivedName = name;
+            return <div>{notDerivedName}</div>
           }
         `);
 
@@ -291,18 +274,17 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration
         );
         const expected = ["name"];
-        const expectedRenamed = ["name", "renamedName"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual(expectedRenamed);
+        expect(renamedOutput).toEqual(expected);
         expect(defaultProps).toEqual({});
       });
 
-      it("should return the renamed name when a new variable is declared from a prop expression", () => {
+      it("should NOT return the renamed name when lose the reactivity without a derived from props object", () => {
         const [input] = inputCode(`
-          export default function MyComponent({ name }) {
-            const renamedName = name ?? 'foo';
-            return <div>{renamedName}</div>
+          export default function MyComponent(props) {
+            const notDerivedName = props.name;
+            return <div>{notDerivedName}</div>
           }
         `);
 
@@ -310,10 +292,27 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration
         );
         const expected = ["name"];
-        const expectedRenamed = ["name", "renamedName"];
 
         expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual(expectedRenamed);
+        expect(renamedOutput).toEqual(expected);
+        expect(defaultProps).toEqual({});
+      });
+
+      it("should NOT return the renamed name when lose the reactivity without a derived from default props", () => {
+        const [input] = inputCode(`
+          export default function MyComponent({ name }) {
+            const notDerivedName = name ?? 'foo';
+            return <div>{notDerivedName}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration
+        );
+        const expected = ["name"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
         expect(defaultProps).toEqual({});
       });
 
@@ -353,6 +352,43 @@ describe("utils", () => {
           propsFromExport
         );
         const expected = ["foo", "bar", "baz"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
+        expect(defaultProps).toEqual({});
+      });
+
+      // baz is not a renamed prop, stops reactivity to get this calculation
+      it("should not return the renamed name using a logical expression that is not for default props using destructuring", () => {
+        const [input] = inputCode(`
+          export default function MyComponent({ foo, bar }) {
+            const baz = foo && bar;
+            return <div>{baz}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration
+        );
+        const expected = ["foo", "bar"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
+        expect(defaultProps).toEqual({});
+      });
+
+      it('should not return the renamed name using a logical expression that is not for default props using "props"', () => {
+        const [input] = inputCode(`
+          export default function MyComponent(props) {
+            const baz = props.foo && props.bar;
+            return <div>{baz}</div>
+          }
+        `);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration
+        );
+        const expected = ["foo", "bar"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);

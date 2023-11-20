@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import AST from "../../ast";
 import transformToReactiveProps from ".";
+import AST from "../../ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
@@ -151,7 +151,7 @@ describe("utils", () => {
         expect(isAddedDefaultProps).toBe(false);
       });
 
-      it("should transform all renamed props via variable declaration", () => {
+      it("should LOSE REACTIVITY with renamed props inside body without a derived", () => {
         const code = `
           export default function Component(props) {
             const foot = props.foo;
@@ -168,16 +168,82 @@ describe("utils", () => {
 
         const expectedCode = toInline(`
           export default function Component(props) {
-            const foot = props.foo;
-            const bart = props.bar;
-            const bazt = props.baz;
-            console.log(foot.value);
-            if (bart.value) return jsxDEV("div", {children: bazt.value}, undefined, false, undefined, this);
+            const foot = props.foo.value;
+            const bart = props.bar.value;
+            const bazt = props.baz.value;
+            console.log(foot);
+            if (bart) return jsxDEV("div", {children: bazt}, undefined, false, undefined, this);
           }
         `);
 
         expect(outputCode).toBe(expectedCode);
         expect(propNames).toEqual(["foo", "bar", "baz"]);
+        expect(isAddedDefaultProps).toBe(false);
+      });
+
+      it("should NOT lose reactivity with renamed state props inside body", () => {
+        const code = `
+          export default function Component({}, { state }) {
+            const stateFoo = state('foo');
+            const stateBar = state('bar');
+            const stateBaz = state('baz');
+            const renamedFoo = stateFoo;
+            const renamedBar = stateBar;
+            const renamedBaz = stateBaz;
+            return <div>{renamedFoo.value}{renamedBar.value}{renamedBaz.value}</div>;
+          }`;
+
+        const ast = parseCodeToAST(code);
+        const [outputAst, propNames, isAddedDefaultProps] =
+          transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode =
+          toInline(`export default function Component({}, {state}) {
+            const stateFoo = state('foo');
+            const stateBar = state('bar');
+            const stateBaz = state('baz');
+            const renamedFoo = stateFoo;
+            const renamedBar = stateBar;
+            const renamedBaz = stateBaz;
+            return jsxDEV("div", {children: [renamedFoo.value, renamedBar.value, renamedBaz.value]}, undefined, true, undefined, this);
+          }`);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(propNames).toEqual([]);
+        expect(isAddedDefaultProps).toBe(false);
+      });
+
+      it("should lose reactivity if it is done deliberately in the state", () => {
+        const code = `
+        export default function Component({}, { state }) {
+          const stateFoo = state('foo');
+          const stateBar = state('bar');
+          const stateBaz = state('baz');
+          const renamedFoo = stateFoo.value;
+          const renamedBar = stateBar.value;
+          const renamedBaz = stateBaz.value;
+          return <div>{renamedFoo}{renamedBar}{renamedBaz}</div>;
+        }`;
+
+        const ast = parseCodeToAST(code);
+        const [outputAst, propNames, isAddedDefaultProps] =
+          transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode =
+          toInline(`export default function Component({}, {state}) {
+          const stateFoo = state('foo');
+          const stateBar = state('bar');
+          const stateBaz = state('baz');
+          const renamedFoo = stateFoo.value;
+          const renamedBar = stateBar.value;
+          const renamedBaz = stateBaz.value;
+          return jsxDEV("div", {children: [renamedFoo, renamedBar, renamedBaz]}, undefined, true, undefined, this);
+        }`);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(propNames).toEqual([]);
         expect(isAddedDefaultProps).toBe(false);
       });
 
@@ -419,9 +485,9 @@ describe("utils", () => {
 
       it("should transform a default prop declaration inside the body of the component", () => {
         const code = `
-          export default function Component({ foo }) {
-            const bar = foo ?? "bar";
-            return <div>{bar}</div>;
+          export default function Component({ foo }, { derived}) {
+            const bar = derived(() => foo ?? "bar");
+            return <div>{bar.value}</div>;
           }
         `;
         const ast = parseCodeToAST(code);
@@ -430,16 +496,38 @@ describe("utils", () => {
         const outputCode = toInline(generateCodeFromAST(outputAst));
 
         const expectedCode = toInline(`
-          export default function Component({foo}) {
-            effect(() => foo.value ??= 'bar');
-            const bar = foo;
+          export default function Component({foo}, {derived}) {
+            const bar = derived(() => foo.value ?? "bar");
             return jsxDEV("div", {children: bar.value}, undefined, false, undefined, this);
           }
         `);
 
         expect(outputCode).toBe(expectedCode);
         expect(propNames).toEqual(["foo"]);
-        expect(isAddedDefaultProps).toBe(true);
+        // adding default props inside a derived is not considered as default props
+        expect(isAddedDefaultProps).toBe(false);
+      });
+
+      it("should transform conditional props in a variable", () => {
+        const code = `export default function MyComponent({foo, bar}) {
+          const baz = foo && bar;
+          return <div>{baz ? 'TRUE' : 'FALSE'}</div>
+        }`;
+
+        const ast = parseCodeToAST(code);
+        const [outputAst, propNames, isAddedDefaultProps] =
+          transformToReactiveProps(ast);
+        const outputCode = toInline(generateCodeFromAST(outputAst));
+
+        const expectedCode =
+          toInline(`export default function MyComponent({foo, bar}) {
+          const baz = foo.value && bar.value;
+          return jsxDEV("div", {children: baz ? 'TRUE' : 'FALSE'}, undefined, false, undefined, this);
+        }`);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(propNames).toEqual(["foo", "bar"]);
+        expect(isAddedDefaultProps).toBe(false);
       });
     });
   });

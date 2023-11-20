@@ -1022,11 +1022,11 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside code with || operator", () => {
+      it("should be possible to set default props inside a derived with || operator", () => {
         const input = `
-          export default function MyComponent({foo}) {
-            const bar = foo || 'bar';
-            return <div>{bar}</div>
+          export default function MyComponent({foo}, {derived}) {
+            const bar = derived(() => foo || 'bar');
+            return <div>{bar.value}</div>
           }
         `;
 
@@ -1037,9 +1037,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {h, effect}) {
-            effect(() => foo.value ||= 'bar');
-            const bar = foo;
+          export default brisaElement(function MyComponent({foo}, {derived, h}) {
+            const bar = derived(() => foo.value || 'bar');
             return h('div', {}, () => bar.value);
           }, ['foo']);
         `);
@@ -1047,11 +1046,11 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside code with props identifier and || operator", () => {
+      it("should be possible to set default props inside a derived with props identifier and || operator", () => {
         const input = `
-          export default function MyComponent(props) {
-            const bar = props.foo || 'bar';
-            return <div>{bar}</div>
+          export default function MyComponent(props, {derived}) {
+            const bar = derived(() => props.foo || 'bar');
+            return <div>{bar.value}</div>
           }
         `;
 
@@ -1062,9 +1061,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent(props, {h, effect}) {
-            effect(() => props.foo.value ||= 'bar');
-            const bar = props.foo;
+          export default brisaElement(function MyComponent(props, {derived, h}) {
+            const bar = derived(() => props.foo.value || 'bar');
             return h('div', {}, () => bar.value);
           }, ['foo']);
         `);
@@ -1072,11 +1070,11 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside code with ?? operator", () => {
+      it("should be possible to set default props inside a derived with ?? operator", () => {
         const input = `
-          export default function MyComponent({foo}) {
-            const bar = foo ?? 'bar';
-            return <div>{bar}</div>
+          export default function MyComponent({foo}, {derived}) {
+            const bar = derived(() => foo ?? 'bar');
+            return <div>{bar.value}</div>
           }
         `;
 
@@ -1087,9 +1085,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {h, effect}) {
-            effect(() => foo.value ??= 'bar');
-            const bar = foo;
+          export default brisaElement(function MyComponent({foo}, {derived, h}) {
+            const bar = derived(() => foo.value ?? 'bar');
             return h('div', {}, () => bar.value);
           }, ['foo']);
         `);
@@ -1097,11 +1094,11 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside code with props identifier and ?? operator", () => {
+      it("should be possible to set default props inside derived with props identifier and ?? operator", () => {
         const input = `
-          export default function MyComponent(props) {
-            const bar = props.foo ?? 'bar';
-            return <div>{bar}</div>
+          export default function MyComponent(props, {derived}) {
+            const bar = derived(() => props.foo ?? 'bar');
+            return <div>{bar.value}</div>
           }
         `;
 
@@ -1112,63 +1109,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent(props, {h, effect}) {
-            effect(() => props.foo.value ??= 'bar');
-            const bar = props.foo;
-            return h('div', {}, () => bar.value);
-          }, ['foo']);
-        `);
-
-        expect(output).toBe(expected);
-      });
-
-      it("should be possible to set default props inside code with props identifier and ?? operator and effect variable", () => {
-        const input = `
-          export default function MyComponent(props) {
-            const effect = false;
-            const bar = props.foo ?? 'bar';
-            return <div>{bar}</div>
-          }
-        `;
-
-        const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
-        );
-
-        const expected = toInline(`
-          import {brisaElement, _on, _off} from "brisa/client";
-
-          export default brisaElement(function MyComponent(props, {h, effect: effect$}) {
-            effect$(() => props.foo.value ??= 'bar');
-            const effect = false;
-            const bar = props.foo;
-            return h('div', {}, () => bar.value);
-          }, ['foo']);
-        `);
-
-        expect(output).toBe(expected);
-      });
-
-      it("should be possible to set default props inside code with ?? operator and some effect", () => {
-        const input = `
-          export default function MyComponent({foo}, {effect}) {
-            const bar = foo ?? 'bar';
-            effect(() => console.log(bar))
-            return <div>{bar}</div>
-          }
-        `;
-
-        const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
-        );
-
-        const expected = toInline(`
-          import {brisaElement, _on, _off} from "brisa/client";
-
-          export default brisaElement(function MyComponent({foo}, {effect, h}) {
-            effect(() => foo.value ??= 'bar');
-            const bar = foo;
-            effect(() => console.log(bar.value));
+          export default brisaElement(function MyComponent(props, {derived, h}) {
+            const bar = derived(() => props.foo.value ?? 'bar');
             return h('div', {}, () => bar.value);
           }, ['foo']);
         `);
@@ -1254,36 +1196,49 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it.todo(
-        "should alert with a warning in DEV when consuming spread props inside JSX",
-        () => {}
-      );
-
-      it.todo(
-        "should be possible to use props as conditional variables",
-        () => {
-          const input = `
+      it("should be possible to use props as conditional render inside JSX", () => {
+        const input = `
           export default function MyComponent({foo, bar}) {
-            const baz = foo && bar;
-            return <div>{baz ? 'TRUE' : 'FALSE'}</div>
+            return <div>{foo && bar ? 'TRUE' : 'FALSE'}</div>
           }
         `;
 
-          const output = toInline(
-            transformJSXToReactive(input, "src/web-components/my-component.tsx")
-          );
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
 
-          const expected = toInline(`
+        const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
           export default brisaElement(function MyComponent({foo, bar}, {h}) {
-            const baz = foo.value && bar.value;
-            return h('div', {}, () => baz ? 'TRUE' : 'FALSE');
-          }, ['foo', 'bar']);}`);
+            return h('div', {}, () => foo.value && bar.value ? 'TRUE' : 'FALSE');
+          }, ['foo', 'bar']);`);
 
-          expect(output).toBe(expected);
-        }
-      );
+        expect(output).toBe(expected);
+      });
+
+      it("should be possible to use props as conditional variables", () => {
+        const input = `
+          export default function MyComponent({foo, bar}, {derived}) {
+            const baz = derived(() => foo && bar);
+            return <div>{baz.value ? 'TRUE' : 'FALSE'}</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo, bar}, {derived, h}) {
+            const baz = derived(() => foo.value && bar.value);
+            return h('div', {}, () => baz.value ? 'TRUE' : 'FALSE');
+          }, ['foo', 'bar']);`);
+
+        expect(output).toBe(expected);
+      });
 
       it("should wrap conditional renders in different returns inside an hyperScript function", () => {
         const input = `
@@ -1358,6 +1313,11 @@ describe("utils", () => {
 
       it.todo(
         'should only register the first effect signal on "<>sig.value && <div>{sig.value.message}</div>", the second one should be ignored'
+      );
+
+      it.todo(
+        "should alert with a warning in DEV when consuming spread props inside JSX",
+        () => {}
       );
     });
   });
