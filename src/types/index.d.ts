@@ -3,8 +3,8 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { BunPlugin } from "bun";
 import { IntrinsicCustomElements } from "@/../build/_brisa/types";
+import { BunPlugin } from "bun";
 
 export interface RequestContext extends Request {
   context: Map<string, any>;
@@ -20,9 +20,10 @@ type Effect = () => void | Promise<void>;
 type Cleanup = Effect;
 
 export interface WebContext {
-  state<T>(initialValue: T): { value: T };
+  state<T>(initialValue?: T): { value: T };
   effect(fn: Effect): void;
   cleanup(fn: Cleanup): void;
+  derived<T>(fn: () => T): { value: T };
   onMount(fn: Effect): void;
   css(strings: string, ...values: string[]): void;
 }
