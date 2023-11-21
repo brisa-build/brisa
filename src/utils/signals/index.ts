@@ -10,6 +10,11 @@ export default function signals() {
     if (index > -1) stack.splice(index, 1);
   }
 
+  function cleanEffects(fn: Effect) {
+    const cleans = cleanups.get(fn) ?? [];
+    for (let clean of cleans) clean();
+  }
+
   function state<T>(initialValue?: T): { value: T } {
     const effects = new Set<Effect>();
     return {
@@ -20,10 +25,9 @@ export default function signals() {
       set value(v) {
         initialValue = v;
 
-        for (let effect of effects) {
-          const cleans = cleanups.get(effect) ?? [];
-          for (let clean of cleans) clean();
-          effect();
+        for (let signalEffect of effects) {
+          cleanEffects(signalEffect);
+          signalEffect();
         }
       },
     };
@@ -41,8 +45,7 @@ export default function signals() {
     effect,
     cleanAll() {
       for (let effect of cleanups.keys()) {
-        const cleans = cleanups.get(effect) ?? [];
-        for (let clean of cleans) clean();
+        cleanEffects(effect);
       }
     },
     cleanup(fn: Cleanup) {
