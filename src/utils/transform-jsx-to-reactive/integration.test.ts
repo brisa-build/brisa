@@ -2330,13 +2330,11 @@ describe("integration", () => {
       );
     });
 
-    it.todo(
-      "should call the inner signal only when the signal exists",
-      async () => {
-        window.mockSignalParent = mock((s: string) => true);
-        window.mockSignalChild = mock((s: string) => "");
+    it("should call the inner signal only when the signal exists", async () => {
+      window.mockSignalParent = mock((s: string) => true);
+      window.mockSignalChild = mock((s: string) => "");
 
-        const code = `
+      const code = `
         export default function Component({ user }) {
           return (
             <>
@@ -2346,33 +2344,32 @@ describe("integration", () => {
         }
       `;
 
-        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
 
-        document.body.innerHTML = "<test-component />";
+      document.body.innerHTML = "<test-component />";
 
-        expect(window.mockSignalParent).toHaveBeenCalledTimes(1);
-        expect(window.mockSignalChild).toHaveBeenCalledTimes(0);
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(0);
 
-        const testComponent = document.querySelector(
-          "test-component"
-        ) as HTMLElement;
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
 
-        testComponent.setAttribute("user", "{ 'name': 'Aral' }");
+      testComponent.setAttribute("user", "{ 'name': 'Aral' }");
 
-        expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
-        expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Aral</b>");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Aral</b>");
 
-        testComponent.setAttribute("user", "");
+      testComponent.setAttribute("user", "");
 
-        expect(window.mockSignalParent).toHaveBeenCalledTimes(3);
-        expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(3);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
-      }
-    );
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
+    });
   });
 });

@@ -3,10 +3,12 @@ type Cleanup = Effect;
 
 export default function signals() {
   const stack: Effect[] = [];
+  let registeredSignals = new Set();
   let cleanups = new Map<Effect, Cleanup[]>();
 
-  function removeFromStack(fn: Effect) {
+  function cleanStacks(fn: Effect, isRootEffect: boolean) {
     const index = stack.indexOf(fn);
+    if (isRootEffect) registeredSignals.clear();
     if (index > -1) stack.splice(index, 1);
   }
 
@@ -19,7 +21,10 @@ export default function signals() {
     const effects = new Set<Effect>();
     return {
       get value() {
-        if (stack[0]) effects.add(stack[0]);
+        if (stack[0] && !registeredSignals.has(this)) {
+          effects.add(stack[0]);
+          registeredSignals.add(this);
+        }
         return initialValue!;
       },
       set value(v) {
@@ -37,7 +42,7 @@ export default function signals() {
     stack.unshift(fn);
     const p = fn();
     if (p?.then) await p;
-    removeFromStack(fn);
+    cleanStacks(fn, true);
   }
 
   return {
