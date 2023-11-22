@@ -2319,7 +2319,7 @@ describe("integration", () => {
 
       testComponent.setAttribute("propName", "b");
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("a,b,c");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("abc");
 
       testComponent.setAttribute("propName", "a");
 
