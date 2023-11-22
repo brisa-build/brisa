@@ -23,8 +23,10 @@ const XLINK_NAMESPACE = `${W3}1999/xlink`;
 const DANGER_HTML = "danger-html";
 const SLOT_TAG = "slot";
 
-const createTextNode = (text: string) =>
-  document.createTextNode((text ?? "").toString());
+const createTextNode = (text: Children) =>
+  document.createTextNode(
+    (Array.isArray(text) ? text.join("") : text ?? "").toString()
+  );
 const isReactiveArray = (a: any) =>
   a?.some?.((v: unknown) => typeof v === "object");
 const arr = Array.from;
@@ -188,7 +190,7 @@ export default function brisaElement(
               }
               // Reactive text node
               else if ((child as unknown as boolean) !== false) {
-                const textNode = createTextNode(child as string);
+                const textNode = createTextNode(child);
 
                 insertOrUpdate([textNode]);
 
@@ -200,12 +202,7 @@ export default function brisaElement(
             else startEffect(childOrPromise);
           });
         } else if ((children as unknown as boolean) !== false) {
-          appendChild(
-            el,
-            createTextNode(
-              Array.isArray(children) ? children.join("") : children
-            )
-          );
+          appendChild(el, createTextNode(children));
         }
 
         if (tagName) appendChild(parent, el);

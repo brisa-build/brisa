@@ -29,7 +29,7 @@ export default function getReactiveReturnStatement(
   // Transforming:
   //  "return conditional ? ['div', {}, ''] : ['span', {}, '']"
   // to:
-  //  "return h(null, {}, () => conditional ? ['div', {}, ''] : ['span', {}, ''])"
+  //  "return [null, {}, () => conditional ? ['div', {}, ''] : ['span', {}, '']]"
   if (REACTIVE_VALUES.has(returnStatement?.argument?.type)) {
     tagName = FRAGMENT;
     props = EMPTY_ATTRIBUTES;
