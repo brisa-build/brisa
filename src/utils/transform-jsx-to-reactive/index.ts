@@ -1,6 +1,7 @@
 import { ESTree } from "meriyah";
 
 import AST from "../ast";
+import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 import defineBrisaElement from "./define-brisa-element";
 import getComponentVariableNames from "./get-component-variable-names";
 import getWebComponentAst from "./get-web-component-ast";
@@ -8,7 +9,6 @@ import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
 import transformToDirectExport from "./transform-to-direct-export";
 import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
-import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 

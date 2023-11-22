@@ -1,7 +1,7 @@
 import { ESTree } from "meriyah";
+import getConstants from "../../../constants";
 import { JSX_NAME, NO_REACTIVE_CHILDREN_EXPRESSION } from "../constants";
 import wrapWithArrowFn from "../wrap-with-arrow-fn";
-import getConstants from "../../../constants";
 
 const TYPES_TO_JOIN = new Set([
   "Literal",
@@ -15,7 +15,7 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
 
   return JSON.parse(
     JSON.stringify(ast, (key, value) => {
-      // return ['Hello', 'World'] -> return [null, {}, ['Hello', 'World'].join('')]
+      // return ['Hello', 'World'] -> return [null, {}, ['Hello', 'World']]
       if (
         value?.type === "ReturnStatement" &&
         value?.argument?.type === "ArrayExpression"
@@ -32,7 +32,10 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
             elements: [
               { type: "Literal", value: null },
               { type: "ObjectExpression", properties: [] },
-              joinArray(value.argument.elements),
+              {
+                type: "ArrayExpression",
+                elements: value.argument.elements,
+              },
             ],
           },
         };
@@ -118,7 +121,7 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
         restOfProps.push({ ...prop, value });
       }
 
-      // <div>{'some'} {'example'}</div> -> ["div", {}, ["some", " ", "example"].join("")]
+      // <div>{'some'} {'example'}</div> -> ["div", {}, ["some", " ", "example"].join('')]
       if (
         children.type === "ArrayExpression" &&
         children.elements.length &&

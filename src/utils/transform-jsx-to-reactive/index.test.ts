@@ -469,6 +469,30 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should be possible to return a variable as a child", () => {
+        const input = `
+            export default function MyComponent() {
+              const foo = 'Some text'
+              return foo
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+
+        const expected = toInline(`
+            import {brisaElement, _on, _off} from "brisa/client";
+
+            export default brisaElement(function MyComponent({}, {h}) {
+              const foo = 'Some text';
+              return h(null, {}, () => foo);
+            });
+          `);
+
+        expect(output).toBe(expected);
+      });
+
       it("should be possible to return null as a child", () => {
         const input = `
             export default function MyComponent() {

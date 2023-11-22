@@ -3,6 +3,11 @@ import wrapWithArrowFn from "../wrap-with-arrow-fn";
 
 const FRAGMENT = { type: "Literal", value: null };
 const EMPTY_ATTRIBUTES = { type: "ObjectExpression", properties: [] };
+const REACTIVE_VALUES = new Set([
+  "Identifier",
+  "ConditionalExpression",
+  "MemberExpression",
+]);
 
 export default function getReactiveReturnStatement(
   componentBody: ESTree.Statement[],
@@ -25,15 +30,10 @@ export default function getReactiveReturnStatement(
   //  "return conditional ? ['div', {}, ''] : ['span', {}, '']"
   // to:
   //  "return h(null, {}, () => conditional ? ['div', {}, ''] : ['span', {}, ''])"
-  if (returnStatement?.argument?.type === "ConditionalExpression") {
+  if (REACTIVE_VALUES.has(returnStatement?.argument?.type)) {
     tagName = FRAGMENT;
     props = EMPTY_ATTRIBUTES;
-    componentChildren = wrapWithArrowFn({
-      type: "ConditionalExpression",
-      test: returnStatement.argument.test,
-      consequent: returnStatement.argument.consequent,
-      alternate: returnStatement.argument.alternate,
-    });
+    componentChildren = wrapWithArrowFn(returnStatement?.argument);
   }
 
   // Transforming:
