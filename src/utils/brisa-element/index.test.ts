@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeAll, afterAll, mock } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { serialize } from "../serialization";
+import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
 import dangerHTML from "../danger-html";
+import { serialize } from "../serialization";
 
 let brisaElement: any;
 let _on: symbol, _off: symbol;
@@ -2170,6 +2170,23 @@ describe("utils", () => {
       const script = testComponent?.shadowRoot?.querySelector("script");
 
       expect(script).not.toBeNull();
+    });
+
+    it("should render an string when receive an array of strings", () => {
+      const Component = ({}, { h }: any) => {
+        return h(null, {}, [["div", {}, ["hello", " ", "world"]]]);
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>hello world</div>"
+      );
     });
   });
 });

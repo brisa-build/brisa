@@ -25,7 +25,8 @@ const SLOT_TAG = "slot";
 
 const createTextNode = (text: string) =>
   document.createTextNode((text ?? "").toString());
-const isArray = Array.isArray;
+const isReactiveArray = (a: any) =>
+  a?.some?.((v: unknown) => typeof v === "object");
 const arr = Array.from;
 const lowercase = (str: string) => str.toLowerCase();
 const isAttributeAnEvent = (key: string) => key.startsWith("on");
@@ -131,8 +132,8 @@ export default function brisaElement(
           el.innerHTML += (children as any).props.html as string;
         } else if (children === SLOT_TAG) {
           appendChild(el, createElement(SLOT_TAG));
-        } else if (isArray(children)) {
-          if (isArray(children[0])) {
+        } else if (isReactiveArray(children)) {
+          if (isReactiveArray((children as any)[0])) {
             for (let child of children as Children[]) {
               hyperScript(null, {}, child, el);
             }
@@ -157,7 +158,7 @@ export default function brisaElement(
             function startEffect(child: Children) {
               const isDangerHTML = (child as any)?.type === DANGER_HTML;
 
-              if (isDangerHTML || isArray(child)) {
+              if (isDangerHTML || isReactiveArray(child)) {
                 let currentElNodes = arr(el.childNodes);
                 const fragment = document.createDocumentFragment();
 
@@ -171,7 +172,7 @@ export default function brisaElement(
                   }
                 }
                 // Reactive child node
-                else if (isArray((child as any[])[0])) {
+                else if (isReactiveArray((child as any[])[0])) {
                   for (let c of child as Children[]) {
                     hyperScript(null, {}, c, fragment);
                   }
@@ -199,7 +200,12 @@ export default function brisaElement(
             else startEffect(childOrPromise);
           });
         } else if ((children as unknown as boolean) !== false) {
-          appendChild(el, createTextNode(children));
+          appendChild(
+            el,
+            createTextNode(
+              Array.isArray(children) ? children.join("") : children
+            )
+          );
         }
 
         if (tagName) appendChild(parent, el);

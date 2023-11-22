@@ -2295,18 +2295,16 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Default</b>");
     });
 
-    it.todo("should work reactivity returning a variable", () => {
+    it("should work reactivity returning a variable", () => {
       const code = `
-        export default function Component({ propName }) {
-          let example = ['a', 'b', 'c'];
+        const example = ['a', 'b', 'c'];
 
-          if (propName.value === 'a') {
-            example = example.map(item => {
-              return <b>{item}</b>
-            })
-          }
+        export default function Component({ propName }, { derived }) {
+          const element = derived(
+            () => propName === 'a' ? example.map(item => <b>{item}</b>) : example
+          );
         
-          return example
+          return element.value;
         }
       `;
       defineBrisaWebComponent(code, "src/web-components/test-component.tsx");

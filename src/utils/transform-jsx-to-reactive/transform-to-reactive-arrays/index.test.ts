@@ -1,8 +1,8 @@
 import { describe, expect, it, spyOn } from "bun:test";
-import transformToReactiveArrays from ".";
-import AST from "../../ast";
 import { ESTree } from "meriyah";
+import transformToReactiveArrays from ".";
 import getConstants from "../../../constants";
+import AST from "../../ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
@@ -408,7 +408,7 @@ describe("utils", () => {
         const output = toOutputCode(outputAst);
         const expected = toInline(`
           export default function MyComponent() {
-            return [null, {}, ['Hello', ' ', 'World'].join('')];
+            return [null, {}, ['Hello', ' ', 'World']];
           }
         `);
         expect(output).toBe(expected);

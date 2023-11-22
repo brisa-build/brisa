@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
+import { ESTree } from "meriyah";
 import defineBrisaElement from ".";
-import getWebComponentAst from "../get-web-component-ast";
+import * as BRISA_CLIENT from "../../../core/client";
 import AST from "../../ast";
 import getPropsNames from "../get-props-names";
-import * as BRISA_CLIENT from "../../../core/client";
-import { ESTree } from "meriyah";
+import getWebComponentAst from "../get-web-component-ast";
 import transformToReactiveArrays from "../transform-to-reactive-arrays";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
@@ -197,7 +197,7 @@ describe("utils", () => {
         expect(output(wrappedComponent)).toBe(
           toInline(`
           brisaElement(function Test({}, {h}) {
-              return h(null, {}, ["Hello", " ", "World"].join(""));
+              return h(null, {}, ["Hello", " ", "World"]);
           })
         `)
         );
