@@ -19,7 +19,7 @@ export default function transformJSXToReactive(code: string, path: string) {
   const astWithDirectExport = transformToDirectExport(ast);
   const [astWithPropsDotValue, propNames, isAddedDefaultProps] =
     transformToReactiveProps(astWithDirectExport);
-  const reactiveAst = transformToReactiveArrays(astWithPropsDotValue);
+  const reactiveAst = transformToReactiveArrays(astWithPropsDotValue, path);
   let [componentBranch, index] = getWebComponentAst(reactiveAst) as [
     ESTree.FunctionDeclaration,
     number
