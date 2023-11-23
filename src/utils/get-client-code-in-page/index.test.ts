@@ -36,11 +36,11 @@ describe("utils", () => {
     };
     mockCompiledFile = spyOn(Bun, "file").mockImplementation(
       (filepath) =>
-      ({
-        async text() {
-          return transpiler.transform(fs.readFileSync(filepath), "tsx");
-        },
-      } as BunFile)
+        ({
+          async text() {
+            return transpiler.transform(fs.readFileSync(filepath), "tsx");
+          },
+        } as BunFile)
     );
   });
 
@@ -62,7 +62,7 @@ describe("utils", () => {
       const input = path.join(pages, "page-with-web-component.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
       const expected = {
-        code: 'class c extends HTMLElement{constructor(){super();this.attachShadow({mode:\"open\"})}render(d=\"World\"){if(!this.shadowRoot)return;this.shadowRoot.innerHTML=\"<h2>NATIVE WEB COMPONENT \"+this.getAttribute(\"name\")+\"</h2>\"+d}connectedCallback(){console.log(\"connected\",this.getAttribute(\"name\"))}disconnectedCallback(){console.log(\"disconnected\")}attributeChangedCallback(){this.render()}adoptedCallback(){console.log(\"adopted\")}static get observedAttributes(){return[\"name\"]}}if(c)customElements.define(\"native-some-example\",c);\n',
+        code: 'class c extends HTMLElement{constructor(){super();this.attachShadow({mode:"open"})}render(d="World"){if(!this.shadowRoot)return;this.shadowRoot.innerHTML="<h2>NATIVE WEB COMPONENT "+this.getAttribute("name")+"</h2>"+d}connectedCallback(){console.log("connected",this.getAttribute("name"))}disconnectedCallback(){console.log("disconnected")}attributeChangedCallback(){this.render()}adoptedCallback(){console.log("adopted")}static get observedAttributes(){return["name"]}}if(c)customElements.define("native-some-example",c);\n',
         size: 523,
       };
       expect(output).toEqual(expected);
