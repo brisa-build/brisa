@@ -10,7 +10,7 @@ related:
 
 ### System Requirements
 
-- Bun [1.0.13](https://bun.sh/) or later
+- Bun [1.0.14](https://bun.sh/) or later
 - macOS, Windows (including WSL), and Linux are supported.
 
 ### Automatic Installation
