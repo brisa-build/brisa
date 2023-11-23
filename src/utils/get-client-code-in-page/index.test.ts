@@ -30,15 +30,17 @@ describe("utils", () => {
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       SRC_DIR: src,
+      IS_PRODUCTION: true,
+      IS_DEVELOPMENT: false,
       BUILD_DIR: build,
     };
     mockCompiledFile = spyOn(Bun, "file").mockImplementation(
       (filepath) =>
-        ({
-          async text() {
-            return transpiler.transform(fs.readFileSync(filepath), "tsx");
-          },
-        } as BunFile)
+      ({
+        async text() {
+          return transpiler.transform(fs.readFileSync(filepath), "tsx");
+        },
+      } as BunFile)
     );
   });
 
@@ -56,14 +58,12 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    // TODO: there is a bug in Bun compiling multiple-times the same files.
-    // This test pass in isolation but not running the whole tests
-    it.skip("should return client code in page with web components", async () => {
+    it("should return client code in page with web components", async () => {
       const input = path.join(pages, "page-with-web-component.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
       const expected = {
-        code: 'var h=(d)=>d.children;h.__isFragment=!0;class c extends HTMLElement{constructor(){super();this.attachShadow({mode:"open"})}render(d="World"){if(!this.shadowRoot)return;this.shadowRoot.innerHTML="<h2>NATIVE WEB COMPONENT "+this.getAttribute("name")+"</h2>"+d}connectedCallback(){console.log("connected",this.getAttribute("name"))}disconnectedCallback(){console.log("disconnected")}attributeChangedCallback(){this.render()}adoptedCallback(){console.log("adopted")}static get observedAttributes(){return["name"]}}customElements.define("native-some-example",c);\n',
-        size: 563,
+        code: 'class c extends HTMLElement{constructor(){super();this.attachShadow({mode:\"open\"})}render(d=\"World\"){if(!this.shadowRoot)return;this.shadowRoot.innerHTML=\"<h2>NATIVE WEB COMPONENT \"+this.getAttribute(\"name\")+\"</h2>\"+d}connectedCallback(){console.log(\"connected\",this.getAttribute(\"name\"))}disconnectedCallback(){console.log(\"disconnected\")}attributeChangedCallback(){this.render()}adoptedCallback(){console.log(\"adopted\")}static get observedAttributes(){return[\"name\"]}}if(c)customElements.define(\"native-some-example\",c);\n',
+        size: 523,
       };
       expect(output).toEqual(expected);
     });
