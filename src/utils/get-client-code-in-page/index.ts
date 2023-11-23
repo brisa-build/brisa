@@ -5,7 +5,7 @@ import AST from "../ast";
 import { injectUnsuspenseCode } from "../inject-unsuspense-code" assert { type: "macro" };
 import transformJSXToReactive from "../transform-jsx-to-reactive";
 
-const ASTUtil = AST("js");
+const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
 
 export default async function getClientCodeInPage(
@@ -20,6 +20,17 @@ export default async function getClientCodeInPage(
     useSuspense,
     useWebComponents,
   } = await getWebComponentsFromPath(pagepath, allWebComponents);
+
+  // Web components inside web components
+  const nestedComponents = await Promise.all(
+    Object.values(pageWebComponents).map((path) =>
+      getWebComponentsFromPath(path, allWebComponents)
+    )
+  );
+
+  for (const { webComponents } of nestedComponents) {
+    Object.assign(pageWebComponents, webComponents);
+  }
 
   if (useSuspense) {
     code += unsuspenseScriptCode;

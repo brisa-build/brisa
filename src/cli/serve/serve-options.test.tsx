@@ -1,8 +1,8 @@
-import path from "node:path";
-import fs from "node:fs";
-import { describe, it, expect, beforeEach, afterEach, spyOn } from "bun:test";
-import getConstants from "../../constants";
 import { BunFile } from "bun";
+import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
+import fs from "node:fs";
+import path from "node:path";
+import getConstants from "../../constants";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -124,9 +124,7 @@ describe("CLI: serve", () => {
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<script>I am a web component JS code</script>");
-    expect(html).toContain(
-      '<native-some-example name="web component"></native-some-example>'
-    );
+    expect(html).toContain("<web-component></web-component>");
   });
 
   it("should redirect the home to the correct locale", async () => {

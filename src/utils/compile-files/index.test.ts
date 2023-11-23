@@ -74,6 +74,7 @@ describe("utils", () => {
         PAGES_DIR,
         BUILD_DIR,
         IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
         SRC_DIR,
         ASSETS_DIR,
       };
@@ -117,7 +118,7 @@ describe("utils", () => {
     ${info}Route                               | Size | Client size  
     ${info}------------------------------------------------------------
     ${info}λ /pages/_404.js                    | 261 B | 0 B 
-    ${info}λ /pages/page-with-web-component.js | 273 B | 563 B 
+    ${info}λ /pages/page-with-web-component.js | 247 B | 4 kB
     ${info}λ /pages/somepage.js                | 151 B | 0 B
     ${info}λ /pages/index.js                   | 233 B | 258 B 
     ${info}λ /pages/user/[username].js         | 144 B | 0 B 

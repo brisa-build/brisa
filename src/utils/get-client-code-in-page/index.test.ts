@@ -58,14 +58,20 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it("should return client code in page with web components", async () => {
+    it("should return client code size of brisa + 2 web-components in page with web components", async () => {
       const input = path.join(pages, "page-with-web-component.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
-      const expected = {
-        code: 'class c extends HTMLElement{constructor(){super();this.attachShadow({mode:"open"})}render(d="World"){if(!this.shadowRoot)return;this.shadowRoot.innerHTML="<h2>NATIVE WEB COMPONENT "+this.getAttribute("name")+"</h2>"+d}connectedCallback(){console.log("connected",this.getAttribute("name"))}disconnectedCallback(){console.log("disconnected")}attributeChangedCallback(){this.render()}adoptedCallback(){console.log("adopted")}static get observedAttributes(){return["name"]}}if(c)customElements.define("native-some-example",c);\n',
-        size: 523,
-      };
-      expect(output).toEqual(expected);
+      const brisaSize = 2921;
+      const webComponents = 630;
+
+      expect(output).not.toBeNull();
+      expect(output!.size).toEqual(brisaSize + webComponents);
+    });
+
+    it("shoukld return client code size as 0 when a page does not have web components", async () => {
+      const input = path.join(pages, "somepage.tsx");
+      const output = await getClientCodeInPage(input, allWebComponents);
+      expect(output!.size).toEqual(0);
     });
 
     it("should return client code in page with suspense", async () => {
@@ -79,11 +85,11 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo(
-      "should return 2 web components in page if there is 1 web component and another one inside",
-      () => {
-        // TODO: This will make sense to do after doing the transformation from JSX to hyperscript, this way we can analyze the JSX directly
-      }
-    );
+    it("should define 2 web components if there is 1 web component and another one inside", async () => {
+      const input = path.join(pages, "page-with-web-component.tsx");
+      const output = await getClientCodeInPage(input, allWebComponents);
+      expect(output!.code).toContain('"web-component"');
+      expect(output!.code).toContain('"native-some-example"');
+    });
   });
 });
