@@ -1,3 +1,3 @@
 export default function WebComponent() {
-  return <div>Hello World</div>;
+  return <native-some-example />;
 }
