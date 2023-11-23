@@ -1,5 +1,3 @@
-import path from "node:path";
-import fs from "node:fs";
 import { BunFile } from "bun";
 import {
   Mock,
@@ -10,6 +8,8 @@ import {
   it,
   spyOn,
 } from "bun:test";
+import fs from "node:fs";
+import path from "node:path";
 
 import getClientCodeInPage from ".";
 import getConstants from "../../constants";

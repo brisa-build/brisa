@@ -10,7 +10,10 @@ const TYPES_TO_JOIN = new Set([
   "ConditionalExpression",
 ]);
 
-export default function transformToReactiveArrays(ast: ESTree.Program) {
+export default function transformToReactiveArrays(
+  ast: ESTree.Program,
+  path?: string
+) {
   const { LOG_PREFIX, BOOLEANS_IN_HTML } = getConstants();
 
   return JSON.parse(
@@ -66,6 +69,7 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
           LOG_PREFIX.ERROR,
           `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`
         );
+        if (path) console.log(LOG_PREFIX.ERROR, `File: ${path}`);
         console.log(LOG_PREFIX.ERROR, `--------------------------`);
         console.log(
           LOG_PREFIX.ERROR,
@@ -84,6 +88,25 @@ export default function transformToReactiveArrays(ast: ESTree.Program) {
         if (name === "children" || prop?.key?.value === "children") {
           children = prop.key.value ?? prop.value;
           continue;
+        }
+
+        if (prop?.type === "SpreadElement") {
+          console.log(LOG_PREFIX.WARN, `Ops! Warning:`);
+          console.log(LOG_PREFIX.WARN, `--------------------------`);
+          console.log(
+            LOG_PREFIX.WARN,
+            `You are using spread props inside web-components JSX.`
+          );
+          console.log(
+            LOG_PREFIX.WARN,
+            `This can cause the lost of reactivity.`
+          );
+          if (path) console.log(LOG_PREFIX.WARN, `File: ${path}`);
+          console.log(LOG_PREFIX.WARN, `--------------------------`);
+          console.log(
+            LOG_PREFIX.WARN,
+            `Docs: https://brisa.dev/docs/component-details/web-components`
+          );
         }
 
         // <div open={true} /> -> <div open />

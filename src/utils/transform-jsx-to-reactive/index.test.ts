@@ -368,9 +368,13 @@ describe("utils", () => {
         ]);
         expect(logs[5]).toEqual([
           LOG_PREFIX.ERROR,
-          `--------------------------`,
+          `File: src/web-components/my-component.tsx`,
         ]);
         expect(logs[6]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
+        expect(logs[7]).toEqual([
           LOG_PREFIX.ERROR,
           `Docs: https://brisa.dev/docs/component-details/web-components`,
         ]);
@@ -1327,13 +1331,81 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it.todo(
-        "should be possible to set default props from ...rest inside code"
-      );
+      it("should be possible to set default props from ...rest inside code", () => {
+        const input = `
+          export default function MyComponent({ foo, ...rest }, {derived}) {
+            const user = derived(() => rest.user ?? { name: 'No user'});
+            return <div>{user.name}</div>
+          }
+        `;
 
-      it.todo(
-        "should log a warning when using spread props inside JSX that can lost the reactivity"
-      );
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent({foo, ...rest}, {derived, h}) {
+            const user = derived(() => rest.user.value ?? ({name: 'No user'}));
+            return h('div', {}, () => user.value.name);
+          }, ['foo', 'user']);
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should log a warning when using spread props inside JSX that can lost the reactivity", () => {
+        const { LOG_PREFIX } = getConstants();
+        const mockLog = spyOn(console, "log");
+
+        mockLog.mockImplementation(() => {});
+
+        const input = `
+          export default function MyComponent(props) {
+            return <div {...props}>Example</div>
+          }
+        `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent(props, {h}) {
+            return h('div', {...props}, 'Example');
+          });
+        `);
+        const logs = mockLog.mock.calls.slice(0);
+        mockLog.mockRestore();
+        expect(output).toBe(expected);
+        expect(logs[0]).toEqual([LOG_PREFIX.WARN, `Ops! Warning:`]);
+        expect(logs[1]).toEqual([
+          LOG_PREFIX.WARN,
+          `--------------------------`,
+        ]);
+        expect(logs[2]).toEqual([
+          LOG_PREFIX.WARN,
+          `You are using spread props inside web-components JSX.`,
+        ]);
+        expect(logs[3]).toEqual([
+          LOG_PREFIX.WARN,
+          `This can cause the lost of reactivity.`,
+        ]);
+        expect(logs[4]).toEqual([
+          LOG_PREFIX.WARN,
+          `File: src/web-components/my-component.tsx`,
+        ]);
+        expect(logs[5]).toEqual([
+          LOG_PREFIX.WARN,
+          `--------------------------`,
+        ]);
+        expect(logs[6]).toEqual([
+          LOG_PREFIX.WARN,
+          `Docs: https://brisa.dev/docs/component-details/web-components`,
+        ]);
+      });
 
       it.todo(
         'should only register the first effect signal on "<>sig.value && <div>{sig.value.message}</div>", the second one should be ignored'

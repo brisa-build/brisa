@@ -2328,6 +2328,28 @@ describe("integration", () => {
       );
     });
 
+    it("should be possible to set default props from ...rest inside code", () => {
+      const code = `
+      export default function MyComponent({ foo, ...rest }, {derived}) {
+        const user = derived(() => rest.user ?? { name: 'No user'});
+        return <div>{user.name}</div>
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component foo='bar' />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>No user</div>");
+
+      testComponent.setAttribute("user", "{ 'name': 'Aral' }");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
     it.todo(
       "should call the inner signal only when the signal exists",
       async () => {
