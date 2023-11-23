@@ -1,5 +1,5 @@
+import { describe, expect, it } from "bun:test";
 import path from "node:path";
-import { describe, it, expect } from "bun:test";
 import getWebComponentsList from ".";
 
 const fixturesDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
@@ -20,12 +20,7 @@ describe("utils", () => {
     });
 
     it.todo(
-      "should alert in DEV if there is a web component with the same name, taking one the first one",
-      () => {}
-    );
-
-    it.todo(
-      "should not alert in PROD if there is a web component with the same name, taking one the first one",
+      "should alert if there is a web component with the same name, taking one the first one",
       () => {}
     );
   });

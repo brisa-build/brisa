@@ -1406,15 +1406,6 @@ describe("utils", () => {
           `Docs: https://brisa.dev/docs/component-details/web-components`,
         ]);
       });
-
-      it.todo(
-        'should only register the first effect signal on "<>sig.value && <div>{sig.value.message}</div>", the second one should be ignored'
-      );
-
-      it.todo(
-        "should alert with a warning in DEV when consuming spread props inside JSX",
-        () => {}
-      );
     });
   });
 });
