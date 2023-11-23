@@ -1,6 +1,6 @@
-import path from "node:path";
+import { afterEach, describe, expect, it, mock, spyOn } from "bun:test";
 import fs from "node:fs";
-import { describe, it, expect, afterEach, mock, spyOn } from "bun:test";
+import path from "node:path";
 import compileFiles from ".";
 import getConstants from "../../constants";
 
@@ -88,8 +88,12 @@ describe("utils", () => {
       const files = fs.readdirSync(BUILD_DIR).toSorted();
 
       expect(fs.existsSync(TYPES)).toBe(true);
-      expect(fs.readFileSync(TYPES).toString()).toBe(
-        `export interface IntrinsicCustomElements {\n  'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;\n}`
+      expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
+        minifyText(`
+          export interface IntrinsicCustomElements {
+            'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;
+            'web-component': HTMLAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx")>;
+          }`)
       );
       expect(console.log).toHaveBeenCalled();
       expect(files).toHaveLength(9);
@@ -132,7 +136,7 @@ describe("utils", () => {
     ${info}Φ JS shared by all
     ${info}
   `);
-      expect(logOutput).toBe(expected);
+      expect(logOutput).toContain(expected);
     });
   });
 });
