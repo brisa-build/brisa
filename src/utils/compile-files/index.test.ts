@@ -127,7 +127,7 @@ describe("utils", () => {
     ${info}Ω /i18n.js                          | 154 B | 0 B
     ${info}Δ /layout.js                        | 307 B | 0 B
     ${info}Ψ /websocket.js                     | 199 B | 0 B
-    ${info}Φ /chunk-${generatedHash}.js        | 460 B  | 0 B
+    ${info}Φ /chunk-${generatedHash}.js        | 85 B  | 0 B
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
