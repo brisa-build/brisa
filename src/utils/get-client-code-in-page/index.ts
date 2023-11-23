@@ -1,8 +1,8 @@
-import getConstants from "../../constants";
-import { join } from "node:path";
 import { rm, writeFile } from "node:fs/promises";
-import { injectUnsuspenseCode } from "../inject-unsuspense-code" assert { type: "macro" };
+import { join } from "node:path";
+import getConstants from "../../constants";
 import AST from "../ast";
+import { injectUnsuspenseCode } from "../inject-unsuspense-code" assert { type: "macro" };
 import transformJSXToReactive from "../transform-jsx-to-reactive";
 
 const ASTUtil = AST("js");
@@ -12,35 +12,14 @@ export default async function getClientCodeInPage(
   pagepath: string,
   allWebComponents: Record<string, string> = {}
 ) {
-  const pageFile = Bun.file(pagepath);
-  const ast = ASTUtil.parseCodeToAST(await pageFile.text());
-  const pageWebComponents: Record<string, string> = {};
-  let useWebComponents = false;
-  let useSuspense = false;
   let size = 0;
   let code = "";
 
-  JSON.stringify(ast, (key, value) => {
-    const webComponentName = value?.arguments?.[0]?.value ?? "";
-    const webComponentPath = allWebComponents[webComponentName];
-    const isWebComponent =
-      webComponentPath &&
-      value?.type === "CallExpression" &&
-      value?.callee?.type === "Identifier" &&
-      value?.arguments?.[0]?.type === "Literal";
-
-    if (isWebComponent) {
-      useWebComponents = true;
-      pageWebComponents[webComponentName] = webComponentPath;
-    }
-
-    useSuspense ||=
-      value?.type === "ExpressionStatement" &&
-      value?.expression?.operator === "=" &&
-      value?.expression?.left?.property?.name === "suspense";
-
-    return value;
-  });
+  const {
+    webComponents: pageWebComponents,
+    useSuspense,
+    useWebComponents,
+  } = await getWebComponentsFromPath(pagepath, allWebComponents);
 
   if (useSuspense) {
     code += unsuspenseScriptCode;
@@ -150,4 +129,39 @@ function snakeToCamelCase(str: string) {
   return str.replace(/([-_][a-z])/g, (group) =>
     group.toUpperCase().replace("-", "").replace("_", "")
   );
+}
+
+async function getWebComponentsFromPath(
+  path: string,
+  allWebComponents: Record<string, string>
+) {
+  const pageFile = Bun.file(path);
+  const ast = ASTUtil.parseCodeToAST(await pageFile.text());
+  const webComponents: Record<string, string> = {};
+  let useWebComponents = false;
+  let useSuspense = false;
+
+  JSON.stringify(ast, (key, value) => {
+    const webComponentName = value?.arguments?.[0]?.value ?? "";
+    const webComponentPath = allWebComponents[webComponentName];
+    const isWebComponent =
+      webComponentPath &&
+      value?.type === "CallExpression" &&
+      value?.callee?.type === "Identifier" &&
+      value?.arguments?.[0]?.type === "Literal";
+
+    if (isWebComponent) {
+      useWebComponents = true;
+      webComponents[webComponentName] = webComponentPath;
+    }
+
+    useSuspense ||=
+      value?.type === "ExpressionStatement" &&
+      value?.expression?.operator === "=" &&
+      value?.expression?.left?.property?.name === "suspense";
+
+    return value;
+  });
+
+  return { webComponents, useWebComponents, useSuspense };
 }
