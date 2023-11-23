@@ -8,15 +8,16 @@ This page provides an overview of the file and folder structure of a Brisa proje
 
 ## `src`-level folders
 
-|                                                                        |                                             |
-| ---------------------------------------------------------------------- | ------------------------------------------- |
-| [`pages`](/docs/building-your-application/routing#pages)               | Pages Router                                |
-| [`api`](/docs/building-your-application/routing#api)                   | Api Router                                  |
-| [`public`](/docs/building-your-application/optimizing/static-assets)   | Static assets to be served                  |
-| [`middleware`](/docs/building-your-application/configuring/middleware) | Middleware                                  |
-| [`layout`](/docs/building-your-application/configuring/layout)         | Layout / Layouts                            |
-| [`websocket`](/docs/building-your-application/configuring/websocket)   | Websocket                                   |
-| [`i18n`](/docs/building-your-application/configuring/i18n)             | Internationalization routing & translations |
+|                                                                                      |                                             |
+| ------------------------------------------------------------------------------------ | ------------------------------------------- |
+| [`pages`](/docs/building-your-application/routing#pages)                             | Pages Router                                |
+| [`api`](/docs/building-your-application/routing#api)                                 | Api Router                                  |
+| [`public`](/docs/building-your-application/optimizing/static-assets)                 | Static assets to be served                  |
+| [`middleware`](/docs/building-your-application/configuring/middleware)               | Middleware                                  |
+| [`layout`](/docs/building-your-application/configuring/layout)                       | Layout / Layouts                            |
+| [`websocket`](/docs/building-your-application/configuring/websocket)                 | Websocket                                   |
+| [`i18n`](/docs/building-your-application/configuring/i18n)                           | Internationalization routing & translations |
+| [`web-components`](/docs/building-your-application/component-details/web-components) | Client components                           |
 
 ## Top-level files
 

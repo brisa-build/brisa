@@ -3,8 +3,6 @@ title: Web Components
 description: Understand how to use web-components in Brisa.
 ---
 
-TODO: Implement it
-
 Remember that everything in Brisa (pages, layout, middleware, api...) runs on the server.
 
 The page components are server-components. However, we support a connection to the [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) through the `src/web-components` folder.
