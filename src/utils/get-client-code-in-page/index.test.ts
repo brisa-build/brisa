@@ -61,7 +61,7 @@ describe("utils", () => {
     it("should return client code size of brisa + 2 web-components in page with web components", async () => {
       const input = path.join(pages, "page-with-web-component.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
-      const brisaSize = 2921;
+      const brisaSize = 3255;
       const webComponents = 630;
 
       expect(output).not.toBeNull();

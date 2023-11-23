@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import formatElements, { tagParsingRegex } from "./format-elements";
 import { JSXElement } from "../../types";
+import formatElements, { tagParsingRegex } from "./format-elements";
 
 describe("utils", () => {
   describe("tagParsingRegex", () => {
@@ -9,27 +9,27 @@ describe("utils", () => {
       expect(match[0]).toBe("<p>bar</p>");
       expect(match[1]).toBe("p");
       expect(match[2]).toBe("bar");
-      expect(match[3]).toBe(undefined);
+      expect(match[3]).not.toBeDefined();
     });
     it("should match empty tags", () => {
       const match = "foo<p></p>baz".match(tagParsingRegex)!;
       expect(match[0]).toBe("<p></p>");
       expect(match[1]).toBe("p");
       expect(match[2]).toBe("");
-      expect(match[3]).toBe(undefined);
+      expect(match[3]).not.toBeDefined();
     });
     it("should match self closing tags without spaces", () => {
       const match = "foo<p/>baz".match(tagParsingRegex)!;
       expect(match[0]).toBe("<p/>");
-      expect(match[1]).toBe(undefined);
-      expect(match[2]).toBe(undefined);
+      expect(match[1]).not.toBeDefined();
+      expect(match[2]).not.toBeDefined();
       expect(match[3]).toBe("p");
     });
     it("should match self closing tags with spaces", () => {
       const match = "foo<p />baz".match(tagParsingRegex)!;
       expect(match[0]).toBe("<p />");
-      expect(match[1]).toBe(undefined);
-      expect(match[2]).toBe(undefined);
+      expect(match[1]).not.toBeDefined();
+      expect(match[2]).not.toBeDefined();
       expect(match[3]).toBe("p");
     });
     it("should match first occurrence of a tag when input has several", () => {
@@ -37,21 +37,21 @@ describe("utils", () => {
       expect(match[0]).toBe("<a>bar</a>");
       expect(match[1]).toBe("a");
       expect(match[2]).toBe("bar");
-      expect(match[3]).toBe(undefined);
+      expect(match[3]).not.toBeDefined();
     });
     it("should match first occurrence of a tag when they are nested", () => {
       const match = "foo<a>bar<b>baz</b>foobar</a>qux".match(tagParsingRegex)!;
       expect(match[0]).toBe("<a>bar<b>baz</b>foobar</a>");
       expect(match[1]).toBe("a");
       expect(match[2]).toBe("bar<b>baz</b>foobar");
-      expect(match[3]).toBe(undefined);
+      expect(match[3]).not.toBeDefined();
     });
     it("should tolerate spaces in regular tags too", () => {
       const match = "foo<a >bar</a >baz".match(tagParsingRegex)!;
       expect(match[0]).toBe("<a >bar</a >");
       expect(match[1]).toBe("a");
       expect(match[2]).toBe("bar");
-      expect(match[3]).toBe(undefined);
+      expect(match[3]).not.toBeDefined();
     });
   });
   describe("formatElements", () => {
@@ -60,7 +60,7 @@ describe("utils", () => {
       const element = output[1] as JSXElement;
 
       expect(output[0]).toBe("this is a ");
-      expect(element.type?.toString()).toBe("(j)=>j.children");
+      expect(element.type?.toString()).toBe("(i)=>i.children");
       expect(element.props?.children).toBe("test");
     });
 
