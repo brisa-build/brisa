@@ -1,10 +1,10 @@
+import { BuildArtifact } from "bun";
 import fs from "node:fs";
 import path from "node:path";
-import { BuildArtifact } from "bun";
 
+import getConstants from "../../constants";
 import byteSizeToString from "../byte-size-to-string";
 import getClientCodeInPage from "../get-client-code-in-page";
-import getConstants from "../../constants";
 import getEntrypoints from "../get-entrypoints";
 import getImportableFilepath from "../get-importable-filepath";
 import getWebComponentsList from "../get-web-components-list";
