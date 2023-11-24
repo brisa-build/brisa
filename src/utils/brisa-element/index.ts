@@ -21,6 +21,7 @@ const W3 = "http://www.w3.org/";
 const SVG_NAMESPACE = `${W3}2000/svg`;
 const XLINK_NAMESPACE = `${W3}1999/xlink`;
 const DANGER_HTML = "danger-html";
+const PORTAL = "portal";
 const SLOT_TAG = "slot";
 
 const createTextNode = (text: Children) =>
@@ -100,13 +101,25 @@ export default function brisaElement(
           : state(deserialize(this.getAttribute(attr)));
       }
 
+      function handlePortal(
+        children: Children,
+        parent: HTMLElement | DocumentFragment
+      ) {
+        if ((children as any)?.type !== PORTAL) return [children, parent];
+        const { element, target } = (children as any).props;
+        return [element, target];
+      }
+
       function hyperScript(
         tagName: string | null,
         attributes: Attr,
         children: Children,
         parent: HTMLElement | DocumentFragment = shadowRoot
       ) {
-        const el = (
+        // Handle portal
+        [children, parent] = handlePortal(children, parent);
+
+        let el = (
           tagName ? createElement(tagName, parent) : parent
         ) as HTMLElement;
 
@@ -155,9 +168,11 @@ export default function brisaElement(
           };
 
           effect(() => {
-            const childOrPromise = children();
+            const childOrPromise = (children as any)();
 
             function startEffect(child: Children) {
+              [child, el] = handlePortal(child, el);
+
               const isDangerHTML = (child as any)?.type === DANGER_HTML;
 
               if (isDangerHTML || isReactiveArray(child)) {

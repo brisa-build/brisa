@@ -179,6 +179,17 @@ export function dangerHTML(html: string): {
   };
 };
 
+export function createPortal(
+  element: JSX.Element,
+  target: HTMLElement
+): {
+  type: "portal";
+  props: {
+    element: JSX.Element;
+    target: HTMLElement;
+  };
+};
+
 declare global {
   export namespace JSX {
     type Element = JSXElement | Promise<JSXElement>;

@@ -1,6 +1,7 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import transformJSXToReactive from ".";
+import createPortal from "../create-portal";
 import dangerHTML from "../danger-html";
 import { serialize } from "../serialization";
 
@@ -31,6 +32,7 @@ describe("integration", () => {
       window._on = module._on;
       window._off = module._off;
       window.dangerHTML = dangerHTML;
+      window.createPortal = createPortal;
     });
     afterEach(async () => {
       if (typeof window !== "undefined") GlobalRegistrator.unregister();
@@ -2348,6 +2350,37 @@ describe("integration", () => {
       testComponent.setAttribute("user", "{ 'name': 'Aral' }");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should work reactivity with a portal (createPortal) and a prop", () => {
+      const code = `
+      export default function Component({ name }) {
+        return createPortal(
+          <div>{name}</div>,
+          document.body
+        );
+      }
+      `;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component name='Aral' />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+      expect(document.body.innerHTML).toBe(
+        '<test-component name="Aral"></test-component><div>Aral</div>'
+      );
+
+      testComponent.setAttribute("name", "Barbara");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+      expect(document.body.innerHTML).toBe(
+        '<test-component name="Barbara"></test-component><div>Barbara</div>'
+      );
     });
 
     it.todo(

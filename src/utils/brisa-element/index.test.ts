@@ -1,5 +1,6 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
+import createPortal from "../create-portal";
 import dangerHTML from "../danger-html";
 import { serialize } from "../serialization";
 
@@ -2187,6 +2188,35 @@ describe("utils", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         "<div>hello world</div>"
       );
+
+      it("should work createPortal helper rendering in another HTML element", () => {
+        const Component = ({}, { h }: any) => {
+          return h(null, {}, [
+            [
+              "div",
+              {},
+              () =>
+                createPortal(
+                  ["div", {}, "test"] as any,
+                  document.querySelector("#portal") as HTMLElement
+                ),
+            ],
+          ]);
+        };
+
+        customElements.define("test-component", brisaElement(Component));
+
+        document.body.innerHTML = "<div id='portal'/><test-component />";
+        const testComponent = document.querySelector(
+          "test-component"
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+
+        expect(document.querySelector("#portal")?.innerHTML).toBe(
+          "<div>test</div>"
+        );
+      });
     });
   });
 });

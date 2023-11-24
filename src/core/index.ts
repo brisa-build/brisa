@@ -1,3 +1,4 @@
+import createPortal from "../utils/create-portal";
 import dangerHTML from "../utils/danger-html";
 
-export { dangerHTML };
+export { createPortal, dangerHTML };
