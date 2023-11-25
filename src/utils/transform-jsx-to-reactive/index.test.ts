@@ -444,7 +444,7 @@ describe("utils", () => {
             export default brisaElement(function MyComponent({}, {h: h$$, ...context}) {
               const h = context.state(3);
               const h$ = "foo";
-              return h$$('div', {}, () => [h.value, ' ', h$].join(''));
+              return h$$('div', {}, [[null, {}, () => h.value], [null, {}, " "], [null, {}, h$]]);
             });
           `);
 
@@ -1170,7 +1170,7 @@ describe("utils", () => {
 
           export default brisaElement(function ConditionalRender({name, children}, {h}) {
             return h('h2', {}, [
-              ['b', {}, () => ['Hello ', name.value].join('')], [null, {}, () => name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'], [null, {}, children]
+              ['b', {}, [[null, {}, "Hello "], [null, {}, () => name.value]]], [null, {}, () => name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'], [null, {}, children]
             ]);
           }, ['name']);
       `);

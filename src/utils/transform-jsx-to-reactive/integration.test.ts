@@ -1631,6 +1631,53 @@ describe("integration", () => {
       expect(runtimeLog?.shadowRoot?.innerHTML).toBe("<dialog></dialog>");
     });
 
+    it("should work an open attribute in a dialog composed with and expression", () => {
+      const code = `
+      type RuntimeLogProps = {
+        error: { stack: string, message: string };
+        warning: string;
+      }
+      
+      export default function RuntimeLog({ error, warning }: RuntimeLogProps) {
+        return (
+          <dialog open={error || warning}>
+            {error ? <>{\`Error: \${error.message}\`}<pre>{error.stack}</pre></> : ''}
+            {warning ? \`Warning: \${warning}\` : ''}
+          </dialog>
+        )
+      }      
+      `;
+      defineBrisaWebComponent(code, "src/web-components/runtime-log.tsx");
+
+      document.body.innerHTML = "<runtime-log />";
+      const runtimeLog = document.querySelector("runtime-log") as HTMLElement;
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe("<dialog></dialog>");
+
+      runtimeLog.setAttribute(
+        "error",
+        '{ "stack": "stack", "message": "message" }'
+      );
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
+        '<dialog open="">Error: message<pre>stack</pre></dialog>'
+      );
+
+      runtimeLog.removeAttribute("error");
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe("<dialog></dialog>");
+
+      runtimeLog.setAttribute("warning", "warning");
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
+        '<dialog open="">Warning: warning</dialog>'
+      );
+
+      runtimeLog.removeAttribute("warning");
+
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe("<dialog></dialog>");
+    });
+
     it("should serialize the props consuming another web-component", () => {
       const testComp = `export default function Test({ }) {
         return <web-component user={{ name: "Aral" }} />;
@@ -2380,6 +2427,127 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("");
       expect(document.body.innerHTML).toBe(
         '<test-component name="Barbara"></test-component><div>Barbara</div>'
+      );
+    });
+
+    it('should work reactivity with a mix between "createPortal" and "dangerHTML"', () => {
+      const code = `
+      export default function Component({ name }) {
+        return createPortal(
+          dangerHTML(\`<div>\${name}</div>\`),
+          document.body
+        );
+      }
+      `;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component name='Aral' />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+      expect(document.body.innerHTML).toBe(
+        '<test-component name="Aral"></test-component><div>Aral</div>'
+      );
+
+      testComponent.setAttribute("name", "Barbara");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+      expect(document.body.innerHTML).toBe(
+        '<test-component name="Barbara"></test-component><div>Barbara</div>'
+      );
+    });
+
+    it('should open/close a modal with "createPortal", creating/removing the DOM element', () => {
+      const code = `
+      export default function Component({ }, { state }) {
+        const open = state(false);
+
+        return (
+          <>
+            <button onClick={() => open.value = !open.value}>{open.value ? 'close' : 'open' }</button>
+            {open.value && createPortal(<div>modal</div>, document.body)}
+          </>
+        );
+      }
+      `;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<button>open</button>"
+      );
+      expect(document.body.innerHTML).toBe("<test-component></test-component>");
+
+      const button = testComponent?.shadowRoot?.querySelector(
+        "button"
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<button>close</button>"
+      );
+      expect(document.body.innerHTML).toBe(
+        "<test-component></test-component><div>modal</div>"
+      );
+
+      button.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<button>open</button>"
+      );
+
+      expect(document.body.innerHTML).toBe("<test-component></test-component>");
+    });
+
+    it("should open/close text content creating/removing the DOM element", () => {
+      const code = `
+      export default function Component({ }, { state }) {
+        const open = state(false);
+
+        return (
+          <>
+            <button onClick={() => open.value = !open.value}>{open.value ? 'close' : 'open' }</button>
+            {open.value && <div>content</div>}
+          </>
+        );
+      }
+      `;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<button>open</button>"
+      );
+
+      const button = testComponent?.shadowRoot?.querySelector(
+        "button"
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<button>close</button><div>content</div>"
+      );
+
+      button.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<button>open</button>"
       );
     });
 

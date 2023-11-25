@@ -391,7 +391,7 @@ describe("utils", () => {
         const expected = toInline(`
           export default function MyComponent() {
             const example = 'example';
-            return ['div', {}, ['this', ' ', 'is', ' ', 1, ' ', example].join('')];
+            return ['div', {}, [[null, {}, "this"], [null, {}, " "], [null, {}, "is"], [null, {}, " "], [null, {}, 1], [null, {}, " "], [null, {}, example]]];
           }
         `);
         expect(output).toBe(expected);
@@ -410,6 +410,27 @@ describe("utils", () => {
           export default function MyComponent() {
             return [null, {}, ['Hello', ' ', 'World']];
           }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should return a fragment with the ternary", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({ error }) {
+            return (
+              <>
+                Test
+                {error.value ? <>{\`Error: \${error.value.message}\`} <pre>{error.value.stack}</pre></> : ''}
+              </>
+            )
+          }`);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = toInline(`
+        export default function MyComponent({error}) {
+          return [null, {}, [[null, {}, "Test"], [null, {}, () => error.value ? [null, {}, [[null, {}, () => \`Error: \${error.value.message}\`], [null, {}, " "], ["pre", {}, () => error.value.stack]]] : ""]]];
+        }
         `);
         expect(output).toBe(expected);
       });

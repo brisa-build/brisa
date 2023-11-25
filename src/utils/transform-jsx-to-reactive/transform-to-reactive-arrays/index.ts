@@ -144,17 +144,9 @@ export default function transformToReactiveArrays(
         restOfProps.push({ ...prop, value });
       }
 
-      // <div>{'some'} {'example'}</div> -> ["div", {}, ["some", " ", "example"].join('')]
-      if (
-        children.type === "ArrayExpression" &&
-        children.elements.length &&
-        children.elements.every((el: any) => TYPES_TO_JOIN.has(el.type))
-      ) {
-        children = joinArray(children.elements);
-      }
       // Transform: <div><span />{someVar ? <b /> : <i />}</div>
       // to: ["div", {}, [['span', {}, ''], [null, {}, () => someVar.value ? ["b", {}, ""] : ["i", {}, ""]]]
-      else if (children.type === "ArrayExpression") {
+      if (children.type === "ArrayExpression") {
         children.elements = children.elements.map((el: any) => {
           if (JSX_NAME.has(el.callee?.name)) return el;
           return {
