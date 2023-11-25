@@ -3,13 +3,6 @@ import getConstants from "../../../constants";
 import { JSX_NAME, NO_REACTIVE_CHILDREN_EXPRESSION } from "../constants";
 import wrapWithArrowFn from "../wrap-with-arrow-fn";
 
-const TYPES_TO_JOIN = new Set([
-  "Literal",
-  "Identifier",
-  "MemberExpression",
-  "ConditionalExpression",
-]);
-
 export default function transformToReactiveArrays(
   ast: ESTree.Program,
   path?: string
