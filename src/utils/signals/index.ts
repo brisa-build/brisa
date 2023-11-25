@@ -1,8 +1,12 @@
 type Effect = () => void | Promise<void>;
 type Cleanup = Effect;
+type State<T> = {
+  value: T;
+};
 
 export default function signals() {
   const stack: Effect[] = [];
+  let effects = new WeakMap<State<unknown>, Set<Effect>>();
   let cleanups = new Map<Effect, Cleanup[]>();
 
   function removeFromStack(fn: Effect) {
@@ -10,23 +14,24 @@ export default function signals() {
     if (index > -1) stack.splice(index, 1);
   }
 
-  function cleanEffects(fn: Effect) {
+  function cleanEffect(fn: Effect) {
     const cleans = cleanups.get(fn) ?? [];
     for (let clean of cleans) clean();
   }
 
   function state<T>(initialValue?: T): { value: T } {
-    const effects = new Set<Effect>();
     return {
       get value() {
-        if (stack[0]) effects.add(stack[0]);
+        if (stack[0]) {
+          effects.set(this, (effects.get(this) ?? new Set()).add(stack[0]));
+        }
         return initialValue!;
       },
       set value(v) {
         initialValue = v;
 
-        for (let signalEffect of effects) {
-          cleanEffects(signalEffect);
+        for (let signalEffect of effects.get(this) ?? []) {
+          cleanEffect(signalEffect);
           signalEffect();
         }
       },
@@ -45,8 +50,9 @@ export default function signals() {
     effect,
     cleanAll() {
       for (let effect of cleanups.keys()) {
-        cleanEffects(effect);
+        cleanEffect(effect);
       }
+      effects = new WeakMap();
     },
     cleanup(fn: Cleanup) {
       const cleans = cleanups.get(stack[0]) ?? [];
