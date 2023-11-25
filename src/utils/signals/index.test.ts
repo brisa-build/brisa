@@ -173,4 +173,26 @@ describe("signals", () => {
 
     expect(triple.value).toBe(6);
   });
+
+  it('should remove all effects with "cleanAll" method', () => {
+    const { state, effect, cleanAll } = signals();
+    const count = state<number>(0);
+    const mockEffect = mock<(count?: number) => void>(() => {});
+
+    effect(() => {
+      mockEffect(count.value);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+
+    count.value = 1;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+
+    cleanAll();
+
+    count.value = 2;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+  });
 });
