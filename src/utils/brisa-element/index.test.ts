@@ -2137,7 +2137,6 @@ describe("utils", () => {
 
       customElements.define("test-component", brisaElement(Component));
       customElements.define("parent-component", brisaElement(ParentComponent));
-
       document.body.innerHTML = "<parent-component />";
 
       const parentComponent = document.querySelector(
@@ -2158,8 +2157,8 @@ describe("utils", () => {
       };
 
       customElements.define("test-component", brisaElement(Component));
-
       document.body.innerHTML = "<test-component />";
+
       const testComponent = document.querySelector(
         "test-component"
       ) as HTMLElement;
@@ -2179,8 +2178,8 @@ describe("utils", () => {
       };
 
       customElements.define("test-component", brisaElement(Component));
-
       document.body.innerHTML = "<test-component />";
+
       const testComponent = document.querySelector(
         "test-component"
       ) as HTMLElement;
@@ -2188,35 +2187,113 @@ describe("utils", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         "<div>hello world</div>"
       );
+    });
 
-      it("should work createPortal helper rendering in another HTML element", () => {
-        const Component = ({}, { h }: any) => {
-          return h(null, {}, [
-            [
-              "div",
-              {},
-              () =>
-                createPortal(
-                  ["div", {}, "test"] as any,
-                  document.querySelector("#portal") as HTMLElement
-                ),
-            ],
-          ]);
-        };
-
-        customElements.define("test-component", brisaElement(Component));
-
-        document.body.innerHTML = "<div id='portal'/><test-component />";
-        const testComponent = document.querySelector(
-          "test-component"
-        ) as HTMLElement;
-
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
-
-        expect(document.querySelector("#portal")?.innerHTML).toBe(
-          "<div>test</div>"
+    it("should work createPortal helper rendering in another HTML element", () => {
+      const Component = ({}, { h }: any) =>
+        h(
+          null,
+          {},
+          createPortal(
+            ["div", {}, "test"] as any,
+            document.querySelector("#portal") as any
+          )
         );
-      });
+
+      customElements.define("portal-component", brisaElement(Component));
+      document.body.innerHTML =
+        '<div id="portal"></div><portal-component></portal-component>';
+
+      const portalComponent = document.querySelector(
+        "portal-component"
+      ) as HTMLElement;
+
+      expect(portalComponent?.shadowRoot?.innerHTML).toBe("");
+
+      expect(document.body.innerHTML).toBe(
+        '<div id="portal"><div>test</div></div><portal-component></portal-component>'
+      );
+    });
+
+    it("should remove a text using && operator", () => {
+      const Component = ({ foo }: any, { h }: any) =>
+        h("div", {}, [
+          [
+            null,
+            {},
+            () =>
+              foo.value && [
+                ["b", {}, "test"],
+                ["span", {}, "test2"],
+              ],
+          ],
+          ["div", {}, "test3"],
+        ]);
+
+      customElements.define("test-component", brisaElement(Component, ["foo"]));
+      document.body.innerHTML = '<test-component foo="bar" />';
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><b>test</b><span>test2</span><div>test3</div></div>"
+      );
+
+      testComponent.removeAttribute("foo");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><div>test3</div></div>"
+      );
+    });
+
+    it("should work a ternary operator with several elements", () => {
+      const Component = ({ error }: any, { h }: any) => {
+        return h(null, {}, [
+          [
+            null,
+            {},
+            () =>
+              error.value
+                ? [
+                    null,
+                    {},
+                    [
+                      [null, {}, () => `Error: ${error.value.message}`],
+                      [null, {}, " "],
+                      ["pre", {}, () => error.value.stack],
+                    ],
+                  ]
+                : [null, {}, ""],
+          ],
+          ["div", {}, "Test"],
+        ]);
+      };
+
+      customElements.define(
+        "test-component",
+        brisaElement(Component, ["error"])
+      );
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Test</div>");
+
+      testComponent.setAttribute(
+        "error",
+        serialize({ message: "message", stack: "stack" })
+      );
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "Error: message <pre>stack</pre><div>Test</div>"
+      );
+
+      testComponent.removeAttribute("error");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Test</div>");
     });
   });
 });
