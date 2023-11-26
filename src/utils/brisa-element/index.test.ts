@@ -837,11 +837,11 @@ describe("utils", () => {
       function Test({}, { state, effect, cleanup, h }: any) {
         const count = state(0);
 
-        effect(() => {
+        effect((r: any) => {
           mockEffect(count.value);
           cleanup(() => {
             mockCleanup();
-          });
+          }, r.id);
         });
 
         return h("button", { onClick: () => count.value++ }, "click");
@@ -857,18 +857,18 @@ describe("utils", () => {
         "button"
       ) as HTMLButtonElement;
 
-      expect(mockEffect).toHaveBeenCalledTimes(1);
       expect(mockCleanup).toHaveBeenCalledTimes(0);
+      expect(mockEffect).toHaveBeenCalledTimes(1);
 
       button.click();
 
-      expect(mockEffect).toHaveBeenCalledTimes(2);
       expect(mockCleanup).toHaveBeenCalledTimes(1);
+      expect(mockEffect).toHaveBeenCalledTimes(2);
 
       button.click();
 
-      expect(mockEffect).toHaveBeenCalledTimes(3);
       expect(mockCleanup).toHaveBeenCalledTimes(2);
+      expect(mockEffect).toHaveBeenCalledTimes(3);
     });
 
     it("should cleanup everytime the web-component is unmount", () => {
@@ -876,9 +876,9 @@ describe("utils", () => {
       const mockCleanup = mock(() => {});
 
       function Test({}, { effect, cleanup, h }: any) {
-        effect(() => {
+        effect((r: any) => {
           mockEffect();
-          cleanup(() => mockCleanup());
+          cleanup(() => mockCleanup(), r.id);
         });
 
         return h("div", {}, "");
@@ -905,9 +905,9 @@ describe("utils", () => {
       const mockCleanup = mock(() => {});
 
       function Test({}, { effect, cleanup, h }: any) {
-        effect(async () => {
+        effect(async (r: any) => {
           mockEffect();
-          cleanup(async () => mockCleanup());
+          cleanup(async () => mockCleanup(), r.id);
         });
 
         return h("div", {}, "");
@@ -934,10 +934,10 @@ describe("utils", () => {
       const mockCleanup = mock(() => {});
 
       function Test({}, { effect, cleanup, h }: any) {
-        effect(async () => {
+        effect(async (r: any) => {
           mockEffect();
-          cleanup(async () => mockCleanup());
-          cleanup(async () => mockCleanup());
+          cleanup(async () => mockCleanup(), r.id);
+          cleanup(async () => mockCleanup(), r.id);
         });
 
         return h("div", {}, "");

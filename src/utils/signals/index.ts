@@ -1,6 +1,6 @@
-type Effect = (
+type Effect = ((
   addSubEffect: (effect: Effect) => Effect
-) => void | Promise<void>;
+) => void | Promise<void>) & { id?: Effect };
 type Cleanup = () => void | Promise<void>;
 type State<T> = {
   value: T;
@@ -17,34 +17,37 @@ export default function signals() {
     if (index > -1) stack.splice(index, 1);
   }
 
-  function callCleanupsOfEffect(fn: Effect) {
-    const cleans = cleanups.get(fn) ?? new Set();
+  function callCleanupsOfEffect(eff: Effect) {
+    const cleans = cleanups.get(eff) ?? new Set();
     for (let clean of cleans) clean();
   }
 
-  function addSubEffect(fn: Effect) {
-    return (subEffect: Effect) => {
-      const subEffects = subEffectsPerEffect.get(fn) ?? new Set();
+  function addSubEffect(eff: Effect) {
+    const r = (subEffect: Effect) => {
+      const subEffects = subEffectsPerEffect.get(eff) ?? new Set();
       subEffects.add(subEffect);
-      subEffectsPerEffect.set(fn, subEffects);
+      subEffectsPerEffect.set(eff, subEffects);
       return subEffect;
     };
+    r.id = eff;
+    return r;
   }
 
   function cleanSubEffects(fn: Effect) {
     const subEffects = subEffectsPerEffect.get(fn) ?? new Set();
 
-    for (let fn of subEffects) {
-      callCleanupsOfEffect(fn);
-      cleanups.delete(fn);
-      subEffectsPerEffect.delete(fn);
+    for (let subEffect of subEffects) {
+      callCleanupsOfEffect(subEffect);
+      cleanups.delete(subEffect);
 
       for (let signal of effects.keys()) {
         const signalEffects = effects.get(signal)!;
-        signalEffects.delete(fn);
+        signalEffects.delete(subEffect);
         if (signalEffects.size === 0) effects.delete(signal);
       }
     }
+
+    subEffectsPerEffect.delete(fn);
   }
 
   function state<T>(initialValue?: T): { value: T } {
@@ -83,12 +86,10 @@ export default function signals() {
     subEffectsPerEffect.clear();
   }
 
-  function cleanup(fn: Cleanup, insideEffect = false) {
-    const selectedEffect = stack[0];
-    if (!selectedEffect && insideEffect) return;
-    const cleans = cleanups.get(selectedEffect) ?? new Set();
+  function cleanup(fn: Cleanup, eff: Effect) {
+    const cleans = cleanups.get(eff) ?? new Set();
     cleans.add(fn);
-    cleanups.set(selectedEffect, cleans);
+    cleanups.set(eff, cleans);
   }
 
   function derived<T>(fn: () => T): { value: T } {
