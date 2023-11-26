@@ -34,6 +34,10 @@ export default function defineBrisaElement(
 
   manageWebContextField(newComponentAst, hyperScriptVarName, "h");
 
+  // Note:
+  // this is necessary because for the default props like:
+  //   export default function Component({ propName = 'default value' }) {}
+  // the compiler will add an "effect" to use the default value if the prop is not passed
   if (effectVarName) {
     manageWebContextField(newComponentAst, effectVarName, "effect");
   }

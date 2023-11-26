@@ -129,6 +129,133 @@ describe("signals", () => {
     expect(user.value.name.value).toEqual("Barbara");
   });
 
+  it("should work with nested effects", () => {
+    const { state, effect } = signals();
+    const a = state<number>(0);
+    const b = state<string>("x");
+    const mockEffect = mock<(name: string, value: string | number) => void>(
+      () => {}
+    );
+
+    effect((r) => {
+      effect(
+        r(() => {
+          mockEffect("B", b.value);
+        })
+      );
+      mockEffect("A", a.value);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[0]).toEqual(["B", "x"]);
+    expect(mockEffect.mock.calls[1]).toEqual(["A", 0]);
+
+    a.value = 1;
+    b.value = "y";
+
+    expect(mockEffect).toHaveBeenCalledTimes(5);
+    expect(mockEffect.mock.calls[2]).toEqual(["B", "x"]);
+    expect(mockEffect.mock.calls[3]).toEqual(["A", 1]);
+    expect(mockEffect.mock.calls[4]).toEqual(["B", "y"]);
+  });
+
+  it("should unregister nested conditional effects when the condition is false", () => {
+    const { state, effect } = signals();
+    const a = state<number>(0);
+    const b = state<string>("x");
+    const mockEffect = mock<(name: string, value: string | number) => void>(
+      () => {}
+    );
+
+    effect((r) => {
+      if (a.value === 0) {
+        effect(
+          r(() => {
+            mockEffect("B", b.value);
+          })
+        );
+      }
+      mockEffect("A", a.value);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[0]).toEqual(["B", "x"]);
+    expect(mockEffect.mock.calls[1]).toEqual(["A", 0]);
+
+    a.value = 1;
+    b.value = "y";
+
+    expect(mockEffect).toHaveBeenCalledTimes(3);
+    expect(mockEffect.mock.calls[2]).toEqual(["A", 1]);
+  });
+
+  it("should register conditional nested conditional effects when the condition is true", () => {
+    const { state, effect } = signals();
+    const a = state<number>(0);
+    const b = state<string>("x");
+    const mockEffect = mock<(name: string, value: string | number) => void>(
+      () => {}
+    );
+
+    effect((r) => {
+      if (a.value === 1) {
+        effect(
+          r(() => {
+            mockEffect("B", b.value);
+          })
+        );
+      }
+      mockEffect("A", a.value);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0]).toEqual(["A", 0]);
+
+    a.value = 1;
+
+    expect(mockEffect).toHaveBeenCalledTimes(3);
+    expect(mockEffect.mock.calls[1]).toEqual(["B", "x"]);
+    expect(mockEffect.mock.calls[2]).toEqual(["A", 1]);
+  });
+
+  it("should register again nested conditional effects when the condition is true", () => {
+    const { state, effect } = signals();
+    const a = state<number>(0);
+    const b = state<string>("x");
+    const mockEffect = mock<(name: string, value: string | number) => void>(
+      () => {}
+    );
+
+    effect((r) => {
+      if (a.value === 0) {
+        effect(
+          r(() => {
+            mockEffect("B", b.value);
+          })
+        );
+      }
+      mockEffect("A", a.value);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[0]).toEqual(["B", "x"]);
+    expect(mockEffect.mock.calls[1]).toEqual(["A", 0]);
+
+    a.value = 1;
+    b.value = "y";
+
+    expect(mockEffect).toHaveBeenCalledTimes(3);
+    expect(mockEffect.mock.calls[2]).toEqual(["A", 1]);
+
+    a.value = 0;
+    b.value = "z";
+
+    expect(mockEffect).toHaveBeenCalledTimes(6);
+    expect(mockEffect.mock.calls[3]).toEqual(["B", "y"]);
+    expect(mockEffect.mock.calls[4]).toEqual(["A", 0]);
+    expect(mockEffect.mock.calls[5]).toEqual(["B", "z"]);
+  });
+
   it("should work without race conditions between async effects and signals", async () => {
     const { state, effect } = signals();
     const count = state<number>(0);
@@ -194,5 +321,34 @@ describe("signals", () => {
     count.value = 2;
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
+  });
+
+  it('should remove all cleanups with "cleanAll" method', () => {
+    const { state, effect, cleanup, cleanAll } = signals();
+    const count = state<number>(0);
+    const mockEffect = mock<(count?: number) => void>(() => {});
+    const mockCleanup = mock<() => void>(() => {});
+
+    effect(() => {
+      mockEffect(count.value);
+      cleanup(mockCleanup, true);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockCleanup).toHaveBeenCalledTimes(0);
+
+    count.value = 1;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockCleanup).toHaveBeenCalledTimes(1);
+
+    cleanAll();
+
+    expect(mockCleanup).toHaveBeenCalledTimes(2);
+
+    count.value = 2;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockCleanup).toHaveBeenCalledTimes(2);
   });
 });
