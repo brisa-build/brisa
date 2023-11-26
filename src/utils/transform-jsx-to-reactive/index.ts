@@ -6,6 +6,7 @@ import defineBrisaElement from "./define-brisa-element";
 import getComponentVariableNames from "./get-component-variable-names";
 import getWebComponentAst from "./get-web-component-ast";
 import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
+import optimizeEffects from "./optimize-effects";
 import transformToDirectExport from "./transform-to-direct-export";
 import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
@@ -40,6 +41,8 @@ export default function transformJSXToReactive(code: string, path: string) {
   if (effectVarName) {
     while (allVariableNames.has(effectVarName)) effectVarName += "$";
   }
+
+  componentBranch = optimizeEffects(componentBranch, allVariableNames);
 
   const [importDeclaration, brisaElement] = defineBrisaElement(
     componentBranch,

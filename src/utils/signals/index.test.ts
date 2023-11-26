@@ -57,9 +57,9 @@ describe("signals", () => {
     const mockEffect = mock<(count?: number) => void>(() => {});
     const mockCleanup = mock<() => void>(() => {});
 
-    effect(() => {
+    effect((r: any) => {
       mockEffect(count.value);
-      cleanup(mockCleanup);
+      cleanup(mockCleanup, r.id);
     });
 
     expect(mockEffect).toHaveBeenCalledTimes(1);
@@ -329,9 +329,9 @@ describe("signals", () => {
     const mockEffect = mock<(count?: number) => void>(() => {});
     const mockCleanup = mock<() => void>(() => {});
 
-    effect(() => {
+    effect((r: any) => {
       mockEffect(count.value);
-      cleanup(mockCleanup, true);
+      cleanup(mockCleanup, r.id);
     });
 
     expect(mockEffect).toHaveBeenCalledTimes(1);

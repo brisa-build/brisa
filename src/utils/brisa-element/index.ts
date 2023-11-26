@@ -117,7 +117,9 @@ export default function brisaElement(
         tagName: string | null,
         attributes: Attr,
         children: Children,
-        parent: HTMLElement | DocumentFragment = shadowRoot
+        parent: HTMLElement | DocumentFragment = shadowRoot,
+        // r: function to register subeffects to then clean them up
+        r = (v: any) => v
       ) {
         // Handle portal
         [children, parent] = handlePortal(children, parent);
@@ -137,9 +139,7 @@ export default function brisaElement(
               )
             );
           } else if (!isEvent && typeof attrValue === "function") {
-            effect(() =>
-              setAttribute(el, attribute, (attrValue as () => string)())
-            );
+            effect(r(() => setAttribute(el, attribute, (attrValue as any)())));
           } else {
             setAttribute(el, attribute, attrValue as string);
           }
@@ -153,10 +153,10 @@ export default function brisaElement(
         } else if (isReactiveArray(children)) {
           if (isReactiveArray((children as any)[0])) {
             for (let child of children as Children[]) {
-              hyperScript(null, {}, child, el);
+              hyperScript(null, {}, child, el, r);
             }
           } else {
-            hyperScript(...(children as [string, Attr, Children]), el);
+            hyperScript(...(children as [string, Attr, Children]), el, r);
           }
         } else if (typeof children === "function") {
           let lastNodes: ChildNode[] | undefined;
@@ -170,55 +170,61 @@ export default function brisaElement(
             } else for (let e of element) appendChild(el, e);
           };
 
-          effect(() => {
-            const childOrPromise = (children as any)();
+          effect(
+            r((r2: any) => {
+              const childOrPromise = (children as any)();
 
-            function startEffect(child: Children) {
-              [child, el] = handlePortal(child, el);
+              function startEffect(child: Children) {
+                [child, el] = handlePortal(child, el);
 
-              const isDangerHTML = (child as any)?.type === DANGER_HTML;
+                const isDangerHTML = (child as any)?.type === DANGER_HTML;
 
-              if (isDangerHTML || isReactiveArray(child)) {
-                let currentElNodes = arr(el.childNodes);
-                const fragment = document.createDocumentFragment();
+                if (isDangerHTML || isReactiveArray(child)) {
+                  let currentElNodes = arr(el.childNodes);
+                  const fragment = document.createDocumentFragment();
 
-                // Reactive injected danger HTML via dangerHTML() helper
-                if (isDangerHTML) {
-                  const div = createElement("div");
-                  div.innerHTML += (child as any).props.html as string;
+                  // Reactive injected danger HTML via dangerHTML() helper
+                  if (isDangerHTML) {
+                    const div = createElement("div");
+                    div.innerHTML += (child as any).props.html as string;
 
-                  for (let node of arr(div.childNodes)) {
-                    appendChild(fragment, node);
+                    for (let node of arr(div.childNodes)) {
+                      appendChild(fragment, node);
+                    }
                   }
-                }
-                // Reactive child node
-                else if (isReactiveArray((child as any[])[0])) {
-                  for (let c of child as Children[]) {
-                    hyperScript(null, {}, c, fragment);
+                  // Reactive child node
+                  else if (isReactiveArray((child as any[])[0])) {
+                    for (let c of child as Children[]) {
+                      hyperScript(null, {}, c, fragment, r(r2));
+                    }
+                  } else if (child.length) {
+                    hyperScript(
+                      ...(child as [string, Attr, Children]),
+                      fragment,
+                      r(r2)
+                    );
                   }
-                } else if (child.length) {
-                  hyperScript(...(child as [string, Attr, Children]), fragment);
+
+                  insertOrUpdate([fragment]);
+
+                  lastNodes = arr(el.childNodes).filter(
+                    (node) => !currentElNodes.includes(node)
+                  );
                 }
+                // Reactive text node
+                else {
+                  const textNode = createTextNode(child);
 
-                insertOrUpdate([fragment]);
+                  insertOrUpdate([textNode]);
 
-                lastNodes = arr(el.childNodes).filter(
-                  (node) => !currentElNodes.includes(node)
-                );
+                  lastNodes = [textNode];
+                }
               }
-              // Reactive text node
-              else {
-                const textNode = createTextNode(child);
-
-                insertOrUpdate([textNode]);
-
-                lastNodes = [textNode];
-              }
-            }
-            if (childOrPromise instanceof Promise)
-              childOrPromise.then(startEffect);
-            else startEffect(childOrPromise);
-          });
+              if (childOrPromise instanceof Promise)
+                childOrPromise.then(startEffect);
+              else startEffect(childOrPromise);
+            })
+          );
         } else {
           appendChild(el, createTextNode(children));
         }
