@@ -1,22 +1,50 @@
-type Effect = () => void | Promise<void>;
-type Cleanup = Effect;
+type Effect = (
+  addSubEffect: (effect: Effect) => Effect
+) => void | Promise<void>;
+type Cleanup = () => void | Promise<void>;
 type State<T> = {
   value: T;
 };
 
 export default function signals() {
   const stack: Effect[] = [];
-  let effects = new WeakMap<State<unknown>, Set<Effect>>();
-  let cleanups = new Map<Effect, Cleanup[]>();
+  let effects = new Map<State<unknown>, Set<Effect>>();
+  let cleanups = new Map<Effect, Set<Cleanup>>();
+  let subEffectsPerEffect = new Map<Effect, Set<Effect>>();
 
   function removeFromStack(fn: Effect) {
     const index = stack.indexOf(fn);
     if (index > -1) stack.splice(index, 1);
   }
 
-  function cleanEffect(fn: Effect) {
-    const cleans = cleanups.get(fn) ?? [];
+  function callCleanupsOfEffect(fn: Effect) {
+    const cleans = cleanups.get(fn) ?? new Set();
     for (let clean of cleans) clean();
+  }
+
+  function addSubEffect(fn: Effect) {
+    return (subEffect: Effect) => {
+      const subEffects = subEffectsPerEffect.get(fn) ?? new Set();
+      subEffects.add(subEffect);
+      subEffectsPerEffect.set(fn, subEffects);
+      return subEffect;
+    };
+  }
+
+  function cleanSubEffects(fn: Effect) {
+    const subEffects = subEffectsPerEffect.get(fn) ?? new Set();
+
+    for (let fn of subEffects) {
+      callCleanupsOfEffect(fn);
+      cleanups.delete(fn);
+      subEffectsPerEffect.delete(fn);
+
+      for (let signal of effects.keys()) {
+        const signalEffects = effects.get(signal)!;
+        signalEffects.delete(fn);
+        if (signalEffects.size === 0) effects.delete(signal);
+      }
+    }
   }
 
   function state<T>(initialValue?: T): { value: T } {
@@ -30,9 +58,10 @@ export default function signals() {
       set value(v) {
         initialValue = v;
 
-        for (let signalEffect of effects.get(this) ?? []) {
-          cleanEffect(signalEffect);
-          signalEffect();
+        for (let fn of effects.get(this) ?? []) {
+          cleanSubEffects(fn);
+          callCleanupsOfEffect(fn);
+          fn(addSubEffect(fn));
         }
       },
     };
@@ -40,33 +69,37 @@ export default function signals() {
 
   async function effect(fn: Effect) {
     stack.unshift(fn);
-    const p = fn();
+    const p = fn(addSubEffect(fn));
     if (p?.then) await p;
     removeFromStack(fn);
   }
 
-  return {
-    state,
-    effect,
-    cleanAll() {
-      for (let effect of cleanups.keys()) {
-        cleanEffect(effect);
-      }
-      effects = new WeakMap();
-    },
-    cleanup(fn: Cleanup) {
-      const cleans = cleanups.get(stack[0]) ?? [];
-      cleans.push(fn);
-      cleanups.set(stack[0], cleans);
-    },
-    derived<T>(fn: () => T): { value: T } {
-      const derivedState = state<T>();
+  function cleanAll() {
+    for (let effect of cleanups.keys()) {
+      callCleanupsOfEffect(effect);
+    }
+    cleanups.clear();
+    effects.clear();
+    subEffectsPerEffect.clear();
+  }
 
-      effect(() => {
-        derivedState.value = fn();
-      });
+  function cleanup(fn: Cleanup, insideEffect = false) {
+    const selectedEffect = stack[0];
+    if (!selectedEffect && insideEffect) return;
+    const cleans = cleanups.get(selectedEffect) ?? new Set();
+    cleans.add(fn);
+    cleanups.set(selectedEffect, cleans);
+  }
 
-      return derivedState;
-    },
-  };
+  function derived<T>(fn: () => T): { value: T } {
+    const derivedState = state<T>();
+
+    effect(() => {
+      derivedState.value = fn();
+    });
+
+    return derivedState;
+  }
+
+  return { state, effect, cleanAll, cleanup, derived };
 }
