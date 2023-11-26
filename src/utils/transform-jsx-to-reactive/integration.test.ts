@@ -2551,13 +2551,11 @@ describe("integration", () => {
       );
     });
 
-    it.todo(
-      "should call the inner signal only when the signal exists",
-      async () => {
-        window.mockSignalParent = mock((s: string) => true);
-        window.mockSignalChild = mock((s: string) => "");
+    it("should call the inner signal only when the signal exists", async () => {
+      window.mockSignalParent = mock((s: string) => true);
+      window.mockSignalChild = mock((s: string) => "");
 
-        const code = `
+      const code = `
         export default function Component({ user }) {
           return (
             <>
@@ -2567,33 +2565,206 @@ describe("integration", () => {
         }
       `;
 
-        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
 
-        document.body.innerHTML = "<test-component />";
+      document.body.innerHTML = "<test-component />";
 
-        expect(window.mockSignalParent).toHaveBeenCalledTimes(1);
-        expect(window.mockSignalChild).toHaveBeenCalledTimes(0);
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(0);
 
-        const testComponent = document.querySelector(
-          "test-component"
-        ) as HTMLElement;
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
 
-        testComponent.setAttribute("user", "{ 'name': 'Aral' }");
+      testComponent.setAttribute("user", "{ 'name': 'Aral' }");
 
-        expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
-        expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Aral</b>");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<b>Aral</b>");
 
-        testComponent.setAttribute("user", "");
+      testComponent.removeAttribute("user");
 
-        expect(window.mockSignalParent).toHaveBeenCalledTimes(3);
-        expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(3);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
-      }
-    );
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
+    });
+
+    it("should call the inner signal only when the signal exists with two && nested operators", async () => {
+      window.mockSignalParent = mock((s: string) => true);
+      window.mockSignalChild = mock((s: string) => true);
+      window.mockSignalGrandChild = mock((s: string) => true);
+
+      const code = `
+        export default function Component({ user }) {
+          return (
+            <>
+             {window.mockSignalParent() && user 
+              ? <div>
+                {
+                window.mockSignalChild() && user.emails
+                 ? <b>{window.mockSignalGrandChild() && user.emails[0]}</b>
+                 : 'NO EMAIL'
+                }</div>
+              : 'EMPTY'
+            }
+            </>
+          )
+        }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(0);
+      expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(0);
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
+
+      testComponent.setAttribute(
+        "user",
+        "{ 'emails': ['contact@aralroca.com'] }"
+      );
+
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(1);
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><b>contact@aralroca.com</b></div>"
+      );
+
+      testComponent.removeAttribute("user");
+
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
+      expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(1);
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
+
+      testComponent.setAttribute("user", "{ 'name': 'Aral' }");
+
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(3);
+      expect(window.mockSignalChild).toHaveBeenCalledTimes(2);
+      expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(1);
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>NO EMAIL</div>");
+    });
+
+    it("should unregister cleanup when is inside an effect with a condition, starting as true", () => {
+      window.mockCallback = mock((s: string) => {});
+      window.mockCallbackCleanup = mock((s: string) => {});
+
+      const code = `
+        export default function Component({ foo }, { effect, cleanup }) {
+          effect(() => {
+            if(foo) {
+              const onClick = () => window.mockCallback("click");
+              document.addEventListener("click", onClick);
+
+              cleanup(() => {
+                window.mockCallbackCleanup("cleanup");
+                document.removeEventListener("click", onClick);
+              });
+            }
+          });
+
+          return <div>{foo ?? 'no value'}</div>;
+        };
+      `;
+
+      defineBrisaWebComponent(
+        code,
+        "src/web-components/unregister-cleanup.tsx"
+      );
+
+      document.body.innerHTML =
+        '<unregister-cleanup foo="some"></unregister-cleanup>';
+
+      const testComponent = document.querySelector(
+        "unregister-cleanup"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>some</div>");
+
+      expect(window.mockCallback).toHaveBeenCalledTimes(0);
+
+      document.dispatchEvent(new Event("click"));
+
+      expect(window.mockCallback).toHaveBeenCalledTimes(1);
+
+      testComponent.removeAttribute("foo");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>no value</div>");
+      expect(window.mockCallbackCleanup).toHaveBeenCalledTimes(1);
+
+      document.dispatchEvent(new Event("click"));
+
+      expect(window.mockCallback).toHaveBeenCalledTimes(1);
+    });
+
+    it("should unregister cleanup when is inside an effect with a condition, starting as false", () => {
+      window.mockCallback = mock((s: string) => {});
+      window.mockCallbackCleanup = mock((s: string) => {});
+
+      const code = `
+        export default function Component({ foo }, { effect, cleanup }) {
+          effect(() => {
+            if(foo) {
+              const onClick = () => window.mockCallback("click");
+              document.addEventListener("click", onClick);
+
+              cleanup(() => {
+                window.mockCallbackCleanup("cleanup");
+                document.removeEventListener("click", onClick);
+              });
+            }
+          });
+
+          return <div>{foo ?? 'no value'}</div>;
+        };
+      `;
+
+      defineBrisaWebComponent(
+        code,
+        "src/web-components/unregister-cleanup.tsx"
+      );
+
+      document.body.innerHTML = "<unregister-cleanup></unregister-cleanup>";
+
+      const testComponent = document.querySelector(
+        "unregister-cleanup"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>no value</div>");
+
+      expect(window.mockCallback).toHaveBeenCalledTimes(0);
+
+      document.dispatchEvent(new Event("click"));
+
+      expect(window.mockCallback).toHaveBeenCalledTimes(0);
+
+      testComponent.setAttribute("foo", "some");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>some</div>");
+
+      document.dispatchEvent(new Event("click"));
+
+      expect(window.mockCallback).toHaveBeenCalledTimes(1);
+
+      testComponent.removeAttribute("foo");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>no value</div>");
+      expect(window.mockCallbackCleanup).toHaveBeenCalledTimes(1);
+
+      document.dispatchEvent(new Event("click"));
+
+      expect(window.mockCallback).toHaveBeenCalledTimes(1);
+    });
   });
 });
