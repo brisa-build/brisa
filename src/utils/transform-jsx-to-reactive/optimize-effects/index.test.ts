@@ -43,7 +43,7 @@ describe("utils", () => {
 
         expect(output).toEqual(expected);
       });
-      it("should add 'true' as second parameter to cleanups used inside effects", () => {
+      it("should add 'r.id' as second parameter to cleanups used inside effects", () => {
         const input = `
           export default function Component({ propName }, { effect, cleanup }) {
             effect(() => {
@@ -75,7 +75,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should add 'true' as second parameter to cleanups used inside effects using different variable names", () => {
+      it("should add 'r.id' as second parameter to cleanups used inside effects using different variable names", () => {
         const input = `
           export default function Component({ propName }, { effect: e, cleanup: c }) {
             e(() => {
@@ -107,7 +107,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should add 'true' as second parameter to cleanups used inside effects using an identifier", () => {
+      it("should add 'r.id' as second parameter to cleanups used inside effects using an identifier", () => {
         const input = `
           export default function Component({ propName }, props) {
             const { effect: e, cleanup: c } = props;
@@ -143,7 +143,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should add 'true' as second parameter to cleanups used inside effects using rest", () => {
+      it("should add 'r.id' as second parameter to cleanups used inside effects using rest", () => {
         const input = `
           export default function Component({propName}, {effect, ...rest}) {
             effect(r => {
@@ -346,6 +346,313 @@ describe("utils", () => {
           
             return ['span', {}, 'Hello world'];
           }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should wrap nested effect to "r" to register as subeffect', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(() => {
+              if (propName.value) {
+                effect(() => {
+                  if (propName.value) {
+                    console.log("Hello world");
+                  }
+                });
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+          export default function Component({propName}, {effect}) {
+            effect((r) => {
+              if (propName.value) {
+                effect(r(() => {
+                  if (propName.value) {
+                    console.log("Hello world");
+                  }
+                }));
+              }
+            });
+          
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should wrap hypernested effect to "r" to register as subeffect', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(() => {
+              if (propName.value) {
+                effect(() => {
+                  if (propName.value) {
+                    effect(() => {
+                      if (propName.value) {
+                        console.log("Hello world");
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+          export default function Component({propName}, {effect}) {
+            effect((r) => {
+              if (propName.value) {
+                effect(r((r2) => {
+                  if (propName.value) {
+                    effect(r(r2(() => {
+                      if (propName.value) {
+                        console.log("Hello world");
+                      }
+                    })));
+                  }
+                }));
+              }
+            });
+          
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should not wrap nested effect to "r" to register as subeffect if the effect is not nested', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(() => console.log(propName.value));
+            effect(() => console.log(propName.value));
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+          export default function Component({propName}, {effect}) {
+            effect(() => console.log(propName.value));
+            effect(() => console.log(propName.value));
+          
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should wrap two nested effects to "r" to register as subeffect', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(() => {
+              if (propName.value) {
+                effect(() => {
+                  if (propName.value) {
+                    console.log("Hello world");
+                  }
+                });
+                effect(() => {
+                  if (propName.value) {
+                    console.log("Hello world");
+                  }
+                });
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+          export default function Component({propName}, {effect}) {
+            effect((r) => {
+              if (propName.value) {
+                effect(r(() => {
+                  if (propName.value) {
+                    console.log("Hello world");
+                  }
+                }));
+                effect(r(() => {
+                  if (propName.value) {
+                    console.log("Hello world");
+                  }
+                }));
+              }
+            });
+          
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should wrap nested effects without block statement to "r" to register as subeffect', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(() => propName.value && effect(() => console.log("Hello world")));
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+          export default function Component({propName}, {effect}) {
+            effect((r) => propName.value && effect(r(() => console.log("Hello world"))));
+          
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should wrap nested effects with different variable names to "r" to register as subeffect', () => {
+        const input = `
+          export default function Component({ propName }, { effect: e }) {
+            e(() => {
+              if (propName.value) {
+                e(() => {
+                  if (propName.value) {
+                    console.log("Hello world");
+                  }
+                });
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+          export default function Component({propName}, {effect: e}) {
+            e((r) => {
+              if (propName.value) {
+                e(r(() => {
+                  if (propName.value) {
+                    console.log("Hello world");
+                  }
+                }));
+              }
+            });
+          
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should wrap nested effects in outside function to "r" to register as subeffect', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            const log = () => {
+              console.log("Hello world");
+            }
+            function fn() {
+              if (propName.value) {
+                effect(log);
+              }
+            }
+
+            effect(fn);
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+          export default function Component({propName}, {effect}) {
+            const log = () => {
+              console.log("Hello world");
+            }
+            function fn(r) {
+              if (propName.value) {
+                effect(r(log));
+              }
+            }
+
+            effect(fn);
+
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should wrap nested effects in inside function to "r" to register as subeffect', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(function () {
+              if (propName.value) {
+                effect(() => {
+                  console.log("Hello world");
+                });
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+          export default function Component({propName}, {effect}) {
+            effect(function fn(r) {
+              if (propName.value) {
+                effect(r(() => {
+                  console.log("Hello world");
+                }));
+              }
+            });
+
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should not wrap nested effects with "r" if are already wrapped', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(r => {
+              if (propName.value) {
+                effect(r(() => {
+                  console.log("Hello world");
+                }));
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = toInline(`
+        export default function Component({propName}, {effect}) {
+          effect(r => {
+            if (propName.value) {
+              effect(r(() => {
+                console.log("Hello world");
+              }));
+            }
+          });
+        
+          return ['span', {}, 'Hello world'];
+        }
         `);
 
         expect(output).toEqual(expected);
