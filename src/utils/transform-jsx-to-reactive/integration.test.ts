@@ -2643,14 +2643,14 @@ describe("integration", () => {
 
       testComponent.removeAttribute("user");
 
-      expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(3);
       expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
       expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(1);
       expect(testComponent?.shadowRoot?.innerHTML).toBe("EMPTY");
 
       testComponent.setAttribute("user", "{ 'name': 'Aral' }");
 
-      expect(window.mockSignalParent).toHaveBeenCalledTimes(3);
+      expect(window.mockSignalParent).toHaveBeenCalledTimes(4);
       expect(window.mockSignalChild).toHaveBeenCalledTimes(2);
       expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(1);
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>NO EMAIL</div>");
