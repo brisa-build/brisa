@@ -37,16 +37,22 @@ export default function signals() {
     const subEffects = subEffectsPerEffect.get(fn) ?? new Set();
 
     for (let subEffect of subEffects) {
+      // Call cleanups of subeffects
       callCleanupsOfEffect(subEffect);
       cleanups.delete(subEffect);
 
-      for (let signal of effects.keys()) {
-        const signalEffects = effects.get(signal)!;
+      // Recursive clean subeffects (grandchildren effects)
+      cleanSubEffects(subEffect);
+
+      // Remove subeffects registered via signal
+      for (let signalEffect of effects.keys()) {
+        const signalEffects = effects.get(signalEffect)!;
         signalEffects.delete(subEffect);
-        if (signalEffects.size === 0) effects.delete(signal);
+        if (signalEffects.size === 0) effects.delete(signalEffect);
       }
     }
 
+    // Remove stored subeffects
     subEffectsPerEffect.delete(fn);
   }
 
@@ -61,7 +67,15 @@ export default function signals() {
       set value(v) {
         initialValue = v;
 
-        for (let fn of effects.get(this) ?? []) {
+        const originalEffects = effects.get(this) ?? [];
+        const clonedEffects = new Set<Effect>([...originalEffects]);
+
+        for (let fn of originalEffects) {
+          // This means that is a new registered effect, so it is already executed
+          // However is interesting to iterate to the updated effects to don't execute
+          // the removed ones (subeffects)
+          if (!clonedEffects.has(fn)) continue;
+
           cleanSubEffects(fn);
           callCleanupsOfEffect(fn);
           fn(addSubEffect(fn));
