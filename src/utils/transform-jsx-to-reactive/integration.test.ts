@@ -822,11 +822,11 @@ describe("integration", () => {
       const code = `export default function Test({ }, { state, effect, cleanup }: any) {
         const count = state(0);
 
-        effect(() => {
+        effect((r) => {
           window.mockEffect(count.value);
           cleanup(() => {
             window.mockCleanup();
-          });
+          }, r.id);
         });
 
         return <button onClick={() => count.value++}>click</button>
