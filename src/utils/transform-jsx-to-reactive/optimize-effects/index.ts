@@ -131,7 +131,7 @@ export default function optimizeEffects(
       ) {
         return transformInnerEffect(value);
       }
-      if (value?.type == !"CallExpression") return value;
+      if (value?.type !== "CallExpression") return value;
       if (
         value?.callee?.property?.name &&
         value?.callee?.object?.name !== identifier
