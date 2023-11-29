@@ -2844,5 +2844,129 @@ describe("integration", () => {
       expect(window.mockEffect.mock.calls[3]).toEqual(["C", "z"]);
       expect(window.mockEffect.mock.calls[4]).toEqual(["B", "y"]);
     });
+
+    it.todo('should be possible to move web-components from a list without losing unmounting and keeping inner state', () => {
+      const innerWebComponentCode = `
+        export default function InnerWebComponent({ }, { state }) {
+          const name = state('Aral');
+          return <button onClick={() => name.value += 'a'}>{name.value}</button>
+        }
+      `;
+      const code = `
+        export default function MagicList({ }, { state }) {
+          const list = state<string[]>(['some', 'another']);
+
+          const addItem = (e: any) => {
+            e.preventDefault();
+            const formData = new FormData(e.target)
+            list.value = [...list.value, formData.get('item') as string]
+          }
+
+          const deleteItem = (index: number) => {
+            list.value = list.value.filter((_, i) => i !== index)
+          }
+
+          const moveItemUp = (index: number) => {
+            if (index === 0) return
+            const item = list.value[index]
+            const filtered = list.value.filter((_, i) => i !== index)
+            list.value = [...filtered.slice(0, index - 1), item, ...filtered.slice(index - 1)]
+          }
+
+          return (
+            <div>
+              <form onSubmit={addItem}>
+                <input name="item" id="item" placeholder="Add item" />
+                <button>add</button>
+              </form>
+              <ul>
+                {list.value.map((item: string, index: number) => (
+                  <li>
+                    <button onClick={() => deleteItem(index)}>delete</button>
+                    <button onClick={() => moveItemUp(index)}>move up</button>
+                    {item}
+                    <inner-web-component />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      `;
+
+      defineBrisaWebComponent(
+        innerWebComponentCode,
+        "src/web-components/inner-web-component.tsx"
+      );
+
+      defineBrisaWebComponent(code, "src/web-components/magic-list.tsx");
+
+      document.body.innerHTML = "<magic-list />";
+
+      const magicList = document.querySelector(
+        "magic-list"
+      ) as HTMLElement;
+
+      const input = magicList?.shadowRoot?.querySelector(
+        "input"
+      ) as HTMLInputElement;
+
+      const button = magicList?.shadowRoot?.querySelector(
+        "button"
+      ) as HTMLButtonElement;
+
+      input.value = "test";
+      button.click();
+
+      const list = magicList?.shadowRoot?.querySelector("ul");
+
+      expect(list?.innerHTML).toBe(
+        "<li><button>delete</button><button>move up</button>some<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>another<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>test<inner-web-component></inner-web-component></li>"
+      );
+
+      const innerComponents = magicList?.shadowRoot?.querySelectorAll(
+        "inner-web-component"
+      ) as NodeListOf<HTMLElement>;
+
+      expect(innerComponents.length).toBe(3);
+
+      const secondInnerComponentButton = innerComponents[1]?.shadowRoot?.querySelector(
+        "button"
+      ) as HTMLButtonElement;
+
+      secondInnerComponentButton.click();
+
+      expect(innerComponents[0]?.shadowRoot?.innerHTML).toBe(
+        "<button>Aral</button>"
+      );
+      expect(innerComponents[1]?.shadowRoot?.innerHTML).toBe(
+        "<button>Arala</button>"
+      );
+      expect(innerComponents[2]?.shadowRoot?.innerHTML).toBe(
+        "<button>Aral</button>"
+      );
+
+      // Move second item up
+      const secondItemMoveUpButton = list?.querySelectorAll("button")[3];
+      secondItemMoveUpButton?.click();
+
+      expect(list?.innerHTML).toBe(
+        "<li><button>delete</button><button>move up</button>another<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>some<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>test<inner-web-component></inner-web-component></li>"
+      );
+
+      const newInnerComponents = magicList?.shadowRoot?.querySelectorAll(
+        "inner-web-component"
+      ) as NodeListOf<HTMLElement>;
+
+      expect(newInnerComponents[0]?.shadowRoot?.innerHTML).toBe(
+        "<button>Arala</button>"
+      );
+      expect(newInnerComponents[1]?.shadowRoot?.innerHTML).toBe(
+        "<button>Aral</button>"
+      );
+      expect(newInnerComponents[2]?.shadowRoot?.innerHTML).toBe(
+        "<button>Aral</button>"
+      );
+    })
   });
 });
