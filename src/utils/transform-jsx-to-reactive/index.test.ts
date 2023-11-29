@@ -1020,7 +1020,7 @@ describe("utils", () => {
           export default brisaElement(function Component({}, {effect, cleanup, state, h}) {
             const someState = state(0);
           
-            effect(() => {
+            effect(r => {
               console.log(someState.value);
             });
           
