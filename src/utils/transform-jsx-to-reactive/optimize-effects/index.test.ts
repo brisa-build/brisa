@@ -334,11 +334,11 @@ describe("utils", () => {
           export default function Component({propName}, {effect, cleanup}) {
             effect(r => {
               if (propName.value) {
-                effect(r => {
+                effect(r(r1 => {
                   if (propName.value) {
-                    cleanup(() => console.log("Hello world"), r.id);
+                    cleanup(() => console.log("Hello world"), r1.id);
                   }
-                });
+                }));
               }
             });
 
@@ -370,9 +370,9 @@ describe("utils", () => {
         const output = toOutput(input);
         const expected = toInline(`
           export default function Component({propName}, {effect}) {
-            effect((r) => {
+            effect(r => {
               if (propName.value) {
-                effect(r(() => {
+                effect(r(r1 => {
                   if (propName.value) {
                     console.log("Hello world");
                   }
@@ -410,11 +410,11 @@ describe("utils", () => {
         const output = toOutput(input);
         const expected = toInline(`
           export default function Component({propName}, {effect}) {
-            effect((r) => {
+            effect(r => {
               if (propName.value) {
-                effect(r((r2) => {
+                effect(r(r1 => {
                   if (propName.value) {
-                    effect(r(r2(() => {
+                    effect(r(r1(r2 => {
                       if (propName.value) {
                         console.log("Hello world");
                       }
@@ -443,13 +443,12 @@ describe("utils", () => {
         const output = toOutput(input);
         const expected = toInline(`
           export default function Component({propName}, {effect}) {
-            effect(() => console.log(propName.value));
-            effect(() => console.log(propName.value));
+            effect(r => console.log(propName.value));
+            effect(r1 => console.log(propName.value));
           
             return ['span', {}, 'Hello world'];
           }
         `);
-
 
         expect(output).toEqual(expected);
       });
@@ -478,14 +477,14 @@ describe("utils", () => {
         const output = toOutput(input);
         const expected = toInline(`
           export default function Component({propName}, {effect}) {
-            effect((r) => {
+            effect(r => {
               if (propName.value) {
-                effect(r(() => {
+                effect(r(r1 => {
                   if (propName.value) {
                     console.log("Hello world");
                   }
                 }));
-                effect(r(() => {
+                effect(r(r2 => {
                   if (propName.value) {
                     console.log("Hello world");
                   }
@@ -511,7 +510,7 @@ describe("utils", () => {
         const output = toOutput(input);
         const expected = toInline(`
           export default function Component({propName}, {effect}) {
-            effect((r) => propName.value && effect(r(() => console.log("Hello world"))));
+            effect(r => propName.value && effect(r(r1 => console.log("Hello world"))));
           
             return ['span', {}, 'Hello world'];
           }
@@ -539,9 +538,9 @@ describe("utils", () => {
         const output = toOutput(input);
         const expected = toInline(`
           export default function Component({propName}, {effect: e}) {
-            e((r) => {
+            e(r => {
               if (propName.value) {
-                e(r(() => {
+                e(r(r1 => {
                   if (propName.value) {
                     console.log("Hello world");
                   }
@@ -578,10 +577,10 @@ describe("utils", () => {
           export default function Component({propName}, {effect}) {
             const log = () => {
               console.log("Hello world");
-            }
-            function fn(r) {
+            };
+            function fn(r1) {
               if (propName.value) {
-                effect(r(log));
+                effect(r1(log));
               }
             }
 
@@ -611,9 +610,9 @@ describe("utils", () => {
         const output = toOutput(input);
         const expected = toInline(`
           export default function Component({propName}, {effect}) {
-            effect(function fn(r) {
+            effect(function (r) {
               if (propName.value) {
-                effect(r(() => {
+                effect(r(r1 => {
                   console.log("Hello world");
                 }));
               }
@@ -631,7 +630,7 @@ describe("utils", () => {
           export default function Component({ propName }, { effect }) {
             effect(r => {
               if (propName.value) {
-                effect(r(() => {
+                effect(r(r1 => {
                   console.log("Hello world");
                 }));
               }
@@ -645,7 +644,7 @@ describe("utils", () => {
         export default function Component({propName}, {effect}) {
           effect(r => {
             if (propName.value) {
-              effect(r(() => {
+              effect(r(r1 => {
                 console.log("Hello world");
               }));
             }
