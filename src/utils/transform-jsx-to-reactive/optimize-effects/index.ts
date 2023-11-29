@@ -1,6 +1,11 @@
 import { ESTree } from "meriyah";
 
 type EffectNode = ESTree.CallExpression & { effectDeps: string[] };
+type WebContextDetails = {
+  effectName: string;
+  cleanupName: string;
+  identifier?: string;
+};
 type Properties = (
   | ESTree.Property
   | ESTree.RestElement
@@ -35,22 +40,23 @@ export default function optimizeEffects(
   componentBranch: ESTree.FunctionDeclaration,
   allVariableNames = new Set<string>()
 ): ESTree.FunctionDeclaration {
-  const webContext = componentBranch.params[1];
+  const webContextAst = componentBranch.params[1];
 
-  if (!webContext) return componentBranch;
+  if (!webContextAst) return componentBranch;
 
-  let effectName = "effect";
-  let cleanupName = "cleanup";
-  let identifier: string | undefined;
+  const webContextDetails: WebContextDetails = {
+    effectName: "effect",
+    cleanupName: "cleanup",
+  };
 
   const { assignRNameToNode, getRNameFromIdentifier, getEffectIdentifier } =
     getSubEffectManager(allVariableNames);
 
-  if (webContext.type === "ObjectPattern") {
-    const defined = trackDefinedEffectOrCleanup(webContext.properties);
-    if (!defined) return componentBranch;
-  } else if (webContext.type === "Identifier") {
-    identifier = webContext.name;
+  if (webContextAst.type === "ObjectPattern") {
+    const modified = setWebContextProperties(webContextAst.properties);
+    if (!modified) return componentBranch;
+  } else if (webContextAst.type === "Identifier") {
+    webContextDetails.identifier = webContextAst.name;
   }
 
   return {
@@ -67,16 +73,19 @@ export default function optimizeEffects(
     },
   } as ESTree.FunctionDeclaration;
 
+  // The first traverse is needed to get the effect identifier, the cleanup
+  // identifier, and assign 'r' names to effects params and propagate effect
+  // dependencies to inner effects
   function traverseA2B(this: any, key: string, node: any) {
     if (
       node?.type === "VariableDeclaration" &&
       node?.declarations[0]?.id?.type === "ObjectPattern" &&
-      identifier === node?.declarations[0]?.init?.name
+      webContextDetails.identifier === node?.declarations[0]?.init?.name
     ) {
-      trackDefinedEffectOrCleanup(node?.declarations[0]?.id?.properties);
+      setWebContextProperties(node?.declarations[0]?.id?.properties);
     }
 
-    if (node?.callee?.name === effectName) {
+    if (node?.callee?.name === webContextDetails.effectName) {
       assignRNameToNode(node, { parent: this });
     }
 
@@ -85,7 +94,9 @@ export default function optimizeEffects(
     return node;
   }
 
-  // The first traverse was needed to get the effect identifier
+  // This second traverse, once we have the effect identifier, is needed to
+  // add the effectDeps to the effect function.
+  // ex: effect(someFn); function someFn(r) {} // adding 'r' as dependency
   function traverseAgainA2B(this: any, key: string, node: any) {
     if (
       DECLARATION_NODE_TYPES.has(node?.type) &&
@@ -103,6 +114,10 @@ export default function optimizeEffects(
     return node;
   }
 
+  // This third traverse is needed to:
+  // - wrap each sub-effect function with its dependencies
+  //   ex: effect((r) => effect(r1 => {})) --> effect((r) => effect(r(r1 => {})));
+  // - add 'r.id' as second parameter to cleanups used inside effects
   function traverseB2A(this: any, key: string, node: any) {
     if (
       DECLARATION_NODE_TYPES.has(node?.type) &&
@@ -113,18 +128,21 @@ export default function optimizeEffects(
 
     if (
       node?.callee?.property?.name &&
-      node?.callee?.object?.name !== identifier
+      node?.callee?.object?.name !== webContextDetails.identifier
     ) {
       return node;
     }
 
     const name = node?.callee?.name ?? node?.callee?.property?.name;
 
-    if (name !== effectName) return node;
+    if (name !== webContextDetails.effectName) return node;
 
     return transformInnerEffect(node, this);
   }
 
+  // This function is called to each sub-effect function to wrap it with
+  // its dependencies and to add 'r.id' as second parameter to cleanups
+  // used inside effects
   function transformInnerEffect(effect: EffectNode, parent: EffectNode) {
     const effectIdentifier = (effect as any)?.id?.name;
     const takenName = getRNameFromIdentifier(effectIdentifier);
@@ -146,7 +164,7 @@ export default function optimizeEffects(
       const innerName =
         innerVal?.callee?.name ?? innerVal?.callee?.property?.name;
 
-      if (innerName !== cleanupName) return innerVal;
+      if (innerName !== webContextDetails.cleanupName) return innerVal;
 
       // Add 'r.id' as second parameter to cleanups used inside effects
       const arg = {
@@ -180,30 +198,36 @@ export default function optimizeEffects(
     return wrapEffectWithDependencies(modifiedEffect, parent);
   }
 
-  function trackDefinedEffectOrCleanup(properties: Properties) {
-    let foundEffectOrCleanup = false;
+  // This function is called to set the effect name, cleanup name and identifier
+  // from the web context properties that have all web components as second parameter
+  //
+  // ex: here "e" is the effect name and "c" is the cleanup name:
+  // const Component = (props, {state, effect: e, cleanup: c}) => {}
+  //
+  function setWebContextProperties(properties: Properties) {
+    let setted = false;
 
     for (let property of properties) {
       const { key, value, type } = property;
 
       if (type === "RestElement") {
-        identifier = (property as any).argument.name;
-        foundEffectOrCleanup = true;
+        webContextDetails.identifier = (property as any).argument.name;
+        setted = true;
         continue;
       }
 
       if (key.type !== "Identifier" || value.type !== "Identifier") continue;
-      if (key.name === effectName) {
-        effectName = value.name;
-        foundEffectOrCleanup = true;
+      if (key.name === webContextDetails.effectName) {
+        webContextDetails.effectName = value.name;
+        setted = true;
       }
-      if (key.name === cleanupName) {
-        cleanupName = value.name;
-        foundEffectOrCleanup = true;
+      if (key.name === webContextDetails.cleanupName) {
+        webContextDetails.cleanupName = value.name;
+        setted = true;
       }
     }
 
-    return foundEffectOrCleanup;
+    return setted;
   }
 }
 
