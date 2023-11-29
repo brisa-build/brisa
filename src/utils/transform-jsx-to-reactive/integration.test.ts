@@ -446,7 +446,7 @@ describe("integration", () => {
 
       defineBrisaWebComponent(code, "src/web-components/test-button.tsx");
 
-      const onAfterClickMock = mock(() => {});
+      const onAfterClickMock = mock(() => { });
 
       window.onAfterClick = onAfterClickMock;
       document.body.innerHTML = `
@@ -464,7 +464,7 @@ describe("integration", () => {
     });
 
     it("should trigger events in different web-components", () => {
-      window.mock = mock(() => {});
+      window.mock = mock(() => { });
 
       const parentCode = `export default function Parent() {
         return <first-component onClickMe={window.mock}>click me</first-component>
@@ -686,7 +686,7 @@ describe("integration", () => {
     });
 
     it("should unregister effects when the component is disconnected", () => {
-      window.mock = mock((n: number) => {});
+      window.mock = mock((n: number) => { });
       const code = `export default function Test({ }, { state, effect }: any) {
           const count = state(0);
 
@@ -816,8 +816,8 @@ describe("integration", () => {
     });
 
     it("should cleanup everytime an effect is re-called", () => {
-      window.mockEffect = mock((num: number) => {});
-      window.mockCleanup = mock(() => {});
+      window.mockEffect = mock((num: number) => { });
+      window.mockCleanup = mock(() => { });
 
       const code = `export default function Test({ }, { state, effect, cleanup }: any) {
         const count = state(0);
@@ -859,8 +859,8 @@ describe("integration", () => {
     });
 
     it("should cleanup everytime the web-component is unmount", () => {
-      window.mockEffect = mock(() => {});
-      window.mockCleanup = mock(() => {});
+      window.mockEffect = mock(() => { });
+      window.mockCleanup = mock(() => { });
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(() => {
@@ -888,8 +888,8 @@ describe("integration", () => {
     });
 
     it("should cleanup async cleanups when the web-component is unmount", async () => {
-      window.mockEffect = mock(() => {});
-      window.mockCleanup = mock(() => {});
+      window.mockEffect = mock(() => { });
+      window.mockCleanup = mock(() => { });
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(async () => {
@@ -917,8 +917,8 @@ describe("integration", () => {
     });
 
     it("should cleanup multi cleanups inside an effect when the web-component is unmount", async () => {
-      window.mockEffect = mock(() => {});
-      window.mockCleanup = mock(() => {});
+      window.mockEffect = mock(() => { });
+      window.mockCleanup = mock(() => { });
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(async () => {
@@ -1809,7 +1809,7 @@ describe("integration", () => {
     });
 
     it("should handle keyboard events", () => {
-      window.mockAlert = mock((s: string) => {});
+      window.mockAlert = mock((s: string) => { });
       const code = `export default () => <input onKeyDown={() => window.mockAlert("Enter to onKeyDown")} />;`;
 
       defineBrisaWebComponent(code, "src/web-components/keyboard-events.tsx");
@@ -1947,8 +1947,8 @@ describe("integration", () => {
     });
 
     it("should be possible to execute different onMount callbacks", async () => {
-      window.mockFirstCallback = mock((s: string) => {});
-      window.mockSecondCallback = mock((s: string) => {});
+      window.mockFirstCallback = mock((s: string) => { });
+      window.mockSecondCallback = mock((s: string) => { });
 
       const code = `export default ({ }, { onMount }: any) => {
         onMount(() => {
@@ -1973,7 +1973,7 @@ describe("integration", () => {
     });
 
     it("should cleanup an event registered on onMount when the component is unmounted", async () => {
-      window.mockCallback = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
 
       const code = `export default ({}, { onMount, cleanup,  }: any) => {
         onMount(() => {
@@ -2012,7 +2012,7 @@ describe("integration", () => {
     });
 
     it("should cleanup on unmount if a cleanup callback is registered in the root of the component", () => {
-      window.mockCallback = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
 
       const code = `export default ({ }, { cleanup }: any) => {
         cleanup(() => {
@@ -2036,7 +2036,7 @@ describe("integration", () => {
     });
 
     it("should cleanup on unmount if a cleanup callback is registered in a nested component", () => {
-      window.mockCallback = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
       const testComp = `export default ({ }, { cleanup }: any) => {
         cleanup(() => window.mockCallback("cleanup"));
         return null;
@@ -2657,8 +2657,8 @@ describe("integration", () => {
     });
 
     it("should unregister cleanup when is inside an effect with a condition, starting as true", () => {
-      window.mockCallback = mock((s: string) => {});
-      window.mockCallbackCleanup = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
+      window.mockCallbackCleanup = mock((s: string) => { });
 
       const code = `
         export default function Component({ foo }, { effect, cleanup }) {
@@ -2709,8 +2709,8 @@ describe("integration", () => {
     });
 
     it("should unregister cleanup when is inside an effect with a condition, starting as false", () => {
-      window.mockCallback = mock((s: string) => {});
-      window.mockCallbackCleanup = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
+      window.mockCallbackCleanup = mock((s: string) => { });
 
       const code = `
         export default function Component({ foo }, { effect, cleanup }) {
@@ -2765,6 +2765,84 @@ describe("integration", () => {
       document.dispatchEvent(new Event("click"));
 
       expect(window.mockCallback).toHaveBeenCalledTimes(1);
+    });
+
+    it('should execute again the effect if is updated during effect registration', () => {
+      window.mockEffect = mock((s: string) => { });
+
+      const code = `
+        export default function Component({}, { state, effect }) {
+          const a = state<number>(0);
+          const b = state<string>("x");
+
+          effect(() => {
+            if (a.value === 1) {
+              effect(() => mockEffect("B", b.value));
+            }
+            mockEffect("A", a.value);
+            a.value = 1;
+          });
+  
+          return null;
+        };
+      `;
+
+      document.body.innerHTML =
+        '<unregister-subeffect></unregister-subeffect>';
+
+      defineBrisaWebComponent(
+        code,
+        "src/web-components/unregister-subeffect.tsx"
+      );
+
+      expect(window.mockEffect).toHaveBeenCalledTimes(3);
+      expect(window.mockEffect.mock.calls[0]).toEqual(["A", 0]);
+      expect(window.mockEffect.mock.calls[1]).toEqual(["B", "x"]);
+      expect(window.mockEffect.mock.calls[2]).toEqual(["A", 1]);
+    });
+
+    it('should unregister sub-effects', () => {
+      window.mockEffect = mock((s: string) => { });
+
+      const code = `
+        export default function Component({}, { state, effect }) {
+          const a = state<number>(0);
+          const b = state<string>("x");
+
+          effect(() => {
+            if (a.value !== 1) return
+
+            effect(() => {
+              mockEffect("B", b.value)
+              if(b.value === 'z') effect(() => mockEffect("C", b.value));
+            });
+          });
+
+          a.value = 1;
+          b.value = 'y';
+          b.value = 'z';
+          b.value = 'y';
+          a.value = 2;
+          b.value = 'z';
+  
+          return null;
+        };
+      `;
+
+      document.body.innerHTML =
+        '<unregister-subeffect></unregister-subeffect>';
+
+      defineBrisaWebComponent(
+        code,
+        "src/web-components/unregister-subeffect.tsx"
+      );
+
+      expect(window.mockEffect).toHaveBeenCalledTimes(5);
+      expect(window.mockEffect.mock.calls[0]).toEqual(["B", "x"]);
+      expect(window.mockEffect.mock.calls[1]).toEqual(["B", "y"]);
+      expect(window.mockEffect.mock.calls[2]).toEqual(["B", "z"]);
+      expect(window.mockEffect.mock.calls[3]).toEqual(["C", "z"]);
+      expect(window.mockEffect.mock.calls[4]).toEqual(["B", "y"]);
     });
   });
 });

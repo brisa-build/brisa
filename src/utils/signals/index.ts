@@ -57,6 +57,8 @@ export default function signals() {
   }
 
   function state<T>(initialValue?: T): { value: T } {
+    let calledSameEffectOnce = false;
+
     return {
       get value() {
         if (stack[0]) {
@@ -71,6 +73,13 @@ export default function signals() {
         const clonedEffects = new Set<Effect>([...currentEffects]);
 
         for (let fn of currentEffects) {
+
+          // Avoid calling the same effect infinitely
+          if (fn === stack[0]) {
+            if (calledSameEffectOnce) continue;
+            calledSameEffectOnce = !calledSameEffectOnce;
+          }
+
           // This means that is a new registered effect, so it is already executed
           // However is interesting to iterate to the updated effects to don't execute
           // the removed ones (subeffects)
