@@ -1,4 +1,5 @@
 import { ESTree } from "meriyah";
+import getConstants from "../../../constants";
 import wrapWithArrowFn from "../wrap-with-arrow-fn";
 
 const FRAGMENT = { type: "Literal", value: null };
@@ -7,12 +8,14 @@ const REACTIVE_VALUES = new Set([
   "Identifier",
   "ConditionalExpression",
   "MemberExpression",
+  "LogicalExpression",
 ]);
 
 export default function getReactiveReturnStatement(
   componentBody: ESTree.Statement[],
   hyperScriptVarName: string
 ) {
+  const { LOG_PREFIX } = getConstants();
   const returnStatementIndex = componentBody.findIndex(
     (node: any) => node.type === "ReturnStatement"
   );
@@ -49,7 +52,7 @@ export default function getReactiveReturnStatement(
     componentBody[0]?.declarations[0]?.init?.body?.type !== "BlockStatement"
   ) {
     const elements =
-      componentBody[0]?.declarations[0]?.init?.body?.elements ?? [];
+      (componentBody[0] as any)?.declarations[0]?.init?.body?.elements ?? [];
     tagName = {
       type: "Literal",
       value: elements[0]?.value ?? null,
@@ -101,6 +104,25 @@ export default function getReactiveReturnStatement(
 
       componentChildren = wrapWithArrowFn(reactiveBinaryExpression(children));
     }
+  }
+
+  if (!componentChildren) {
+    console.log(LOG_PREFIX.ERROR, "Error Code: 5001");
+    console.log(LOG_PREFIX.ERROR);
+    console.log(
+      LOG_PREFIX.ERROR,
+      "Description: An unexpected error occurred while processing your component."
+    );
+    console.log(
+      LOG_PREFIX.ERROR,
+      "Details: The server encountered an internal error and was unable to build your component."
+    );
+    console.log(LOG_PREFIX.ERROR);
+    console.log(
+      LOG_PREFIX.ERROR,
+      "Please provide the following error code when reporting the problem: 5001."
+    );
+    console.log(LOG_PREFIX.ERROR);
   }
 
   const newReturnStatement = {

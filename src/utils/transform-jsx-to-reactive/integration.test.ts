@@ -2844,6 +2844,59 @@ describe("integration", () => {
     });
 
     it.todo(
+      "should work an async-await effect changing state and with a conditional render",
+      async () => {
+        const code = `
+        export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
+          const bar = state<any>()
+        
+          effect(async () => {
+            if (foo === 'bar') {
+              bar.value = await Promise.resolve({ someField: 'someValue' })
+            } else {
+              bar.value = null
+            }
+          })
+        
+          return bar.value && <div>{bar.value.someField}</div>;
+        };
+      `;
+
+        document.body.innerHTML = "<test-component foo='bar' />";
+
+        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+        const testComponent = document.querySelector(
+          "test-component"
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+
+        await Bun.sleep(0);
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe(
+          "<div>someValue</div>"
+        );
+
+        testComponent.setAttribute("foo", "baz");
+
+        await Bun.sleep(0);
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+
+        testComponent.setAttribute("foo", "bar");
+
+        await Bun.sleep(0);
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe(
+          "<div>someValue</div>"
+        );
+
+        await Bun.sleep(0);
+      }
+    );
+
+    it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
       () => {
         const innerWebComponentCode = `
