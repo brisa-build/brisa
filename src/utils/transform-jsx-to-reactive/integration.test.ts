@@ -446,7 +446,7 @@ describe("integration", () => {
 
       defineBrisaWebComponent(code, "src/web-components/test-button.tsx");
 
-      const onAfterClickMock = mock(() => { });
+      const onAfterClickMock = mock(() => {});
 
       window.onAfterClick = onAfterClickMock;
       document.body.innerHTML = `
@@ -464,7 +464,7 @@ describe("integration", () => {
     });
 
     it("should trigger events in different web-components", () => {
-      window.mock = mock(() => { });
+      window.mock = mock(() => {});
 
       const parentCode = `export default function Parent() {
         return <first-component onClickMe={window.mock}>click me</first-component>
@@ -686,7 +686,7 @@ describe("integration", () => {
     });
 
     it("should unregister effects when the component is disconnected", () => {
-      window.mock = mock((n: number) => { });
+      window.mock = mock((n: number) => {});
       const code = `export default function Test({ }, { state, effect }: any) {
           const count = state(0);
 
@@ -816,8 +816,8 @@ describe("integration", () => {
     });
 
     it("should cleanup everytime an effect is re-called", () => {
-      window.mockEffect = mock((num: number) => { });
-      window.mockCleanup = mock(() => { });
+      window.mockEffect = mock((num: number) => {});
+      window.mockCleanup = mock(() => {});
 
       const code = `export default function Test({ }, { state, effect, cleanup }: any) {
         const count = state(0);
@@ -859,8 +859,8 @@ describe("integration", () => {
     });
 
     it("should cleanup everytime the web-component is unmount", () => {
-      window.mockEffect = mock(() => { });
-      window.mockCleanup = mock(() => { });
+      window.mockEffect = mock(() => {});
+      window.mockCleanup = mock(() => {});
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(() => {
@@ -888,8 +888,8 @@ describe("integration", () => {
     });
 
     it("should cleanup async cleanups when the web-component is unmount", async () => {
-      window.mockEffect = mock(() => { });
-      window.mockCleanup = mock(() => { });
+      window.mockEffect = mock(() => {});
+      window.mockCleanup = mock(() => {});
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(async () => {
@@ -917,8 +917,8 @@ describe("integration", () => {
     });
 
     it("should cleanup multi cleanups inside an effect when the web-component is unmount", async () => {
-      window.mockEffect = mock(() => { });
-      window.mockCleanup = mock(() => { });
+      window.mockEffect = mock(() => {});
+      window.mockCleanup = mock(() => {});
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(async () => {
@@ -1809,7 +1809,7 @@ describe("integration", () => {
     });
 
     it("should handle keyboard events", () => {
-      window.mockAlert = mock((s: string) => { });
+      window.mockAlert = mock((s: string) => {});
       const code = `export default () => <input onKeyDown={() => window.mockAlert("Enter to onKeyDown")} />;`;
 
       defineBrisaWebComponent(code, "src/web-components/keyboard-events.tsx");
@@ -1947,8 +1947,8 @@ describe("integration", () => {
     });
 
     it("should be possible to execute different onMount callbacks", async () => {
-      window.mockFirstCallback = mock((s: string) => { });
-      window.mockSecondCallback = mock((s: string) => { });
+      window.mockFirstCallback = mock((s: string) => {});
+      window.mockSecondCallback = mock((s: string) => {});
 
       const code = `export default ({ }, { onMount }: any) => {
         onMount(() => {
@@ -1973,7 +1973,7 @@ describe("integration", () => {
     });
 
     it("should cleanup an event registered on onMount when the component is unmounted", async () => {
-      window.mockCallback = mock((s: string) => { });
+      window.mockCallback = mock((s: string) => {});
 
       const code = `export default ({}, { onMount, cleanup,  }: any) => {
         onMount(() => {
@@ -2012,7 +2012,7 @@ describe("integration", () => {
     });
 
     it("should cleanup on unmount if a cleanup callback is registered in the root of the component", () => {
-      window.mockCallback = mock((s: string) => { });
+      window.mockCallback = mock((s: string) => {});
 
       const code = `export default ({ }, { cleanup }: any) => {
         cleanup(() => {
@@ -2036,7 +2036,7 @@ describe("integration", () => {
     });
 
     it("should cleanup on unmount if a cleanup callback is registered in a nested component", () => {
-      window.mockCallback = mock((s: string) => { });
+      window.mockCallback = mock((s: string) => {});
       const testComp = `export default ({ }, { cleanup }: any) => {
         cleanup(() => window.mockCallback("cleanup"));
         return null;
@@ -2657,8 +2657,8 @@ describe("integration", () => {
     });
 
     it("should unregister cleanup when is inside an effect with a condition, starting as true", () => {
-      window.mockCallback = mock((s: string) => { });
-      window.mockCallbackCleanup = mock((s: string) => { });
+      window.mockCallback = mock((s: string) => {});
+      window.mockCallbackCleanup = mock((s: string) => {});
 
       const code = `
         export default function Component({ foo }, { effect, cleanup }) {
@@ -2709,8 +2709,8 @@ describe("integration", () => {
     });
 
     it("should unregister cleanup when is inside an effect with a condition, starting as false", () => {
-      window.mockCallback = mock((s: string) => { });
-      window.mockCallbackCleanup = mock((s: string) => { });
+      window.mockCallback = mock((s: string) => {});
+      window.mockCallbackCleanup = mock((s: string) => {});
 
       const code = `
         export default function Component({ foo }, { effect, cleanup }) {
@@ -2767,8 +2767,8 @@ describe("integration", () => {
       expect(window.mockCallback).toHaveBeenCalledTimes(1);
     });
 
-    it('should execute again the effect if is updated during effect registration', () => {
-      window.mockEffect = mock((s: string) => { });
+    it("should execute again the effect if is updated during effect registration", () => {
+      window.mockEffect = mock((s: string) => {});
 
       const code = `
         export default function Component({}, { state, effect }) {
@@ -2787,8 +2787,7 @@ describe("integration", () => {
         };
       `;
 
-      document.body.innerHTML =
-        '<unregister-subeffect></unregister-subeffect>';
+      document.body.innerHTML = "<unregister-subeffect></unregister-subeffect>";
 
       defineBrisaWebComponent(
         code,
@@ -2801,8 +2800,8 @@ describe("integration", () => {
       expect(window.mockEffect.mock.calls[2]).toEqual(["A", 1]);
     });
 
-    it('should unregister sub-effects', () => {
-      window.mockEffect = mock((s: string) => { });
+    it("should unregister sub-effects", () => {
+      window.mockEffect = mock((s: string) => {});
 
       const code = `
         export default function Component({}, { state, effect }) {
@@ -2829,8 +2828,7 @@ describe("integration", () => {
         };
       `;
 
-      document.body.innerHTML =
-        '<unregister-subeffect></unregister-subeffect>';
+      document.body.innerHTML = "<unregister-subeffect></unregister-subeffect>";
 
       defineBrisaWebComponent(
         code,
@@ -2845,14 +2843,16 @@ describe("integration", () => {
       expect(window.mockEffect.mock.calls[4]).toEqual(["B", "y"]);
     });
 
-    it.todo('should be possible to move web-components from a list without losing unmounting and keeping inner state', () => {
-      const innerWebComponentCode = `
+    it.todo(
+      "should be possible to move web-components from a list without unmounting + keeping inner state",
+      () => {
+        const innerWebComponentCode = `
         export default function InnerWebComponent({ }, { state }) {
           const name = state('Aral');
           return <button onClick={() => name.value += 'a'}>{name.value}</button>
         }
       `;
-      const code = `
+        const code = `
         export default function MagicList({ }, { state }) {
           const list = state<string[]>(['some', 'another']);
 
@@ -2894,79 +2894,79 @@ describe("integration", () => {
         }
       `;
 
-      defineBrisaWebComponent(
-        innerWebComponentCode,
-        "src/web-components/inner-web-component.tsx"
-      );
+        defineBrisaWebComponent(
+          innerWebComponentCode,
+          "src/web-components/inner-web-component.tsx"
+        );
 
-      defineBrisaWebComponent(code, "src/web-components/magic-list.tsx");
+        defineBrisaWebComponent(code, "src/web-components/magic-list.tsx");
 
-      document.body.innerHTML = "<magic-list />";
+        document.body.innerHTML = "<magic-list />";
 
-      const magicList = document.querySelector(
-        "magic-list"
-      ) as HTMLElement;
+        const magicList = document.querySelector("magic-list") as HTMLElement;
 
-      const input = magicList?.shadowRoot?.querySelector(
-        "input"
-      ) as HTMLInputElement;
+        const input = magicList?.shadowRoot?.querySelector(
+          "input"
+        ) as HTMLInputElement;
 
-      const button = magicList?.shadowRoot?.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+        const button = magicList?.shadowRoot?.querySelector(
+          "button"
+        ) as HTMLButtonElement;
 
-      input.value = "test";
-      button.click();
+        input.value = "test";
+        button.click();
 
-      const list = magicList?.shadowRoot?.querySelector("ul");
+        const list = magicList?.shadowRoot?.querySelector("ul");
 
-      expect(list?.innerHTML).toBe(
-        "<li><button>delete</button><button>move up</button>some<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>another<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>test<inner-web-component></inner-web-component></li>"
-      );
+        expect(list?.innerHTML).toBe(
+          "<li><button>delete</button><button>move up</button>some<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>another<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>test<inner-web-component></inner-web-component></li>"
+        );
 
-      const innerComponents = magicList?.shadowRoot?.querySelectorAll(
-        "inner-web-component"
-      ) as NodeListOf<HTMLElement>;
+        const innerComponents = magicList?.shadowRoot?.querySelectorAll(
+          "inner-web-component"
+        ) as NodeListOf<HTMLElement>;
 
-      expect(innerComponents.length).toBe(3);
+        expect(innerComponents.length).toBe(3);
 
-      const secondInnerComponentButton = innerComponents[1]?.shadowRoot?.querySelector(
-        "button"
-      ) as HTMLButtonElement;
+        const secondInnerComponentButton =
+          innerComponents[1]?.shadowRoot?.querySelector(
+            "button"
+          ) as HTMLButtonElement;
 
-      secondInnerComponentButton.click();
+        secondInnerComponentButton.click();
 
-      expect(innerComponents[0]?.shadowRoot?.innerHTML).toBe(
-        "<button>Aral</button>"
-      );
-      expect(innerComponents[1]?.shadowRoot?.innerHTML).toBe(
-        "<button>Arala</button>"
-      );
-      expect(innerComponents[2]?.shadowRoot?.innerHTML).toBe(
-        "<button>Aral</button>"
-      );
+        expect(innerComponents[0]?.shadowRoot?.innerHTML).toBe(
+          "<button>Aral</button>"
+        );
+        expect(innerComponents[1]?.shadowRoot?.innerHTML).toBe(
+          "<button>Arala</button>"
+        );
+        expect(innerComponents[2]?.shadowRoot?.innerHTML).toBe(
+          "<button>Aral</button>"
+        );
 
-      // Move second item up
-      const secondItemMoveUpButton = list?.querySelectorAll("button")[3];
-      secondItemMoveUpButton?.click();
+        // Move second item up
+        const secondItemMoveUpButton = list?.querySelectorAll("button")[3];
+        secondItemMoveUpButton?.click();
 
-      expect(list?.innerHTML).toBe(
-        "<li><button>delete</button><button>move up</button>another<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>some<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>test<inner-web-component></inner-web-component></li>"
-      );
+        expect(list?.innerHTML).toBe(
+          "<li><button>delete</button><button>move up</button>another<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>some<inner-web-component></inner-web-component></li><li><button>delete</button><button>move up</button>test<inner-web-component></inner-web-component></li>"
+        );
 
-      const newInnerComponents = magicList?.shadowRoot?.querySelectorAll(
-        "inner-web-component"
-      ) as NodeListOf<HTMLElement>;
+        const newInnerComponents = magicList?.shadowRoot?.querySelectorAll(
+          "inner-web-component"
+        ) as NodeListOf<HTMLElement>;
 
-      expect(newInnerComponents[0]?.shadowRoot?.innerHTML).toBe(
-        "<button>Arala</button>"
-      );
-      expect(newInnerComponents[1]?.shadowRoot?.innerHTML).toBe(
-        "<button>Aral</button>"
-      );
-      expect(newInnerComponents[2]?.shadowRoot?.innerHTML).toBe(
-        "<button>Aral</button>"
-      );
-    })
+        expect(newInnerComponents[0]?.shadowRoot?.innerHTML).toBe(
+          "<button>Arala</button>"
+        );
+        expect(newInnerComponents[1]?.shadowRoot?.innerHTML).toBe(
+          "<button>Aral</button>"
+        );
+        expect(newInnerComponents[2]?.shadowRoot?.innerHTML).toBe(
+          "<button>Aral</button>"
+        );
+      }
+    );
   });
 });

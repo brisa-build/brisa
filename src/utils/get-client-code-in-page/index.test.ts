@@ -36,11 +36,11 @@ describe("utils", () => {
     };
     mockCompiledFile = spyOn(Bun, "file").mockImplementation(
       (filepath) =>
-      ({
-        async text() {
-          return transpiler.transform(fs.readFileSync(filepath), "tsx");
-        },
-      } as BunFile)
+        ({
+          async text() {
+            return transpiler.transform(fs.readFileSync(filepath), "tsx");
+          },
+        } as BunFile)
     );
   });
 
