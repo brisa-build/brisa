@@ -73,7 +73,6 @@ export default function signals() {
         const clonedEffects = new Set<Effect>([...currentEffects]);
 
         for (let fn of currentEffects) {
-
           // Avoid calling the same effect infinitely
           if (fn === stack[0]) {
             if (calledSameEffectOnce) continue;

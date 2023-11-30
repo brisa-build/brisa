@@ -79,7 +79,7 @@ describe("utils", () => {
         ASSETS_DIR,
       };
 
-      mockLog.mockImplementation(() => { });
+      mockLog.mockImplementation(() => {});
 
       const { success, logs } = await compileFiles();
 
