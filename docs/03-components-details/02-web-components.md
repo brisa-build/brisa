@@ -74,6 +74,10 @@ export default function Counter({}, { state }: WebContext) {
 
 Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
 
+### Props
+
+TODO
+
 ### Events
 
 #### Events via attributes
@@ -150,7 +154,7 @@ As web components are DOM elements, they also automatically have their own event
 You can register an event after accessing an element with the `ref` attribute and `state`:
 
 ```tsx
-export default ({}, { onMount, cleanup, state }: any) => {
+export default ({}, { onMount, cleanup, state }: WebContext) => {
   const ref = state(null);
 
   function onClick(e) {
@@ -169,6 +173,40 @@ Although we recommend registering events via attributes, we also provide the opp
 > **Good to know**: For the `ref` attribute you do not have to put the `.value`, you have to put the whole state.
 
 ### Effect
+
+Effects are used to record side effects such as fetching data, setting up a subscription, and manually changing the DOM in Brisa components.
+
+Each effect is executed immediately upon registration and also every time a registered signal within the effect changes. There is no need to write the dependencies of these signals separately, since the effect is smart enough to detect the signals.
+
+```tsx
+export default ({ foo }: { foo: string }, { effect }: WebContext) => {
+  effect(() => {
+    if (foo === "bar") {
+      console.log("foo now is bar");
+    }
+  });
+
+  return <div>Example</div>;
+};
+```
+
+This would be an example using a prop called `foo`. The props are signals readonly, that's why it doesn't have the `.value`.
+
+You can also use async-await in effects:
+
+```tsx
+export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
+  const bar = state<any>();
+
+  effect(async () => {
+    if (foo === "bar") {
+      bar.value = await fetch(/* some endpoint */).then((r) => r.json());
+    }
+  });
+
+  return bar.value && <div>{bar.value.someField}</div>;
+};
+```
 
 ### onMount
 
