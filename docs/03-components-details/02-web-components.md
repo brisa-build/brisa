@@ -36,17 +36,23 @@ They can now be used directly as HTML tags in the rest of the web-components and
 
 We support type-safe, so TypeScript can make your life easier when using them.
 
-## Differences with server components
+## Differences with Server Components
 
 In order to make it easy during development, we support the fact that creating web-components is very similar to the rest of the components (Brisa mode). However there are some differences.
 
 Web components are fully reactive thanks to signals. There are no rerenders, no virtual DOM and no reconciliation.
 
-### State
+TODO
+
+## Creating a Web Component
+
+TODO
+
+## State
 
 The state is under a signal. This means that to consume it you have to use the `.value` clause.
 
-#### Example:
+### Example:
 
 `src/web-components/counter-component.tsx`:
 
@@ -74,7 +80,7 @@ export default function Counter({}, { state }: WebContext) {
 
 Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
 
-### Props
+## Props
 
 Brisa components use _props_ to communicate with each other. Every parent component can pass some information to its child components by giving them props. Props might remind you of HTML attributes, but you can pass any JavaScript value through them, including objects, arrays, and functions.
 
@@ -83,7 +89,7 @@ The properties are signals but can be used directly without using the `.value`, 
 > **Good to know**: Since props are signals, consume them directly or use [`derived`](#derived) method. Doing so breaks the reactivity:
 >
 > ```tsx
-> function UserImages({ urls }, { derived }) {
+> export default function UserImages({ urls }, { derived }) {
 >   // ❌ variable is no longer reactive
 >   const firstImage = urls[0];
 >   // ✅ Instead, use derived:
@@ -91,17 +97,7 @@ The properties are signals but can be used directly without using the `.value`, 
 > }
 > ```
 
-In this code, the `user-info` component isn’t passing any props to its child component, `user-images`:
-
-`src/web-components/user-info.tsx`:
-
-```tsx
-export default function UserInfo() {
-  return <user-images />;
-}
-```
-
-#### Step 1: Pass props to the child component
+### Step 1: Pass props to the child component
 
 First, pass some props to `user-images`. For example, let’s pass three props: urls (array of strings), width and height (number):
 
@@ -121,14 +117,14 @@ export default function UserInfo() {
 
 Now you can read these props inside the `user-images` component.
 
-#### Step 2: Read props inside the child component
+### Step 2: Read props inside the child component
 
 You can read these props by listing their names `urls`, `width`, `height` separated by the commas inside `({` and `})` directly after `function UserImages`. This lets you use them inside the `UserImages` code, like you would with a variable.
 
 `src/web-components/user-images.tsx`:
 
 ```tsx
-function UserImages({ urls, width, height }) {
+export default function UserImages({ urls, width, height }) {
   // urls, width and height are available here
   return urls.map((imageUrl) => (
     <img
@@ -142,19 +138,21 @@ function UserImages({ urls, width, height }) {
 }
 ```
 
-#### Specifying a default value for a prop
+### Specifying a default value for a prop
 
 If you want to give a prop a default value to fall back on when no value is specified, you can do it with the destructuring by putting `=` and the default value right after the parameter:
 
 ```tsx
-function UserImages({ urls = [], width = 300, height = 300 }) {
+export default function UserImages({ urls = [], width = 300, height = 300 }) {
   // ...
 }
 ```
 
-### Events
+Adding defaults in this way does not break reactivity.
 
-#### Events via attributes
+## Events
+
+### Events via attributes
 
 In Brisa Web Components there is a convention that events must start with `on` prefix. Ex: `onNext`, `onPrev`. This convention is because it is necessary to distinguish between attributes that are events and those that are not. And as the functions cannot serialize, we came to make this convention. After following this convention you can use events in Web Components as if you were in other frameworks such as React.
 
@@ -209,7 +207,7 @@ export default function ColorSVG({}: any, { state }: WebContext) {
 }
 ```
 
-#### DOM events
+### DOM events
 
 As web components are DOM elements, they also automatically have their own events. You can capture an `onClick` of any Web Component without the need to implement it inside:
 
@@ -223,7 +221,7 @@ As web components are DOM elements, they also automatically have their own event
 
 > **Good to know**: It is important to know this when naming events that do not conflict with [existing DOM events](https://www.w3schools.com/jsref/dom_obj_event.asp), to avoid "event fires twice" issues. Also important if you want to overwrite a DOM event, use the [`e.stopPropagation()`](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation) to avoid the conflict.
 
-#### Events on `ref`
+### Events on `ref`
 
 You can register an event after accessing an element with the `ref` attribute and `state`:
 
@@ -246,7 +244,7 @@ Although we recommend registering events via attributes, we also provide the opp
 
 > **Good to know**: For the `ref` attribute you do not have to put the `.value`, you have to put the whole state.
 
-### Effect
+## Effect
 
 Effects are used to record side effects such as fetching data, setting up a subscription, and manually changing the DOM in Brisa components.
 
@@ -282,23 +280,25 @@ export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
 };
 ```
 
-### onMount
+## onMount
 
-### Cleanup
+TODO
 
-### Derived
+## Cleanup
 
-### Context
+TODO
+
+## Derived
+
+TODO
+
+## Context
 
 Web Components do not have access to the [`request context`](/docs/building-your-application/data-fetching/request-context) directly as they are executed on the client. If they need something from the request context, it has to be passed as a parameter.
 
 To share context between Web Components without prop drilling you can use the web context.
 
 TODO: Implement and show an example
-
-## Creating a Web Component
-
-TODO
 
 ## Using Web Components in Web Components
 

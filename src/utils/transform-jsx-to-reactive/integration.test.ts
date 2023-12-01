@@ -2843,6 +2843,57 @@ describe("integration", () => {
       expect(window.mockEffect.mock.calls[4]).toEqual(["B", "y"]);
     });
 
+    it("should be possible to return an array and keep the reactivity", () => {
+      const userInfoCode = `
+          export default function UserInfo() {
+            return (
+              <user-images
+                urls={["some-image.jpg", "another-url.jpg"]}
+                width={300}
+                height={300}
+              />
+            );
+          }
+        `;
+      const userImagesCode = `
+          export default function UserImages({ urls, width, height }) {
+            return urls.map((imageUrl) => (
+              <img
+                class="avatar"
+                src={imageUrl}
+                width={width}
+                height={height}
+              />
+            ));
+          }
+        `;
+
+      defineBrisaWebComponent(userInfoCode, "src/web-components/user-info.tsx");
+
+      defineBrisaWebComponent(
+        userImagesCode,
+        "src/web-components/user-images.tsx"
+      );
+
+      document.body.innerHTML = "<user-info />";
+
+      const userInfo = document.querySelector("user-info") as HTMLElement;
+
+      const userImages = userInfo?.shadowRoot?.querySelector(
+        "user-images"
+      ) as HTMLElement;
+
+      expect(userImages?.shadowRoot?.innerHTML).toBe(
+        '<img class="avatar" src="some-image.jpg" width="300" height="300"><img class="avatar" src="another-url.jpg" width="300" height="300">'
+      );
+
+      userImages.setAttribute("urls", "['foo.jpg', 'bar.jpg', 'baz.jpg']");
+
+      expect(userImages?.shadowRoot?.innerHTML).toBe(
+        '<img class="avatar" src="foo.jpg" width="300" height="300"><img class="avatar" src="bar.jpg" width="300" height="300"><img class="avatar" src="baz.jpg" width="300" height="300">'
+      );
+    });
+
     it.todo(
       "should work an async-await effect changing state and with a conditional render",
       async () => {
