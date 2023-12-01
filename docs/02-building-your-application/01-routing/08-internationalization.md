@@ -707,7 +707,9 @@ For example, if a user prefers the locale `fr` in their accept-language header b
 
 ## Search Engine Optimization
 
-Since Brisa knows what language the user is visiting it will automatically add the `lang` attribute to the `<html>` tag.
+Since Brisa knows what language the user is visiting it will automatically add the `lang` and `dir` attributes to the `<html>` tag.
+
+The [`lang` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang) is added to define the language of the content assisting search engines and browsers, meanwhile the [`dir` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir) is added to indicate to search engines and browsers the directionality of the content text.
 
 ### Activate automatic `hrefLang`
 
