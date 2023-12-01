@@ -40,45 +40,63 @@ We support type-safe, so TypeScript can make your life easier when using them.
 
 In order to make it easy during development, we support the fact that creating web-components is very similar to the rest of the components (Brisa mode). However there are some differences.
 
-Web components are fully reactive thanks to signals. There are no rerenders, no virtual DOM and no reconciliation.
+Although the server components are interactive in Brisa, the interactivity of the server components is more focused on interactivity where the server is involved. It would not make sense to do the interactivity on the server for Spreadsheet cell components, since all this interactivity could be on the client avoiding constant calls to the server.
 
-TODO
+Web components are fully reactive thanks to [signals](#state-state-method). There are no rerenders, no virtual DOM and no reconciliation.
 
-## Creating a Web Component
-
-TODO
-
-## State
-
-The state is under a signal. This means that to consume it you have to use the `.value` clause.
-
-### Example:
-
-`src/web-components/counter-component.tsx`:
+And of course, unlike Server Components, you can access the [Web API](https://developer.mozilla.org/en-US/docs/Web/API):
 
 ```tsx
 import { WebContext } from "brisa";
 
-export default function Counter({}, { state }: WebContext) {
-  // Declaring state
-  const count = state<number>(0);
+export default function SomeWebComponent({}, { onMount, cleanup }: WebContext) {
+  onMount(() => document.addEventListener("scroll", onScroll));
+  cleanup(() => document.removeEventListener("scroll", onScroll));
 
-  // Setting state:
-  const inc = () => count.value++;
-  const dec = () => count.value--;
+  function onScroll(event) {
+    // some implementation of the scroll event
+  }
 
-  return (
-    <>
-      <button onClick={inc}>+</button>
-      {/* Consuming state: */}
-      <span> Counter: {count.value} </span>
-      <button onClick={dec}>-</button>
-    </>
-  );
+  return <div>{/* some content */}</div>;
 }
 ```
 
-Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
+In the last example, the scroll event is recorded when the web component is mounted and deleted when the web component is unmounted.
+
+## Creating a Web Component
+
+### Step 1: Create the file
+
+Unlike Server Components that can be created anywhere, web components must be inside the `src/web-component` folder. For example, let's create this file: `src/web-component/some-example.tsx`.
+
+Here the **file name** is very important, since it will be the name of the web-component selector. That is, we will be able to use it in other web/server components with the tag:
+
+```tsx
+<some-example>Some example</some-example>
+```
+
+The names of the Web Components, as a convention, must be created in [**kebab-case**](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case) and at least 2 batches to avoid conflicts with other elements of the web. However, you can group them in folders.
+
+| Route                                        | Correct | `selector`                 |
+| -------------------------------------------- | ------- | -------------------------- |
+| `src/web-component/some-example.tsx`         | ✅      | `<some-example/>`          |
+| `src/web-component/some/example.tsx`         | ✅      | `<some-example/>`          |
+| `src/web-component/some-complex-example.tsx` | ✅      | `<some-complex-example />` |
+| `src/web-component/SomeExample.tsx`          | ❌      | -                          |
+| `src/web-component/someExample.tsx`          | ❌      | -                          |
+| `src/web-component/some_complex-example.tsx` | ❌      | -                          |
+| `src/web-component/some_complex/example.tsx` | ❌      | -                          |
+| `src/web-component/some.tsx`                 | ❌      | -                          |
+
+### Step 2: Write and `export default` the component
+
+Once we have created the file, we can write our Web Component. The only thing we need to do to make it available is to make a `export default` of the component.
+
+```tsx
+export default function HelloWorld() {
+  return <div>Hello World</div>;
+}
+```
 
 ## Props
 
@@ -86,7 +104,7 @@ Brisa components use _props_ to communicate with each other. Every parent compon
 
 The properties are signals but can be used directly without using the `.value`, because they are readonly.
 
-> **Good to know**: Since props are signals, consume them directly or use [`derived`](#derived) method. Doing so breaks the reactivity:
+> **Good to know**: Since props are signals, consume them directly or use [`derived`](#derived-state-and-props-derived-method) method. Doing so breaks the reactivity:
 >
 > ```tsx
 > export default function UserImages({ urls }, { derived }) {
@@ -149,6 +167,82 @@ export default function UserImages({ urls = [], width = 300, height = 300 }) {
 ```
 
 Adding defaults in this way does not break reactivity.
+
+## Children
+
+In Brisa, the children prop is a special prop that allows components to pass elements, components, or even plain text as children to another component. It provides a flexible way to compose and structure Brisa applications.
+
+The children prop is implicitly available and can be accessed as an argument. Let's take a look at a simple example:
+
+`src/web-components/my-component.tsx`:
+
+```tsx
+const MyComponent = ({ children }) => {
+  return (
+    <div>
+      <p>This is my component</p>
+      {children}
+    </div>
+  );
+};
+
+export default MyComponent;
+```
+
+`src/web-components/parent-component.tsx`:
+
+```tsx
+const ParentComponent = () => {
+  return (
+    <my-component>
+      <p>These are the child components!</p>
+    </my-component>
+  );
+};
+
+export default ParentComponent;
+```
+
+In this example, the `my-component` component can render its content and any child components passed to it using the children prop.
+
+However, Web-components, by their nature, have the possibility to use the [`slot` tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) also to define children. You can use it in case you need **more than one child**. The prop `children` is an equivalent to an unnamed slot.
+
+This is **also valid**:
+
+`src/web-components/my-component-using-slots.tsx`:
+
+```tsx
+const MyComponentUsingSlots = () => {
+  return (
+    <div>
+      <p>This is my component with slots</p>
+      <div>
+        <slot name="header"></slot>
+      </div>
+      <div>
+        <slot name="content"></slot>
+      </div>
+    </div>
+  );
+};
+
+export default MyComponentUsingSlots;
+```
+
+`src/web-components/parent-component-using-slots.tsx`:
+
+```tsx
+const ParentComponentUsingSlots = () => {
+  return (
+    <my-component-using-slots>
+      <div slot="header">Header Content</div>
+      <p slot="content">These are the child components!</p>
+    </my-component-using-slots>
+  );
+};
+
+export default ParentComponentUsingSlots;
+```
 
 ## Events
 
@@ -244,7 +338,39 @@ Although we recommend registering events via attributes, we also provide the opp
 
 > **Good to know**: For the `ref` attribute you do not have to put the `.value`, you have to put the whole state.
 
-## Effect
+## State (`state` method)
+
+The state is under a signal. This means that to consume it you have to use the `.value` clause.
+
+### Example:
+
+`src/web-components/counter-component.tsx`:
+
+```tsx
+import { WebContext } from "brisa";
+
+export default function Counter({}, { state }: WebContext) {
+  // Declaring state
+  const count = state<number>(0);
+
+  // Setting state:
+  const inc = () => count.value++;
+  const dec = () => count.value--;
+
+  return (
+    <>
+      <button onClick={inc}>+</button>
+      {/* Consuming state: */}
+      <span> Counter: {count.value} </span>
+      <button onClick={dec}>-</button>
+    </>
+  );
+}
+```
+
+Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
+
+## Effects (`effect` method)
 
 Effects are used to record side effects such as fetching data, setting up a subscription, and manually changing the DOM in Brisa components.
 
@@ -280,15 +406,15 @@ export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
 };
 ```
 
-## onMount
+## Effect on mount (`onMount` method)
 
 TODO
 
-## Cleanup
+## Clean effects (`cleanup` method)
 
 TODO
 
-## Derived
+## Derived state and props (`derived` method)
 
 TODO
 
@@ -299,6 +425,10 @@ Web Components do not have access to the [`request context`](/docs/building-your
 To share context between Web Components without prop drilling you can use the web context.
 
 TODO: Implement and show an example
+
+## Portals (`createPortal`)
+
+## Inject HTML (`dangerHTML`)
 
 ## Using Web Components in Web Components
 
