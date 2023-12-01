@@ -428,7 +428,11 @@ TODO: Implement and show an example
 
 ## Portals (`createPortal`)
 
+TODO
+
 ## Inject HTML (`dangerHTML`)
+
+TODO
 
 ## Using Web Components in Web Components
 
