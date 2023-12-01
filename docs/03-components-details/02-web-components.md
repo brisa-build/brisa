@@ -76,7 +76,81 @@ Whenever a state mutate (change the `.value`) reactively updates these parts of 
 
 ### Props
 
-TODO
+Brisa components use _props_ to communicate with each other. Every parent component can pass some information to its child components by giving them props. Props might remind you of HTML attributes, but you can pass any JavaScript value through them, including objects, arrays, and functions.
+
+The properties are signals but can be used directly without using the `.value`, because they are readonly.
+
+> **Good to know**: Since props are signals, consume them directly or use [`derived`](#derived) method. Doing so breaks the reactivity:
+>
+> ```tsx
+> function UserImages({ urls }, { derived }) {
+>   // ❌ variable is no longer reactive
+>   const firstImage = urls[0];
+>   // ✅ Instead, use derived:
+>   const reactiveFirstImage = derived(() => urls[0]);
+> }
+> ```
+
+In this code, the `user-info` component isn’t passing any props to its child component, `user-images`:
+
+`src/web-components/user-info.tsx`:
+
+```tsx
+export default function UserInfo() {
+  return <user-images />;
+}
+```
+
+#### Step 1: Pass props to the child component
+
+First, pass some props to `user-images`. For example, let’s pass three props: urls (array of strings), width and height (number):
+
+`src/web-components/user-info.tsx`:
+
+```tsx
+export default function UserInfo() {
+  return (
+    <user-images
+      urls={["some-image.jpg", "another-url.jpg"]}
+      width={300}
+      height={300}
+    />
+  );
+}
+```
+
+Now you can read these props inside the `user-images` component.
+
+#### Step 2: Read props inside the child component
+
+You can read these props by listing their names `urls`, `width`, `height` separated by the commas inside `({` and `})` directly after `function UserImages`. This lets you use them inside the `UserImages` code, like you would with a variable.
+
+`src/web-components/user-images.tsx`:
+
+```tsx
+function UserImages({ urls, width, height }) {
+  // urls, width and height are available here
+  return urls.map((imageUrl) => (
+    <img
+      class="avatar"
+      src={imageUrl}
+      alt="probably we can add this 'alt' to prop also"
+      width={width}
+      height={height}
+    />
+  ));
+}
+```
+
+#### Specifying a default value for a prop
+
+If you want to give a prop a default value to fall back on when no value is specified, you can do it with the destructuring by putting `=` and the default value right after the parameter:
+
+```tsx
+function UserImages({ urls = [], width = 300, height = 300 }) {
+  // ...
+}
+```
 
 ### Events
 
