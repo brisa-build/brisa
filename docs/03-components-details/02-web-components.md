@@ -244,6 +244,8 @@ const ParentComponentUsingSlots = () => {
 export default ParentComponentUsingSlots;
 ```
 
+> **Good to know**: Slots only work in Web Components. In Server Components only works `children` prop.
+
 ## Events
 
 ### Events via attributes
@@ -408,15 +410,94 @@ export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
 
 ## Effect on mount (`onMount` method)
 
-TODO
+The `onMount` method is triggered only once, when the component has been mounted. In the case that the component is unmounted and mounted again, it will be called again, although it would be another instance of the component starting with its initial state.
+
+It is useful for using things during the life of the component, for example document events, or for accessing rendered DOM elements and having control over them.
+
+To delete the events recorded during this lifetime, there is the following [`cleanup`](#clean-effects-cleanup-method) method.
+
+```tsx
+import { WebContext } from "brisa";
+
+export default function SomeWebComponent({}, { onMount, cleanup }: WebContext) {
+  onMount(() => {
+    // Register things after mounting the component
+    document.addEventListener("scroll", onScroll);
+  });
+  cleanup(() => {
+    // Unregister when the component unmounts
+    document.removeEventListener("scroll", onScroll);
+  });
+
+  function onScroll(event) {
+    // some implementation of the scroll event
+  }
+
+  return <div>{/* some content */}</div>;
+}
+```
 
 ## Clean effects (`cleanup` method)
 
-TODO
+As discussed above in the [`onMount`](#effect-on-mount-onmount-method) method, there is also a cleanup method to clean up the unmount. However, it has more power than just this.
+
+The `cleanup` will be triggered when:
+
+- When the component is **unmounted**, it calls up all `cleanup` used in the component.
+- If you have a cleanup inside an [**`effect`**](#effects-effect-method), every time the `effect` is executed **before it is executed**, the `cleanup`s inside it will be called.
+
+```tsx
+import { WebContext } from "brisa";
+
+export default function SomeWebComponent({ foo }, { effect, cleanup }: WebContext) {
+  effect(() => {
+    const interval = setInterval(() => console.log(foo), 100)
+
+    // - Triggered before each effect execution (when "foo" change)
+    // - Triggered also on unmount
+    cleanup(() => clearInterval(interval)) //
+  });
+
+  cleanup(() => /* Triggered on unmount */);
+
+  return <div>{/* some content */}</div>;
+}
+```
 
 ## Derived state and props (`derived` method)
 
-TODO
+The `derived` method is useful to create signals derived from other signals such as state or props.
+
+Example derived from props:
+
+`src/web-components/my-component.tsx`:
+
+```tsx
+export default function MyComponent({ user }, { derived }) {
+  const username = derived(() => user.name ?? "No user");
+
+  return <div>{username.value}</div>;
+}
+```
+
+Example derived from state:
+
+`src/web-components/double-counter.tsx`:
+
+```tsx
+export default function DoubleCounter({}, { state, derived }) {
+  const count = state(0);
+  const double = derived(() => count.value * 2);
+
+  return (
+    <div>
+      <button onClick={() => count.value--}>Decrement</button>
+      {double.value}
+      <button onClick={() => count.value++}>Increment</button>
+    </div>
+  );
+}
+```
 
 ## Context
 
@@ -428,15 +509,84 @@ TODO: Implement and show an example
 
 ## Portals (`createPortal`)
 
-TODO
+`createPortal` lets you render some children into a different part of the DOM. `createPortal(children, domNode)`.
+
+To create a portal, call `createPortal`, passing some JSX, and the DOM node where it should be rendered:
+
+```tsx
+import { createPortal } from "brisa";
+
+export default function Component() {
+  return (
+    <div>
+      <p>This child is placed in the parent div.</p>
+      {createPortal(
+        <p>This child is placed in the document body.</p>,
+        document.body
+      )}
+    </div>
+  );
+}
+```
+
+A portal only changes the physical placement of the DOM node. In every other way, the JSX you render into a portal acts as a child node of the Brisa component that renders it. For example, the child can access the context provided by the parent tree, and events bubble up from children to parents according to the Brisa tree.
 
 ## Inject HTML (`dangerHTML`)
 
-TODO
+Make situations that we want to inject HTML that we have in string to the DOM. For these occasions, you can use the `dangerHTML` function. Since without this function it is escaped by security.
+
+```tsx
+export default function SomeComponent() {
+  return (
+    <>
+      {/* Escaped by default (doesn't work for security): */}
+      {'<script>alert("This is escaped and is not going to work")</script>'}
+
+      {/* Force to inject an string as HTML: */}
+      {dangerHTML(
+        '<script>alert("This is injected and is going to work")</script>'
+      )}
+    </>
+  );
+}
+```
 
 ## Using Web Components in Web Components
 
-TODO
+Within the web components you can use other web components by writing them as if they were other DOM elements. We are not going to use any import, we can consume it directly as another HTML tag.
+
+Example consuming a Web Component inside a Web Component:
+
+```tsx filename="src/web-components/using-web-component.tsx" switcher
+import { WebContext } from "brisa";
+
+type Props = { name: string };
+
+export function ServerComponent(
+  { name, children }: Props,
+  webContext: WebContext
+) {
+  return (
+    <div>
+      {/* This is the Web Component, no import need it, is like more HTML tags */}
+      <some-web-component name={name}>{children}</some-web-component>
+    </div>
+  );
+}
+```
+
+```js filename="src/web-components/using-web-component.js" switcher
+import { WebContext } from "brisa";
+
+export function ServerComponent({ name, children }, webContext) {
+  return (
+    <div>
+      {/* This is the Web Component, no import need it, is like more HTML tags */}
+      <some-web-component name={name}>{children}</some-web-component>
+    </div>
+  );
+}
+```
 
 ## Using Web Components in Server Components
 
@@ -482,7 +632,50 @@ export function ServerComponent({ name }, requestContext) {
 
 ## Using Server Components in Web Components
 
-TODO
+It is not possible to use Server Components inside Web Components **directly** (with an import). However, it **is possible** to add Server Components within Web Components. But it can only be done through the prop [**children**](#children) or using [**slots**](#children).
+
+Web component:
+
+`src/web-components/my-counter.tsx`:
+
+```tsx
+const LIMIT = 100;
+
+export default function MyCounter({ children, onLimit }, { state, effect }) {
+  const count = state(0);
+
+  effect(() => {
+    if (count.value === LIMIT) {
+      console.log("Log from client");
+      onLimit();
+    }
+  });
+
+  return (
+    <div>
+      <button onClick={() => count.value--}>-</button>
+      <button onClick={() => count.value++}>+</button>
+      {count.value}
+      {/* This children can be a Server Component: */}
+      <div>{children}</div>
+    </div>
+  );
+}
+```
+
+Server Component:
+
+```tsx
+import AnotherServerComponent from "./another";
+
+export default function MyServerComponent() {
+  return (
+    <my-counter onLimit={() => console.log("Log from server")}>
+      <AnotherServerComponent />
+    </my-counter>
+  );
+}
+```
 
 ## UI-agnostic
 
