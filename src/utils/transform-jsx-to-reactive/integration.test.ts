@@ -159,6 +159,85 @@ describe("integration", () => {
       );
     });
 
+    it('should work different children using slot with "name" attribute', () => {
+      const componentWithSlotsCode = `
+      const MyComponentUsingSlots = () => {
+        return (
+          <div>
+            <p>This is my component with slots</p>
+            <div>
+              <slot name="header"></slot>
+            </div>
+            <div>
+              <slot name="content"></slot>
+            </div>
+          </div>
+        );
+      };
+
+      export default MyComponentUsingSlots;
+    `;
+      const parentComponentUsingSlotsCode = `
+      const ParentComponentUsingSlots = () => {
+        return (
+          <my-component-using-slots>
+            <div slot="header">Header Content</div>
+            <p slot="content">These are the child components!</p>
+          </my-component-using-slots>
+        );
+      };
+
+      export default ParentComponentUsingSlots;
+      `;
+
+      defineBrisaWebComponent(
+        componentWithSlotsCode,
+        "src/web-components/my-component-using-slots.tsx"
+      );
+
+      defineBrisaWebComponent(
+        parentComponentUsingSlotsCode,
+        "src/web-components/parent-component-using-slots.tsx"
+      );
+
+      document.body.innerHTML = `
+        <parent-component-using-slots></parent-component-using-slots>
+      `;
+
+      const parentComponentUsingSlots = document.querySelector(
+        "parent-component-using-slots"
+      ) as HTMLElement;
+
+      expect(parentComponentUsingSlots?.shadowRoot?.innerHTML).toBe(
+        '<my-component-using-slots><div slot="header">Header Content</div><p slot="content">These are the child components!</p></my-component-using-slots>'
+      );
+
+      const myComponentUsingSlots =
+        parentComponentUsingSlots?.shadowRoot?.querySelector(
+          "my-component-using-slots"
+        ) as HTMLElement;
+
+      expect(myComponentUsingSlots?.shadowRoot?.innerHTML).toBe(
+        '<div><p>This is my component with slots</p><div><slot name="header"></slot></div><div><slot name="content"></slot></div></div>'
+      );
+
+      const headerSlot = myComponentUsingSlots?.shadowRoot?.querySelector(
+        'slot[name="header"]'
+      ) as HTMLSlotElement;
+
+      expect(headerSlot?.assignedElements()[0].innerHTML).toBe(
+        "Header Content"
+      );
+
+      const contentSlot = myComponentUsingSlots?.shadowRoot?.querySelector(
+        'slot[name="content"]'
+      ) as HTMLSlotElement;
+
+      expect(contentSlot?.assignedElements()[0].innerHTML).toBe(
+        "These are the child components!"
+      );
+    });
+
     it("should work with conditional rendering inside text node", () => {
       const code = `
       export default function ConditionalRender({ name, children }: any) {
