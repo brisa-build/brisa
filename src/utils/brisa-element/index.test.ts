@@ -2295,5 +2295,30 @@ describe("utils", () => {
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Test</div>");
     });
+
+    it('should unmount/mount again a component when the "key" prop changes', async () => {
+      const mockRender = mock((key: number) => {});
+      const Component = ({ key }: any, { h }: any) => {
+        mockRender(key.value);
+        return h(null, {}, ["div", {}, key.value]);
+      };
+
+      document.body.innerHTML = '<key-component key="1" />';
+      customElements.define("key-component", brisaElement(Component));
+
+      const testComponent = document.querySelector(
+        "key-component"
+      ) as HTMLElement;
+
+      expect(mockRender).toHaveBeenCalledTimes(1);
+      expect(mockRender.mock.calls[0][0]).toBe(1);
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
+
+      testComponent.setAttribute("key", "2");
+
+      expect(mockRender).toHaveBeenCalledTimes(2);
+      expect(mockRender.mock.calls[1][0]).toBe(2);
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
+    });
   });
 });

@@ -147,6 +147,7 @@ export default function UserImages({ urls, width, height }) {
   return urls.map((imageUrl) => (
     <img
       class="avatar"
+      key={imageUrl}
       src={imageUrl}
       alt="probably we can add this 'alt' to prop also"
       width={width}
@@ -167,6 +168,40 @@ export default function UserImages({ urls = [], width = 300, height = 300 }) {
 ```
 
 Adding defaults in this way does not break reactivity.
+
+### `key` property
+
+Each child in a list should have a unique "`key`" prop. Keys tell Brisa which array item each component corresponds to, so that it can match them up later. This becomes important if your array items can move (e.g. due to sorting), get inserted, or get deleted. A well-chosen key helps Brisa infer what exactly has happened, and make the correct updates to the DOM tree.
+
+```tsx
+export default function List({ people }) {
+  return (
+    <ul>
+      {people.map((person) => (
+        <li key={person.id}>
+          <img src={getImageUrl(person)} alt={person.name} />
+          <p>
+            <b>{person.name}</b>
+            {" " + person.profession + " "}
+            known for {person.accomplishment}
+          </p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+The `key` property is also an attribute to identify the instance of a component. When the value of `key` changes, it forces a unmount + mount of the component again, resetting the state of the component.
+
+For example, if we use the locale as `key`, changing the locale will reset the state of the component.
+
+```tsx
+export default function ExampleOfKey({}, { i18n }) {
+  // If locale change, some-component is going to be unmounted + mounted
+  return <some-component key={i18n.locale} />;
+}
+```
 
 ## Children
 

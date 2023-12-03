@@ -3151,5 +3151,69 @@ describe("integration", () => {
         );
       }
     );
+
+    it('should unmount and mount again when the attribute "key" changes', async () => {
+      window.mockMount = mock((s: string) => {});
+      const code = `
+        export default function Component({ key }, { onMount }) {
+          onMount(() => window.mockMount(key));
+          return <div>{key}</div>;
+        }
+      `;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component key='1' />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
+
+      await Bun.sleep(0);
+      expect(window.mockMount).toHaveBeenCalledTimes(1);
+      expect(window.mockMount.mock.calls[0][0]).toBe(1);
+
+      testComponent.setAttribute("key", "2");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
+
+      await Bun.sleep(0);
+      expect(window.mockMount).toHaveBeenCalledTimes(2);
+      expect(window.mockMount.mock.calls[1][0]).toBe(2);
+    });
+
+    it('should reset the state when the attribute "key" changes', () => {
+      window.mockMount = mock((s: string) => {});
+      const code = `
+        export default function Component({}, {state }) {
+          const count = state(0);
+          return <div onClick={() => count.value++}>{count.value}</div>;
+        }
+      `;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component key='1' />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      const div = testComponent?.shadowRoot?.querySelector("div");
+
+      expect(div?.innerHTML).toBe("0");
+
+      div?.click();
+
+      expect(div?.innerHTML).toBe("1");
+
+      testComponent.setAttribute("key", "2");
+
+      const newDiv = testComponent?.shadowRoot?.querySelector("div");
+
+      expect(newDiv?.innerHTML).toBe("0");
+    });
   });
 });
