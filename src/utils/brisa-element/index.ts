@@ -26,6 +26,7 @@ const SLOT_TAG = "slot";
 const KEY = "key";
 const CONNECTED_CALLBACK = "connectedCallback";
 const DISCONNECTED_CALLBACK = "disconnectedCallback";
+const INNER_HTML = "innerHTML";
 
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
@@ -154,7 +155,7 @@ export default function brisaElement(
 
         // Handle children
         if ((children as any)?.type === DANGER_HTML) {
-          el.innerHTML += (children as any).props.html as string;
+          el[INNER_HTML] += (children as any).props.html as string;
         } else if (children === SLOT_TAG) {
           appendChild(el, createElement(SLOT_TAG));
         } else if (isReactiveArray(children)) {
@@ -192,10 +193,10 @@ export default function brisaElement(
 
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {
-                    const div = createElement("div");
-                    div.innerHTML += (child as any).props.html as string;
+                    const p = createElement("p");
+                    p[INNER_HTML] += (child as any).props.html as string;
 
-                    for (let node of arr(div.childNodes)) {
+                    for (let node of arr(p.childNodes)) {
                       appendChild(fragment, node);
                     }
                   }
@@ -261,7 +262,7 @@ export default function brisaElement(
     // Clean up signals on disconnection
     [DISCONNECTED_CALLBACK]() {
       const self = this;
-      self.shadowRoot!.innerHTML = "";
+      self.shadowRoot![INNER_HTML] = "";
       self.s?.cleanAll();
       delete self.s;
     }
