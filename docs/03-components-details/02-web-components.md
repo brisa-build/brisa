@@ -571,6 +571,8 @@ A portal only changes the physical placement of the DOM node. In every other way
 Make situations that we want to inject HTML that we have in string to the DOM. For these occasions, you can use the `dangerHTML` function. Since without this function it is escaped by security.
 
 ```tsx
+import { dangerHTML } from "brisa";
+
 export default function SomeComponent() {
   return (
     <>
