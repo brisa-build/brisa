@@ -5,7 +5,7 @@ type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
 type Render = (
   props: Record<string, unknown>,
-  ctx: ReturnType<typeof signals> & {
+  s: ReturnType<typeof signals> & {
     onMount(cb: () => void): void;
     css(strings: string[], ...values: string[]): void;
     h(tagName: string, attributes: Attr, children: unknown): void;
@@ -24,6 +24,8 @@ const DANGER_HTML = "danger-html";
 const PORTAL = "portal";
 const SLOT_TAG = "slot";
 const KEY = "key";
+const CONNECTED_CALLBACK = "connectedCallback";
+const DISCONNECTED_CALLBACK = "disconnectedCallback";
 
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
@@ -35,6 +37,7 @@ const createTextNode = (text: Children) => {
 const isReactiveArray = (a: any) =>
   a?.some?.((v: unknown) => typeof v === "object");
 const arr = Array.from;
+const isFunction = (fn: unknown) => typeof fn === "function";
 const lowercase = (str: string) => str.toLowerCase();
 const isAttributeAnEvent = (key: string) => key.startsWith("on");
 const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
@@ -87,24 +90,25 @@ export default function brisaElement(
 
   return class extends HTMLElement {
     p: Record<string, StateSignal | Event> | undefined;
-    ctx: ReturnType<typeof signals> | undefined;
+    s: ReturnType<typeof signals> | undefined;
 
     static get observedAttributes() {
       return attributesLowercase;
     }
 
-    async connectedCallback() {
-      this.ctx = signals();
-      const { state, effect } = this.ctx;
-      const shadowRoot = this.shadowRoot ?? this.attachShadow({ mode: "open" });
+    async [CONNECTED_CALLBACK]() {
+      const self = this;
+      self.s = signals();
+      const { state, effect } = self.s;
+      const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
 
-      this.p = {};
+      self.p = {};
 
       for (let attr of observedAttributes) {
-        this.p[attributesObj[attr]] = isAttributeAnEvent(attr)
-          ? this.e(attr)
-          : state(deserialize(this.getAttribute(attr)));
+        self.p[attributesObj[attr]] = isAttributeAnEvent(attr)
+          ? self.e(attr)
+          : state(deserialize(self.getAttribute(attr)));
       }
 
       function handlePortal(
@@ -141,7 +145,7 @@ export default function brisaElement(
                 (e as CustomEvent)?.detail ?? e
               )
             );
-          } else if (!isEvent && typeof attrValue === "function") {
+          } else if (!isEvent && isFunction(attrValue)) {
             effect(r(() => setAttribute(el, attribute, (attrValue as any)())));
           } else {
             setAttribute(el, attribute, attrValue as string);
@@ -161,7 +165,7 @@ export default function brisaElement(
           } else {
             hyperScript(...(children as [string, Attr, Children]), el, r);
           }
-        } else if (typeof children === "function") {
+        } else if (isFunction(children)) {
           let lastNodes: ChildNode[] | undefined;
 
           const insertOrUpdate = (
@@ -236,9 +240,9 @@ export default function brisaElement(
       }
 
       await render(
-        { children: SLOT_TAG, ...this.p },
+        { children: SLOT_TAG, ...self.p },
         {
-          ...this.ctx,
+          ...self.s,
           h: hyperScript,
           onMount(cb: () => void) {
             fnToExecuteAfterMount.push(cb);
@@ -255,10 +259,11 @@ export default function brisaElement(
     }
 
     // Clean up signals on disconnection
-    disconnectedCallback() {
-      this.shadowRoot!.innerHTML = "";
-      this.ctx?.cleanAll();
-      delete this.ctx;
+    [DISCONNECTED_CALLBACK]() {
+      const self = this;
+      self.shadowRoot!.innerHTML = "";
+      self.s?.cleanAll();
+      delete self.s;
     }
 
     // Handle events
@@ -276,14 +281,16 @@ export default function brisaElement(
       oldValue: string | null,
       newValue: string | null
     ) {
+      const self = this;
+
       // unmount + mount again when the key changes
       if (name === KEY && oldValue != null && oldValue !== newValue) {
-        this.disconnectedCallback();
-        this.connectedCallback();
+        self[DISCONNECTED_CALLBACK]();
+        self[CONNECTED_CALLBACK]();
       }
       // Handle component props
-      if (this.p && oldValue !== newValue && !isAttributeAnEvent(name)) {
-        (this.p[attributesObj[name]] as StateSignal).value =
+      if (self.p && oldValue !== newValue && !isAttributeAnEvent(name)) {
+        (self.p[attributesObj[name]] as StateSignal).value =
           deserialize(newValue);
       }
     }
