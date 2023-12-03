@@ -23,6 +23,7 @@ const XLINK_NAMESPACE = `${W3}1999/xlink`;
 const DANGER_HTML = "danger-html";
 const PORTAL = "portal";
 const SLOT_TAG = "slot";
+const KEY = "key";
 
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
@@ -76,6 +77,8 @@ export default function brisaElement(
   const attributesLowercase: string[] = [];
   const attributesObj: Record<string, string> = {};
 
+  observedAttributes.push(KEY);
+
   for (let attr of observedAttributes) {
     const lowercaseAttr = lowercase(attr);
     attributesObj[lowercaseAttr] = attributesObj[attr] = attr;
@@ -93,7 +96,7 @@ export default function brisaElement(
     async connectedCallback() {
       this.ctx = signals();
       const { state, effect } = this.ctx;
-      const shadowRoot = this.attachShadow({ mode: "open" });
+      const shadowRoot = this.shadowRoot ?? this.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
 
       this.p = {};
@@ -253,6 +256,7 @@ export default function brisaElement(
 
     // Clean up signals on disconnection
     disconnectedCallback() {
+      this.shadowRoot!.innerHTML = "";
       this.ctx?.cleanAll();
       delete this.ctx;
     }
@@ -272,6 +276,11 @@ export default function brisaElement(
       oldValue: string | null,
       newValue: string | null
     ) {
+      // unmount + mount again when the key changes
+      if (name === KEY && oldValue != null && oldValue !== newValue) {
+        this.disconnectedCallback();
+        this.connectedCallback();
+      }
       // Handle component props
       if (this.p && oldValue !== newValue && !isAttributeAnEvent(name)) {
         (this.p[attributesObj[name]] as StateSignal).value =
