@@ -79,8 +79,8 @@ describe("utils", () => {
 
       const output = await getClientCodeInPage(input, allWebComponents);
       const expected = {
-        code: "l$=new Set([]);u$=(b)=>{l$.add(b);for(let v of l$){const $=document.getElementById(`S:${v}`),r=document.getElementById(`U:${v}`);if(!$||!r)continue;l$.delete(v),$.replaceWith(r.content.cloneNode(!0)),r.remove(),document.getElementById(`R:${v}`)?.remove()}};\n",
-        size: 258,
+        code: "l$=new Set;u$=(h)=>{const v=(r)=>document.getElementById(r);l$.add(h);for(let r of l$){const g=v(`S:${r}`),f=v(`U:${r}`);if(!g||!f)continue;l$.delete(r),g.replaceWith(f.content.cloneNode(!0)),f.remove(),v(`R:${r}`)?.remove()}};\n",
+        size: 228,
       };
       expect(output).toEqual(expected);
     });
