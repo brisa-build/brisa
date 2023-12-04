@@ -3075,7 +3075,7 @@ describe("integration", () => {
               </form>
               <ul>
                 {list.value.map((item: string, index: number) => (
-                  <li>
+                  <li key={item}>
                     <button onClick={() => deleteItem(index)}>delete</button>
                     <button onClick={() => moveItemUp(index)}>move up</button>
                     {item}

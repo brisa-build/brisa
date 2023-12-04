@@ -25,7 +25,7 @@ const PORTAL = "portal";
 const SLOT_TAG = "slot";
 const KEY = "key";
 const CONNECTED_CALLBACK = "connectedCallback";
-const DISCONNECTED_CALLBACK = "disconnectedCallback";
+const DISCONNECTED_CALLBACK = "dis" + CONNECTED_CALLBACK;
 const INNER_HTML = "innerHTML";
 
 const createTextNode = (text: Children) => {
