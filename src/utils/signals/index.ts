@@ -82,14 +82,14 @@ export default function signals() {
             calledSameEffectOnce = !calledSameEffectOnce;
           }
 
-          // This means that is a new registered effect, so it is already executed
-          // However is interesting to iterate to the updated effects to don't execute
-          // the removed ones (subeffects)
-          if (!clonedEffects.has(fn)) continue;
-
-          cleanSubEffects(fn);
-          cleanupAnEffect(fn);
-          fn(addSubEffect(fn));
+          // When is not entering means that is a new registered effect, so it is
+          // already executed. However is interesting to iterate to the updated
+          // effects to don't execute the removed ones (subeffects)
+          if (clonedEffects.has(fn)) {
+            cleanSubEffects(fn);
+            cleanupAnEffect(fn);
+            fn(addSubEffect(fn));
+          }
         }
       },
     };

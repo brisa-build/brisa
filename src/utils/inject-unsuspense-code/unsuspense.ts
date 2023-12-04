@@ -17,12 +17,12 @@ u$ = (idSection: string) => {
     const suspensedElement = byId(`S:${id}`);
     const ususpensedTemplate = byId(`U:${id}`) as HTMLTemplateElement;
 
-    if (!suspensedElement || !ususpensedTemplate) continue;
+    if (suspensedElement && ususpensedTemplate) {
+      l$.delete(id);
 
-    l$.delete(id);
-
-    suspensedElement.replaceWith(ususpensedTemplate.content.cloneNode(true));
-    ususpensedTemplate.remove();
-    byId(`R:${id}`)?.remove();
+      suspensedElement.replaceWith(ususpensedTemplate.content.cloneNode(true));
+      ususpensedTemplate.remove();
+      byId(`R:${id}`)?.remove();
+    }
   }
 };

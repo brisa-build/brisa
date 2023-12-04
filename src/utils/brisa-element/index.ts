@@ -18,8 +18,8 @@ export const _on = Symbol("on");
 export const _off = Symbol("off");
 
 const W3 = "http://www.w3.org/";
-const SVG_NAMESPACE = `${W3}2000/svg`;
-const XLINK_NAMESPACE = `${W3}1999/xlink`;
+const SVG_NAMESPACE = W3 + "2000/svg";
+const XLINK_NAMESPACE = W3 + "1999/xlink";
 const DANGER_HTML = "danger-html";
 const PORTAL = "portal";
 const SLOT_TAG = "slot";
@@ -282,7 +282,7 @@ export default function brisaElement(
       oldValue: string | null,
       newValue: string | null
     ) {
-      const self = this;
+      const self = this as any;
 
       // unmount + mount again when the key changes
       if (name === KEY && oldValue != null && oldValue !== newValue) {
