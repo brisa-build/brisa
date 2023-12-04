@@ -20,13 +20,13 @@ export const _off = Symbol("off");
 const W3 = "http://www.w3.org/";
 const SVG_NAMESPACE = W3 + "2000/svg";
 const XLINK_NAMESPACE = W3 + "1999/xlink";
-const DANGER_HTML = "danger-html";
+const HTML = "HTML";
 const PORTAL = "portal";
 const SLOT_TAG = "slot";
 const KEY = "key";
 const CONNECTED_CALLBACK = "connectedCallback";
 const DISCONNECTED_CALLBACK = "dis" + CONNECTED_CALLBACK;
-const INNER_HTML = "innerHTML";
+const INNER_HTML = "inner" + HTML;
 
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
@@ -154,8 +154,8 @@ export default function brisaElement(
         }
 
         // Handle children
-        if ((children as any)?.type === DANGER_HTML) {
-          el[INNER_HTML] += (children as any).props.html as string;
+        if ((children as any)?.type === HTML) {
+          (el as any)[INNER_HTML] += (children as any).props.html as string;
         } else if (children === SLOT_TAG) {
           appendChild(el, createElement(SLOT_TAG));
         } else if (isReactiveArray(children)) {
@@ -185,7 +185,7 @@ export default function brisaElement(
               function startEffect(child: Children) {
                 [child, el] = handlePortal(child, el);
 
-                const isDangerHTML = (child as any)?.type === DANGER_HTML;
+                const isDangerHTML = (child as any)?.type === HTML;
 
                 if (isDangerHTML || isReactiveArray(child)) {
                   let currentElNodes = arr(el.childNodes);
@@ -194,7 +194,8 @@ export default function brisaElement(
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {
                     const p = createElement("p");
-                    p[INNER_HTML] += (child as any).props.html as string;
+                    (p as any)[INNER_HTML] += (child as any).props
+                      .html as string;
 
                     for (let node of arr(p.childNodes)) {
                       appendChild(fragment, node);
@@ -262,7 +263,7 @@ export default function brisaElement(
     // Clean up signals on disconnection
     [DISCONNECTED_CALLBACK]() {
       const self = this;
-      self.shadowRoot![INNER_HTML] = "";
+      (self.shadowRoot as any)[INNER_HTML] = "";
       self.s?.cleanAll();
       delete self.s;
     }

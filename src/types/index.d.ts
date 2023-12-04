@@ -173,7 +173,7 @@ interface ComponentType extends JSXComponent {
 }
 
 export function dangerHTML(html: string): {
-  type: "danger-html";
+  type: "HTML";
   props: {
     html: string;
   };
