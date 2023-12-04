@@ -5,17 +5,17 @@ declare global {
   var l$: Set<string>;
 }
 
-l$ = new Set([]);
+l$ = new Set();
 
 // window.u$: Unsuspense component
 u$ = (idSection: string) => {
+  const byId = (id: string) => document.getElementById(id);
+
   l$.add(idSection);
 
   for (let id of l$) {
-    const suspensedElement = document.getElementById(`S:${id}`);
-    const ususpensedTemplate = document.getElementById(
-      `U:${id}`
-    ) as HTMLTemplateElement;
+    const suspensedElement = byId(`S:${id}`);
+    const ususpensedTemplate = byId(`U:${id}`) as HTMLTemplateElement;
 
     if (!suspensedElement || !ususpensedTemplate) continue;
 
@@ -23,6 +23,6 @@ u$ = (idSection: string) => {
 
     suspensedElement.replaceWith(ususpensedTemplate.content.cloneNode(true));
     ususpensedTemplate.remove();
-    document.getElementById(`R:${id}`)?.remove();
+    byId(`R:${id}`)?.remove();
   }
 };
