@@ -8,6 +8,9 @@ type State<T> = {
 
 export default function signals() {
   const stack: Effect[] = [];
+  const getSet = <T>(set: Map<unknown, Set<T>>, key: unknown) =>
+    set.get(key) ?? new Set();
+
   let effects = new Map<State<unknown>, Set<Effect>>();
   let cleanups = new Map<Effect, Set<Cleanup>>();
   let subEffectsPerEffect = new Map<Effect, Set<Effect>>();
@@ -18,14 +21,14 @@ export default function signals() {
   }
 
   function cleanupAnEffect(eff: Effect) {
-    const cleans = cleanups.get(eff) ?? new Set();
+    const cleans = getSet<Cleanup>(cleanups, eff);
     for (let clean of cleans) clean();
     cleanups.delete(eff);
   }
 
   function addSubEffect(eff: Effect) {
     const r = (subEffect: Effect) => {
-      const subEffects = subEffectsPerEffect.get(eff) ?? new Set();
+      const subEffects = getSet<Effect>(subEffectsPerEffect, eff);
       subEffects.add(subEffect);
       subEffectsPerEffect.set(eff, subEffects);
       return subEffect;
@@ -35,7 +38,7 @@ export default function signals() {
   }
 
   function cleanSubEffects(fn: Effect) {
-    const subEffects = subEffectsPerEffect.get(fn) ?? new Set();
+    const subEffects = getSet<Effect>(subEffectsPerEffect, fn);
 
     for (let subEffect of subEffects) {
       // Call cleanups of subeffects + remove them
@@ -62,14 +65,14 @@ export default function signals() {
     return {
       get value() {
         if (stack[0]) {
-          effects.set(this, (effects.get(this) ?? new Set()).add(stack[0]));
+          effects.set(this, getSet<Effect>(effects, this).add(stack[0]));
         }
         return initialValue!;
       },
       set value(v) {
         initialValue = v;
 
-        const currentEffects = effects.get(this) ?? [];
+        const currentEffects = getSet<Effect>(effects, this);
         const clonedEffects = new Set<Effect>([...currentEffects]);
 
         for (let fn of currentEffects) {
@@ -109,7 +112,7 @@ export default function signals() {
   }
 
   function cleanup(fn: Cleanup, eff: Effect) {
-    const cleans = cleanups.get(eff) ?? new Set();
+    const cleans = getSet<Cleanup>(cleanups, eff);
     cleans.add(fn);
     cleanups.set(eff, cleans);
   }
