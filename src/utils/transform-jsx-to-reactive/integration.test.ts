@@ -2973,58 +2973,69 @@ describe("integration", () => {
       );
     });
 
-    it.todo(
-      "should work an async-await effect changing state and with a conditional render",
-      async () => {
-        const code = `
-        export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
-          const bar = state<any>()
-        
-          effect(async () => {
-            if (foo === 'bar') {
-              bar.value = await Promise.resolve({ someField: 'someValue' })
-            } else {
-              bar.value = null
-            }
-          })
-        
-          return bar.value && <div>{bar.value.someField}</div>;
-        };
+    it('should unmount and mount again when the attribute "key" changes', async () => {
+      window.mockMount = mock((s: string) => {});
+      const code = `
+        export default function Component({ key }, { onMount }) {
+          onMount(() => window.mockMount(key));
+          return <div>{key}</div>;
+        }
       `;
 
-        document.body.innerHTML = "<test-component foo='bar' />";
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
 
-        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      document.body.innerHTML = "<test-component key='1' />";
 
-        const testComponent = document.querySelector(
-          "test-component"
-        ) as HTMLElement;
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
 
-        await Bun.sleep(0);
+      await Bun.sleep(0);
+      expect(window.mockMount).toHaveBeenCalledTimes(1);
+      expect(window.mockMount.mock.calls[0][0]).toBe(1);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe(
-          "<div>someValue</div>"
-        );
+      testComponent.setAttribute("key", "2");
 
-        testComponent.setAttribute("foo", "baz");
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
 
-        await Bun.sleep(0);
+      await Bun.sleep(0);
+      expect(window.mockMount).toHaveBeenCalledTimes(2);
+      expect(window.mockMount.mock.calls[1][0]).toBe(2);
+    });
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+    it('should reset the state when the attribute "key" changes', () => {
+      window.mockMount = mock((s: string) => {});
+      const code = `
+        export default function Component({}, {state }) {
+          const count = state(0);
+          return <div onClick={() => count.value++}>{count.value}</div>;
+        }
+      `;
 
-        testComponent.setAttribute("foo", "bar");
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
 
-        await Bun.sleep(0);
+      document.body.innerHTML = "<test-component key='1' />";
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe(
-          "<div>someValue</div>"
-        );
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
 
-        await Bun.sleep(0);
-      }
-    );
+      const div = testComponent?.shadowRoot?.querySelector("div");
+
+      expect(div?.innerHTML).toBe("0");
+
+      div?.click();
+
+      expect(div?.innerHTML).toBe("1");
+
+      testComponent.setAttribute("key", "2");
+
+      const newDiv = testComponent?.shadowRoot?.querySelector("div");
+
+      expect(newDiv?.innerHTML).toBe("0");
+    });
 
     it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
@@ -3152,68 +3163,57 @@ describe("integration", () => {
       }
     );
 
-    it('should unmount and mount again when the attribute "key" changes', async () => {
-      window.mockMount = mock((s: string) => {});
-      const code = `
-        export default function Component({ key }, { onMount }) {
-          onMount(() => window.mockMount(key));
-          return <div>{key}</div>;
-        }
+    it.todo(
+      "should work an async-await effect changing state and with a conditional render",
+      async () => {
+        const code = `
+        export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
+          const bar = state<any>()
+        
+          effect(async () => {
+            if (foo === 'bar') {
+              bar.value = await Promise.resolve({ someField: 'someValue' })
+            } else {
+              bar.value = null
+            }
+          })
+        
+          return bar.value && <div>{bar.value.someField}</div>;
+        };
       `;
 
-      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+        document.body.innerHTML = "<test-component foo='bar' />";
 
-      document.body.innerHTML = "<test-component key='1' />";
+        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
 
-      const testComponent = document.querySelector(
-        "test-component"
-      ) as HTMLElement;
+        const testComponent = document.querySelector(
+          "test-component"
+        ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("");
 
-      await Bun.sleep(0);
-      expect(window.mockMount).toHaveBeenCalledTimes(1);
-      expect(window.mockMount.mock.calls[0][0]).toBe(1);
+        await Bun.sleep(0);
 
-      testComponent.setAttribute("key", "2");
+        expect(testComponent?.shadowRoot?.innerHTML).toBe(
+          "<div>someValue</div>"
+        );
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
+        testComponent.setAttribute("foo", "baz");
 
-      await Bun.sleep(0);
-      expect(window.mockMount).toHaveBeenCalledTimes(2);
-      expect(window.mockMount.mock.calls[1][0]).toBe(2);
-    });
+        await Bun.sleep(0);
 
-    it('should reset the state when the attribute "key" changes', () => {
-      window.mockMount = mock((s: string) => {});
-      const code = `
-        export default function Component({}, {state }) {
-          const count = state(0);
-          return <div onClick={() => count.value++}>{count.value}</div>;
-        }
-      `;
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("");
 
-      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+        testComponent.setAttribute("foo", "bar");
 
-      document.body.innerHTML = "<test-component key='1' />";
+        await Bun.sleep(0);
 
-      const testComponent = document.querySelector(
-        "test-component"
-      ) as HTMLElement;
+        expect(testComponent?.shadowRoot?.innerHTML).toBe(
+          "<div>someValue</div>"
+        );
 
-      const div = testComponent?.shadowRoot?.querySelector("div");
-
-      expect(div?.innerHTML).toBe("0");
-
-      div?.click();
-
-      expect(div?.innerHTML).toBe("1");
-
-      testComponent.setAttribute("key", "2");
-
-      const newDiv = testComponent?.shadowRoot?.querySelector("div");
-
-      expect(newDiv?.innerHTML).toBe("0");
-    });
+        await Bun.sleep(0);
+      }
+    );
   });
 });
