@@ -1,15 +1,15 @@
 import fs from "node:fs";
 import type {
-  Props,
   ComponentType,
   JSXNode,
+  Props,
   RequestContext,
 } from "../../types";
 import extendStreamController, {
   Controller,
 } from "../extend-stream-controller";
-import renderAttributes from "../render-attributes";
 import generateHrefLang from "../generate-href-lang";
+import renderAttributes from "../render-attributes";
 
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
@@ -61,7 +61,7 @@ async function enqueueDuringRendering(
     const { type, props } = elementContent;
     const isFragment = type?.__isFragment;
 
-    if (type === "danger-html") {
+    if (type === "HTML") {
       controller.enqueue(props.html, suspenseId);
       continue;
     }
