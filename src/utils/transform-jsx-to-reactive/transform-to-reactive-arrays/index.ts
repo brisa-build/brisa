@@ -75,6 +75,25 @@ export default function transformToReactiveArrays(
       const restOfProps = [];
       let children: any = [];
 
+      // Add "key" prop if it exists
+      if (value.arguments[2].name !== "undefined") {
+        restOfProps.push({
+          type: "Property",
+          key: {
+            type: "Identifier",
+            name: "key",
+          },
+          value: value.arguments[2],
+          shorthand: false,
+          computed: false,
+          method: false,
+          kind: "init",
+          extra: {
+            shorthand: false,
+          },
+        });
+      }
+
       for (let prop of props) {
         const name = prop.key?.name ?? prop.key?.object?.name;
 
@@ -207,28 +226,4 @@ function hasNodeASignal(node: ESTree.Node) {
   });
 
   return hasSignal;
-}
-
-function joinArray(elements: ESTree.ArrayExpression["elements"]) {
-  return {
-    type: "CallExpression",
-    callee: {
-      type: "MemberExpression",
-      object: {
-        type: "ArrayExpression",
-        elements,
-      },
-      computed: false,
-      property: {
-        type: "Identifier",
-        name: "join",
-      },
-    },
-    arguments: [
-      {
-        type: "Literal",
-        value: "",
-      },
-    ],
-  };
 }
