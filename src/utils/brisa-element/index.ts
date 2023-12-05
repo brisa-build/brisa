@@ -169,13 +169,11 @@ export default function brisaElement(
         } else if (isFunction(children)) {
           let lastNodes: ChildNode[] | undefined;
 
-          const insertOrUpdate = (
-            element: (ChildNode | DocumentFragment)[]
-          ) => {
+          const insertOrUpdate = (element: ChildNode | DocumentFragment) => {
             if (lastNodes && el.contains(lastNodes[0])) {
-              for (let e of element) el.insertBefore(e, lastNodes[0]);
+              el.insertBefore(element, lastNodes[0]);
               for (let node of lastNodes) node?.remove();
-            } else for (let e of element) appendChild(el, e);
+            } else appendChild(el, element);
           };
 
           effect(
@@ -213,8 +211,7 @@ export default function brisaElement(
                       r(r2)
                     );
                   }
-
-                  insertOrUpdate([fragment]);
+                  insertOrUpdate(fragment);
 
                   lastNodes = arr(el.childNodes).filter(
                     (node) => !currentElNodes.includes(node)
@@ -224,7 +221,7 @@ export default function brisaElement(
                 else {
                   const textNode = createTextNode(child);
 
-                  insertOrUpdate([textNode]);
+                  insertOrUpdate(textNode);
 
                   lastNodes = [textNode];
                 }
