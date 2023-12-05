@@ -1268,6 +1268,25 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it('should return the "key" attribute in list items when there is a "key" prop', () => {
+        const input = `
+          export default function MyComponent({ items }) {
+            return <ul>{items.map(item => <li key={item.id}>{item.name}</li>)}</ul>
+          }
+        `;
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+        );
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          export default brisaElement(function MyComponent({items}, {h}) {
+            return h('ul', {}, () => items.value.map(item => ['li', {key: item.id}, item.name]));
+          }, ['items']);`);
+
+        expect(output).toBe(expected);
+      });
+
       it("should wrap conditional renders in different returns inside an hyperScript function", () => {
         const input = `
           export default function MyComponent({ show }) {

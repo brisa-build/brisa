@@ -434,6 +434,25 @@ describe("utils", () => {
         `);
         expect(output).toBe(expected);
       });
+
+      it('should keep the "key" attribute', () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent() {
+            return (
+              <div key="foo">foo</div>
+            )
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = toInline(`
+          export default function MyComponent() {
+            return ['div', {key: "foo"}, 'foo'];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
     });
   });
 });
