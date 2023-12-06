@@ -75,8 +75,9 @@ export default function transformToReactiveArrays(
       const restOfProps = [];
       let children: any = [];
 
-      // Add "key" prop if it exists
-      if (value.arguments[2].name !== "undefined") {
+      // Add "key" prop if it exists 
+      // (compare as string because is undefined in jsx prod vs "undefined" in jsxDev)
+      if ((value.arguments?.[2]?.name + '') !== "undefined") {
         restOfProps.push({
           type: "Property",
           key: {
