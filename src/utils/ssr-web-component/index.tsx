@@ -7,7 +7,7 @@ type Props = {
   [key: string]: any;
 };
 
-const voidFn = () => {};
+const voidFn = () => { };
 
 export default function SSRWebComponent({
   Component,

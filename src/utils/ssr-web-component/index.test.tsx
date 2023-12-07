@@ -37,7 +37,7 @@ describe("utils", () => {
     });
 
     it("should render a web component with css template literal", () => {
-      const Component = ({}, { css }: WebContext) => {
+      const Component = ({ }, { css }: WebContext) => {
         css`
           div {
             color: red;
@@ -63,7 +63,7 @@ describe("utils", () => {
     });
 
     it("should render a web component with a initial state", () => {
-      const Component = ({}, { state }: WebContext) => {
+      const Component = ({ }, { state }: WebContext) => {
         const foo = state({ name: "world" });
 
         return <div>hello {foo.value.name}</div>;
@@ -81,7 +81,7 @@ describe("utils", () => {
     });
 
     it("should render a web component with a derived state", () => {
-      const Component = ({}, { state, derived }: WebContext) => {
+      const Component = ({ }, { state, derived }: WebContext) => {
         const foo = state({ name: "wor" });
         const bar = derived(() => foo.value.name + "ld");
 
@@ -100,7 +100,7 @@ describe("utils", () => {
     });
 
     it("should render a web component with a effect", () => {
-      const Component = ({}, { effect }: WebContext) => {
+      const Component = ({ }, { effect }: WebContext) => {
         effect(() => {
           document.title = "hello world";
         });
@@ -120,7 +120,7 @@ describe("utils", () => {
     });
 
     it("should render a web component with a cleanup", () => {
-      const Component = ({}, { cleanup }: WebContext) => {
+      const Component = ({ }, { cleanup }: WebContext) => {
         cleanup(() => {
           document.title = "hello world";
         });
@@ -140,7 +140,7 @@ describe("utils", () => {
     });
 
     it("should render a web component with a onMount", () => {
-      const Component = ({}, { onMount }: WebContext) => {
+      const Component = ({ }, { onMount }: WebContext) => {
         onMount(() => {
           document.title = "hello world";
         });
