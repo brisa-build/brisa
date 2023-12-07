@@ -1,9 +1,9 @@
 import { describe, expect, it } from "bun:test";
-import AST from "../../ast";
 import transformToDirectExport from ".";
+import { normalizeQuotes } from "../../../helpers";
+import AST from "../../ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 
 describe("utils", () => {
   describe("transform-jsx-to-reactive", () => {
@@ -14,8 +14,8 @@ describe("utils", () => {
           export default MyComponent;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
-        const expectedCode = toInline(`
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
           export default props => jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);
         `);
 
@@ -30,8 +30,8 @@ describe("utils", () => {
           export default MyComponent;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
-        const expectedCode = toInline(`
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
           export default function (props) {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);}
         `);
 
@@ -46,8 +46,8 @@ describe("utils", () => {
           export default MyComponent;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
-        const expectedCode = toInline(`
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
           export default props => {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);};
         `);
 
@@ -59,8 +59,8 @@ describe("utils", () => {
           export default (props) => <div>{props.foo}</div>;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
-        const expectedCode = toInline(`
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
           export default props => jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);
         `);
 
@@ -74,8 +74,8 @@ describe("utils", () => {
           }
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
-        const expectedCode = toInline(`
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
           export default props => {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);};
         `);
 
@@ -89,8 +89,8 @@ describe("utils", () => {
           }
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
-        const expectedCode = toInline(`
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
           export default function MyComponent(props) {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);}
         `);
 

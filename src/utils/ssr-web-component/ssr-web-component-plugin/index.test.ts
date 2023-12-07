@@ -1,12 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import wrapWithSSRWebComponent, { workaroundText } from ".";
+import { normalizeQuotes } from "../../../helpers";
 import AST from "../../ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 const toExpected = (s: string) =>
-  toInline(generateCodeFromAST(parseCodeToAST(s)) + workaroundText);
+  normalizeQuotes(generateCodeFromAST(parseCodeToAST(s)) + workaroundText);
 
 describe("utils", () => {
   describe("ssrWebComponentPlugin", () => {
@@ -19,7 +19,7 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const output = toInline(
+      const output = normalizeQuotes(
         wrapWithSSRWebComponent(code, allWebComponents).code
       );
       const expected = toExpected(`
@@ -51,7 +51,7 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const output = toInline(
+      const output = normalizeQuotes(
         wrapWithSSRWebComponent(code, allWebComponents).code
       );
       const expected = toExpected(`
@@ -83,7 +83,7 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const output = toInline(
+      const output = normalizeQuotes(
         wrapWithSSRWebComponent(code, allWebComponents).code
       );
       const expected = toExpected(`

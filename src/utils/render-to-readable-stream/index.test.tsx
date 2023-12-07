@@ -1,9 +1,11 @@
-import { describe, it, expect, mock, afterEach, afterAll } from "bun:test";
+import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
-import dangerHTML from "../danger-html";
 import getConstants from "../../constants";
+import { toInline } from "../../helpers";
 import { ComponentType, RequestContext, Translate } from "../../types";
+import dangerHTML from "../danger-html";
 import extendRequestContext from "../extend-request-context";
+import SSRWebComponent from "../ssr-web-component";
 
 const emptyI18n = {
   locale: "",
@@ -12,7 +14,6 @@ const emptyI18n = {
   t: () => "",
   pages: {},
 };
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "");
 
 const testRequest = extendRequestContext({
   originalRequest: new Request("http://test.com/"),
@@ -38,7 +39,7 @@ describe("brisa core", () => {
       const result = await Bun.readableStreamToText(stream);
 
       const expected = `<div class="test">Hello World</div>`;
-      expect(result).toEqual(expected);
+      expect(result).toBe(expected);
       expect(mockConsoleError.mock.calls[0].at(0) as unknown as string).toEqual(
         "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it."
       );
@@ -68,7 +69,7 @@ describe("brisa core", () => {
       const result = await Bun.readableStreamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello World</h1><p>This is a paragraph</p></div>';
-      expect(result).toEqual(expected);
+      expect(result).toBe(expected);
     });
 
     it("should work with async components", async () => {
@@ -90,7 +91,7 @@ describe("brisa core", () => {
       const result = await Bun.readableStreamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>';
-      expect(result).toEqual(expected);
+      expect(result).toBe(expected);
     });
 
     it("should be possible to access to the request object inside components", async () => {
@@ -108,7 +109,7 @@ describe("brisa core", () => {
       const result = await Bun.readableStreamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello World</h1><p>The URL is: http://test.com/</p></div>';
-      expect(result).toEqual(expected);
+      expect(result).toBe(expected);
     });
 
     it("should be possible to provide and consume context", async () => {
@@ -142,7 +143,7 @@ describe("brisa core", () => {
       const result2 = await Bun.readableStreamToText(stream2);
       const expected2 = "<div>Hello Test</div>";
 
-      expect(result).toEqual(expected);
+      expect(result).toBe(expected);
       expect(result2).toEqual(expected2);
     });
 
@@ -167,7 +168,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("<div>Error</div>");
+      expect(result).toBe("<div>Error</div>");
     });
 
     it("should render the error component as fallback if the nested component throws an error", async () => {
@@ -188,7 +189,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         "<div><h1>Parent component</h1><div>Error</div></div>"
       );
     });
@@ -211,7 +212,7 @@ describe("brisa core", () => {
         testRequest
       );
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         "<div><h1>another component</h1><script>alert(&#x27;test&#x27;)</script></div>"
       );
     });
@@ -234,7 +235,7 @@ describe("brisa core", () => {
         testRequest
       );
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("This is a <b>test</b>");
+      expect(result).toBe("This is a <b>test</b>");
     });
 
     it("should render a list of elements", async () => {
@@ -256,8 +257,58 @@ describe("brisa core", () => {
         testRequest
       );
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
-        "<b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>"
+      expect(result).toBe("<b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>");
+    });
+
+    it("should render a list of SSR web components", async () => {
+      const WebComponent = ({
+        name,
+        children,
+      }: {
+        name: string;
+        children: JSX.Element;
+      }) => (
+        <div>
+          Hello {name}
+          {children}
+        </div>
+      );
+
+      const ServerComponent = () => (
+        <>
+          {Array.from({ length: 3 }, (_, i) => (
+            <SSRWebComponent
+              Component={WebComponent}
+              selector="web-component"
+              name={"World" + i}
+            >
+              <b> Child </b>
+            </SSRWebComponent>
+          ))}
+        </>
+      );
+
+      const stream = renderToReadableStream(<ServerComponent />, testRequest);
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        toInline(`
+        <web-component name="World0">
+          <template shadowrootmode="open">
+          <div>Hello World0<b> Child </b></div>
+          </template>
+        </web-component>
+        <web-component name="World1">
+          <template shadowrootmode="open">
+            <div>Hello World1<b> Child </b></div>
+          </template>
+        </web-component>
+        <web-component name="World2">
+          <template shadowrootmode="open">
+            <div>Hello World2<b> Child </b></div>
+          </template>
+        </web-component>
+      `)
       );
     });
 
@@ -273,7 +324,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("<div>TRUE</div><div>TRUE</div>0");
+      expect(result).toBe("<div>TRUE</div><div>TRUE</div>0");
     });
 
     it("should be possible to render in a tag {text|number} in a middle of string ", async () => {
@@ -285,7 +336,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("<div>This is 1 example</div>");
+      expect(result).toBe("<div>This is 1 example</div>");
     });
 
     it("should be possible to render in a Fragment {text|number} in a middle of string", async () => {
@@ -297,7 +348,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("This is 1 example");
+      expect(result).toBe("This is 1 example");
     });
 
     it("should be possible to render undefined and null", async () => {
@@ -310,9 +361,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
-        '<div class="empty"></div><div class="empty"></div>'
-      );
+      expect(result).toBe('<div class="empty"></div><div class="empty"></div>');
     });
 
     it("should inject the hrefLang attributes if the i18n is enabled and have hrefLangOrigin defined", () => {
@@ -439,7 +488,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>This is 1 example</div></template><script id="R:1">u$(\'1\')</script>'
       );
     });
@@ -455,7 +504,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is 1 example</template><script id="R:1">u$(\'1\')</script>'
       );
     });
@@ -472,7 +521,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is <b>1</b> example</template><script id="R:1">u$(\'1\')</script>'
       );
     });
@@ -489,7 +538,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is 1 example</template><script id="R:1">u$(\'1\')</script>'
       );
     });
@@ -507,7 +556,7 @@ describe("brisa core", () => {
 
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         toInline(`
         <div id="S:1">
           <b>Loading...</b>
@@ -687,7 +736,7 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
-      expect(result).toEqual(`<a href="http://test.com/test">Test</a>`);
+      expect(result).toBe(`<a href="http://test.com/test">Test</a>`);
     });
 
     it('should NOT render the "a" tag with the locale if the url is external and mailto protocol', async () => {
@@ -701,7 +750,7 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = {} as any;
-      expect(result).toEqual(`<a href="mailto:test@test.com">Test</a>`);
+      expect(result).toBe(`<a href="mailto:test@test.com">Test</a>`);
     });
 
     it('should NOT render the "a" tag with the locale if the i18n is enabled and the link already has some locale', async () => {
@@ -715,14 +764,14 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
-      expect(result).toEqual(`<a href="/en/test">Test</a>`);
+      expect(result).toBe(`<a href="/en/test">Test</a>`);
     });
 
     it("should not be possible to inject HTML as string directly in the JSX element", async () => {
       const element = <div>{`<script>alert('test')</script>`}</div>;
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         `<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`
       );
     });
@@ -736,7 +785,7 @@ describe("brisa core", () => {
       );
       const stream = renderToReadableStream(<Component />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         `<div><h1>Example</h1>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`
       );
     });
@@ -745,7 +794,7 @@ describe("brisa core", () => {
       const element = <div>{dangerHTML(`<script>alert('test')</script>`)}</div>;
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(`<div><script>alert('test')</script></div>`);
+      expect(result).toBe(`<div><script>alert('test')</script></div>`);
     });
 
     it("should not be possible to inject HTML as children string directly in the JSX", async () => {
@@ -753,7 +802,7 @@ describe("brisa core", () => {
       const element = <Component />;
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(
+      expect(result).toBe(
         `&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`
       );
     });
@@ -765,7 +814,7 @@ describe("brisa core", () => {
       const element = <Component />;
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(`<script>alert('test')</script>`);
+      expect(result).toBe(`<script>alert('test')</script>`);
     });
 
     it("should render the head element with the canonical", () => {
@@ -882,7 +931,7 @@ describe("brisa core", () => {
       );
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("<dialog open><h1>Test</h1></dialog>");
+      expect(result).toBe("<dialog open><h1>Test</h1></dialog>");
     });
 
     it('should render "open" attribute without content in the "dialog" tag when opEN={true} (no lowercase)', async () => {
@@ -893,7 +942,7 @@ describe("brisa core", () => {
       );
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("<dialog open><h1>Test</h1></dialog>");
+      expect(result).toBe("<dialog open><h1>Test</h1></dialog>");
     });
 
     it('should not render "open" attribute in the "dialog" tag when opEN={false} (no lowercase)', async () => {
@@ -904,7 +953,7 @@ describe("brisa core", () => {
       );
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("<dialog><h1>Test</h1></dialog>");
+      expect(result).toBe("<dialog><h1>Test</h1></dialog>");
     });
 
     it('should not render "open" attribute in the "dialog" tag when open={false}', async () => {
@@ -915,14 +964,14 @@ describe("brisa core", () => {
       );
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual("<dialog><h1>Test</h1></dialog>");
+      expect(result).toBe("<dialog><h1>Test</h1></dialog>");
     });
 
     it("should serialize an attribute that is an object as a string", async () => {
       const element = <div data-test={{ a: 1, b: 2 }} />;
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toEqual(`<div data-test="{'a':1,'b':2}"></div>`);
+      expect(result).toBe(`<div data-test="{'a':1,'b':2}"></div>`);
     });
   });
 });

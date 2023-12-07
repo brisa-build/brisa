@@ -1,9 +1,9 @@
 import { describe, expect, it } from "bun:test";
 import transformToReactiveProps from ".";
+import { normalizeQuotes } from "../../../helpers";
 import AST from "../../ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 
 describe("utils", () => {
   describe("transform-jsx-to-reactive", () => {
@@ -23,9 +23,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           const outsideComponent = props => {
             console.log(props.foo);
             if (props.bar) return props.baz;
@@ -52,9 +52,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component({foo, bar, baz}) {
             console.log(foo.value);
             if (bar.value) return jsxDEV("div", {children: baz.value}, undefined, false, undefined, this);
@@ -76,9 +76,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component({foo: foot, bar: bart, baz: bazt}) {
             console.log(foot.value);
             if (bart.value) return jsxDEV("div", {children: bazt.value}, undefined, false, undefined, this);
@@ -100,9 +100,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component({foo, ...rest}) {
             console.log(foo.value);
             if (rest.bar.value) return jsxDEV("div", {children: rest.baz.value}, undefined, false, undefined, this);
@@ -121,9 +121,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default props => console.log(props.foo.value);
         `);
 
@@ -140,9 +140,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default ({foo, ...rest}) => foo.value === "Test" && rest.bar.value && jsxDEV("div", {children: rest.baz.value}, undefined, false, undefined, this);
         `);
 
@@ -164,9 +164,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component(props) {
             const foot = props.foo.value;
             const bart = props.bar.value;
@@ -196,10 +196,10 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
         const expectedCode =
-          toInline(`export default function Component({}, {state}) {
+          normalizeQuotes(`export default function Component({}, {state}) {
             const stateFoo = state('foo');
             const stateBar = state('bar');
             const stateBaz = state('baz');
@@ -229,10 +229,10 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
         const expectedCode =
-          toInline(`export default function Component({}, {state}) {
+          normalizeQuotes(`export default function Component({}, {state}) {
           const stateFoo = state('foo');
           const stateBar = state('bar');
           const stateBaz = state('baz');
@@ -258,9 +258,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component(props) {
             const {foo: foot, bar: bart, baz: bazt} = props;
             console.log(foot.value);
@@ -288,9 +288,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           const outsideComponent = props => {
             console.log(props.foo.name);
             if (props.bar.name) return props.baz.name;
@@ -317,9 +317,9 @@ describe("utils", () => {
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
 
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component({foo, bar}) {
             return jsxDEV("div", {foo: bar.value,children: "test"}, undefined, false, undefined, this);
           }
@@ -340,9 +340,9 @@ describe("utils", () => {
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
 
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component({foo, bar, baz}) {
             effect(() => baz.value ??= 'baz');
             effect(() => bar.value ??= 'bar');
@@ -365,9 +365,9 @@ describe("utils", () => {
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
 
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component({children}) {
             return jsxDEV("div", {children}, undefined, false, undefined, this);
           }
@@ -388,9 +388,9 @@ describe("utils", () => {
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
 
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component({foo, bar: children}) {
             return jsxDEV("div", {children: [foo.value, children.value]}, undefined, true, undefined, this);
           }
@@ -411,9 +411,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           const bar = props => jsxDEV("div", {children: props.baz}, undefined, false, undefined, this);
           export default function Component({foo}) {
             return jsxDEV("div", {children: bar({foo: foo.value})}, undefined, false, undefined, this);
@@ -435,9 +435,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component(props) {
             const {onClick, ...rest} = props;
             return jsxDEV("div", {onClick,children: jsxDEV("div", {onClick: rest.onClickSpan,children: "Click"}, undefined, false, undefined, this)}, undefined, false, undefined, this);
@@ -470,9 +470,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
             export default function RuntimeLog({error, warning}) {
               return jsxDEV("dialog", {open: error.value || warning.value,children: [error.value && \`Error: \${error.value.message}\`, error.value && jsxDEV("pre", {children: error.value.stack}, undefined, false, undefined, this), warning.value && \`Warning: \${warning.value}\`]}, undefined, true, undefined, this);
             }
@@ -493,9 +493,9 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
-        const expectedCode = toInline(`
+        const expectedCode = normalizeQuotes(`
           export default function Component({foo}, {derived}) {
             const bar = derived(() => foo.value ?? "bar");
             return jsxDEV("div", {children: bar.value}, undefined, false, undefined, this);
@@ -517,10 +517,10 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [outputAst, propNames, isAddedDefaultProps] =
           transformToReactiveProps(ast);
-        const outputCode = toInline(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
 
         const expectedCode =
-          toInline(`export default function MyComponent({foo, bar}) {
+          normalizeQuotes(`export default function MyComponent({foo, bar}) {
           const baz = foo.value && bar.value;
           return jsxDEV("div", {children: baz ? 'TRUE' : 'FALSE'}, undefined, false, undefined, this);
         }`);

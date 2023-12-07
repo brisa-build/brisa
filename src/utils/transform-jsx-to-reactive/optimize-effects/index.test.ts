@@ -1,11 +1,11 @@
 import { describe, expect, it } from "bun:test";
 import { ESTree } from "meriyah";
 import optimizeEffects from ".";
+import { normalizeQuotes } from "../../../helpers";
 import AST from "../../ast";
 import getWebComponentAst from "../get-web-component-ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 const toOutput = (code: string) => {
   const reactiveAst = parseCodeToAST(code);
   const [componentBranch, index] = getWebComponentAst(reactiveAst);
@@ -15,7 +15,7 @@ const toOutput = (code: string) => {
 
   (reactiveAst.body[index as number] as any).declaration = outputComponentAst;
 
-  return toInline(generateCodeFromAST(reactiveAst));
+  return normalizeQuotes(generateCodeFromAST(reactiveAst));
 };
 
 describe("utils", () => {
@@ -23,7 +23,7 @@ describe("utils", () => {
     describe("optimize-effects", () => {
       it("should not do any transformation if not the effect in webContext", () => {
         const input = `export default ({ }, { h }: any) => ['div', {}, 'test'];`;
-        const expected = toInline(
+        const expected = normalizeQuotes(
           `export default ({}, {h}) => ['div', {}, 'test'];`
         );
         const output = toOutput(input);
@@ -35,7 +35,7 @@ describe("utils", () => {
           const { h } = props;
           return ['div', {}, 'test'];
         }`;
-        const expected = toInline(`export default ({}, props) => {
+        const expected = normalizeQuotes(`export default ({}, props) => {
           const {h} = props;
           return ['div', {}, 'test'];
         };`);
@@ -58,7 +58,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect, cleanup}) {
             effect(r => {
               if (propName.value) {
@@ -90,7 +90,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect: e, cleanup: c}) {
             e(r => {
               if (propName.value) {
@@ -124,7 +124,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, props) {
             const {effect: e, cleanup: c} = props;
 
@@ -158,7 +158,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
         export default function Component({propName}, {effect, ...rest}) {
           effect(r => {
             if (propName.value) {
@@ -190,7 +190,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect, cleanup}) {
             effect(function (r) {
               if (propName.value) {
@@ -222,7 +222,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect, cleanup}) {
             effect(r => {
               if (propName.value) {
@@ -256,7 +256,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect, cleanup}) {
             const clean = () => console.log("Hello world");
 
@@ -292,7 +292,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect, cleanup}) {
             const fn = r => {
               if (propName.value) {
@@ -330,7 +330,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect, cleanup}) {
             effect(r => {
               if (propName.value) {
@@ -368,7 +368,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect}) {
             effect(r => {
               if (propName.value) {
@@ -408,7 +408,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect}) {
             effect(r => {
               if (propName.value) {
@@ -441,7 +441,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect}) {
             effect(r => console.log(propName.value));
             effect(r1 => console.log(propName.value));
@@ -475,7 +475,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect}) {
             effect(r => {
               if (propName.value) {
@@ -508,7 +508,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect}) {
             effect(r => propName.value && effect(r(r1 => console.log("Hello world"))));
           
@@ -536,7 +536,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect: e}) {
             e(r => {
               if (propName.value) {
@@ -573,7 +573,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect}) {
             const log = () => {
               console.log("Hello world");
@@ -608,7 +608,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {effect}) {
             effect(function (r) {
               if (propName.value) {
@@ -640,7 +640,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
         export default function Component({propName}, {effect}) {
           effect(r => {
             if (propName.value) {

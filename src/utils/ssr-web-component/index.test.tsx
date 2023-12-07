@@ -58,7 +58,7 @@ describe("utils", () => {
       );
       expect(output.props.children.props.children[1].type).toBe("style");
       expect(output.props.children.props.children[1].props.children).toBe(
-        "div { color: red; }"
+        "div {color: red;}"
       );
     });
 
