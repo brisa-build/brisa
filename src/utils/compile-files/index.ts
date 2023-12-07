@@ -36,7 +36,7 @@ export default async function compileFiles() {
     outdir: BUILD_DIR,
     sourcemap: IS_PRODUCTION ? undefined : "inline",
     root: SRC_DIR,
-    minify: true,
+    minify: IS_PRODUCTION,
     splitting: true,
     plugins: [
       {
@@ -158,11 +158,11 @@ async function compileClientCodePage(
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
   ${Object.entries(allWebComponents)
-    .map(
-      ([name, location]) =>
-        `'${name}': HTMLAttributes<typeof import("${location}")>;`
-    )
-    .join("\n")}
+      .map(
+        ([name, location]) =>
+          `'${name}': HTMLAttributes<typeof import("${location}")>;`
+      )
+      .join("\n")}
 }`;
 
   fs.writeFileSync(
