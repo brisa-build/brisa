@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from "bun:test";
+import { afterEach, describe, expect, it } from "bun:test";
 import renderAttributes from ".";
 import getConstants from "../../constants";
 import extendRequestContext from "../extend-request-context";
@@ -90,6 +90,21 @@ describe("utils", () => {
       });
 
       expect(attributes).toBe(' lang="ar" dir="rtl"');
+    });
+
+    it('should not add any attribute when the value is "undefined"', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+      const attributes = renderAttributes({
+        props: {
+          foo: undefined,
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe("");
     });
 
     it('should translate the "a" href attribute', () => {
