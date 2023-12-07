@@ -179,27 +179,31 @@ async function enqueueChildren(
   suspenseId?: number
 ): Promise<void> {
   if (Array.isArray(children)) {
-    for (const child of children) {
-      if (Array.isArray(child)) {
-        await enqueueChildren(
-          child as unknown as JSXNode,
-          request,
-          controller,
-          suspenseId
-        );
-        continue;
-      }
+    await enqueueArrayChildren(children, request, controller, suspenseId);
+  } else if (typeof children === "object") {
+    await enqueueDuringRendering(children, request, controller, suspenseId);
+  } else if (typeof children?.toString === "function") {
+    await controller.enqueue(Bun.escapeHTML(children.toString()), suspenseId);
+  }
+}
+
+async function enqueueArrayChildren(
+  children: JSXNode[],
+  request: RequestContext,
+  controller: Controller,
+  suspenseId?: number
+): Promise<void> {
+  for (const child of children) {
+    if (Array.isArray(child)) {
+      await enqueueArrayChildren(
+        child as unknown as JSXNode[],
+        request,
+        controller,
+        suspenseId
+      );
+    } else {
       await enqueueDuringRendering(child, request, controller, suspenseId);
     }
-    return;
-  }
-
-  if (typeof children === "object") {
-    return enqueueDuringRendering(children, request, controller, suspenseId);
-  }
-
-  if (typeof children?.toString === "function") {
-    return controller.enqueue(Bun.escapeHTML(children.toString()), suspenseId);
   }
 }
 
