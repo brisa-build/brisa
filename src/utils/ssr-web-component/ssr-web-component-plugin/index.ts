@@ -46,7 +46,8 @@ export default function ssrWebComponentPlugin(
           return value;
         }
 
-        const ComponentName = `_Brisa_WC${count++}`;
+        const ComponentName =
+          usedWebComponents.get(componentPath) ?? `_Brisa_WC${count++}`;
 
         usedWebComponents.set(componentPath, ComponentName);
 
