@@ -364,6 +364,19 @@ describe("brisa core", () => {
       expect(result).toBe('<div class="empty"></div><div class="empty"></div>');
     });
 
+    it('should not be possible to send "undefined" as a attribute', async () => {
+      const Component = ({ name }: { name: string }) => (
+        <div title={name}>Hello {name}</div>
+      );
+
+      const stream = renderToReadableStream(
+        <Component name={undefined as any} />,
+        testRequest
+      );
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toBe("<div>Hello </div>");
+    });
+
     it("should inject the hrefLang attributes if the i18n is enabled and have hrefLangOrigin defined", () => {
       const req = extendRequestContext({
         originalRequest: new Request(testRequest),
