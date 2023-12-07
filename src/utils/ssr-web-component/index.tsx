@@ -20,7 +20,7 @@ export default function SSRWebComponent({
   return (
     <Selector {...props}>
       <template shadowrootmode="open">
-        {Component(props, {
+        {Component({ ...props, children: <slot /> }, {
           state: (value: unknown) => ({ value }),
           effect: voidFn,
           onMount: voidFn,
@@ -32,6 +32,7 @@ export default function SSRWebComponent({
         } as unknown as RequestContext)}
         {style.length > 0 && <style>{toInline(style)}</style>}
       </template>
+      {props.children}
     </Selector>
   );
 }
