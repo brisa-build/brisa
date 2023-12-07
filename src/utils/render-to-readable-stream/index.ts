@@ -180,6 +180,15 @@ async function enqueueChildren(
 ): Promise<void> {
   if (Array.isArray(children)) {
     for (const child of children) {
+      if (Array.isArray(child)) {
+        await enqueueChildren(
+          child as unknown as JSXNode,
+          request,
+          controller,
+          suspenseId
+        );
+        continue;
+      }
       await enqueueDuringRendering(child, request, controller, suspenseId);
     }
     return;
