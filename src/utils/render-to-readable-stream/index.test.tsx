@@ -298,18 +298,21 @@ describe("brisa core", () => {
           <h1>Test</h1>
           <web-component name="World0">
             <template shadowrootmode="open">
-            <div>Hello World0<b> Child </b></div>
+            <div>Hello World0<slot></slot></div>
             </template>
+            <b> Child </b>
           </web-component>
           <web-component name="World1">
             <template shadowrootmode="open">
-              <div>Hello World1<b> Child </b></div>
+              <div>Hello World1<slot></slot></div>
             </template>
+            <b> Child </b>
           </web-component>
           <web-component name="World2">
             <template shadowrootmode="open">
-              <div>Hello World2<b> Child </b></div>
+              <div>Hello World2<slot></slot></div>
             </template>
+            <b> Child </b>
           </web-component>
         </div>
       `)
