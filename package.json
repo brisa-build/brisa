@@ -70,11 +70,11 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "12.10.3",
-    "brisa": "0.0.11",
+    "brisa": "0.0.12-canary.1",
     "bun-types": "1.0.15"
   },
   "peerDependencies": {
-    "typescript": "5.3.2"
+    "typescript": "5.3.3"
   },
   "dependencies": {
     "astring": "1.8.6",
