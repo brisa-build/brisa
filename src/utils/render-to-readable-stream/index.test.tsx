@@ -275,7 +275,8 @@ describe("brisa core", () => {
       );
 
       const ServerComponent = () => (
-        <>
+        <div>
+          <h1>Test</h1>
           {Array.from({ length: 3 }, (_, i) => (
             <SSRWebComponent
               Component={WebComponent}
@@ -285,7 +286,7 @@ describe("brisa core", () => {
               <b> Child </b>
             </SSRWebComponent>
           ))}
-        </>
+        </div>
       );
 
       const stream = renderToReadableStream(<ServerComponent />, testRequest);
@@ -293,21 +294,24 @@ describe("brisa core", () => {
 
       expect(result).toBe(
         toInline(`
-        <web-component name="World0">
-          <template shadowrootmode="open">
-          <div>Hello World0<b> Child </b></div>
-          </template>
-        </web-component>
-        <web-component name="World1">
-          <template shadowrootmode="open">
-            <div>Hello World1<b> Child </b></div>
-          </template>
-        </web-component>
-        <web-component name="World2">
-          <template shadowrootmode="open">
-            <div>Hello World2<b> Child </b></div>
-          </template>
-        </web-component>
+        <div>
+          <h1>Test</h1>
+          <web-component name="World0">
+            <template shadowrootmode="open">
+            <div>Hello World0<b> Child </b></div>
+            </template>
+          </web-component>
+          <web-component name="World1">
+            <template shadowrootmode="open">
+              <div>Hello World1<b> Child </b></div>
+            </template>
+          </web-component>
+          <web-component name="World2">
+            <template shadowrootmode="open">
+              <div>Hello World2<b> Child </b></div>
+            </template>
+          </web-component>
+        </div>
       `)
       );
     });
