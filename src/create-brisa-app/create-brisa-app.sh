@@ -20,6 +20,7 @@ echo "{
   \"type\": \"module\",
   \"scripts\": {
     \"dev\": \"brisa dev\",
+    \"dev:debug\": \"brisa dev --debug\",
     \"build\": \"brisa build\",
     \"start\": \"brisa start\"
   },
