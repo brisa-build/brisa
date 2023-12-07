@@ -1,6 +1,7 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import transformJSXToReactive from ".";
+import { normalizeQuotes } from "../../helpers";
 import createPortal from "../create-portal";
 import dangerHTML from "../danger-html";
 import { serialize } from "../serialization";
@@ -11,12 +12,10 @@ declare global {
   }
 }
 
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
-
 function defineBrisaWebComponent(code: string, path: string) {
   const componentName = path.split("/").pop()?.split(".")[0] as string;
 
-  const webComponent = toInline(transformJSXToReactive(code, path))
+  const webComponent = normalizeQuotes(transformJSXToReactive(code, path))
     .replace('import {brisaElement, _on, _off} from "brisa/client"', "")
     .replace("export default", "");
 
@@ -3044,7 +3043,7 @@ describe("integration", () => {
         }
       `;
 
-      document.body.innerHTML = toInline(`
+      document.body.innerHTML = normalizeQuotes(`
         <my-component>
           <template shadowrootmode="open">
             <div>bar</div>

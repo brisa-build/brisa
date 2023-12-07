@@ -1,11 +1,11 @@
 import { describe, expect, it } from "bun:test";
-import AST from "../../ast";
-import mergeEarlyReturnsInOne from ".";
-import getWebComponentAst from "../get-web-component-ast";
 import { ESTree } from "meriyah";
+import mergeEarlyReturnsInOne from ".";
+import { normalizeQuotes } from "../../../helpers";
+import AST from "../../ast";
+import getWebComponentAst from "../get-web-component-ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 const toOutput = (code: string) => {
   const reactiveAst = parseCodeToAST(code);
   const [componentBranch, index] = getWebComponentAst(reactiveAst);
@@ -15,7 +15,7 @@ const toOutput = (code: string) => {
 
   (reactiveAst.body[index as number] as any).declaration = outputComponentAst;
 
-  return toInline(generateCodeFromAST(reactiveAst));
+  return normalizeQuotes(generateCodeFromAST(reactiveAst));
 };
 
 describe("utils", () => {
@@ -32,7 +32,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             if (propName.value) {
               console.log('Hello world');
@@ -60,7 +60,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             if (propName.value) {
               console.log('Hello world');
@@ -93,7 +93,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             switch (propName.value) {
               case 'a':
@@ -122,7 +122,7 @@ describe("utils", () => {
         }
       `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               if (propName.value) {
@@ -150,7 +150,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               if (propName.value) {
@@ -183,7 +183,7 @@ describe("utils", () => {
         `;
 
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               if (propName.value.startsWith('a')) {
@@ -216,7 +216,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               switch (propName.value) {
@@ -251,7 +251,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               switch (propName.value) {
@@ -290,7 +290,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               if (propName.value === 'a') {
@@ -332,7 +332,7 @@ describe("utils", () => {
           `;
 
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}, {state, effect}) {
             const user = state({name: 'Aral'});
             const a = 1;
@@ -368,7 +368,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               if (propName.value === 'a') {
@@ -400,7 +400,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               if (propName.value === 'a') {
@@ -433,7 +433,7 @@ describe("utils", () => {
           }
         `;
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             return [null, {}, () => {
               switch (propName.value) {
@@ -483,7 +483,7 @@ describe("utils", () => {
       `;
 
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             if (propName.value) {
               let fn = function () {
@@ -514,7 +514,7 @@ describe("utils", () => {
       `;
 
         const output = toOutput(input);
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           export default function Component({propName}) {
             let example = ['a', 'b', 'c'];
           

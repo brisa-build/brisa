@@ -2,15 +2,15 @@ import { describe, expect, it } from "bun:test";
 import { ESTree } from "meriyah";
 import defineBrisaElement from ".";
 import * as BRISA_CLIENT from "../../../core/client";
+import { normalizeQuotes } from "../../../helpers";
 import AST from "../../ast";
 import getPropsNames from "../get-props-names";
 import getWebComponentAst from "../get-web-component-ast";
 import transformToReactiveArrays from "../transform-to-reactive-arrays";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 const output = (ast: any) =>
-  toInline(generateCodeFromAST(ast as unknown as ESTree.Program));
+  normalizeQuotes(generateCodeFromAST(ast as unknown as ESTree.Program));
 
 describe("utils", () => {
   describe("transform-jsx-to-reactive", () => {
@@ -54,7 +54,7 @@ describe("utils", () => {
           'import {brisaElement, _on, _off} from "brisa/client";'
         );
         expect(output(wrappedComponent)).toBe(
-          toInline(`
+          normalizeQuotes(`
           brisaElement(function MyComponent({exampleProp}, {h}) {
               return h("div", {}, () => exampleProp.value);
           }, ["exampleProp"])
@@ -81,7 +81,7 @@ describe("utils", () => {
           'import {brisaElement, _on, _off} from "brisa/client";'
         );
         expect(output(wrappedComponent)).toBe(
-          toInline(`
+          normalizeQuotes(`
           brisaElement(function MyComponent(props, {h}) {
               return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
           }, ["foo", "bar"])
@@ -108,7 +108,7 @@ describe("utils", () => {
           'import {brisaElement, _on, _off} from "brisa/client";'
         );
         expect(output(wrappedComponent)).toBe(
-          toInline(`
+          normalizeQuotes(`
           brisaElement(function MyComponent(props, {h}) {
               return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
           }, ["foo", "bar"])
@@ -137,7 +137,7 @@ describe("utils", () => {
           'import {brisaElement, _on, _off} from "brisa/client";'
         );
         expect(output(wrappedComponent)).toBe(
-          toInline(`
+          normalizeQuotes(`
           brisaElement(function MyComponent(props, {h, effect}) {
               return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
           }, ["foo", "bar"])
@@ -166,7 +166,7 @@ describe("utils", () => {
           'import {brisaElement, _on, _off} from "brisa/client";'
         );
         expect(output(wrappedComponent)).toBe(
-          toInline(`
+          normalizeQuotes(`
           brisaElement(function MyComponent(props, {effect, h}) {
               return h(null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]);
           }, ["foo", "bar"])
@@ -195,7 +195,7 @@ describe("utils", () => {
         );
 
         expect(output(wrappedComponent)).toBe(
-          toInline(`
+          normalizeQuotes(`
           brisaElement(function Test({}, {h}) {
               return h(null, {}, ["Hello", " ", "World"]);
           })

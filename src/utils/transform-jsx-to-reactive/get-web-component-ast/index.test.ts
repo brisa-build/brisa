@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import AST from "../../ast";
-import getWebComponentAst from ".";
 import { ESTree } from "meriyah";
+import getWebComponentAst from ".";
+import { normalizeQuotes } from "../../../helpers";
+import AST from "../../ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 
 describe("utils", () => {
   describe("transform-jsx-to-reactive", () => {
@@ -28,10 +28,10 @@ describe("utils", () => {
           }
         `);
         const [ast, index] = getWebComponentAst(input);
-        const output = toInline(
+        const output = normalizeQuotes(
           generateCodeFromAST(ast as unknown as ESTree.Program)
         );
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           function MyComponent() {
             return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
           }
@@ -51,10 +51,10 @@ describe("utils", () => {
           export default MyComponent;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = toInline(
+        const codeOutput = normalizeQuotes(
           generateCodeFromAST(astOutput as unknown as ESTree.Program)
         );
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           let MyComponent = function () {
             return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
           };
@@ -70,10 +70,10 @@ describe("utils", () => {
           export default () => <div>foo</div>;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = toInline(
+        const codeOutput = normalizeQuotes(
           generateCodeFromAST(astOutput as unknown as ESTree.Program)
         );
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this)
         `);
         expect(codeOutput).toEqual(expected);
@@ -87,10 +87,10 @@ describe("utils", () => {
           export default (props) => <div>{props.someProp}</div>;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = toInline(
+        const codeOutput = normalizeQuotes(
           generateCodeFromAST(astOutput as unknown as ESTree.Program)
         );
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           props => jsxDEV("div", {children: props.someProp}, undefined, false, undefined, this)
         `);
 
@@ -107,10 +107,10 @@ describe("utils", () => {
           export default MyComponent;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = toInline(
+        const codeOutput = normalizeQuotes(
           generateCodeFromAST(astOutput as unknown as ESTree.Program)
         );
-        const expected = toInline(`
+        const expected = normalizeQuotes(`
           const MyComponent = () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
         `);
         expect(codeOutput).toEqual(expected);

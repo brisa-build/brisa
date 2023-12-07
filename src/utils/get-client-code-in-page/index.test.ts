@@ -22,6 +22,10 @@ const pages = path.join(src, "pages");
 const transpiler = new Bun.Transpiler({ loader: "js" });
 const allWebComponents = await getWebComponentsList(src);
 let mockCompiledFile: Mock<typeof Bun.file>;
+const pageWebComponents = {
+  "web-component": allWebComponents["web-component"],
+  "native-some-example": allWebComponents["native-some-example"],
+};
 
 describe("utils", () => {
   beforeEach(async () => {
@@ -60,7 +64,11 @@ describe("utils", () => {
 
     it("should return client code size of brisa + 2 web-components in page with web components", async () => {
       const input = path.join(pages, "page-with-web-component.tsx");
-      const output = await getClientCodeInPage(input, allWebComponents);
+      const output = await getClientCodeInPage(
+        input,
+        allWebComponents,
+        pageWebComponents
+      );
       const brisaSize = 3909;
       const webComponents = 630;
 
@@ -87,7 +95,11 @@ describe("utils", () => {
 
     it("should define 2 web components if there is 1 web component and another one inside", async () => {
       const input = path.join(pages, "page-with-web-component.tsx");
-      const output = await getClientCodeInPage(input, allWebComponents);
+      const output = await getClientCodeInPage(
+        input,
+        allWebComponents,
+        pageWebComponents
+      );
       expect(output!.code).toContain('"web-component"');
       expect(output!.code).toContain('"native-some-example"');
     });
