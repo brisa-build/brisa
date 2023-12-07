@@ -3037,6 +3037,28 @@ describe("integration", () => {
       expect(newDiv?.innerHTML).toBe("0");
     });
 
+    it('should render over a template with shadowrootmode="open"', () => {
+      const Component = `
+        export default function MyComponent() {
+          return <div>foo</div>
+        }
+      `;
+
+      document.body.innerHTML = toInline(`
+        <my-component>
+          <template shadowrootmode="open">
+            <div>bar</div>
+          </template>
+        </my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+    });
+
     it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
       () => {

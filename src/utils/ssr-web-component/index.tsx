@@ -1,16 +1,20 @@
-import { RequestContext } from '../../types';
+import { RequestContext } from "../../types";
 
 type Props = {
   Component: any;
   selector: string;
   [key: string]: any;
-}
+};
 
-const voidFn = () => { };
+const voidFn = () => {};
 
-export default function SSRWebComponent({ Component, selector, ...props }: Props) {
-  let style = ''
-  let Selector = selector
+export default function SSRWebComponent({
+  Component,
+  selector,
+  ...props
+}: Props) {
+  let style = "";
+  let Selector = selector;
 
   return (
     <Selector {...props}>
@@ -23,10 +27,10 @@ export default function SSRWebComponent({ Component, selector, ...props }: Props
           cleanup: voidFn,
           css: (strings: string[], ...values: string[]) => {
             style += strings[0] + values.join("");
-          }
+          },
         } as unknown as RequestContext)}
         {style.length > 0 && <style>{style}</style>}
       </template>
     </Selector>
-  )
+  );
 }
