@@ -10,21 +10,18 @@ const unsuspenseScriptCode = await injectUnsuspenseCode();
 
 export default async function getClientCodeInPage(
   pagepath: string,
-  allWebComponents: Record<string, string> = {}
+  allWebComponents: Record<string, string> = {},
+  pageWebComponents: Record<string, string> = {}
 ) {
   let size = 0;
   let code = "";
 
-  const {
-    webComponents: pageWebComponents,
-    useSuspense,
-    useWebComponents,
-  } = await getWebComponentsFromPath(pagepath, allWebComponents);
+  const { useSuspense } = await analyzeClientPath(pagepath, allWebComponents);
 
   // Web components inside web components
   const nestedComponents = await Promise.all(
     Object.values(pageWebComponents).map((path) =>
-      getWebComponentsFromPath(path, allWebComponents)
+      analyzeClientPath(path, allWebComponents)
     )
   );
 
@@ -37,7 +34,7 @@ export default async function getClientCodeInPage(
     size += unsuspenseScriptCode.length;
   }
 
-  if (!useWebComponents) return { code, size };
+  if (!Object.keys(pageWebComponents).length) return { code, size };
 
   const transformedCode = await transformToWebComponents(pageWebComponents);
 
@@ -95,12 +92,11 @@ async function transformToWebComponents(
     // TODO: format: "iife" when Bun support it
     // https://bun.sh/docs/bundler#format
     plugins: [
-      ...(CONFIG?.plugins ?? []),
       {
         name: "web-components-transformer",
         setup(build) {
           build.onLoad(
-            { filter: /.*web-components.*/ },
+            { filter: /.*web-components.*\.(tsx|jsx)$/ },
             async ({ path, loader }) => {
               let code = await Bun.file(path).text();
 
@@ -123,6 +119,7 @@ async function transformToWebComponents(
           );
         },
       },
+      ...(CONFIG?.plugins ?? []),
     ],
   });
 
@@ -142,14 +139,13 @@ function snakeToCamelCase(str: string) {
   );
 }
 
-async function getWebComponentsFromPath(
+async function analyzeClientPath(
   path: string,
   allWebComponents: Record<string, string>
 ) {
   const pageFile = Bun.file(path);
   const ast = ASTUtil.parseCodeToAST(await pageFile.text());
   const webComponents: Record<string, string> = {};
-  let useWebComponents = false;
   let useSuspense = false;
 
   JSON.stringify(ast, (key, value) => {
@@ -162,7 +158,6 @@ async function getWebComponentsFromPath(
       value?.arguments?.[0]?.type === "Literal";
 
     if (isWebComponent) {
-      useWebComponents = true;
       webComponents[webComponentName] = webComponentPath;
     }
 
@@ -174,5 +169,5 @@ async function getWebComponentsFromPath(
     return value;
   });
 
-  return { webComponents, useWebComponents, useSuspense };
+  return { webComponents, useSuspense };
 }

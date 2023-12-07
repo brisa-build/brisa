@@ -9,6 +9,7 @@ import getEntrypoints from "../get-entrypoints";
 import getImportableFilepath from "../get-importable-filepath";
 import getWebComponentsList from "../get-web-components-list";
 import logTable from "../log-table";
+import ssrWebComponentPlugin from "../ssr-web-component/ssr-web-component-plugin";
 
 export default async function compileFiles() {
   const { SRC_DIR, BUILD_DIR, CONFIG, IS_PRODUCTION, LOG_PREFIX } =
@@ -21,7 +22,9 @@ export default async function compileFiles() {
   const websocketPath = getImportableFilepath("websocket", SRC_DIR);
   const layoutPath = getImportableFilepath("layout", SRC_DIR);
   const i18nPath = getImportableFilepath("i18n", SRC_DIR);
+  const allWebComponents = await getWebComponentsList(SRC_DIR);
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
+  const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -35,12 +38,44 @@ export default async function compileFiles() {
     root: SRC_DIR,
     minify: true,
     splitting: true,
-    plugins: [...(CONFIG?.plugins ?? [])],
+    plugins: [
+      {
+        name: "ssr-web-components",
+        setup(build) {
+          build.onLoad({ filter: /\.(tsx|jsx)$/ }, async ({ path, loader }) => {
+            let code = await Bun.file(path).text();
+
+            try {
+              const result = ssrWebComponentPlugin(code, allWebComponents);
+              const buildPath = path
+                .replace(SRC_DIR, BUILD_DIR)
+                .replace(/\.tsx?$/, ".js");
+              code = result.code;
+              webComponentsPerEntrypoint[buildPath] =
+                result.detectedWebComponents;
+            } catch (error) {
+              console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
+              console.log(LOG_PREFIX.ERROR, (error as Error).message);
+            }
+
+            return {
+              contents: code,
+              loader,
+            };
+          });
+        },
+      },
+      ...(CONFIG?.plugins ?? []),
+    ],
   });
 
   if (!success) return { success, logs };
 
-  const clientSizesPerPage = await compileClientCodePage(outputs);
+  const clientSizesPerPage = await compileClientCodePage(
+    outputs,
+    allWebComponents,
+    webComponentsPerEntrypoint
+  );
 
   if (!clientSizesPerPage) {
     return { success: false, logs: ["Error compiling web components"] };
@@ -86,8 +121,12 @@ export default async function compileFiles() {
   return { success, logs };
 }
 
-async function compileClientCodePage(pages: BuildArtifact[]) {
-  const { SRC_DIR, BUILD_DIR } = getConstants();
+async function compileClientCodePage(
+  pages: BuildArtifact[],
+  allWebComponents: Record<string, string>,
+  webComponentsPerEntrypoint: Record<string, Record<string, string>>
+) {
+  const { BUILD_DIR } = getConstants();
   const clientCodePath = path.join(BUILD_DIR, "pages-client");
   const internalPath = path.join(BUILD_DIR, "_brisa");
 
@@ -95,13 +134,16 @@ async function compileClientCodePage(pages: BuildArtifact[]) {
   if (!fs.existsSync(internalPath)) fs.mkdirSync(internalPath);
 
   const clientSizesPerPage: Record<string, Blob["size"]> = {};
-  const allWebComponents = await getWebComponentsList(SRC_DIR);
 
   for (const page of pages) {
     const route = page.path.replace(BUILD_DIR, "");
     const pagePath = path.join(BUILD_DIR, page.path.replace(BUILD_DIR, ""));
     const clientCodePath = pagePath.replace("pages", "pages-client");
-    const pageCode = await getClientCodeInPage(pagePath, allWebComponents);
+    const pageCode = await getClientCodeInPage(
+      pagePath,
+      allWebComponents,
+      webComponentsPerEntrypoint[pagePath]
+    );
 
     if (!pageCode) return null;
 

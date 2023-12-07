@@ -9,6 +9,7 @@ node_modules
 /jsx-runtime/
 /jsx-dev-runtime/
 /client/
+/server/
 cli-build
 cli-start
 cli-dev

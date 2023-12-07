@@ -101,6 +101,9 @@ export default function brisaElement(
       const self = this;
       self.s = signals();
       const { state, effect } = self.s;
+
+      if (self.shadowRoot) (self.shadowRoot as any)[INNER_HTML] = "";
+
       const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
 
@@ -260,7 +263,6 @@ export default function brisaElement(
     // Clean up signals on disconnection
     [DISCONNECTED_CALLBACK]() {
       const self = this;
-      (self.shadowRoot as any)[INNER_HTML] = "";
       self.s?.cleanAll();
       delete self.s;
     }
