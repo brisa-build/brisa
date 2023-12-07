@@ -1,3 +1,4 @@
+import { toInline } from "../../helpers";
 import { RequestContext } from "../../types";
 
 type Props = {
@@ -29,7 +30,7 @@ export default function SSRWebComponent({
             style += strings[0] + values.join("");
           },
         } as unknown as RequestContext)}
-        {style.length > 0 && <style>{style}</style>}
+        {style.length > 0 && <style>{toInline(style)}</style>}
       </template>
     </Selector>
   );

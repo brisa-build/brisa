@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import { ESTree } from "meriyah";
 import getReactiveReturnStatement from ".";
+import { normalizeQuotes } from "../../../helpers";
 import AST from "../../ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 
 describe("utils", () => {
   describe("transform-jsx-to-reactive", () => {
@@ -17,11 +17,11 @@ describe("utils", () => {
         const output = getReactiveReturnStatement(componentBody, "h");
 
         const expectedIndex = -1;
-        const expectedCode = toInline(
+        const expectedCode = normalizeQuotes(
           `return h('div', {foo: () => props.bar.value}, 'baz');`
         );
 
-        expect(toInline(generateCodeFromAST(output[0] as any))).toBe(
+        expect(normalizeQuotes(generateCodeFromAST(output[0] as any))).toBe(
           expectedCode
         );
         expect(output[1]).toBe(expectedIndex);
@@ -39,9 +39,9 @@ describe("utils", () => {
           .body;
         const output = getReactiveReturnStatement(componentBody, "h");
         const expectedIndex = 1;
-        const expectedCode = toInline(`return h(null, {}, () => foo);`);
+        const expectedCode = normalizeQuotes(`return h(null, {}, () => foo);`);
 
-        expect(toInline(generateCodeFromAST(output[0] as any))).toBe(
+        expect(normalizeQuotes(generateCodeFromAST(output[0] as any))).toBe(
           expectedCode
         );
         expect(output[1]).toBe(expectedIndex);
