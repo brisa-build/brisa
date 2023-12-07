@@ -20,6 +20,7 @@
     "jsx-runtime",
     "jsx-dev-runtime",
     "client",
+    "server",
     "cli.sh"
   ],
   "exports": {
@@ -39,14 +40,19 @@
       "import": "./client/index.js",
       "require": "./client/index.js"
     },
+    "./server": {
+      "import": "./server/index.js",
+      "require": "./server/index.js"
+    },
     "./cli.sh": {
       "import": "./cli.sh",
       "require": "./cli.sh"
     }
   },
   "scripts": {
-    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client",
+    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server",
     "build:core": "bun build --minify --target=bun --outdir=out/core src/core/index.ts && bun run build:cli && cp src/types/index.d.ts out/core/index.d.ts",
+    "build:core-server": "bun build --minify --target=bun --outdir=server src/core/server/index.ts && bun run build:cli && cp src/types/index.d.ts server/index.d.ts",
     "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:cli && cp src/types/index.d.ts client/index.d.ts",
     "build:cli": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/serve/index.tsx",
     "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-runtime/index.d.ts",

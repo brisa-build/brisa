@@ -121,19 +121,23 @@ async function enqueueDuringRendering(
     await enqueueChildren(props.children, request, controller, suspenseId);
 
     if (type === "head") {
+      controller.enqueue(generateHrefLang(request), suspenseId);
+      controller.hasHeadTag = true;
+      controller.insideHeadTag = false;
+    }
+
+    if (type === "body") {
       const clientFile = request.route?.filePath?.replace(
         "/pages",
         "/pages-client"
       );
-      let codeToInject = generateHrefLang(request);
 
       if (fs.existsSync(clientFile)) {
-        codeToInject += `<script>${await Bun.file(clientFile).text()}</script>`;
+        controller.enqueue(
+          `<script>${await Bun.file(clientFile).text()}</script>`,
+          suspenseId
+        );
       }
-
-      controller.enqueue(codeToInject, suspenseId);
-      controller.hasHeadTag = true;
-      controller.insideHeadTag = false;
     }
 
     // Node tag end
