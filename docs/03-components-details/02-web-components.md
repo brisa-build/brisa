@@ -714,6 +714,27 @@ export default function MyServerComponent() {
 }
 ```
 
+## Server Side Rendering
+
+By default Brisa applies **Server Side Rendering (SSR)** of the web components, this means that they are executed both on the **server** and then on the **client** during hydration. To do this we use the [Declarative Shadow DOM](https://developer.chrome.com/docs/css-ui/declarative-shadow-dom) below.
+
+Within the Web Component the only ones that do **not run on the server** are:
+
+- [`effect`](#effects-effect-method) - Effects such as side-effects that can be used to interact with the Web API are not executed during the SSR.
+- [`onMount`](#effect-on-mount-onmount-method) - The components are mounted on the client once the browser receives the HTML (even if it does not have JavaScript), so it does not make sense to run this function on the server. When the component is hydrated on the client then this function is executed, only once, on the client.
+- [`cleanup`](#clean-effects-cleanup-method) - Similar to `onMount`, if they are not mounted on the server, they are not unmounted on the server either. All cleanup functions are only executed on the client.
+- [**Events**](#events) - Since the events are executed after a user (client) action, they are not executed during the SSR.
+
+### How to disable SSR to a web component
+
+There are cases where we can avoid the SSR of some web component. It makes sense for these web components that are not available in the initial rendered page, for example they appear after some web interaction, such as a modal.
+
+To do this, all web components have available the `ssr` attribute. It's `true` by default _(this attribute does not need to be used when it is `true`)_, but you can use it to turn to `false`. This can be used in any web-component, either consumed from another web-component or from a server component.
+
+```tsx
+<some-web-component ssr={false} />
+```
+
 ## UI-agnostic
 
 If instead of using the Brisa mode you want to transform React, Vue, Svelte, Solid, Lit components, you can do it easily. Or even if you want to use native Web Components.
