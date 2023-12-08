@@ -9,10 +9,11 @@ type Props = {
 
 const voidFn = () => {};
 
-export default async function SSRWebComponent(
-  { Component, selector, ...props }: Props,
-  requestContext: RequestContext
-) {
+export default async function SSRWebComponent({
+  Component,
+  selector,
+  ...props
+}: Props) {
   let style = "";
   let Selector = selector;
 
@@ -33,7 +34,7 @@ export default async function SSRWebComponent(
 
   try {
     content = await (typeof Component.suspense === "function"
-      ? Component.suspense(componentProps, requestContext)
+      ? Component.suspense(componentProps, webContext)
       : Component(componentProps, webContext));
   } catch (err) {
     if (Component.error) {
