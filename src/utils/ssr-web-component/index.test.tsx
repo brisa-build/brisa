@@ -12,10 +12,7 @@ describe("utils", () => {
     it("should render a web component", async () => {
       const Component = () => <div>hello world</div>;
       const selector = "my-component";
-      const output = (await SSRWebComponent(
-        { Component, selector },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({ Component, selector })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -29,14 +26,11 @@ describe("utils", () => {
     it("should render a web component with props", async () => {
       const Component = ({ name }: { name: string }) => <div>hello {name}</div>;
       const selector = "my-component";
-      const output = (await SSRWebComponent(
-        {
-          Component,
-          selector,
-          name: "world",
-        },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({
+        Component,
+        selector,
+        name: "world",
+      })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -58,10 +52,7 @@ describe("utils", () => {
         return <div>hello world</div>;
       };
       const selector = "my-component";
-      const output = (await SSRWebComponent(
-        { Component, selector },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({ Component, selector })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -83,10 +74,7 @@ describe("utils", () => {
         return <div>hello {foo.value.name}</div>;
       };
       const selector = "my-component";
-      const output = (await SSRWebComponent(
-        { Component, selector },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({ Component, selector })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -105,10 +93,7 @@ describe("utils", () => {
         return <div>hello {bar.value}</div>;
       };
       const selector = "my-component";
-      const output = (await SSRWebComponent(
-        { Component, selector },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({ Component, selector })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -128,10 +113,7 @@ describe("utils", () => {
         return <div>hello world</div>;
       };
       const selector = "my-component";
-      const output = (await SSRWebComponent(
-        { Component, selector },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({ Component, selector })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -151,10 +133,7 @@ describe("utils", () => {
         return <div>hello world</div>;
       };
       const selector = "my-component";
-      const output = (await SSRWebComponent(
-        { Component, selector },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({ Component, selector })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -174,10 +153,7 @@ describe("utils", () => {
         return <div>hello world</div>;
       };
       const selector = "my-component";
-      const output = (await SSRWebComponent(
-        { Component, selector },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({ Component, selector })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -195,14 +171,11 @@ describe("utils", () => {
 
       const selector = "my-component";
 
-      const output = (await SSRWebComponent(
-        {
-          Component,
-          selector,
-          children: "world",
-        },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({
+        Component,
+        selector,
+        children: "world",
+      })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -224,14 +197,11 @@ describe("utils", () => {
 
       const selector = "my-component";
 
-      const output = (await SSRWebComponent(
-        {
-          Component,
-          selector,
-          children: "world",
-        },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({
+        Component,
+        selector,
+        children: "world",
+      })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -254,14 +224,11 @@ describe("utils", () => {
 
       const selector = "my-component";
 
-      const output = (await SSRWebComponent(
-        {
-          Component,
-          selector,
-          children: "world",
-        },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({
+        Component,
+        selector,
+        children: "world",
+      })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -280,13 +247,10 @@ describe("utils", () => {
 
       const selector = "my-component";
 
-      const output = (await SSRWebComponent(
-        {
-          Component,
-          selector,
-        },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({
+        Component,
+        selector,
+      })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -308,13 +272,10 @@ describe("utils", () => {
 
       const selector = "my-component";
 
-      const output = (await SSRWebComponent(
-        {
-          Component,
-          selector,
-        },
-        requestContext
-      )) as any;
+      const output = (await SSRWebComponent({
+        Component,
+        selector,
+      })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -333,13 +294,10 @@ describe("utils", () => {
       const selector = "my-component";
 
       try {
-        (await SSRWebComponent(
-          {
-            Component,
-            selector,
-          },
-          requestContext
-        )) as any;
+        (await SSRWebComponent({
+          Component,
+          selector,
+        })) as any;
         expect(false).toBe(true);
       } catch (error: any) {
         expect(error.message).toBe("error");
