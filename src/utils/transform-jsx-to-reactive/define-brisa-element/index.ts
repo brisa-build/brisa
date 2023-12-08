@@ -13,13 +13,14 @@ export default function defineBrisaElement(
     wrapWithReturnStatement(component.body as ESTree.Statement),
   ]) as ESTree.Statement[];
 
-  let hyperScriptVarName = "h";
-  let effectVarName = isAddedDefaultProps ? "effect" : undefined;
-
-  while (allVariableNames.has(hyperScriptVarName)) hyperScriptVarName += "$";
-  if (effectVarName) {
-    while (allVariableNames.has(effectVarName)) effectVarName += "$";
-  }
+  const hyperScriptVarName = generateUniqueVariableName("h", allVariableNames);
+  const effectVarName = isAddedDefaultProps
+    ? generateUniqueVariableName("effect", allVariableNames)
+    : undefined;
+  const componentName = generateUniqueVariableName(
+    component.id?.name ?? "Component",
+    allVariableNames
+  );
 
   const [returnWithHyperScript, returnStatementIndex] =
     getReactiveReturnStatement(componentBody, hyperScriptVarName);
@@ -30,7 +31,10 @@ export default function defineBrisaElement(
 
   const newComponentAst = {
     type: "FunctionExpression",
-    id: component.id,
+    id: {
+      type: "Identifier",
+      name: componentName,
+    },
     params: componentParams,
     body: {
       type: "BlockStatement",
@@ -50,7 +54,10 @@ export default function defineBrisaElement(
     manageWebContextField(newComponentAst, effectVarName, "effect");
   }
 
-  const args = [newComponentAst] as ESTree.Expression[];
+  // Add an identifier to the component
+  const args = [
+    { type: "Identifier", name: componentName },
+  ] as ESTree.Expression[];
 
   if (componentPropsNames?.length) {
     args.push({
@@ -63,7 +70,7 @@ export default function defineBrisaElement(
   }
 
   // Wrapping: default export with brisaElement
-  const newComponent = {
+  const brisaElement = {
     type: "CallExpression",
     callee: {
       type: "Identifier",
@@ -72,7 +79,7 @@ export default function defineBrisaElement(
     arguments: args,
   };
 
-  return [BRISA_IMPORT, newComponent];
+  return [BRISA_IMPORT, brisaElement, newComponentAst];
 }
 
 function manageWebContextField(
@@ -149,4 +156,15 @@ function wrapWithReturnStatement(statement: ESTree.Statement) {
     type: "ReturnStatement",
     argument: statement,
   };
+}
+
+function generateUniqueVariableName(
+  baseName: string,
+  existingNames: Set<string>
+): string {
+  let uniqueName = baseName;
+  while (existingNames.has(uniqueName)) {
+    uniqueName += "$";
+  }
+  return uniqueName;
 }
