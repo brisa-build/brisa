@@ -130,8 +130,8 @@ describe("utils", () => {
         const [importDeclaration, wrappedComponent] = defineBrisaElement(
           component,
           propNames,
-          "h",
-          "effect"
+          new Set(),
+          true
         );
         expect(output(importDeclaration)).toBe(
           'import {brisaElement, _on, _off} from "brisa/client";'
@@ -159,8 +159,8 @@ describe("utils", () => {
         const [importDeclaration, wrappedComponent] = defineBrisaElement(
           component,
           propNames,
-          "h",
-          "effect"
+          new Set(),
+          true
         );
         expect(output(importDeclaration)).toBe(
           'import {brisaElement, _on, _off} from "brisa/client";'
