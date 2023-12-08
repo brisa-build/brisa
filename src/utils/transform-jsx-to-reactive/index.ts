@@ -37,7 +37,7 @@ export default function transformJSXToReactive(code: string, path: string) {
 
   componentBranch = optimizeEffects(componentBranch, allVariableNames);
 
-  const [importDeclaration, brisaElement] = defineBrisaElement(
+  const [importDeclaration, brisaElement, componentAst] = defineBrisaElement(
     componentBranch,
     propNames,
     allVariableNames,
@@ -47,6 +47,7 @@ export default function transformJSXToReactive(code: string, path: string) {
   // Wrap the component with brisaElement
   if (typeof index === "number") {
     (reactiveAst.body[index] as any).declaration = brisaElement;
+    reactiveAst.body.splice(index, 0, componentAst as ESTree.Statement);
   }
 
   // Add the import declaration
