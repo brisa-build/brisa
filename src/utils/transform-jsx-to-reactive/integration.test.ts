@@ -15,9 +15,11 @@ declare global {
 function defineBrisaWebComponent(code: string, path: string) {
   const componentName = path.split("/").pop()?.split(".")[0] as string;
 
-  const webComponent = normalizeQuotes(transformJSXToReactive(code, path))
-    .replace('import {brisaElement, _on, _off} from "brisa/client"', "")
-    .replace("export default", "");
+  const webComponent = `(() => {${normalizeQuotes(
+    transformJSXToReactive(code, path)
+  )
+    .replace('import {brisaElement, _on, _off} from "brisa/client";', "")
+    .replace("export default", "return")}})()`;
 
   customElements.define(componentName, eval(webComponent));
 }
@@ -3056,6 +3058,98 @@ describe("integration", () => {
       const myComponent = document.querySelector("my-component") as HTMLElement;
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+    });
+
+    it("should throw an error if the component throws an error and there is not the error component", () => {
+      const Component = `
+        export default function MyComponent() {
+          return throw new Error('test')
+        }
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      expect(() =>
+        defineBrisaWebComponent(
+          Component,
+          "src/web-components/my-component.tsx"
+        )
+      ).toThrow();
+    });
+
+    it("should render the error component if there is an error", () => {
+      const Component = `
+        export default function MyComponent() {
+          return throw new Error('test')
+        }
+
+        MyComponent.error = () => <div>Ops!</div>
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Ops!</div>");
+    });
+
+    it("should display the suspense component meanwhile the component is not mounted", async () => {
+      const Component = `
+        export default async function MyComponent() {
+          return <div>hello world</div>
+        }
+
+        MyComponent.suspense = () => <div>loading...</div>
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>loading...</div>");
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>hello world</div>");
+    });
+
+    it("should not lose the reactivity after showing the suspense", async () => {
+      const Component = `
+        export default async function MyComponent() {
+          const count = state(0);
+          return <div onClick={() => count.value++}>{count.value}</div>
+        }
+
+        MyComponent.suspense = () => <div>loading...</div>
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>loading...</div>");
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>0</div>");
+
+      myComponent.click();
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
     });
 
     it.todo(

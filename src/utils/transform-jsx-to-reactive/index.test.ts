@@ -91,9 +91,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {h}) {
+            function MyComponent({}, {h}) {
               return h('div', {}, 'foo');
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
         expect(output).toBe(expected);
       });
@@ -110,9 +112,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {h}) {
+            function MyComponent({}, {h}) {
               return h('div', {}, ['b', {}, 'foo']);
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
         expect(output).toBe(expected);
       });
@@ -129,9 +133,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent(props, {h}) {
+            function MyComponent(props, {h}) {
               return h('div', {}, () => props.someProp.value);
-            }, ['someProp']);
+            }
+
+            export default brisaElement(MyComponent, ['someProp']);
         `);
         expect(output).toBe(expected);
       });
@@ -155,10 +161,12 @@ describe("utils", () => {
             let Test = function (props) {
               return ['div', {}, props.anotherName];
             };
-  
-            export default brisaElement(function MyComponent(props, {h}) {
+
+            function MyComponent(props, {h}) {
               return h('div', {}, () => props.someProp.value);
-            }, ['someProp']);
+            }
+  
+            export default brisaElement(MyComponent, ['someProp']);
         `);
         expect(output).toBe(expected);
       });
@@ -175,9 +183,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({someProp}, {h}) {
+            function MyComponent({someProp}, {h}) {
               return h('div', {}, () => someProp.value);
-            }, ['someProp']);
+            }
+
+            export default brisaElement(MyComponent, ['someProp']);
           `);
         expect(output).toBe(expected);
       });
@@ -196,11 +206,13 @@ describe("utils", () => {
 
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
-  
-            export default brisaElement(async function MyComponent({}, {h}) {
+
+            async function MyComponent({}, {h}) {
               await new Promise(resolve => setTimeout(resolve, 1000));
               return h('div', {}, 'foo');
-            });
+            }
+  
+            export default brisaElement(MyComponent);
           `);
 
         expect(output).toBe(expected);
@@ -218,9 +230,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({someProp: somePropRenamed}, {h}) {
+            function MyComponent({someProp: somePropRenamed}, {h}) {
               return h('div', {}, () => somePropRenamed.value);
-            }, ['someProp']);
+            }
+
+            export default brisaElement(MyComponent, ['someProp']);
           `);
         expect(output).toBe(expected);
       });
@@ -239,9 +253,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {h}) {
+            function MyComponent({}, {h}) {
               return h(null, {}, [['div', {}, 'foo'], ['span', {}, 'bar']]);
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
         expect(output).toBe(expected);
       });
@@ -260,9 +276,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent(props, {h}) {
+            function MyComponent(props, {h}) {
               return h(null, {}, [['div', {}, () => props.foo.value], ['span', {}, () => props.bar.value]]);
-            }, ['foo', 'bar']);
+            }
+
+            export default brisaElement(MyComponent, ['foo', 'bar']);
           `);
 
         expect(output).toBe(expected);
@@ -300,9 +318,11 @@ describe("utils", () => {
               return [null, {}, [['div', {}, props.bla], ['span', {}, props.another]]];
             };
 
-            export default brisaElement(function MyComponent(props, {h}) {
+            function MyComponent(props, {h}) {
               return h(null, {}, [['div', {}, () => props.foo.value], ['span', {}, () => props.bar.value]]);
-            }, ['foo', 'bar']);
+            }
+
+            export default brisaElement(MyComponent, ['foo', 'bar']);
           `);
 
         expect(output).toBe(expected);
@@ -342,9 +362,11 @@ describe("utils", () => {
               return ['div', {}, props.children];
             };
 
-            export default brisaElement(function MyComponent(props, {h}) {
+            function MyComponent(props, {h}) {
               return h(null, {}, [['div', {}, () => props.foo.value], ['span', {}, () => props.bar.value]]);
-            }, ['foo', 'bar']);
+            }
+
+            export default brisaElement(MyComponent, ['foo', 'bar']);
           `);
         const logs = mockLog.mock.calls.slice(0);
         mockLog.mockRestore();
@@ -394,9 +416,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({h}, {h: h$}) {
+            function MyComponent({h}, {h: h$}) {
               return h$('div', {}, () => h.value);
-            }, ['h']);
+            }
+
+            export default brisaElement(MyComponent, ['h']);
           `);
 
         expect(output).toBe(expected);
@@ -416,10 +440,12 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {state, h: h$}) {
+            function MyComponent({}, {state, h: h$}) {
               const h = state(3);
               return h$('div', {}, () => h.value);
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
 
         expect(output).toBe(expected);
@@ -441,11 +467,13 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {h: h$$, ...context}) {
+            function MyComponent({}, {h: h$$, ...context}) {
               const h = context.state(3);
               const h$ = "foo";
               return h$$('div', {}, [[null, {}, () => h.value], [null, {}, " "], [null, {}, h$]]);
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
 
         expect(output).toBe(expected);
@@ -465,9 +493,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {h}) {
+            function MyComponent({}, {h}) {
               return h(null, {}, 'foo');
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
 
         expect(output).toBe(expected);
@@ -488,10 +518,12 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {h}) {
+            function MyComponent({}, {h}) {
               const foo = 'Some text';
               return h(null, {}, () => foo);
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
 
         expect(output).toBe(expected);
@@ -511,9 +543,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {h}) {
+            function MyComponent({}, {h}) {
               return h(null, {}, '');
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
 
         expect(output).toBe(expected);
@@ -532,9 +566,11 @@ describe("utils", () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            export default brisaElement(function MyComponent({}, {h}) {
+            function MyComponent({}, {h}) {
               return h(null, {}, '');
-            });
+            }
+
+            export default brisaElement(MyComponent);
           `);
 
         expect(output).toBe(expected);
@@ -554,9 +590,11 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({show}, {h}) {
+          function MyComponent({show}, {h}) {
             return h(null, {}, () => show.value ? ['div', {}, 'foo'] : 'Empty');
-          }, ['show']);
+          }
+
+          export default brisaElement(MyComponent, ['show']);
         `);
 
         expect(output).toBe(expected);
@@ -574,7 +612,9 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function (props, {h}) {return h('div', {}, () => props.foo.value);}, ['foo']);
+          function Component(props, {h}) {return h('div', {}, () => props.foo.value);}
+
+          export default brisaElement(Component, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -592,7 +632,9 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function (props, {h}) {return h(null, {}, 'Hello World');});
+          function Component(props, {h}) {return h(null, {}, 'Hello World');}
+
+          export default brisaElement(Component);
         `);
 
         expect(output).toBe(expected);
@@ -612,9 +654,11 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {h}) {
+          function MyComponent({foo}, {h}) {
             return h(null, {}, () => 'Hello ' + foo.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(MyComponent, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -634,9 +678,11 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo, bar, baz}, {h}) {
+          function MyComponent({foo, bar, baz}, {h}) {
             return h(null, {}, () => 'Hello ' + foo.value + ' ' + bar.value + ' ' + baz.value);
-          }, ['foo', 'bar', 'baz']);
+          }
+
+          export default brisaElement(MyComponent, ['foo', 'bar', 'baz']);
         `);
 
         expect(output).toBe(expected);
@@ -656,9 +702,11 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent(props, {h}) {
+          function MyComponent(props, {h}) {
             return h(null, {}, () => 'Hello ' + props.foo.value + ' ' + props.bar.value + ' ' + props.baz.value);
-          }, ['foo', 'bar', 'baz']);
+          }
+
+          export default brisaElement(MyComponent, ['foo', 'bar', 'baz']);
         `);
 
         expect(output).toBe(expected);
@@ -678,9 +726,11 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function (props, {h}) {
+          function Component(props, {h}) {
             return h(null, {}, () => 'Hello ' + props.foo.value + ' ' + props.bar.value + ' ' + props.baz.value);
-          }, ['foo', 'bar', 'baz']);
+          }
+
+          export default brisaElement(Component, ['foo', 'bar', 'baz']);
         `);
 
         expect(output).toBe(expected);
@@ -698,7 +748,9 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function (props, {h}) {return h(null, {}, () => 'Hello World' + props.foo.value);}, ['foo']);
+          function Component(props, {h}) {return h(null, {}, () => 'Hello World' + props.foo.value);}
+
+          export default brisaElement(Component, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -716,7 +768,9 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function (props, {h}) {console.log('Hello World');});
+          function Component(props, {h}) {console.log('Hello World');}
+
+          export default brisaElement(Component);
         `);
 
         expect(output).toBe(expected);
@@ -734,7 +788,9 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function (props, {h}) {return h(null, {}, () => console.log('Hello World' + props.foo.value));}, ['foo']);
+          function Component(props, {h}) {return h(null, {}, () => console.log('Hello World' + props.foo.value));}
+
+          export default brisaElement(Component, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -752,7 +808,9 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function ({foo}, {h}) {return h(null, {}, () => console.log({foo: foo.value}));}, ['foo']);
+          function Component({foo}, {h}) {return h(null, {}, () => console.log({foo: foo.value}));}
+
+          export default brisaElement(Component, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -771,7 +829,9 @@ describe("utils", () => {
         const expected = toInline(`
         import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function (props, {h}) {return h('div', {}, () => props.foo.value);}, ['foo']);
+        function Component(props, {h}) {return h('div', {}, () => props.foo.value);}
+
+        export default brisaElement(Component, ['foo']);
       `);
 
         expect(output).toBe(expected);
@@ -792,9 +852,11 @@ describe("utils", () => {
         const expected = toInline(`
         import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function (props, {h}) {
+        function Component(props, {h}) {
           return h('div', {}, () => props.foo.value);
-        }, ['foo']);
+        }
+
+        export default brisaElement(Component, ['foo']);
       `);
 
         expect(output).toBe(expected);
@@ -814,9 +876,11 @@ describe("utils", () => {
         const expected =
           toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function MyComponent({}, {h}) {
-          return h('dialog', {open: _on}, '');
-        });`);
+          function MyComponent({}, {h}) {
+            return h('dialog', {open: _on}, '');
+          }
+
+          export default brisaElement(MyComponent);`);
 
         expect(output).toBe(expected);
       });
@@ -835,9 +899,11 @@ describe("utils", () => {
         const expected =
           toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function MyComponent(props, {h}) {
-          return h('dialog', {open: () => props.open.value ? _on : _off}, '');
-        }, ['open']);`);
+          function MyComponent(props, {h}) {
+            return h('dialog', {open: () => props.open.value ? _on : _off}, '');
+          }
+
+          export default brisaElement(MyComponent, ['open']);`);
 
         expect(output).toBe(expected);
       });
@@ -857,10 +923,12 @@ describe("utils", () => {
         const expected =
           toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function MyComponent({}, {state, h}) {
-          const open = state(true);
-          return h('dialog', {open: () => open.value ? _on : _off}, '');
-        });`);
+          function MyComponent({}, {state, h}) {
+            const open = state(true);
+            return h('dialog', {open: () => open.value ? _on : _off}, '');
+          }
+
+          export default brisaElement(MyComponent);`);
 
         expect(output).toBe(expected);
       });
@@ -880,10 +948,12 @@ describe("utils", () => {
         const expected =
           toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function MyComponent({}, {h}) {
-          const open = true;
-          return h('dialog', {open: open ? _on : _off}, '');
-        });`);
+          function MyComponent({}, {h}) {
+            const open = true;
+            return h('dialog', {open: open ? _on : _off}, '');
+          }
+
+          export default brisaElement(MyComponent);`);
 
         expect(output).toBe(expected);
       });
@@ -903,11 +973,13 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {h, effect}) {
+          function MyComponent({foo}, {h, effect}) {
             effect(() => foo.value ??= 'bar');
             const someVar = 'test';
             return h('div', {}, () => foo.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(MyComponent, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -930,11 +1002,13 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function ({foo}, {h, effect}) {
+          function Component({foo}, {h, effect}) {
             effect(() => foo.value ??= 'bar');
             const someVar = 'test';
             return h('div', {}, () => foo.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(Component, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -957,11 +1031,13 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function ({foo}, {h, effect}) {
+          function Component({foo}, {h, effect}) {
             effect(() => foo.value ??= 'bar');
             const someVar = 'test';
             return h('div', {}, () => foo.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(Component, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -984,11 +1060,13 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function ({foo: renamedFoo}, {h, effect}) {
+          function Component({foo: renamedFoo}, {h, effect}) {
             effect(() => renamedFoo.value ??= 'bar');
             const someVar = 'test';
             return h('div', {}, () => renamedFoo.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(Component, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -1017,7 +1095,7 @@ describe("utils", () => {
         const expected =
           toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function Component({}, {effect, cleanup, state, h}) {
+          function Component({}, {effect, cleanup, state, h}) {
             const someState = state(0);
           
             effect(r => {
@@ -1025,7 +1103,9 @@ describe("utils", () => {
             });
           
             return h('div', {}, () => someState.value);
-          });`);
+          }
+
+          export default brisaElement(Component);`);
 
         expect(output).toBe(expected);
       });
@@ -1043,9 +1123,11 @@ describe("utils", () => {
         const expected =
           toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function Component({onFoo}, {h}) {
+          function Component({onFoo}, {h}) {
             return h('div', {onClick: onFoo}, 'foo');
-          }, ['onFoo']);`);
+          }
+
+          export default brisaElement(Component, ['onFoo']);`);
 
         expect(output).toBe(expected);
       });
@@ -1065,10 +1147,12 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {derived, h}) {
+          function MyComponent({foo}, {derived, h}) {
             const bar = derived(() => foo.value || 'bar');
             return h('div', {}, () => bar.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(MyComponent, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -1089,10 +1173,12 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent(props, {derived, h}) {
+          function MyComponent(props, {derived, h}) {
             const bar = derived(() => props.foo.value || 'bar');
             return h('div', {}, () => bar.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(MyComponent, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -1113,10 +1199,12 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo}, {derived, h}) {
+          function MyComponent({foo}, {derived, h}) {
             const bar = derived(() => foo.value ?? 'bar');
             return h('div', {}, () => bar.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(MyComponent, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -1137,10 +1225,12 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent(props, {derived, h}) {
+          function MyComponent(props, {derived, h}) {
             const bar = derived(() => props.foo.value ?? 'bar');
             return h('div', {}, () => bar.value);
-          }, ['foo']);
+          }
+
+          export default brisaElement(MyComponent, ['foo']);
         `);
 
         expect(output).toBe(expected);
@@ -1168,11 +1258,13 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function ConditionalRender({name, children}, {h}) {
+          function ConditionalRender({name, children}, {h}) {
             return h('h2', {}, [
               ['b', {}, [[null, {}, "Hello "], [null, {}, () => name.value]]], [null, {}, () => name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'], [null, {}, children]
             ]);
-          }, ['name']);
+          }
+
+          export default brisaElement(ConditionalRender, ['name']);
       `);
 
         expect(output).toBe(expected);
@@ -1193,9 +1285,12 @@ describe("utils", () => {
           import {brisaElement, _on, _off} from "brisa/client";
 
           export const props = ['foo', 'bar'];
-          export default brisaElement(function MyComponent(props, {h}) {
+
+          function MyComponent(props, {h}) {
             return h('div', {...props}, 'Example');
-          }, ['foo', 'bar']);
+          }
+
+          export default brisaElement(MyComponent, ['foo', 'bar']);
         `);
 
         expect(output).toBe(expected);
@@ -1216,9 +1311,12 @@ describe("utils", () => {
           import {brisaElement, _on, _off} from "brisa/client";
 
           export const props = ['bar'];
-          export default brisaElement(function MyComponent({foo, ...props}, {h}) {
+
+          function MyComponent({foo, ...props}, {h}) {
             return h('div', {...props}, 'Example');
-          }, ['foo', 'bar']);
+          }
+
+          export default brisaElement(MyComponent, ['foo', 'bar']);
         `);
 
         expect(output).toBe(expected);
@@ -1238,9 +1336,11 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo, bar}, {h}) {
+          function MyComponent({foo, bar}, {h}) {
             return h('div', {}, () => foo.value && bar.value ? 'TRUE' : 'FALSE');
-          }, ['foo', 'bar']);`);
+          }
+
+          export default brisaElement(MyComponent, ['foo', 'bar']);`);
 
         expect(output).toBe(expected);
       });
@@ -1260,10 +1360,12 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo, bar}, {derived, h}) {
+          function MyComponent({foo, bar}, {derived, h}) {
             const baz = derived(() => foo.value && bar.value);
             return h('div', {}, () => baz.value ? 'TRUE' : 'FALSE');
-          }, ['foo', 'bar']);`);
+          }
+
+          export default brisaElement(MyComponent, ['foo', 'bar']);`);
 
         expect(output).toBe(expected);
       });
@@ -1280,9 +1382,11 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({items}, {h}) {
+          function MyComponent({items}, {h}) {
             return h('ul', {}, () => items.value.map(item => ['li', {key: item.id}, item.name]));
-          }, ['items']);`);
+          }
+
+          export default brisaElement(MyComponent, ['items']);`);
 
         expect(output).toBe(expected);
       });
@@ -1303,13 +1407,15 @@ describe("utils", () => {
         const expected = toInline(`
         import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function MyComponent({show}, {h}) {
+        function MyComponent({show}, {h}) {
           return h(null, {}, () => {
             if (show.value) return ['div', {}, 'foo'];
             const bar = ['b', {}, 'bar'];
             return ['span', {}, 'bar'];
           });
-        }, ['show']);
+        }
+
+        export default brisaElement(MyComponent, ['show']);
         `);
 
         expect(output).toBe(expected);
@@ -1336,7 +1442,7 @@ describe("utils", () => {
         const expected = toInline(`
         import {brisaElement, _on, _off} from "brisa/client";
 
-        export default brisaElement(function MyComponent({show}, {h}) {
+        function MyComponent({show}, {h}) {
           return h(null, {}, () => {
             switch (show.value) {
               case true:return ['div', {}, 'foo'];
@@ -1344,7 +1450,9 @@ describe("utils", () => {
               default:return ['span', {}, 'bar'];
             }
           });
-        }, ['show']);
+        }
+
+        export default brisaElement(MyComponent, ['show']);
         `);
 
         expect(output).toBe(expected);
@@ -1365,10 +1473,12 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent({foo, ...rest}, {derived, h}) {
+          function MyComponent({foo, ...rest}, {derived, h}) {
             const user = derived(() => rest.user.value ?? ({name: 'No user'}));
             return h('div', {}, () => user.value.name);
-          }, ['foo', 'user']);
+          }
+
+          export default brisaElement(MyComponent, ['foo', 'user']);
         `);
 
         expect(output).toBe(expected);
@@ -1392,9 +1502,11 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          export default brisaElement(function MyComponent(props, {h}) {
+          function MyComponent(props, {h}) {
             return h('div', {...props}, 'Example');
-          });
+          }
+
+          export default brisaElement(MyComponent);
         `);
         const logs = mockLog.mock.calls.slice(0);
         mockLog.mockRestore();
