@@ -1,13 +1,21 @@
 import { describe, expect, it } from "bun:test";
 import SSRWebComponent from ".";
 import { WebContext } from "../../types";
+import extendRequestContext from "../extend-request-context";
+
+const requestContext = extendRequestContext({
+  originalRequest: new Request("http://localhost:3000"),
+});
 
 describe("utils", () => {
   describe("SSRWebComponent", () => {
-    it("should render a web component", () => {
+    it("should render a web component", async () => {
       const Component = () => <div>hello world</div>;
       const selector = "my-component";
-      const output = SSRWebComponent({ Component, selector }) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -18,14 +26,17 @@ describe("utils", () => {
       );
     });
 
-    it("should render a web component with props", () => {
+    it("should render a web component with props", async () => {
       const Component = ({ name }: { name: string }) => <div>hello {name}</div>;
       const selector = "my-component";
-      const output = SSRWebComponent({
-        Component,
-        selector,
-        name: "world",
-      }) as any;
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+          name: "world",
+        },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -36,7 +47,7 @@ describe("utils", () => {
       ).toBe("hello world");
     });
 
-    it("should render a web component with css template literal", () => {
+    it("should render a web component with css template literal", async () => {
       const Component = ({}, { css }: WebContext) => {
         css`
           div {
@@ -47,7 +58,10 @@ describe("utils", () => {
         return <div>hello world</div>;
       };
       const selector = "my-component";
-      const output = SSRWebComponent({ Component, selector }) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -62,14 +76,17 @@ describe("utils", () => {
       );
     });
 
-    it("should render a web component with a initial state", () => {
+    it("should render a web component with a initial state", async () => {
       const Component = ({}, { state }: WebContext) => {
         const foo = state({ name: "world" });
 
         return <div>hello {foo.value.name}</div>;
       };
       const selector = "my-component";
-      const output = SSRWebComponent({ Component, selector }) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -80,7 +97,7 @@ describe("utils", () => {
       ).toBe("hello world");
     });
 
-    it("should render a web component with a derived state", () => {
+    it("should render a web component with a derived state", async () => {
       const Component = ({}, { state, derived }: WebContext) => {
         const foo = state({ name: "wor" });
         const bar = derived(() => foo.value.name + "ld");
@@ -88,7 +105,10 @@ describe("utils", () => {
         return <div>hello {bar.value}</div>;
       };
       const selector = "my-component";
-      const output = SSRWebComponent({ Component, selector }) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -99,7 +119,7 @@ describe("utils", () => {
       ).toBe("hello world");
     });
 
-    it("should render a web component with a effect", () => {
+    it("should render a web component with a effect", async () => {
       const Component = ({}, { effect }: WebContext) => {
         effect(() => {
           document.title = "hello world";
@@ -108,7 +128,10 @@ describe("utils", () => {
         return <div>hello world</div>;
       };
       const selector = "my-component";
-      const output = SSRWebComponent({ Component, selector }) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -119,7 +142,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render a web component with a cleanup", () => {
+    it("should render a web component with a cleanup", async () => {
       const Component = ({}, { cleanup }: WebContext) => {
         cleanup(() => {
           document.title = "hello world";
@@ -128,7 +151,10 @@ describe("utils", () => {
         return <div>hello world</div>;
       };
       const selector = "my-component";
-      const output = SSRWebComponent({ Component, selector }) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -139,7 +165,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render a web component with a onMount", () => {
+    it("should render a web component with a onMount", async () => {
       const Component = ({}, { onMount }: WebContext) => {
         onMount(() => {
           document.title = "hello world";
@@ -148,7 +174,10 @@ describe("utils", () => {
         return <div>hello world</div>;
       };
       const selector = "my-component";
-      const output = SSRWebComponent({ Component, selector }) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -159,18 +188,21 @@ describe("utils", () => {
       );
     });
 
-    it("should render a web component with a children slot", () => {
+    it("should render a web component with a children slot", async () => {
       const Component = ({ children }: any) => {
         return <div>hello {children}</div>;
       };
 
       const selector = "my-component";
 
-      const output = SSRWebComponent({
-        Component,
-        selector,
-        children: "world",
-      }) as any;
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+          children: "world",
+        },
+        requestContext
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
@@ -183,6 +215,135 @@ describe("utils", () => {
         output.props.children[0].props.children[0].props.children[1].type
       ).toBe("slot");
       expect(output.props.children[1]).toBe("world");
+    });
+
+    it("should work with async components", async () => {
+      const Component = async ({ children }: any) => {
+        return <div>hello {children}</div>;
+      };
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+          children: "world",
+        },
+        requestContext
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("div");
+      expect(output.props.children[0].props.children[0].props.children[0]).toBe(
+        "hello "
+      );
+      expect(
+        output.props.children[0].props.children[0].props.children[1].type
+      ).toBe("slot");
+      expect(output.props.children[1]).toBe("world");
+    });
+
+    it("should work the suspense component in async components", async () => {
+      const Component = async ({ children }: any) => {
+        return <div>hello {children}</div>;
+      };
+      Component.suspense = () => <div>loading...</div>;
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+          children: "world",
+        },
+        requestContext
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("div");
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        "loading..."
+      );
+    });
+
+    it("should render the error component when there is an error rendering the component", async () => {
+      const Component = () => {
+        throw new Error("error");
+      };
+      Component.error = () => <div>Ops! error</div>;
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("div");
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        "Ops! error"
+      );
+    });
+
+    it("should render the error component when there is an error rendering the suspense component", async () => {
+      const Component = async () => {
+        return <div>hello world</div>;
+      };
+      Component.suspense = () => {
+        throw new Error("error");
+      };
+      Component.error = () => <div>Ops! error</div>;
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("div");
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        "Ops! error"
+      );
+    });
+
+    it("should throw the error if there is no an error component", async () => {
+      const Component = () => {
+        throw new Error("error");
+      };
+
+      const selector = "my-component";
+
+      try {
+        (await SSRWebComponent(
+          {
+            Component,
+            selector,
+          },
+          requestContext
+        )) as any;
+        expect(false).toBe(true);
+      } catch (error: any) {
+        expect(error.message).toBe("error");
+      }
     });
   });
 });
