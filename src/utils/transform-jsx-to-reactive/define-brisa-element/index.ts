@@ -5,13 +5,21 @@ import getReactiveReturnStatement from "../get-reactive-return-statement";
 export default function defineBrisaElement(
   component: ESTree.FunctionDeclaration,
   componentPropsNames: string[],
-  hyperScriptVarName: string = "h",
-  effectVarName?: string
+  allVariableNames: Set<string> = new Set(),
+  isAddedDefaultProps?: boolean
 ) {
   const componentParams = component.params;
   const componentBody = (component.body?.body ?? [
     wrapWithReturnStatement(component.body as ESTree.Statement),
   ]) as ESTree.Statement[];
+
+  let hyperScriptVarName = "h";
+  let effectVarName = isAddedDefaultProps ? "effect" : undefined;
+
+  while (allVariableNames.has(hyperScriptVarName)) hyperScriptVarName += "$";
+  if (effectVarName) {
+    while (allVariableNames.has(effectVarName)) effectVarName += "$";
+  }
 
   const [returnWithHyperScript, returnStatementIndex] =
     getReactiveReturnStatement(componentBody, hyperScriptVarName);

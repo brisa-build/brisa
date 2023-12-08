@@ -34,21 +34,14 @@ export default function transformJSXToReactive(code: string, path: string) {
 
   const componentVariableNames = getComponentVariableNames(componentBranch);
   const allVariableNames = new Set([...propNames, ...componentVariableNames]);
-  let hyperScriptVarName = "h";
-  let effectVarName = isAddedDefaultProps ? "effect" : undefined;
-
-  while (allVariableNames.has(hyperScriptVarName)) hyperScriptVarName += "$";
-  if (effectVarName) {
-    while (allVariableNames.has(effectVarName)) effectVarName += "$";
-  }
 
   componentBranch = optimizeEffects(componentBranch, allVariableNames);
 
   const [importDeclaration, brisaElement] = defineBrisaElement(
     componentBranch,
     propNames,
-    hyperScriptVarName,
-    effectVarName
+    allVariableNames,
+    isAddedDefaultProps
   );
 
   // Wrap the component with brisaElement
