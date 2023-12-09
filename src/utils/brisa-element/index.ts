@@ -111,7 +111,7 @@ export default function brisaElement(
       const self = this;
       self.s = signals();
 
-      const { state, effect, reset } = self.s;
+      const { state, reset } = self.s;
       const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
       let cssStyle = "";
@@ -140,6 +140,7 @@ export default function brisaElement(
         parent: HTMLElement | DocumentFragment,
         // r: function to register subeffects to then clean them up
         r: (v: any) => any,
+        effect: (v: any) => any,
         initialRender = false
       ) {
         // Handle promises
@@ -192,10 +193,10 @@ export default function brisaElement(
         } else if (isReactiveArray(children)) {
           if (isReactiveArray((children as any)[0])) {
             for (let child of children as Children[]) {
-              mount(null, {}, child, el, r);
+              mount(null, {}, child, el, r, effect);
             }
           } else {
-            mount(...(children as [string, Attr, Children]), el, r);
+            mount(...(children as [string, Attr, Children]), el, r, effect);
           }
         } else if (isFunction(children)) {
           let lastNodes: ChildNode[] | undefined;
@@ -233,10 +234,10 @@ export default function brisaElement(
                   // Reactive child node
                   else if (isReactiveArray((child as Children[])[0])) {
                     for (let c of child as Children[]) {
-                      mount(null, {}, c, fragment, r(r2));
+                      mount(null, {}, c, fragment, r(r2), effect);
                     }
                   } else if ((child as ReactiveArray).length) {
-                    mount(...(child as ReactiveArray), fragment, r(r2));
+                    mount(...(child as ReactiveArray), fragment, r(r2), effect);
                   }
                   insertOrUpdate(fragment);
 
@@ -265,19 +266,19 @@ export default function brisaElement(
         if (tagName) appendChild(parent, el);
       }
 
-      const props = { children: SLOT_TAG, ...self.p };
-      const webContext = {
-        ...self.s,
-        onMount(cb: () => void) {
-          fnToExecuteAfterMount.push(cb);
-        },
-        // Handle CSS
-        css(strings: string[], ...values: string[]) {
-          cssStyle += strings[0] + values.join("");
-        },
-      } as WebContext;
+      const startRender = (fn: Render, signals = self.s) => {
+        const props = { children: SLOT_TAG, ...self.p };
+        const webContext = {
+          ...signals,
+          onMount(cb: () => void) {
+            fnToExecuteAfterMount.push(cb);
+          },
+          // Handle CSS
+          css(strings: string[], ...values: string[]) {
+            cssStyle += strings[0] + values.join("");
+          },
+        } as WebContext;
 
-      const startRender = (fn: Render) => {
         cssStyle = "";
         return mount(
           null,
@@ -285,21 +286,24 @@ export default function brisaElement(
           fn(props, webContext),
           shadowRoot,
           (v: any) => v,
+          signals?.effect!,
           true
         );
       };
 
       // Render the component
+      let suspenseSignals = signals();
       try {
         // Handle suspense
         if (isFunction(render.suspense)) {
-          await startRender(render.suspense!);
-          reset();
+          await startRender(render.suspense!, suspenseSignals);
         }
         // Handle render
         await startRender(render);
+        suspenseSignals.reset();
       } catch (e) {
         // Handle error
+        suspenseSignals.reset();
         reset();
         if (isFunction(render.error)) {
           startRender(render.error!);
