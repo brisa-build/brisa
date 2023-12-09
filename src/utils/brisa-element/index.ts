@@ -111,7 +111,7 @@ export default function brisaElement(
       const self = this;
       self.s = signals();
 
-      const { state, effect } = self.s;
+      const { state, effect, cleanAll } = self.s;
       const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
       let cssStyle = "";
@@ -294,13 +294,15 @@ export default function brisaElement(
         // Handle suspense
         if (isFunction(render.suspense)) {
           await startRender(render.suspense!);
+          cleanAll();
         }
         // Handle render
         await startRender(render);
       } catch (e) {
         // Handle error
+        cleanAll();
         if (isFunction(render.error)) {
-          await startRender(render.error!);
+          startRender(render.error!);
         } else throw e;
       }
       for (const fn of fnToExecuteAfterMount) fn();
