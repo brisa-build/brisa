@@ -3125,7 +3125,7 @@ describe("integration", () => {
 
     it("should not lose the reactivity after showing the suspense", async () => {
       const Component = `
-        export default async function MyComponent() {
+        export default async function MyComponent({}, {state}) {
           const count = state(0);
           return <div onClick={() => count.value++}>{count.value}</div>
         }
