@@ -2271,6 +2271,74 @@ describe("utils", () => {
       expect(mockCallback.mock.calls[0][0]).toBe("cleanup");
     });
 
+    it("should cleanup suspense when the real content is displayed", async () => {
+      const mockCallback = mock((s: string) => {});
+      const Component = async ({ name = "final content" }) => {
+        return ["div", {}, name];
+      };
+
+      Component.suspense = ({ name = "suspense" }, { cleanup }: any) => {
+        cleanup(() => {
+          mockCallback("cleanup");
+        });
+        return ["div", {}, name];
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>suspense</div>");
+
+      expect(mockCallback).toHaveBeenCalledTimes(0);
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>final content</div>"
+      );
+
+      expect(mockCallback).toHaveBeenCalledTimes(1);
+    });
+
+    it("should cleanup when thrown an error with error component", async () => {
+      const mockCallback = mock((s: string) => {});
+      const Component = async ({}, { cleanup }: any) => {
+        cleanup(() => {
+          mockCallback("cleanup");
+        });
+
+        await Bun.sleep(0);
+
+        throw new Error("error");
+      };
+
+      Component.error = ({ name = "error" }) => {
+        return ["div", {}, name];
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("");
+
+      expect(mockCallback).not.toHaveBeenCalled();
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>error</div>");
+      expect(mockCallback).toHaveBeenCalledTimes(1);
+    });
+
     it("should be possible to inject html using the dangerHTML helper", () => {
       const Component = ({}) => {
         return ["div", {}, () => dangerHTML("<script>alert('test')</script>")];
