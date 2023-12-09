@@ -27,21 +27,21 @@ export default function manageWebContextField(
     });
   }
 
-  // convert function ({}) {} to function ({}, { h }) {}
+  // convert function ({}) {} to function ({}, { effect }) {}
   if (componentAST.params?.length === 1) {
     componentAST.params.push({
       type: "ObjectPattern",
       properties: [property],
     });
   }
-  // convert function ({}, { state }) {} to function ({}, { state, h }) {}
+  // convert function ({}, { state }) {} to function ({}, { state, effect }) {}
   else if (componentAST.params[1]?.type === "ObjectPattern") {
-    const existH = componentAST.params[1].properties.some(
+    const existFieldName = componentAST.params[1].properties.some(
       (prop: any) => prop.key.name === originalFieldName
     );
-    if (!existH) componentAST.params[1].properties.push(property);
+    if (!existFieldName) componentAST.params[1].properties.push(property);
   }
-  // convert function ({}, context) {} to function ({ h, ...context }) {}
+  // convert function ({}, context) {} to function ({ effect, ...context }) {}
   else if (componentAST.params[1]?.type === "Identifier") {
     const props = componentAST.params[1];
     componentAST.params[1] = {

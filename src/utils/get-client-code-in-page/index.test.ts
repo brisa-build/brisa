@@ -69,8 +69,8 @@ describe("utils", () => {
         allWebComponents,
         pageWebComponents
       );
-      const brisaSize = 3855;
-      const webComponents = 630;
+      const brisaSize = 3849;
+      const webComponents = 626;
 
       expect(output).not.toBeNull();
       expect(output!.size).toEqual(brisaSize + webComponents);

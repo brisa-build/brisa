@@ -12,8 +12,7 @@ const REACTIVE_VALUES = new Set([
 ]);
 
 export default function getReactiveReturnStatement(
-  componentBody: ESTree.Statement[],
-  hyperScriptVarName: string
+  componentBody: ESTree.Statement[]
 ) {
   const { LOG_PREFIX } = getConstants();
   const returnStatementIndex = componentBody.findIndex(
@@ -125,17 +124,16 @@ export default function getReactiveReturnStatement(
     console.log(LOG_PREFIX.ERROR);
   }
 
-  const newReturnStatement = {
-    type: "ReturnStatement",
-    argument: {
-      type: "CallExpression",
-      callee: {
-        type: "Identifier",
-        name: hyperScriptVarName,
-      },
-      arguments: [tagName, props, componentChildren],
-    },
-  };
+  const newReturnStatement =
+    tagName === FRAGMENT
+      ? { type: "ReturnStatement", argument: componentChildren }
+      : {
+          type: "ReturnStatement",
+          argument: {
+            type: "ArrayExpression",
+            elements: [tagName, props, componentChildren],
+          },
+        };
 
   return [newReturnStatement, returnStatementIndex];
 }
