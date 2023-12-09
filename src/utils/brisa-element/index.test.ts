@@ -2274,6 +2274,7 @@ describe("utils", () => {
     it("should cleanup suspense when the real content is displayed", async () => {
       const mockCallback = mock((s: string) => {});
       const Component = async ({ name = "final content" }) => {
+        await Bun.sleep(0);
         return ["div", {}, name];
       };
 
@@ -2292,8 +2293,9 @@ describe("utils", () => {
         "test-component"
       ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>suspense</div>");
+      await Bun.sleep(0);
 
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>suspense</div>");
       expect(mockCallback).toHaveBeenCalledTimes(0);
 
       await Bun.sleep(0);
@@ -2303,6 +2305,66 @@ describe("utils", () => {
       );
 
       expect(mockCallback).toHaveBeenCalledTimes(1);
+    });
+
+    it('should be reactive both suspense and "real" content', async () => {
+      const mockUnmountSuspense = mock((s: string) => {});
+
+      const Component = async ({}, { state }: any) => {
+        const count = state(0);
+
+        await Bun.sleep(0);
+
+        return [
+          "div",
+          { onClick: () => count.value++ },
+          () => "REAL:" + count.value,
+        ];
+      };
+
+      Component.suspense = ({}, { state, cleanup }: any) => {
+        const count = state(0);
+
+        cleanup(() => {
+          mockUnmountSuspense("cleanup");
+        });
+
+        return [
+          "div",
+          { onClick: () => count.value++ },
+          () => "SUSPENSE:" + count.value,
+        ];
+      };
+
+      customElements.define("test-component", brisaElement(Component));
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>SUSPENSE:0</div>"
+      );
+
+      testComponent?.shadowRoot?.querySelector("div")!.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>SUSPENSE:1</div>"
+      );
+      expect(mockUnmountSuspense).toHaveBeenCalledTimes(0);
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>REAL:0</div>");
+      expect(mockUnmountSuspense).toHaveBeenCalledTimes(1);
+
+      testComponent?.shadowRoot?.querySelector("div")!.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>REAL:1</div>");
     });
 
     it("should cleanup when thrown an error with error component", async () => {

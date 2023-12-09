@@ -3157,6 +3157,124 @@ describe("integration", () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
     });
 
+    it("should not lose reactivity inside the suspense component", async () => {
+      const Component = `
+        export default async function MyComponent({}, {state}) {
+          const count = state(0);
+
+          await new Promise(resolve => setTimeout(resolve, 0))
+
+          return <div onClick={() => count.value++}>REAL: {count.value}</div>
+        }
+
+        MyComponent.suspense = ({}, {state}) => {
+          const count = state(0);
+          return <div onClick={() => count.value++}>SUSPENSE: {count.value}</div>
+        }
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>SUSPENSE: 0</div>");
+
+      myComponent?.shadowRoot?.querySelector("div")!.click();
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>SUSPENSE: 1</div>");
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>REAL: 0</div>");
+
+      myComponent?.shadowRoot?.querySelector("div")!.click();
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>REAL: 1</div>");
+    });
+
+    it("should not lose reactivity inside error component", () => {
+      const Component = `
+        export default function MyComponent() {
+          throw new Error('test')
+          return
+        }
+
+        MyComponent.error = ({}, {state}) => {
+          const count = state(0);
+          return <div onClick={() => count.value++}>ERROR: {count.value}</div>
+        }
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>ERROR: 0</div>");
+
+      myComponent?.shadowRoot?.querySelector("div")!.click();
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>ERROR: 1</div>");
+    });
+
+    it("should call cleanup after every phase: suspense -> real -> error", async () => {
+      window.mockCleanup = mock((s: string) => {});
+
+      const Component = `
+        export default async function MyComponent({}, {cleanup}) {
+          await new Promise(resolve => setTimeout(resolve, 0))
+          cleanup(() => window.mockCleanup('real'))
+          throw new Error('test')
+          return
+        }
+
+        MyComponent.error = ({}, {cleanup}) => {
+          cleanup(() => window.mockCleanup('error'))
+          return <div>ERROR</div>
+        }
+
+        MyComponent.suspense = ({}, {cleanup}) => {
+          cleanup(() => window.mockCleanup('suspense'))
+          return <div>SUSPENSE</div>
+        }
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(window.mockCleanup).toHaveBeenCalledTimes(0);
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>SUSPENSE</div>");
+
+      await Bun.sleep(0);
+
+      expect(window.mockCleanup).toHaveBeenCalledTimes(2);
+      expect(window.mockCleanup.mock.calls[0][0]).toBe("suspense");
+      expect(window.mockCleanup.mock.calls[1][0]).toBe("real");
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>ERROR</div>");
+
+      // Unmount the component
+      document.body.innerHTML = "";
+
+      expect(window.mockCleanup).toHaveBeenCalledTimes(3);
+      expect(window.mockCleanup.mock.calls[2][0]).toBe("error");
+    });
+
     it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
       () => {
