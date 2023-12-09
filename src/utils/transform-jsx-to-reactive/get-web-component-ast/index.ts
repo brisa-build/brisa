@@ -17,11 +17,10 @@ export default function getWebComponentAst(
   const { type, name } = defaultExport.declaration as ESTree.Identifier;
 
   if (type === "Identifier") {
-    const declaration = ast.body.find(
-      (node) =>
-        node.type.endsWith("Declaration") &&
-        (node as any).declarations[0].id?.name === name
-    ) as ESTree.FunctionDeclaration;
+    const declaration = ast.body.find((node: any) => {
+      const declarationName = node.declarations?.[0].id?.name ?? node?.id?.name;
+      return node.type.endsWith("Declaration") && declarationName === name;
+    }) as ESTree.FunctionDeclaration;
 
     if (!declaration) return empty;
 

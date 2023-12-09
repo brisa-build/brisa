@@ -54,6 +54,26 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("Hello World");
     });
 
+    it("should work returining a text node in an async component exported in a different line", async () => {
+      const code = `async function Component() {
+        return 'Hello world'
+      };
+      
+      export default Component`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      await Bun.sleep(0);
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("Hello world");
+    });
+
     it("should work returning an array of text nodes", () => {
       const code = `export default function Test() {
         return ['Hello', ' ', 'World'];
@@ -3274,6 +3294,297 @@ describe("integration", () => {
       expect(window.mockCleanup).toHaveBeenCalledTimes(3);
       expect(window.mockCleanup.mock.calls[2][0]).toBe("error");
     });
+
+    it.todo(
+      'should be possible to use reactive props without the .value inside the "error" component',
+      () => {
+        const Component = `
+        export default function MyComponent() {
+          throw new Error('test')
+          return
+        }
+
+        MyComponent.error = ({ name }) => <div>{name}</div>
+      `;
+
+        document.body.innerHTML = normalizeQuotes(`
+        <my-component name="Aral"></my-component>
+      `);
+
+        defineBrisaWebComponent(
+          Component,
+          "src/web-components/my-component.tsx"
+        );
+
+        const myComponent = document.querySelector(
+          "my-component"
+        ) as HTMLElement;
+
+        expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+        myComponent.setAttribute("name", "Barbara");
+
+        expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+      }
+    );
+
+    it.todo(
+      'should be possible to use reactive props without the .value inside the "suspense" component',
+      () => {
+        const Component = `
+        export default async function MyComponent() {
+          await new Promise(resolve => setTimeout(resolve, 0))
+          return <div>hello world</div>
+        }
+
+        MyComponent.suspense = ({ name }) => <div>{name}</div>
+      `;
+
+        document.body.innerHTML = normalizeQuotes(`
+        <my-component name="Aral"></my-component>
+      `);
+
+        defineBrisaWebComponent(
+          Component,
+          "src/web-components/my-component.tsx"
+        );
+
+        const myComponent = document.querySelector(
+          "my-component"
+        ) as HTMLElement;
+
+        expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+        myComponent.setAttribute("name", "Barbara");
+
+        expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+      }
+    );
+
+    it.todo("should unregister sub-effects inside 'error' component", () => {
+      window.mockEffect = mock((s: string) => {});
+
+      const code = `
+        export default function Component({}, { state, effect }) {
+          throw new Error('test')
+        }
+        
+        Component.error = ({}, { state, effect }) => {
+          const a = state<number>(0);
+          const b = state<string>("x");
+
+          effect(() => {
+            if (a.value !== 1) return
+
+            effect(() => {
+              mockEffect("B", b.value)
+              if(b.value === 'z') effect(() => mockEffect("C", b.value));
+            });
+          });
+
+          a.value = 1;
+          b.value = 'y';
+          b.value = 'z';
+          b.value = 'y';
+          a.value = 2;
+          b.value = 'z';
+  
+          return null;
+        };
+      `;
+
+      document.body.innerHTML = "<unregister-subeffect></unregister-subeffect>";
+
+      defineBrisaWebComponent(
+        code,
+        "src/web-components/unregister-subeffect.tsx"
+      );
+
+      expect(window.mockEffect).toHaveBeenCalledTimes(5);
+      expect(window.mockEffect.mock.calls[0]).toEqual(["B", "x"]);
+      expect(window.mockEffect.mock.calls[1]).toEqual(["B", "y"]);
+      expect(window.mockEffect.mock.calls[2]).toEqual(["B", "z"]);
+      expect(window.mockEffect.mock.calls[3]).toEqual(["C", "z"]);
+      expect(window.mockEffect.mock.calls[4]).toEqual(["B", "y"]);
+    });
+
+    it.todo("should unregister sub-effects inside 'suspense' component", () => {
+      window.mockEffect = mock((s: string) => {});
+
+      const code = `
+        export default function Component({}, { state, effect }) {
+          await new Promise(resolve => setTimeout(resolve, 0))
+          return <div>hello world</div>
+        }
+        
+        Component.suspense = ({}, { state, effect }) => {
+          const a = state<number>(0);
+          const b = state<string>("x");
+
+          effect(() => {
+            if (a.value !== 1) return
+
+            effect(() => {
+              mockEffect("B", b.value)
+              if(b.value === 'z') effect(() => mockEffect("C", b.value));
+            });
+          });
+
+          a.value = 1;
+          b.value = 'y';
+          b.value = 'z';
+          b.value = 'y';
+          a.value = 2;
+          b.value = 'z';
+  
+          return null;
+        };
+      `;
+
+      document.body.innerHTML = "<unregister-subeffect></unregister-subeffect>";
+
+      defineBrisaWebComponent(
+        code,
+        "src/web-components/unregister-subeffect.tsx"
+      );
+
+      expect(window.mockEffect).toHaveBeenCalledTimes(5);
+      expect(window.mockEffect.mock.calls[0]).toEqual(["B", "x"]);
+      expect(window.mockEffect.mock.calls[1]).toEqual(["B", "y"]);
+      expect(window.mockEffect.mock.calls[2]).toEqual(["B", "z"]);
+      expect(window.mockEffect.mock.calls[3]).toEqual(["C", "z"]);
+      expect(window.mockEffect.mock.calls[4]).toEqual(["B", "y"]);
+    });
+
+    it.todo(
+      'should work reactivity conditional if-else inside "error" component',
+      () => {
+        const code = `
+        export default function Component({ foo }) {
+          throw new Error('test')
+        }
+        
+        Component.error = ({ foo }) => {
+          if(foo === 'foo') return <div>foo</div> 
+          return <div>bar</div>
+        };
+      `;
+
+        document.body.innerHTML = "<test-component foo='foo' />";
+
+        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+        const testComponent = document.querySelector(
+          "test-component"
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+
+        testComponent.setAttribute("foo", "bar");
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+      }
+    );
+
+    it.todo(
+      'should work reactivity conditional switch-case inside "error" component',
+      () => {
+        const code = `
+        export default function Component({ foo }) {
+          throw new Error('test')
+        }
+        
+        Component.error = ({ foo }) => {
+          switch(foo) {
+            case 'foo':
+              return <div>foo</div>
+            default:
+              return <div>bar</div>
+          }
+        };
+      `;
+
+        document.body.innerHTML = "<test-component foo='foo' />";
+
+        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+        const testComponent = document.querySelector(
+          "test-component"
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+
+        testComponent.setAttribute("foo", "bar");
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+      }
+    );
+
+    it.todo(
+      'should work reactivity conditional if-else inside "suspense" component',
+      () => {
+        const code = `
+        export default async function Component({ foo }) {
+          await new Promise(resolve => setTimeout(resolve, 0))
+          return <div>hello world</div>
+        }
+        
+        Component.suspense = ({ foo }) => {
+          if(foo === 'foo') return <div>foo</div> 
+          return <div>bar</div>
+        };
+      `;
+
+        document.body.innerHTML = "<test-component foo='foo' />";
+
+        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+        const testComponent = document.querySelector(
+          "test-component"
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+
+        testComponent.setAttribute("foo", "bar");
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+      }
+    );
+
+    it.todo(
+      'should work reactivity conditional switch-case inside "suspense" component',
+      () => {
+        const code = `
+        export default async function Component({ foo }) {
+          await new Promise(resolve => setTimeout(resolve, 0))
+          return <div>hello world</div>
+        }
+        
+        Component.suspense = ({ foo }) => {
+          switch(foo) {
+            case 'foo':
+              return <div>foo</div>
+            default:
+              return <div>bar</div>
+          }
+        };
+      `;
+
+        document.body.innerHTML = "<test-component foo='foo' />";
+
+        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+        const testComponent = document.querySelector(
+          "test-component"
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+
+        testComponent.setAttribute("foo", "bar");
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+      }
+    );
 
     it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
