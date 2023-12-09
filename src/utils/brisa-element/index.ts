@@ -111,7 +111,7 @@ export default function brisaElement(
       const self = this;
       self.s = signals();
 
-      const { state, effect, cleanAll } = self.s;
+      const { state, effect, reset } = self.s;
       const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
       let cssStyle = "";
@@ -294,13 +294,13 @@ export default function brisaElement(
         // Handle suspense
         if (isFunction(render.suspense)) {
           await startRender(render.suspense!);
-          cleanAll();
+          reset();
         }
         // Handle render
         await startRender(render);
       } catch (e) {
         // Handle error
-        cleanAll();
+        reset();
         if (isFunction(render.error)) {
           startRender(render.error!);
         } else throw e;
@@ -308,11 +308,9 @@ export default function brisaElement(
       for (const fn of fnToExecuteAfterMount) fn();
     }
 
-    // Clean up signals on disconnection
+    // Reset all: call cleanup, remove effects, subeffects, cleanups, etc
     [DISCONNECTED_CALLBACK]() {
-      const self = this;
-      self.s?.cleanAll();
-      delete self.s;
+      this.s?.reset();
     }
 
     // Handle events
