@@ -3,15 +3,25 @@ import signals from "../signals";
 
 type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
-type Render = (
-  props: Record<string, unknown>,
-  s: ReturnType<typeof signals> & {
-    onMount(cb: () => void): void;
-    css(strings: string[], ...values: string[]): void;
-    h(tagName: string, attributes: Attr, children: unknown): void;
-  }
-) => Node[];
-type Children = unknown[] | string | (() => Children);
+type Props = Record<string, unknown>;
+type ReactiveArray = [string, Attr, Children];
+type WebContext = ReturnType<typeof signals> & {
+  onMount(cb: () => void): void;
+  css(strings: string[], ...values: string[]): void;
+  h(tagName: string, attributes: Attr, children: unknown): void;
+};
+type Render = {
+  (props: Props, webContext: WebContext): Children;
+  suspense?(props: Props, webContext: WebContext): Children;
+  error?(props: Props, webContext: WebContext): Children;
+};
+
+type Children =
+  | unknown[]
+  | string
+  | (() => Children)
+  | Promise<Children>
+  | { type: string; props: any };
 type Event = (e: unknown) => void;
 
 export const _on = Symbol("on");
@@ -100,12 +110,11 @@ export default function brisaElement(
     async [CONNECTED_CALLBACK]() {
       const self = this;
       self.s = signals();
+
       const { state, effect } = self.s;
-
-      if (self.shadowRoot) (self.shadowRoot as any)[INNER_HTML] = "";
-
       const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
+      let cssStyle = "";
 
       self.p = {};
 
@@ -124,14 +133,33 @@ export default function brisaElement(
         return [element, target];
       }
 
-      function hyperScript(
+      async function mount(
         tagName: string | null,
         attributes: Attr,
         children: Children,
-        parent: HTMLElement | DocumentFragment = shadowRoot,
+        parent: HTMLElement | DocumentFragment,
         // r: function to register subeffects to then clean them up
-        r = (v: any) => v
+        r: (v: any) => any,
+        initialRender = false
       ) {
+        // Handle promises
+        if ((children as Promise<Children>)?.then) {
+          children = await (children as any);
+        }
+
+        if (initialRender) {
+          // Reset innerHTML when using shadowRoot
+          if (self.shadowRoot) {
+            (self.shadowRoot as any)[INNER_HTML] = "";
+          }
+          // Handle CSS
+          if (cssStyle) {
+            const style = createElement("style");
+            style.textContent = cssStyle;
+            appendChild(shadowRoot, style);
+          }
+        }
+
         // Handle portal
         [children, parent] = handlePortal(children, parent);
 
@@ -164,10 +192,10 @@ export default function brisaElement(
         } else if (isReactiveArray(children)) {
           if (isReactiveArray((children as any)[0])) {
             for (let child of children as Children[]) {
-              hyperScript(null, {}, child, el, r);
+              mount(null, {}, child, el, r);
             }
           } else {
-            hyperScript(...(children as [string, Attr, Children]), el, r);
+            mount(...(children as [string, Attr, Children]), el, r);
           }
         } else if (isFunction(children)) {
           let lastNodes: ChildNode[] | undefined;
@@ -203,16 +231,12 @@ export default function brisaElement(
                     }
                   }
                   // Reactive child node
-                  else if (isReactiveArray((child as any[])[0])) {
+                  else if (isReactiveArray((child as Children[])[0])) {
                     for (let c of child as Children[]) {
-                      hyperScript(null, {}, c, fragment, r(r2));
+                      mount(null, {}, c, fragment, r(r2));
                     }
-                  } else if (child.length) {
-                    hyperScript(
-                      ...(child as [string, Attr, Children]),
-                      fragment,
-                      r(r2)
-                    );
+                  } else if ((child as ReactiveArray).length) {
+                    mount(...(child as ReactiveArray), fragment, r(r2));
                   }
                   insertOrUpdate(fragment);
 
@@ -241,22 +265,40 @@ export default function brisaElement(
         if (tagName) appendChild(parent, el);
       }
 
-      await render(
-        { children: SLOT_TAG, ...self.p },
-        {
-          ...self.s,
-          h: hyperScript,
-          onMount(cb: () => void) {
-            fnToExecuteAfterMount.push(cb);
-          },
-          // Handle CSS
-          css(strings: string[], ...values: string[]) {
-            const style = createElement("style");
-            style.textContent = strings[0] + values.join("");
-            appendChild(shadowRoot, style);
-          },
+      const props = { children: SLOT_TAG, ...self.p };
+      const webContext = {
+        ...self.s,
+        onMount(cb: () => void) {
+          fnToExecuteAfterMount.push(cb);
+        },
+        // Handle CSS
+        css(strings: string[], ...values: string[]) {
+          cssStyle += strings[0] + values.join("");
+        },
+      } as WebContext;
+
+      const startRender = (fn: Render) => {
+        cssStyle = "";
+        return mount(
+          null,
+          {},
+          fn(props, webContext),
+          shadowRoot,
+          (v: any) => v,
+          true
+        );
+      };
+
+      try {
+        if (isFunction(render.suspense)) {
+          await startRender(render.suspense!);
         }
-      );
+        await startRender(render);
+      } catch (e) {
+        if (isFunction(render.error)) {
+          await startRender(render.error!);
+        } else throw e;
+      }
       for (const fn of fnToExecuteAfterMount) fn();
     }
 
