@@ -19,7 +19,7 @@ function defineBrisaWebComponent(code: string, path: string) {
     transformJSXToReactive(code, path)
   )
     .replace('import {brisaElement, _on, _off} from "brisa/client";', "")
-    .replace("export default", "return")}})()`;
+    .replace("export default", "const _Test =")}return _Test;})()`;
 
   customElements.define(componentName, eval(webComponent));
 }
@@ -3148,7 +3148,11 @@ describe("integration", () => {
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>0</div>");
 
-      myComponent.click();
+      const button = myComponent?.shadowRoot?.querySelector(
+        "div"
+      ) as HTMLElement;
+
+      button.click();
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
     });
