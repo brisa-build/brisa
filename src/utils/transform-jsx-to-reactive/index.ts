@@ -7,6 +7,7 @@ import getComponentVariableNames from "./get-component-variable-names";
 import getWebComponentAst from "./get-web-component-ast";
 import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
 import optimizeEffects from "./optimize-effects";
+import transformComponentStatics from "./transform-component-statics";
 import transformToDirectExport from "./transform-to-direct-export";
 import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
@@ -44,14 +45,26 @@ export default function transformJSXToReactive(code: string, path: string) {
     isAddedDefaultProps
   );
 
+  const reactiveAstWithStatics = transformComponentStatics(
+    reactiveAst,
+    componentBranch.id?.name!,
+    allVariableNames
+  );
+
   // Wrap the component with brisaElement
   if (typeof index === "number") {
-    (reactiveAst.body[index] as any).declaration = brisaElement;
-    reactiveAst.body.splice(index, 0, componentAst as ESTree.Statement);
+    (reactiveAstWithStatics.body[index] as any).declaration = brisaElement;
+    reactiveAstWithStatics.body.splice(
+      index,
+      0,
+      componentAst as ESTree.Statement
+    );
   }
 
   // Add the import declaration
-  reactiveAst.body.unshift(importDeclaration as ESTree.ImportDeclaration);
+  reactiveAstWithStatics.body.unshift(
+    importDeclaration as ESTree.ImportDeclaration
+  );
 
-  return generateCodeFromAST(reactiveAst);
+  return generateCodeFromAST(reactiveAstWithStatics);
 }
