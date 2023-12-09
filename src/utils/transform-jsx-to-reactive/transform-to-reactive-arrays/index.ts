@@ -11,32 +11,6 @@ export default function transformToReactiveArrays(
 
   return JSON.parse(
     JSON.stringify(ast, (key, value) => {
-      // return ['Hello', 'World'] -> return [null, {}, ['Hello', 'World']]
-      if (
-        value?.type === "ReturnStatement" &&
-        value?.argument?.type === "ArrayExpression"
-      ) {
-        const allAreLiterals = value.argument.elements.every(
-          (el: any) => el.type === "Literal"
-        );
-        if (!allAreLiterals) return value;
-
-        return {
-          type: "ReturnStatement",
-          argument: {
-            type: "ArrayExpression",
-            elements: [
-              { type: "Literal", value: null },
-              { type: "ObjectExpression", properties: [] },
-              {
-                type: "ArrayExpression",
-                elements: value.argument.elements,
-              },
-            ],
-          },
-        };
-      }
-
       if (
         value?.type !== "CallExpression" ||
         !JSX_NAME.has(value?.callee?.name ?? "")

@@ -27,15 +27,19 @@ describe("utils", () => {
     });
     it("should work props and state with a counter", () => {
       type Props = { name: { value: string }; children: Node };
-      function Counter({ name, children }: Props, { state, h }: any) {
+      function Counter({ name, children }: Props, { state }: any) {
         const count = state(0);
 
-        return h("p", { class: () => (count.value % 2 === 0 ? "even" : "") }, [
-          ["button", { onClick: () => count.value++ }, "+"],
-          ["span", {}, () => ` ${name.value} ${count.value} `],
-          ["button", { onClick: () => count.value-- }, "-"],
-          children,
-        ]);
+        return [
+          "p",
+          { class: () => (count.value % 2 === 0 ? "even" : "") },
+          [
+            ["button", { onClick: () => count.value++ }, "+"],
+            ["span", {}, () => ` ${name.value} ${count.value} `],
+            ["button", { onClick: () => count.value-- }, "-"],
+            children,
+          ],
+        ];
       }
 
       customElements.define(
@@ -73,22 +77,26 @@ describe("utils", () => {
 
     it("should work with conditional rendering inside span node", () => {
       type Props = { name: { value: string }; children: Node };
-      function ConditionalRender({ name, children }: Props, { h }: any) {
-        return h("", {}, [
+      function ConditionalRender({ name, children }: Props) {
+        return [
+          null,
+          {},
           [
-            "h2",
-            {},
             [
-              ["b", {}, () => "Hello " + name.value],
+              "h2",
+              {},
               [
-                "span",
-                {},
-                () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+                ["b", {}, () => "Hello " + name.value],
+                [
+                  "span",
+                  {},
+                  () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+                ],
               ],
             ],
+            children,
           ],
-          children,
-        ]);
+        ];
       }
 
       customElements.define(
@@ -125,16 +133,20 @@ describe("utils", () => {
 
     it("should work with conditional rendering inside text node", () => {
       type Props = { name: { value: string }; children: Node };
-      function ConditionalRender({ name, children }: Props, { h }: any) {
-        return h("h2", {}, [
-          ["b", {}, () => "Hello " + name.value],
+      function ConditionalRender({ name, children }: Props) {
+        return [
+          "h2",
+          {},
           [
-            "",
-            {},
-            () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+            ["b", {}, () => "Hello " + name.value],
+            [
+              "",
+              {},
+              () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+            ],
+            children,
           ],
-          children,
-        ]);
+        ];
       }
 
       customElements.define(
@@ -165,22 +177,26 @@ describe("utils", () => {
 
     it("should work with conditional rendering inside text node and fragment", () => {
       type Props = { name: { value: string }; children: Node };
-      function ConditionalRender({ name, children }: Props, { h }: any) {
-        return h("", {}, [
+      function ConditionalRender({ name, children }: Props) {
+        return [
+          null,
+          {},
           [
-            "h2",
-            {},
             [
-              ["b", {}, () => "Hello " + name.value],
+              "h2",
+              {},
               [
-                "",
-                {},
-                () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+                ["b", {}, () => "Hello " + name.value],
+                [
+                  "",
+                  {},
+                  () => (name.value === "Barbara" ? ["b", {}, "!! 🥳"] : "🥴"),
+                ],
               ],
             ],
+            children,
           ],
-          children,
-        ]);
+        ];
       }
 
       customElements.define(
@@ -211,19 +227,23 @@ describe("utils", () => {
 
     it("should work with conditional rendering with multiple nodes", () => {
       type Props = { name: { value: string }; children: Node };
-      function ConditionalRender({ name, children }: Props, { h }: any) {
-        return h("h2", {}, [
-          ["b", {}, () => "Hello " + name.value],
+      function ConditionalRender({ name, children }: Props) {
+        return [
+          "h2",
+          {},
           [
-            "",
-            {},
-            () =>
-              name.value === "Barbara"
-                ? [["b", {}, "!! 🥳"], ["i", {}, " this is a "], " test"]
-                : "🥴",
+            ["b", {}, () => "Hello " + name.value],
+            [
+              "",
+              {},
+              () =>
+                name.value === "Barbara"
+                  ? [["b", {}, "!! 🥳"], ["i", {}, " this is a "], " test"]
+                  : "🥴",
+            ],
+            children,
           ],
-          children,
-        ]);
+        ];
       }
 
       customElements.define(
@@ -253,8 +273,8 @@ describe("utils", () => {
     });
 
     it("should work with empty nodes", () => {
-      function EmptyNodes({}, { h }: any) {
-        return h("div", {}, ["span", {}, ""]);
+      function EmptyNodes() {
+        return ["div", {}, ["span", {}, ""]];
       }
 
       customElements.define("empty-nodes", brisaElement(EmptyNodes as any));
@@ -272,7 +292,7 @@ describe("utils", () => {
 
     it("should display a component to display a series of images in a sliding carousel", () => {
       type Props = { images: { value: string[] } };
-      function Carousel({ images }: Props, { state, h }: any) {
+      function Carousel({ images }: Props, { state }: any) {
         const index = state(0);
         const next = () => {
           index.value = (index.value + 1) % images.value.length;
@@ -281,11 +301,15 @@ describe("utils", () => {
           index.value =
             (index.value - 1 + images.value.length) % images.value.length;
         };
-        return h("div", {}, [
-          ["button", { onClick: prev }, "prev"],
-          ["img", { src: () => images?.value?.[index.value] }, ""],
-          ["button", { onClick: next }, "next"],
-        ]);
+        return [
+          "div",
+          {},
+          [
+            ["button", { onClick: prev }, "prev"],
+            ["img", { src: () => images?.value?.[index.value] }, ""],
+            ["button", { onClick: next }, "next"],
+          ],
+        ];
       }
 
       document.body.innerHTML = `
@@ -323,7 +347,7 @@ describe("utils", () => {
 
     it("should display a component to display a series of images in a sliding carousel receiving images inside an object", () => {
       type Props = { images: { value: { url: string }[] } };
-      function Carousel({ images }: Props, { state, h }: any) {
+      function Carousel({ images }: Props, { state }: any) {
         const index = state(0);
         const next = () => {
           index.value = (index.value + 1) % images.value.length;
@@ -332,17 +356,21 @@ describe("utils", () => {
           index.value =
             (index.value - 1 + images.value.length) % images.value.length;
         };
-        return h("div", {}, [
-          ["button", { onClick: prev }, "prev"],
+        return [
+          "div",
+          {},
           [
-            "img",
-            {
-              src: () => images.value[index.value].url,
-            },
-            "",
+            ["button", { onClick: prev }, "prev"],
+            [
+              "img",
+              {
+                src: () => images.value[index.value].url,
+              },
+              "",
+            ],
+            ["button", { onClick: next }, "next"],
           ],
-          ["button", { onClick: next }, "next"],
-        ]);
+        ];
       }
 
       document.body.innerHTML = `
@@ -377,16 +405,20 @@ describe("utils", () => {
     });
 
     it("should render a timer component", () => {
-      function Timer({}, { state, h }: any) {
+      function Timer({}, { state }: any) {
         const time = state(0);
         const interval = setInterval(() => {
           time.value++;
         }, 1);
 
-        return h("div", {}, [
-          ["span", {}, () => `Time: ${time.value}`],
-          ["button", { onClick: () => clearInterval(interval) }, "stop"],
-        ]);
+        return [
+          "div",
+          {},
+          [
+            ["span", {}, () => `Time: ${time.value}`],
+            ["button", { onClick: () => clearInterval(interval) }, "stop"],
+          ],
+        ];
       }
 
       customElements.define("timer-component", brisaElement(Timer));
@@ -420,8 +452,8 @@ describe("utils", () => {
     });
 
     it("should trigger an event when clicking on a button and can be handled via props", () => {
-      function Button({ onAfterClick }: any, { h }: any) {
-        return h("button", { onClick: onAfterClick }, "click me");
+      function Button({ onAfterClick }: any) {
+        return ["button", { onClick: onAfterClick }, "click me"];
       }
 
       customElements.define(
@@ -448,16 +480,16 @@ describe("utils", () => {
     it("should trigger events in different web-components", () => {
       const onClickMock = mock(() => {});
 
-      function Parent({}, { h }: any) {
-        return h("first-component", { onClickMe: onClickMock }, "click me");
+      function Parent() {
+        return ["first-component", { onClickMe: onClickMock }, "click me"];
       }
 
-      function FirstComponent({ onClickMe, children }: any, { h }: any) {
-        return h("second-component", { onClickMe }, children);
+      function FirstComponent({ onClickMe, children }: any) {
+        return ["second-component", { onClickMe }, children];
       }
 
-      function SecondComponent({ onClickMe, children }: any, { h }: any) {
-        return h("button", { onClick: () => onClickMe("TEST") }, children);
+      function SecondComponent({ onClickMe, children }: any) {
+        return ["button", { onClick: () => onClickMe("TEST") }, children];
       }
 
       customElements.define(
@@ -502,24 +534,32 @@ describe("utils", () => {
       button.click();
 
       expect(onClickMock).toHaveBeenCalled();
-      expect(onClickMock.mock.calls[0].at(0)).toBe("TEST");
+      expect(onClickMock.mock.calls[0].at(0) as unknown as string).toBe("TEST");
     });
 
     it("should display a color selector component", () => {
       type Props = { color: { value: string } };
-      function ColorSelector({ color }: Props, { h }: any) {
-        return h("div", {}, [
+      function ColorSelector({ color }: Props) {
+        return [
+          "div",
+          {},
           [
-            "input",
-            {
-              type: "color",
-              value: () => color.value,
-              onInput: (e: any) => (color.value = e.target.value),
-            },
-            "",
+            [
+              "input",
+              {
+                type: "color",
+                value: () => color.value,
+                onInput: (e: any) => (color.value = e.target.value),
+              },
+              "",
+            ],
+            [
+              "span",
+              { style: () => `color:${color.value}` },
+              () => color.value,
+            ],
           ],
-          ["span", { style: () => `color:${color.value}` }, () => color.value],
-        ]);
+        ];
       }
 
       customElements.define(
@@ -554,10 +594,12 @@ describe("utils", () => {
 
     it("should render a TodoList component from props", () => {
       type Props = { todos: { value: string[] } };
-      function TodoList({ todos }: Props, { h }: any) {
-        return h("ul", {}, () =>
-          todos.value.map((todo: string) => ["li", {}, todo])
-        );
+      function TodoList({ todos }: Props) {
+        return [
+          "ul",
+          {},
+          () => todos.value.map((todo: string) => ["li", {}, todo]),
+        ];
       }
 
       document.body.innerHTML = `
@@ -583,7 +625,7 @@ describe("utils", () => {
     });
 
     it("should work an interactive TodoList with state", () => {
-      function TodoList({}, { state, h }: any) {
+      function TodoList({}, { state }: any) {
         const todos = state(["todo 1", "todo 2", "todo 3"]);
         const newTodo = state("");
         const addTodo = () => {
@@ -591,18 +633,26 @@ describe("utils", () => {
           newTodo.value = "";
         };
 
-        return h("div", {}, [
+        return [
+          "div",
+          {},
           [
-            "input",
-            {
-              value: () => newTodo.value,
-              onInput: (e: any) => (newTodo.value = e.target.value),
-            },
-            "",
+            [
+              "input",
+              {
+                value: () => newTodo.value,
+                onInput: (e: any) => (newTodo.value = e.target.value),
+              },
+              "",
+            ],
+            ["button", { onClick: addTodo }, "Add"],
+            [
+              "ul",
+              {},
+              () => todos.value.map((todo: string) => ["li", {}, todo]),
+            ],
           ],
-          ["button", { onClick: addTodo }, "Add"],
-          ["ul", {}, () => todos.value.map((todo: string) => ["li", {}, todo])],
-        ]);
+        ];
       }
 
       customElements.define("todo-list", brisaElement(TodoList as any));
@@ -638,8 +688,8 @@ describe("utils", () => {
     });
 
     it("should be possible to change an static src attribute using the onerror event from img", () => {
-      function Image({}, { h }: any) {
-        return h(
+      function Image() {
+        return [
           "img",
           {
             src: "https://test.com/image.png",
@@ -647,8 +697,8 @@ describe("utils", () => {
               e.target.src = "https://test.com/error.png";
             },
           },
-          ""
-        );
+          "",
+        ];
       }
 
       customElements.define("test-image", brisaElement(Image));
@@ -669,10 +719,10 @@ describe("utils", () => {
     });
 
     it("should be possible to change a dynamic src attribute using the onerror event from img", () => {
-      function Image({}, { state, h }: any) {
+      function Image({}, { state }: any) {
         const src = state("https://test.com/image.png");
 
-        return h(
+        return [
           "img",
           {
             src: () => src.value,
@@ -680,8 +730,8 @@ describe("utils", () => {
               src.value = "https://test.com/error.png";
             },
           },
-          ""
-        );
+          "",
+        ];
       }
 
       customElements.define("test-image", brisaElement(Image));
@@ -705,7 +755,7 @@ describe("utils", () => {
       const mockEffect = mock((n: number) => {});
       let interval: any;
 
-      function Test({}, { state, effect, h }: any) {
+      function Test({}, { state, effect }: any) {
         const count = state(0);
 
         interval = setInterval(() => {
@@ -716,7 +766,7 @@ describe("utils", () => {
           mockEffect(count.value);
         });
 
-        return h("div", {}, () => count.value);
+        return ["div", {}, () => count.value];
       }
 
       customElements.define("test-component", brisaElement(Test));
@@ -753,10 +803,14 @@ describe("utils", () => {
           }
         });
 
-        return h("", {}, [
-          ["div", {}, () => countState.value],
-          ["button", { onClick: () => countState.value++ }, "increment"],
-        ]);
+        return [
+          null,
+          {},
+          [
+            ["div", {}, () => countState.value],
+            ["button", { onClick: () => countState.value++ }, "increment"],
+          ],
+        ];
       }
 
       customElements.define("test-component", brisaElement(Test, ["count"]));
@@ -788,10 +842,10 @@ describe("utils", () => {
     });
 
     it("should work an async web-component", async () => {
-      async function AsyncComponent({}, { state, h }: any) {
+      async function AsyncComponent({}, { state }: any) {
         const count = state(await Promise.resolve(42));
 
-        return h("div", {}, () => count.value);
+        return ["div", {}, () => count.value];
       }
 
       customElements.define("async-component", brisaElement(AsyncComponent));
@@ -807,7 +861,7 @@ describe("utils", () => {
     });
 
     it("should work an async effect inside a web-component", async () => {
-      async function AsyncComponent({}, { state, effect, h }: any) {
+      async function AsyncComponent({}, { state, effect }: any) {
         const count = state(0);
 
         effect(async () => {
@@ -815,7 +869,7 @@ describe("utils", () => {
           count.value = 42;
         });
 
-        return h("div", {}, () => count.value);
+        return ["div", {}, () => count.value];
       }
 
       customElements.define("async-component", brisaElement(AsyncComponent));
@@ -834,7 +888,7 @@ describe("utils", () => {
       const mockEffect = mock((num: number) => {});
       const mockCleanup = mock(() => {});
 
-      function Test({}, { state, effect, cleanup, h }: any) {
+      function Test({}, { state, effect, cleanup }: any) {
         const count = state(0);
 
         effect((r: any) => {
@@ -844,7 +898,7 @@ describe("utils", () => {
           }, r.id);
         });
 
-        return h("button", { onClick: () => count.value++ }, "click");
+        return ["button", { onClick: () => count.value++ }, "click"];
       }
 
       customElements.define("test-component", brisaElement(Test));
@@ -875,13 +929,13 @@ describe("utils", () => {
       const mockEffect = mock(() => {});
       const mockCleanup = mock(() => {});
 
-      function Test({}, { effect, cleanup, h }: any) {
+      function Test({}, { effect, cleanup }: any) {
         effect((r: any) => {
           mockEffect();
           cleanup(() => mockCleanup(), r.id);
         });
 
-        return h("div", {}, "");
+        return ["div", {}, ""];
       }
 
       customElements.define("test-component", brisaElement(Test));
@@ -904,13 +958,13 @@ describe("utils", () => {
       const mockEffect = mock(() => {});
       const mockCleanup = mock(() => {});
 
-      function Test({}, { effect, cleanup, h }: any) {
+      function Test({}, { effect, cleanup }: any) {
         effect(async (r: any) => {
           mockEffect();
           cleanup(async () => mockCleanup(), r.id);
         });
 
-        return h("div", {}, "");
+        return ["div", {}, ""];
       }
 
       customElements.define("test-component", brisaElement(Test));
@@ -933,14 +987,14 @@ describe("utils", () => {
       const mockEffect = mock(() => {});
       const mockCleanup = mock(() => {});
 
-      function Test({}, { effect, cleanup, h }: any) {
+      function Test({}, { effect, cleanup }: any) {
         effect(async (r: any) => {
           mockEffect();
           cleanup(async () => mockCleanup(), r.id);
           cleanup(async () => mockCleanup(), r.id);
         });
 
-        return h("div", {}, "");
+        return ["div", {}, ""];
       }
 
       customElements.define("test-component", brisaElement(Test));
@@ -960,50 +1014,54 @@ describe("utils", () => {
     });
 
     it("should work with reactivity props in a SVG component", () => {
-      function ColorSVG({ color1, color2, color3 }: any, { h }: any) {
-        return h("svg", { width: "12cm", height: "12cm" }, [
+      function ColorSVG({ color1, color2, color3 }: any) {
+        return [
+          "svg",
+          { width: "12cm", height: "12cm" },
           [
-            "g",
-            {
-              style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
-            },
             [
+              "g",
+              {
+                style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
+              },
               [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => color1.value,
-                  transform: "translate(0,50)",
-                },
-                "",
-              ],
-              [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => color2.value,
-                  transform: "translate(70,150)",
-                },
-                "",
-              ],
-              [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => color3.value,
-                  transform: "translate(-70,150)",
-                },
-                "",
+                [
+                  "circle",
+                  {
+                    cx: "6cm",
+                    cy: "2cm",
+                    r: "100",
+                    fill: () => color1.value,
+                    transform: "translate(0,50)",
+                  },
+                  "",
+                ],
+                [
+                  "circle",
+                  {
+                    cx: "6cm",
+                    cy: "2cm",
+                    r: "100",
+                    fill: () => color2.value,
+                    transform: "translate(70,150)",
+                  },
+                  "",
+                ],
+                [
+                  "circle",
+                  {
+                    cx: "6cm",
+                    cy: "2cm",
+                    r: "100",
+                    fill: () => color3.value,
+                    transform: "translate(-70,150)",
+                  },
+                  "",
+                ],
               ],
             ],
           ],
-        ]);
+        ];
       }
 
       document.body.innerHTML = `
@@ -1035,53 +1093,54 @@ describe("utils", () => {
     });
 
     it("should work reactivity if props that are written in camelCase", () => {
-      function ColorSVG(
-        { firstColor, secondColor, thirdColor }: any,
-        { h }: any
-      ) {
-        return h("svg", { width: "12cm", height: "12cm" }, [
+      function ColorSVG({ firstColor, secondColor, thirdColor }: any) {
+        return [
+          "svg",
+          { width: "12cm", height: "12cm" },
           [
-            "g",
-            {
-              style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
-            },
             [
+              "g",
+              {
+                style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
+              },
               [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => firstColor.value,
-                  transform: "translate(0,50)",
-                },
-                "",
-              ],
-              [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => secondColor.value,
-                  transform: "translate(70,150)",
-                },
-                "",
-              ],
-              [
-                "circle",
-                {
-                  cx: "6cm",
-                  cy: "2cm",
-                  r: "100",
-                  fill: () => thirdColor.value,
-                  transform: "translate(-70,150)",
-                },
-                "",
+                [
+                  "circle",
+                  {
+                    cx: "6cm",
+                    cy: "2cm",
+                    r: "100",
+                    fill: () => firstColor.value,
+                    transform: "translate(0,50)",
+                  },
+                  "",
+                ],
+                [
+                  "circle",
+                  {
+                    cx: "6cm",
+                    cy: "2cm",
+                    r: "100",
+                    fill: () => secondColor.value,
+                    transform: "translate(70,150)",
+                  },
+                  "",
+                ],
+                [
+                  "circle",
+                  {
+                    cx: "6cm",
+                    cy: "2cm",
+                    r: "100",
+                    fill: () => thirdColor.value,
+                    transform: "translate(-70,150)",
+                  },
+                  "",
+                ],
               ],
             ],
           ],
-        ]);
+        ];
       }
 
       customElements.define(
@@ -1113,12 +1172,16 @@ describe("utils", () => {
     });
 
     it("should SVG work with foreingObject setting correctly the namespace outside the foreingObject node", () => {
-      function SVG({}, { h }: any) {
-        return h("svg", { width: "12cm", height: "12cm" }, [
-          "foreignObject",
-          { width: "100%", height: "100%" },
-          ["div", { xmlns: "http://www.w3.org/1999/xhtml" }, "test"],
-        ]);
+      function SVG() {
+        return [
+          "svg",
+          { width: "12cm", height: "12cm" },
+          [
+            "foreignObject",
+            { width: "100%", height: "100%" },
+            ["div", { xmlns: "http://www.w3.org/1999/xhtml" }, "test"],
+          ],
+        ];
       }
 
       customElements.define("test-svg", brisaElement(SVG));
@@ -1141,7 +1204,7 @@ describe("utils", () => {
     });
 
     it("should work a web-component that enables the addition, removal, and repositioning of items in a list", () => {
-      function MagicList({}, { state, h }: any) {
+      function MagicList({}, { state }: any) {
         const list = state(["some", "another"]);
 
         const addItem = (e: any) => {
@@ -1165,34 +1228,38 @@ describe("utils", () => {
           ];
         };
 
-        return h("div", {}, [
+        return [
+          "div",
+          {},
           [
-            "form",
-            { onSubmit: addItem },
             [
+              "form",
+              { onSubmit: addItem },
               [
-                "input",
-                { name: "item", id: "item", placeholder: "Add item" },
-                "",
+                [
+                  "input",
+                  { name: "item", id: "item", placeholder: "Add item" },
+                  "",
+                ],
+                ["button", {}, "add"],
               ],
-              ["button", {}, "add"],
+            ],
+            [
+              "ul",
+              {},
+              () =>
+                list.value.map((item: string, index: number) => [
+                  "li",
+                  {},
+                  [
+                    ["button", { onClick: () => deleteItem(index) }, "delete"],
+                    ["button", { onClick: () => moveItemUp(index) }, "move up"],
+                    item,
+                  ],
+                ]),
             ],
           ],
-          [
-            "ul",
-            {},
-            () =>
-              list.value.map((item: string, index: number) => [
-                "li",
-                {},
-                [
-                  ["button", { onClick: () => deleteItem(index) }, "delete"],
-                  ["button", { onClick: () => moveItemUp(index) }, "move up"],
-                  item,
-                ],
-              ]),
-          ],
-        ]);
+        ];
       }
 
       customElements.define(
@@ -1257,10 +1324,10 @@ describe("utils", () => {
 
     it("should reactively update the DOM after adding a new property to the web-component", () => {
       type Props = { count: { value: number } };
-      function Test({ count }: Props, { h, effect }: any) {
+      function Test({ count }: Props, { effect }: any) {
         // This is the code line after compiling: function Test({ count = 1 })
         effect(() => (count.value ??= 1));
-        return h("div", {}, () => count?.value);
+        return ["div", {}, () => count?.value];
       }
 
       customElements.define(
@@ -1282,19 +1349,23 @@ describe("utils", () => {
 
     it("should work multi conditionals renders", () => {
       type Props = { count: { value: number } };
-      function Test({ count }: Props, { h }: any) {
-        return h("div", {}, [
+      function Test({ count }: Props) {
+        return [
+          "div",
+          {},
           [
-            null,
-            {},
-            () =>
-              count.value === 1
-                ? ["span", {}, "one"]
-                : count.value === 2
-                ? ["span", {}, "two"]
-                : ["span", {}, "three"],
+            [
+              null,
+              {},
+              () =>
+                count.value === 1
+                  ? ["span", {}, "one"]
+                  : count.value === 2
+                  ? ["span", {}, "two"]
+                  : ["span", {}, "three"],
+            ],
           ],
-        ]);
+        ];
       }
 
       customElements.define(
@@ -1326,25 +1397,30 @@ describe("utils", () => {
 
     it("should work nested conditionals renders", () => {
       function Test({ first, second, third }: any, { h }: any) {
-        return h("div", {}, [
-          null,
+        return [
+          "div",
           {},
-          () =>
-            first.value === 1
-              ? [
-                  "div",
-                  {},
-                  () =>
-                    second.value === 2
-                      ? [
-                          "span",
-                          {},
-                          () => (third.value === 3 ? "test work" : "no-third"),
-                        ]
-                      : "no-second",
-                ]
-              : "no-first",
-        ]);
+          [
+            null,
+            {},
+            () =>
+              first.value === 1
+                ? [
+                    "div",
+                    {},
+                    () =>
+                      second.value === 2
+                        ? [
+                            "span",
+                            {},
+                            () =>
+                              third.value === 3 ? "test work" : "no-third",
+                          ]
+                        : "no-second",
+                  ]
+                : "no-first",
+          ],
+        ];
       }
 
       customElements.define(
@@ -1389,26 +1465,30 @@ describe("utils", () => {
     });
 
     it("should allow async/await conditional renders from state", async () => {
-      function Test({}: any, { state, h }: any) {
+      function Test({}: any, { state }: any) {
         const first = state(1);
         const second = state(2);
         const third = state(3);
 
-        return h("div", { onClick: () => (second.value = 42) }, async () => {
-          if (first.value === 1) {
-            if (second.value === 2) {
-              if (third.value === 3) {
-                return "test work";
+        return [
+          "div",
+          { onClick: () => (second.value = 42) },
+          async () => {
+            if (first.value === 1) {
+              if (second.value === 2) {
+                if (third.value === 3) {
+                  return "test work";
+                } else {
+                  return "no-third";
+                }
               } else {
-                return "no-third";
+                return `no-second ${second.value}`;
               }
             } else {
-              return `no-second ${second.value}`;
+              return "no-first";
             }
-          } else {
-            return "no-first";
-          }
-        });
+          },
+        ];
       }
 
       customElements.define("test-component", brisaElement(Test as any));
@@ -1433,22 +1513,26 @@ describe("utils", () => {
     });
 
     it("should allow async/await conditional renders from props", async () => {
-      function Test({ first, second, third }: any, { h }: any) {
-        return h("div", {}, async () => {
-          if (first.value === 1) {
-            if (second.value === 2) {
-              if (third.value === 3) {
-                return "test work";
+      function Test({ first, second, third }: any) {
+        return [
+          "div",
+          {},
+          async () => {
+            if (first.value === 1) {
+              if (second.value === 2) {
+                if (third.value === 3) {
+                  return "test work";
+                } else {
+                  return "no-third";
+                }
               } else {
-                return "no-third";
+                return "no-second";
               }
             } else {
-              return "no-second";
+              return "no-first";
             }
-          } else {
-            return "no-first";
-          }
-        });
+          },
+        ];
       }
 
       document.body.innerHTML = "<test-async first='1' second='2' third='3' />";
@@ -1494,27 +1578,31 @@ describe("utils", () => {
     });
 
     it("should be possible to create a collapsible content section with an accordion", () => {
-      function Accordion({}: any, { state, h }: any) {
+      function Accordion({}: any, { state }: any) {
         const active = state(0);
 
-        return h("div", {}, [
+        return [
+          "div",
+          {},
           [
-            "button",
-            {
-              onClick: () => {
-                active.value = active.value === 0 ? 1 : 0;
+            [
+              "button",
+              {
+                onClick: () => {
+                  active.value = active.value === 0 ? 1 : 0;
+                },
               },
-            },
-            "toggle",
+              "toggle",
+            ],
+            [
+              "div",
+              {
+                style: () => `display:${active.value === 0 ? "none" : "block"}`,
+              },
+              "content",
+            ],
           ],
-          [
-            "div",
-            {
-              style: () => `display:${active.value === 0 ? "none" : "block"}`,
-            },
-            "content",
-          ],
-        ]);
+        ];
       }
 
       customElements.define("accordion-element", brisaElement(Accordion));
@@ -1546,36 +1634,40 @@ describe("utils", () => {
     });
 
     it("should display additional information on hover with a tooltip", () => {
-      function Tooltip({}, { state, h }: any) {
+      function Tooltip({}, { state }: any) {
         const visible = state(false);
 
-        return h("div", {}, [
+        return [
+          "div",
+          {},
           [
-            "span",
-            {
-              onMouseOver: () => {
-                visible.value = true;
-              },
-              onMouseOut: () => {
-                visible.value = false;
-              },
-              style: "position:relative;",
-            },
             [
-              [
-                "span",
-                {
-                  style: () =>
-                    `position:absolute; visibility:${
-                      visible.value ? "visible" : "hidden"
-                    };`,
+              "span",
+              {
+                onMouseOver: () => {
+                  visible.value = true;
                 },
-                "Tooltip text",
+                onMouseOut: () => {
+                  visible.value = false;
+                },
+                style: "position:relative;",
+              },
+              [
+                [
+                  "span",
+                  {
+                    style: () =>
+                      `position:absolute; visibility:${
+                        visible.value ? "visible" : "hidden"
+                      };`,
+                  },
+                  "Tooltip text",
+                ],
+                "Hover over me",
               ],
-              "Hover over me",
             ],
           ],
-        ]);
+        ];
       }
 
       customElements.define("tooltip-element", brisaElement(Tooltip));
@@ -1605,36 +1697,39 @@ describe("utils", () => {
     });
 
     it("should work a conditional render with different web-components", () => {
-      function WebComponent1({}, { state, h }: any) {
+      function WebComponent1({}, { state }: any) {
         const name = state("WebComponent1");
-        return h(
+        return [
           "div",
           {
             onClick: () => {
               name.value = "WebComponent1 updated";
             },
           },
-          () => name.value
-        );
+          () => name.value,
+        ];
       }
-      function WebComponent2({}, { state, h }: any) {
+      function WebComponent2({}, { state }: any) {
         const name = state("WebComponent2");
-        return h(
+        return [
           "div",
           {
             onClick: () => {
               name.value = "WebComponent2 updated";
             },
           },
-          () => name.value
-        );
+          () => name.value,
+        ];
       }
-      function ParentWebComponent({ name }: any, { state, h }: any) {
-        return h(null, {}, () =>
-          name.value === "WebComponent1"
-            ? ["web-component-1", {}, ""]
-            : ["web-component-2", {}, ""]
-        );
+      function ParentWebComponent({ name }: any) {
+        return [
+          null,
+          {},
+          () =>
+            name.value === "WebComponent1"
+              ? ["web-component-1", {}, ""]
+              : ["web-component-2", {}, ""],
+        ];
       }
 
       customElements.define("web-component-1", brisaElement(WebComponent1));
@@ -1709,30 +1804,34 @@ describe("utils", () => {
     });
 
     it('should open/close a dialog with the "open" attribute', () => {
-      function Dialog({}, { state, h }: any) {
+      function Dialog({}, { state }: any) {
         const open = state(false);
 
-        return h("div", {}, [
+        return [
+          "div",
+          {},
           [
-            "button",
-            {
-              onClick: () => {
-                open.value = !open.value;
+            [
+              "button",
+              {
+                onClick: () => {
+                  open.value = !open.value;
+                },
               },
-            },
-            "open",
-          ],
-          [
-            "dialog",
-            {
-              open: () => (open.value ? _on : _off),
-              onClick: () => {
-                open.value = false;
+              "open",
+            ],
+            [
+              "dialog",
+              {
+                open: () => (open.value ? _on : _off),
+                onClick: () => {
+                  open.value = false;
+                },
               },
-            },
-            "dialog",
+              "dialog",
+            ],
           ],
-        ]);
+        ];
       }
 
       customElements.define("dialog-element", brisaElement(Dialog));
@@ -1765,11 +1864,11 @@ describe("utils", () => {
     });
 
     it("should serialize the props consuming another web-component", () => {
-      function Test({}, { h }: any) {
-        return h("web-component", { user: { name: "Aral" } }, "");
+      function Test() {
+        return ["web-component", { user: { name: "Aral" } }, ""];
       }
-      function WebComponent({ user }: any, { h }: any) {
-        return h("div", {}, () => user.value.name);
+      function WebComponent({ user }: any) {
+        return ["div", {}, () => user.value.name];
       }
 
       customElements.define("test-component", brisaElement(Test));
@@ -1801,13 +1900,16 @@ describe("utils", () => {
     });
 
     it("should work with booleans and numbers in the same way than React", () => {
-      const Component = ({}, { h }: any) =>
-        h(null, {}, [
+      const Component = ({}) => [
+        null,
+        {},
+        [
           [null, {}, () => true && ["div", {}, "TRUE"]],
           [null, {}, () => false && ["div", {}, "FALSE"]],
           [null, {}, () => 1 && ["div", {}, "TRUE"]],
           [null, {}, () => 0 && ["div", {}, "FALSE"]],
-        ]);
+        ],
+      ];
 
       customElements.define("bool-component", brisaElement(Component));
 
@@ -1822,13 +1924,16 @@ describe("utils", () => {
     });
 
     it("should work with booleans and numbers from props in the same way than React", () => {
-      const Component = ({ first, second, third, fourth }: any, { h }: any) =>
-        h(null, {}, [
+      const Component = ({ first, second, third, fourth }: any) => [
+        null,
+        {},
+        [
           [null, {}, () => first.value && ["div", {}, "TRUE"]],
           [null, {}, () => second.value && ["div", {}, "FALSE"]],
           [null, {}, () => third.value && ["div", {}, "TRUE"]],
           [null, {}, () => fourth.value && ["div", {}, "FALSE"]],
-        ]);
+        ],
+      ];
 
       customElements.define(
         "bool-component",
@@ -1847,11 +1952,14 @@ describe("utils", () => {
     });
 
     it("should be possible to render undefined and null", () => {
-      const Component = ({}, { h }: any) =>
-        h(null, {}, [
+      const Component = () => [
+        null,
+        {},
+        [
           ["div", { class: "empty" }, undefined],
           ["div", { class: "empty" }, null],
-        ]);
+        ],
+      ];
 
       customElements.define("test-component", brisaElement(Component));
 
@@ -1866,8 +1974,7 @@ describe("utils", () => {
     });
 
     it("should not be possible to inject HTML as string directly", () => {
-      const Component = ({}, { h }: any) =>
-        h(null, {}, '<script>alert("test")</script>');
+      const Component = () => '<script>alert("test")</script>';
 
       customElements.define("test-component", brisaElement(Component));
 
@@ -1890,12 +1997,15 @@ describe("utils", () => {
 
     it("should handle keyboard events", () => {
       const mockAlert = mock((s: string) => {});
-      const Component = ({}, { h }: any) =>
-        h("input", {
+      const Component = () => [
+        "input",
+        {
           onKeydown: () => {
             mockAlert("Enter to onKeydown");
           },
-        });
+        },
+        "",
+      ];
 
       customElements.define("keyboard-events", brisaElement(Component));
 
@@ -1920,22 +2030,26 @@ describe("utils", () => {
     it("should handle asynchronous updates", async () => {
       const fetchData = () =>
         Promise.resolve({ json: () => Promise.resolve({ name: "Barbara" }) });
-      const Component = ({}, { state, h }: any) => {
+      const Component = ({}, { state }: any) => {
         const user = state({ name: "Aral" });
 
-        h(null, {}, [
+        return [
+          null,
+          {},
           [
-            "button",
-            {
-              onClick: async () => {
-                const response = await fetchData();
-                user.value = await response.json();
+            [
+              "button",
+              {
+                onClick: async () => {
+                  const response = await fetchData();
+                  user.value = await response.json();
+                },
               },
-            },
-            "fetch",
+              "fetch",
+            ],
+            ["div", {}, () => user.value.name],
           ],
-          ["div", {}, () => user.value.name],
-        ]);
+        ];
       };
 
       customElements.define("async-updates", brisaElement(Component));
@@ -1967,23 +2081,31 @@ describe("utils", () => {
     });
 
     it("should update all items from a list consuming the same state signal at the same time", () => {
-      const Component = ({}, { state, h }: any) => {
+      const Component = ({}, { state }: any) => {
         const list = state(["one", "two", "three"]);
 
-        return h(null, {}, [
+        return [
+          null,
+          {},
           [
-            "button",
-            {
-              onClick: () => {
-                list.value = list.value.map((item: string) =>
-                  item.toUpperCase()
-                );
+            [
+              "button",
+              {
+                onClick: () => {
+                  list.value = list.value.map((item: string) =>
+                    item.toUpperCase()
+                  );
+                },
               },
-            },
-            "uppercase",
+              "uppercase",
+            ],
+            [
+              "ul",
+              {},
+              () => list.value.map((item: string) => ["li", {}, item]),
+            ],
           ],
-          ["ul", {}, () => list.value.map((item: string) => ["li", {}, item])],
-        ]);
+        ];
       };
 
       customElements.define("test-component", brisaElement(Component));
@@ -2009,7 +2131,7 @@ describe("utils", () => {
     });
 
     it("should be possible to update a rendered DOM element after mount via ref", async () => {
-      const Component = ({}, { onMount, state, h }: any) => {
+      const Component = ({}, { onMount, state }: any) => {
         const ref = state(null);
 
         onMount(() => {
@@ -2017,7 +2139,7 @@ describe("utils", () => {
           ref.value.innerHTML = "test";
         });
 
-        return h(null, {}, [["div", { ref }, "original"]]);
+        return [null, {}, [["div", { ref }, "original"]]];
       };
 
       customElements.define("test-component", brisaElement(Component));
@@ -2037,7 +2159,7 @@ describe("utils", () => {
     it("should be possible to execute different onMount callbacks", async () => {
       const mockFirstCallback = mock((s: string) => {});
       const mockSecondCallback = mock((s: string) => {});
-      const Component = ({}, { onMount, h }: any) => {
+      const Component = ({}, { onMount }: any) => {
         onMount(() => {
           mockFirstCallback("first");
         });
@@ -2045,7 +2167,7 @@ describe("utils", () => {
           mockSecondCallback("second");
         });
 
-        return h(null, {}, null);
+        return null;
       };
 
       customElements.define("test-component", brisaElement(Component));
@@ -2061,7 +2183,7 @@ describe("utils", () => {
 
     it("should cleanup an event registered on onMount when the component is unmounted", async () => {
       const mockCallback = mock((s: string) => {});
-      const Component = ({}, { onMount, cleanup, h }: any) => {
+      const Component = ({}, { onMount, cleanup }: any) => {
         onMount(() => {
           const onClick = () => mockCallback("click");
           document.addEventListener("click", onClick);
@@ -2071,7 +2193,7 @@ describe("utils", () => {
           });
         });
 
-        return h(null, {}, null);
+        return null;
       };
 
       customElements.define("test-component", brisaElement(Component));
@@ -2099,12 +2221,12 @@ describe("utils", () => {
 
     it("should cleanup on unmount if a cleanup callback is registered in the root of the component", () => {
       const mockCallback = mock((s: string) => {});
-      const Component = ({}, { cleanup, h }: any) => {
+      const Component = ({}, { cleanup }: any) => {
         cleanup(() => {
           mockCallback("cleanup");
         });
 
-        return h(null, {}, null);
+        return null;
       };
 
       customElements.define("test-component", brisaElement(Component));
@@ -2123,16 +2245,16 @@ describe("utils", () => {
 
     it("should cleanup on unmount if a cleanup callback is registered in a nested component", () => {
       const mockCallback = mock((s: string) => {});
-      const Component = ({}, { cleanup, h }: any) => {
+      const Component = ({}, { cleanup }: any) => {
         cleanup(() => {
           mockCallback("cleanup");
         });
 
-        return h(null, {}, null);
+        return null;
       };
 
-      const ParentComponent = ({}, { h }: any) => {
-        return h(null, {}, [["test-component", {}, null]]);
+      const ParentComponent = () => {
+        return [["test-component", {}, null]];
       };
 
       customElements.define("test-component", brisaElement(Component));
@@ -2150,10 +2272,8 @@ describe("utils", () => {
     });
 
     it("should be possible to inject html using the dangerHTML helper", () => {
-      const Component = ({}, { h }: any) => {
-        return h(null, {}, [
-          ["div", {}, () => dangerHTML("<script>alert('test')</script>")],
-        ]);
+      const Component = ({}) => {
+        return ["div", {}, () => dangerHTML("<script>alert('test')</script>")];
       };
 
       customElements.define("test-component", brisaElement(Component));
@@ -2173,8 +2293,8 @@ describe("utils", () => {
     });
 
     it("should render an string when receive an array of strings", () => {
-      const Component = ({}, { h }: any) => {
-        return h(null, {}, [["div", {}, ["hello", " ", "world"]]]);
+      const Component = () => {
+        return ["div", {}, ["hello", " ", "world"]];
       };
 
       customElements.define("test-component", brisaElement(Component));
@@ -2190,14 +2310,10 @@ describe("utils", () => {
     });
 
     it("should work createPortal helper rendering in another HTML element", () => {
-      const Component = ({}, { h }: any) =>
-        h(
-          null,
-          {},
-          createPortal(
-            ["div", {}, "test"] as any,
-            document.querySelector("#portal") as any
-          )
+      const Component = () =>
+        createPortal(
+          ["div", {}, "test"] as any,
+          document.querySelector("#portal") as any
         );
 
       customElements.define("portal-component", brisaElement(Component));
@@ -2216,8 +2332,10 @@ describe("utils", () => {
     });
 
     it("should remove a text using && operator", () => {
-      const Component = ({ foo }: any, { h }: any) =>
-        h("div", {}, [
+      const Component = ({ foo }: any) => [
+        "div",
+        {},
+        [
           [
             null,
             {},
@@ -2228,7 +2346,8 @@ describe("utils", () => {
               ],
           ],
           ["div", {}, "test3"],
-        ]);
+        ],
+      ];
 
       customElements.define("test-component", brisaElement(Component, ["foo"]));
       document.body.innerHTML = '<test-component foo="bar" />';
@@ -2249,26 +2368,30 @@ describe("utils", () => {
     });
 
     it("should work a ternary operator with several elements", () => {
-      const Component = ({ error }: any, { h }: any) => {
-        return h(null, {}, [
+      const Component = ({ error }: any) => {
+        return [
+          null,
+          {},
           [
-            null,
-            {},
-            () =>
-              error.value
-                ? [
-                    null,
-                    {},
-                    [
-                      [null, {}, () => `Error: ${error.value.message}`],
-                      [null, {}, " "],
-                      ["pre", {}, () => error.value.stack],
-                    ],
-                  ]
-                : [null, {}, ""],
+            [
+              null,
+              {},
+              () =>
+                error.value
+                  ? [
+                      null,
+                      {},
+                      [
+                        [null, {}, () => `Error: ${error.value.message}`],
+                        [null, {}, " "],
+                        ["pre", {}, () => error.value.stack],
+                      ],
+                    ]
+                  : [null, {}, ""],
+            ],
+            ["div", {}, "Test"],
           ],
-          ["div", {}, "Test"],
-        ]);
+        ];
       };
 
       customElements.define(
@@ -2298,9 +2421,9 @@ describe("utils", () => {
 
     it('should unmount/mount again a component when the "key" prop changes', async () => {
       const mockRender = mock((key: number) => {});
-      const Component = ({ key }: any, { h }: any) => {
+      const Component = ({ key }: any) => {
         mockRender(key.value);
-        return h(null, {}, ["div", {}, key.value]);
+        return ["div", {}, key.value];
       };
 
       document.body.innerHTML = '<key-component key="1" />';

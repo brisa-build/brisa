@@ -14,11 +14,11 @@ describe("utils", () => {
           const a = (props) => ['div', { foo: () => props.bar.value }, 'baz']
         `).body as ESTree.Statement[];
 
-        const output = getReactiveReturnStatement(componentBody, "h");
+        const output = getReactiveReturnStatement(componentBody);
 
         const expectedIndex = -1;
         const expectedCode = normalizeQuotes(
-          `return h('div', {foo: () => props.bar.value}, 'baz');`
+          `return ['div', {foo: () => props.bar.value}, 'baz'];`
         );
 
         expect(normalizeQuotes(generateCodeFromAST(output[0] as any))).toBe(
@@ -37,9 +37,9 @@ describe("utils", () => {
 
         const componentBody = (component[0] as any).declarations[0].init.body
           .body;
-        const output = getReactiveReturnStatement(componentBody, "h");
+        const output = getReactiveReturnStatement(componentBody);
         const expectedIndex = 1;
-        const expectedCode = normalizeQuotes(`return h(null, {}, () => foo);`);
+        const expectedCode = normalizeQuotes(`return () => foo;`);
 
         expect(normalizeQuotes(generateCodeFromAST(output[0] as any))).toBe(
           expectedCode

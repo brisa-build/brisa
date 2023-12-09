@@ -397,7 +397,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should allow returning an array of strings", () => {
+      it("should allow returning an array of strings without applying any transformation", () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
             return ['Hello', ' ', 'World'];
@@ -408,7 +408,7 @@ describe("utils", () => {
         const output = toOutputCode(outputAst);
         const expected = normalizeQuotes(`
           export default function MyComponent() {
-            return [null, {}, ['Hello', ' ', 'World']];
+            return ['Hello', ' ', 'World'];
           }
         `);
         expect(output).toBe(expected);

@@ -3082,7 +3082,8 @@ describe("integration", () => {
     it("should render the error component if there is an error", () => {
       const Component = `
         export default function MyComponent() {
-          return throw new Error('test')
+          throw new Error('test')
+          return
         }
 
         MyComponent.error = () => <div>Ops!</div>
