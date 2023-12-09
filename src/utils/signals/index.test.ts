@@ -301,8 +301,8 @@ describe("signals", () => {
     expect(triple.value).toBe(6);
   });
 
-  it('should remove all effects with "cleanAll" method', () => {
-    const { state, effect, cleanAll } = signals();
+  it('should remove all effects with "reset" method', () => {
+    const { state, effect, reset } = signals();
     const count = state<number>(0);
     const mockEffect = mock<(count?: number) => void>(() => {});
 
@@ -316,15 +316,15 @@ describe("signals", () => {
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
 
-    cleanAll();
+    reset();
 
     count.value = 2;
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
   });
 
-  it('should remove all cleanups with "cleanAll" method', () => {
-    const { state, effect, cleanup, cleanAll } = signals();
+  it('should remove all cleanups with "reset" method', () => {
+    const { state, effect, cleanup, reset } = signals();
     const count = state<number>(0);
     const mockEffect = mock<(count?: number) => void>(() => {});
     const mockCleanup = mock<() => void>(() => {});
@@ -342,7 +342,7 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockCleanup).toHaveBeenCalledTimes(1);
 
-    cleanAll();
+    reset();
 
     expect(mockCleanup).toHaveBeenCalledTimes(2);
 

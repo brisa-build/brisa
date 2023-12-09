@@ -102,7 +102,7 @@ export default function signals() {
     removeFromStack(fn);
   }
 
-  function cleanAll() {
+  function reset() {
     for (let effect of cleanups.keys()) {
       cleanupAnEffect(effect);
     }
@@ -127,5 +127,5 @@ export default function signals() {
     return derivedState;
   }
 
-  return { state, effect, cleanAll, cleanup, derived };
+  return { state, effect, reset, cleanup, derived };
 }
