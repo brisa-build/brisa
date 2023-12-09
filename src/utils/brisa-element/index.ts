@@ -289,12 +289,16 @@ export default function brisaElement(
         );
       };
 
+      // Render the component
       try {
+        // Handle suspense
         if (isFunction(render.suspense)) {
           await startRender(render.suspense!);
         }
+        // Handle render
         await startRender(render);
       } catch (e) {
+        // Handle error
         if (isFunction(render.error)) {
           await startRender(render.error!);
         } else throw e;
