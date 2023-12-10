@@ -332,7 +332,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => {});
+        mockLog.mockImplementation(() => { });
 
         const input = `
             function Test(props) {
@@ -897,7 +897,7 @@ describe("utils", () => {
           import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent({foo}, {effect}) {
-            effect(() => foo.value ??= 'bar');
+            effect(r => foo.value ??= 'bar');
             const someVar = 'test';
             return ['div', {}, () => foo.value];
           }
@@ -926,7 +926,7 @@ describe("utils", () => {
           import {brisaElement, _on, _off} from "brisa/client";
 
           function Component({foo}, {effect}) {
-            effect(() => foo.value ??= 'bar');
+            effect(r => foo.value ??= 'bar');
             const someVar = 'test';
             return ['div', {}, () => foo.value];
           }
@@ -955,7 +955,7 @@ describe("utils", () => {
           import {brisaElement, _on, _off} from "brisa/client";
 
           function Component({foo}, {effect}) {
-            effect(() => foo.value ??= 'bar');
+            effect(r => foo.value ??= 'bar');
             const someVar = 'test';
             return ['div', {}, () => foo.value];
           }
@@ -984,7 +984,7 @@ describe("utils", () => {
           import {brisaElement, _on, _off} from "brisa/client";
 
           function Component({foo: renamedFoo}, {effect}) {
-            effect(() => renamedFoo.value ??= 'bar');
+            effect(r => renamedFoo.value ??= 'bar');
             const someVar = 'test';
             return ['div', {}, () => renamedFoo.value];
           }
@@ -1000,7 +1000,7 @@ describe("utils", () => {
           export default function Component({ }, { effect, cleanup, state }: any) {
             const someState = state(0);
           
-            effect(() => {
+            effect(r => {
               console.log(someState.value)
             })
           
@@ -1411,7 +1411,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => {});
+        mockLog.mockImplementation(() => { });
 
         const input = `
           export default function MyComponent(props) {

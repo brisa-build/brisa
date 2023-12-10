@@ -3,11 +3,10 @@ import { ESTree } from "meriyah";
 import AST from "../ast";
 import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 import defineBrisaElement from "./define-brisa-element";
-import getComponentVariableNames from "./get-component-variable-names";
+import generateUniqueVariableName from "./generate-unique-variable-name";
 import getWebComponentAst from "./get-web-component-ast";
 import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
 import optimizeEffects from "./optimize-effects";
-import transformComponentStatics from "./transform-component-statics";
 import transformToDirectExport from "./transform-to-direct-export";
 import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
@@ -19,42 +18,38 @@ export default function transformJSXToReactive(code: string, path: string) {
 
   const ast = parseCodeToAST(code);
   const astWithDirectExport = transformToDirectExport(ast);
-  const [astWithPropsDotValue, propNames, isAddedDefaultProps] =
+
+  // TODO: should also transform statics
+  const out =
     transformToReactiveProps(astWithDirectExport);
-  const reactiveAst = transformToReactiveArrays(astWithPropsDotValue, path);
+  const reactiveAst = transformToReactiveArrays(out.ast, path);
   let [componentBranch, index] = getWebComponentAst(reactiveAst) as [
     ESTree.FunctionDeclaration,
     number
   ];
 
+  // TODO: should also transform statics
   componentBranch = mergeEarlyReturnsInOne(componentBranch);
 
   if (!componentBranch || !path.match(WEB_COMPONENT_REGEX)) {
     return generateCodeFromAST(reactiveAst);
   }
 
-  const componentVariableNames = getComponentVariableNames(componentBranch);
-  const allVariableNames = new Set([...propNames, ...componentVariableNames]);
+  const componentName = componentBranch.id?.name ?? generateUniqueVariableName("Component", out.vars);
 
-  componentBranch = optimizeEffects(componentBranch, allVariableNames);
+  // TODO: should also transform statics
+  componentBranch = optimizeEffects(componentBranch, out.vars);
 
   const [importDeclaration, brisaElement, componentAst] = defineBrisaElement(
     componentBranch,
-    propNames,
-    allVariableNames,
-    isAddedDefaultProps
-  );
-
-  const reactiveAstWithStatics = transformComponentStatics(
-    reactiveAst,
-    componentBranch.id?.name!,
-    allVariableNames
+    out.props,
+    componentName
   );
 
   // Wrap the component with brisaElement
   if (typeof index === "number") {
-    (reactiveAstWithStatics.body[index] as any).declaration = brisaElement;
-    reactiveAstWithStatics.body.splice(
+    (reactiveAst.body[index] as any).declaration = brisaElement;
+    reactiveAst.body.splice(
       index,
       0,
       componentAst as ESTree.Statement
@@ -62,9 +57,9 @@ export default function transformJSXToReactive(code: string, path: string) {
   }
 
   // Add the import declaration
-  reactiveAstWithStatics.body.unshift(
+  reactiveAst.body.unshift(
     importDeclaration as ESTree.ImportDeclaration
   );
 
-  return generateCodeFromAST(reactiveAstWithStatics);
+  return generateCodeFromAST(reactiveAst);
 }

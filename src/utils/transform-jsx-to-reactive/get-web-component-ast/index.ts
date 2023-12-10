@@ -2,7 +2,7 @@ import { ESTree } from "meriyah";
 
 export default function getWebComponentAst(
   ast: ESTree.Program
-): (ESTree.FunctionDeclaration | null | number)[] {
+): null[] | [ESTree.FunctionDeclaration, number] {
   const empty = [null];
   const defaultExportIndex = ast.body.findIndex(
     (node) => node.type === "ExportDefaultDeclaration"
