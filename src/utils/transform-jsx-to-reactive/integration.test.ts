@@ -546,7 +546,7 @@ describe("integration", () => {
 
       defineBrisaWebComponent(code, "src/web-components/test-button.tsx");
 
-      const onAfterClickMock = mock(() => {});
+      const onAfterClickMock = mock(() => { });
 
       window.onAfterClick = onAfterClickMock;
       document.body.innerHTML = `
@@ -564,7 +564,7 @@ describe("integration", () => {
     });
 
     it("should trigger events in different web-components", () => {
-      window.mock = mock(() => {});
+      window.mock = mock(() => { });
 
       const parentCode = `export default function Parent() {
         return <first-component onClickMe={window.mock}>click me</first-component>
@@ -786,7 +786,7 @@ describe("integration", () => {
     });
 
     it("should unregister effects when the component is disconnected", () => {
-      window.mock = mock((n: number) => {});
+      window.mock = mock((n: number) => { });
       const code = `export default function Test({ }, { state, effect }: any) {
           const count = state(0);
 
@@ -916,8 +916,8 @@ describe("integration", () => {
     });
 
     it("should cleanup everytime an effect is re-called", () => {
-      window.mockEffect = mock((num: number) => {});
-      window.mockCleanup = mock(() => {});
+      window.mockEffect = mock((num: number) => { });
+      window.mockCleanup = mock(() => { });
 
       const code = `export default function Test({ }, { state, effect, cleanup }: any) {
         const count = state(0);
@@ -959,8 +959,8 @@ describe("integration", () => {
     });
 
     it("should cleanup everytime the web-component is unmount", () => {
-      window.mockEffect = mock(() => {});
-      window.mockCleanup = mock(() => {});
+      window.mockEffect = mock(() => { });
+      window.mockCleanup = mock(() => { });
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(() => {
@@ -988,8 +988,8 @@ describe("integration", () => {
     });
 
     it("should cleanup async cleanups when the web-component is unmount", async () => {
-      window.mockEffect = mock(() => {});
-      window.mockCleanup = mock(() => {});
+      window.mockEffect = mock(() => { });
+      window.mockCleanup = mock(() => { });
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(async () => {
@@ -1017,8 +1017,8 @@ describe("integration", () => {
     });
 
     it("should cleanup multi cleanups inside an effect when the web-component is unmount", async () => {
-      window.mockEffect = mock(() => {});
-      window.mockCleanup = mock(() => {});
+      window.mockEffect = mock(() => { });
+      window.mockCleanup = mock(() => { });
 
       const code = `export default function Test({ }, { effect, cleanup }: any) {
         effect(async () => {
@@ -1909,7 +1909,7 @@ describe("integration", () => {
     });
 
     it("should handle keyboard events", () => {
-      window.mockAlert = mock((s: string) => {});
+      window.mockAlert = mock((s: string) => { });
       const code = `export default () => <input onKeyDown={() => window.mockAlert("Enter to onKeyDown")} />;`;
 
       defineBrisaWebComponent(code, "src/web-components/keyboard-events.tsx");
@@ -2047,8 +2047,8 @@ describe("integration", () => {
     });
 
     it("should be possible to execute different onMount callbacks", async () => {
-      window.mockFirstCallback = mock((s: string) => {});
-      window.mockSecondCallback = mock((s: string) => {});
+      window.mockFirstCallback = mock((s: string) => { });
+      window.mockSecondCallback = mock((s: string) => { });
 
       const code = `export default ({ }, { onMount }: any) => {
         onMount(() => {
@@ -2073,7 +2073,7 @@ describe("integration", () => {
     });
 
     it("should cleanup an event registered on onMount when the component is unmounted", async () => {
-      window.mockCallback = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
 
       const code = `export default ({}, { onMount, cleanup,  }: any) => {
         onMount(() => {
@@ -2112,7 +2112,7 @@ describe("integration", () => {
     });
 
     it("should cleanup on unmount if a cleanup callback is registered in the root of the component", () => {
-      window.mockCallback = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
 
       const code = `export default ({ }, { cleanup }: any) => {
         cleanup(() => {
@@ -2136,7 +2136,7 @@ describe("integration", () => {
     });
 
     it("should cleanup on unmount if a cleanup callback is registered in a nested component", () => {
-      window.mockCallback = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
       const testComp = `export default ({ }, { cleanup }: any) => {
         cleanup(() => window.mockCallback("cleanup"));
         return null;
@@ -2757,8 +2757,8 @@ describe("integration", () => {
     });
 
     it("should unregister cleanup when is inside an effect with a condition, starting as true", () => {
-      window.mockCallback = mock((s: string) => {});
-      window.mockCallbackCleanup = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
+      window.mockCallbackCleanup = mock((s: string) => { });
 
       const code = `
         export default function Component({ foo }, { effect, cleanup }) {
@@ -2809,8 +2809,8 @@ describe("integration", () => {
     });
 
     it("should unregister cleanup when is inside an effect with a condition, starting as false", () => {
-      window.mockCallback = mock((s: string) => {});
-      window.mockCallbackCleanup = mock((s: string) => {});
+      window.mockCallback = mock((s: string) => { });
+      window.mockCallbackCleanup = mock((s: string) => { });
 
       const code = `
         export default function Component({ foo }, { effect, cleanup }) {
@@ -2868,7 +2868,7 @@ describe("integration", () => {
     });
 
     it("should execute again the effect if is updated during effect registration", () => {
-      window.mockEffect = mock((s: string) => {});
+      window.mockEffect = mock((s: string) => { });
 
       const code = `
         export default function Component({}, { state, effect }) {
@@ -2901,7 +2901,7 @@ describe("integration", () => {
     });
 
     it("should unregister sub-effects", () => {
-      window.mockEffect = mock((s: string) => {});
+      window.mockEffect = mock((s: string) => { });
 
       const code = `
         export default function Component({}, { state, effect }) {
@@ -2995,7 +2995,7 @@ describe("integration", () => {
     });
 
     it('should unmount and mount again when the attribute "key" changes', async () => {
-      window.mockMount = mock((s: string) => {});
+      window.mockMount = mock((s: string) => { });
       const code = `
         export default function Component({ key }, { onMount }) {
           onMount(() => window.mockMount(key));
@@ -3027,7 +3027,7 @@ describe("integration", () => {
     });
 
     it('should reset the state when the attribute "key" changes', () => {
-      window.mockMount = mock((s: string) => {});
+      window.mockMount = mock((s: string) => { });
       const code = `
         export default function Component({}, {state }) {
           const count = state(0);
@@ -3247,7 +3247,7 @@ describe("integration", () => {
     });
 
     it("should call cleanup after every phase: suspense -> real -> error", async () => {
-      window.mockCleanup = mock((s: string) => {});
+      window.mockCleanup = mock((s: string) => { });
 
       const Component = `
         export default async function MyComponent({}, {cleanup}) {
@@ -3324,29 +3324,29 @@ describe("integration", () => {
       const Component = `
         export default async function MyComponent() {
           await new Promise(resolve => setTimeout(resolve, 0))
-          return <div>hello world</div>
+          return <div>real component</div>
         }
 
         MyComponent.suspense = ({ name }) => <div>{name}</div>
       `;
 
       document.body.innerHTML = normalizeQuotes(`
-        <my-component name="Aral"></my-component>
+        <my-suspense name="Aral"></my-suspense>
       `);
 
-      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+      defineBrisaWebComponent(Component, "src/web-components/my-suspense.tsx");
 
-      const myComponent = document.querySelector("my-component") as HTMLElement;
+      const mySuspense = document.querySelector("my-suspense") as HTMLElement;
 
-      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+      expect(mySuspense?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
 
-      myComponent.setAttribute("name", "Barbara");
+      mySuspense.setAttribute("name", "Barbara");
 
-      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+      expect(mySuspense?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
     });
 
     it("should unregister sub-effects inside 'error' component", () => {
-      window.mockEffect = mock((s: string) => {});
+      window.mockEffect = mock((s: string) => { });
 
       const code = `
         export default function Component({}, { state, effect }) {
@@ -3393,7 +3393,7 @@ describe("integration", () => {
     });
 
     it("should unregister sub-effects inside 'suspense' component", () => {
-      window.mockEffect = mock((s: string) => {});
+      window.mockEffect = mock((s: string) => { });
 
       const code = `
         export default async function Component({}, { state, effect }) {

@@ -21,9 +21,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           const outsideComponent = props => {
@@ -38,8 +38,12 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",
+          "console",
+          "props"]));
       });
 
       it("should transform all props from destructured props", () => {
@@ -50,9 +54,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component({foo, bar, baz}) {
@@ -62,8 +66,11 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",
+          "console"]));
       });
 
       it("should transform all props from renamed destructured props", () => {
@@ -74,9 +81,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component({foo: foot, bar: bart, baz: bazt}) {
@@ -86,8 +93,11 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",
+          "console"]));
       });
 
       it("should transform all props from destructured props with spread", () => {
@@ -98,9 +108,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component({foo, ...rest}) {
@@ -110,8 +120,12 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",
+          "console",
+          "rest"]));
       });
 
       it("should transform all props from arrow function without block statement", () => {
@@ -119,17 +133,19 @@ describe("utils", () => {
           export default (props) => console.log(props.foo);
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default props => console.log(props.foo.value);
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "console",
+          "props"]));
       });
 
       it("should transform all destructured props from arrow function with block statement", () => {
@@ -138,17 +154,20 @@ describe("utils", () => {
         `;
 
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default ({foo, ...rest}) => foo.value === "Test" && rest.bar.value && jsxDEV("div", {children: rest.baz.value}, undefined, false, undefined, this);
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",
+          "rest"]));
       });
 
       it("should LOSE REACTIVITY with renamed props inside body without a derived", () => {
@@ -162,9 +181,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component(props) {
@@ -177,8 +196,15 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",
+          "foot",
+          "props",
+          "bart",
+          "bazt",
+          "console"]));
       });
 
       it("should NOT lose reactivity with renamed state props inside body", () => {
@@ -194,9 +220,9 @@ describe("utils", () => {
           }`;
 
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode =
           normalizeQuotes(`export default function Component({}, {state}) {
@@ -210,8 +236,13 @@ describe("utils", () => {
           }`);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual([]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual([]);
+        expect(out.vars).toEqual(new Set(["stateFoo",
+          "stateBar",
+          "stateBaz",
+          "renamedFoo",
+          "renamedBar",
+          "renamedBaz"]));
       });
 
       it("should lose reactivity if it is done deliberately in the state", () => {
@@ -227,9 +258,9 @@ describe("utils", () => {
         }`;
 
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode =
           normalizeQuotes(`export default function Component({}, {state}) {
@@ -243,8 +274,13 @@ describe("utils", () => {
         }`);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual([]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual([]);
+        expect(out.vars).toEqual(new Set(["stateFoo",
+          "stateBar",
+          "stateBaz",
+          "renamedFoo",
+          "renamedBar",
+          "renamedBaz"]));
       });
 
       it("should transform all renamed props via variable declaration and destructuring", () => {
@@ -256,9 +292,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component(props) {
@@ -269,8 +305,12 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",
+          "props",
+          "console"]));
       });
 
       it("should work consuming a property of some props", () => {
@@ -286,9 +326,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           const outsideComponent = props => {
@@ -303,8 +343,12 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",
+          "console",
+          "props"]));
       });
 
       it("should not add .value inside an attribute key, only in the value", () => {
@@ -314,10 +358,10 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component({foo, bar}) {
@@ -326,8 +370,9 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar"]));
       });
 
       it("should remove the default props from params and add them to the component body", () => {
@@ -337,13 +382,13 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          export default function Component({foo, bar, baz}) {
+          export default function Component({foo, bar, baz}, {effect}) {
             effect(() => baz.value ??= 'baz');
             effect(() => bar.value ??= 'bar');
             return jsxDEV("div", {children: [foo.value, bar.value, baz.value]}, undefined, true, undefined, this);
@@ -351,8 +396,10 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar", "baz"]);
-        expect(isAddedDefaultProps).toBe(true);
+        expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz"]));
       });
 
       it("should not transform to reactive if the prop name is children", () => {
@@ -362,10 +409,10 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component({children}) {
@@ -374,8 +421,8 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual([]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual([]);
+        expect(out.vars).toEqual(new Set());
       });
 
       it("should transform to reactive if some another prop is renamed to children", () => {
@@ -385,10 +432,10 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component({foo, bar: children}) {
@@ -397,8 +444,8 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar"]);
+        expect(out.vars).toEqual(new Set(['foo', 'bar']));
       });
 
       it("should transform to reactive if is used inside a function call with a object expression", () => {
@@ -409,9 +456,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           const bar = props => jsxDEV("div", {children: props.baz}, undefined, false, undefined, this);
@@ -421,8 +468,8 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo"]);
+        expect(out.vars).toEqual(new Set(['foo']));
       });
 
       it("should not transform to reactive the props that are events", () => {
@@ -433,9 +480,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component(props) {
@@ -445,8 +492,11 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["onClick", "onClickSpan"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["onClick", "onClickSpan"]);
+        expect(out.vars).toEqual(new Set(["onClick",
+          "onClickSpan",
+          "props",
+          "rest"]));
       });
 
       it("should transform props consumed in an expression inside an attribute value", () => {
@@ -468,9 +518,9 @@ describe("utils", () => {
           `;
 
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
             export default function RuntimeLog({error, warning}) {
@@ -479,8 +529,9 @@ describe("utils", () => {
           `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["error", "warning"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["error", "warning"]);
+        expect(out.vars).toEqual(new Set(["error",
+          "warning"]));
       });
 
       it("should transform a default prop declaration inside the body of the component", () => {
@@ -491,9 +542,9 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
           export default function Component({foo}, {derived}) {
@@ -503,9 +554,10 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo"]);
+        expect(out.props).toEqual(["foo"]);
         // adding default props inside a derived is not considered as default props
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar"]));
       });
 
       it("should transform conditional props in a variable", () => {
@@ -515,9 +567,9 @@ describe("utils", () => {
         }`;
 
         const ast = parseCodeToAST(code);
-        const [outputAst, propNames, isAddedDefaultProps] =
+        const out =
           transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode =
           normalizeQuotes(`export default function MyComponent({foo, bar}) {
@@ -526,8 +578,10 @@ describe("utils", () => {
         }`);
 
         expect(outputCode).toBe(expectedCode);
-        expect(propNames).toEqual(["foo", "bar"]);
-        expect(isAddedDefaultProps).toBe(false);
+        expect(out.props).toEqual(["foo", "bar"]);
+        expect(out.vars).toEqual(new Set(["foo",
+          "bar",
+          "baz",]));
       });
     });
   });
