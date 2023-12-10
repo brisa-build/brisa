@@ -1,37 +1,71 @@
 import { ESTree } from "meriyah";
+import generateUniqueVariableName from "../generate-unique-variable-name";
+import getComponentVariableNames from "../get-component-variable-names";
 import getPropsNames, { getPropNamesFromExport } from "../get-props-names";
 import getWebComponentAst from "../get-web-component-ast";
+import manageWebContextField from "../manage-web-context-field";
 
 type Prop = (ESTree.MemberExpression | ESTree.Identifier) & {
   isSignal?: true;
 };
 
+type Result = {
+  ast: ESTree.Program;
+  props: string[];
+  vars: Set<string>;
+}
+
 export default function transformToReactiveProps(
   ast: ESTree.Program
-): [ESTree.Program, string[], boolean] {
+): Result {
   const [component, defaultExportIndex] = getWebComponentAst(ast) as [
     ESTree.FunctionDeclaration,
     number
   ];
 
-  if (!component) return [ast, [], false];
+  if (!component) return { ast, props: [], vars: new Set() };
 
-  const propNamesFromExport = getPropNamesFromExport(ast);
+  const out = transformComponentToReactiveProps(
+    component,
+    getPropNamesFromExport(ast),
+  );
+
+  const newAst = {
+    ...ast,
+    body: ast.body.map((node, index) => {
+      if (index === defaultExportIndex)
+        return {
+          ...node,
+          declaration: {
+            ...(node as ESTree.ExportDefaultDeclaration).declaration,
+            body: out.component,
+          },
+        };
+      return node;
+    }),
+  } as ESTree.Program;
+
+  return { ast: newAst, props: out.props, vars: out.vars };
+}
+
+export function transformComponentToReactiveProps(
+  component: ESTree.FunctionDeclaration,
+  propNamesFromExport: string[],
+) {
+  const componentVariableNames = getComponentVariableNames(component);
   const [propsNames, renamedPropsNames, defaultPropsValues] = getPropsNames(
     component,
-    propNamesFromExport
+    propNamesFromExport,
   );
   const propsNamesAndRenamesSet = new Set([
     ...propsNames,
     ...renamedPropsNames,
     ...propNamesFromExport,
   ]);
+  const allVariableNames = new Set([...propsNames, ...componentVariableNames]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
-  const isAddedDefaultProps = addDefaultPropsToBody(
-    defaultPropsEntries,
-    component,
-    false
-  );
+
+  addDefaultPropsToBody(defaultPropsEntries, component, allVariableNames);
 
   // Remove props from component params
   for (let propParam of (component.params[0] as any)?.properties ?? []) {
@@ -56,7 +90,7 @@ export default function transformToReactiveProps(
     };
   }
 
-  const componentBodyWithPropsDotValue = JSON.parse(
+  const newComponent = JSON.parse(
     JSON.stringify(component.body),
     function (key, value) {
       // Avoid adding .value in:
@@ -102,29 +136,14 @@ export default function transformToReactiveProps(
     }
   );
 
-  const newAst = {
-    ...ast,
-    body: ast.body.map((node, index) => {
-      if (index === defaultExportIndex)
-        return {
-          ...node,
-          declaration: {
-            ...(node as ESTree.ExportDefaultDeclaration).declaration,
-            body: componentBodyWithPropsDotValue,
-          },
-        };
-      return node;
-    }),
-  } as ESTree.Program;
-
-  return [newAst, propsNames, isAddedDefaultProps];
+  return { component: newComponent, vars: allVariableNames, props: propsNames };
 }
 
 // Set default props values inside component body
 function addDefaultPropsToBody(
   defaultPropsEntries: [string, ESTree.Literal, string?][],
   component: ESTree.FunctionDeclaration,
-  useSignalValueField: boolean
+  allVariableNames: Set<string>,
 ) {
   let isAddedDefaultProps = false;
 
@@ -140,34 +159,21 @@ function addDefaultPropsToBody(
 
     let prop: Prop = identifier
       ? {
-          type: "MemberExpression",
-          object: {
-            type: "Identifier",
-            name: identifier,
-          },
-          property: {
-            type: "Identifier",
-            name: propName,
-          },
-          computed: false,
-        }
-      : {
-          type: "Identifier",
-          name: propName,
-        };
-
-    if (useSignalValueField) {
-      prop = {
         type: "MemberExpression",
-        object: prop,
+        object: {
+          type: "Identifier",
+          name: identifier,
+        },
         property: {
           type: "Identifier",
-          name: "value",
+          name: propName,
         },
         computed: false,
-        isSignal: true,
+      }
+      : {
+        type: "Identifier",
+        name: propName,
       };
-    }
 
     (component.body.body ?? component.body).unshift({
       type: "ExpressionStatement",
@@ -198,5 +204,12 @@ function addDefaultPropsToBody(
     isAddedDefaultProps = true;
   }
 
-  return isAddedDefaultProps;
+  // The compiler will add an "effect" argument to the component
+  if (isAddedDefaultProps) {
+    manageWebContextField(
+      component,
+      generateUniqueVariableName("effect", allVariableNames),
+      "effect"
+    );
+  }
 }
