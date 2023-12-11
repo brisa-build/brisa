@@ -5,7 +5,8 @@ type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
 type Props = Record<string, unknown>;
 type ReactiveArray = [string, Attr, Children];
-type WebContext = ReturnType<typeof signals> & {
+type Signals = ReturnType<typeof signals>;
+type WebContext = Signals & {
   onMount(cb: () => void): void;
   css(strings: string[], ...values: string[]): void;
   h(tagName: string, attributes: Attr, children: unknown): void;
@@ -37,6 +38,8 @@ const KEY = "key";
 const CONNECTED_CALLBACK = "connectedCallback";
 const DISCONNECTED_CALLBACK = "dis" + CONNECTED_CALLBACK;
 const INNER_HTML = "inner" + HTML;
+const PROPS: "p" = "p";
+const SUSPENSE_PROPS = "l";
 
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
@@ -109,20 +112,9 @@ export default function brisaElement(
 
     async [CONNECTED_CALLBACK]() {
       const self = this;
-      self.s = signals();
-
-      const { state, reset } = self.s;
       const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
       let cssStyle = "";
-
-      self.p = {};
-
-      for (let attr of observedAttributes) {
-        self.p[attributesObj[attr]] = isAttributeAnEvent(attr)
-          ? self.e(attr)
-          : state(deserialize(self.getAttribute(attr)));
-      }
 
       function handlePortal(
         children: Children,
@@ -266,10 +258,26 @@ export default function brisaElement(
         if (tagName) appendChild(parent, el);
       }
 
-      const startRender = (fn: Render, signals = self.s) => {
-        const props = { children: SLOT_TAG, ...self.p };
+      const startRender = (
+        fn: Render,
+        renderSignals = signals(),
+        propsField = PROPS
+      ) => {
+        // Save signals to reset them later in the disconnectedCallback
+        self.s = renderSignals;
+
+        // Attributes (events and props)
+        self[propsField] = {};
+        for (let attr of observedAttributes) {
+          self[propsField]![attributesObj[attr]] = isAttributeAnEvent(attr)
+            ? self.e(attr)
+            : renderSignals.state(deserialize(self.getAttribute(attr)));
+        }
+        const props = { children: SLOT_TAG, ...self[propsField] };
+
+        // Web context
         const webContext = {
-          ...signals,
+          ...renderSignals,
           onMount(cb: () => void) {
             fnToExecuteAfterMount.push(cb);
           },
@@ -286,25 +294,31 @@ export default function brisaElement(
           fn(props, webContext),
           shadowRoot,
           (v: any) => v,
-          signals?.effect!,
+          renderSignals.effect,
           true
         );
       };
 
-      // Render the component
       let suspenseSignals = signals();
+
+      // Render the component
       try {
         // Handle suspense
         if (isFunction(render.suspense)) {
-          await startRender(render.suspense!, suspenseSignals);
+          await startRender(
+            render.suspense!,
+            suspenseSignals,
+            SUSPENSE_PROPS as "p"
+          );
         }
         // Handle render
         await startRender(render);
         suspenseSignals.reset();
+        delete self[SUSPENSE_PROPS as "p"];
       } catch (e) {
         // Handle error
         suspenseSignals.reset();
-        reset();
+        self.s!.reset();
         if (isFunction(render.error)) {
           startRender(render.error!);
         } else throw e;
@@ -333,6 +347,7 @@ export default function brisaElement(
       newValue: string | null
     ) {
       const self = this as any;
+      const propsField = self[SUSPENSE_PROPS] ? SUSPENSE_PROPS : PROPS;
 
       // unmount + mount again when the key changes
       if (name === KEY && oldValue != null && oldValue !== newValue) {
@@ -340,8 +355,12 @@ export default function brisaElement(
         self[CONNECTED_CALLBACK]();
       }
       // Handle component props
-      if (self.p && oldValue !== newValue && !isAttributeAnEvent(name)) {
-        (self.p[attributesObj[name]] as StateSignal).value =
+      if (
+        self[propsField] &&
+        oldValue !== newValue &&
+        !isAttributeAnEvent(name)
+      ) {
+        (self[propsField][attributesObj[name]] as StateSignal).value =
           deserialize(newValue);
       }
     }

@@ -2271,6 +2271,71 @@ describe("utils", () => {
       expect(mockCallback.mock.calls[0][0]).toBe("cleanup");
     });
 
+    it("should have reactive props inside the suspense component", async () => {
+      const Component = async () => {
+        await Bun.sleep(0);
+        return ["div", {}, "final content"];
+      };
+
+      Component.suspense = ({ name }: any) => {
+        return () => name.value;
+      };
+
+      customElements.define(
+        "test-component",
+        brisaElement(Component, ["name"])
+      );
+
+      document.body.innerHTML = '<test-component name="suspense" />';
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("suspense");
+
+      testComponent.setAttribute("name", "more suspense");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("more suspense");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>final content</div>"
+      );
+    });
+
+    it("should have reactive props inside the error component", async () => {
+      const Component = async () => {
+        throw new Error("error");
+      };
+
+      Component.error = ({ name }: any) => {
+        return () => name.value;
+      };
+
+      customElements.define(
+        "test-component",
+        brisaElement(Component, ["name"])
+      );
+
+      document.body.innerHTML = '<test-component name="some error" />';
+
+      const testComponent = document.querySelector(
+        "test-component"
+      ) as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("some error");
+
+      testComponent.setAttribute("name", "another error");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("another error");
+    });
+
     it("should cleanup suspense when the real content is displayed", async () => {
       const mockCallback = mock((s: string) => {});
       const Component = async ({ name = "final content" }) => {
