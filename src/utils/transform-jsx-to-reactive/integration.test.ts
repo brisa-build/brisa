@@ -3414,9 +3414,10 @@ describe("integration", () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
     });
 
-    it('should be possible to use reactive props without the .value inside the "suspense" component', () => {
+    it('should be possible to use reactive props without the .value inside the "suspense" component', async () => {
       const Component = `
         export default async function MyComponent() {
+          await new Promise(resolve => setTimeout(resolve, 0))
           await new Promise(resolve => setTimeout(resolve, 0))
           return <div>real component</div>
         }
@@ -3437,6 +3438,17 @@ describe("integration", () => {
       mySuspense.setAttribute("name", "Barbara");
 
       expect(mySuspense?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      await Bun.sleep(0);
+
+      mySuspense.setAttribute(
+        "name",
+        "Change during rendering the real component"
+      );
+
+      expect(mySuspense?.shadowRoot?.innerHTML).toBe(
+        "<div>Change during rendering the real component</div>"
+      );
     });
 
     it("should unregister sub-effects inside 'error' component", () => {
