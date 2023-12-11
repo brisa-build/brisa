@@ -24,7 +24,11 @@ describe("utils", () => {
         const ast = parseCodeToAST(code);
         const [component] = getWebComponentAst(ast);
         const [propNames] = getPropsNames(component!);
-        const [importDeclaration] = defineBrisaElement(component!, propNames, 'MyComponent');
+        const [importDeclaration] = defineBrisaElement(
+          component!,
+          propNames,
+          "MyComponent"
+        );
 
         (importDeclaration as ESTree.ImportDeclaration).specifiers.forEach(
           (specifier) => {
@@ -39,10 +43,10 @@ describe("utils", () => {
           }
         `;
         const ast = parseCodeToAST(code);
-        const [component] = getWebComponentAst(ast)
+        const [component] = getWebComponentAst(ast);
         const [propNames] = getPropsNames(component!);
         const [importDeclaration, brisaElement, wrappedComponent] =
-          defineBrisaElement(component!, propNames, 'MyComponent');
+          defineBrisaElement(component!, propNames, "MyComponent");
         expect(output(importDeclaration)).toBe(
           'import {brisaElement, _on, _off} from "brisa/client";'
         );
@@ -68,7 +72,7 @@ describe("utils", () => {
         const [component] = getWebComponentAst(ast);
         const [propNames] = getPropsNames(component!);
         const [importDeclaration, brisaElement, wrappedComponent] =
-          defineBrisaElement(component!, propNames, 'MyComponent');
+          defineBrisaElement(component!, propNames, "MyComponent");
         expect(output(importDeclaration)).toBe(
           'import {brisaElement, _on, _off} from "brisa/client";'
         );

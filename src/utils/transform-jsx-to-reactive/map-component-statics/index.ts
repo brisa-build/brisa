@@ -9,9 +9,12 @@ const FUNCTION_ESXPRESSION_TYPES = new Set([
 export default function mapComponentStatics(
   ast: ESTree.Program,
   componentName: string,
-  mapFn: (value: ESTree.FunctionDeclaration, name: string) => ESTree.FunctionDeclaration
+  mapFn: (
+    value: ESTree.FunctionDeclaration,
+    name: "suspense" | "error"
+  ) => ESTree.FunctionDeclaration
 ) {
-  const identifiers = new Map<string, string>();
+  const identifiers = new Map<string, "suspense" | "error">();
 
   return JSON.parse(
     // Traversing A to B
@@ -24,7 +27,7 @@ export default function mapComponentStatics(
           identifiers.set(value.right.name, value?.left?.property?.name);
           return value;
         }
-        value.right = mapFn(value.right, value?.left?.property?.name)
+        value.right = mapFn(value.right, value?.left?.property?.name);
       }
 
       if (isFromObjectAssign(value)) {
@@ -34,7 +37,7 @@ export default function mapComponentStatics(
             if (property.value.type === "Identifier") {
               identifiers.set(property.value.name, property?.key?.name);
             } else {
-              property.value = mapFn(property.value, property?.key?.name)
+              property.value = mapFn(property.value, property?.key?.name);
             }
           }
         }
@@ -47,7 +50,7 @@ export default function mapComponentStatics(
       const parent = this;
 
       if (isDetectedIdentifier(value, parent, identifiers)) {
-        parent.init = mapFn(parent.init, identifiers.get(value.name)!)
+        parent.init = mapFn(parent.init, identifiers.get(value.name)!);
       }
 
       return value;

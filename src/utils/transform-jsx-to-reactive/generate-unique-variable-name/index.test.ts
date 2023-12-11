@@ -5,9 +5,15 @@ describe("utils", () => {
   describe("transform-jsx-to-reactive", () => {
     describe("generateUniqueVariableName", () => {
       it("should return a unique variable names", () => {
-        expect(generateUniqueVariableName("d", new Set(["a", "b", "c"]))).toBe("d");
-        expect(generateUniqueVariableName("b", new Set(["a", "b", "c"]))).toBe("b$");
-        expect(generateUniqueVariableName("a", new Set(["a", "a$", "a$$"]))).toBe("a$$$");
+        expect(generateUniqueVariableName("d", new Set(["a", "b", "c"]))).toBe(
+          "d"
+        );
+        expect(generateUniqueVariableName("b", new Set(["a", "b", "c"]))).toBe(
+          "b$"
+        );
+        expect(
+          generateUniqueVariableName("a", new Set(["a", "a$", "a$$"]))
+        ).toBe("a$$$");
       });
     });
   });

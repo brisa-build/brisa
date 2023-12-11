@@ -63,6 +63,29 @@ describe("utils", () => {
         expect(index).toBe(2);
       });
 
+      it("should return the async web component subtree when the default export is from a variable", () => {
+        const input = parseCodeToAST(`
+          const anotherContent = true;
+
+          async function MyComponent() {
+            return <div>foo</div>
+          }
+
+          export default MyComponent;
+        `);
+        const [astOutput, index] = getWebComponentAst(input);
+        const codeOutput = normalizeQuotes(
+          generateCodeFromAST(astOutput as unknown as ESTree.Program)
+        );
+        const expected = normalizeQuotes(`
+          async function MyComponent() {
+            return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
+          }
+        `);
+        expect(codeOutput).toEqual(expected);
+        expect(index).toBe(2);
+      });
+
       it("should return the web component subtree when the component is an arrow function", () => {
         const input = parseCodeToAST(`
           const anotherContent = true;
@@ -112,6 +135,25 @@ describe("utils", () => {
         );
         const expected = normalizeQuotes(`
           const MyComponent = () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
+        `);
+        expect(codeOutput).toEqual(expected);
+        expect(index).toBe(2);
+      });
+
+      it("should return the web component subtree when the component is an async arrow function and the default export is from a variable", () => {
+        const input = parseCodeToAST(`
+          const anotherContent = true;
+
+          const MyComponent = async () => <div>foo</div>;
+
+          export default MyComponent;
+        `);
+        const [astOutput, index] = getWebComponentAst(input);
+        const codeOutput = normalizeQuotes(
+          generateCodeFromAST(astOutput as unknown as ESTree.Program)
+        );
+        const expected = normalizeQuotes(`
+          const MyComponent = async () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
         `);
         expect(codeOutput).toEqual(expected);
         expect(index).toBe(2);
