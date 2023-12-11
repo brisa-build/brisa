@@ -2,11 +2,13 @@ import { ESTree } from "meriyah";
 
 export default function getWebComponentAst(
   ast: ESTree.Program
-): null[] | [ESTree.FunctionDeclaration, number] {
+): null[] | [ESTree.FunctionDeclaration, number, number] {
   const empty = [null];
   const defaultExportIndex = ast.body.findIndex(
     (node) => node.type === "ExportDefaultDeclaration"
   );
+
+  let identifierDeclarationIndex = -1;
 
   if (defaultExportIndex === -1) return empty;
 
@@ -17,18 +19,20 @@ export default function getWebComponentAst(
   const { type, name } = defaultExport.declaration as ESTree.Identifier;
 
   if (type === "Identifier") {
-    const declaration = ast.body.find((node: any) => {
+    const declaration = ast.body.find((node: any, index: number) => {
       const declarationName = node.declarations?.[0].id?.name ?? node?.id?.name;
+      identifierDeclarationIndex = index;
       return node.type.endsWith("Declaration") && declarationName === name;
     }) as ESTree.FunctionDeclaration;
 
     if (!declaration) return empty;
 
-    return [declaration, defaultExportIndex];
+    return [declaration, defaultExportIndex, identifierDeclarationIndex];
   }
 
   return [
     defaultExport.declaration as ESTree.FunctionDeclaration,
     defaultExportIndex,
+    identifierDeclarationIndex,
   ];
 }

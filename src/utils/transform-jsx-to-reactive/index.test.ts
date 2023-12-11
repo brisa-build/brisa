@@ -332,7 +332,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => { });
+        mockLog.mockImplementation(() => {});
 
         const input = `
             function Test(props) {
@@ -1411,7 +1411,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => { });
+        mockLog.mockImplementation(() => {});
 
         const input = `
           export default function MyComponent(props) {

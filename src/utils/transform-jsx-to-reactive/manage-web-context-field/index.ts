@@ -3,6 +3,8 @@ export default function manageWebContextField(
   fieldName: string,
   originalFieldName: string
 ) {
+  const componentParams =
+    componentAST.params ?? componentAST.declarations?.[0]?.init?.params ?? [];
   const property = {
     type: "Property",
     key: {
@@ -20,31 +22,31 @@ export default function manageWebContextField(
   };
 
   // convert function () {} to function ({}) {}
-  if (!componentAST.params?.length) {
-    componentAST.params.push({
+  if (!componentParams?.length) {
+    componentParams.push({
       type: "ObjectPattern",
       properties: [],
     });
   }
 
   // convert function ({}) {} to function ({}, { effect }) {}
-  if (componentAST.params?.length === 1) {
-    componentAST.params.push({
+  if (componentParams?.length === 1) {
+    componentParams.push({
       type: "ObjectPattern",
       properties: [property],
     });
   }
   // convert function ({}, { state }) {} to function ({}, { state, effect }) {}
-  else if (componentAST.params[1]?.type === "ObjectPattern") {
-    const existFieldName = componentAST.params[1].properties.some(
+  else if (componentParams[1]?.type === "ObjectPattern") {
+    const existFieldName = componentParams[1].properties.some(
       (prop: any) => prop.key.name === originalFieldName
     );
-    if (!existFieldName) componentAST.params[1].properties.push(property);
+    if (!existFieldName) componentParams[1].properties.push(property);
   }
   // convert function ({}, context) {} to function ({ effect, ...context }) {}
-  else if (componentAST.params[1]?.type === "Identifier") {
-    const props = componentAST.params[1];
-    componentAST.params[1] = {
+  else if (componentParams[1]?.type === "Identifier") {
+    const props = componentParams[1];
+    componentParams[1] = {
       type: "ObjectPattern",
       properties: [
         property,

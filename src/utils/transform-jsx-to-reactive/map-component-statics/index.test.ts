@@ -14,24 +14,25 @@ describe("utils", () => {
           export default function Component() { return 'Hello' }
           Component.error = () => <div>Error</div>
           Component.suspense = () => <div>Suspense</div>
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: "Literal",
-            value: name,
-          }
-          return value;
-        }))
-
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "Literal",
+              value: name,
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           export default function Component() {return "Hello";}
           Component.error = () => "error";
           Component.suspense = () => "suspense";
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
 
       it("should be possible to map statics using functions", () => {
@@ -39,30 +40,33 @@ describe("utils", () => {
           export default function Component() { return 'Hello' }
           Component.error = function () {return 'Error'}
           Component.suspense = function () {return 'Suspense'}
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: 'BlockStatement',
-            body: [{
-              type: "ReturnStatement",
-              argument: {
-                type: "Literal",
-                value: name,
-              },
-            }],
-          }
-          return value;
-        }))
-
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "BlockStatement",
+              body: [
+                {
+                  type: "ReturnStatement",
+                  argument: {
+                    type: "Literal",
+                    value: name,
+                  },
+                },
+              ],
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           export default function Component() {return "Hello";}
           Component.error = function () {return "error";};
           Component.suspense = function () {return "suspense";};
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
 
       it("should be possible to map statics using functions identifiers", () => {
@@ -72,30 +76,34 @@ describe("utils", () => {
           function Suspense() {return 'Suspense'}
           Component.error = Error
           Component.suspense = Suspense
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: 'BlockStatement',
-            body: [{
-              type: "ReturnStatement",
-              argument: {
-                type: "Literal",
-                value: name,
-              },
-            }],
-          }
-          return value;
-        }))
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "BlockStatement",
+              body: [
+                {
+                  type: "ReturnStatement",
+                  argument: {
+                    type: "Literal",
+                    value: name,
+                  },
+                },
+              ],
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           let Error = function () {return "error";}, Suspense = function () {return "suspense";};
           export default function Component() {return "Hello";}
           Component.error = Error;
           Component.suspense = Suspense;
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
 
       it("should be possible to map statics using arrow functions identifiers", () => {
@@ -105,15 +113,17 @@ describe("utils", () => {
           const Suspense = () => 'Suspense'
           Component.error = Error
           Component.suspense = Suspense
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: 'Literal',
-            value: name,
-          }
-          return value;
-        }))
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "Literal",
+              value: name,
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           export default function Component() {return "Hello";}
@@ -121,9 +131,9 @@ describe("utils", () => {
           const Suspense = () => "suspense";
           Component.error = Error;
           Component.suspense = Suspense;
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
 
       it("should be possible to map statics using arrow functions identifiers via Object.assign", () => {
@@ -132,24 +142,26 @@ describe("utils", () => {
           const Error = () => 'Error'
           const Suspense = () => 'Suspense'
           Object.assign(Component, { error: Error, suspense: Suspense })
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: 'Literal',
-            value: name,
-          }
-          return value;
-        }))
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "Literal",
+              value: name,
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           export default function Component() {return "Hello";}
           const Error = () => "error";
           const Suspense = () => "suspense";
           Object.assign(Component, {error: Error,suspense: Suspense});
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
 
       it("should be possible to map statics using functions identifiers via Object.assign", () => {
@@ -158,108 +170,122 @@ describe("utils", () => {
           function Error() {return 'Error'}
           function Suspense() {return 'Suspense'}
           Object.assign(Component, { error: Error, suspense: Suspense })
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: 'BlockStatement',
-            body: [{
-              type: "ReturnStatement",
-              argument: {
-                type: "Literal",
-                value: name,
-              },
-            }],
-          }
-          return value;
-        }))
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "BlockStatement",
+              body: [
+                {
+                  type: "ReturnStatement",
+                  argument: {
+                    type: "Literal",
+                    value: name,
+                  },
+                },
+              ],
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           let Error = function () {return "error";}, Suspense = function () {return "suspense";};
           export default function Component() {return "Hello";}
           Object.assign(Component, {error: Error,suspense: Suspense});
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
 
       it("should be possible to map statics using functions via Object.assign", () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           Object.assign(Component, { error: function () {return 'Error'}, suspense: function () {return 'Suspense'} })
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: 'BlockStatement',
-            body: [{
-              type: "ReturnStatement",
-              argument: {
-                type: "Literal",
-                value: name,
-              },
-            }],
-          }
-          return value;
-        }))
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "BlockStatement",
+              body: [
+                {
+                  type: "ReturnStatement",
+                  argument: {
+                    type: "Literal",
+                    value: name,
+                  },
+                },
+              ],
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           export default function Component() {return "Hello";}
           Object.assign(Component, {error: function () {return "error";},suspense: function () {return "suspense";}});
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
 
       it("should be possible to map statics using arrow functions via Object.assign", () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           Object.assign(Component, { error: () => 'Error', suspense: () => 'Suspense' })
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: 'Literal',
-            value: name,
-          }
-          return value;
-        }))
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "Literal",
+              value: name,
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           export default function Component() {return "Hello";}
           Object.assign(Component, {error: () => "error",suspense: () => "suspense"});
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
 
       it("should be possible to map statics using methods via Object.assign", () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           Object.assign(Component, { error() {return 'Error'}, suspense() {return 'Suspense'} })
-        `)
+        `);
 
-        const output = toOutput(mapComponentStatics(ast, "Component", (value: any, name) => {
-          value.body = {
-            type: 'BlockStatement',
-            body: [{
-              type: "ReturnStatement",
-              argument: {
-                type: "Literal",
-                value: name,
-              },
-            }],
-          }
-          return value;
-        }))
+        const output = toOutput(
+          mapComponentStatics(ast, "Component", (value: any, name) => {
+            value.body = {
+              type: "BlockStatement",
+              body: [
+                {
+                  type: "ReturnStatement",
+                  argument: {
+                    type: "Literal",
+                    value: name,
+                  },
+                },
+              ],
+            };
+            return value;
+          })
+        );
 
         const expected = normalizeQuotes(`
           export default function Component() {return "Hello";}
           Object.assign(Component, {error() {return "error";},suspense() {return "suspense";}});
-        `)
+        `);
 
-        expect(output).toBe(expected)
+        expect(output).toBe(expected);
       });
     });
   });
-})
+});

@@ -3,7 +3,6 @@ import { ESTree } from "meriyah";
 import AST from "../ast";
 import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 import defineBrisaElement from "./define-brisa-element";
-import generateUniqueVariableName from "./generate-unique-variable-name";
 import getWebComponentAst from "./get-web-component-ast";
 import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
 import optimizeEffects from "./optimize-effects";
@@ -18,48 +17,51 @@ export default function transformJSXToReactive(code: string, path: string) {
 
   const ast = parseCodeToAST(code);
   const astWithDirectExport = transformToDirectExport(ast);
-
-  // TODO: should also transform statics
-  const out =
-    transformToReactiveProps(astWithDirectExport);
+  const out = transformToReactiveProps(astWithDirectExport);
   const reactiveAst = transformToReactiveArrays(out.ast, path);
-  let [componentBranch, index] = getWebComponentAst(reactiveAst) as [
-    ESTree.FunctionDeclaration,
-    number
-  ];
+  const propsSet = new Set(out.props);
+  let [componentBranch, exportIndex, identifierIndex] =
+    getWebComponentAst(reactiveAst);
+
+  for (const { props = [] } of Object.values(out.statics ?? {})) {
+    for (const prop of props) propsSet.add(prop);
+  }
 
   // TODO: should also transform statics
-  componentBranch = mergeEarlyReturnsInOne(componentBranch);
+  componentBranch = mergeEarlyReturnsInOne(componentBranch!);
 
   if (!componentBranch || !path.match(WEB_COMPONENT_REGEX)) {
     return generateCodeFromAST(reactiveAst);
   }
-
-  const componentName = componentBranch.id?.name ?? generateUniqueVariableName("Component", out.vars);
 
   // TODO: should also transform statics
   componentBranch = optimizeEffects(componentBranch, out.vars);
 
   const [importDeclaration, brisaElement, componentAst] = defineBrisaElement(
     componentBranch,
-    out.props,
-    componentName
+    Array.from(propsSet),
+    out.componentName
   );
 
-  // Wrap the component with brisaElement
-  if (typeof index === "number") {
-    (reactiveAst.body[index] as any).declaration = brisaElement;
-    reactiveAst.body.splice(
-      index,
-      0,
-      componentAst as ESTree.Statement
-    );
+  // #### Wrap the component with brisaElement ####
+  // Replace: export default function Component() {}
+  // To: export default brisaElement(Component)
+  (reactiveAst.body[exportIndex!] as any).declaration = brisaElement;
+
+  // Replace the component with reactive component
+  if (identifierIndex !== -1) {
+    // If it was: export default Component (identifier) -> we can replace the original
+    // component with the new one.
+    reactiveAst.body[identifierIndex!] = componentAst as ESTree.Statement;
+  } else {
+    // In case of: export default function Component() {} (not identifier), so we need
+    // to insert the updated component because the old one was replaced to
+    // brisaElement(Component)
+    reactiveAst.body.splice(exportIndex!, 0, componentAst as ESTree.Statement);
   }
 
   // Add the import declaration
-  reactiveAst.body.unshift(
-    importDeclaration as ESTree.ImportDeclaration
-  );
+  reactiveAst.body.unshift(importDeclaration as ESTree.ImportDeclaration);
 
   return generateCodeFromAST(reactiveAst);
 }

@@ -5,10 +5,12 @@ import mapComponentStatics from "../map-component-statics";
 const CHILDREN = "children";
 
 export default function getPropsNames(
-  webComponentAst: ESTree.FunctionDeclaration | ESTree.ArrowFunctionExpression,
+  webComponentAst: any,
   propNamesFromExport: string[] = []
 ): [string[], string[], Record<string, ESTree.Literal>] {
-  const propsAst = webComponentAst?.params?.[0];
+  const propsAst =
+    webComponentAst?.params?.[0] ??
+    webComponentAst?.declarations?.[0]?.init?.params?.[0];
   const propNames = [];
   const renamedPropNames = [];
   let defaultPropsValues: Record<string, ESTree.Literal> = {};
@@ -42,10 +44,7 @@ export default function getPropsNames(
       }
     }
 
-    const [, renames] = getPropsNamesFromIdentifier(
-      "",
-      webComponentAst,
-    );
+    const [, renames] = getPropsNamesFromIdentifier("", webComponentAst);
 
     renamedPropNames.push(...renames);
 
@@ -71,7 +70,7 @@ export default function getPropsNames(
 
 function getPropsNamesFromIdentifier(
   identifier: string,
-  ast: any,
+  ast: any
 ): [string[], string[], Record<string, ESTree.Literal>] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
@@ -146,14 +145,17 @@ export function getPropNamesFromExport(ast: ESTree.Program) {
 }
 
 export function getPropNamesFromStatics(ast: ESTree.Program) {
-  const [componentBrach] = getWebComponentAst(ast)
+  const [componentBrach] = getWebComponentAst(ast);
   const componentName = componentBrach?.id?.name!;
   const propNamesFromExport = getPropNamesFromExport(ast);
-  const propNamesStaticMap = new Map<string, [string[], string[], Record<string, ESTree.Literal>]>();
+  const propNamesStaticMap = new Map<
+    string,
+    [string[], string[], Record<string, ESTree.Literal>]
+  >();
 
   mapComponentStatics(ast, componentName, (staticValue, staticName) => {
-    const res = getPropsNames(staticValue, propNamesFromExport)
-    propNamesStaticMap.set(staticName, res)
+    const res = getPropsNames(staticValue, propNamesFromExport);
+    propNamesStaticMap.set(staticName, res);
     return staticValue;
   });
 

@@ -4,58 +4,116 @@ import getComponentVariableNames from "../get-component-variable-names";
 import getPropsNames, { getPropNamesFromExport } from "../get-props-names";
 import getWebComponentAst from "../get-web-component-ast";
 import manageWebContextField from "../manage-web-context-field";
+import mapComponentStatics from "../map-component-statics";
 
 type Prop = (ESTree.MemberExpression | ESTree.Identifier) & {
   isSignal?: true;
 };
 
+type Statics = {
+  suspense?: Result;
+  error?: Result;
+};
+
 type Result = {
   ast: ESTree.Program;
+  componentName: string;
   props: string[];
   vars: Set<string>;
-}
+  statics?: Statics;
+};
 
-export default function transformToReactiveProps(
-  ast: ESTree.Program
-): Result {
-  const [component, defaultExportIndex] = getWebComponentAst(ast) as [
-    ESTree.FunctionDeclaration,
-    number
-  ];
+export default function transformToReactiveProps(ast: ESTree.Program): Result {
+  const [component, defaultExportIndex, identifierDeclarationIndex] =
+    getWebComponentAst(ast);
+  const defaultComponentName = "Component";
 
-  if (!component) return { ast, props: [], vars: new Set() };
+  if (!component)
+    return { ast, componentName: "", props: [], vars: new Set(), statics: {} };
 
-  const out = transformComponentToReactiveProps(
-    component,
-    getPropNamesFromExport(ast),
-  );
+  const propsFromExport = getPropNamesFromExport(ast);
+  const statics: Statics = {};
+  const componentIndex =
+    identifierDeclarationIndex !== -1
+      ? identifierDeclarationIndex
+      : defaultExportIndex;
+
+  const out = transformComponentToReactiveProps(component, propsFromExport);
+
+  let componentName = defaultComponentName;
 
   const newAst = {
     ...ast,
     body: ast.body.map((node, index) => {
-      if (index === defaultExportIndex)
+      if (index !== componentIndex) return node;
+
+      const hasDeclaration = "declaration" in (node as any);
+      const comp = hasDeclaration
+        ? (node as any)?.declaration
+        : (node as any)?.declarations?.[0];
+
+      componentName =
+        comp?.id?.name ??
+        generateUniqueVariableName(defaultComponentName, out.vars);
+
+      if (hasDeclaration) {
         return {
           ...node,
-          declaration: {
-            ...(node as ESTree.ExportDefaultDeclaration).declaration,
-            body: out.component,
-          },
+          declaration: { ...comp, body: out.component },
         };
-      return node;
+      }
+
+      if (Array.isArray((node as any).declarations)) {
+        return {
+          ...node,
+          declarations: [
+            {
+              ...(node as any).declarations[0],
+              init: out.component,
+            },
+          ],
+        };
+      }
+
+      return { ...node, body: out.component };
     }),
   } as ESTree.Program;
 
-  return { ast: newAst, props: out.props, vars: out.vars };
+  mapComponentStatics(newAst, componentName, (staticAst, staticName) => {
+    const staticsOut = transformComponentToReactiveProps(
+      staticAst,
+      propsFromExport
+    );
+
+    statics[staticName] = {
+      ast: staticsOut.component,
+      props: staticsOut.props,
+      vars: staticsOut.vars,
+      componentName: staticName,
+    };
+
+    staticAst.body = staticsOut.component;
+
+    return staticAst;
+  });
+
+  return {
+    ast: newAst,
+    componentName,
+    props: out.props,
+    vars: out.vars,
+    statics,
+  };
 }
 
 export function transformComponentToReactiveProps(
-  component: ESTree.FunctionDeclaration,
-  propNamesFromExport: string[],
+  component: any,
+  propNamesFromExport: string[]
 ) {
   const componentVariableNames = getComponentVariableNames(component);
   const [propsNames, renamedPropsNames, defaultPropsValues] = getPropsNames(
     component,
-    propNamesFromExport,
+    propNamesFromExport
   );
   const propsNamesAndRenamesSet = new Set([
     ...propsNames,
@@ -64,11 +122,14 @@ export function transformComponentToReactiveProps(
   ]);
   const allVariableNames = new Set([...propsNames, ...componentVariableNames]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
+  const declaration = component?.declarations?.[0];
+  const params = declaration?.init?.params ?? component?.params ?? [];
+  const componentBody = component?.body ?? declaration?.init.body;
 
   addDefaultPropsToBody(defaultPropsEntries, component, allVariableNames);
 
   // Remove props from component params
-  for (let propParam of (component.params[0] as any)?.properties ?? []) {
+  for (let propParam of params[0]?.properties ?? []) {
     const propName =
       propParam.value?.left?.name ??
       propParam.value?.name ??
@@ -86,12 +147,12 @@ export function transformComponentToReactiveProps(
 
     propParam.value = {
       type: "Identifier",
-      name: propParam?.value?.left?.name,
+      name: propName,
     };
   }
 
-  const newComponent = JSON.parse(
-    JSON.stringify(component.body),
+  const newComponentBody = JSON.parse(
+    JSON.stringify(componentBody),
     function (key, value) {
       // Avoid adding .value in:
       //  const { foo: a, bar: b } = props
@@ -136,19 +197,28 @@ export function transformComponentToReactiveProps(
     }
   );
 
+  const newComponent = declaration
+    ? { ...declaration?.init, body: newComponentBody }
+    : newComponentBody;
+
   return { component: newComponent, vars: allVariableNames, props: propsNames };
 }
 
 // Set default props values inside component body
 function addDefaultPropsToBody(
   defaultPropsEntries: [string, ESTree.Literal, string?][],
-  component: ESTree.FunctionDeclaration,
-  allVariableNames: Set<string>,
+  component: any,
+  allVariableNames: Set<string>
 ) {
   let isAddedDefaultProps = false;
+  const componentBody =
+    component?.body?.body ??
+    component?.body ??
+    component?.declarations?.[0]?.init?.body?.body ??
+    component?.declarations?.[0]?.init?.body;
 
   for (let [propName, propValue, usedOperator = "??"] of defaultPropsEntries) {
-    if (component.body == null) continue;
+    if (componentBody == null) continue;
 
     const operator =
       ((propValue as any)?.usedOperator ?? usedOperator) === "??"
@@ -159,23 +229,23 @@ function addDefaultPropsToBody(
 
     let prop: Prop = identifier
       ? {
-        type: "MemberExpression",
-        object: {
-          type: "Identifier",
-          name: identifier,
-        },
-        property: {
+          type: "MemberExpression",
+          object: {
+            type: "Identifier",
+            name: identifier,
+          },
+          property: {
+            type: "Identifier",
+            name: propName,
+          },
+          computed: false,
+        }
+      : {
           type: "Identifier",
           name: propName,
-        },
-        computed: false,
-      }
-      : {
-        type: "Identifier",
-        name: propName,
-      };
+        };
 
-    (component.body.body ?? component.body).unshift({
+    componentBody.unshift({
       type: "ExpressionStatement",
       isEffect: true,
       expression: {
