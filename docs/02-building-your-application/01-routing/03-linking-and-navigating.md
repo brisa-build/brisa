@@ -47,6 +47,7 @@ export default function Posts({ posts }) {
 }
 ```
 
+> [!NOTE]
 > [`encodeURIComponent`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) is used in the example to keep the path utf-8 compatible.
 
 ## I18n navigation

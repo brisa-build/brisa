@@ -33,12 +33,30 @@ export default function Custom500({ error }, requestContext) {
 
 If you want to control errors at the component level instead of displaying a whole new page with the error, you can make the components have the error extension by adding the `ComponentName.error`:
 
-```jsx
-export default function SomeComponent() {
+Example [server component](/docs/components-details/server-components):
+```tsx
+import { RequestContext } from 'brisa';
+
+export default function SomeServerComponent() {
   return; /* some JSX */
 }
 
-SomeComponent.error = ({ error }, requestContext) => {
+SomeServerComponent.error = ({ error }, requestContext: RequestContext) => {
   return <p>Oops! {error.message}</p>;
 };
 ```
+
+Example [web component](/docs/components-details/web-components):
+```tsx
+import { WebContext } from 'brisa';
+
+export default function SomeWebComponent() {
+  /* some JSX */
+}
+
+SomeWebComponent.error = ({ error }, webContext: WebContext) => {
+  return <p>Oops! {error.message}</p>;
+};
+```
+
+This works for both server and web components. The difference is that web-components have access to the [webContext](/docs/building-your-application/data-fetching/web-context) while server-components have access to the [requestContext](/docs/building-your-application/data-fetching/request-context).
