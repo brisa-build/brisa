@@ -25,7 +25,7 @@ describe("utils", () => {
         <LoadLayout layoutModule={layoutModule}>
           <div>Hello world</div>
         </LoadLayout>,
-        testRequest
+        testRequest,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toContain("<title>Brisa</title>");
@@ -41,7 +41,7 @@ describe("utils", () => {
         <LoadLayout layoutModule={layoutModule}>
           <div>Hello world</div>
         </LoadLayout>,
-        testRequest
+        testRequest,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toContain('<title id="title">CUSTOM LAYOUT</title>');

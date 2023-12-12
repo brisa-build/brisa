@@ -24,30 +24,33 @@ export default function transformJSXToReactive(code: string, path: string) {
   let [componentBranch, exportIndex, identifierIndex] =
     getWebComponentAst(reactiveAst);
 
-  for (const { props = [] } of Object.values(out.statics ?? {})) {
-    for (const prop of props) propsSet.add(prop);
-  }
-
-  // TODO: should also transform statics
-  componentBranch = mergeEarlyReturnsInOne(componentBranch!);
-
   if (!componentBranch || !path.match(WEB_COMPONENT_REGEX)) {
     return generateCodeFromAST(reactiveAst);
   }
 
-  // Optimize effects inside web-component + suspense + error phases
+  for (const { props = [] } of Object.values(out.statics ?? {})) {
+    for (const prop of props) propsSet.add(prop);
+  }
+
+  componentBranch = mergeEarlyReturnsInOne(componentBranch!);
   componentBranch = optimizeEffects(componentBranch, out.vars);
+
+  // Merge early returns in one + optimize effects inside statics (suspense + error phases)
   mapComponentStatics(reactiveAst, out.componentName, (value, name) => {
-    if(out.statics?.[name]) {
-      return optimizeEffects(value, out.statics[name]!.vars);
+    const valueWithMergedEarlyReturns = mergeEarlyReturnsInOne(value);
+    if (out.statics?.[name]) {
+      return optimizeEffects(
+        valueWithMergedEarlyReturns,
+        out.statics[name]!.vars,
+      );
     }
-    return value;
-  })
+    return valueWithMergedEarlyReturns;
+  });
 
   const [importDeclaration, brisaElement, componentAst] = defineBrisaElement(
     componentBranch,
     Array.from(propsSet),
-    out.componentName
+    out.componentName,
   );
 
   // #### Wrap the component with brisaElement ####

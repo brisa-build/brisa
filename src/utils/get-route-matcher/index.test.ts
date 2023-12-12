@@ -8,7 +8,7 @@ const PAGES_DIR = path.join(
   "..",
   "..",
   "__fixtures__",
-  "pages"
+  "pages",
 );
 
 describe("utils", () => {
@@ -34,7 +34,7 @@ describe("utils", () => {
       const { route, isReservedPathname } = match(
         extendRequestContext({
           originalRequest: new Request("https://example.com/_404"),
-        })
+        }),
       );
       expect(route).not.toBe(null);
       expect(isReservedPathname).toBe(true);
@@ -46,7 +46,7 @@ describe("utils", () => {
       const { route, isReservedPathname } = match(
         extendRequestContext({
           originalRequest: new Request("https://example.com/somepage"),
-        })
+        }),
       );
       expect(route).not.toBe(null);
       expect(isReservedPathname).toBe(false);

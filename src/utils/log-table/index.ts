@@ -6,14 +6,14 @@ export default function logTable(data: { [key: string]: string }[]) {
   const maxLengths = headers.map((header) =>
     data.reduce(
       (max, item) => Math.max(max, item[header].length),
-      header.length
-    )
+      header.length,
+    ),
   );
   let lines = [];
 
   // Headers
   lines.push(
-    headers.map((header, i) => header.padEnd(maxLengths[i])).join(" | ")
+    headers.map((header, i) => header.padEnd(maxLengths[i])).join(" | "),
   );
 
   // Separators
@@ -22,7 +22,7 @@ export default function logTable(data: { [key: string]: string }[]) {
   // Rows
   for (const item of data) {
     const cells = headers.map((header, i) =>
-      item[header].padEnd(maxLengths[i])
+      item[header].padEnd(maxLengths[i]),
     );
     lines.push(cells.join(" | "));
   }

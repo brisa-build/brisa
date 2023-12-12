@@ -37,7 +37,7 @@ const TYPES_TO_AVOID_ANALYZE_RETURN = new Set([
  *   }
  */
 export default function mergeEarlyReturnsInOne(
-  componentBranch: ESTree.FunctionDeclaration
+  componentBranch: ESTree.FunctionDeclaration,
 ): ESTree.FunctionDeclaration {
   const body = (componentBranch as any)?.body?.body ?? [];
   let firstEarlyReturn = -1;

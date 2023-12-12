@@ -11,8 +11,8 @@ export default function mapComponentStatics(
   componentName: string,
   mapFn: (
     value: ESTree.FunctionDeclaration,
-    name: "suspense" | "error"
-  ) => ESTree.FunctionDeclaration
+    name: "suspense" | "error",
+  ) => ESTree.FunctionDeclaration,
 ) {
   const identifiers = new Map<string, "suspense" | "error">();
 
@@ -54,7 +54,7 @@ export default function mapComponentStatics(
       }
 
       return value;
-    }
+    },
   );
 }
 
@@ -79,7 +79,7 @@ function isFromObjectAssign(value: any) {
 function isDetectedIdentifier(
   value: any,
   parent: any,
-  identifiers: Map<string, string>
+  identifiers: Map<string, string>,
 ) {
   return (
     value?.type === "Identifier" &&

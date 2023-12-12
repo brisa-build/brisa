@@ -50,7 +50,7 @@ describe("unsuspense window.u$", () => {
         <h1>Success!</h1>
         <h2>Hello world!</h2>
       </body>
-    `)
+    `),
     );
   });
 
@@ -84,7 +84,7 @@ describe("unsuspense window.u$", () => {
         <h2>Success!</h2>
         <h3>Hello world!</h3>
       </body>
-    `)
+    `),
     );
   });
 
@@ -116,7 +116,7 @@ describe("unsuspense window.u$", () => {
         <h1>Success!</h1>
         <h2>Hello world!</h2>
       </body>
-    `)
+    `),
     );
   });
 
@@ -154,7 +154,7 @@ describe("unsuspense window.u$", () => {
         <script id="R:1.1"></script>
         <h2>Hello world!</h2>
       </body>
-    `)
+    `),
     );
   });
 });

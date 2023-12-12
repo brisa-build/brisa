@@ -27,13 +27,13 @@ describe("utils", () => {
         const [importDeclaration] = defineBrisaElement(
           component!,
           propNames,
-          "MyComponent"
+          "MyComponent",
         );
 
         (importDeclaration as ESTree.ImportDeclaration).specifiers.forEach(
           (specifier) => {
             expect((BRISA_CLIENT as any)[specifier.local.name]).toBeDefined();
-          }
+          },
         );
       });
       it("should wrap the web-component with brisaElement and return the import declaration", () => {
@@ -48,17 +48,17 @@ describe("utils", () => {
         const [importDeclaration, brisaElement, wrappedComponent] =
           defineBrisaElement(component!, propNames, "MyComponent");
         expect(output(importDeclaration)).toBe(
-          'import {brisaElement, _on, _off} from "brisa/client";'
+          'import {brisaElement, _on, _off} from "brisa/client";',
         );
         expect(output(brisaElement)).toBe(
-          `brisaElement(MyComponent, ["exampleProp"])`
+          `brisaElement(MyComponent, ["exampleProp"])`,
         );
         expect(output(wrappedComponent)).toBe(
           normalizeQuotes(`
           function MyComponent({exampleProp}) {
             return ["div", {}, () => exampleProp.value];
           }
-        `)
+        `),
         );
       });
 
@@ -74,17 +74,17 @@ describe("utils", () => {
         const [importDeclaration, brisaElement, wrappedComponent] =
           defineBrisaElement(component!, propNames, "MyComponent");
         expect(output(importDeclaration)).toBe(
-          'import {brisaElement, _on, _off} from "brisa/client";'
+          'import {brisaElement, _on, _off} from "brisa/client";',
         );
         expect(output(brisaElement)).toBe(
-          `brisaElement(MyComponent, ["foo", "bar"])`
+          `brisaElement(MyComponent, ["foo", "bar"])`,
         );
         expect(output(wrappedComponent)).toBe(
           normalizeQuotes(`
           function MyComponent(props) {
               return [null, {}, [["div", {}, () => props.foo.value], ["span", {}, () => props.bar.value]]];
           }
-        `)
+        `),
         );
       });
     });

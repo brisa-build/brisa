@@ -29,7 +29,7 @@ describe("utils", () => {
         `);
         const [ast, index] = getWebComponentAst(input);
         const output = normalizeQuotes(
-          generateCodeFromAST(ast as unknown as ESTree.Program)
+          generateCodeFromAST(ast as unknown as ESTree.Program),
         );
         const expected = normalizeQuotes(`
           function MyComponent() {
@@ -52,7 +52,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = normalizeQuotes(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program)
+          generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
         const expected = normalizeQuotes(`
           let MyComponent = function () {
@@ -75,7 +75,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = normalizeQuotes(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program)
+          generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
         const expected = normalizeQuotes(`
           async function MyComponent() {
@@ -94,7 +94,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = normalizeQuotes(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program)
+          generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
         const expected = normalizeQuotes(`
           () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this)
@@ -111,7 +111,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = normalizeQuotes(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program)
+          generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
         const expected = normalizeQuotes(`
           props => jsxDEV("div", {children: props.someProp}, undefined, false, undefined, this)
@@ -131,7 +131,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = normalizeQuotes(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program)
+          generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
         const expected = normalizeQuotes(`
           const MyComponent = () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
@@ -150,7 +150,7 @@ describe("utils", () => {
         `);
         const [astOutput, index] = getWebComponentAst(input);
         const codeOutput = normalizeQuotes(
-          generateCodeFromAST(astOutput as unknown as ESTree.Program)
+          generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
         const expected = normalizeQuotes(`
           const MyComponent = async () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);

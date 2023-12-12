@@ -34,7 +34,7 @@ type Props = Record<string, unknown> & {
 
 export type ResponseHeaders = (
   req: RequestContext,
-  status: number
+  status: number,
 ) => HeadersInit;
 
 export type JSXNode = string | number | JSXElement;
@@ -57,7 +57,7 @@ export type JSXElement = {
 
 export type JSXComponent = (
   props: Props,
-  request: RequestContext
+  request: RequestContext,
 ) => JSXNode | Promise<JSXNode>;
 
 export interface ParsedFilePkg {
@@ -152,7 +152,7 @@ export type Translate = <T extends unknown = string>(
     fallback?: string | string[];
     default?: T | string;
     elements?: JSX.Element[] | Record<string, JSX.Element>;
-  }
+  },
 ) => T | JSX.Element[] | string;
 
 export type I18nFromRequest = {
@@ -168,7 +168,7 @@ export interface ComponentType extends JSXComponent {
     props: Props & {
       error?: Error;
     },
-    request: RequestContext
+    request: RequestContext,
   ) => JSXNode | Promise<JSXNode>;
 }
 
@@ -181,7 +181,7 @@ export function dangerHTML(html: string): {
 
 export function createPortal(
   element: JSX.Element,
-  target: HTMLElement
+  target: HTMLElement,
 ): {
   type: "portal";
   props: {

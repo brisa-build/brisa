@@ -18,11 +18,11 @@ describe("utils", () => {
 
         const expectedIndex = -1;
         const expectedCode = normalizeQuotes(
-          `return ['div', {foo: () => props.bar.value}, 'baz'];`
+          `return ['div', {foo: () => props.bar.value}, 'baz'];`,
         );
 
         expect(normalizeQuotes(generateCodeFromAST(output[0] as any))).toBe(
-          expectedCode
+          expectedCode,
         );
         expect(output[1]).toBe(expectedIndex);
       });
@@ -42,7 +42,7 @@ describe("utils", () => {
         const expectedCode = normalizeQuotes(`return () => foo;`);
 
         expect(normalizeQuotes(generateCodeFromAST(output[0] as any))).toBe(
-          expectedCode
+          expectedCode,
         );
         expect(output[1]).toBe(expectedIndex);
       });

@@ -1,5 +1,5 @@
 type Effect = ((
-  addSubEffect: (effect: Effect) => Effect
+  addSubEffect: (effect: Effect) => Effect,
 ) => void | Promise<void>) & { id?: Effect };
 type Cleanup = () => void | Promise<void>;
 type State<T> = {

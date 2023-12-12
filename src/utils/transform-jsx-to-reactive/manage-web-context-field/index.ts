@@ -1,7 +1,7 @@
 export default function manageWebContextField(
   componentAST: any,
   fieldName: string,
-  originalFieldName: string
+  originalFieldName: string,
 ) {
   const componentParams =
     componentAST.params ?? componentAST.declarations?.[0]?.init?.params ?? [];
@@ -39,7 +39,7 @@ export default function manageWebContextField(
   // convert function ({}, { state }) {} to function ({}, { state, effect }) {}
   else if (componentParams[1]?.type === "ObjectPattern") {
     const existFieldName = componentParams[1].properties.some(
-      (prop: any) => prop.key.name === originalFieldName
+      (prop: any) => prop.key.name === originalFieldName,
     );
     if (!existFieldName) componentParams[1].properties.push(property);
   }
