@@ -9,6 +9,7 @@ import optimizeEffects from "./optimize-effects";
 import transformToDirectExport from "./transform-to-direct-export";
 import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
+import mapComponentStatics from "./map-component-statics";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
@@ -34,8 +35,14 @@ export default function transformJSXToReactive(code: string, path: string) {
     return generateCodeFromAST(reactiveAst);
   }
 
-  // TODO: should also transform statics
+  // Optimize effects inside web-component + suspense + error phases
   componentBranch = optimizeEffects(componentBranch, out.vars);
+  mapComponentStatics(reactiveAst, out.componentName, (value, name) => {
+    if(out.statics?.[name]) {
+      return optimizeEffects(value, out.statics[name]!.vars);
+    }
+    return value;
+  })
 
   const [importDeclaration, brisaElement, componentAst] = defineBrisaElement(
     componentBranch,
