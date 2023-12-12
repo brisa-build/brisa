@@ -110,12 +110,14 @@ MyWebComponent.suspense = () => <div>loading...</div>;
 
 You can do a `fetch` in the render because in Brisa there are no rerenders, so it will always run only once mouting the component.
 
-Another benefit of web-components is the suspense defined therein is reactive to both the props and the state you create. So you can make it interactive from the client if you need to.
+Another benefit of web-components is the suspense defined therein is reactive to `props`, `state`, [`context`](docs/components-details/web-components#context) and store. So you can make it interactive from the client if you need to.
 
 Example displaying different texts during suspense using [`context`](docs/components-details/web-components#context):
 
 ```tsx
-export default async function MyWebComponent({}, { context }) {
+import { WebContext } from 'brisa'
+
+export default async function MyWebComponent({}, { context }: WebContext) {
   context.set('suspense-message', 'Loading step 1 ...')
   const firstResponse = await fetch(/* ... */);
   context.set('suspense-message', 'Loading step 2 ...')
@@ -124,8 +126,8 @@ export default async function MyWebComponent({}, { context }) {
   return <div>{firstResponse.foo} {secondResponse.bar}</div>
 }
 
-// Display percentage inside the suspense phase
-MyWebComponent.suspense = ({}, {context}) {
+// Display reactive messages from context during the suspense phase:
+MyWebComponent.suspense = ({}, {context}: WebContext) {
   return context.get('suspense-message').value
 }
 ```
