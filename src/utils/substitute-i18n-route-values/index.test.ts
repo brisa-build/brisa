@@ -25,7 +25,7 @@ describe("utils", () => {
 
       const output = substituteI18nRouteValues(
         "/example/[id]",
-        "/ejemplo/some-id"
+        "/ejemplo/some-id",
       );
 
       expect(output).toBe("/example/some-id");
@@ -48,7 +48,7 @@ describe("utils", () => {
 
       const output = substituteI18nRouteValues(
         "/example/[id]/settings/[[...catchAll]]",
-        "/ejemplo/1/configuracion/2/3"
+        "/ejemplo/1/configuracion/2/3",
       );
 
       expect(output).toBe("/example/1/settings/2/3");

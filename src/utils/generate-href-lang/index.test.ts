@@ -48,7 +48,7 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="en" href="https://www.example.co.uk/en/somepage" />`
+        `<link rel="alternate" hreflang="en" href="https://www.example.co.uk/en/somepage" />`,
       );
     });
 
@@ -84,7 +84,7 @@ describe("utils", () => {
       const output = generateHrefLang(input);
       expect(output).toBe("");
       expect(mockWarn.mock.results[0].value).toBe(
-        `hrefLangOrigin for en is not a valid URL. Please check that has protocol and domain.`
+        `hrefLangOrigin for en is not a valid URL. Please check that has protocol and domain.`,
       );
     });
 
@@ -114,7 +114,7 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="en" href="https://www.example.com/en/somepage" />`
+        `<link rel="alternate" hreflang="en" href="https://www.example.com/en/somepage" />`,
       );
     });
 
@@ -144,7 +144,7 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="en" href="https://www.example.com/en/somepage/1" />`
+        `<link rel="alternate" hreflang="en" href="https://www.example.com/en/somepage/1" />`,
       );
     });
 
@@ -175,7 +175,7 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1" />`
+        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1" />`,
       );
     });
 
@@ -234,7 +234,7 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/2/3" />`
+        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/2/3" />`,
       );
     });
 
@@ -256,7 +256,7 @@ describe("utils", () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request(
-          "https://www.example.com/somepage/1/settings/2/3"
+          "https://www.example.com/somepage/1/settings/2/3",
         ),
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
@@ -267,7 +267,7 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`
+        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
       );
     });
 
@@ -301,7 +301,7 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina" /><link rel="alternate" hreflang="fr" href="https://www.example.com/fr/quelquepage" />`
+        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina" /><link rel="alternate" hreflang="fr" href="https://www.example.com/fr/quelquepage" />`,
       );
     });
 
@@ -332,7 +332,7 @@ describe("utils", () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request(
-          "https://www.example.com/somepage/1/settings/2/3"
+          "https://www.example.com/somepage/1/settings/2/3",
         ),
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
@@ -348,7 +348,7 @@ describe("utils", () => {
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
           `<link rel="alternate" hreflang="it" href="https://www.example.it/it/qualchepagina/1/impostazioni/2/3" />`,
           `<link rel="alternate" hreflang="de" href="https://www.example.de/de/irgendwelcheseite/1/einstellungen/2/3" />`,
-        ].join("")
+        ].join(""),
       );
     });
 
@@ -379,7 +379,7 @@ describe("utils", () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request(
-          "https://www.example.com/en/somepage/1/settings/2/3"
+          "https://www.example.com/en/somepage/1/settings/2/3",
         ),
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
@@ -393,7 +393,7 @@ describe("utils", () => {
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
-        ].join("")
+        ].join(""),
       );
     });
 
@@ -447,7 +447,7 @@ describe("utils", () => {
       expect(output).toBe(
         [
           '<link rel="alternate" hreflang="en" href="https://test.com/en/about-us" />',
-        ].join("")
+        ].join(""),
       );
     });
 
@@ -527,13 +527,13 @@ describe("utils", () => {
       });
       const withTrailingSlash = extendRequestContext({
         originalRequest: new Request(
-          "https://www.example.com/en/somepage/1/settings/2/3/"
+          "https://www.example.com/en/somepage/1/settings/2/3/",
         ),
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
       const withoutTrailingSlash = extendRequestContext({
         originalRequest: new Request(
-          "https://www.example.com/en/somepage/1/settings/2/3"
+          "https://www.example.com/en/somepage/1/settings/2/3",
         ),
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
@@ -547,25 +547,25 @@ describe("utils", () => {
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/" />`,
-        ].join("")
+        ].join(""),
       );
       expect(generateHrefLang(homeWithoutTrailingSlash)).toBe(
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/" />`,
-        ].join("")
+        ].join(""),
       );
       expect(generateHrefLang(withTrailingSlash)).toBe(
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3/" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3/" />`,
-        ].join("")
+        ].join(""),
       );
       expect(generateHrefLang(withoutTrailingSlash)).toBe(
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3/" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3/" />`,
-        ].join("")
+        ].join(""),
       );
     });
 
@@ -613,13 +613,13 @@ describe("utils", () => {
       });
       const withTrailingSlash = extendRequestContext({
         originalRequest: new Request(
-          "https://www.example.com/en/somepage/1/settings/2/3/"
+          "https://www.example.com/en/somepage/1/settings/2/3/",
         ),
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
       const withoutTrailingSlash = extendRequestContext({
         originalRequest: new Request(
-          "https://www.example.com/en/somepage/1/settings/2/3"
+          "https://www.example.com/en/somepage/1/settings/2/3",
         ),
         route: { name: "/somepage/[id]/settings/[...rest]" } as MatchedRoute,
       });
@@ -633,25 +633,25 @@ describe("utils", () => {
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr" />`,
-        ].join("")
+        ].join(""),
       );
       expect(generateHrefLang(homeWithoutTrailingSlash)).toBe(
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr" />`,
-        ].join("")
+        ].join(""),
       );
       expect(generateHrefLang(withTrailingSlash)).toBe(
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
-        ].join("")
+        ].join(""),
       );
       expect(generateHrefLang(withoutTrailingSlash)).toBe(
         [
           `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
           `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
-        ].join("")
+        ].join(""),
       );
     });
   });

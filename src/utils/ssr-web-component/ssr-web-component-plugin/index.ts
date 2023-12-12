@@ -16,7 +16,7 @@ Fragment.__isFragment = true;
 
 export default function ssrWebComponentPlugin(
   code: string,
-  allWebComponents: Record<string, string>
+  allWebComponents: Record<string, string>,
 ) {
   const ast = parseCodeToAST(code);
   const detectedWebComponents: Record<string, string> = {};
@@ -40,7 +40,7 @@ export default function ssrWebComponentPlugin(
         if (
           value?.arguments?.[1]?.properties?.some(
             (prop: any) =>
-              prop?.key?.name === "ssr" && prop?.value?.value === false
+              prop?.key?.name === "ssr" && prop?.value?.value === false,
           )
         ) {
           return value;
@@ -94,7 +94,7 @@ export default function ssrWebComponentPlugin(
       }
 
       return value;
-    })
+    }),
   );
 
   // Add imports of web-components used for SSR
@@ -108,7 +108,7 @@ export default function ssrWebComponentPlugin(
         },
       ],
       source: { type: "Literal", value: path },
-    }))
+    })),
   );
 
   // Add: import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server"

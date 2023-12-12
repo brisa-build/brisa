@@ -31,7 +31,7 @@ const wrapSuspenseTag = (chunk: string, id: number) =>
 
 export default function extendStreamController(
   controller: ReadableStreamDefaultController<string>,
-  head?: ComponentType
+  head?: ComponentType,
 ): Controller {
   const ids = new Set<string>();
   const suspensePromises: Promise<void>[] = [];

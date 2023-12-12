@@ -25,13 +25,13 @@ describe("utils", () => {
           fixturesDir,
           "web-components",
           "@native",
-          "some-example.tsx"
+          "some-example.tsx",
         ),
         "web-component": path.join(
           fixturesDir,
           "web-components",
           "web",
-          "component.tsx"
+          "component.tsx",
         ),
       });
     });

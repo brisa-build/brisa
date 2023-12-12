@@ -38,7 +38,7 @@ const EFFECT_EXECUTION_TYPES = new Set([
  */
 export default function optimizeEffects(
   componentBranch: ESTree.FunctionDeclaration,
-  allVariableNames = new Set<string>()
+  allVariableNames = new Set<string>(),
 ): ESTree.FunctionDeclaration {
   const webContextAst = componentBranch.params[1];
 
@@ -66,9 +66,9 @@ export default function optimizeEffects(
       body: JSON.parse(
         JSON.stringify(
           JSON.parse(JSON.stringify(componentBranch.body?.body, traverseA2B)),
-          traverseAgainA2B
+          traverseAgainA2B,
         ),
-        traverseB2A
+        traverseB2A,
       ),
     },
   } as ESTree.FunctionDeclaration;
@@ -107,7 +107,7 @@ export default function optimizeEffects(
           if (v?.constructor === Object)
             v.effectDeps = [getRNameFromIdentifier(node?.id?.name)];
           return v;
-        })
+        }),
       );
     }
 
@@ -357,7 +357,7 @@ function getSubEffectManager(allVariableNames: Set<string>) {
     getEffectIdentifier: () => effectIdentifier,
     assignRNameToNode: (
       node: any,
-      { takenName, parent }: { takenName?: string; parent: any }
+      { takenName, parent }: { takenName?: string; parent: any },
     ) => {
       const args = node?.arguments?.[0] ?? {};
 
@@ -372,7 +372,7 @@ function getSubEffectManager(allVariableNames: Set<string>) {
           rName,
           ...(parent?.effectDeps ?? []),
           ...(node?.effectDeps ?? []),
-        ])
+        ]),
       );
 
       if (args.type === "Identifier") {

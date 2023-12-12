@@ -143,7 +143,7 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   // Middleware
   if (customMiddleware) {
     const middlewareResponse = await Promise.resolve().then(() =>
-      customMiddleware(req)
+      customMiddleware(req),
     );
 
     if (middlewareResponse) return middlewareResponse;

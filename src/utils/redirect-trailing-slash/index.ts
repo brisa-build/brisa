@@ -2,7 +2,7 @@ import getConstants from "../../constants";
 import { RequestContext } from "../../types";
 
 export default function redirectTrailingSlash(
-  request: RequestContext
+  request: RequestContext,
 ): Response | undefined {
   const { CONFIG } = getConstants();
   const { trailingSlash } = CONFIG;

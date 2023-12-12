@@ -49,7 +49,7 @@ function recompile(filename: string) {
     console.log(
       LOG_PREFIX.ERROR,
       `failed to recompile ${filename}`,
-      stderr.toString()
+      stderr.toString(),
     );
     semaphore = false;
     return;
@@ -83,7 +83,7 @@ export function LiveReloadScript({
     <>
       <script>
         {dangerHTML(
-          `(new WebSocket("${wsUrl}")).onmessage = e => e.data === "${LIVE_RELOAD_COMMAND}" && location.reload();`
+          `(new WebSocket("${wsUrl}")).onmessage = e => e.data === "${LIVE_RELOAD_COMMAND}" && location.reload();`,
         )}
       </script>
       {children}

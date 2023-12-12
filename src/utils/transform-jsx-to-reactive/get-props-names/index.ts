@@ -6,7 +6,7 @@ const CHILDREN = "children";
 
 export default function getPropsNames(
   webComponentAst: any,
-  propNamesFromExport: string[] = []
+  propNamesFromExport: string[] = [],
 ): [string[], string[], Record<string, ESTree.Literal>] {
   const propsAst =
     webComponentAst?.params?.[0] ??
@@ -20,7 +20,7 @@ export default function getPropsNames(
       if (prop.type === "RestElement") {
         const [names, renamedNames, defaultProps] = getPropsNamesFromIdentifier(
           prop.argument.name,
-          webComponentAst
+          webComponentAst,
         );
 
         propNames.push(...names);
@@ -70,7 +70,7 @@ export default function getPropsNames(
 
 function getPropsNamesFromIdentifier(
   identifier: string,
-  ast: any
+  ast: any,
 ): [string[], string[], Record<string, ESTree.Literal>] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
@@ -134,12 +134,12 @@ export function getPropNamesFromExport(ast: ESTree.Program) {
     (node) =>
       node.type === "ExportNamedDeclaration" &&
       node.declaration?.type === "VariableDeclaration" &&
-      (node as any).declaration?.declarations?.[0]?.id?.name === "props"
+      (node as any).declaration?.declarations?.[0]?.id?.name === "props",
   ) as any;
 
   return (
     exportProps?.declaration?.declarations?.[0]?.init?.elements?.map(
-      (el: ESTree.Literal) => el.value
+      (el: ESTree.Literal) => el.value,
     ) ?? []
   );
 }

@@ -467,7 +467,7 @@ t(
   { count: 1 },
   {
     fallback: "fallback-key",
-  }
+  },
 );
 ```
 
@@ -479,7 +479,7 @@ t(
   { count: 42 },
   {
     fallback: ["fallback-key", "fallback-key-2"],
-  }
+  },
 );
 ```
 

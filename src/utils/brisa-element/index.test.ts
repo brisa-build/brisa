@@ -44,7 +44,7 @@ describe("utils", () => {
 
       customElements.define(
         "test-counter",
-        brisaElement(Counter as any, ["name"])
+        brisaElement(Counter as any, ["name"]),
       );
 
       document.body.innerHTML = `
@@ -55,23 +55,23 @@ describe("utils", () => {
 
       const counter = document.querySelector("test-counter") as HTMLElement;
       const [inc, dec] = counter?.shadowRoot?.querySelectorAll(
-        "button"
+        "button",
       ) as NodeListOf<HTMLButtonElement>;
 
       expect(counter?.shadowRoot?.innerHTML).toBe(
-        '<p class="even"><button>+</button><span> Aral 0 </span><button>-</button><slot></slot></p>'
+        '<p class="even"><button>+</button><span> Aral 0 </span><button>-</button><slot></slot></p>',
       );
       inc.click();
       expect(counter?.shadowRoot?.innerHTML).toBe(
-        '<p class=""><button>+</button><span> Aral 1 </span><button>-</button><slot></slot></p>'
+        '<p class=""><button>+</button><span> Aral 1 </span><button>-</button><slot></slot></p>',
       );
       counter.setAttribute("name", "Another name");
       expect(counter?.shadowRoot?.innerHTML).toBe(
-        '<p class=""><button>+</button><span> Another name 1 </span><button>-</button><slot></slot></p>'
+        '<p class=""><button>+</button><span> Another name 1 </span><button>-</button><slot></slot></p>',
       );
       dec.click();
       expect(counter?.shadowRoot?.innerHTML).toBe(
-        '<p class="even"><button>+</button><span> Another name 0 </span><button>-</button><slot></slot></p>'
+        '<p class="even"><button>+</button><span> Another name 0 </span><button>-</button><slot></slot></p>',
       );
     });
 
@@ -101,7 +101,7 @@ describe("utils", () => {
 
       customElements.define(
         "conditional-render",
-        brisaElement(ConditionalRender as any, ["name"])
+        brisaElement(ConditionalRender as any, ["name"]),
       );
 
       document.body.innerHTML = `
@@ -111,23 +111,23 @@ describe("utils", () => {
       `;
 
       const conditionalRender = document.querySelector(
-        "conditional-render"
+        "conditional-render",
       ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Aral</b><span>🥴</span></h2><slot></slot>"
+        "<h2><b>Hello Aral</b><span>🥴</span></h2><slot></slot>",
       );
 
       conditionalRender.setAttribute("name", "Barbara");
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Barbara</b><span><b>!! 🥳</b></span></h2><slot></slot>"
+        "<h2><b>Hello Barbara</b><span><b>!! 🥳</b></span></h2><slot></slot>",
       );
 
       conditionalRender.setAttribute("name", "Aral");
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Aral</b><span>🥴</span></h2><slot></slot>"
+        "<h2><b>Hello Aral</b><span>🥴</span></h2><slot></slot>",
       );
     });
 
@@ -151,7 +151,7 @@ describe("utils", () => {
 
       customElements.define(
         "conditional-render",
-        brisaElement(ConditionalRender as any, ["name"])
+        brisaElement(ConditionalRender as any, ["name"]),
       );
 
       document.body.innerHTML = `
@@ -161,17 +161,17 @@ describe("utils", () => {
       `;
 
       const conditionalRender = document.querySelector(
-        "conditional-render"
+        "conditional-render",
       ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Aral</b>🥴<slot></slot></h2>"
+        "<h2><b>Hello Aral</b>🥴<slot></slot></h2>",
       );
 
       conditionalRender.setAttribute("name", "Barbara");
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Barbara</b><b>!! 🥳</b><slot></slot></h2>"
+        "<h2><b>Hello Barbara</b><b>!! 🥳</b><slot></slot></h2>",
       );
     });
 
@@ -201,7 +201,7 @@ describe("utils", () => {
 
       customElements.define(
         "conditional-render",
-        brisaElement(ConditionalRender as any, ["name"])
+        brisaElement(ConditionalRender as any, ["name"]),
       );
 
       document.body.innerHTML = `
@@ -211,17 +211,17 @@ describe("utils", () => {
       `;
 
       const conditionalRender = document.querySelector(
-        "conditional-render"
+        "conditional-render",
       ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Aral</b>🥴</h2><slot></slot>"
+        "<h2><b>Hello Aral</b>🥴</h2><slot></slot>",
       );
 
       conditionalRender.setAttribute("name", "Barbara");
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Barbara</b><b>!! 🥳</b></h2><slot></slot>"
+        "<h2><b>Hello Barbara</b><b>!! 🥳</b></h2><slot></slot>",
       );
     });
 
@@ -248,7 +248,7 @@ describe("utils", () => {
 
       customElements.define(
         "conditional-render",
-        brisaElement(ConditionalRender as any, ["name"])
+        brisaElement(ConditionalRender as any, ["name"]),
       );
 
       document.body.innerHTML = `
@@ -258,17 +258,17 @@ describe("utils", () => {
         `;
 
       const conditionalRender = document.querySelector(
-        "conditional-render"
+        "conditional-render",
       ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Aral</b>🥴<slot></slot></h2>"
+        "<h2><b>Hello Aral</b>🥴<slot></slot></h2>",
       );
 
       conditionalRender.setAttribute("name", "Barbara");
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
-        "<h2><b>Hello Barbara</b><b>!! 🥳</b><i> this is a </i> test<slot></slot></h2>"
+        "<h2><b>Hello Barbara</b><b>!! 🥳</b><i> this is a </i> test<slot></slot></h2>",
       );
     });
 
@@ -286,7 +286,7 @@ describe("utils", () => {
       const emptyNodes = document.querySelector("empty-nodes") as HTMLElement;
 
       expect(emptyNodes?.shadowRoot?.innerHTML).toBe(
-        "<div><span></span></div>"
+        "<div><span></span></div>",
       );
     });
 
@@ -318,30 +318,30 @@ describe("utils", () => {
 
       customElements.define(
         "sliding-carousel",
-        brisaElement(Carousel as any, ["images"])
+        brisaElement(Carousel as any, ["images"]),
       );
 
       const carousel = document.querySelector(
-        "sliding-carousel"
+        "sliding-carousel",
       ) as HTMLElement;
       const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
-        "button"
+        "button",
       ) as NodeListOf<HTMLButtonElement>;
 
       expect(carousel?.shadowRoot?.innerHTML).toBe(
-        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>'
+        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>',
       );
       next.click();
       expect(carousel?.shadowRoot?.innerHTML).toBe(
-        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>'
+        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
       );
       next.click();
       expect(carousel?.shadowRoot?.innerHTML).toBe(
-        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>'
+        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>',
       );
       prev.click();
       expect(carousel?.shadowRoot?.innerHTML).toBe(
-        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>'
+        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
       );
     });
 
@@ -379,28 +379,28 @@ describe("utils", () => {
 
       customElements.define(
         "carousel-images",
-        brisaElement(Carousel as any, ["images"])
+        brisaElement(Carousel as any, ["images"]),
       );
 
       const carousel = document.querySelector("carousel-images") as HTMLElement;
       const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
-        "button"
+        "button",
       ) as NodeListOf<HTMLButtonElement>;
 
       expect(carousel?.shadowRoot?.innerHTML).toBe(
-        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>'
+        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>',
       );
       next.click();
       expect(carousel?.shadowRoot?.innerHTML).toBe(
-        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>'
+        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
       );
       next.click();
       expect(carousel?.shadowRoot?.innerHTML).toBe(
-        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>'
+        '<div><button>prev</button><img src="https://picsum.photos/200/300"><button>next</button></div>',
       );
       prev.click();
       expect(carousel?.shadowRoot?.innerHTML).toBe(
-        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>'
+        '<div><button>prev</button><img src="https://picsum.photos/200/300?grayscale"><button>next</button></div>',
       );
     });
 
@@ -429,16 +429,16 @@ describe("utils", () => {
 
       const timer = document.querySelector("timer-component") as HTMLElement;
       const button = timer?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       expect(timer?.shadowRoot?.innerHTML).toBe(
-        "<div><span>Time: 0</span><button>stop</button></div>"
+        "<div><span>Time: 0</span><button>stop</button></div>",
       );
 
       setTimeout(() => {
         expect(timer?.shadowRoot?.innerHTML).toBe(
-          "<div><span>Time: 1</span><button>stop</button></div>"
+          "<div><span>Time: 1</span><button>stop</button></div>",
         );
       }, 1);
 
@@ -446,7 +446,7 @@ describe("utils", () => {
 
       setTimeout(() => {
         expect(timer?.shadowRoot?.innerHTML).toBe(
-          "<div><span>Time: 1</span><button>stop</button></div>"
+          "<div><span>Time: 1</span><button>stop</button></div>",
         );
       }, 1);
     });
@@ -458,7 +458,7 @@ describe("utils", () => {
 
       customElements.define(
         "test-button",
-        brisaElement(Button as any, ["onAfterClick"])
+        brisaElement(Button as any, ["onAfterClick"]),
       );
       const onAfterClickMock = mock(() => {});
 
@@ -469,7 +469,7 @@ describe("utils", () => {
 
       const testButton = document.querySelector("test-button") as HTMLElement;
       const button = testButton?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       button.click();
@@ -494,41 +494,41 @@ describe("utils", () => {
 
       customElements.define(
         "second-component",
-        brisaElement(SecondComponent, ["onClickMe"])
+        brisaElement(SecondComponent, ["onClickMe"]),
       );
       customElements.define(
         "first-component",
-        brisaElement(FirstComponent, ["onClickMe"])
+        brisaElement(FirstComponent, ["onClickMe"]),
       );
       customElements.define("parent-component", brisaElement(Parent));
       document.body.innerHTML = "<parent-component />";
 
       const parentComponent = document.querySelector(
-        "parent-component"
+        "parent-component",
       ) as HTMLElement;
 
       const firstComponent = parentComponent?.shadowRoot?.querySelector(
-        "first-component"
+        "first-component",
       ) as HTMLElement;
 
       const secondComponent = firstComponent?.shadowRoot?.querySelector(
-        "second-component"
+        "second-component",
       ) as HTMLElement;
 
       expect(parentComponent?.shadowRoot?.innerHTML).toBe(
-        "<first-component>click me</first-component>"
+        "<first-component>click me</first-component>",
       );
 
       expect(firstComponent?.shadowRoot?.innerHTML).toBe(
-        "<second-component><slot></slot></second-component>"
+        "<second-component><slot></slot></second-component>",
       );
 
       expect(secondComponent?.shadowRoot?.innerHTML).toBe(
-        "<button><slot></slot></button>"
+        "<button><slot></slot></button>",
       );
 
       const button = secondComponent?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       button.click();
@@ -564,7 +564,7 @@ describe("utils", () => {
 
       customElements.define(
         "color-selector",
-        brisaElement(ColorSelector as any, ["color"])
+        brisaElement(ColorSelector as any, ["color"]),
       );
 
       document.body.innerHTML = `
@@ -572,15 +572,15 @@ describe("utils", () => {
       `;
 
       const colorSelector = document.querySelector(
-        "color-selector"
+        "color-selector",
       ) as HTMLElement;
 
       const input = colorSelector?.shadowRoot?.querySelector(
-        "input"
+        "input",
       ) as HTMLInputElement;
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
-        '<div><input type="color" value="#000000"><span style="color:#000000">#000000</span></div>'
+        '<div><input type="color" value="#000000"><span style="color:#000000">#000000</span></div>',
       );
 
       input.value = "#ffffff";
@@ -588,7 +588,7 @@ describe("utils", () => {
       input.dispatchEvent(new Event("input"));
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
-        '<div><input type="color" value="#ffffff"><span style="color:#ffffff">#ffffff</span></div>'
+        '<div><input type="color" value="#ffffff"><span style="color:#ffffff">#ffffff</span></div>',
       );
     });
 
@@ -608,19 +608,19 @@ describe("utils", () => {
 
       customElements.define(
         "todo-list",
-        brisaElement(TodoList as any, ["todos"])
+        brisaElement(TodoList as any, ["todos"]),
       );
 
       const todoList = document.querySelector("todo-list") as HTMLElement;
 
       expect(todoList?.shadowRoot?.innerHTML).toBe(
-        "<ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul>"
+        "<ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul>",
       );
 
       todoList.setAttribute("todos", '["todo 4", "todo 5"]');
 
       expect(todoList?.shadowRoot?.innerHTML).toBe(
-        "<ul><li>todo 4</li><li>todo 5</li></ul>"
+        "<ul><li>todo 4</li><li>todo 5</li></ul>",
       );
     });
 
@@ -661,15 +661,15 @@ describe("utils", () => {
       const todoList = document.querySelector("todo-list") as HTMLElement;
 
       const input = todoList?.shadowRoot?.querySelector(
-        "input"
+        "input",
       ) as HTMLInputElement;
 
       const button = todoList?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       expect(todoList?.shadowRoot?.innerHTML).toBe(
-        '<div><input value=""><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul></div>'
+        '<div><input value=""><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul></div>',
       );
 
       input.value = "todo 4";
@@ -677,13 +677,13 @@ describe("utils", () => {
       input.dispatchEvent(new Event("input"));
 
       expect(todoList?.shadowRoot?.innerHTML).toBe(
-        '<div><input value="todo 4"><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul></div>'
+        '<div><input value="todo 4"><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul></div>',
       );
 
       button.click();
 
       expect(todoList?.shadowRoot?.innerHTML).toBe(
-        '<div><input value=""><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li><li>todo 4</li></ul></div>'
+        '<div><input value=""><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li><li>todo 4</li></ul></div>',
       );
     });
 
@@ -706,15 +706,15 @@ describe("utils", () => {
 
       const testImage = document.querySelector("test-image") as HTMLElement;
       const img = testImage?.shadowRoot?.querySelector(
-        "img"
+        "img",
       ) as HTMLImageElement;
 
       expect(testImage?.shadowRoot?.innerHTML).toBe(
-        '<img src="https://test.com/image.png">'
+        '<img src="https://test.com/image.png">',
       );
       img.dispatchEvent(new Event("error"));
       expect(testImage?.shadowRoot?.innerHTML).toBe(
-        '<img src="https://test.com/error.png">'
+        '<img src="https://test.com/error.png">',
       );
     });
 
@@ -739,15 +739,15 @@ describe("utils", () => {
 
       const testImage = document.querySelector("test-image") as HTMLElement;
       const img = testImage?.shadowRoot?.querySelector(
-        "img"
+        "img",
       ) as HTMLImageElement;
 
       expect(testImage?.shadowRoot?.innerHTML).toBe(
-        '<img src="https://test.com/image.png">'
+        '<img src="https://test.com/image.png">',
       );
       img.dispatchEvent(new Event("error"));
       expect(testImage?.shadowRoot?.innerHTML).toBe(
-        '<img src="https://test.com/error.png">'
+        '<img src="https://test.com/error.png">',
       );
     });
 
@@ -772,7 +772,7 @@ describe("utils", () => {
       customElements.define("test-component", brisaElement(Test));
       document.body.innerHTML = "<test-component />";
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>0</div>");
@@ -817,27 +817,27 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component count='1' />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       const button = testComponent?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>1</div><button>increment</button>"
+        "<div>1</div><button>increment</button>",
       );
 
       button.click();
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>2</div><button>increment</button>"
+        "<div>2</div><button>increment</button>",
       );
 
       testComponent.setAttribute("count", "3");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>3</div><button>increment</button>"
+        "<div>3</div><button>increment</button>",
       );
     });
 
@@ -852,7 +852,7 @@ describe("utils", () => {
       document.body.innerHTML = "<async-component />";
 
       const asyncComponent = document.querySelector(
-        "async-component"
+        "async-component",
       ) as HTMLElement;
 
       await Bun.sleep(0);
@@ -876,7 +876,7 @@ describe("utils", () => {
       document.body.innerHTML = "<async-component />";
 
       const asyncComponent = document.querySelector(
-        "async-component"
+        "async-component",
       ) as HTMLElement;
 
       await Bun.sleep(0);
@@ -904,11 +904,11 @@ describe("utils", () => {
       customElements.define("test-component", brisaElement(Test));
       document.body.innerHTML = "<test-component />";
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       const button = testComponent?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       expect(mockCleanup).toHaveBeenCalledTimes(0);
@@ -942,7 +942,7 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(mockEffect).toHaveBeenCalledTimes(1);
@@ -971,7 +971,7 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(mockEffect).toHaveBeenCalledTimes(1);
@@ -1001,7 +1001,7 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(mockEffect).toHaveBeenCalledTimes(1);
@@ -1070,7 +1070,7 @@ describe("utils", () => {
 
       customElements.define(
         "color-svg",
-        brisaElement(ColorSVG as any, ["color1", "color2", "color3"])
+        brisaElement(ColorSVG as any, ["color1", "color2", "color3"]),
       );
 
       const colorSVG = document.querySelector("color-svg") as HTMLElement;
@@ -1080,7 +1080,7 @@ describe("utils", () => {
       });
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>'
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
       );
 
       colorSVG.setAttribute("color1", "#0000ff");
@@ -1088,7 +1088,7 @@ describe("utils", () => {
       colorSVG.setAttribute("color3", "#00ff00");
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>'
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
       );
     });
 
@@ -1149,7 +1149,7 @@ describe("utils", () => {
           "firstColor",
           "secondColor",
           "thirdColor",
-        ])
+        ]),
       );
 
       document.body.innerHTML = `
@@ -1159,7 +1159,7 @@ describe("utils", () => {
       const colorSVG = document.querySelector("color-svg") as HTMLElement;
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>'
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>',
       );
 
       colorSVG.setAttribute("firstColor", "#0000ff");
@@ -1167,7 +1167,7 @@ describe("utils", () => {
       colorSVG.setAttribute("thirdColor", "#00ff00");
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>'
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
       );
     });
 
@@ -1190,7 +1190,7 @@ describe("utils", () => {
       const testSVG = document.querySelector("test-svg") as HTMLElement;
       const svg = testSVG?.shadowRoot?.querySelector("svg") as SVGElement;
       const foreignObject = testSVG?.shadowRoot?.querySelector(
-        "foreignObject"
+        "foreignObject",
       ) as SVGElement;
       const div = testSVG?.shadowRoot?.querySelector("div") as HTMLElement;
 
@@ -1199,7 +1199,7 @@ describe("utils", () => {
       expect(div.namespaceURI).toBe("http://www.w3.org/1999/xhtml");
 
       expect(testSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><foreignobject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">test</div></foreignobject></svg>'
+        '<svg width="12cm" height="12cm"><foreignobject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">test</div></foreignobject></svg>',
       );
     });
 
@@ -1264,39 +1264,39 @@ describe("utils", () => {
 
       customElements.define(
         "magic-list",
-        brisaElement(MagicList as any, ["items"])
+        brisaElement(MagicList as any, ["items"]),
       );
 
       document.body.innerHTML = "<magic-list />";
 
       const magicList = document.querySelector("magic-list") as HTMLElement;
       const form = magicList?.shadowRoot?.querySelector(
-        "form"
+        "form",
       ) as HTMLFormElement;
       const input = magicList?.shadowRoot?.querySelector(
-        "input"
+        "input",
       ) as HTMLInputElement;
 
       expect(magicList?.shadowRoot?.innerHTML).toBe(
-        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>another</li></ul></div>'
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>another</li></ul></div>',
       );
 
       // Adding a new item
       input.value = "test";
       form.dispatchEvent(new Event("submit"));
       expect(magicList?.shadowRoot?.innerHTML).toBe(
-        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>another</li><li><button>delete</button><button>move up</button>test</li></ul></div>'
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>another</li><li><button>delete</button><button>move up</button>test</li></ul></div>',
       );
 
       // Moving up the last item
       const moveUpButton = [
         ...(magicList?.shadowRoot?.querySelectorAll(
-          "button"
+          "button",
         ) as NodeListOf<HTMLButtonElement>),
       ].at(-1) as HTMLButtonElement;
       moveUpButton.click();
       expect(magicList?.shadowRoot?.innerHTML).toBe(
-        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>test</li><li><button>delete</button><button>move up</button>another</li></ul></div>'
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>test</li><li><button>delete</button><button>move up</button>another</li></ul></div>',
       );
 
       // Deleting the last item
@@ -1304,13 +1304,13 @@ describe("utils", () => {
         (
           [
             ...(magicList?.shadowRoot?.querySelectorAll(
-              "button"
+              "button",
             ) as NodeListOf<HTMLButtonElement>),
           ].at(-2) as HTMLButtonElement
         ).click();
       deleteLast();
       expect(magicList?.shadowRoot?.innerHTML).toBe(
-        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>test</li></ul></div>'
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>test</li></ul></div>',
       );
 
       // Deleting all items
@@ -1318,7 +1318,7 @@ describe("utils", () => {
       deleteLast();
 
       expect(magicList?.shadowRoot?.innerHTML).toBe(
-        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul></ul></div>'
+        '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul></ul></div>',
       );
     });
 
@@ -1332,12 +1332,12 @@ describe("utils", () => {
 
       customElements.define(
         "test-component",
-        brisaElement(Test as any, ["count"])
+        brisaElement(Test as any, ["count"]),
       );
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
@@ -1361,8 +1361,8 @@ describe("utils", () => {
                 count.value === 1
                   ? ["span", {}, "one"]
                   : count.value === 2
-                  ? ["span", {}, "two"]
-                  : ["span", {}, "three"],
+                    ? ["span", {}, "two"]
+                    : ["span", {}, "three"],
             ],
           ],
         ];
@@ -1370,28 +1370,28 @@ describe("utils", () => {
 
       customElements.define(
         "test-component",
-        brisaElement(Test as any, ["count"])
+        brisaElement(Test as any, ["count"]),
       );
       document.body.innerHTML = "<test-component count='1' />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><span>one</span></div>"
+        "<div><span>one</span></div>",
       );
 
       testComponent.setAttribute("count", "2");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><span>two</span></div>"
+        "<div><span>two</span></div>",
       );
 
       testComponent.setAttribute("count", "3");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><span>three</span></div>"
+        "<div><span>three</span></div>",
       );
     });
 
@@ -1425,18 +1425,18 @@ describe("utils", () => {
 
       customElements.define(
         "test-component",
-        brisaElement(Test as any, ["first", "second", "third"])
+        brisaElement(Test as any, ["first", "second", "third"]),
       );
 
       document.body.innerHTML =
         "<test-component first='1' second='2' third='3' />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><div><span>test work</span></div></div>"
+        "<div><div><span>test work</span></div></div>",
       );
 
       testComponent.setAttribute("first", "2");
@@ -1447,20 +1447,20 @@ describe("utils", () => {
       testComponent.setAttribute("second", "3");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><div>no-second</div></div>"
+        "<div><div>no-second</div></div>",
       );
 
       testComponent.setAttribute("second", "2");
       testComponent.setAttribute("third", "4");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><div><span>no-third</span></div></div>"
+        "<div><div><span>no-third</span></div></div>",
       );
 
       testComponent.setAttribute("third", "3");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><div><span>test work</span></div></div>"
+        "<div><div><span>test work</span></div></div>",
       );
     });
 
@@ -1496,7 +1496,7 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       await Bun.sleep(0);
@@ -1508,7 +1508,7 @@ describe("utils", () => {
       await Bun.sleep(0);
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>no-second 42</div>"
+        "<div>no-second 42</div>",
       );
     });
 
@@ -1539,7 +1539,7 @@ describe("utils", () => {
 
       customElements.define(
         "test-async",
-        brisaElement(Test as any, ["first", "second", "third"])
+        brisaElement(Test as any, ["first", "second", "third"]),
       );
 
       const testComponent = document.querySelector("test-async") as HTMLElement;
@@ -1610,26 +1610,26 @@ describe("utils", () => {
       document.body.innerHTML = "<accordion-element />";
 
       const accordion = document.querySelector(
-        "accordion-element"
+        "accordion-element",
       ) as HTMLElement;
       const button = accordion?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:none">content</div></div>'
+        '<div><button>toggle</button><div style="display:none">content</div></div>',
       );
 
       button.click();
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:block">content</div></div>'
+        '<div><button>toggle</button><div style="display:block">content</div></div>',
       );
 
       button.click();
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:none">content</div></div>'
+        '<div><button>toggle</button><div style="display:none">content</div></div>',
       );
     });
 
@@ -1676,23 +1676,23 @@ describe("utils", () => {
 
       const tooltip = document.querySelector("tooltip-element") as HTMLElement;
       const span = tooltip?.shadowRoot?.querySelector(
-        "span"
+        "span",
       ) as HTMLSpanElement;
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>'
+        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
       );
 
       span.dispatchEvent(new Event("mouseover"));
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:visible;">Tooltip text</span>Hover over me</span></div>'
+        '<div><span style="position:relative;"><span style="position:absolute; visibility:visible;">Tooltip text</span>Hover over me</span></div>',
       );
 
       span.dispatchEvent(new Event("mouseout"));
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>'
+        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
       );
     });
 
@@ -1736,70 +1736,70 @@ describe("utils", () => {
       customElements.define("web-component-2", brisaElement(WebComponent2));
       customElements.define(
         "parent-web-component",
-        brisaElement(ParentWebComponent, ["name"])
+        brisaElement(ParentWebComponent, ["name"]),
       );
 
       document.body.innerHTML = '<parent-web-component name="WebComponent1" />';
 
       const parentWebComponent = document.querySelector(
-        "parent-web-component"
+        "parent-web-component",
       ) as HTMLElement;
       const firstWebComponent = parentWebComponent?.shadowRoot?.querySelector(
-        "web-component-1"
+        "web-component-1",
       ) as HTMLElement;
       const firstDiv = firstWebComponent?.shadowRoot?.querySelector(
-        "div"
+        "div",
       ) as HTMLElement;
 
       // The first component should be mounted
       expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
-        "<web-component-1></web-component-1>"
+        "<web-component-1></web-component-1>",
       );
       expect(firstWebComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>WebComponent1</div>"
+        "<div>WebComponent1</div>",
       );
 
       // The first component should be updated
       firstDiv.click();
       expect(firstWebComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>WebComponent1 updated</div>"
+        "<div>WebComponent1 updated</div>",
       );
 
       // Changing the conditional render on the parent component
       parentWebComponent.setAttribute("name", "WebComponent2");
       const secondWebComponent = parentWebComponent?.shadowRoot?.querySelector(
-        "web-component-2"
+        "web-component-2",
       ) as HTMLElement;
       const secondDiv = secondWebComponent?.shadowRoot?.querySelector(
-        "div"
+        "div",
       ) as HTMLElement;
 
       // The second component should be mounted
       expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
-        "<web-component-2></web-component-2>"
+        "<web-component-2></web-component-2>",
       );
       expect(secondWebComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>WebComponent2</div>"
+        "<div>WebComponent2</div>",
       );
 
       // The second component should be updated
       secondDiv.click();
       expect(secondWebComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>WebComponent2 updated</div>"
+        "<div>WebComponent2 updated</div>",
       );
 
       // Changing the conditional render on the parent component again to the first component
       parentWebComponent.setAttribute("name", "WebComponent1");
       const firstComponent = parentWebComponent?.shadowRoot?.querySelector(
-        "web-component-1"
+        "web-component-1",
       ) as HTMLElement;
 
       // The first component should be unmounted and the state should be reset
       expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
-        "<web-component-1></web-component-1>"
+        "<web-component-1></web-component-1>",
       );
       expect(firstComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>WebComponent1</div>"
+        "<div>WebComponent1</div>",
       );
     });
 
@@ -1840,26 +1840,26 @@ describe("utils", () => {
 
       const dialog = document.querySelector("dialog-element") as HTMLElement;
       const button = dialog?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
       const dialogElement = dialog?.shadowRoot?.querySelector(
-        "dialog"
+        "dialog",
       ) as HTMLDialogElement;
 
       expect(dialog?.shadowRoot?.innerHTML).toBe(
-        "<div><button>open</button><dialog>dialog</dialog></div>"
+        "<div><button>open</button><dialog>dialog</dialog></div>",
       );
 
       button.click();
 
       expect(dialog?.shadowRoot?.innerHTML).toBe(
-        '<div><button>open</button><dialog open="">dialog</dialog></div>'
+        '<div><button>open</button><dialog open="">dialog</dialog></div>',
       );
 
       dialogElement.click();
 
       expect(dialog?.shadowRoot?.innerHTML).toBe(
-        "<div><button>open</button><dialog>dialog</dialog></div>"
+        "<div><button>open</button><dialog>dialog</dialog></div>",
       );
     });
 
@@ -1874,27 +1874,27 @@ describe("utils", () => {
       customElements.define("test-component", brisaElement(Test));
       customElements.define(
         "web-component",
-        brisaElement(WebComponent, ["user"])
+        brisaElement(WebComponent, ["user"]),
       );
 
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
       const webComponent = testComponent?.shadowRoot?.querySelector(
-        "web-component"
+        "web-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        `<web-component user="{'name':'Aral'}"></web-component>`
+        `<web-component user="{'name':'Aral'}"></web-component>`,
       );
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Aral</div>`);
 
       webComponent.setAttribute("user", serialize({ name: "Barbara" }));
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        `<web-component user="{'name':'Barbara'}"></web-component>`
+        `<web-component user="{'name':'Barbara'}"></web-component>`,
       );
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Barbara</div>`);
     });
@@ -1915,11 +1915,11 @@ describe("utils", () => {
 
       document.body.innerHTML = "<bool-component />";
       const boolComponent = document.querySelector(
-        "bool-component"
+        "bool-component",
       ) as HTMLElement;
 
       expect(boolComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>TRUE</div><div>TRUE</div>0"
+        "<div>TRUE</div><div>TRUE</div>0",
       );
     });
 
@@ -1937,17 +1937,17 @@ describe("utils", () => {
 
       customElements.define(
         "bool-component",
-        brisaElement(Component, ["first", "second", "third", "fourth"])
+        brisaElement(Component, ["first", "second", "third", "fourth"]),
       );
 
       document.body.innerHTML =
         "<bool-component first='true' second='false' third='1' fourth='0' />";
       const boolComponent = document.querySelector(
-        "bool-component"
+        "bool-component",
       ) as HTMLElement;
 
       expect(boolComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>TRUE</div><div>TRUE</div>0"
+        "<div>TRUE</div><div>TRUE</div>0",
       );
     });
 
@@ -1965,11 +1965,11 @@ describe("utils", () => {
 
       document.body.innerHTML = "<test-component />";
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        '<div class="empty"></div><div class="empty"></div>'
+        '<div class="empty"></div><div class="empty"></div>',
       );
     });
 
@@ -1980,18 +1980,18 @@ describe("utils", () => {
 
       document.body.innerHTML = "<test-component />";
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        '<script>alert("test")</script>'
+        '<script>alert("test")</script>',
       );
 
       const script = document.querySelector("script");
 
       expect(script).toBeNull();
       expect(
-        testComponent?.shadowRoot?.firstChild?.nodeType === Node.TEXT_NODE
+        testComponent?.shadowRoot?.firstChild?.nodeType === Node.TEXT_NODE,
       ).toBeTruthy();
     });
 
@@ -2011,13 +2011,13 @@ describe("utils", () => {
 
       document.body.innerHTML = "<keyboard-events />";
       const keyboardEventEl = document.querySelector(
-        "keyboard-events"
+        "keyboard-events",
       ) as HTMLElement;
 
       expect(keyboardEventEl?.shadowRoot?.innerHTML).toBe("<input>");
 
       const input = keyboardEventEl?.shadowRoot?.querySelector(
-        "input"
+        "input",
       ) as HTMLInputElement;
 
       input.dispatchEvent(new KeyboardEvent("keydown"));
@@ -2056,27 +2056,27 @@ describe("utils", () => {
 
       document.body.innerHTML = "<async-updates />";
       const asyncUpdatesComp = document.querySelector(
-        "async-updates"
+        "async-updates",
       ) as HTMLElement;
 
       expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
-        "<button>fetch</button><div>Aral</div>"
+        "<button>fetch</button><div>Aral</div>",
       );
 
       const button = asyncUpdatesComp?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       button.click();
 
       expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
-        "<button>fetch</button><div>Aral</div>"
+        "<button>fetch</button><div>Aral</div>",
       );
 
       await Bun.sleep(0);
 
       expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
-        "<button>fetch</button><div>Barbara</div>"
+        "<button>fetch</button><div>Barbara</div>",
       );
     });
 
@@ -2093,7 +2093,7 @@ describe("utils", () => {
               {
                 onClick: () => {
                   list.value = list.value.map((item: string) =>
-                    item.toUpperCase()
+                    item.toUpperCase(),
                   );
                 },
               },
@@ -2112,21 +2112,21 @@ describe("utils", () => {
 
       document.body.innerHTML = "<test-component />";
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<button>uppercase</button><ul><li>one</li><li>two</li><li>three</li></ul>"
+        "<button>uppercase</button><ul><li>one</li><li>two</li><li>three</li></ul>",
       );
 
       const button = testComponent?.shadowRoot?.querySelector(
-        "button"
+        "button",
       ) as HTMLButtonElement;
 
       button.click();
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<button>uppercase</button><ul><li>ONE</li><li>TWO</li><li>THREE</li></ul>"
+        "<button>uppercase</button><ul><li>ONE</li><li>TWO</li><li>THREE</li></ul>",
       );
     });
 
@@ -2146,7 +2146,7 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>original</div>");
@@ -2209,7 +2209,7 @@ describe("utils", () => {
       expect(mockCallback).toHaveBeenCalledTimes(1);
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       testComponent.remove();
@@ -2234,7 +2234,7 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       testComponent.remove();
@@ -2262,7 +2262,7 @@ describe("utils", () => {
       document.body.innerHTML = "<parent-component />";
 
       const parentComponent = document.querySelector(
-        "parent-component"
+        "parent-component",
       ) as HTMLElement;
 
       parentComponent.remove();
@@ -2283,13 +2283,13 @@ describe("utils", () => {
 
       customElements.define(
         "test-component",
-        brisaElement(Component, ["name"])
+        brisaElement(Component, ["name"]),
       );
 
       document.body.innerHTML = '<test-component name="suspense" />';
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       await Bun.sleep(0);
@@ -2303,7 +2303,7 @@ describe("utils", () => {
       await Bun.sleep(0);
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>final content</div>"
+        "<div>final content</div>",
       );
     });
 
@@ -2318,13 +2318,13 @@ describe("utils", () => {
 
       customElements.define(
         "test-component",
-        brisaElement(Component, ["name"])
+        brisaElement(Component, ["name"]),
       );
 
       document.body.innerHTML = '<test-component name="some error" />';
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       await Bun.sleep(0);
@@ -2355,7 +2355,7 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       await Bun.sleep(0);
@@ -2366,7 +2366,7 @@ describe("utils", () => {
       await Bun.sleep(0);
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>final content</div>"
+        "<div>final content</div>",
       );
 
       expect(mockCallback).toHaveBeenCalledTimes(1);
@@ -2406,19 +2406,19 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       await Bun.sleep(0);
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>SUSPENSE:0</div>"
+        "<div>SUSPENSE:0</div>",
       );
 
       testComponent?.shadowRoot?.querySelector("div")!.click();
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>SUSPENSE:1</div>"
+        "<div>SUSPENSE:1</div>",
       );
       expect(mockUnmountSuspense).toHaveBeenCalledTimes(0);
 
@@ -2453,7 +2453,7 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("");
@@ -2475,11 +2475,11 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><script>alert('test')</script></div>"
+        "<div><script>alert('test')</script></div>",
       );
 
       const script = testComponent?.shadowRoot?.querySelector("script");
@@ -2496,11 +2496,11 @@ describe("utils", () => {
       document.body.innerHTML = "<test-component />";
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div>hello world</div>"
+        "<div>hello world</div>",
       );
     });
 
@@ -2508,7 +2508,7 @@ describe("utils", () => {
       const Component = () =>
         createPortal(
           ["div", {}, "test"] as any,
-          document.querySelector("#portal") as any
+          document.querySelector("#portal") as any,
         );
 
       customElements.define("portal-component", brisaElement(Component));
@@ -2516,13 +2516,13 @@ describe("utils", () => {
         '<div id="portal"></div><portal-component></portal-component>';
 
       const portalComponent = document.querySelector(
-        "portal-component"
+        "portal-component",
       ) as HTMLElement;
 
       expect(portalComponent?.shadowRoot?.innerHTML).toBe("");
 
       expect(document.body.innerHTML).toBe(
-        '<div id="portal"><div>test</div></div><portal-component></portal-component>'
+        '<div id="portal"><div>test</div></div><portal-component></portal-component>',
       );
     });
 
@@ -2548,17 +2548,17 @@ describe("utils", () => {
       document.body.innerHTML = '<test-component foo="bar" />';
 
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><b>test</b><span>test2</span><div>test3</div></div>"
+        "<div><b>test</b><span>test2</span><div>test3</div></div>",
       );
 
       testComponent.removeAttribute("foo");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "<div><div>test3</div></div>"
+        "<div><div>test3</div></div>",
       );
     });
 
@@ -2591,22 +2591,22 @@ describe("utils", () => {
 
       customElements.define(
         "test-component",
-        brisaElement(Component, ["error"])
+        brisaElement(Component, ["error"]),
       );
       document.body.innerHTML = "<test-component />";
       const testComponent = document.querySelector(
-        "test-component"
+        "test-component",
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Test</div>");
 
       testComponent.setAttribute(
         "error",
-        serialize({ message: "message", stack: "stack" })
+        serialize({ message: "message", stack: "stack" }),
       );
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        "Error: message <pre>stack</pre><div>Test</div>"
+        "Error: message <pre>stack</pre><div>Test</div>",
       );
 
       testComponent.removeAttribute("error");
@@ -2625,7 +2625,7 @@ describe("utils", () => {
       customElements.define("key-component", brisaElement(Component));
 
       const testComponent = document.querySelector(
-        "key-component"
+        "key-component",
       ) as HTMLElement;
 
       expect(mockRender).toHaveBeenCalledTimes(1);

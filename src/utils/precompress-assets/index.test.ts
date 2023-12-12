@@ -8,7 +8,7 @@ const assetsPath = path.join(
   "..",
   "..",
   "__fixtures__",
-  "public"
+  "public",
 );
 
 describe("utils", () => {
@@ -18,7 +18,7 @@ describe("utils", () => {
         unlink(`${assetsPath}/favicon.ico.gz`),
         unlink(`${assetsPath}/some-dir/some-img.png.gz`),
         unlink(`${assetsPath}/some-dir/some-text.txt.gz`),
-      ])
+      ]),
     );
 
     it("should precompress all assets", async () => {
@@ -27,7 +27,7 @@ describe("utils", () => {
       expect(await exists(`${assetsPath}/favicon.ico.gz`)).toBe(true);
       expect(await exists(`${assetsPath}/some-dir/some-img.png.gz`)).toBe(true);
       expect(await exists(`${assetsPath}/some-dir/some-text.txt.gz`)).toBe(
-        true
+        true,
       );
     });
   });

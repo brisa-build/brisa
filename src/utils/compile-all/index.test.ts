@@ -65,21 +65,21 @@ describe.skip("compileAll", () => {
         "user",
         "_404.js",
         "page-with-web-component.js",
-      ].toSorted()
+      ].toSorted(),
     );
     expect(fs.readdirSync(path.join(OUT_DIR, "api"))).toEqual(["example.js"]);
     expect(fs.readdirSync(path.join(OUT_DIR, "public")).toSorted()).toEqual(
-      ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted()
+      ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted(),
     );
     expect(
-      fs.readdirSync(path.join(OUT_DIR, "public", "some-dir")).toSorted()
+      fs.readdirSync(path.join(OUT_DIR, "public", "some-dir")).toSorted(),
     ).toEqual(
       [
         "some-text.txt.gz",
         "some-img.png.gz",
         "some-img.png",
         "some-text.txt",
-      ].toSorted()
+      ].toSorted(),
     );
   });
 });

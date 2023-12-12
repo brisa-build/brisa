@@ -42,7 +42,7 @@ describe("CLI: serve", () => {
 
   it("should return 404 page without redirect to the locale if the page doesn't exist", async () => {
     const response = await testRequest(
-      new Request("http://localhost:1234/not-found-page")
+      new Request("http://localhost:1234/not-found-page"),
     );
     const html = await response.text();
 
@@ -61,7 +61,7 @@ describe("CLI: serve", () => {
       },
     };
     const response = await testRequest(
-      new Request("http://localhost:1234/es/not-found-page")
+      new Request("http://localhost:1234/es/not-found-page"),
     );
     const html = await response.text();
 
@@ -80,7 +80,7 @@ describe("CLI: serve", () => {
       },
     };
     const response = await testRequest(
-      new Request("http://localhost:1234/not-found-page")
+      new Request("http://localhost:1234/not-found-page"),
     );
     const html = await response.text();
 
@@ -93,7 +93,7 @@ describe("CLI: serve", () => {
 
   it("should return 404 page", async () => {
     const response = await testRequest(
-      new Request("http://localhost:1234/es/not-found-page")
+      new Request("http://localhost:1234/es/not-found-page"),
     );
     const html = await response.text();
 
@@ -110,11 +110,11 @@ describe("CLI: serve", () => {
       () =>
         ({
           text: () => Promise.resolve("I am a web component JS code"),
-        } as BunFile)
+        }) as BunFile,
     );
 
     const response = await testRequest(
-      new Request("http://localhost:1234/es/page-with-web-component")
+      new Request("http://localhost:1234/es/page-with-web-component"),
     );
     const html = await response.text();
 
@@ -147,7 +147,7 @@ describe("CLI: serve", () => {
 
   it("should redirect to the correct locale", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234/somepage`)
+      new Request(`http://localhost:1234/somepage`),
     );
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe("/es/somepage");
@@ -184,20 +184,20 @@ describe("CLI: serve", () => {
     };
 
     const response = await testRequest(
-      new Request("https://en.test.com/somepage")
+      new Request("https://en.test.com/somepage"),
     );
 
     const responseEs = await testRequest(
-      new Request("https://es.test.com/somepage")
+      new Request("https://es.test.com/somepage"),
     );
 
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage"
+      "https://en.test.com/en/somepage",
     );
     expect(responseEs.status).toBe(301);
     expect(responseEs.headers.get("Location")).toBe(
-      "http://es.test.com/es/somepage"
+      "http://es.test.com/es/somepage",
     );
   });
 
@@ -226,7 +226,7 @@ describe("CLI: serve", () => {
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage"
+      "https://en.test.com/en/somepage",
     );
   });
 
@@ -260,7 +260,7 @@ describe("CLI: serve", () => {
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage-en"
+      "https://en.test.com/en/somepage-en",
     );
   });
 
@@ -297,7 +297,7 @@ describe("CLI: serve", () => {
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage-en/"
+      "https://en.test.com/en/somepage-en/",
     );
   });
 
@@ -355,7 +355,7 @@ describe("CLI: serve", () => {
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage"
+      "https://en.test.com/en/somepage",
     );
   });
 
@@ -388,7 +388,7 @@ describe("CLI: serve", () => {
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "http://en.test.com/en/somepage/"
+      "http://en.test.com/en/somepage/",
     );
   });
 
@@ -400,11 +400,11 @@ describe("CLI: serve", () => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234/es/somepage`)
+      new Request(`http://localhost:1234/es/somepage`),
     );
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "http://localhost:1234/es/somepage/"
+      "http://localhost:1234/es/somepage/",
     );
   });
 
@@ -416,7 +416,7 @@ describe("CLI: serve", () => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234/somepage`)
+      new Request(`http://localhost:1234/somepage`),
     );
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe("/es/somepage/");
@@ -424,7 +424,7 @@ describe("CLI: serve", () => {
 
   it("should return a page with layout and i18n", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234/es/somepage`)
+      new Request(`http://localhost:1234/es/somepage`),
     );
     const html = await response.text();
     expect(response.status).toBe(200);
@@ -436,7 +436,7 @@ describe("CLI: serve", () => {
 
   it("should be possible to fetch an api route GET", async () => {
     const response = await testRequest(
-      new Request(`http:///localhost:1234/es/api/example`)
+      new Request(`http:///localhost:1234/es/api/example`),
     );
     const json = await response.json();
 
@@ -454,7 +454,7 @@ describe("CLI: serve", () => {
       new Request(`http:///localhost:1234/es/api/example`, {
         method: "POST",
         body,
-      })
+      }),
     );
     const json = await response.json();
 
@@ -464,7 +464,7 @@ describe("CLI: serve", () => {
 
   it("should return 404 page if the api route does not exist", async () => {
     const response = await testRequest(
-      new Request(`http:///localhost:1234/es/api/not-found`)
+      new Request(`http:///localhost:1234/es/api/not-found`),
     );
     const html = await response.text();
 
@@ -478,7 +478,7 @@ describe("CLI: serve", () => {
     const response = await testRequest(
       new Request(`http:///localhost:1234/es/api/example`, {
         method: "PUT",
-      })
+      }),
     );
     const html = await response.text();
 

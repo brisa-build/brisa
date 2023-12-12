@@ -7,7 +7,7 @@ const pagesDir = path.join(
   "..",
   "..",
   "__fixtures__",
-  "pages"
+  "pages",
 );
 
 describe("utils", () => {

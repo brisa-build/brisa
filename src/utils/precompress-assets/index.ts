@@ -13,6 +13,6 @@ export default async function precompressAssets(assetsPath: string) {
       const gzip = gzipSync(new Uint8Array(await assetContent.arrayBuffer()));
 
       Bun.write(`${asset}.gz`, gzip);
-    })
+    }),
   );
 }

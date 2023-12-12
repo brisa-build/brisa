@@ -25,7 +25,7 @@ describe("signals", () => {
     const count = state(0);
     const username = state("Anonymous");
     const mockEffect = mock<(count?: number, username?: string) => void>(
-      () => {}
+      () => {},
     );
     const updatedCount = 435;
     const updatedUsername = "Aral";
@@ -134,14 +134,14 @@ describe("signals", () => {
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
-      () => {}
+      () => {},
     );
 
     effect((r) => {
       effect(
         r(() => {
           mockEffect("B", b.value);
-        })
+        }),
       );
       mockEffect("A", a.value);
     });
@@ -164,7 +164,7 @@ describe("signals", () => {
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
-      () => {}
+      () => {},
     );
 
     effect((r) => {
@@ -172,7 +172,7 @@ describe("signals", () => {
         effect(
           r(() => {
             mockEffect("B", b.value);
-          })
+          }),
         );
       }
       mockEffect("A", a.value);
@@ -194,7 +194,7 @@ describe("signals", () => {
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
-      () => {}
+      () => {},
     );
 
     effect((r) => {
@@ -202,7 +202,7 @@ describe("signals", () => {
         effect(
           r(() => {
             mockEffect("B", b.value);
-          })
+          }),
         );
       }
       mockEffect("A", a.value);
@@ -223,7 +223,7 @@ describe("signals", () => {
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
-      () => {}
+      () => {},
     );
 
     effect((r) => {
@@ -231,7 +231,7 @@ describe("signals", () => {
         effect(
           r(() => {
             mockEffect("B", b.value);
-          })
+          }),
         );
       }
       mockEffect("A", a.value);

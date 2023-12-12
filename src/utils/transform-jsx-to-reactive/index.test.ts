@@ -16,8 +16,8 @@ describe("utils", () => {
         const output = toInline(
           transformJSXToReactive(
             input,
-            "/src/web-components/@react/my-component.tsx"
-          )
+            "/src/web-components/@react/my-component.tsx",
+          ),
         );
         const expected = toInline(input);
         expect(output).toBe(expected);
@@ -32,8 +32,8 @@ describe("utils", () => {
         const output = toInline(
           transformJSXToReactive(
             input,
-            "/src/web-components/@react/my-component.tsx"
-          )
+            "/src/web-components/@react/my-component.tsx",
+          ),
         );
         const expected = toInline(input);
         expect(output).toBe(expected);
@@ -48,7 +48,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "/src/components/my-component.tsx")
+          transformJSXToReactive(input, "/src/components/my-component.tsx"),
         );
         const expected = toInline(`
             export default function MyComponent() {
@@ -62,7 +62,7 @@ describe("utils", () => {
             const element = <div>foo</div>
           `;
         const output = toInline(
-          transformJSXToReactive(input, "/src/components/my-component.tsx")
+          transformJSXToReactive(input, "/src/components/my-component.tsx"),
         );
         const expected = toInline(`const element = ['div', {}, 'foo'];`);
         expect(output).toBe(expected);
@@ -73,7 +73,7 @@ describe("utils", () => {
             const element = () => <div>foo</div>
           `;
         const output = toInline(
-          transformJSXToReactive(input, "/src/components/my-component.tsx")
+          transformJSXToReactive(input, "/src/components/my-component.tsx"),
         );
         const expected = toInline(`const element = () => ['div', {}, 'foo'];`);
         expect(output).toBe(expected);
@@ -86,7 +86,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -107,7 +107,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -128,7 +128,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -153,7 +153,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -178,7 +178,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -201,7 +201,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -225,7 +225,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -248,7 +248,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -271,7 +271,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -308,7 +308,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -352,7 +352,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -410,7 +410,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -435,7 +435,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -460,7 +460,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -483,7 +483,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -507,7 +507,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -529,7 +529,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -549,7 +549,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -571,7 +571,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -595,7 +595,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -619,7 +619,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -643,7 +643,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -665,7 +665,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -685,7 +685,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -705,7 +705,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -725,7 +725,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -746,7 +746,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -769,7 +769,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -793,7 +793,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected =
@@ -816,7 +816,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected =
@@ -840,7 +840,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected =
@@ -865,7 +865,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected =
@@ -890,7 +890,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -919,7 +919,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -948,7 +948,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -977,7 +977,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1012,7 +1012,7 @@ describe("utils", () => {
           }        
         `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected =
@@ -1040,7 +1040,7 @@ describe("utils", () => {
           }
         `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected =
@@ -1064,7 +1064,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1090,7 +1090,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1116,7 +1116,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1142,7 +1142,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1175,8 +1175,8 @@ describe("utils", () => {
         const output = toInline(
           transformJSXToReactive(
             input,
-            "src/web-components/conditional-render.tsx"
-          )
+            "src/web-components/conditional-render.tsx",
+          ),
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1202,7 +1202,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1228,7 +1228,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1253,7 +1253,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1277,7 +1277,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1300,7 +1300,7 @@ describe("utils", () => {
           }
         `;
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1324,7 +1324,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1359,7 +1359,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1390,7 +1390,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
 
         const expected = toInline(`
@@ -1420,7 +1420,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          transformJSXToReactive(input, "src/web-components/my-component.tsx")
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";

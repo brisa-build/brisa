@@ -125,7 +125,7 @@ import { type RequestContext } from "brisa";
 
 export function responseHeaders(
   request: RequestContext,
-  responseStatus: number
+  responseStatus: number,
 ) {
   return {
     "Cache-Control": "public, max-age=3600",

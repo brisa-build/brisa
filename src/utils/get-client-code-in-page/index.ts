@@ -11,7 +11,7 @@ const unsuspenseScriptCode = await injectUnsuspenseCode();
 export default async function getClientCodeInPage(
   pagepath: string,
   allWebComponents: Record<string, string> = {},
-  pageWebComponents: Record<string, string> = {}
+  pageWebComponents: Record<string, string> = {},
 ) {
   let size = 0;
   let code = "";
@@ -21,8 +21,8 @@ export default async function getClientCodeInPage(
   // Web components inside web components
   const nestedComponents = await Promise.all(
     Object.values(pageWebComponents).map((path) =>
-      analyzeClientPath(path, allWebComponents)
-    )
+      analyzeClientPath(path, allWebComponents),
+    ),
   );
 
   for (const { webComponents } of nestedComponents) {
@@ -47,7 +47,7 @@ export default async function getClientCodeInPage(
 }
 
 async function transformToWebComponents(
-  webComponentsList: Record<string, string>
+  webComponentsList: Record<string, string>,
 ) {
   const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
     getConstants();
@@ -68,9 +68,9 @@ async function transformToWebComponents(
     .map((k) =>
       numCustomElements === 1
         ? `if(${snakeToCamelCase(
-            k
+            k,
           )}) customElements.define("${k}", ${snakeToCamelCase(k)})`
-        : `defineElement("${k}", ${snakeToCamelCase(k)});`
+        : `defineElement("${k}", ${snakeToCamelCase(k)});`,
     )
     .join("\n");
 
@@ -115,7 +115,7 @@ async function transformToWebComponents(
                 contents: code,
                 loader,
               };
-            }
+            },
           );
         },
       },
@@ -135,13 +135,13 @@ async function transformToWebComponents(
 
 function snakeToCamelCase(str: string) {
   return str.replace(/([-_][a-z])/g, (group) =>
-    group.toUpperCase().replace("-", "").replace("_", "")
+    group.toUpperCase().replace("-", "").replace("_", ""),
   );
 }
 
 async function analyzeClientPath(
   path: string,
-  allWebComponents: Record<string, string>
+  allWebComponents: Record<string, string>,
 ) {
   const pageFile = Bun.file(path);
   const ast = ASTUtil.parseCodeToAST(await pageFile.text());

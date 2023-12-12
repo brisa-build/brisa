@@ -43,7 +43,7 @@ function getHrefLangDomain(locale: string): string {
   if (domain && !URL.canParse(domain)) {
     if (!IS_PRODUCTION)
       console.warn(
-        `hrefLangOrigin for ${locale} is not a valid URL. Please check that has protocol and domain.`
+        `hrefLangOrigin for ${locale} is not a valid URL. Please check that has protocol and domain.`,
       );
     return "";
   }
@@ -54,7 +54,7 @@ function getHrefLangDomain(locale: string): string {
 function getURLInAnotherLang(
   domain: string,
   locale: string,
-  request: RequestContext
+  request: RequestContext,
 ) {
   const { I18N_CONFIG, LOCALES_SET } = getConstants();
   const paths = new URL(request.finalURL).pathname.split("/");

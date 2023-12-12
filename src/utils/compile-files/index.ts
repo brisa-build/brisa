@@ -74,7 +74,7 @@ export default async function compileFiles() {
   const clientSizesPerPage = await compileClientCodePage(
     outputs,
     allWebComponents,
-    webComponentsPerEntrypoint
+    webComponentsPerEntrypoint,
   );
 
   if (!clientSizesPerPage) {
@@ -106,7 +106,7 @@ export default async function compileFiles() {
         Size: byteSizeToString(output.size, 0),
         "Client size": byteSizeToString(clientSizesPerPage[route] ?? 0, 0),
       };
-    })
+    }),
   );
 
   console.log(LOG_PREFIX.INFO);
@@ -124,7 +124,7 @@ export default async function compileFiles() {
 async function compileClientCodePage(
   pages: BuildArtifact[],
   allWebComponents: Record<string, string>,
-  webComponentsPerEntrypoint: Record<string, Record<string, string>>
+  webComponentsPerEntrypoint: Record<string, Record<string, string>>,
 ) {
   const { BUILD_DIR } = getConstants();
   const clientCodePath = path.join(BUILD_DIR, "pages-client");
@@ -142,7 +142,7 @@ async function compileClientCodePage(
     const pageCode = await getClientCodeInPage(
       pagePath,
       allWebComponents,
-      webComponentsPerEntrypoint[pagePath]
+      webComponentsPerEntrypoint[pagePath],
     );
 
     if (!pageCode) return null;
@@ -160,14 +160,14 @@ async function compileClientCodePage(
   ${Object.entries(allWebComponents)
     .map(
       ([name, location]) =>
-        `'${name}': HTMLAttributes<typeof import("${location}")>;`
+        `'${name}': HTMLAttributes<typeof import("${location}")>;`,
     )
     .join("\n")}
 }`;
 
   fs.writeFileSync(
     path.join(internalPath, "types.ts"),
-    intrinsicCustomElements
+    intrinsicCustomElements,
   );
 
   return clientSizesPerPage;

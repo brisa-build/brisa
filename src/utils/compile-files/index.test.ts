@@ -93,7 +93,7 @@ describe("utils", () => {
           export interface IntrinsicCustomElements {
             'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;
             'web-component': HTMLAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx")>;
-          }`)
+          }`),
       );
       expect(console.log).toHaveBeenCalled();
       expect(files).toHaveLength(8);

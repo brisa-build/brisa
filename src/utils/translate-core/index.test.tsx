@@ -64,7 +64,7 @@ describe("utils", () => {
 
       expect(typeof t).toBe("function");
       expect(t("hello_world.hello_world_nested", { name: "Test" })).toBe(
-        "Hello Test"
+        "Hello Test",
       );
     });
 
@@ -90,10 +90,10 @@ describe("utils", () => {
 
       expect(typeof t).toBe("function");
       expect(t("key_1", null, { returnObjects: true })).toEqual(
-        nsNestedKeys.key_1
+        nsNestedKeys.key_1,
       );
       expect(t("key_2", null, { returnObjects: true })).toEqual(
-        nsNestedKeys.key_2
+        nsNestedKeys.key_2,
       );
     });
 
