@@ -226,6 +226,7 @@ export default i18nConfig;
 
 After this, you can consume translations in every part of your app through the [request context](/docs/building-your-application/data-fetching/request-context): `middleware`, `api` routes, `page` routes, all page components, `responseHeaders`, `layout`, `Head` of each page...
 
+> [!IMPORTANT]
 > **Important in TypeScript**: The generic type `<typeof en>` in `I18nConfig` enables type-safe consumption of translations with the `t` function by resolving the keys, keys with plurals and nested keys from the preferred locale. This allows IDE autocompletion and type checking of translation keys throughout the codebase, improving productivity and avoiding translation bugs due to typos or invalid keys.
 
 The generic `I18nConfig<typeof en>` allows you to activate type-safe consuming translations with the `t` function. Displaying to you all the keys from the preferred locale messages, resolving plurals and nested values.

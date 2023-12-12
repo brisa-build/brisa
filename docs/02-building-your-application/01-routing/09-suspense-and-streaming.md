@@ -82,7 +82,7 @@ SomeComponent.error = ({ error }) => {
 
 - Since streaming is server-rendered, it does not impact SEO. You can use the [Mobile Friendly Test](https://search.google.com/test/mobile-friendly) tool from Google to see how your page appears to Google's web crawlers and view the serialized HTML ([source](https://web.dev/rendering-on-the-web/#seo-considerations)).
 
-## Suspense differences between server-web components
+## Suspense differences between server/web components
 
 Both server/web components use suspense during streaming.
 
@@ -105,7 +105,7 @@ export default async function MyWebComponent({}, { state }) {
   return <div>{foo}</div>;
 }
 
-MyWebComponent.suspense = () => <div>loading...</div>;
+MyWebComponent.suspense = (props, webContext) => <div>loading...</div>;
 ```
 
 You can do a `fetch` in the render because in Brisa there are no rerenders, so it will always run only once mouting the component.
