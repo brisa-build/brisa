@@ -1,17 +1,15 @@
 ---
 title: Suspense and Streaming
-description: Suspense allows you to create a fallback for any server-component, and automatically stream content as it becomes ready.
+description: Suspense allows you to create a fallback for any component, and automatically stream content as it becomes ready.
 ---
 
-Each server-component allows an extension to add a `suspense` component to it, which is the fallback that will be displayed while the component loads.
+Each component (server-component and web-component) allows an extension to add a `suspense` component to it, which is the fallback that will be displayed while the component loads.
 
 ```js
 SomeComponent.suspense = ({}, { i18n }) => {
   return <div>{i18n.t('loading-message')...}</div>
 }
 ```
-
-> **Good to know**: `suspense` is only supported in **server-components** (default components). Probably if you need to add a `suspense` in a web-component is a sign that the load should be moved to the server.
 
 ## Suspense during Streaming
 
@@ -83,3 +81,57 @@ SomeComponent.error = ({ error }) => {
 ### SEO
 
 - Since streaming is server-rendered, it does not impact SEO. You can use the [Mobile Friendly Test](https://search.google.com/test/mobile-friendly) tool from Google to see how your page appears to Google's web crawlers and view the serialized HTML ([source](https://web.dev/rendering-on-the-web/#seo-considerations)).
+
+## Suspense differences between server-web components
+
+Both server/web components use suspense during streaming.
+
+### Suspense in Web-components
+
+By default all **web-components** are **Server Side Rendered**. Unless you use the `ssr={false}` attribute when consuming it:
+
+```tsx
+<my-web-component ssr={false} />
+```
+
+Web-components have another benefit of suspense, and that is that it is applied dynamically as well, this means that if you have web-components that are not displayed in the initial HTML but are dynamically displayed later after a user interaction and need to do something asynchronous to load data, the content defined in the "suspense" will be displayed while loading this data.
+
+**`src/web-components/my-web-component.tsx`**:
+
+```tsx
+export default async function MyWebComponent({}, { state }) {
+  const foo = await fetch(/* ... */).then((r) => r.text());
+
+  return <div>{foo}</div>;
+}
+
+MyWebComponent.suspense = () => <div>loading...</div>;
+```
+
+You can do a `fetch` in the render because in Brisa there are no rerenders, so it will always run only once mouting the component.
+
+Another benefit of web-components is the suspense defined therein is reactive to both the props and the state you create. So you can make it interactive from the client if you need to.
+
+Example displaying different texts during suspense using [`context`](docs/components-details/web-components#context):
+
+```tsx
+export default async function MyWebComponent({}, { context }) {
+  context.set('suspense-message', 'Loading step 1 ...')
+  const firstResponse = await fetch(/* ... */);
+  context.set('suspense-message', 'Loading step 2 ...')
+  const secondResponse = await fetch(/* ... */);
+
+  return <div>{firstResponse.foo} {secondResponse.bar}</div>
+}
+
+// Display percentage inside the suspense phase
+MyWebComponent.suspense = ({}, {context}) {
+  return context.get('suspense-message').value
+}
+```
+
+Also works during streaming. Although loading data is done at the client-side. That is, the `suspense` is rendered on the server with SSR, and on the client-side the real component is loaded by updating the suspense phase until it has the content. That is, these **`fetch`** inside the component will **never be done from the server** in the case of web-components.
+
+TODO: Implement context in client + test that this example is working fine
+
+TODO: Implement the same behavior in the server + add docs about it
