@@ -37,6 +37,7 @@ The router supports nested files. If you create a nested folder structure, files
 
 Brisa supports pages with dynamic routes. For example, if you create a file called `pages/posts/[id].js`, then it will be accessible at `posts/1`, `posts/2`, etc.
 
+> [!NOTE]
 > To learn more about dynamic routing, check the [Dynamic Routing documentation](/docs/building-your-application/routing/dynamic-routes).
 
 ## Layout

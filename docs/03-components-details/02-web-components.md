@@ -592,6 +592,42 @@ export default function SomeComponent() {
 }
 ```
 
+## Suspense component phase
+
+You can generate a [`suspense`](/docs/building-your-application/routing/suspense-and-streaming#suspense-in-web-components) phase if your web-component is **async** and you want to show something while the promise is pending. It also works during HTML streaming.
+
+```tsx
+export default async function MyWebComponent({}, { state }) {
+  const foo = await fetch(/* ... */).then((r) => r.text());
+
+  return <div>{foo}</div>;
+}
+
+MyWebComponent.suspense = (props, webContext) => <div>loading...</div>;
+```
+
+> [!NOTE]
+> See more details [here](/docs/building-your-application/routing/suspense-and-streaming#suspense-in-web-components) to learn more.
+
+## Handle component error
+
+You can generate a [`error`](/docs/building-your-application/routing/custom-error#errors-in-component-level) phase if your web-component **throws an error** and you want to show something without crash the rest of the page.
+
+```tsx
+import { WebContext } from 'brisa';
+
+export default function SomeWebComponent() {
+   /* some code */
+}
+
+SomeWebComponent.error = ({ error }, webContext: WebContext) => {
+  return <p>Oops! {error.message}</p>;
+};
+```
+
+> [!NOTE]
+> See more details [here](/docs/building-your-application/routing/custom-error#errors-in-component-level) to learn more.
+
 ## Using Web Components in Web Components
 
 Within the web components you can use other web components by writing them as if they were other DOM elements. We are not going to use any import, we can consume it directly as another HTML tag.
