@@ -32,8 +32,9 @@ export default function transformJSXToReactive(code: string, path: string) {
     for (const prop of props) propsSet.add(prop);
   }
 
-  componentBranch = mergeEarlyReturnsInOne(componentBranch!);
-  componentBranch = optimizeEffects(componentBranch, out.vars);
+  componentBranch = mergeEarlyReturnsInOne(
+    optimizeEffects(componentBranch, out.vars),
+  );
 
   // Merge early returns in one + optimize effects inside statics (suspense + error phases)
   mapComponentStatics(reactiveAst, out.componentName, (value, name) => {

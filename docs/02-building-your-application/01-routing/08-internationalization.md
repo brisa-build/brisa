@@ -190,7 +190,7 @@ export default {
 
 Brisa supports to consume translations inspired by libraries such as [i18next](https://www.i18next.com/) and [next-translate](https://github.com/aralroca/next-translate).
 
-> **Good to know**: It only occupies 400B of client code if you consume translations in the web-components, if you only use it in server-components, pages, layout, api, middleware, it is 0B of client code.
+> [!TIP] > **Good to know**: It only occupies 400B of client code if you consume translations in the web-components, if you only use it in server-components, pages, layout, api, middleware, it is 0B of client code.
 
 In order to consume translations, you need first to define the `messages` property in `src/i18n.js` file:
 
