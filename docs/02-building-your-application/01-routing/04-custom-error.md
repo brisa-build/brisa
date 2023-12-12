@@ -38,7 +38,7 @@ Example [server component](/docs/components-details/server-components):
 import { RequestContext } from 'brisa';
 
 export default function SomeServerComponent() {
-  return; /* some JSX */
+  /* some JSX */
 }
 
 SomeServerComponent.error = ({ error }, requestContext: RequestContext) => {
