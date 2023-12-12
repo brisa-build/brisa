@@ -82,7 +82,7 @@ export default function transformToReactiveProps(ast: ESTree.Program): Result {
   mapComponentStatics(newAst, componentName, (staticAst, staticName) => {
     const staticsOut = transformComponentToReactiveProps(
       staticAst,
-      propsFromExport
+      propsFromExport,
     );
 
     statics[staticName] = {
@@ -108,12 +108,12 @@ export default function transformToReactiveProps(ast: ESTree.Program): Result {
 
 export function transformComponentToReactiveProps(
   component: any,
-  propNamesFromExport: string[]
+  propNamesFromExport: string[],
 ) {
   const componentVariableNames = getComponentVariableNames(component);
   const [propsNames, renamedPropsNames, defaultPropsValues] = getPropsNames(
     component,
-    propNamesFromExport
+    propNamesFromExport,
   );
   const propsNamesAndRenamesSet = new Set([
     ...propsNames,
@@ -194,7 +194,7 @@ export function transformComponentToReactiveProps(
       }
 
       return value;
-    }
+    },
   );
 
   const newComponent = declaration
@@ -208,7 +208,7 @@ export function transformComponentToReactiveProps(
 function addDefaultPropsToBody(
   defaultPropsEntries: [string, ESTree.Literal, string?][],
   component: any,
-  allVariableNames: Set<string>
+  allVariableNames: Set<string>,
 ) {
   let isAddedDefaultProps = false;
   const componentBody =
@@ -279,7 +279,7 @@ function addDefaultPropsToBody(
     manageWebContextField(
       component,
       generateUniqueVariableName("effect", allVariableNames),
-      "effect"
+      "effect",
     );
   }
 }

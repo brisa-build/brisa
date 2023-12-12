@@ -67,7 +67,7 @@ import { Database } from "bun:sqlite";
 const db = new Database(":memory:");
 
 const userQuery = db.query(
-  "SELECT firstName, lastName, ranking FROM users WHERE id = ?;"
+  "SELECT firstName, lastName, ranking FROM users WHERE id = ?;",
 );
 
 const updateRanking = db.prepare("UPDATE users SET ranking = ? WHERE id = ?");

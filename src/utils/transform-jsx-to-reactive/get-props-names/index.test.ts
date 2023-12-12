@@ -17,7 +17,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected: string[] = [];
 
@@ -32,7 +32,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
 
@@ -47,7 +47,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -62,7 +62,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -78,7 +78,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -94,7 +94,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -110,7 +110,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -126,7 +126,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -144,7 +144,7 @@ describe("utils", () => {
           }
         `);
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog", "cat"];
 
@@ -166,7 +166,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog", "cat"];
 
@@ -188,7 +188,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog"];
 
@@ -210,7 +210,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog"];
 
@@ -227,7 +227,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
         const expectedDefaultProps: ESTree.Literal = {
@@ -248,7 +248,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
         const expectedRenamed = ["renamedName"];
@@ -271,7 +271,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -289,7 +289,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -307,7 +307,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
@@ -326,7 +326,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
         const expectedRenamed = ["foo", "bar"];
@@ -349,7 +349,7 @@ describe("utils", () => {
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
-          propsFromExport
+          propsFromExport,
         );
         const expected = ["foo", "bar", "baz"];
 
@@ -368,7 +368,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
 
@@ -386,7 +386,7 @@ describe("utils", () => {
         `);
 
         const [propNames, renamedOutput, defaultProps] = getPropsNames(
-          input as unknown as ESTree.FunctionDeclaration
+          input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
 

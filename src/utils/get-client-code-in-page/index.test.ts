@@ -44,7 +44,7 @@ describe("utils", () => {
           async text() {
             return transpiler.transform(fs.readFileSync(filepath), "tsx");
           },
-        } as BunFile)
+        }) as BunFile,
     );
   });
 
@@ -67,7 +67,7 @@ describe("utils", () => {
       const output = await getClientCodeInPage(
         input,
         allWebComponents,
-        pageWebComponents
+        pageWebComponents,
       );
       const brisaSize = 3849;
       const webComponents = 626;
@@ -98,7 +98,7 @@ describe("utils", () => {
       const output = await getClientCodeInPage(
         input,
         allWebComponents,
-        pageWebComponents
+        pageWebComponents,
       );
       expect(output!.code).toContain('"web-component"');
       expect(output!.code).toContain('"native-some-example"');

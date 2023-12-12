@@ -7,7 +7,7 @@ const dir = path.join(
   "..",
   "..",
   "__fixtures__",
-  "files-to-detect"
+  "files-to-detect",
 );
 
 describe("utils", () => {

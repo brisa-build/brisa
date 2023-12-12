@@ -20,7 +20,7 @@ describe("utils", () => {
         "web-component": "src/components/web-component.tsx",
       };
       const output = normalizeQuotes(
-        wrapWithSSRWebComponent(code, allWebComponents).code
+        wrapWithSSRWebComponent(code, allWebComponents).code,
       );
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
@@ -52,7 +52,7 @@ describe("utils", () => {
         "web-component": "src/components/web-component.tsx",
       };
       const output = normalizeQuotes(
-        wrapWithSSRWebComponent(code, allWebComponents).code
+        wrapWithSSRWebComponent(code, allWebComponents).code,
       );
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
@@ -84,7 +84,7 @@ describe("utils", () => {
         "web-component": "src/components/web-component.tsx",
       };
       const output = normalizeQuotes(
-        wrapWithSSRWebComponent(code, allWebComponents).code
+        wrapWithSSRWebComponent(code, allWebComponents).code,
       );
       const expected = toExpected(`
         export default function ServerComponent() {
@@ -110,7 +110,7 @@ describe("utils", () => {
         "web-component": "src/components/web-component.tsx",
       };
       const output = normalizeQuotes(
-        wrapWithSSRWebComponent(code, allWebComponents).code
+        wrapWithSSRWebComponent(code, allWebComponents).code,
       );
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";

@@ -1,11 +1,11 @@
 import { ESTree } from "meriyah";
 
 export default function getWebComponentAst(
-  ast: ESTree.Program
+  ast: ESTree.Program,
 ): null[] | [ESTree.FunctionDeclaration, number, number] {
   const empty = [null];
   const defaultExportIndex = ast.body.findIndex(
-    (node) => node.type === "ExportDefaultDeclaration"
+    (node) => node.type === "ExportDefaultDeclaration",
   );
 
   let identifierDeclarationIndex = -1;

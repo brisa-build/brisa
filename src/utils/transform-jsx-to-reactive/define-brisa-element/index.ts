@@ -5,7 +5,7 @@ import getReactiveReturnStatement from "../get-reactive-return-statement";
 export default function defineBrisaElement(
   component: ESTree.FunctionDeclaration,
   componentPropsNames: string[],
-  componentName: string
+  componentName: string,
 ) {
   const componentParams = component.params;
   const componentBody = (component.body?.body ?? [
@@ -16,7 +16,7 @@ export default function defineBrisaElement(
     getReactiveReturnStatement(componentBody);
 
   const newComponentBody = componentBody.map((node, index) =>
-    index === indexReturn ? reactiveReturn : node
+    index === indexReturn ? reactiveReturn : node,
   );
 
   const newComponentAst = {

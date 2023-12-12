@@ -8,7 +8,7 @@ const { IS_PRODUCTION, BUILD_DIR, PAGES_DIR, LOG_PREFIX } = getConstants();
 if (IS_PRODUCTION && !fs.existsSync(BUILD_DIR)) {
   console.log(
     LOG_PREFIX.ERROR,
-    'Not exist "build" yet. Please run "brisa build" first'
+    'Not exist "build" yet. Please run "brisa build" first',
   );
   process.exit(1);
 }
@@ -19,7 +19,7 @@ if (!fs.existsSync(PAGES_DIR)) {
 
   console.log(
     LOG_PREFIX.ERROR,
-    `Not exist ${path}" directory. It\'s required to run "${cli}"`
+    `Not exist ${path}" directory. It\'s required to run "${cli}"`,
   );
   process.exit(1);
 }
@@ -31,7 +31,7 @@ function init(options: ServeOptions) {
     globalThis.brisaServer = server;
     console.log(
       LOG_PREFIX.READY,
-      `listening on http://${server.hostname}:${server.port}...`
+      `listening on http://${server.hostname}:${server.port}...`,
     );
   } catch (error) {
     const { message } = error as Error;

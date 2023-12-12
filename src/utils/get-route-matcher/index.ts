@@ -4,7 +4,7 @@ import { RequestContext, RouterType } from "../../types";
 export default function getRouteMatcher(
   dir: string,
   reservedPathnames: string[] = [],
-  locale?: string
+  locale?: string,
 ): RouterType {
   const router = new Bun.FileSystemRouter({
     style: "nextjs",
@@ -26,10 +26,13 @@ export default function getRouteMatcher(
     };
   };
 
-  const reservedRoutes = reservedPathnames.reduce((all, pathname) => {
-    all[pathname] = router.match(pathname);
-    return all;
-  }, {} as Record<string, MatchedRoute | null>);
+  const reservedRoutes = reservedPathnames.reduce(
+    (all, pathname) => {
+      all[pathname] = router.match(pathname);
+      return all;
+    },
+    {} as Record<string, MatchedRoute | null>,
+  );
 
   return { match: routeMatcher, reservedRoutes };
 }

@@ -23,7 +23,7 @@ describe("utils", () => {
               value: name,
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`
@@ -57,7 +57,7 @@ describe("utils", () => {
               ],
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`
@@ -93,7 +93,7 @@ describe("utils", () => {
               ],
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`
@@ -122,7 +122,7 @@ describe("utils", () => {
               value: name,
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`
@@ -151,7 +151,7 @@ describe("utils", () => {
               value: name,
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`
@@ -187,7 +187,7 @@ describe("utils", () => {
               ],
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`
@@ -220,7 +220,7 @@ describe("utils", () => {
               ],
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`
@@ -244,7 +244,7 @@ describe("utils", () => {
               value: name,
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`
@@ -276,7 +276,7 @@ describe("utils", () => {
               ],
             };
             return value;
-          })
+          }),
         );
 
         const expected = normalizeQuotes(`

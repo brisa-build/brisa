@@ -44,7 +44,7 @@ const SUSPENSE_PROPS = "l";
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
   return document.createTextNode(
-    (Array.isArray(text) ? text.join("") : text ?? "").toString()
+    (Array.isArray(text) ? text.join("") : text ?? "").toString(),
   );
 };
 
@@ -59,7 +59,7 @@ const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
 
 const createElement = (
   tagName: string,
-  parent?: HTMLElement | DocumentFragment
+  parent?: HTMLElement | DocumentFragment,
 ) => {
   return tagName === "svg" ||
     ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
@@ -89,7 +89,7 @@ const setAttribute = (el: HTMLElement, key: string, value: string) => {
 
 export default function brisaElement(
   render: Render,
-  observedAttributes: string[] = []
+  observedAttributes: string[] = [],
 ) {
   const attributesLowercase: string[] = [];
   const attributesObj: Record<string, string> = {};
@@ -118,7 +118,7 @@ export default function brisaElement(
 
       function handlePortal(
         children: Children,
-        parent: HTMLElement | DocumentFragment
+        parent: HTMLElement | DocumentFragment,
       ) {
         if ((children as any)?.type !== PORTAL) return [children, parent];
         const { element, target } = (children as any).props;
@@ -133,7 +133,7 @@ export default function brisaElement(
         // r: function to register subeffects to then clean them up
         r: (v: any) => any,
         effect: (v: any) => any,
-        initialRender = false
+        initialRender = false,
       ) {
         // Handle promises
         if ((children as Promise<Children>)?.then) {
@@ -167,8 +167,8 @@ export default function brisaElement(
           if (isEvent) {
             el.addEventListener(lowercase(attribute.slice(2)), (e) =>
               (attrValue as (detail: unknown) => EventListener)(
-                (e as CustomEvent)?.detail ?? e
-              )
+                (e as CustomEvent)?.detail ?? e,
+              ),
             );
           } else if (!isEvent && isFunction(attrValue)) {
             effect(r(() => setAttribute(el, attribute, (attrValue as any)())));
@@ -234,7 +234,7 @@ export default function brisaElement(
                   insertOrUpdate(fragment);
 
                   lastNodes = arr(el.childNodes).filter(
-                    (node) => !currentElNodes.includes(node)
+                    (node) => !currentElNodes.includes(node),
                   );
                 }
                 // Reactive text node
@@ -249,7 +249,7 @@ export default function brisaElement(
               if (childOrPromise instanceof Promise)
                 childOrPromise.then(startEffect);
               else startEffect(childOrPromise);
-            })
+            }),
           );
         } else {
           appendChild(el, createTextNode(children));
@@ -261,7 +261,7 @@ export default function brisaElement(
       const startRender = (
         fn: Render,
         renderSignals = signals(),
-        propsField = PROPS
+        propsField = PROPS,
       ) => {
         // Save signals to reset them later in the disconnectedCallback
         self.s = renderSignals;
@@ -295,7 +295,7 @@ export default function brisaElement(
           shadowRoot,
           (v: any) => v,
           renderSignals.effect,
-          true
+          true,
         );
       };
 
@@ -308,7 +308,7 @@ export default function brisaElement(
           await startRender(
             render.suspense!,
             suspenseSignals,
-            SUSPENSE_PROPS as "p"
+            SUSPENSE_PROPS as "p",
           );
         }
         // Handle render
@@ -344,7 +344,7 @@ export default function brisaElement(
     attributeChangedCallback(
       name: string,
       oldValue: string | null,
-      newValue: string | null
+      newValue: string | null,
     ) {
       const self = this as any;
       const propsField = self[SUSPENSE_PROPS] ? SUSPENSE_PROPS : PROPS;

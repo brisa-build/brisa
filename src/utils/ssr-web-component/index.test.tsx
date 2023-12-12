@@ -14,7 +14,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children).toBe(
-        "hello world"
+        "hello world",
       );
     });
 
@@ -32,7 +32,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(
-        output.props.children[0].props.children[0].props.children.join("")
+        output.props.children[0].props.children[0].props.children.join(""),
       ).toBe("hello world");
     });
 
@@ -54,11 +54,11 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children).toBe(
-        "hello world"
+        "hello world",
       );
       expect(output.props.children[0].props.children[1].type).toBe("style");
       expect(output.props.children[0].props.children[1].props.children).toBe(
-        "div {color: red;}"
+        "div {color: red;}",
       );
     });
 
@@ -76,7 +76,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(
-        output.props.children[0].props.children[0].props.children.join("")
+        output.props.children[0].props.children[0].props.children.join(""),
       ).toBe("hello world");
     });
 
@@ -95,7 +95,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(
-        output.props.children[0].props.children[0].props.children.join("")
+        output.props.children[0].props.children[0].props.children.join(""),
       ).toBe("hello world");
     });
 
@@ -115,7 +115,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children).toBe(
-        "hello world"
+        "hello world",
       );
     });
 
@@ -135,7 +135,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children).toBe(
-        "hello world"
+        "hello world",
       );
     });
 
@@ -155,7 +155,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children).toBe(
-        "hello world"
+        "hello world",
       );
     });
 
@@ -177,10 +177,10 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children[0]).toBe(
-        "hello "
+        "hello ",
       );
       expect(
-        output.props.children[0].props.children[0].props.children[1].type
+        output.props.children[0].props.children[0].props.children[1].type,
       ).toBe("slot");
       expect(output.props.children[1]).toBe("world");
     });
@@ -203,10 +203,10 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children[0]).toBe(
-        "hello "
+        "hello ",
       );
       expect(
-        output.props.children[0].props.children[0].props.children[1].type
+        output.props.children[0].props.children[0].props.children[1].type,
       ).toBe("slot");
       expect(output.props.children[1]).toBe("world");
     });
@@ -230,7 +230,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children).toBe(
-        "loading..."
+        "loading...",
       );
     });
 
@@ -252,7 +252,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children).toBe(
-        "Ops! error"
+        "Ops! error",
       );
     });
 
@@ -277,7 +277,7 @@ describe("utils", () => {
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
       expect(output.props.children[0].props.children[0].props.children).toBe(
-        "Ops! error"
+        "Ops! error",
       );
     });
 

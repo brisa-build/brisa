@@ -12,7 +12,7 @@ const regexTrailingSlash = /\/$/;
 
 export default function adaptRouterToPageTranslations(
   pages: I18nConfig["pages"],
-  pagesRouter: RouterType
+  pagesRouter: RouterType,
 ) {
   const pageEntries = Object.entries(pages ?? {});
   const translationsEntries = pageEntries.flatMap(toTranslationEntries);

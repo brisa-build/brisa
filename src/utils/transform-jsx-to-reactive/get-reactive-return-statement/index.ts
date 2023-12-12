@@ -12,11 +12,11 @@ const REACTIVE_VALUES = new Set([
 ]);
 
 export default function getReactiveReturnStatement(
-  componentBody: ESTree.Statement[]
+  componentBody: ESTree.Statement[],
 ) {
   const { LOG_PREFIX } = getConstants();
   const returnStatementIndex = componentBody.findIndex(
-    (node: any) => node.type === "ReturnStatement"
+    (node: any) => node.type === "ReturnStatement",
   );
   const returnStatement = componentBody[returnStatementIndex] as any;
   let [tagName, props, children] = returnStatement?.argument?.elements ?? [];
@@ -110,16 +110,16 @@ export default function getReactiveReturnStatement(
     console.log(LOG_PREFIX.ERROR);
     console.log(
       LOG_PREFIX.ERROR,
-      "Description: An unexpected error occurred while processing your component."
+      "Description: An unexpected error occurred while processing your component.",
     );
     console.log(
       LOG_PREFIX.ERROR,
-      "Details: The server encountered an internal error and was unable to build your component."
+      "Details: The server encountered an internal error and was unable to build your component.",
     );
     console.log(LOG_PREFIX.ERROR);
     console.log(
       LOG_PREFIX.ERROR,
-      "Please provide the following error code when reporting the problem: 5001."
+      "Please provide the following error code when reporting the problem: 5001.",
     );
     console.log(LOG_PREFIX.ERROR);
   }

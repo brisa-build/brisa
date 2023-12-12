@@ -39,7 +39,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.props).toEqual(["foo", "bar", "baz"]);
         expect(out.vars).toEqual(
-          new Set(["foo", "bar", "baz", "console", "props"])
+          new Set(["foo", "bar", "baz", "console", "props"]),
         );
       });
 
@@ -110,7 +110,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.props).toEqual(["foo", "bar", "baz"]);
         expect(out.vars).toEqual(
-          new Set(["foo", "bar", "baz", "console", "rest"])
+          new Set(["foo", "bar", "baz", "console", "rest"]),
         );
       });
 
@@ -185,7 +185,7 @@ describe("utils", () => {
             "bart",
             "bazt",
             "console",
-          ])
+          ]),
         );
       });
 
@@ -226,7 +226,7 @@ describe("utils", () => {
             "renamedFoo",
             "renamedBar",
             "renamedBaz",
-          ])
+          ]),
         );
       });
 
@@ -267,7 +267,7 @@ describe("utils", () => {
             "renamedFoo",
             "renamedBar",
             "renamedBaz",
-          ])
+          ]),
         );
       });
 
@@ -294,7 +294,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.props).toEqual(["foo", "bar", "baz"]);
         expect(out.vars).toEqual(
-          new Set(["foo", "bar", "baz", "props", "console"])
+          new Set(["foo", "bar", "baz", "props", "console"]),
         );
       });
 
@@ -329,7 +329,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.props).toEqual(["foo", "bar", "baz"]);
         expect(out.vars).toEqual(
-          new Set(["foo", "bar", "baz", "console", "props"])
+          new Set(["foo", "bar", "baz", "console", "props"]),
         );
       });
 
@@ -467,7 +467,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.props).toEqual(["onClick", "onClickSpan"]);
         expect(out.vars).toEqual(
-          new Set(["onClick", "onClickSpan", "props", "rest"])
+          new Set(["onClick", "onClickSpan", "props", "rest"]),
         );
       });
 
