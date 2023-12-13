@@ -70,7 +70,6 @@ export default function transformToDirectExport(
             },
           ],
         };
-        // Remove the next declaration from the ast
         astWithoutDefaultExport.body.splice(i, 1);
         break;
       }
