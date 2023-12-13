@@ -22,6 +22,36 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
       });
 
+      it("should transform the web-component to a direct export if the component is a let variable declaration", () => {
+        const ast = parseCodeToAST(`
+          let MyComponent
+          MyComponent = (props) => <div>{props.foo}</div>;
+          export default MyComponent;
+        `);
+        const outputAst = transformToDirectExport(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
+          export default props => jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
+
+      it("should transform the web-component to a direct export if the component is a let variable declaration + function", () => {
+        const ast = parseCodeToAST(`
+          let MyComponent
+          MyComponent = function (props) { return <div>{props.foo}</div> };
+          export default MyComponent;
+        `);
+        const outputAst = transformToDirectExport(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
+          export default function (props) {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);}
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
+
       it("should transform the web-component to a direct export if the component is a function declaration", () => {
         const ast = parseCodeToAST(`
           function MyComponent(props) {

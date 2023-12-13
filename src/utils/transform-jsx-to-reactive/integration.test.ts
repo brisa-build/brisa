@@ -3214,6 +3214,68 @@ describe("integration", () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Ops!</div>");
     });
 
+    it('should work error component if component is declared with "let" and function', () => {
+      const code = `
+        let Component
+
+        Component = function ({ foo }) {
+          throw new Error('test')
+        }
+        
+        Component.error = ({ foo }) => {
+          if(foo === 'foo') return <div>foo</div> 
+          return <div>bar</div>
+        };
+
+        export default Component
+      `;
+
+      document.body.innerHTML = "<test-component foo='foo' />";
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+
+      testComponent.setAttribute("foo", "bar");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+    });
+
+    it('should work error component if component is declared with "let" and arrow function', () => {
+      const code = `
+        let Component
+
+        Component = ({ foo }) => {
+          throw new Error('test')
+        }
+        
+        Component.error = ({ foo }) => {
+          if(foo === 'foo') return <div>foo</div> 
+          return <div>bar</div>
+        };
+
+        export default Component
+      `;
+
+      document.body.innerHTML = "<test-component foo='foo' />";
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+
+      testComponent.setAttribute("foo", "bar");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+    });
+
     it("should display the suspense component meanwhile the component is not mounted", async () => {
       const Component = `
         export default async function MyComponent() {

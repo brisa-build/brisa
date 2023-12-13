@@ -39,19 +39,43 @@ export default function transformToDirectExport(
     body: ast.body.filter((node, index) => index !== defaultExportIndex),
   };
 
-  const componentDeclarationIndex = ast.body.findIndex((node: any) => {
-    const name =
-      node.id?.name ??
-      node.declaration?.name ??
-      node?.declarations?.[0]?.id?.name;
+  let componentDeclarationIndex = ast.body.findIndex((node: any) => {
     return (
-      DIRECT_TYPES.has(node.type) && name === defaultExportNode.declaration.name
+      DIRECT_TYPES.has(node.type) &&
+      getName(node) === defaultExportNode.declaration.name
     );
   });
 
   if (componentDeclarationIndex === -1) return ast;
 
-  const componentDeclaration = ast.body[componentDeclarationIndex];
+  let componentDeclaration = ast.body[componentDeclarationIndex] as any;
+
+  // Manage: let Component; Component = () => <div>foo</div>; export default Component;
+  if ((componentDeclaration as any)?.declarations?.[0]?.init === null) {
+    for (let i = ast.body.length - 1; i > componentDeclarationIndex; i--) {
+      const node = ast.body[i];
+
+      if (
+        node.type === "ExpressionStatement" &&
+        node.expression.type === "AssignmentExpression" &&
+        node.expression.left.type === "Identifier" &&
+        node.expression.left.name === getName(componentDeclaration)
+      ) {
+        componentDeclaration = {
+          ...componentDeclaration,
+          declarations: [
+            {
+              ...componentDeclaration.declarations[0],
+              init: node.expression.right,
+            },
+          ],
+        };
+        // Remove the next declaration from the ast
+        astWithoutDefaultExport.body.splice(i, 1);
+        break;
+      }
+    }
+  }
 
   if (componentDeclaration.type === "VariableDeclaration") {
     const updatedBody = astWithoutDefaultExport.body.map((node, index) => {
@@ -69,4 +93,12 @@ export default function transformToDirectExport(
   }
 
   return ast;
+}
+
+function getName(node: any) {
+  return (
+    node?.id?.name ??
+    node?.declaration?.name ??
+    node?.declarations?.[0]?.id?.name
+  );
 }
