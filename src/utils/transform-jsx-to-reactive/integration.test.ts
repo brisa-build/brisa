@@ -3214,6 +3214,45 @@ describe("integration", () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Ops!</div>");
     });
 
+      it('should be possible to have access to the error inside the error component', async () => {
+      window.mockError = mock((s: string) => {});
+
+      const code = `
+        let Component
+
+        Component = function ({ foo }) {
+          throw new Error('test')
+        }
+        
+        Component.error = ({ foo, error }) => {
+          window.mockError(error.message)
+          if(foo === 'foo') return <div>foo</div> 
+          return <div>bar</div>
+        };
+
+        export default Component
+      `;
+
+      document.body.innerHTML = "<test-component foo='foo' />";
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      await Bun.sleep(0);
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+
+      testComponent.setAttribute("foo", "bar");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+
+      expect(window.mockError).toHaveBeenCalledTimes(1);
+      expect(window.mockError.mock.calls[0][0]).toBe("test");
+    });
+
     it('should work error component if component is declared with "let" and function', () => {
       const code = `
         let Component

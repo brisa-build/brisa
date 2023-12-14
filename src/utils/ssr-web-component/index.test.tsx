@@ -236,23 +236,24 @@ describe("utils", () => {
 
     it("should render the error component when there is an error rendering the component", async () => {
       const Component = () => {
-        throw new Error("error");
+        throw new Error("some error");
       };
-      Component.error = () => <div>Ops! error</div>;
+      Component.error = ({ error, name }: any) => <div>Ops! {error.message}, hello {name}</div>;
 
       const selector = "my-component";
 
       const output = (await SSRWebComponent({
         Component,
         selector,
+        name: 'world'
       })) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe("template");
       expect(output.props.children[0].props.shadowrootmode).toBe("open");
       expect(output.props.children[0].props.children[0].type).toBe("div");
-      expect(output.props.children[0].props.children[0].props.children).toBe(
-        "Ops! error",
+      expect(output.props.children[0].props.children[0].props.children.join('')).toBe(
+        "Ops! some error, hello world",
       );
     });
 

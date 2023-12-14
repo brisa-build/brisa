@@ -620,7 +620,7 @@ export default function SomeWebComponent() {
    /* some code */
 }
 
-SomeWebComponent.error = ({ error }, webContext: WebContext) => {
+SomeWebComponent.error = ({ error, ...props }, webContext: WebContext) => {
   return <p>Oops! {error.message}</p>;
 };
 ```
