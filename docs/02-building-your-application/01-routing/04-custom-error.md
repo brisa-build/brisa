@@ -41,7 +41,7 @@ export default function SomeServerComponent() {
   /* some JSX */
 }
 
-SomeServerComponent.error = ({ error }, requestContext: RequestContext) => {
+SomeServerComponent.error = ({ error, ...props }, requestContext: RequestContext) => {
   return <p>Oops! {error.message}</p>;
 };
 ```
@@ -54,7 +54,7 @@ export default function SomeWebComponent() {
   /* some JSX */
 }
 
-SomeWebComponent.error = ({ error }, webContext: WebContext) => {
+SomeWebComponent.error = ({ error, ...props }, webContext: WebContext) => {
   return <p>Oops! {error.message}</p>;
 };
 ```

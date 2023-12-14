@@ -164,11 +164,11 @@ describe("brisa core", () => {
         throw new Error("Test");
       };
 
-      Component.error = () => <div>Error</div>;
+      Component.error = ({ name, error }: any) => <div>Error {error.message}, hello {name}</div>;
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component name="world" />, testRequest);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<div>Error</div>");
+      expect(result).toBe("<div>Error Test, hello world</div>");
     });
 
     it("should render the error component as fallback if the nested component throws an error", async () => {

@@ -260,6 +260,7 @@ export default function brisaElement(
 
       const startRender = (
         fn: Render,
+        extraProps = {},
         renderSignals = signals(),
         propsField = PROPS,
       ) => {
@@ -273,7 +274,7 @@ export default function brisaElement(
             ? self.e(attr)
             : renderSignals.state(deserialize(self.getAttribute(attr)));
         }
-        const props = { children: SLOT_TAG, ...self[propsField] };
+        const props = { children: SLOT_TAG, ...self[propsField], ...extraProps };
 
         // Web context
         const webContext = {
@@ -307,6 +308,7 @@ export default function brisaElement(
         if (isFunction(render.suspense)) {
           await startRender(
             render.suspense!,
+            {},
             suspenseSignals,
             SUSPENSE_PROPS as "p",
           );
@@ -320,7 +322,7 @@ export default function brisaElement(
         suspenseSignals.reset();
         self.s!.reset();
         if (isFunction(render.error)) {
-          startRender(render.error!);
+          startRender(render.error!, { error: self.s!.state(e) });
         } else throw e;
       }
       for (const fn of fnToExecuteAfterMount) fn();

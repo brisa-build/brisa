@@ -36,11 +36,11 @@ export default async function SSRWebComponent({
     content = await (typeof Component.suspense === "function"
       ? Component.suspense(componentProps, webContext)
       : Component(componentProps, webContext));
-  } catch (err) {
+  } catch (error) {
     if (Component.error) {
-      content = await Component.error(err, componentProps, webContext);
+      content = await Component.error({ ...componentProps, error }, webContext);
     } else {
-      throw err;
+      throw error;
     }
   }
 
