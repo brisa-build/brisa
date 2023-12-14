@@ -40,6 +40,7 @@ const DISCONNECTED_CALLBACK = "dis" + CONNECTED_CALLBACK;
 const INNER_HTML = "inner" + HTML;
 const PROPS: "p" = "p";
 const SUSPENSE_PROPS = "l";
+const NULL = null;
 
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
@@ -185,7 +186,7 @@ export default function brisaElement(
         } else if (isReactiveArray(children)) {
           if (isReactiveArray((children as any)[0])) {
             for (let child of children as Children[]) {
-              mount(null, {}, child, el, r, effect);
+              mount(NULL, {}, child, el, r, effect);
             }
           } else {
             mount(...(children as [string, Attr, Children]), el, r, effect);
@@ -226,7 +227,7 @@ export default function brisaElement(
                   // Reactive child node
                   else if (isReactiveArray((child as Children[])[0])) {
                     for (let c of child as Children[]) {
-                      mount(null, {}, c, fragment, r(r2), effect);
+                      mount(NULL, {}, c, fragment, r(r2), effect);
                     }
                   } else if ((child as ReactiveArray).length) {
                     mount(...(child as ReactiveArray), fragment, r(r2), effect);
@@ -260,7 +261,7 @@ export default function brisaElement(
 
       const startRender = (
         fn: Render,
-        extraProps = {},
+        extraProps?: { [key: string]: unknown } | null,
         renderSignals = signals(),
         propsField = PROPS,
       ) => {
@@ -290,7 +291,7 @@ export default function brisaElement(
 
         cssStyle = "";
         return mount(
-          null,
+          NULL,
           {},
           fn(props, webContext),
           shadowRoot,
@@ -308,7 +309,7 @@ export default function brisaElement(
         if (isFunction(render.suspense)) {
           await startRender(
             render.suspense!,
-            {},
+            NULL,
             suspenseSignals,
             SUSPENSE_PROPS as "p",
           );
@@ -352,7 +353,7 @@ export default function brisaElement(
       const propsField = self[SUSPENSE_PROPS] ? SUSPENSE_PROPS : PROPS;
 
       // unmount + mount again when the key changes
-      if (name === KEY && oldValue != null && oldValue !== newValue) {
+      if (name === KEY && oldValue != NULL && oldValue !== newValue) {
         self[DISCONNECTED_CALLBACK]();
         self[CONNECTED_CALLBACK]();
       }
