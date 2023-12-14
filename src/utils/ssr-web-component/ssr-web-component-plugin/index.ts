@@ -36,11 +36,11 @@ export default function ssrWebComponentPlugin(
 
         detectedWebComponents[selector] = componentPath;
 
-        // Avoid transformation if it has the "ssr" attribute to "false"
+        // Avoid transformation if it has the "skipSSR" attribute
         if (
           value?.arguments?.[1]?.properties?.some(
             (prop: any) =>
-              prop?.key?.name === "ssr" && prop?.value?.value === false,
+              prop?.key?.name === "skipSSR" && prop?.value?.value !== false,
           )
         ) {
           return value;

@@ -74,10 +74,10 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it('should not convert a web-component to ServerComponent if has the attribute "ssr" set to false', () => {
+    it('should not convert a web-component to ServerComponent if has the attribute "skipSSR"', () => {
       const code = `
         export default function ServerComponent() {
-          return <web-component ssr={false} />;
+          return <web-component skipSSR />;
         }
       `;
       const allWebComponents = {
@@ -88,7 +88,28 @@ describe("utils", () => {
       );
       const expected = toExpected(`
         export default function ServerComponent() {
-          return <web-component ssr={false} />;
+          return <web-component skipSSR />;
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
+    it('should not convert a web-component to ServerComponent if has the attribute "skipSSR" set to true', () => {
+      const code = `
+        export default function ServerComponent() {
+          return <web-component skipSSR={true} />;
+        }
+      `;
+      const allWebComponents = {
+        "web-component": "src/components/web-component.tsx",
+      };
+      const output = normalizeQuotes(
+        wrapWithSSRWebComponent(code, allWebComponents).code,
+      );
+      const expected = toExpected(`
+        export default function ServerComponent() {
+          return <web-component skipSSR={true} />;
         }
       `);
 

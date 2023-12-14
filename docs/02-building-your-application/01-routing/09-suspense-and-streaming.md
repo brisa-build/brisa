@@ -88,10 +88,10 @@ Both server/web components use suspense during streaming.
 
 ### Suspense in Web-components
 
-By default all **web-components** are **Server Side Rendered**. Unless you use the `ssr={false}` attribute when consuming it:
+By default all **web-components** are **Server Side Rendered**. Unless you use the `skipSSR={true}` attribute when consuming it:
 
 ```tsx
-<my-web-component ssr={false} />
+<my-web-component skipSSR />
 ```
 
 Web-components have another benefit of suspense, and that is that it is applied dynamically as well, this means that if you have web-components that are not displayed in the initial HTML but are dynamically displayed later after a user interaction and need to do something asynchronous to load data, the content defined in the "suspense" will be displayed while loading this data.

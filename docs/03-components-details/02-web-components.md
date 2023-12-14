@@ -769,10 +769,10 @@ Within the Web Component the only ones that do **not run on the server** are:
 
 There are cases where we can avoid the SSR of some web component. It makes sense for these web components that are not available in the initial rendered page, for example they appear after some web interaction, such as a modal.
 
-To do this, all web components have available the `ssr` attribute. It's `true` by default _(this attribute does not need to be used when it is `true`)_, but you can use it to turn to `false`. This can be used in any web-component, either consumed from another web-component or from a server component.
+To do this, all web components have available the `skipSSR` attribute. It's `true` by default _(this attribute does not need to be used when it is `true`)_, but you can use it to turn to `false`. This can be used in any web-component, either consumed from another web-component or from a server component.
 
 ```tsx
-<some-web-component ssr={false} />
+<some-web-component skipSSR />
 ```
 
 ## UI-agnostic
