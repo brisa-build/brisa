@@ -4,15 +4,144 @@
 /// <reference lib="dom.iterable" />
 
 import { IntrinsicCustomElements } from "@/../build/_brisa/types";
-import { BunPlugin } from "bun";
+import { BunPlugin, MatchedRoute } from "bun";
 
+/**
+ * Description:
+ * 
+ * Request context is a set of utilities to use within your server components with the context of the request.
+ */
 export interface RequestContext extends Request {
+  /**
+   * Description:
+   * 
+   * The context is a map where you can store any value and use it in any server part: 
+   * middleware, layout, page, components, api, etc.
+   * 
+   * Example setting a value:
+   * 
+   * ```ts
+   * context.set('count', 0);
+   * ```
+   * 
+   * Example getting a value:
+   * 
+   * ```ts
+   * <div>{context.get('count')}</div>
+   * ```
+   * 
+   * Docs:
+   * 
+   * - [How to use `context`](https://brisa.dev/docs/components-details/server-components#context-context-method)
+   */
   context: Map<string, any>;
+
+  /**
+   * Description:
+   * 
+   * The route is the matched route of the request.
+   * 
+   * You can access to: 
+   * 
+   * params, filePath, pathname, query, name and kind,
+   * 
+   * Example:
+   * 
+   * ```ts
+   * <div>{route.pathname}</div>
+   * ```
+   */
   route?: MatchedRoute;
+  
+  /**
+   * Description:
+   * 
+   * The `i18n` object is a set of utilities to use within your server components 
+   * to access to the locale and consume the translations.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * const { t, locale } = i18n;
+   * 
+   * <div>{t('hello-world')}</div>
+   * ```
+   * 
+   * Docs:
+   * 
+   * - [How to use `i18n`](https://brisa.dev/docs/building-your-application/routing/internationalization)
+   */
   i18n: I18nFromRequest;
+
+  /**
+   * Description:
+   * 
+   * The `ws` is the WebSocket instance of the request.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * ws.send('Hello World');
+   * ```
+   * 
+   * Docs:
+   * 
+   * - [How to use `ws`](https://brisa.dev/docs/building-your-application/routing/websockets)
+   */
   ws?: ServerWebSocket<unknown>;
+
+  /**
+   * Description:
+   * 
+   * The `getIP` method returns the IP of the request.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * const ip = getIP();
+   * ```
+   */
   getIP: () => SocketAddress | null;
+
+  /**
+   * Description:
+   * 
+   * The `finalURL` is the URL of your page, regardless of the fact that for the users it is another one.
+   * 
+   * Example:
+   * 
+   * User enter to:
+   * 
+   * `/es/sobre-nosotros/`
+   * 
+   * But the `finalURL` is:
+   * 
+   * `/about-us`
+   * 
+   * Because your page is in `src/pages/about-us/index.tsx`
+   * 
+   * Docs:
+   * 
+   * - [How to use `finalURL`](https://brisa.dev/docs/building-your-application/routing/internationalization#final-url)
+   */
   finalURL: string;
+
+  /**
+   * Description:
+   * 
+   * The `id` is the unique identifier of the request. This id is used internally by Brisa,
+   * but we expose it to you because it can be useful for tracking.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * console.log(id); // 1edfa3c2-e101-40e3-af57-8890795dacd4
+   * ```
+   * 
+   * Docs:
+   * 
+   * - [How to use `id`](https://brisa.dev/docs/building-your-application/data-fetching/request-context)
+   */
   id: string;
 }
 

@@ -752,3 +752,16 @@ The main difference between them is that you can have multiple domains in `domai
 `hrefLang` is automatic managed by Brisa, however `rel=canonical` links not.
 
 For these [`domains`](<(#domain-routing)>) that have the same `defaultLocale` we recommend to manage in the [layout](/docs/building-your-application/routing/pages-and-layouts#layout) the [canonical](https://en.wikipedia.org/wiki/Canonical_link_element) links in order to prevent duplicate content issues in search engine optimization.
+
+## `finalURL`
+
+The `finalURL` is a field you have access to in the [RequestContext](/docs/building-your-application/data-fetching/request-context) and is the URL of your page, regardless of the fact that for the users it is another one.
+
+For example, if the user enters to `/es/sobre-nosotros/` the `finalURL` can be `/about-us` because your page is in `src/pages/about-us/index.tsx`.
+
+```tsx
+export default function SomeComponent({}, { i18n, finalURL, route }: RequestContext) {
+  console.log(`${finalURL} - ${i18n.locale} - ${route.pathname}`)
+  // /about-us - es - /es/sobre-nosotros/
+}
+```
