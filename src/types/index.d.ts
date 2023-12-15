@@ -19,12 +19,154 @@ export interface RequestContext extends Request {
 type Effect = () => void | Promise<void>;
 type Cleanup = Effect;
 
+/**
+ * Description:
+ * 
+ *  Web Context is a set of utilities to use within your web components without losing the context where you are. 
+ *  The state, cleanups, effects, and so on, will be applied without conflicting with other components.
+ */
 export interface WebContext {
+  /**
+   * Description:
+   * 
+   * The state is under a signal. This means that to consume it you have to use the `.value` clause.
+   * 
+   * Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
+   * 
+   * Example declaration:
+   * 
+   * ```ts
+   * const count = state<number>(0);
+   * ```
+   * 
+   * Example usage:
+   * 
+   * ```ts
+   * <div>{count.value}</div>
+   * ```
+   * 
+   * Example mutation:
+   * 
+   * ```ts
+   * count.value += 1;
+   * ```
+   * 
+   * Docs:
+   *  - [How to use `state`](https://brisa.dev/docs/components-details/web-components#state-state-method)
+   */
   state<T>(initialValue?: T): { value: T };
+
+  /**
+   * Description:
+   * 
+   * The effect is a function that will be executed when the component is mount and 
+   * every time the state/prop signal that is registered inside changes.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * effect(() => { console.log('Hello World') })
+   * ```
+   * 
+   *  - will be executed when the component is mount
+   * 
+   * ```ts
+   * effect(() => { console.log(count.value) })
+   * ```
+   * 
+   *  - will be executed when the component is mount and every time the `count` state changes
+   * 
+   * Docs:
+   * 
+   * - [How to use `effect`](https://brisa.dev/docs/components-details/web-components#effect-effect-method)
+   */
   effect(fn: Effect): void;
+
+  /**
+   * Description:
+   * 
+   * The cleanup is a function that will be executed when the component is unmount or to clean up an effect.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * cleanup(() => { console.log('Hello World') })
+   * ```
+   * 
+   *  - will be executed when the component is unmount
+   * 
+   * ```ts
+   * effect(() => { cleanup(() => { console.log('Hello World') }) })
+   * ```
+   * 
+   *  - will be executed when the component is unmount or when the effect is re-executed
+   * 
+   * Docs:
+   * 
+   * - [How to use `cleanup`](https://brisa.dev/docs/components-details/web-components#clean-effects-cleanup-method)
+   */
   cleanup(fn: Cleanup): void;
+
+  /**
+   * Description:
+   * 
+   * The `derived` method is useful to create signals derived from other signals such as state or props.
+   * 
+   * Example of declaration:
+   * 
+   * ```ts 
+   * const doubleCount = derived(() => count.value * 2);
+   * ```
+   * 
+   * Example of usage:
+   * 
+   * ```ts
+   * <div>{doubleCount.value}</div>
+   * ```
+   * 
+   * Docs:
+   * 
+   * - [How to use `derived`](https://brisa.dev/docs/components-details/web-components#derived-state-and-props-derived-method)
+   */
   derived<T>(fn: () => T): { value: T };
+
+  /**
+   * Description:
+   * 
+   * The `onMount` method is triggered only once, when the component has been mounted. 
+   * In the case that the component is unmounted and mounted again, it will be called again, 
+   * although it would be another instance of the component starting with its initial state.
+   * 
+   * It is useful for using things during the life of the component, for example document events, 
+   * or for accessing rendered DOM elements and having control over them.
+   * 
+   * To delete the events recorded during this lifetime, there is the following 
+   * [`cleanup`](#clean-effects-cleanup-method) method.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * onMount(() => { console.log('Yeah! Component has been mounted') })
+   * ```
+   * 
+   * Docs:
+   * 
+   * - [How to use `onMount`](https://brisa.dev/docs/components-details/web-components#effect-on-mount-onmount-method)
+   */
   onMount(fn: Effect): void;
+  
+  /**
+   * Description:
+   * 
+   * The `css` method is used to inject CSS into the DOM.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * css`body { background-color: red; }`
+   * ```
+   * 
+   */ 
   css(strings: TemplateStringsArray, ...values: string[]): void;
 }
 
@@ -172,17 +314,53 @@ export interface ComponentType extends JSXComponent {
   ) => JSXNode | Promise<JSXNode>;
 }
 
-export function dangerHTML(html: string): {
+/**
+ * Description:
+ * 
+ *   Inject HTML string to the DOM.
+ * 
+ * Example:
+ * 
+ * ```ts
+ * <div>{dangerHTML('<h1>Hello World</h1>')}</div>
+ * ```
+ *
+ * Docs:
+ *
+ * - [How to use `dangerHTML`](https://brisa.dev/docs/components-details/web-components#inject-html-dangerhtml)
+ */
+export function dangerHTML(html: string): DangerHTMLOutput;
+
+type DangerHTMLOutput = {
   type: "HTML";
   props: {
     html: string;
   };
 };
 
+/**
+ * Description:
+ * 
+ *   `createPortal` lets you render some children into a different part of the DOM. 
+ * 
+ *    To create a portal, call `createPortal`, passing some JSX, and the DOM node where it should be rendered.
+ * 
+ * Example:
+ * 
+ * ```ts
+ * <div>{createPortal(<h1>Hello World</h1>, document.body)}</div>
+ * ```
+ *
+ * Docs:
+ *
+ * - [How to use `createPortal`](https://brisa.dev/docs/components-details/web-components#portals-createportal)
+ */
 export function createPortal(
   element: JSX.Element,
   target: HTMLElement,
-): {
+): CreatePortalOutput;
+
+type CreatePortalOutput = {
   type: "portal";
   props: {
     element: JSX.Element;
