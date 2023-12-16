@@ -1,5 +1,7 @@
 import { ContextProvider } from "../../types";
 
+export const CURRENT_PROVIDER_ID = Symbol("current-provider-id");
+
 export function contextProvider<T>({
   context,
   value,
@@ -7,10 +9,10 @@ export function contextProvider<T>({
 }: ContextProvider<T>) {
   const id = Symbol("context-provider");
   const contextStore = store.get(context.id) ?? new Map<symbol, T>();
-  const currentProviderId = contextStore.get("currentProviderId");
+  const currentProviderId = contextStore.get(CURRENT_PROVIDER_ID);
 
   contextStore.set(id, value);
-  contextStore.set("currentProviderId", id);
+  contextStore.set(CURRENT_PROVIDER_ID, id);
 
   store.set(context.id, contextStore);
 
@@ -20,9 +22,9 @@ export function contextProvider<T>({
     contextStore.delete(id);
 
     if (currentProviderId) {
-      contextStore.set("currentProviderId", currentProviderId);
+      contextStore.set(CURRENT_PROVIDER_ID, currentProviderId);
     } else {
-      contextStore.delete("currentProviderId");
+      contextStore.delete(CURRENT_PROVIDER_ID);
     }
 
     store.set(context.id, contextStore);
