@@ -6,6 +6,7 @@ import { ComponentType, RequestContext, Translate } from "../../types";
 import dangerHTML from "../danger-html";
 import extendRequestContext from "../extend-request-context";
 import SSRWebComponent from "../ssr-web-component";
+import createContext from "../create-context";
 
 const emptyI18n = {
   locale: "",
@@ -1005,6 +1006,98 @@ describe("brisa core", () => {
       const stream = renderToReadableStream(element, testRequest);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(`<div data-test="{'a':1,'b':2}"></div>`);
+    });
+
+    it('should work context with "useContext" hook without context-provider', async () => {
+      type TestContext = { name: string };
+      const context = createContext<TestContext>({ name: "bar" });
+
+      const Component = ({}, { useContext }: RequestContext) => {
+        const contextSignal = useContext<TestContext>(context);
+        return <div>{contextSignal.value.name}</div>;
+      };
+
+      const stream = renderToReadableStream(<Component />, testRequest);
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(`<div>bar</div>`);
+    });
+
+    it('should work context with "useContext" hook with context-provider', async () => {
+      type TestContext = { name: string };
+      const context = createContext<TestContext>({ name: "bar" });
+
+      const Component = ({}, { useContext }: RequestContext) => {
+        const contextSignal = useContext<TestContext>(context);
+        return <div>{contextSignal.value.name}</div>;
+      };
+
+      const stream = renderToReadableStream(
+        <context-provider context={context} value={{ name: "foo" }}>
+          <Component />
+        </context-provider>,
+        testRequest,
+      );
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(`<div>foo</div>`);
+    });
+
+    it('should work context with "useContext" hook with context-provider and multiple providers', async () => {
+      type TestContext = { name: string };
+
+      const context = createContext<TestContext>({ name: "bar" });
+
+      const Component = ({}, { useContext }: RequestContext) => {
+        const contextSignal = useContext<TestContext>(context);
+        return <div>{contextSignal.value.name}</div>;
+      };
+
+      const Parent = () => {
+        return Array.from({ length: 5 }, (_, i) => (
+          <context-provider context={context} value={{ name: "foo" + i }}>
+            <Component />
+          </context-provider>
+        ));
+      };
+
+      const stream = renderToReadableStream(<Parent />, testRequest);
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        `<div>foo0</div><div>foo1</div><div>foo2</div><div>foo3</div><div>foo4</div>`,
+      );
+    });
+
+    it('should work context with "useContext" hook with context-provider and multiple providers and nested context', async () => {
+      type TestContext = { name: string };
+      const context = createContext<TestContext>({ name: "bar" });
+
+      const Component = ({}, { useContext }: RequestContext) => {
+        const contextSignal = useContext<TestContext>(context);
+        return <div>{contextSignal.value.name}</div>;
+      };
+
+      const Parent = () => {
+        return Array.from({ length: 5 }, (_, i) => (
+          <context-provider context={context} value={{ name: "foo" + i }}>
+            <context-provider context={context} value={{ name: "foo2" + i }}>
+              <Component />
+            </context-provider>
+          </context-provider>
+        ));
+      };
+
+      const element = <Parent />;
+      const stream = renderToReadableStream(element, testRequest);
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        `<div>foo20</div><div>foo21</div><div>foo22</div><div>foo23</div><div>foo24</div>`,
+      );
     });
   });
 });

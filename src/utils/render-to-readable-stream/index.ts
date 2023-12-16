@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import type {
   ComponentType,
+  JSXElement,
   JSXNode,
   Props,
   RequestContext,
@@ -10,9 +11,12 @@ import extendStreamController, {
 } from "../extend-stream-controller";
 import generateHrefLang from "../generate-href-lang";
 import renderAttributes from "../render-attributes";
+import { contextProvider } from "../context-provider/server";
 
+const CONTEXT_PROVIDER = "context-provider";
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const TAG_TO_IGNORE = new Set([CONTEXT_PROVIDER]);
 
 export default function renderToReadableStream(
   element: JSX.Element,
@@ -27,7 +31,7 @@ export default function renderToReadableStream(
       );
 
       const renderingPromise = enqueueDuringRendering(
-        element,
+        element as JSXElement,
         request,
         extendedController,
       )
@@ -64,14 +68,14 @@ async function enqueueDuringRendering(
     }
 
     const { type, props } = elementContent;
-    const isFragment = type?.__isFragment;
+    const isTagToIgnore = type?.__isFragment || TAG_TO_IGNORE.has(type);
 
     if (type === "HTML") {
       controller.enqueue(props.html, suspenseId);
       continue;
     }
 
-    if (isComponent(type) && !isFragment) {
+    if (isComponent(type) && !isTagToIgnore) {
       const componentContent = { component: type, props };
       const isSuspenseComponent = isComponent(type.suspense);
 
@@ -106,9 +110,21 @@ async function enqueueDuringRendering(
     if (controller.insideHeadTag && props.id) controller.addId(props.id);
 
     const attributes = renderAttributes({ props, request, type });
+    const isContextProvider = type === CONTEXT_PROVIDER;
+    let cleanContext;
 
+    // Register context provider
+    if (isContextProvider) {
+      cleanContext = contextProvider({
+        context: props.context,
+        value: props.value,
+        store: request.store,
+      });
+    }
+
+    // Node tag start
     controller.startTag(
-      isFragment ? null : `<${type}${attributes}>`,
+      isTagToIgnore ? null : `<${type}${attributes}>`,
       suspenseId,
     );
 
@@ -137,16 +153,19 @@ async function enqueueDuringRendering(
         "/pages-client",
       );
 
-      if (fs.existsSync(clientFile)) {
+      if (fs.existsSync(clientFile!)) {
         controller.enqueue(
-          `<script>${await Bun.file(clientFile).text()}</script>`,
+          `<script>${await Bun.file(clientFile!).text()}</script>`,
           suspenseId,
         );
       }
     }
 
+    // Clean consumed context
+    if (cleanContext) cleanContext();
+
     // Node tag end
-    controller.endTag(isFragment ? null : `</${type}>`, suspenseId);
+    controller.endTag(isTagToIgnore ? null : `</${type}>`, suspenseId);
   }
 }
 
