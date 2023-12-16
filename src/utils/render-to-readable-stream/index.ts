@@ -22,7 +22,7 @@ export default function renderToReadableStream(
   return new ReadableStream({
     async start(controller) {
       const extendedController = extendStreamController(controller, head);
-      const abortPromise = new Promise((res) => 
+      const abortPromise = new Promise((res) =>
         request.signal.addEventListener("abort", res),
       );
 

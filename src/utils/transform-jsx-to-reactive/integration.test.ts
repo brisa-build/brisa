@@ -3214,7 +3214,7 @@ describe("integration", () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Ops!</div>");
     });
 
-      it('should be possible to have access to the error inside the error component', async () => {
+    it("should be possible to have access to the error inside the error component", async () => {
       window.mockError = mock((s: string) => {});
 
       const code = `
