@@ -17,10 +17,10 @@ describe("brisa core", () => {
       });
       expect(requestContext.route).toEqual(route);
       expect(requestContext.finalURL).toEqual(request.url);
-      expect(requestContext.context).toBeInstanceOf(Map);
+      expect(requestContext.store).toBeInstanceOf(Map);
     });
 
-    it("should work context", () => {
+    it("should work store", () => {
       const request = new Request("https://example.com");
       const route = {
         path: "/",
@@ -29,8 +29,8 @@ describe("brisa core", () => {
         originalRequest: request,
         route,
       });
-      requestContext.context.set("foo", "bar");
-      expect(requestContext.context.get("foo")).toBe("bar");
+      requestContext.store.set("foo", "bar");
+      expect(requestContext.store.get("foo")).toBe("bar");
     });
 
     it("should work i18n", () => {
@@ -43,6 +43,7 @@ describe("brisa core", () => {
         originalRequest: request,
         route,
         i18n: {
+          pages: {},
           locale: "es",
           defaultLocale: "en",
           locales: ["en", "es"],

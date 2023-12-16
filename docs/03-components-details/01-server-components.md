@@ -5,6 +5,10 @@ description: Understand how to use server components in Brisa.
 
 TODO
 
-## Context (`context` method)
+## Store (`store` method)
+
+TODO
+
+## Context
 
 TODO

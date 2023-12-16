@@ -109,7 +109,7 @@ export default async function Layout(
 }
 ```
 
-The `fetch` is directly native and has no wrapper to control the cache. We recommend that you do not do the same `fetch` in several places, but use the [`context`](/docs/building-your-application/data-fetching/request-context) to store the data and consume it from any component.
+The `fetch` is directly native and has no wrapper to control the cache. We recommend that you do not do the same `fetch` in several places, but use the [`store`](/docs/building-your-application/data-fetching/request-context) to store the data and consume it from any component.
 
 ## Response headers in layouts and pages
 
@@ -154,7 +154,7 @@ import { type RequestContext } from "brisa";
 export default async function Layout({}, request: RequestContext) {
   const data = await getData(request);
 
-  request.context.set("data", data);
+  request.store.set("data", data);
 
   return (
     <html>
@@ -175,8 +175,8 @@ type Props = {
   name: string;
 };
 
-export default function SomeComponent(props: Props, request: RequestContext) {
-  const data = request.context.get("data");
+export default function SomeComponent(props: Props, { store }: RequestContext) {
+  const data = store.get("data");
 
   return <h1>Hello {data[props.name]}</h1>;
 }

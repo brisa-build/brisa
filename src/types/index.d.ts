@@ -15,26 +15,26 @@ export interface RequestContext extends Request {
   /**
    * Description:
    * 
-   * The context is a map where you can store any value and use it in any server part: 
+   * The store is a map where you can store any value and use it in any server part: 
    * middleware, layout, page, components, api, etc.
    * 
    * Example setting a value:
    * 
    * ```ts
-   * context.set('count', 0);
+   * store.set('count', 0);
    * ```
    * 
    * Example getting a value:
    * 
    * ```ts
-   * <div>{context.get('count')}</div>
+   * <div>{store.get('count')}</div>
    * ```
    * 
    * Docs:
    * 
-   * - [How to use `context`](https://brisa.dev/docs/components-details/server-components#context-context-method)
+   * - [How to use `store`](https://brisa.dev/docs/components-details/server-components#store-store-method)
    */
-  context: Map<string, any>;
+  store: Map<string, any>;
 
   /**
    * Description:

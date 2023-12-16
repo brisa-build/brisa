@@ -160,7 +160,7 @@ export function responseHeaders(request, responseStatus) {
 
 ## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders`
 
-You can share data between different parts of the application using the [`request context`](/docs/building-your-application/data-fetching/request-context).
+You can share data between different parts of the application using the [`store`](/docs/building-your-application/data-fetching/request-context#store).
 
 ```ts filename="middleware.ts" switcher
 import { type RequestContext } from "brisa";
@@ -168,7 +168,7 @@ import { type RequestContext } from "brisa";
 export default async function middleware(request: RequestContext) {
   const data = await getData(request);
 
-  request.context.set("data", data);
+  request.store.set("data", data);
 }
 ```
 
@@ -180,10 +180,10 @@ type Props = {
 };
 
 export default function SomeComponent(props: Props, request: RequestContext) {
-  const data = request.context.get("data");
+  const data = request.store.get("data");
 
   return <h1>Hello {data[props.name]}</h1>;
 }
 ```
 
-If you want to know more [check this out](<(/docs/building-your-application/data-fetching/request-context)>).
+If you want to know more [check this out](/docs/building-your-application/data-fetching/request-context#store).

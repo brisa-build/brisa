@@ -199,7 +199,7 @@ export default function optimizeEffects(
   }
 
   // This function is called to set the effect name, cleanup name and identifier
-  // from the web context properties that have all web components as second parameter
+  // from the webContext properties that have all web components as second parameter
   //
   // ex: here "e" is the effect name and "c" is the cleanup name:
   // const Component = (props, {state, effect: e, cleanup: c}) => {}

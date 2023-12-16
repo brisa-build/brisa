@@ -30,10 +30,10 @@ export default function extendRequestContext({
   originalRequest.route =
     currentRequestContext?.route ?? route ?? originalRequest.route;
 
-  // context
-  originalRequest.context =
-    currentRequestContext?.context ??
-    originalRequest.context ??
+  // store
+  originalRequest.store =
+    currentRequestContext?.store ??
+    originalRequest.store ??
     new Map<string, any>();
 
   // id
