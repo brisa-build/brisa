@@ -164,9 +164,16 @@ describe("brisa core", () => {
         throw new Error("Test");
       };
 
-      Component.error = ({ name, error }: any) => <div>Error {error.message}, hello {name}</div>;
+      Component.error = ({ name, error }: any) => (
+        <div>
+          Error {error.message}, hello {name}
+        </div>
+      );
 
-      const stream = renderToReadableStream(<Component name="world" />, testRequest);
+      const stream = renderToReadableStream(
+        <Component name="world" />,
+        testRequest,
+      );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<div>Error Test, hello world</div>");
     });
@@ -938,9 +945,15 @@ describe("brisa core", () => {
       // abort the request
       req.signal.dispatchEvent(new Event("abort"));
 
+      // just the next chunk is not ready aborted
       const { done: done2, value: value2 } = await reader.read();
-      expect(done2).toBe(true);
-      expect(value2).toBe(undefined);
+      expect(done2).toBe(false);
+      expect(value2).toBe('<head>');
+
+      // Not continue reading because the request is aborted
+      const { done: done3, value: value3 } = await reader.read();
+      expect(done3).toBe(true);
+      expect(value3).toBe(undefined);
     });
 
     it('should render "open" attribute without content in the "dialog" tag when open={true}', async () => {

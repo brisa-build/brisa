@@ -21,15 +21,20 @@ export default function renderToReadableStream(
 ) {
   return new ReadableStream({
     async start(controller) {
-      request.signal.addEventListener("abort", () => controller.close());
-
       const extendedController = extendStreamController(controller, head);
-
-      await enqueueDuringRendering(element, request, extendedController).catch(
-        (e) => controller.error(e),
+      const abortPromise = new Promise((res) => 
+        request.signal.addEventListener("abort", res),
       );
 
-      await extendedController.waitSuspensedPromises();
+      const renderingPromise = enqueueDuringRendering(
+        element,
+        request,
+        extendedController,
+      )
+        .then(() => extendedController.waitSuspensedPromises())
+        .catch((e) => controller.error(e));
+
+      await Promise.race([abortPromise, renderingPromise]);
 
       controller.close();
 
