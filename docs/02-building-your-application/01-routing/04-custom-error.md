@@ -13,7 +13,7 @@ export default function Custom404() {
 }
 ```
 
-> [!TIP] 
+> [!TIP]
 > **Good to know**: In this page you can access to the `request context`, `fetch` data, change the `head` content (meta tags, etc), and change the `response headers`, in the same way of the rest of pages.
 
 ## 500 Page
@@ -26,7 +26,7 @@ export default function Custom500({ error }, requestContext) {
 }
 ```
 
-> [!TIP] 
+> [!TIP]
 > **Good to know**: In this page you can access to the `request context`, `fetch` data, change the `head` content (meta tags, etc), and change the `response headers`, in the same way of the rest of pages.
 
 ### Errors in component-level
@@ -34,21 +34,26 @@ export default function Custom500({ error }, requestContext) {
 If you want to control errors at the component level instead of displaying a whole new page with the error, you can make the components have the error extension by adding the `ComponentName.error`:
 
 Example [server component](/docs/components-details/server-components):
+
 ```tsx
-import { RequestContext } from 'brisa';
+import { RequestContext } from "brisa";
 
 export default function SomeServerComponent() {
   /* some JSX */
 }
 
-SomeServerComponent.error = ({ error, ...props }, requestContext: RequestContext) => {
+SomeServerComponent.error = (
+  { error, ...props },
+  requestContext: RequestContext,
+) => {
   return <p>Oops! {error.message}</p>;
 };
 ```
 
 Example [web component](/docs/components-details/web-components):
+
 ```tsx
-import { WebContext } from 'brisa';
+import { WebContext } from "brisa";
 
 export default function SomeWebComponent() {
   /* some JSX */

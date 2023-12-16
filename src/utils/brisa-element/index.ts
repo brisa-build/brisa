@@ -275,7 +275,11 @@ export default function brisaElement(
             ? self.e(attr)
             : renderSignals.state(deserialize(self.getAttribute(attr)));
         }
-        const props = { children: SLOT_TAG, ...self[propsField], ...extraProps };
+        const props = {
+          children: SLOT_TAG,
+          ...self[propsField],
+          ...extraProps,
+        };
 
         // Web context
         const webContext = {

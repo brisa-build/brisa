@@ -36,6 +36,18 @@ export default function extendRequestContext({
     originalRequest.store ??
     new Map<string, any>();
 
+  // useContext
+  originalRequest.useContext = (ctx) => {
+    const store = originalRequest.store;
+    const context = store.get(ctx.id);
+
+    if (!context) return { value: ctx.defaultValue };
+
+    return {
+      value: context.get(context.get("currentProviderId")) ?? ctx.defaultValue,
+    };
+  };
+
   // id
   originalRequest.id = currentRequestContext?.id ?? id ?? originalRequest.id;
 

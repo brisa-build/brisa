@@ -1,5 +1,7 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
 import extendRequestContext from ".";
+import createContext from "../create-context";
+import { contextProvider } from "../context-provider/server";
 
 describe("brisa core", () => {
   afterEach(() => {
@@ -74,6 +76,62 @@ describe("brisa core", () => {
       });
 
       expect(requestContext.ws.send()).toBe("some message");
+    });
+
+    it("should return the default value when the context is not found", () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const { useContext } = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      const context = createContext("foo");
+      expect(useContext(context).value).toBe("foo");
+    });
+
+    it("should return the provider value when has a context", () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const context = createContext("foo");
+      const { useContext, store } = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      const cleanProvider = contextProvider({ context, value: "bar", store });
+      expect(useContext(context).value).toBe("bar");
+      cleanProvider();
+      expect(useContext(context).value).toBe("foo");
+    });
+
+    it("should return the last provider value when has multiple providers", () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const context = createContext("foo");
+      const { useContext, store } = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      const cleanProviderParent = contextProvider({
+        context,
+        value: "bar",
+        store,
+      });
+      const cleanProviderChild = contextProvider({
+        context,
+        value: "baz",
+        store,
+      });
+      expect(useContext(context).value).toBe("baz");
+      cleanProviderChild();
+      expect(useContext(context).value).toBe("bar");
+      cleanProviderParent();
+      expect(useContext(context).value).toBe("foo");
     });
   });
 });

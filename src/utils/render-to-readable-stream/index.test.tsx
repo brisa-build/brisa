@@ -948,7 +948,7 @@ describe("brisa core", () => {
       // just the next chunk is not ready aborted
       const { done: done2, value: value2 } = await reader.read();
       expect(done2).toBe(false);
-      expect(value2).toBe('<head>');
+      expect(value2).toBe("<head>");
 
       // Not continue reading because the request is aborted
       const { done: done3, value: value3 } = await reader.read();

@@ -190,7 +190,7 @@ export default {
 
 Brisa supports to consume translations inspired by libraries such as [i18next](https://www.i18next.com/) and [next-translate](https://github.com/aralroca/next-translate).
 
-> [!TIP] 
+> [!TIP]
 > **Good to know**: It only occupies 400B of client code if you consume translations in the web-components, if you only use it in server-components, pages, layout, api, middleware, it is 0B of client code.
 
 In order to consume translations, you need first to define the `messages` property in `src/i18n.js` file:
@@ -226,8 +226,7 @@ export default i18nConfig;
 
 After this, you can consume translations in every part of your app through the [request context](/docs/building-your-application/data-fetching/request-context): `middleware`, `api` routes, `page` routes, all page components, `responseHeaders`, `layout`, `Head` of each page...
 
-> [!IMPORTANT]
-> **Important in TypeScript**: The generic type `<typeof en>` in `I18nConfig` enables type-safe consumption of translations with the `t` function by resolving the keys, keys with plurals and nested keys from the preferred locale. This allows IDE autocompletion and type checking of translation keys throughout the codebase, improving productivity and avoiding translation bugs due to typos or invalid keys.
+> [!IMPORTANT] > **Important in TypeScript**: The generic type `<typeof en>` in `I18nConfig` enables type-safe consumption of translations with the `t` function by resolving the keys, keys with plurals and nested keys from the preferred locale. This allows IDE autocompletion and type checking of translation keys throughout the codebase, improving productivity and avoiding translation bugs due to typos or invalid keys.
 
 The generic `I18nConfig<typeof en>` allows you to activate type-safe consuming translations with the `t` function. Displaying to you all the keys from the preferred locale messages, resolving plurals and nested values.
 
@@ -760,8 +759,11 @@ The `finalURL` is a field you have access to in the [RequestContext](/docs/build
 For example, if the user enters to `/es/sobre-nosotros/` the `finalURL` can be `/about-us` because your page is in `src/pages/about-us/index.tsx`.
 
 ```tsx
-export default function SomeComponent({}, { i18n, finalURL, route }: RequestContext) {
-  console.log(`${finalURL} - ${i18n.locale} - ${route.pathname}`)
+export default function SomeComponent(
+  {},
+  { i18n, finalURL, route }: RequestContext,
+) {
+  console.log(`${finalURL} - ${i18n.locale} - ${route.pathname}`);
   // /about-us - es - /es/sobre-nosotros/
 }
 ```
