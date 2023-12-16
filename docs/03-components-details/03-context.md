@@ -30,7 +30,7 @@ The Provider does **not need any import**. You can use the custom element `conte
 
 Although in both server and client the context is used exactly the same, the main difference between them is the following:
 
-In the server-components the `context-provider` is a tag that does not end in the HTML, it is only used so that the rendering from the server knows how to manage the context. That is to say, the final HTML would be only the HTML inside AnotherComponent.
+In the server-components the `context-provider` is a tag that does not end in the HTML, it is only used so that the rendering from the server knows how to manage the context. That is to say, the final HTML would be only the HTML inside `AnotherComponent`.
 
 **Server component:**
 
@@ -47,7 +47,7 @@ export default function ServerComponent() {
 }
 ```
 
-In web-components if there is the actual `context-provider` web-component to be able to manage the context on the client. That is to say, the final HTML would be the tag of the `context-provider` + the HTML of the another-component.
+In web-components if there is the actual `context-provider` web-component to be able to manage the context on the client. That is to say, the final HTML would be the tag of the `context-provider` + the HTML of the `another-component`.
 
 **Web component:**
 
