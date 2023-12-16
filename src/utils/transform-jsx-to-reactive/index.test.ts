@@ -995,7 +995,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should add the h function when there are more web context attributes", () => {
+      it("should add the h function when there are more webContext attributes", () => {
         const input = `
           export default function Component({ }, { effect, cleanup, state }: any) {
             const someState = state(0);

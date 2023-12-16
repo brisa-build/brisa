@@ -43,7 +43,7 @@ export default function manageWebContextField(
     );
     if (!existFieldName) componentParams[1].properties.push(property);
   }
-  // convert function ({}, context) {} to function ({ effect, ...context }) {}
+  // convert function ({}, webContext) {} to function ({ effect, ...webContext }) {}
   else if (componentParams[1]?.type === "Identifier") {
     const props = componentParams[1];
     componentParams[1] = {

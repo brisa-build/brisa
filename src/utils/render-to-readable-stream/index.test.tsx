@@ -112,9 +112,9 @@ describe("brisa core", () => {
       expect(result).toBe(expected);
     });
 
-    it("should be possible to provide and consume context", async () => {
+    it("should be possible to set and get store values", async () => {
       const ComponentChild = ({}, request: RequestContext) => (
-        <div>Hello {request.context.get("testData").testName}</div>
+        <div>Hello {request.store.get("testData").testName}</div>
       );
 
       const Component = (
@@ -125,7 +125,7 @@ describe("brisa core", () => {
         const query = new URLSearchParams(url.search);
         const testName = query.get("name") || name;
 
-        request.context.set("testData", { testName });
+        request.store.set("testData", { testName });
         return <ComponentChild />;
       };
 

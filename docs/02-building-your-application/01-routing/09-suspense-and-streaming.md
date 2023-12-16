@@ -31,13 +31,13 @@ In this example we are registering `suspense` to display a loading state meanwhi
 import { type RequestContext } from "brisa";
 
 // If it does not have the suspense, it waits to show the content, otherwise, it puts it in suspense and is displayed once is available
-export default async function SomeComponent({}, { context, i18n }: RequestContext) {
+export default async function SomeComponent({}, { store, i18n }: RequestContext) {
   const { t } = i18n
   const user = await getUser();
   const message = t('hello-username', { username: user.username })
 
-  // Save user inside the request context to avoid prop drilling
-  context.set('user', user);
+  // Save user inside the store to avoid prop drilling
+  store.set('user', user);
 
   return <Card title={message}><UserContent /></Card>
 }
@@ -56,12 +56,12 @@ SomeComponent.error = ({ error }) => {
 
 ```jsx filename="src/components/some-component.jsx" switcher
 // If it does not have the suspense, it waits to show the content, otherwise, it puts it in suspense and is displayed once is available
-export default async function SomeComponent({}, { context, i18n }) {
+export default async function SomeComponent({}, { store, i18n }) {
   const user = await getUser();
   const message = i18n.t('hello-username', { username: user.username })
 
-  // Save user inside the request context to avoid prop drilling
-  context.set('user', user);
+  // Save user inside the store to avoid prop drilling
+  store.set('user', user);
 
   return <Card title={message}><UserContent /></Card>
 }
@@ -110,30 +110,30 @@ MyWebComponent.suspense = (props, webContext) => <div>loading...</div>;
 
 You can do a `fetch` in the render because in Brisa there are no rerenders, so it will always run only once mouting the component.
 
-Another benefit of web-components is the suspense defined therein is reactive to `props`, `state`, [`context`](docs/components-details/web-components#context) and store. So you can make it interactive from the client if you need to.
+Another benefit of web-components is the suspense defined therein is reactive to `props`, `state`, `context` and `store`. So you can make it interactive from the client if you need to.
 
-Example displaying different texts during suspense using [`context`](docs/components-details/web-components#context):
+Example displaying different texts during suspense using [`store`](docs/components-details/web-components#store):
 
 ```tsx
 import { WebContext } from 'brisa'
 
-export default async function MyWebComponent({}, { context }: WebContext) {
-  context.set('suspense-message', 'Loading step 1 ...')
+export default async function MyWebComponent({}, { store }: WebContext) {
+  store.set('suspense-message', 'Loading step 1 ...')
   const firstResponse = await fetch(/* ... */);
-  context.set('suspense-message', 'Loading step 2 ...')
+  store.set('suspense-message', 'Loading step 2 ...')
   const secondResponse = await fetch(/* ... */);
 
   return <div>{firstResponse.foo} {secondResponse.bar}</div>
 }
 
 // Display reactive messages from context during the suspense phase:
-MyWebComponent.suspense = ({}, {context}: WebContext) {
-  return context.get('suspense-message').value
+MyWebComponent.suspense = ({}, { store }: WebContext) {
+  return store.get('suspense-message').value
 }
 ```
 
 Also works during streaming. Although loading data is done at the client-side. That is, the `suspense` is rendered on the server with SSR, and on the client-side the real component is loaded by updating the suspense phase until it has the content. That is, these **`fetch`** inside the component will **never be done from the server** in the case of web-components.
 
-TODO: Implement context in client + test that this example is working fine
+TODO: Implement store in client + test that this example is working fine
 
 TODO: Implement the same behavior in the server + add docs about it
