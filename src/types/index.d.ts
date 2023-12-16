@@ -51,7 +51,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `useContext`](https://brisa.dev/docs/components-details/server-components#usecontext)
+   * - [How to use `useContext`](https://brisa.dev/docs/components-details/server-components#consume-context-usecontext)
    */
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
@@ -506,7 +506,7 @@ type BrisaContext<T> = {
  *
  * Docs:
  *
- * - [How to use `createContext`](https://brisa.dev/docs/components-details/server-components#createcontext)
+ * - [How to use `createContext`](https://brisa.dev/docs/components-details/server-components#create-context-createcontext)
  */
 export function createContext<T>(defaultValue?: T): BrisaContext<T>;
 
