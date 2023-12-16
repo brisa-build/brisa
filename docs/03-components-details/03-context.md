@@ -7,16 +7,15 @@ Context provides a way to pass data through the component tree without having to
 
 In a typical Brisa application, data is passed top-down (parent to child) via props, but such usage can be cumbersome for certain types of props (e.g. locale preference, UI theme) that are required by many components within an application. Context provides a way to share values like these between components without having to explicitly pass a prop through every level of the tree.
 
-
 ### Create Context (`createContext`)
 
 `createContext` lets you create a context that components can provide or read.
 
 ```ts
-import { createContext } from 'brisa';
+import { createContext } from "brisa";
 
-const defaultValue = 'foo';
-const SomeContext = createContext(defaultValue)
+const defaultValue = "foo";
+const SomeContext = createContext(defaultValue);
 ```
 
 Parameters:
@@ -34,31 +33,33 @@ Although in both server and client the context is used exactly the same, the mai
 In the server-components the `context-provider` is a tag that does not end in the HTML, it is only used so that the rendering from the server knows how to manage the context. That is to say, the final HTML would be only the HTML inside AnotherComponent.
 
 **Server component:**
-```tsx
-import { createContext } from 'brisa';
-import AnotherComponent from '@/components/another-component';
 
-const ctx = createContext('foo');
+```tsx
+import { createContext } from "brisa";
+import AnotherComponent from "@/components/another-component";
+
+const ctx = createContext("foo");
 
 export default function ServerComponent() {
   <context-provider context={ctx} value="bar">
     <AnotherComponent />
-  </context-provider>
+  </context-provider>;
 }
 ```
 
 In web-components if there is the actual `context-provider` web-component to be able to manage the context on the client. That is to say, the final HTML would be the tag of the `context-provider` + the HTML of the another-component.
 
 **Web component:**
-```tsx
-import { createContext } from 'brisa';
 
-const ctx = createContext('foo');
+```tsx
+import { createContext } from "brisa";
+
+const ctx = createContext("foo");
 
 export default function WebComponent() {
   <context-provider context={ctx} value="bar">
     <another-component />
-  </context-provider>
+  </context-provider>;
 }
 ```
 
