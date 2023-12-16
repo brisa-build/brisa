@@ -8,95 +8,114 @@ import { BunPlugin, MatchedRoute } from "bun";
 
 /**
  * Description:
- * 
+ *
  * Request context is a set of utilities to use within your server components with the context of the request.
  */
 export interface RequestContext extends Request {
   /**
    * Description:
-   * 
-   * The store is a map where you can store any value and use it in any server part: 
+   *
+   * The store is a map where you can store any value and use it in any server part:
    * middleware, layout, page, components, api, etc.
-   * 
+   *
    * Example setting a value:
-   * 
+   *
    * ```ts
    * store.set('count', 0);
    * ```
-   * 
+   *
    * Example getting a value:
-   * 
+   *
    * ```ts
    * <div>{store.get('count')}</div>
    * ```
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `store`](https://brisa.dev/docs/components-details/server-components#store-store-method)
    */
-  store: Map<string, any>;
+  store: Map<string | symbol, any>;
 
   /**
    * Description:
-   * 
-   * The route is the matched route of the request.
-   * 
-   * You can access to: 
-   * 
-   * params, filePath, pathname, query, name and kind,
-   * 
+   *
+   * The `useContext` method is used to consume a context value.
+   *
    * Example:
-   * 
+   *
+   * ```ts
+   * const foo = useContext(context);
+   *
+   * <div>{foo.value}</div>
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `useContext`](https://brisa.dev/docs/components-details/server-components#usecontext)
+   */
+  useContext: <T>(context: BrisaContext<T>) => { value: T };
+
+  /**
+   * Description:
+   *
+   * The route is the matched route of the request.
+   *
+   * You can access to:
+   *
+   * params, filePath, pathname, query, name and kind,
+   *
+   * Example:
+   *
    * ```ts
    * <div>{route.pathname}</div>
    * ```
    */
   route?: MatchedRoute;
-  
+
   /**
    * Description:
-   * 
-   * The `i18n` object is a set of utilities to use within your server components 
+   *
+   * The `i18n` object is a set of utilities to use within your server components
    * to access to the locale and consume the translations.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * const { t, locale } = i18n;
-   * 
+   *
    * <div>{t('hello-world')}</div>
    * ```
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `i18n`](https://brisa.dev/docs/building-your-application/routing/internationalization)
    */
   i18n: I18nFromRequest;
 
   /**
    * Description:
-   * 
+   *
    * The `ws` is the WebSocket instance of the request.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * ws.send('Hello World');
    * ```
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `ws`](https://brisa.dev/docs/building-your-application/routing/websockets)
    */
   ws?: ServerWebSocket<unknown>;
 
   /**
    * Description:
-   * 
+   *
    * The `getIP` method returns the IP of the request.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * const ip = getIP();
    * ```
@@ -105,41 +124,41 @@ export interface RequestContext extends Request {
 
   /**
    * Description:
-   * 
+   *
    * The `finalURL` is the URL of your page, regardless of the fact that for the users it is another one.
-   * 
+   *
    * Example:
-   * 
+   *
    * User enter to:
-   * 
+   *
    * `/es/sobre-nosotros/`
-   * 
+   *
    * But the `finalURL` is:
-   * 
+   *
    * `/about-us`
-   * 
+   *
    * Because your page is in `src/pages/about-us/index.tsx`
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `finalURL`](https://brisa.dev/docs/building-your-application/routing/internationalization#final-url)
    */
   finalURL: string;
 
   /**
    * Description:
-   * 
+   *
    * The `id` is the unique identifier of the request. This id is used internally by Brisa,
    * but we expose it to you because it can be useful for tracking.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * console.log(id); // 1edfa3c2-e101-40e3-af57-8890795dacd4
    * ```
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `id`](https://brisa.dev/docs/building-your-application/data-fetching/request-context)
    */
   id: string;
@@ -150,36 +169,36 @@ type Cleanup = Effect;
 
 /**
  * Description:
- * 
- *  Web Context is a set of utilities to use within your web components without losing the context where you are. 
+ *
+ *  Web Context is a set of utilities to use within your web components without losing the context where you are.
  *  The state, cleanups, effects, and so on, will be applied without conflicting with other components.
  */
 export interface WebContext {
   /**
    * Description:
-   * 
+   *
    * The state is under a signal. This means that to consume it you have to use the `.value` clause.
-   * 
+   *
    * Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
-   * 
+   *
    * Example declaration:
-   * 
+   *
    * ```ts
    * const count = state<number>(0);
    * ```
-   * 
+   *
    * Example usage:
-   * 
+   *
    * ```ts
    * <div>{count.value}</div>
    * ```
-   * 
+   *
    * Example mutation:
-   * 
+   *
    * ```ts
    * count.value += 1;
    * ```
-   * 
+   *
    * Docs:
    *  - [How to use `state`](https://brisa.dev/docs/components-details/web-components#state-state-method)
    */
@@ -187,115 +206,115 @@ export interface WebContext {
 
   /**
    * Description:
-   * 
-   * The effect is a function that will be executed when the component is mount and 
+   *
+   * The effect is a function that will be executed when the component is mount and
    * every time the state/prop signal that is registered inside changes.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * effect(() => { console.log('Hello World') })
    * ```
-   * 
+   *
    *  - will be executed when the component is mount
-   * 
+   *
    * ```ts
    * effect(() => { console.log(count.value) })
    * ```
-   * 
+   *
    *  - will be executed when the component is mount and every time the `count` state changes
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `effect`](https://brisa.dev/docs/components-details/web-components#effect-effect-method)
    */
   effect(fn: Effect): void;
 
   /**
    * Description:
-   * 
+   *
    * The cleanup is a function that will be executed when the component is unmount or to clean up an effect.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * cleanup(() => { console.log('Hello World') })
    * ```
-   * 
+   *
    *  - will be executed when the component is unmount
-   * 
+   *
    * ```ts
    * effect(() => { cleanup(() => { console.log('Hello World') }) })
    * ```
-   * 
+   *
    *  - will be executed when the component is unmount or when the effect is re-executed
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `cleanup`](https://brisa.dev/docs/components-details/web-components#clean-effects-cleanup-method)
    */
   cleanup(fn: Cleanup): void;
 
   /**
    * Description:
-   * 
+   *
    * The `derived` method is useful to create signals derived from other signals such as state or props.
-   * 
+   *
    * Example of declaration:
-   * 
-   * ```ts 
+   *
+   * ```ts
    * const doubleCount = derived(() => count.value * 2);
    * ```
-   * 
+   *
    * Example of usage:
-   * 
+   *
    * ```ts
    * <div>{doubleCount.value}</div>
    * ```
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `derived`](https://brisa.dev/docs/components-details/web-components#derived-state-and-props-derived-method)
    */
   derived<T>(fn: () => T): { value: T };
 
   /**
    * Description:
-   * 
-   * The `onMount` method is triggered only once, when the component has been mounted. 
-   * In the case that the component is unmounted and mounted again, it will be called again, 
+   *
+   * The `onMount` method is triggered only once, when the component has been mounted.
+   * In the case that the component is unmounted and mounted again, it will be called again,
    * although it would be another instance of the component starting with its initial state.
-   * 
-   * It is useful for using things during the life of the component, for example document events, 
+   *
+   * It is useful for using things during the life of the component, for example document events,
    * or for accessing rendered DOM elements and having control over them.
-   * 
-   * To delete the events recorded during this lifetime, there is the following 
+   *
+   * To delete the events recorded during this lifetime, there is the following
    * [`cleanup`](#clean-effects-cleanup-method) method.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * onMount(() => { console.log('Yeah! Component has been mounted') })
    * ```
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `onMount`](https://brisa.dev/docs/components-details/web-components#effect-on-mount-onmount-method)
    */
   onMount(fn: Effect): void;
-  
+
   /**
    * Description:
-   * 
+   *
    * The `css` method is used to inject CSS into the DOM.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * css`body { background-color: red; }`
    * ```
-   * 
-   */ 
+   *
+   */
   css(strings: TemplateStringsArray, ...values: string[]): void;
 }
 
@@ -443,13 +462,61 @@ export interface ComponentType extends JSXComponent {
   ) => JSXNode | Promise<JSXNode>;
 }
 
+export type ContextProvider<T> = {
+  context: BrisaContext<T>;
+  value: T;
+  store: Map<string | symbol, any>;
+};
+
+type BrisaContext<T> = {
+  defaultValue: T;
+  id: symbol;
+};
+
 /**
  * Description:
- * 
+ *
+ * `createContext` is used to create a context with a default value.
+ *
+ * This context should be used with the `context-provider` in order to
+ * set a shared value to a sub-tree of components.
+ *
+ * Example provider:
+ *
+ * ```tsx
+ * <context-provider context={context} value={value}>
+ *  {children}
+ * </context-provider>
+ * ```
+ *
+ * So, all the children of this provider will have access to the value
+ * of the context.
+ *
+ * Example consumer:
+ *
+ * ```tsx
+ * <div>{context.value}</div>
+ * ```
+ *
+ * Example updating the provider value from any sub-tree component:
+ *
+ * ```tsx
+ * context.value = 'foo';
+ * ```
+ *
+ * Docs:
+ *
+ * - [How to use `createContext`](https://brisa.dev/docs/components-details/server-components#createcontext)
+ */
+export function createContext<T>(defaultValue?: T): BrisaContext<T>;
+
+/**
+ * Description:
+ *
  *   Inject HTML string to the DOM.
- * 
+ *
  * Example:
- * 
+ *
  * ```ts
  * <div>{dangerHTML('<h1>Hello World</h1>')}</div>
  * ```
@@ -469,13 +536,13 @@ type DangerHTMLOutput = {
 
 /**
  * Description:
- * 
- *   `createPortal` lets you render some children into a different part of the DOM. 
- * 
+ *
+ *   `createPortal` lets you render some children into a different part of the DOM.
+ *
  *    To create a portal, call `createPortal`, passing some JSX, and the DOM node where it should be rendered.
- * 
+ *
  * Example:
- * 
+ *
  * ```ts
  * <div>{createPortal(<h1>Hello World</h1>, document.body)}</div>
  * ```
