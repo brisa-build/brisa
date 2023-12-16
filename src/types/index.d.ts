@@ -564,9 +564,15 @@ type CreatePortalOutput = {
   };
 };
 
+interface ContextProviderAttributes {
+  context: BrisaContext<unknown>;
+  value: unknown;
+  children: unknown;
+}
+
 declare global {
   export namespace JSX {
-    type Element = JSXElement | Promise<JSXElement>;
+    type Element = JSXElement | Promise<JSXElement> | Element[];
 
     interface ElementChildrenAttribute {
       children: Child;
@@ -751,6 +757,9 @@ declare global {
       tspan: SVGAttributes<SVGTSpanElement>;
       use: SVGAttributes<SVGUseElement>;
       view: SVGAttributes<SVGViewElement>;
+
+      // Custom Elements
+      "context-provider": ContextProviderAttributes;
     }
   }
 }
