@@ -8,15 +8,3 @@ TODO
 ## Store (`store` method)
 
 TODO
-
-## Context
-
-TODO
-
-### `createContext`
-
-TODO
-
-### `useContext`
-
-TODO
