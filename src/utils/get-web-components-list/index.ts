@@ -1,11 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
-import getConstants from "../../constants";
+import { logError } from "../log/log-build";
+
+const CONTEXT_PROVIDER = "context-provider";
 
 export default async function getWebComponentsList(
   dir: string,
 ): Promise<Record<string, string>> {
-  const { LOG_PREFIX } = getConstants();
   const webDir = path.join(dir, "web-components");
 
   if (!fs.existsSync(webDir)) return {};
@@ -21,21 +22,19 @@ export default async function getWebComponentsList(
     Object.entries(webRouter.routes).map(([key, path]) => {
       const selector = key.replace(/^\/@?/g, "").replaceAll("/", "-");
 
-      if (existingSelectors.has(selector)) {
-        console.log(LOG_PREFIX.ERROR, "Ops! Error:");
-        console.log(LOG_PREFIX.ERROR, "--------------------------");
-        console.log(
-          LOG_PREFIX.ERROR,
+      if (selector === CONTEXT_PROVIDER) {
+        logError([
+          `You can't use the reserved name "${CONTEXT_PROVIDER}"`,
+          "Please, rename it to avoid conflicts.",
+        ]);
+      } else if (existingSelectors.has(selector)) {
+        logError([
           `You have more than one web-component with the same name: "${selector}"`,
-        );
-        console.log(
-          LOG_PREFIX.ERROR,
           "Please, rename one of them to avoid conflicts.",
-        );
-        console.log(LOG_PREFIX.ERROR, "--------------------------");
+        ]);
+      } else {
+        existingSelectors.add(selector);
       }
-
-      existingSelectors.add(selector);
 
       return [selector, path];
     }),

@@ -1,9 +1,5 @@
 import fs from "node:fs";
-import type {
-  ComponentType,
-  Props,
-  RequestContext,
-} from "../../types";
+import type { ComponentType, Props, RequestContext } from "../../types";
 import extendStreamController, {
   Controller,
 } from "../extend-stream-controller";
@@ -174,7 +170,11 @@ async function enqueueComponent(
   controller: Controller,
   suspenseId?: number,
 ): Promise<void> {
-  const componentValue = await getValueOfComponent(component, props, request) as JSX.Element;
+  const componentValue = (await getValueOfComponent(
+    component,
+    props,
+    request,
+  )) as JSX.Element;
 
   if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
     return controller.enqueue(
@@ -218,12 +218,7 @@ async function enqueueArrayChildren(
 ): Promise<void> {
   for (const child of children) {
     if (Array.isArray(child)) {
-      await enqueueArrayChildren(
-        child,
-        request,
-        controller,
-        suspenseId,
-      );
+      await enqueueArrayChildren(child, request, controller, suspenseId);
     } else {
       await enqueueDuringRendering(child, request, controller, suspenseId);
     }
@@ -238,7 +233,7 @@ async function getValueOfComponent(
   componentFn: ComponentType,
   props: Props,
   request: RequestContext,
-){
+) {
   return Promise.resolve()
     .then(() => componentFn(props, request) ?? "")
     .catch((error: Error) => {

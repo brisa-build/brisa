@@ -1446,7 +1446,7 @@ describe("utils", () => {
         ]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.WARN,
-          `You are using spread props inside web-components JSX.`,
+          `You can't use spread props inside web-components JSX.`,
         ]);
         expect(logs[3]).toEqual([
           LOG_PREFIX.WARN,

@@ -8,7 +8,7 @@ import getClientCodeInPage from "../get-client-code-in-page";
 import getEntrypoints from "../get-entrypoints";
 import getImportableFilepath from "../get-importable-filepath";
 import getWebComponentsList from "../get-web-components-list";
-import logTable from "../log-table";
+import { logTable } from "../log/log-build";
 import ssrWebComponentPlugin from "../ssr-web-component/ssr-web-component-plugin";
 
 export default async function compileFiles() {
