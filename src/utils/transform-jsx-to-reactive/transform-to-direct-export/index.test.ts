@@ -8,6 +8,17 @@ const { parseCodeToAST, generateCodeFromAST } = AST();
 describe("utils", () => {
   describe("transform-jsx-to-reactive", () => {
     describe("transform-to-direct-export", () => {
+      it('should add an "export default null" if there is no default export', () => {
+        const ast = parseCodeToAST(`const MyComponent = () => <div>foo</div>;`);
+        const outputAst = transformToDirectExport(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
+          const MyComponent = () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
+          export default null;
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
       it("should transform the web-component to a direct export if the component is a variable declaration", () => {
         const ast = parseCodeToAST(`
           const MyComponent = (props) => <div>{props.foo}</div>;

@@ -28,7 +28,19 @@ export default function transformToDirectExport(
     (node) => node.type === "ExportDefaultDeclaration",
   );
 
-  if (defaultExportIndex === -1) return ast;
+  // Add "export default null" if there is no default export
+  if (defaultExportIndex === -1) {
+    return {
+      ...ast,
+      body: [
+        ...ast.body,
+        {
+          type: "ExportDefaultDeclaration",
+          declaration: { type: "Literal", value: null },
+        },
+      ],
+    };
+  }
 
   const defaultExportNode = ast.body[defaultExportIndex] as any;
 
