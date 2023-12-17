@@ -53,7 +53,8 @@ describe("utils", () => {
         const expected = toInline(`
             export default function MyComponent() {
               return ['div', {}, 'foo'];
-            }`);
+            }
+          `);
         expect(output).toBe(expected);
       });
 
@@ -64,7 +65,7 @@ describe("utils", () => {
         const output = toInline(
           transformJSXToReactive(input, "/src/components/my-component.tsx"),
         );
-        const expected = toInline(`const element = ['div', {}, 'foo'];`);
+        const expected = toInline(`const element = ['div', {}, 'foo'];export default null;`);
         expect(output).toBe(expected);
       });
 
@@ -75,7 +76,7 @@ describe("utils", () => {
         const output = toInline(
           transformJSXToReactive(input, "/src/components/my-component.tsx"),
         );
-        const expected = toInline(`const element = () => ['div', {}, 'foo'];`);
+        const expected = toInline(`const element = () => ['div', {}, 'foo'];export default null;`);
         expect(output).toBe(expected);
       });
 
