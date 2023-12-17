@@ -40,6 +40,25 @@ describe("utils", () => {
       });
     });
 
+    it('should transform if the path is internal web component "__BRISA_CLIENT__"', () => {
+      const input = `
+          export default function MyComponent() {
+            return <div>foo</div>
+          }
+        `;
+      const output = toInline(
+        transformJSXToReactive(input, "__BRISA_CLIENT__ContextProvider"),
+      );
+      const expected = toInline(`
+        import {brisaElement, _on, _off} from "brisa/client";
+        
+        function MyComponent() {return ["div", {}, "foo"];}
+        
+        const ContextProvider = brisaElement(MyComponent);
+      `);
+      expect(output).toBe(expected);
+    });
+
     describe("basic components with transformation", () => {
       it("should transform JSX to an array if is not a web-component", () => {
         const input = `
