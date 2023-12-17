@@ -1,8 +1,6 @@
 import fs from "node:fs";
 import type {
   ComponentType,
-  JSXElement,
-  JSXNode,
   Props,
   RequestContext,
 } from "../../types";
@@ -16,7 +14,6 @@ import { contextProvider } from "../context-provider/server";
 const CONTEXT_PROVIDER = "context-provider";
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
-const TAG_TO_IGNORE = new Set([CONTEXT_PROVIDER]);
 
 export default function renderToReadableStream(
   element: JSX.Element,
@@ -31,7 +28,7 @@ export default function renderToReadableStream(
       );
 
       const renderingPromise = enqueueDuringRendering(
-        element as JSXElement,
+        element,
         request,
         extendedController,
       )
@@ -52,7 +49,7 @@ export default function renderToReadableStream(
 }
 
 async function enqueueDuringRendering(
-  element: JSXNode | Promise<JSXNode>,
+  element: JSX.Element,
   request: RequestContext,
   controller: Controller,
   suspenseId?: number,
@@ -68,7 +65,9 @@ async function enqueueDuringRendering(
     }
 
     const { type, props } = elementContent;
-    const isTagToIgnore = type?.__isFragment || TAG_TO_IGNORE.has(type);
+    const isProvider = type === CONTEXT_PROVIDER;
+    const isServerProvider = isProvider && props.serverOnly;
+    const isTagToIgnore = type?.__isFragment || isServerProvider;
 
     if (type === "HTML") {
       controller.enqueue(props.html, suspenseId);
@@ -175,7 +174,7 @@ async function enqueueComponent(
   controller: Controller,
   suspenseId?: number,
 ): Promise<void> {
-  const componentValue = await getValueOfComponent(component, props, request);
+  const componentValue = await getValueOfComponent(component, props, request) as JSX.Element;
 
   if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
     return controller.enqueue(
@@ -197,7 +196,7 @@ async function enqueueComponent(
 }
 
 async function enqueueChildren(
-  children: JSXNode,
+  children: JSX.Element[] | JSX.Element,
   request: RequestContext,
   controller: Controller,
   suspenseId?: number,
@@ -212,7 +211,7 @@ async function enqueueChildren(
 }
 
 async function enqueueArrayChildren(
-  children: JSXNode[],
+  children: JSX.Element[],
   request: RequestContext,
   controller: Controller,
   suspenseId?: number,
@@ -220,7 +219,7 @@ async function enqueueArrayChildren(
   for (const child of children) {
     if (Array.isArray(child)) {
       await enqueueArrayChildren(
-        child as unknown as JSXNode[],
+        child,
         request,
         controller,
         suspenseId,
@@ -239,7 +238,7 @@ async function getValueOfComponent(
   componentFn: ComponentType,
   props: Props,
   request: RequestContext,
-) {
+){
   return Promise.resolve()
     .then(() => componentFn(props, request) ?? "")
     .catch((error: Error) => {
