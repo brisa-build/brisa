@@ -93,20 +93,23 @@ describe("utils", () => {
           export interface IntrinsicCustomElements {
             'native-some-example': HTMLAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx")>;
             'web-component': HTMLAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx")>;
+            'with-context': HTMLAttributes<typeof import("${SRC_DIR}/web-components/with-context.tsx")>;
           }`),
       );
       expect(console.log).toHaveBeenCalled();
-      expect(files).toHaveLength(8);
+      expect(files).toHaveLength(9);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("api");
-      expect(files[2]).toBe("i18n.js");
-      expect(files[3]).toBe("layout.js");
-      expect(files[4]).toBe("middleware.js");
-      expect(files[5]).toBe("pages");
-      expect(files[6]).toBe("pages-client");
-      expect(files[7]).toBe("websocket.js");
+      expect(files[2]).toStartWith("chunk-");
+      expect(files[3]).toBe("i18n.js");
+      expect(files[4]).toBe("layout.js");
+      expect(files[5]).toBe("middleware.js");
+      expect(files[6]).toBe("pages");
+      expect(files[7]).toBe("pages-client");
+      expect(files[8]).toBe("websocket.js");
 
       const info = constants.LOG_PREFIX.INFO;
+      const generatedHash = files[2].replace("chunk-", "").replace(".js", "");
       const logOutput = minifyText(mockLog.mock.calls.flat().join("\n"));
       mockLog.mockRestore();
 
@@ -116,14 +119,16 @@ describe("utils", () => {
     ${info}------------------------------------------------------------
     ${info}λ /pages/_404.js                    | 295 B | 0 B 
     ${info}λ /pages/page-with-web-component.js | 1 kB  | 5 kB
-    ${info}λ /pages/somepage.js                | 185 B | 0 B
+    ${info}λ /pages/somepage.js                | 341 B | 0 B
+    ${info}λ /pages/somepage-with-context.js   | 327 B | 0 B
     ${info}λ /pages/index.js                   | 267 B | 217 B 
     ${info}λ /pages/user/[username].js         | 175 B | 0 B 
     ${info}λ /api/example.js                   | 275 B | 0 B 
+    ${info}Δ /layout.js                        | 342 B | 0 B
     ${info}ƒ /middleware.js                    | 151 B | 0 B
     ${info}Ω /i18n.js                          | 154 B | 0 B
-    ${info}Δ /layout.js                        | 342 B | 0 B
     ${info}Ψ /websocket.js                     | 199 B | 0 B
+    ${info}Φ /chunk-${generatedHash}.js        | 80 B  | 0 B
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout

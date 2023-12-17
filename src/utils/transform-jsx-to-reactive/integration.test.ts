@@ -91,6 +91,25 @@ describe("integration", () => {
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("Hello World");
     });
+
+    it("should work returning directly the children", () => {
+      const code = `export default function Test({ children }) {
+        return children;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component>Hello World</test-component>";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<slot></slot>");
+
+      expect(testComponent?.innerHTML).toBe("Hello World");
+    });
+
     it("should work props and state with a counter", () => {
       const path = "src/web-components/test-counter.tsx";
       const code = `

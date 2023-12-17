@@ -35,6 +35,11 @@ describe("utils", () => {
           "web",
           "component.tsx",
         ),
+        "with-context": path.join(
+          fixturesDir,
+          "web-components",
+          "with-context.tsx",
+        ),
       });
     });
 

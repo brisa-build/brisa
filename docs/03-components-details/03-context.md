@@ -57,6 +57,19 @@ export default function WebComponent() {
 }
 ```
 
+Parameters:
+
+- `SomeContext`: The context that you’ve previously created with createContext. The context itself does not hold the information, it only represents the kind of information you can provide or read from components.
+
+Returns:
+
+- `useContext` returns the context value inside a signal for the calling component. It is determined as the value passed to the closest [`context-provider`](#provider) above the calling component in the tree. If there is no such provider, then the returned value will be the `defaultValue` you have passed to [`createContext`](#create-context-createcontext) for that context. The returned value is up-to-date, reactive under a signal.
+
+> [!CAUTION]
+> - `useContext()` call in a component is not affected by providers returned from the same component. The corresponding `<context-provider>` needs to be above the component doing the `useContext()` call.
+> - Instead of an import it is inside the [`RequestContext`](/docs/building-your-application/data-fetching/request-context) or [`WebContext`](/docs/building-your-application/data-fetching/web-context). In the case of server the context is stored inside the request, since each request is different and it is better that it is not global to **avoid concurrency problems**. In the case of web is needed within the `WebContext` to generate a reactive signal that is cleared when the web component is disconnected.
+
+
 #### `serverOnly` property
 
 In many cases we want to share sensitive data on the server components-tree and that this data never reaches the client. To do this, the provider supports the `serverOnly` property and during SSR it is extripated so that it is never part of the final HTML.
@@ -94,15 +107,5 @@ export default function MyComponent(props, { useContext }) {
   return <div style={{ color: theme.value.color }}>Hello world</div>
 ```
 
-Parameters:
-
-- `SomeContext`: The context that you’ve previously created with createContext. The context itself does not hold the information, it only represents the kind of information you can provide or read from components.
-
-Returns:
-
-- `useContext` returns the context value inside a signal for the calling component. It is determined as the value passed to the closest [`context-provider`](#provider) above the calling component in the tree. If there is no such provider, then the returned value will be the `defaultValue` you have passed to [`createContext`](#create-context-createcontext) for that context. The returned value is up-to-date, reactive under a signal.
-
-Caveats:
-
-- `useContext()` call in a component is not affected by providers returned from the same component. The corresponding `<context-provider>` needs to be above the component doing the `useContext()` call.
-- Instead of an import it is inside the [`RequestContext`](/docs/building-your-application/data-fetching/request-context) or [`WebContext`](/docs/building-your-application/data-fetching/web-context). In the case of server the context is stored inside the request, since each request is different and it is better that it is not global to **avoid concurrency problems**. In the case of web is needed within the `WebContext` to generate a reactive signal that is cleared when the web component is disconnected.
+> [!CAUTION]
+> The `serverOnly` property in **runtime always works** and there is **no need to worry**. However, if you don't use any client context and you don't want to carry the `context-provider` code in the client we recommend that you use literal values, like `true|false` directly, since during the build we don't evaluate if there are dynamic values, then in this case the provider code will be carried in the client even if it is not used later and you will never see any sensitive data.

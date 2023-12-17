@@ -8,7 +8,7 @@ export default function transformToReactiveArrays(
   ast: ESTree.Program,
   path?: string,
 ) {
-  const { LOG_PREFIX, BOOLEANS_IN_HTML } = getConstants();
+  const { BOOLEANS_IN_HTML } = getConstants();
 
   return JSON.parse(
     JSON.stringify(ast, (key, value) => {
