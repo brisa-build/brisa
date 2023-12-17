@@ -70,7 +70,7 @@ export interface RequestContext extends Request {
    * <div>{route.pathname}</div>
    * ```
    */
-  route?: MatchedRoute;
+  route: MatchedRoute;
 
   /**
    * Description:
@@ -107,7 +107,7 @@ export interface RequestContext extends Request {
    *
    * - [How to use `ws`](https://brisa.dev/docs/building-your-application/routing/websockets)
    */
-  ws?: ServerWebSocket<unknown>;
+  ws: ServerWebSocket<unknown>;
 
   /**
    * Description:
@@ -327,7 +327,7 @@ export type ResponseHeaders = (
   status: number,
 ) => HeadersInit;
 
-export type JSXNode = string | number | JSXElement;
+export type JSXNode = string | number | JSXElement | JSXNode[];
 
 type Child = JSXNode | Child[];
 
@@ -568,11 +568,12 @@ interface ContextProviderAttributes {
   context: BrisaContext<unknown>;
   value: unknown;
   children: unknown;
+  serverOnly?: boolean;
 }
 
 declare global {
   export namespace JSX {
-    type Element = JSXElement | Promise<JSXElement> | Element[];
+    type Element = JSXElement | Promise<JSXElement>;
 
     interface ElementChildrenAttribute {
       children: Child;
