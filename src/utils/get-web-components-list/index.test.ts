@@ -4,6 +4,7 @@ import getWebComponentsList from ".";
 import getConstants from "../../constants";
 
 const fixturesDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const reservedNamesDir = path.join(fixturesDir, "reserved-names");
 const { LOG_PREFIX } = getConstants();
 const originalConsoleLog = console.log;
 const mockConsoleLog = mock((v) => v) as any;
@@ -14,6 +15,7 @@ describe("utils", () => {
       console.log = mockConsoleLog;
     });
     afterEach(() => {
+      mockConsoleLog.mockClear();
       console.log = originalConsoleLog;
     });
 
@@ -54,6 +56,31 @@ describe("utils", () => {
       expect(mockConsoleLog.mock.calls[3]).toEqual([
         LOG_PREFIX.ERROR,
         "Please, rename one of them to avoid conflicts.",
+      ]);
+      expect(mockConsoleLog.mock.calls[4]).toEqual([
+        LOG_PREFIX.ERROR,
+        "--------------------------",
+      ]);
+    });
+
+    it("should alert if there is a web component with the same name as a reserved name", async () => {
+      await getWebComponentsList(reservedNamesDir);
+
+      expect(mockConsoleLog.mock.calls[0]).toEqual([
+        LOG_PREFIX.ERROR,
+        "Ops! Error:",
+      ]);
+      expect(mockConsoleLog.mock.calls[1]).toEqual([
+        LOG_PREFIX.ERROR,
+        "--------------------------",
+      ]);
+      expect(mockConsoleLog.mock.calls[2]).toEqual([
+        LOG_PREFIX.ERROR,
+        `You can't use the reserved name "context-provider"`,
+      ]);
+      expect(mockConsoleLog.mock.calls[3]).toEqual([
+        LOG_PREFIX.ERROR,
+        "Please, rename it to avoid conflicts.",
       ]);
       expect(mockConsoleLog.mock.calls[4]).toEqual([
         LOG_PREFIX.ERROR,

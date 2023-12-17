@@ -2,6 +2,7 @@ import { ESTree } from "meriyah";
 import getConstants from "../../../constants";
 import { JSX_NAME, NO_REACTIVE_CHILDREN_EXPRESSION } from "../constants";
 import wrapWithArrowFn from "../wrap-with-arrow-fn";
+import { logError, logWarning } from "../../log/log-build";
 
 export default function transformToReactiveArrays(
   ast: ESTree.Program,
@@ -22,25 +23,17 @@ export default function transformToReactiveArrays(
         value.arguments[0].type === "Identifier" &&
         value.arguments[0].name !== "Fragment"
       ) {
-        console.log(LOG_PREFIX.ERROR, `Ops! Error:`);
-        console.log(LOG_PREFIX.ERROR, `--------------------------`);
-        console.log(
-          LOG_PREFIX.ERROR,
+        const errorMessages = [
           `You can't use "${value.arguments[0].name}" variable as a tag name.`,
-        );
-        console.log(
-          LOG_PREFIX.ERROR,
           `Please use a string instead. You cannot use server-components inside web-components directly.`,
-        );
-        console.log(
-          LOG_PREFIX.ERROR,
           `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`,
-        );
-        if (path) console.log(LOG_PREFIX.ERROR, `File: ${path}`);
-        console.log(LOG_PREFIX.ERROR, `--------------------------`);
-        console.log(
-          LOG_PREFIX.ERROR,
-          `Docs: https://brisa.dev/docs/component-details/web-components`,
+        ];
+
+        if (path) errorMessages.push(`File: ${path}`);
+
+        logError(
+          errorMessages,
+          "Docs: https://brisa.dev/docs/component-details/web-components",
         );
       }
 
@@ -77,21 +70,16 @@ export default function transformToReactiveArrays(
         }
 
         if (prop?.type === "SpreadElement") {
-          console.log(LOG_PREFIX.WARN, `Ops! Warning:`);
-          console.log(LOG_PREFIX.WARN, `--------------------------`);
-          console.log(
-            LOG_PREFIX.WARN,
-            `You are using spread props inside web-components JSX.`,
-          );
-          console.log(
-            LOG_PREFIX.WARN,
+          const warnMessages = [
+            `You can't use spread props inside web-components JSX.`,
             `This can cause the lost of reactivity.`,
-          );
-          if (path) console.log(LOG_PREFIX.WARN, `File: ${path}`);
-          console.log(LOG_PREFIX.WARN, `--------------------------`);
-          console.log(
-            LOG_PREFIX.WARN,
-            `Docs: https://brisa.dev/docs/component-details/web-components`,
+          ];
+
+          if (path) warnMessages.push(`File: ${path}`);
+
+          logWarning(
+            warnMessages,
+            "Docs: https://brisa.dev/docs/component-details/web-components",
           );
         }
 
