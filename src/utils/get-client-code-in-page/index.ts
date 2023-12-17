@@ -100,10 +100,6 @@ async function transformToWebComponents(
             async ({ path, loader }) => {
               let code = await Bun.file(path).text();
 
-              if (!code.includes("export default")) {
-                code += `\nexport default null;`;
-              }
-
               try {
                 code = transformJSXToReactive(code, path);
               } catch (error) {
