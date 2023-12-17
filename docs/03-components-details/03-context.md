@@ -26,11 +26,7 @@ Parameters:
 
 The Provider is required to propagate a value from this context to a sub-tree of components.
 
-The Provider does **not need any import**. You can use the custom element `context-provider` by passing the context and value.
-
-Although in both server and client the context is used exactly the same, the main difference between them is the following:
-
-In the server-components the `context-provider` is a tag that does not end in the HTML, it is only used so that the rendering from the server knows how to manage the context. That is to say, the final HTML would be only the HTML inside `AnotherComponent`.
+The Provider does **not need any import**. You can use the custom element `context-provider` by passing the context and value. It is a web component because this way the value is going to be shared with the client components and also you can use the same provider in client components.
 
 **Server component:**
 
@@ -47,8 +43,6 @@ export default function ServerComponent() {
 }
 ```
 
-In web-components if there is the actual `context-provider` web-component to be able to manage the context on the client. That is to say, the final HTML would be the tag of the `context-provider` + the HTML of the `another-component`.
-
 **Web component:**
 
 ```tsx
@@ -62,6 +56,33 @@ export default function WebComponent() {
   </context-provider>;
 }
 ```
+
+#### `serverOnly` property
+
+In many cases we want to share sensitive data on the server components-tree and that this data never reaches the client. To do this, the provider supports the `serverOnly` property and during SSR it is extripated so that it is never part of the final HTML.
+
+```tsx
+import { createContext } from "brisa";
+import AnotherComponent from "@/components/another-component";
+
+const ctx = createContext("foo");
+
+export default function ServerComponent() {
+  <context-provider serverOnly context={ctx} value="bar">
+    <AnotherComponent />
+  </context-provider>;
+}
+```
+
+This means:
+
+```tsx
+<context-provider serverOnly context={ctx} value="bar">
+  <div>Hello</div>
+</context-provider>
+```
+
+Is going to be transformed to just this HTML: `<div>Hello</div>`. Without the `context-provider` on top.
 
 ### Consume Context (`useContext`)
 

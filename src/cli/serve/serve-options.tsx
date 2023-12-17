@@ -138,7 +138,7 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   const isApi = pathname.startsWith(locale ? `/${locale}/api/` : "/api/");
   const api = isApi ? rootRouter.match(req) : null;
 
-  req.route = isApi ? api?.route : route;
+  req.route = (isApi ? api?.route : route) as MatchedRoute;
 
   // Middleware
   if (customMiddleware) {
