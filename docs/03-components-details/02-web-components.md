@@ -104,7 +104,8 @@ Brisa components use _props_ to communicate with each other. Every parent compon
 
 The properties are signals but can be used directly without using the `.value`, because they are readonly.
 
-> [!TIP] > **Good to know**: Since props are signals, consume them directly or use [`derived`](#derived-state-and-props-derived-method) method. Doing so breaks the reactivity:
+> [!TIP]
+> **Good to know**: Since props are signals, consume them directly or use [`derived`](#derived-state-and-props-derived-method) method. Doing so breaks the reactivity:
 >
 > ```tsx
 > export default function UserImages({ urls }, { derived }) {
@@ -279,7 +280,7 @@ const ParentComponentUsingSlots = () => {
 export default ParentComponentUsingSlots;
 ```
 
-> [!TIP]
+> [!TIP] 
 > **Good to know**: Slots only work in Web Components. In Server Components only works `children` prop.
 
 ## Events
@@ -351,7 +352,8 @@ As web components are DOM elements, they also automatically have their own event
 />
 ```
 
-> [!TIP] > **Good to know**: It is important to know this when naming events that do not conflict with [existing DOM events](https://www.w3schools.com/jsref/dom_obj_event.asp), to avoid "event fires twice" issues. Also important if you want to overwrite a DOM event, use the [`e.stopPropagation()`](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation) to avoid the conflict.
+> [!TIP]
+> **Good to know**: It is important to know this when naming events that do not conflict with [existing DOM events](https://www.w3schools.com/jsref/dom_obj_event.asp), to avoid "event fires twice" issues. Also important if you want to overwrite a DOM event, use the [`e.stopPropagation()`](https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation) to avoid the conflict.
 
 ### Events on `ref`
 
@@ -374,7 +376,8 @@ export default ({}, { onMount, cleanup, state }: WebContext) => {
 
 Although we recommend registering events via attributes, we also provide the opportunity to do it this way. The grace of the `ref` is also that you can have control of the element after mounting, thing that also allows to register events in it.
 
-> [!TIP] > **Good to know**: For the `ref` attribute you do not have to put the `.value`, you have to put the whole state.
+> [!TIP]
+> **Good to know**: For the `ref` attribute you do not have to put the `.value`, you have to put the whole state.
 
 ## State (`state` method)
 
