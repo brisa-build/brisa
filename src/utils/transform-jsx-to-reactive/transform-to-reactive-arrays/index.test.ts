@@ -63,6 +63,61 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should transform JSX to an reactive array if have some signal (state) inside suspense", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent() {
+            return 'Hello world'
+          }
+
+          MyComponent.suspense = ({}, { state }) => {
+            const loading = state('Loading');
+
+            return (
+              <div>
+                {loading.value}
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent() {return "Hello world";}
+          
+          MyComponent.suspense = ({}, {state}) => {
+            const loading = state("Loading");
+            return ["div", {}, () => loading.value];
+          };
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should transform JSX to an reactive array if have some signal (store) inside suspense", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent() {
+            return 'Hello world'
+          }
+
+          MyComponent.suspense = ({}, { store }) => {
+            return (
+              <div>
+                {store.get('loading')}
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent() {return "Hello world";}
+          
+          MyComponent.suspense = ({}, {store}) => {
+            return ["div", {}, () => store.get('loading')];
+          };
+        `);
+        expect(output).toBe(expected);
+      });
+
       it('should transform JSX to an reactive array if have some signal (store)', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
