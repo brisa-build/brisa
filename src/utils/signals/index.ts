@@ -14,19 +14,15 @@ const UNSUBSCRIBE = "u";
 
 const subscription = createSubscription();
 const storeMap = new Map();
-
-function storeOperation(operation: StoreOperation, key: string, value?: any) {
-  const res = storeMap[operation](key, value);
-  subscription[NOTIFY](key, value, operation === "get");
-  return res;
-}
-
 const globalStore = {} as Record<string, any>;
 
 // Only get/set/delete from store are reactive
 for (let op of ["get", "set", "delete"]) {
-  globalStore[op] = (key: string, value: any) =>
-    storeOperation(op as StoreOperation, key, value);
+  globalStore[op] = (key: string, value: any) => {
+    const res = storeMap[op as StoreOperation](key, value);
+    subscription[NOTIFY](key, value, op === "get");
+    return res;
+  }
 }
 
 export default function signals() {
