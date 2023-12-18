@@ -174,11 +174,11 @@ type Cleanup = Effect;
  *  The state, cleanups, effects, and so on, will be applied without conflicting with other components.
  */
 export interface WebContext {
-    /**
+  /**
    * Description:
    *
    * The store is a reactive map where you can store any value and use it in any web-component.
-   * 
+   *
    * Unlike state, instead of being a local component state, store is global for all web-components.
    *
    * Example setting a value:
@@ -348,7 +348,7 @@ type ReactiveMap = {
   set: <T>(key: string, value: T) => void;
   delete: (key: string) => void;
   Map: Map<string, unknown>;
-}
+};
 
 type Props = Record<string, unknown> & {
   children?: Child;
