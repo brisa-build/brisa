@@ -19,8 +19,9 @@ const globalStore = {
     return value;
   },
   set(key: string, value: any) {
-    storeMap.set(key, value);
+    const res = storeMap.set(key, value);
     subscription[NOTIFY](key, value);
+    return res;
   },
   clear() {
     const keys = [...storeMap.keys()];
@@ -30,8 +31,9 @@ const globalStore = {
     }
   },
   delete(key: string) {
-    storeMap.delete(key);
+    const res = storeMap.delete(key);
     subscription[NOTIFY](key);
+    return res;
   },
 };
 
@@ -177,6 +179,9 @@ export default function signals() {
       manageStoreSubscription();
       return globalStore.get(key);
     },
+    get Map() {
+      return storeMap;
+    }
   };
 
   return { state, store, effect, reset, cleanup, derived };
