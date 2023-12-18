@@ -1233,5 +1233,23 @@ describe("brisa core", () => {
         `<div>foo20</div><div>foo21</div><div>foo22</div><div>foo23</div><div>foo24</div>`,
       );
     });
+
+    it('should render [object Object] in case of rendering an object', () => {
+      const Component = () => {
+        const object = {}
+        return <div>{object}</div>;
+      };
+
+      const stream = renderToReadableStream(
+        <Component />,
+        testRequest,
+      );
+
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toMatch(
+        `<div>[object Object]</div>`,
+      );
+    })
   });
 });
