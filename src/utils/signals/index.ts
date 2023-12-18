@@ -6,6 +6,8 @@ type Listener = (...params: any[]) => void;
 type State<T> = {
   value: T;
 };
+type StoreOperation = "get" | "set" | "delete";
+
 const NOTIFY = "n";
 const SUBSCRIBE = "s";
 const UNSUBSCRIBE = "u";
@@ -13,24 +15,19 @@ const UNSUBSCRIBE = "u";
 const subscription = createSubscription();
 const storeMap = new Map();
 
+function storeOperation(operation: StoreOperation, key: string, value?: any) {
+  const res = storeMap[operation](key, value);
+  subscription[NOTIFY](key, value, operation === "get");
+  return res;
+}
+
+const globalStore = {} as Record<string, any>;
+
 // Only get/set/delete from store are reactive
-const globalStore = {
-  get(key: string) {
-    const value = storeMap.get(key);
-    subscription[NOTIFY](key, value, true);
-    return value;
-  },
-  set(key: string, value: any) {
-    const res = storeMap.set(key, value);
-    subscription[NOTIFY](key, value);
-    return res;
-  },
-  delete(key: string) {
-    const res = storeMap.delete(key);
-    subscription[NOTIFY](key);
-    return res;
-  },
-};
+for (let op of ["get", "set", "delete"]) {
+  globalStore[op] = (key: string, value: any) =>
+    storeOperation(op as StoreOperation, key, value);
+}
 
 export default function signals() {
   const stack: Effect[] = [];
@@ -176,7 +173,7 @@ export default function signals() {
     },
     get Map() {
       return storeMap;
-    }
+    },
   };
 
   return { state, store, effect, reset, cleanup, derived };
@@ -197,4 +194,3 @@ function createSubscription() {
     },
   };
 }
- 
