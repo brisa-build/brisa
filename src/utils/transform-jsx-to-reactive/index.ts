@@ -10,6 +10,7 @@ import transformToDirectExport from "./transform-to-direct-export";
 import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
 import mapComponentStatics from "./map-component-statics";
+import getReactiveReturnStatement from "./get-reactive-return-statement";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
@@ -38,14 +39,11 @@ export default function transformJSXToReactive(code: string, path: string) {
 
   // Merge early returns in one + optimize effects inside statics (suspense + error phases)
   mapComponentStatics(reactiveAst, out.componentName, (value, name) => {
-    const valueWithMergedEarlyReturns = mergeEarlyReturnsInOne(value);
+    const comp = getReactiveReturnStatement(mergeEarlyReturnsInOne(value), name) as ESTree.FunctionDeclaration;
     if (out.statics?.[name]) {
-      return optimizeEffects(
-        valueWithMergedEarlyReturns,
-        out.statics[name]!.vars,
-      );
+      return optimizeEffects(comp, out.statics[name]!.vars);
     }
-    return valueWithMergedEarlyReturns;
+    return comp;
   });
 
   const [importDeclaration, brisaElement, componentAst] = defineBrisaElement(

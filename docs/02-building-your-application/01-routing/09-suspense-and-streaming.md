@@ -127,13 +127,11 @@ export default async function MyWebComponent({}, { store }: WebContext) {
 }
 
 // Display reactive messages from context during the suspense phase:
-MyWebComponent.suspense = ({}, { store }: WebContext) {
-  return store.get('suspense-message').value
+MyWebComponent.suspense = ({}, { store }: WebContext) => {
+  return store.get('suspense-message');
 }
 ```
 
 Also works during streaming. Although loading data is done at the client-side. That is, the `suspense` is rendered on the server with SSR, and on the client-side the real component is loaded by updating the suspense phase until it has the content. That is, these **`fetch`** inside the component will **never be done from the server** in the case of web-components.
-
-TODO: Implement store in client + test that this example is working fine
 
 TODO: Implement the same behavior in the server + add docs about it

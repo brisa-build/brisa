@@ -12,8 +12,13 @@ const REACTIVE_VALUES = new Set([
 ]);
 
 export default function getReactiveReturnStatement(
-  componentBody: ESTree.Statement[],
+  component: ESTree.FunctionDeclaration,
+  componentName: string,
 ) {
+  const componentBody = (component.body?.body ?? [
+    wrapWithReturnStatement(component.body as ESTree.Statement),
+  ]) as ESTree.Statement[];
+
   const { LOG_PREFIX } = getConstants();
   const returnStatementIndex = componentBody.findIndex(
     (node: any) => node.type === "ReturnStatement",
@@ -135,5 +140,29 @@ export default function getReactiveReturnStatement(
           },
         };
 
-  return [newReturnStatement, returnStatementIndex];
+  const newComponentBody = componentBody.map((node, index) =>
+    index === returnStatementIndex ? newReturnStatement : node,
+  );
+
+  return {
+    type: "FunctionExpression",
+    id: {
+      type: "Identifier",
+      name: componentName,
+    },
+    params: component.params,
+    body: {
+      type: "BlockStatement",
+      body: newComponentBody,
+    },
+    generator: component.generator,
+    async: component.async,
+  };
+}
+
+function wrapWithReturnStatement(statement: ESTree.Statement) {
+  return {
+    type: "ReturnStatement",
+    argument: statement,
+  };
 }
