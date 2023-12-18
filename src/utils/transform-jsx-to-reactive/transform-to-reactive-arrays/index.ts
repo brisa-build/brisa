@@ -3,6 +3,8 @@ import getConstants from "../../../constants";
 import { JSX_NAME, NO_REACTIVE_CHILDREN_EXPRESSION } from "../constants";
 import wrapWithArrowFn from "../wrap-with-arrow-fn";
 
+const SIGNAL_PROPERTIES = new Set(["value", "get"]);
+
 export default function transformToReactiveArrays(
   ast: ESTree.Program,
   path?: string,
@@ -194,7 +196,7 @@ function hasNodeASignal(node: ESTree.Node) {
       value?.type === "MemberExpression" &&
       value?.object?.type === "Identifier" &&
       value?.property?.type === "Identifier" &&
-      value?.property?.name === "value";
+      SIGNAL_PROPERTIES.has(value?.property?.name);
 
     return value;
   });

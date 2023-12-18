@@ -63,6 +63,27 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it('should transform JSX to an reactive array if have some signal (store)', () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { store }) {
+            return (
+              <div>
+                <button onClick={() => store.set('count', store.get('store') + 1)}>Click</button>
+                <span>{store.get('count')}</span>
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {store}) {
+            return ['div', {}, [['button', {onClick: () => store.set('count', store.get('store') + 1)}, 'Click'], ['span', {}, () => store.get('count')]]];
+          }
+        `);
+        expect(output).toBe(expected);
+      })
+
       it("should change signals to function if the signal state is used in a conditional", () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
@@ -81,6 +102,26 @@ describe("utils", () => {
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, () => count.value > 0 && ['span', {}, () => count.value]];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should change signals to function if the signal store is used in a conditional", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { store }) {
+            return (
+              <div>
+                {store.get('count') > 0 && <span>{store.get('count')}</span>}
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {store}) {
+            return ['div', {}, () => store.get('count') > 0 && ['span', {}, () => store.get('count')]];
           }
         `);
         expect(output).toBe(expected);
@@ -139,6 +180,26 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should change signals to function if the signal store is used in a ternary", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { store }) {
+            return (
+              <div>
+                {store.get('count') > 0 ? <span>{store.get('count')}</span> : <span>0</span>}
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {store}) {
+            return ['div', {}, () => store.get('count') > 0 ? ['span', {}, () => store.get('count')] : ['span', {}, '0']];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
       it("should change signals to function if the signal state is used in an atributte", () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
@@ -158,6 +219,27 @@ describe("utils", () => {
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, ['span', {title: () => count.value}, '']];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should change signals to function if the signal store is used in an atributte", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { store }) {
+            return (
+              <div>
+                <span title={store.get('title')}></span>
+              </div>
+            )
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {store}) {
+            return ['div', {}, ['span', {title: () => store.get('title')}, '']];
           }
         `);
         expect(output).toBe(expected);
@@ -188,6 +270,28 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should change signals to function if the signal store is used in a child also", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { store }) {
+            return (
+              <div>
+                <span title={store.get('count')}></span>
+                {store.get('count')}
+              </div>
+            )
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {store}) {
+            return ['div', {}, [['span', {title: () => store.get('count')}, ''], [null, {}, () => store.get('count')]]];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
       it("should change signals to function if the signal state is used in a child element also", () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
@@ -208,6 +312,28 @@ describe("utils", () => {
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, [['span', {title: () => count.value}, ''], ['span', {}, () => count.value]]];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should change signals to function if the signal store is used in a child element also", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { store }) {
+            return (
+              <div>
+                <span title={store.get('count')}></span>
+                <span>{store.get('count')}</span>
+              </div>
+            )
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {store}) {
+            return ['div', {}, [['span', {title: () => store.get('count')}, ''], ['span', {}, () => store.get('count')]]];
           }
         `);
         expect(output).toBe(expected);
