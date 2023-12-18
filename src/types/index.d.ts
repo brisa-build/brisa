@@ -174,6 +174,31 @@ type Cleanup = Effect;
  *  The state, cleanups, effects, and so on, will be applied without conflicting with other components.
  */
 export interface WebContext {
+    /**
+   * Description:
+   *
+   * The store is a reactive map where you can store any value and use it in any web-component.
+   * 
+   * Unlike state, instead of being a local component state, store is global for all web-components.
+   *
+   * Example setting a value:
+   *
+   * ```ts
+   * store.set('count', 0);
+   * ```
+   *
+   * Example getting a value:
+   *
+   * ```ts
+   * <div>{store.get('count')}</div>
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `store`](https://brisa.dev/docs/components-details/web-components#store-store-method)
+   */
+  store: ReactiveMap;
+
   /**
    * Description:
    *
@@ -316,6 +341,13 @@ export interface WebContext {
    *
    */
   css(strings: TemplateStringsArray, ...values: string[]): void;
+}
+
+type ReactiveMap = {
+  get: <T>(key: string) => T;
+  set: <T>(key: string, value: T) => void;
+  delete: (key: string) => void;
+  Map: Map<string, unknown>;
 }
 
 type Props = Record<string, unknown> & {
