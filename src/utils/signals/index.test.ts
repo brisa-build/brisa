@@ -381,7 +381,7 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[2][0]).toBe(1);
 
-    store.clear();
+    store.Map.clear();
   });
 
   it("should work store with derived", () => {
@@ -419,7 +419,7 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[2][0]).toBe(2);
 
-    store.clear();
+    store.Map.clear();
   });
 
   it("should work reactive store delete method", () => {
@@ -442,40 +442,6 @@ describe("signals", () => {
     expect(store.get("count")).toBeUndefined();
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[1][0]).toBeUndefined();
-    store.clear();
-  });
-
-  it("should work reactive store clear method", () => {
-    const { store, effect } = signals();
-    const mockEffectCount = mock<(count?: number) => void>(() => {});
-    const mockEffectAge = mock<(age?: number) => void>(() => {});
-
-    store.set("count", 0);
-    store.set("age", 33);
-
-    expect(store.get("count")).toBe(0);
-    expect(store.get("age")).toBe(33);
-
-    effect(() => {
-      mockEffectCount(store.get("count"));
-    });
-
-    effect(() => {
-      mockEffectAge(store.get("age"));
-    });
-
-    expect(mockEffectCount).toHaveBeenCalledTimes(1);
-    expect(mockEffectCount.mock.calls[0][0]).toBe(0);
-    expect(mockEffectAge).toHaveBeenCalledTimes(1);
-    expect(mockEffectAge.mock.calls[0][0]).toBe(33);
-
-    store.clear();
-
-    expect(store.get("count")).toBeUndefined();
-    expect(store.get("age")).toBeUndefined();
-    expect(mockEffectCount).toHaveBeenCalledTimes(2);
-    expect(mockEffectCount.mock.calls[1][0]).toBeUndefined();
-    expect(mockEffectAge).toHaveBeenCalledTimes(2);
-    expect(mockEffectAge.mock.calls[1][0]).toBeUndefined();
+    store.Map.clear();
   });
 });
