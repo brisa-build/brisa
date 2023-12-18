@@ -351,4 +351,131 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockCleanup).toHaveBeenCalledTimes(2);
   });
+
+  it("should work store shared between different signals", () => {
+    const { store, effect } = signals();
+    const { store: store2 } = signals();
+
+    const mockEffect = mock<(count?: number) => void>(() => {});
+    store.set("count", 0);
+
+    expect(store.get("count")).toBe(0);
+
+    effect(() => {
+      mockEffect(store.get("count"));
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0][0]).toBe(0);
+
+    store.set("count", 2);
+
+    expect(store.get("count")).toBe(2);
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[1][0]).toBe(2);
+
+    store2.set("count", 1);
+
+    expect(store2.get("count")).toBe(1);
+    expect(store.get("count")).toBe(1);
+    expect(mockEffect).toHaveBeenCalledTimes(3);
+    expect(mockEffect.mock.calls[2][0]).toBe(1);
+
+    store.clear();
+  });
+
+  it("should work store with derived", () => {
+    const { store, derived, effect } = signals();
+    const { store: store2 } = signals();
+    const mockEffect = mock<(count?: number) => void>(() => {});
+
+    store.set("count", 0);
+    const double = derived<number>(() => store.get("count") * 2);
+
+    expect(double.value).toBe(0);
+
+    store.set("count", 1);
+
+    expect(double.value).toBe(2);
+
+    effect(() => {
+      mockEffect(double.value);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0][0]).toBe(2);
+
+    store.set("count", 2);
+
+    expect(double.value).toBe(4);
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[1][0]).toBe(4);
+
+    store2.set("count", 1);
+
+    expect(store2.get("count")).toBe(1);
+    expect(store.get("count")).toBe(1);
+    expect(double.value).toBe(2);
+    expect(mockEffect).toHaveBeenCalledTimes(3);
+    expect(mockEffect.mock.calls[2][0]).toBe(2);
+
+    store.clear();
+  });
+
+  it("should work reactive store delete method", () => {
+    const { store, effect } = signals();
+    const mockEffect = mock<(count?: number) => void>(() => {});
+
+    store.set("count", 0);
+
+    expect(store.get("count")).toBe(0);
+
+    effect(() => {
+      mockEffect(store.get("count"));
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0][0]).toBe(0);
+
+    store.delete("count");
+
+    expect(store.get("count")).toBeUndefined();
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[1][0]).toBeUndefined();
+    store.clear();
+  });
+
+  it("should work reactive store clear method", () => {
+    const { store, effect } = signals();
+    const mockEffectCount = mock<(count?: number) => void>(() => {});
+    const mockEffectAge = mock<(age?: number) => void>(() => {});
+
+    store.set("count", 0);
+    store.set("age", 33);
+
+    expect(store.get("count")).toBe(0);
+    expect(store.get("age")).toBe(33);
+
+    effect(() => {
+      mockEffectCount(store.get("count"));
+    });
+
+    effect(() => {
+      mockEffectAge(store.get("age"));
+    });
+
+    expect(mockEffectCount).toHaveBeenCalledTimes(1);
+    expect(mockEffectCount.mock.calls[0][0]).toBe(0);
+    expect(mockEffectAge).toHaveBeenCalledTimes(1);
+    expect(mockEffectAge.mock.calls[0][0]).toBe(33);
+
+    store.clear();
+
+    expect(store.get("count")).toBeUndefined();
+    expect(store.get("age")).toBeUndefined();
+    expect(mockEffectCount).toHaveBeenCalledTimes(2);
+    expect(mockEffectCount.mock.calls[1][0]).toBeUndefined();
+    expect(mockEffectAge).toHaveBeenCalledTimes(2);
+    expect(mockEffectAge.mock.calls[1][0]).toBeUndefined();
+  });
 });
