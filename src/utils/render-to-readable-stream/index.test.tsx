@@ -1234,22 +1234,17 @@ describe("brisa core", () => {
       );
     });
 
-    it('should render [object Object] in case of rendering an object', () => {
+    it("should render [object Object] in case of rendering an object", () => {
       const Component = () => {
-        const object = {}
+        const object = {};
         return <div>{object}</div>;
       };
 
-      const stream = renderToReadableStream(
-        <Component />,
-        testRequest,
-      );
+      const stream = renderToReadableStream(<Component />, testRequest);
 
       const result = Bun.readableStreamToText(stream);
 
-      expect(result).resolves.toMatch(
-        `<div>[object Object]</div>`,
-      );
-    })
+      expect(result).resolves.toMatch(`<div>[object Object]</div>`);
+    });
   });
 });
