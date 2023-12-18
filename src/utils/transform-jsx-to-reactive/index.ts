@@ -39,7 +39,10 @@ export default function transformJSXToReactive(code: string, path: string) {
 
   // Merge early returns in one + optimize effects inside statics (suspense + error phases)
   mapComponentStatics(reactiveAst, out.componentName, (value, name) => {
-    const comp = getReactiveReturnStatement(mergeEarlyReturnsInOne(value), name) as ESTree.FunctionDeclaration;
+    const comp = getReactiveReturnStatement(
+      mergeEarlyReturnsInOne(value),
+      name,
+    ) as ESTree.FunctionDeclaration;
     if (out.statics?.[name]) {
       return optimizeEffects(comp, out.statics[name]!.vars);
     }

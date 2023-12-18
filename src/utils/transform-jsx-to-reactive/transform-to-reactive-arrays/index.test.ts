@@ -118,7 +118,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it('should transform JSX to an reactive array if have some signal (store)', () => {
+      it("should transform JSX to an reactive array if have some signal (store)", () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
@@ -137,7 +137,7 @@ describe("utils", () => {
           }
         `);
         expect(output).toBe(expected);
-      })
+      });
 
       it("should change signals to function if the signal state is used in a conditional", () => {
         const input = parseCodeToAST(`

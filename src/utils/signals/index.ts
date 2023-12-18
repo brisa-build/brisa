@@ -22,7 +22,7 @@ for (let op of ["get", "set", "delete"]) {
     const res = storeMap[op as StoreOperation](key, value);
     subscription[NOTIFY](key, value, op === "get");
     return res;
-  }
+  };
 }
 
 export default function signals() {

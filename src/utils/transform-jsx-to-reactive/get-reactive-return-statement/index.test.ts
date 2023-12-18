@@ -12,11 +12,12 @@ describe("utils", () => {
       it("should return the reactive return statement", () => {
         const program = parseCodeToAST(`
           const a = (props) => ['div', { foo: () => props.bar.value }, 'baz']
-        `) as any
+        `) as any;
 
-        const component = program.body[0].declarations[0].init as ESTree.FunctionDeclaration
+        const component = program.body[0].declarations[0]
+          .init as ESTree.FunctionDeclaration;
 
-        const output = getReactiveReturnStatement(component, 'a');
+        const output = getReactiveReturnStatement(component, "a");
 
         const expectedCode = normalizeQuotes(
           `function a(props) {return ['div', {foo: () => props.bar.value}, 'baz'];}`,
@@ -35,8 +36,9 @@ describe("utils", () => {
           }
         `) as any;
 
-        const component = program.body[0].declarations[0].init as ESTree.FunctionDeclaration
-        const output = getReactiveReturnStatement(component, 'a');
+        const component = program.body[0].declarations[0]
+          .init as ESTree.FunctionDeclaration;
+        const output = getReactiveReturnStatement(component, "a");
         const expectedCode = normalizeQuotes(`
           function a(props) {
             const foo = ['b', {}, () => props.bar.value];
