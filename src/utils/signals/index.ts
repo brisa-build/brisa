@@ -12,6 +12,8 @@ const UNSUBSCRIBE = "u";
 
 const subscription = createSubscription();
 const storeMap = new Map();
+
+// Only get/set/delete from store are reactive
 const globalStore = {
   get(key: string) {
     const value = storeMap.get(key);
@@ -22,13 +24,6 @@ const globalStore = {
     const res = storeMap.set(key, value);
     subscription[NOTIFY](key, value);
     return res;
-  },
-  clear() {
-    const keys = [...storeMap.keys()];
-    storeMap.clear();
-    for (let key of keys) {
-      subscription[NOTIFY](key);
-    }
   },
   delete(key: string) {
     const res = storeMap.delete(key);
@@ -202,3 +197,4 @@ function createSubscription() {
     },
   };
 }
+ 
