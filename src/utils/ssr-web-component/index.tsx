@@ -9,15 +9,15 @@ type Props = {
 
 const voidFn = () => {};
 
-export default async function SSRWebComponent({
-  Component,
-  selector,
-  ...props
-}: Props) {
+export default async function SSRWebComponent(
+  { Component, selector, ...props }: Props,
+  { store }: RequestContext,
+) {
   let style = "";
   let Selector = selector;
 
   const webContext = {
+    store,
     state: (value: unknown) => ({ value }),
     effect: voidFn,
     onMount: voidFn,

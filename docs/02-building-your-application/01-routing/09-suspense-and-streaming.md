@@ -115,25 +115,27 @@ Another benefit of web-components is the suspense defined therein is reactive to
 Example displaying different texts during suspense using [`store`](docs/components-details/web-components#store):
 
 ```tsx
-import { WebContext } from 'brisa'
+import { WebContext } from "brisa";
 
 export default async function MyWebComponent({}, { store }: WebContext) {
-  store.set('suspense-message', 'Loading step 1 ...')
+  store.set("suspense-message", "Loading step 1 ...");
   const firstResponse = await fetch(/* ... */);
-  store.set('suspense-message', 'Loading step 2 ...')
+  store.set("suspense-message", "Loading step 2 ...");
   const secondResponse = await fetch(/* ... */);
 
-  return <div>{firstResponse.foo} {secondResponse.bar}</div>
+  return (
+    <div>
+      {firstResponse.foo} {secondResponse.bar}
+    </div>
+  );
 }
 
 // Display reactive messages from context during the suspense phase:
-MyWebComponent.suspense = ({}, { store }: WebContext) {
-  return store.get('suspense-message').value
-}
+MyWebComponent.suspense = ({}, { store }: WebContext) => {
+  return store.get("suspense-message");
+};
 ```
 
 Also works during streaming. Although loading data is done at the client-side. That is, the `suspense` is rendered on the server with SSR, and on the client-side the real component is loaded by updating the suspense phase until it has the content. That is, these **`fetch`** inside the component will **never be done from the server** in the case of web-components.
-
-TODO: Implement store in client + test that this example is working fine
 
 TODO: Implement the same behavior in the server + add docs about it

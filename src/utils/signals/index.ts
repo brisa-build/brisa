@@ -2,18 +2,45 @@ type Effect = ((
   addSubEffect: (effect: Effect) => Effect,
 ) => void | Promise<void>) & { id?: Effect };
 type Cleanup = () => void | Promise<void>;
+type Listener = (...params: any[]) => void;
 type State<T> = {
   value: T;
 };
+type StoreOperation = "get" | "set" | "delete";
+
+const NOTIFY = "n";
+const SUBSCRIBE = "s";
+const UNSUBSCRIBE = "u";
+
+const subscription = createSubscription();
+const storeMap = new Map();
+const globalStore = {} as Record<string, any>;
+
+// Only get/set/delete from store are reactive
+for (let op of ["get", "set", "delete"]) {
+  globalStore[op] = (key: string, value: any) => {
+    const res = storeMap[op as StoreOperation](key, value);
+    subscription[NOTIFY](key, value, op === "get");
+    return res;
+  };
+}
 
 export default function signals() {
   const stack: Effect[] = [];
+  const storeSignals = new Map();
   const getSet = <T>(set: Map<unknown, Set<T>>, key: unknown) =>
     set.get(key) ?? new Set();
 
   let effects = new Map<State<unknown>, Set<Effect>>();
   let cleanups = new Map<Effect, Set<Cleanup>>();
   let subEffectsPerEffect = new Map<Effect, Set<Effect>>();
+  let subscribed = false;
+
+  function manageStore(key: string, value: any, getter: boolean) {
+    const val = storeSignals.get(key) ?? state(value);
+    getter ? val.value : (val.value = value);
+    storeSignals.set(key, val);
+  }
 
   function removeFromStack(fn: Effect) {
     const index = stack.indexOf(fn);
@@ -109,6 +136,13 @@ export default function signals() {
     cleanups.clear();
     effects.clear();
     subEffectsPerEffect.clear();
+    manageStoreSubscription(false);
+  }
+
+  function manageStoreSubscription(subscribe = true) {
+    if (subscribed === subscribe) return;
+    subscribed = subscribe;
+    subscription[subscribe ? SUBSCRIBE : UNSUBSCRIBE](manageStore);
   }
 
   function cleanup(fn: Cleanup, eff: Effect) {
@@ -127,5 +161,32 @@ export default function signals() {
     return derivedState;
   }
 
-  return { state, effect, reset, cleanup, derived };
+  const store = {
+    ...globalStore,
+    get(key: string) {
+      manageStoreSubscription();
+      return globalStore.get(key);
+    },
+    get Map() {
+      return storeMap;
+    },
+  };
+
+  return { state, store, effect, reset, cleanup, derived };
+}
+
+function createSubscription() {
+  const listeners = new Set<Listener>();
+
+  return {
+    [SUBSCRIBE](listener: Listener) {
+      listeners.add(listener);
+    },
+    [NOTIFY](...params: any[]) {
+      for (let listener of listeners) listener(...params);
+    },
+    [UNSUBSCRIBE](listener: Listener) {
+      listeners.delete(listener);
+    },
+  };
 }

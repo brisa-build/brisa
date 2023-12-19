@@ -3432,6 +3432,50 @@ describe("integration", () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>REAL: 1</div>");
     });
 
+    it("should not lose reactivity store inside the suspense component", async () => {
+      const Component = `
+        const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+        export default async function MyWebComponent({}, { store }) {
+          await sleep(0);
+          store.set('suspense-message', 'Loading step 1 ...')
+          await sleep(0);
+          store.set('suspense-message', 'Loading step 2 ...')
+          await sleep(0);
+
+          return <div>Loaded</div>
+        }
+
+        MyWebComponent.suspense = ({}, { store }) => {
+          return store.get('suspense-message') ?? 'Loading ...'
+        }
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("Loading ...");
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("Loading step 1 ...");
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("Loading step 2 ...");
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Loaded</div>");
+    });
+
     it("should not lose reactivity inside error component", () => {
       const Component = `
         export default function MyComponent() {
