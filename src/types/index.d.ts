@@ -4,7 +4,7 @@
 /// <reference lib="dom.iterable" />
 
 import { IntrinsicCustomElements } from "@/../build/_brisa/types";
-import { BunPlugin, MatchedRoute } from "bun";
+import { BunPlugin, MatchedRoute, TLSOptions } from "bun";
 
 /**
  * Description:
@@ -370,6 +370,7 @@ export type Configuration = {
   assetPrefix?: string;
   plugins?: BunPlugin[];
   basePath?: string;
+  tls?: TLSOptions
 };
 
 export type JSXElement = {
