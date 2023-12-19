@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { MatchedRoute, ServeOptions, ServerWebSocket } from "bun";
+import { MatchedRoute, type Serve, ServerWebSocket } from "bun";
 import getConstants from "../../constants";
 import { RequestContext } from "../../types";
 import dangerHTML from "../../utils/danger-html";
@@ -24,6 +24,7 @@ const {
   PORT,
   PAGES_DIR,
   ASSETS_DIR,
+  CONFIG,
 } = getConstants();
 
 let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
@@ -35,6 +36,7 @@ const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
 const route404 = pagesRouter.reservedRoutes[PAGE_404];
 const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
 const customMiddleware = middlewareModule?.default;
+const tls = CONFIG?.tls;
 
 const responseInitWithGzip = {
   headers: {
@@ -44,7 +46,7 @@ const responseInitWithGzip = {
 };
 
 // Options to start server
-export const serveOptions: ServeOptions = {
+export const serveOptions = {
   port: PORT,
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
@@ -106,26 +108,29 @@ export const serveOptions: ServeOptions = {
         })
     );
   },
+  tls,
   websocket: {
-    open: (ws: ServerWebSocket<{ id: string }>) => {
+    open: (ws) => {
       if (!globalThis.sockets) globalThis.sockets = new Map();
-      globalThis.sockets.set(ws.data.id, ws);
+      const { id } = ws.data as unknown as { id: string };
+      globalThis.sockets.set(id, ws);
       if (!IS_PRODUCTION) ws.subscribe(HOT_RELOAD_TOPIC);
       wsModule?.open?.(ws);
     },
-    close: (ws: ServerWebSocket<{ id: string }>) => {
-      globalThis.sockets?.delete?.(ws.data.id);
+    close: (ws) => {
+      const { id } = ws.data as unknown as { id: string };
+      globalThis.sockets?.delete?.(id);
       if (!IS_PRODUCTION) ws.unsubscribe(HOT_RELOAD_TOPIC);
       wsModule?.close?.(ws);
     },
-    message: (ws: ServerWebSocket<{ id: string }>, message: string) => {
+    message: (ws, message: string) => {
       wsModule?.message?.(ws, message);
     },
-    drain: (ws: ServerWebSocket<{ id: string }>) => {
+    drain: (ws) => {
       wsModule?.drain?.(ws);
     },
   },
-};
+} satisfies Serve;
 
 ///////////////////////////////////////////////////////
 ////////////////////// HELPERS ///////////////////////
