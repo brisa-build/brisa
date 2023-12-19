@@ -411,6 +411,64 @@ export default function Counter({}, { state }: WebContext) {
 
 Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
 
+## Store (`store` method)
+
+The difference between state and `store` is that store is a **shared** state among all web-components. The store is a reactive `Map`, where the methods `get`, `set` and `delete` are reactive.
+
+There is no need to use the `.value` here. But once the `.get` is done you may lose reactivity and need to add it to a `derived`.
+
+### Example:
+
+`src/web-components/shared-store.tsx`:
+
+```tsx
+import { WebContext } from "brisa";
+
+export default function SharedStore({}, { store }: WebContext) {
+  // Setting store
+  store.set("user", { username: "foo", displayName: "Foo" });
+
+  function updateName() {
+    // Reactive update all web-components that consume the same store entry
+    store.set("user", { username: "bar", displayName: "Bar" });
+  }
+
+  // Consuming store
+  return (
+    <>
+      Hello {store.get("user").displayName}
+      <button onClick={updateName}>Update name</button>
+    </>
+  );
+}
+```
+
+### Example with `derived` and `store`:
+
+```tsx
+import { WebContext } from "brisa";
+
+export default function SharedStore({}, { store, derived }: WebContext) {
+  const name = derived(() => store.get("user").displayName);
+
+  // Setting store
+  store.set("user", { username: "foo", displayName: "Foo" });
+
+  function updateName() {
+    // Reactive update all web-components that consume the same store entry
+    store.set("user", { username: "bar", displayName: "Bar" });
+  }
+
+  // Consuming derived store
+  return (
+    <>
+      Hello {name.value}
+      <button onClick={updateName}>Update name</button>
+    </>
+  );
+}
+```
+
 ## Effects (`effect` method)
 
 Effects are used to record side effects such as fetching data, setting up a subscription, and manually changing the DOM in Brisa components.
@@ -614,10 +672,10 @@ MyWebComponent.suspense = (props, webContext) => <div>loading...</div>;
 You can generate a [`error`](/docs/building-your-application/routing/custom-error#errors-in-component-level) phase if your web-component **throws an error** and you want to show something without crash the rest of the page.
 
 ```tsx
-import { WebContext } from 'brisa';
+import { WebContext } from "brisa";
 
 export default function SomeWebComponent() {
-   /* some code */
+  /* some code */
 }
 
 SomeWebComponent.error = ({ error, ...props }, webContext: WebContext) => {

@@ -7,32 +7,7 @@ export default function defineBrisaElement(
   componentPropsNames: string[],
   componentName: string,
 ) {
-  const componentParams = component.params;
-  const componentBody = (component.body?.body ?? [
-    wrapWithReturnStatement(component.body as ESTree.Statement),
-  ]) as ESTree.Statement[];
-
-  const [reactiveReturn, indexReturn] =
-    getReactiveReturnStatement(componentBody);
-
-  const newComponentBody = componentBody.map((node, index) =>
-    index === indexReturn ? reactiveReturn : node,
-  );
-
-  const newComponentAst = {
-    type: "FunctionExpression",
-    id: {
-      type: "Identifier",
-      name: componentName,
-    },
-    params: componentParams,
-    body: {
-      type: "BlockStatement",
-      body: newComponentBody,
-    },
-    generator: component.generator,
-    async: component.async,
-  };
+  const newComponentAst = getReactiveReturnStatement(component, componentName);
 
   // Add an identifier to the component
   const args = [
@@ -60,11 +35,4 @@ export default function defineBrisaElement(
   };
 
   return [BRISA_IMPORT, brisaElement, newComponentAst];
-}
-
-function wrapWithReturnStatement(statement: ESTree.Statement) {
-  return {
-    type: "ReturnStatement",
-    argument: statement,
-  };
 }

@@ -65,6 +65,12 @@ async function enqueueDuringRendering(
     const isServerProvider = isProvider && props.serverOnly;
     const isTagToIgnore = type?.__isFragment || isServerProvider;
 
+    // Cases that is rendered an object <div>{object}</div>
+    if (!type && !props) {
+      controller.enqueue(elementContent.toString(), suspenseId);
+      continue;
+    }
+
     if (type === "HTML") {
       controller.enqueue(props.html, suspenseId);
       continue;

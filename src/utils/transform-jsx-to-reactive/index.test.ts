@@ -476,6 +476,40 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should be possible to return a variable as a child inside suspense", () => {
+        const input = `
+            export default function MyComponent() {
+              return 'Hello world'
+            }
+
+            MyComponent.suspense = () => {
+              const foo = 'Some text'
+              return foo
+            }
+          `;
+
+        const output = toInline(
+          transformJSXToReactive(input, "src/web-components/my-component.tsx"),
+        );
+
+        const expected = toInline(`
+            import {brisaElement, _on, _off} from "brisa/client";
+
+            function MyComponent() {
+              return 'Hello world';
+            }
+
+            export default brisaElement(MyComponent);
+
+            MyComponent.suspense = function suspense() {
+              const foo = 'Some text';
+              return () => foo;
+            };
+          `);
+
+        expect(output).toBe(expected);
+      });
+
       it("should be possible to return null as a child", () => {
         const input = `
             export default function MyComponent() {
@@ -523,7 +557,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap conditional renders inside an hyperScript function", () => {
+      it("should wrap conditional renders inside a function", () => {
         const input = `
           export default function MyComponent({show}) {
             return show ? <div>foo</div> : 'Empty'
@@ -1338,7 +1372,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap conditional renders in different returns inside an hyperScript function", () => {
+      it("should wrap conditional renders in different returns inside a function", () => {
         const input = `
           export default function MyComponent({ show }) {
           if (show) return <div>foo</div>
@@ -1368,7 +1402,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap conditional renders using switch-case and different returns inside an hyperScript function", () => {
+      it("should wrap conditional renders using switch-case and different returns inside a function", () => {
         const input = `
         export default function MyComponent({ show }) {
           switch (show) {

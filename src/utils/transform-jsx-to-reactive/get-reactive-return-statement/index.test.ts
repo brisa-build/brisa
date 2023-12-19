@@ -10,41 +10,45 @@ describe("utils", () => {
   describe("transform-jsx-to-reactive", () => {
     describe("get-reactive-return-statement", () => {
       it("should return the reactive return statement", () => {
-        const componentBody = parseCodeToAST(`
+        const program = parseCodeToAST(`
           const a = (props) => ['div', { foo: () => props.bar.value }, 'baz']
-        `).body as ESTree.Statement[];
+        `) as any;
 
-        const output = getReactiveReturnStatement(componentBody);
+        const component = program.body[0].declarations[0]
+          .init as ESTree.FunctionDeclaration;
 
-        const expectedIndex = -1;
+        const output = getReactiveReturnStatement(component, "a");
+
         const expectedCode = normalizeQuotes(
-          `return ['div', {foo: () => props.bar.value}, 'baz'];`,
+          `function a(props) {return ['div', {foo: () => props.bar.value}, 'baz'];}`,
         );
 
-        expect(normalizeQuotes(generateCodeFromAST(output[0] as any))).toBe(
+        expect(normalizeQuotes(generateCodeFromAST(output as any))).toBe(
           expectedCode,
         );
-        expect(output[1]).toBe(expectedIndex);
       });
 
       it("should be reactive returning a variable", () => {
-        const component = parseCodeToAST(`
+        const program = parseCodeToAST(`
           const a = (props) => {
             const foo = ['b', {}, () => props.bar.value];
             return foo;
           }
-        `).body as ESTree.Statement[];
+        `) as any;
 
-        const componentBody = (component[0] as any).declarations[0].init.body
-          .body;
-        const output = getReactiveReturnStatement(componentBody);
-        const expectedIndex = 1;
-        const expectedCode = normalizeQuotes(`return () => foo;`);
+        const component = program.body[0].declarations[0]
+          .init as ESTree.FunctionDeclaration;
+        const output = getReactiveReturnStatement(component, "a");
+        const expectedCode = normalizeQuotes(`
+          function a(props) {
+            const foo = ['b', {}, () => props.bar.value];
+            return () => foo;
+          }
+        `);
 
-        expect(normalizeQuotes(generateCodeFromAST(output[0] as any))).toBe(
+        expect(normalizeQuotes(generateCodeFromAST(output as any))).toBe(
           expectedCode,
         );
-        expect(output[1]).toBe(expectedIndex);
       });
     });
   });
