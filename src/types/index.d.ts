@@ -370,7 +370,7 @@ export type Configuration = {
   assetPrefix?: string;
   plugins?: BunPlugin[];
   basePath?: string;
-  tls?: TLSOptions
+  tls?: TLSOptions;
 };
 
 export type JSXElement = {
