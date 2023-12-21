@@ -10,6 +10,7 @@ import getImportableFilepath from "../get-importable-filepath";
 import getWebComponentsList from "../get-web-components-list";
 import { logTable } from "../log/log-build";
 import ssrWebComponentPlugin from "../ssr-web-component/ssr-web-component-plugin";
+import createContextPlugin from "../create-context/create-context-plugin";
 
 export default async function compileFiles() {
   const { SRC_DIR, BUILD_DIR, CONFIG, IS_PRODUCTION, LOG_PREFIX } =
@@ -65,6 +66,7 @@ export default async function compileFiles() {
           });
         },
       },
+      createContextPlugin(),
       ...(CONFIG?.plugins ?? []),
     ],
   });

@@ -128,7 +128,7 @@ describe("utils", () => {
     ${info}ƒ /middleware.js                    | 151 B | 0 B
     ${info}Ω /i18n.js                          | 154 B | 0 B
     ${info}Ψ /websocket.js                     | 199 B | 0 B
-    ${info}Φ /chunk-${generatedHash}.js        | 80 B  | 0 B
+    ${info}Φ /chunk-${generatedHash}.js        | 84 B  | 0 B
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout

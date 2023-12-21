@@ -5,6 +5,7 @@ import AST from "../ast";
 import { injectUnsuspenseCode } from "../inject-unsuspense-code" assert { type: "macro" };
 import { injectClientContextProviderCode } from "../context-provider/inject-client" assert { type: "macro" };
 import transformJSXToReactive from "../transform-jsx-to-reactive";
+import createContextPlugin from "../create-context/create-context-plugin";
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
@@ -134,6 +135,7 @@ async function transformToWebComponents(
           );
         },
       },
+      createContextPlugin(),
       ...(CONFIG?.plugins ?? []),
     ],
   });
