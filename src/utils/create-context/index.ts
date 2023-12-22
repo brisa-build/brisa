@@ -1,8 +1,5 @@
-type Id = string | symbol;
+import { BrisaContext } from "brisa/jsx-runtime";
 
-export default function createContext<T>(
-  defaultValue: T,
-  id: Id = Symbol("context"),
-) {
-  return { id, defaultValue };
+export default function createContext<T>(defaultValue: T, id?: string) {
+  return { id, defaultValue } as BrisaContext<T>;
 }

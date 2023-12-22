@@ -11,7 +11,7 @@ const voidFn = () => {};
 
 export default async function SSRWebComponent(
   { Component, selector, ...props }: Props,
-  { store }: RequestContext,
+  { store, useContext }: RequestContext,
 ) {
   let style = "";
   let Selector = selector;
@@ -23,6 +23,7 @@ export default async function SSRWebComponent(
     onMount: voidFn,
     derived: (fn: () => unknown) => ({ value: fn() }),
     cleanup: voidFn,
+    useContext,
     css: (strings: string[], ...values: string[]) => {
       style += strings[0] + values.join("");
     },

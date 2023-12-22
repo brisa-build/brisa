@@ -43,7 +43,7 @@ export interface RequestContext extends Request {
    *
    * Example:
    *
-   * ```ts
+   * ```tsx
    * const foo = useContext(context);
    *
    * <div>{foo.value}</div>
@@ -51,7 +51,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `useContext`](https://brisa.dev/docs/components-details/server-components#consume-context-usecontext)
+   * - [How to use `useContext`](https://brisa.dev/docs/components-details/context)
    */
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
@@ -202,6 +202,25 @@ export interface WebContext {
   /**
    * Description:
    *
+   * The `useContext` method is used to consume a context value.
+   *
+   * Example:
+   *
+   * ```tsx
+   * const foo = useContext(context);
+   *
+   * <div>{foo.value}</div>
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `useContext`](https://brisa.dev/docs/components-details/context)
+   */
+  useContext: <T>(context: BrisaContext<T>) => { value: T };
+
+  /**
+   * Description:
+   *
    * The state is under a signal. This means that to consume it you have to use the `.value` clause.
    *
    * Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
@@ -341,6 +360,13 @@ export interface WebContext {
    *
    */
   css(strings: TemplateStringsArray, ...values: string[]): void;
+
+  /**
+   * Description:
+   *
+   * The `self` attribute is the reference to the web-component itself.
+   */
+  self: HTMLElement;
 }
 
 type ReactiveMap = {
@@ -501,9 +527,9 @@ export type ContextProvider<T> = {
   store: Map<string | symbol, any>;
 };
 
-type BrisaContext<T> = {
+export type BrisaContext<T> = {
   defaultValue: T;
-  id: symbol;
+  id: string;
 };
 
 /**

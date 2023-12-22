@@ -5,6 +5,8 @@ import { normalizeQuotes } from "../../helpers";
 import createPortal from "../create-portal";
 import dangerHTML from "../danger-html";
 import { serialize } from "../serialization";
+import createContext from "../create-context";
+import { join } from "node:path";
 
 declare global {
   interface Window {
@@ -26,6 +28,13 @@ function defineBrisaWebComponent(code: string, path: string) {
   return webComponent;
 }
 
+async function getContextProviderCode() {
+  const code = await Bun.file(
+    join(import.meta.dir, "..", "context-provider", "client.tsx"),
+  ).text();
+  return code.replace(/import.*\n/g, "");
+}
+
 describe("integration", () => {
   describe("web-components", () => {
     beforeEach(async () => {
@@ -36,6 +45,7 @@ describe("integration", () => {
       window._off = module._off;
       window.dangerHTML = dangerHTML;
       window.createPortal = createPortal;
+      window.createContext = createContext;
     });
     afterEach(async () => {
       if (typeof window !== "undefined") GlobalRegistrator.unregister();
@@ -3827,6 +3837,183 @@ describe("integration", () => {
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
     });
+
+    it("should work store between two components", async () => {
+      const code = `
+        export default function First({}, { store }) {
+          return <div onClick={() => store.set('count', (store.get('count') ?? 0) + 1)}>{store.get('count') ?? 0}</div>
+        }
+      `;
+      const code2 = `
+        export default function Second({}, { store }) {
+          return <div>{store.get('count') ?? 0}</div>
+        }
+      `;
+
+      defineBrisaWebComponent(code, "src/web-components/first-component.tsx");
+      defineBrisaWebComponent(code2, "src/web-components/second-component.tsx");
+      document.body.innerHTML = "<first-component /><second-component />";
+
+      const firstComponent = document.querySelector(
+        "first-component",
+      ) as HTMLElement;
+
+      const secondComponent = document.querySelector(
+        "second-component",
+      ) as HTMLElement;
+
+      expect(firstComponent?.shadowRoot?.innerHTML).toBe("<div>0</div>");
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe("<div>0</div>");
+
+      firstComponent?.shadowRoot?.querySelector("div")?.click();
+
+      expect(firstComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
+    });
+
+    it('should work "useContext" method', () => {
+      const code = `
+        const Context = createContext({ foo: 'foo' }, '0:0')
+
+        export default function Component({}, { useContext }) {
+          const context = useContext(Context)
+          return <div>{context.value.foo}</div>
+        }
+      `;
+
+      document.body.innerHTML = "<test-component />";
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>foo</div>");
+    });
+
+    it('should work "useContext" method with context-provider web component', async () => {
+      const parentCode = `
+        const Context = createContext({ foo: 'foo' }, '0:0')
+
+        export default function ParentComponent() {
+          return (
+            <context-provider context={Context} value={{ foo: 'bar' }}>
+              <child-component />
+            </context-provider>
+          )
+        }
+      `;
+
+      const childCode = `
+        const Context = createContext({ foo: 'foo' }, '0:0')
+
+        export default function ChildComponent({}, { useContext }) {
+          const context = useContext(Context)
+          return <div>{context.value.foo}</div>
+        }
+      `;
+
+      defineBrisaWebComponent(
+        await getContextProviderCode(),
+        "src/web-components/context-provider.tsx",
+      );
+      defineBrisaWebComponent(
+        parentCode,
+        "src/web-components/parent-component.tsx",
+      );
+      defineBrisaWebComponent(
+        childCode,
+        "src/web-components/child-component.tsx",
+      );
+      document.body.innerHTML = "<parent-component />";
+
+      const parent = document.querySelector("parent-component") as HTMLElement;
+      const child = parent?.shadowRoot?.querySelector(
+        "child-component",
+      ) as HTMLElement;
+
+      expect(parent.shadowRoot?.innerHTML).toBe(
+        "<context-provider context=\"{'id':'0:0','defaultValue':{'foo':'foo'}}\" value=\"{'foo':'bar'}\" cid=\"0:0\" pid=\"0\"><child-component></child-component></context-provider>",
+      );
+      expect(child.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+    });
+
+    it.todo(
+      "should work reactivity an array with different context providers",
+      async () => {
+        const child = `
+        const Context = createContext({ foo: 'foo' }, '0:0')
+
+        export default function ChildComponent({}, { useContext }) {
+          const context = useContext(Context)
+          return <div>{context.value.foo}</div>
+        }
+      `;
+        const parentCode = `
+        const Context = createContext({ foo: 'foo' }, '0:0')
+
+        export default function ParentComponent({ first = "first", second = "second", third = "third" }) {
+          return (
+            <>
+              <context-provider context={Context} value={{ foo: first }}>
+                <child-component />
+              </context-provider>
+              <context-provider context={Context} value={{ foo: second }}>
+                <child-component />
+              </context-provider>
+              <context-provider context={Context} value={{ foo: third }}>
+                <child-component />
+              </context-provider>
+            </>
+          )
+        }
+      `;
+
+        defineBrisaWebComponent(
+          await getContextProviderCode(),
+          "src/web-components/context-provider.tsx",
+        );
+        defineBrisaWebComponent(
+          parentCode,
+          "src/web-components/parent-component.tsx",
+        );
+        defineBrisaWebComponent(
+          child,
+          "src/web-components/child-component.tsx",
+        );
+        document.body.innerHTML = "<parent-component />";
+
+        const parent = document.querySelector(
+          "parent-component",
+        ) as HTMLElement;
+        const children = parent?.shadowRoot?.querySelectorAll(
+          "child-component",
+        ) as NodeListOf<HTMLElement>;
+
+        expect(children[0].shadowRoot?.innerHTML).toBe("<div>first</div>");
+        expect(children[1].shadowRoot?.innerHTML).toBe("<div>second</div>");
+        expect(children[2].shadowRoot?.innerHTML).toBe("<div>third</div>");
+
+        parent.setAttribute("first", "first-changed");
+        parent.setAttribute("second", "second-changed");
+        parent.setAttribute("third", "third-changed");
+
+        expect(children[0].shadowRoot?.innerHTML).toBe(
+          "<div>first-changed</div>",
+        );
+        expect(children[1].shadowRoot?.innerHTML).toBe(
+          "<div>second-changed</div>",
+        );
+        expect(children[2].shadowRoot?.innerHTML).toBe(
+          "<div>third-changed</div>",
+        );
+      },
+    );
+
+    it.todo("should work with multiple context providers");
+
+    it.todo("should work with multiple nested context providers");
 
     it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
