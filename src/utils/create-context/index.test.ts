@@ -3,10 +3,10 @@ import createContext from ".";
 
 describe("utils", () => {
   describe("createContext", () => {
-    it("should create a context with symbol", () => {
+    it("should create a context", () => {
       const context = createContext("foo");
       expect(context.defaultValue).toBe("foo");
-      expect(context.id).toBeTypeOf("symbol");
+      expect(context.id).toBeUndefined();
     });
 
     it('should create a context with an id of "bar"', () => {

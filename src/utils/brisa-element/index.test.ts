@@ -3,6 +3,8 @@ import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
 import createPortal from "../create-portal";
 import dangerHTML from "../danger-html";
 import { serialize } from "../serialization";
+import createContext from "../create-context";
+import { BrisaContext, WebContext } from "../../types";
 
 let brisaElement: any;
 let _on: symbol, _off: symbol;
@@ -2637,6 +2639,25 @@ describe("utils", () => {
       expect(mockRender).toHaveBeenCalledTimes(2);
       expect(mockRender.mock.calls[1][0]).toBe(2);
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
+    });
+
+    it("should work with useContext method", () => {
+      const Context = createContext({ name: "Aral" }, "0:0") as BrisaContext<{
+        name: string;
+      }>;
+      const Component = ({}, { useContext }: WebContext) => {
+        const context = useContext(Context);
+        return ["div", {}, context.value.name];
+      };
+
+      customElements.define("context-component", brisaElement(Component));
+      document.body.innerHTML = "<context-component />";
+
+      const contextComponent = document.querySelector(
+        "context-component",
+      ) as HTMLElement;
+
+      expect(contextComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
     });
   });
 });

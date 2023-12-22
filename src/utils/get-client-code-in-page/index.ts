@@ -74,7 +74,9 @@ async function transformToWebComponents(
 
   const customElementKeys = Object.keys(webComponentsList);
 
-  if (useContextProvider) customElementKeys.push("context-provider");
+  if (useContextProvider) {
+    customElementKeys.unshift("context-provider");
+  }
 
   const numCustomElements = customElementKeys.length;
   const customElementsDefinitions = customElementKeys
