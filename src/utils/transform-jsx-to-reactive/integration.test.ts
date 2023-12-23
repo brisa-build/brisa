@@ -4162,6 +4162,81 @@ describe("integration", () => {
       expect(child.shadowRoot?.innerHTML).toBe("<div>foo - bar </div>");
     });
 
+    it("should work context rendering a list of items and each item with a provider", async () => {
+      const listItemCode = `
+        const Context = createContext({}, '0:0')
+
+        export default function ListItem({}, { useContext }) {
+          const context = useContext(Context)
+          return <li>{context.value}</li>
+        }
+      `;
+      const itemListProviderCode = `
+        const Ctx = createContext({}, '0:0');
+
+        export default function ItemListProvider({ items = [] }) {
+          return (
+            <ul>
+              {items.map((item, index) => (
+                <context-provider context={Ctx} key={index} value={item}>
+                  {/* Avoid prop-drilling to the list-item component */}
+                  <list-item />
+                </context-provider>
+              ))}
+            </ul>
+          );
+        }
+      `;
+
+      document.body.innerHTML = "<item-list-provider />";
+
+      window._pid = 0;
+      defineBrisaWebComponent(
+        await getContextProviderCode(),
+        "src/web-components/context-provider.tsx",
+      );
+      defineBrisaWebComponent(
+        itemListProviderCode,
+        "src/web-components/item-list-provider.tsx",
+      );
+      defineBrisaWebComponent(listItemCode, "src/web-components/list-item.tsx");
+
+      const itemListProvider = document.querySelector(
+        "item-list-provider",
+      ) as HTMLElement;
+
+      itemListProvider.setAttribute(
+        "items",
+        JSON.stringify(["first", "second", "third"]),
+      );
+
+      const list = itemListProvider?.shadowRoot?.querySelector("ul");
+
+      const children = list?.querySelectorAll(
+        "list-item",
+      ) as NodeListOf<HTMLElement>;
+
+      expect(children).toHaveLength(3);
+      expect(children[0].shadowRoot?.innerHTML).toBe("<li>first</li>");
+      expect(children[1].shadowRoot?.innerHTML).toBe("<li>second</li>");
+      expect(children[2].shadowRoot?.innerHTML).toBe("<li>third</li>");
+
+      itemListProvider.setAttribute(
+        "items",
+        JSON.stringify(["1", "2", "3", "4"]),
+      );
+
+      const item = list?.querySelectorAll(
+        "list-item",
+      ) as NodeListOf<HTMLElement>;
+
+      expect(item).toHaveLength(4);
+      expect(item[0].shadowRoot?.innerHTML).toBe("<li>1</li>");
+      expect(item[1].shadowRoot?.innerHTML).toBe("<li>2</li>");
+      expect(item[2].shadowRoot?.innerHTML).toBe("<li>3</li>");
+      expect(item[3].shadowRoot?.innerHTML).toBe("<li>4</li>");
+    });
+
     it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
       () => {
