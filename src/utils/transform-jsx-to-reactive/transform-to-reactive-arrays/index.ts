@@ -113,7 +113,7 @@ export default function transformToReactiveArrays(
         const isPropAnEvent = name?.startsWith("on");
 
         value =
-          isPropAnEvent || !hasNodeASignal(prop.value)
+          isPropAnEvent || !hasNodeASignal(prop.value, true)
             ? prop.value
             : wrapWithArrowFn(prop.value);
 
@@ -171,14 +171,13 @@ export default function transformToReactiveArrays(
   ) as ESTree.Program;
 }
 
-function hasNodeASignal(node: ESTree.Node) {
+function hasNodeASignal(node: ESTree.Node, allowProperties = false) {
   let hasSignal = false;
 
   if (NO_REACTIVE_CHILDREN_EXPRESSION.has(node?.type)) return hasSignal;
 
   JSON.stringify(node, (key, value) => {
-    // Avoid to check component attributes, they are already wrapped with arrow functions
-    if (value?.type === "Property") return null;
+    if (!allowProperties && value?.type === "Property") return null;
 
     hasSignal ||=
       value?.type === "MemberExpression" &&
