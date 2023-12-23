@@ -94,6 +94,8 @@ const getConstants = () =>
 
 declare global {
   var mockConstants: Partial<typeof constants> | undefined;
+  var BrisaRegistry: Map<string, number>;
+  var lastContextProviderId: number;
 }
 
 export default getConstants;

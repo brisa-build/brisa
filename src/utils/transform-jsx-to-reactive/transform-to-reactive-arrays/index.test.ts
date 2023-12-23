@@ -19,6 +19,17 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should transform JSX to an array if is a web-component arrow fn", () => {
+        const input = parseCodeToAST(
+          `export default ({ name = 'foo' }) => <div>{name}</div>`,
+        );
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(
+          `export default ({name = 'foo'}) => ['div', {}, name];`,
+        );
+        expect(output).toBe(expected);
+      });
+
       it("should transform JSX to an array if is a web-component", () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
@@ -58,6 +69,49 @@ describe("utils", () => {
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, [['button', {onClick: () => count(count.value + 1)}, 'Click'], ['span', {}, () => count.value]]];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should transform to reactive attribute when it has a signal (state) inside", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { state }) {
+            const bar = state(0);
+
+            return (
+              <some-component value={{ foo: bar.value }}>
+                Hello world
+              </some-component>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {state}) {
+            const bar = state(0);
+            return ['some-component', {value: () => ({foo: bar.value})}, 'Hello world'];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should transform to reactive attribute when it has a signal (store) inside", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { store }) {
+            return (
+              <some-component value={{ foo: store.get('bar') }}>
+                Hello world
+              </some-component>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {store}) {
+            return ['some-component', {value: () => ({foo: store.get('bar')})}, 'Hello world'];
           }
         `);
         expect(output).toBe(expected);

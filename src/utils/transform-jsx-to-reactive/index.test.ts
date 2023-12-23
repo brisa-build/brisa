@@ -40,6 +40,25 @@ describe("utils", () => {
       });
     });
 
+    it('should transform if the path is internal web component "__BRISA_CLIENT__"', () => {
+      const input = `
+          export default function MyComponent() {
+            return <div>foo</div>
+          }
+        `;
+      const output = toInline(
+        transformJSXToReactive(input, "__BRISA_CLIENT__ContextProvider"),
+      );
+      const expected = toInline(`
+        import {brisaElement, _on, _off} from "brisa/client";
+        
+        function MyComponent() {return ["div", {}, "foo"];}
+        
+        const ContextProvider = brisaElement(MyComponent);
+      `);
+      expect(output).toBe(expected);
+    });
+
     describe("basic components with transformation", () => {
       it("should transform JSX to an array if is not a web-component", () => {
         const input = `
@@ -53,7 +72,8 @@ describe("utils", () => {
         const expected = toInline(`
             export default function MyComponent() {
               return ['div', {}, 'foo'];
-            }`);
+            }
+          `);
         expect(output).toBe(expected);
       });
 
@@ -64,7 +84,9 @@ describe("utils", () => {
         const output = toInline(
           transformJSXToReactive(input, "/src/components/my-component.tsx"),
         );
-        const expected = toInline(`const element = ['div', {}, 'foo'];`);
+        const expected = toInline(
+          `const element = ['div', {}, 'foo'];export default null;`,
+        );
         expect(output).toBe(expected);
       });
 
@@ -75,7 +97,9 @@ describe("utils", () => {
         const output = toInline(
           transformJSXToReactive(input, "/src/components/my-component.tsx"),
         );
-        const expected = toInline(`const element = () => ['div', {}, 'foo'];`);
+        const expected = toInline(
+          `const element = () => ['div', {}, 'foo'];export default null;`,
+        );
         expect(output).toBe(expected);
       });
 
@@ -1475,7 +1499,7 @@ describe("utils", () => {
         ]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.WARN,
-          `You are using spread props inside web-components JSX.`,
+          `You can't use spread props inside web-components JSX.`,
         ]);
         expect(logs[3]).toEqual([
           LOG_PREFIX.WARN,

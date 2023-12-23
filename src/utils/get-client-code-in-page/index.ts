@@ -3,7 +3,9 @@ import { join } from "node:path";
 import getConstants from "../../constants";
 import AST from "../ast";
 import { injectUnsuspenseCode } from "../inject-unsuspense-code" assert { type: "macro" };
+import { injectClientContextProviderCode } from "../context-provider/inject-client" assert { type: "macro" };
 import transformJSXToReactive from "../transform-jsx-to-reactive";
+import createContextPlugin from "../create-context/create-context-plugin";
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
@@ -16,7 +18,10 @@ export default async function getClientCodeInPage(
   let size = 0;
   let code = "";
 
-  const { useSuspense } = await analyzeClientPath(pagepath, allWebComponents);
+  let { useSuspense, useContextProvider } = await analyzeClientPath(
+    pagepath,
+    allWebComponents,
+  );
 
   // Web components inside web components
   const nestedComponents = await Promise.all(
@@ -25,8 +30,9 @@ export default async function getClientCodeInPage(
     ),
   );
 
-  for (const { webComponents } of nestedComponents) {
-    Object.assign(pageWebComponents, webComponents);
+  for (const item of nestedComponents) {
+    useContextProvider ||= item.useContextProvider;
+    Object.assign(pageWebComponents, item.webComponents);
   }
 
   if (useSuspense) {
@@ -36,7 +42,10 @@ export default async function getClientCodeInPage(
 
   if (!Object.keys(pageWebComponents).length) return { code, size };
 
-  const transformedCode = await transformToWebComponents(pageWebComponents);
+  const transformedCode = await transformToWebComponents(
+    pageWebComponents,
+    useContextProvider,
+  );
 
   if (!transformedCode) return null;
 
@@ -48,6 +57,7 @@ export default async function getClientCodeInPage(
 
 async function transformToWebComponents(
   webComponentsList: Record<string, string>,
+  useContextProvider: boolean,
 ) {
   const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
     getConstants();
@@ -63,6 +73,11 @@ async function transformToWebComponents(
     "const defineElement = (name, component) => name && customElements.define(name, component);";
 
   const customElementKeys = Object.keys(webComponentsList);
+
+  if (useContextProvider) {
+    customElementKeys.unshift("context-provider");
+  }
+
   const numCustomElements = customElementKeys.length;
   const customElementsDefinitions = customElementKeys
     .map((k) =>
@@ -74,7 +89,14 @@ async function transformToWebComponents(
     )
     .join("\n");
 
-  const code =
+  let code = "";
+
+  if (useContextProvider) {
+    const contextProviderCode = await injectClientContextProviderCode();
+    code += contextProviderCode;
+  }
+
+  code +=
     numCustomElements === 1
       ? `${imports}\n${customElementsDefinitions}`
       : `${imports}\n${defineElement}\n${customElementsDefinitions}`;
@@ -100,10 +122,6 @@ async function transformToWebComponents(
             async ({ path, loader }) => {
               let code = await Bun.file(path).text();
 
-              if (!code.includes("export default")) {
-                code += `\nexport default null;`;
-              }
-
               try {
                 code = transformJSXToReactive(code, path);
               } catch (error) {
@@ -119,6 +137,7 @@ async function transformToWebComponents(
           );
         },
       },
+      createContextPlugin(),
       ...(CONFIG?.plugins ?? []),
     ],
   });
@@ -147,18 +166,28 @@ async function analyzeClientPath(
   const ast = ASTUtil.parseCodeToAST(await pageFile.text());
   const webComponents: Record<string, string> = {};
   let useSuspense = false;
+  let useContextProvider = false;
 
   JSON.stringify(ast, (key, value) => {
-    const webComponentName = value?.arguments?.[0]?.value ?? "";
-    const webComponentPath = allWebComponents[webComponentName];
-    const isWebComponent =
-      webComponentPath &&
+    const webComponentSelector = value?.arguments?.[0]?.value ?? "";
+    const webComponentPath = allWebComponents[webComponentSelector];
+    const isCustomElement =
       value?.type === "CallExpression" &&
       value?.callee?.type === "Identifier" &&
       value?.arguments?.[0]?.type === "Literal";
 
+    const isWebComponent = webComponentPath && isCustomElement;
+
+    if (isCustomElement && webComponentSelector === "context-provider") {
+      const serverOnlyProps = value?.arguments?.[1]?.properties?.find?.(
+        (e: any) => e?.key?.name === "serverOnly",
+      );
+
+      useContextProvider ||= serverOnlyProps?.value?.value !== true;
+    }
+
     if (isWebComponent) {
-      webComponents[webComponentName] = webComponentPath;
+      webComponents[webComponentSelector] = webComponentPath;
     }
 
     useSuspense ||=
@@ -169,5 +198,5 @@ async function analyzeClientPath(
     return value;
   });
 
-  return { webComponents, useSuspense };
+  return { webComponents, useSuspense, useContextProvider };
 }
