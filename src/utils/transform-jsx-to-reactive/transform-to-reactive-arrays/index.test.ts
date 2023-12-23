@@ -74,7 +74,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it('should transform to reactive attribute when it has a signal (state) inside', () => {
+      it("should transform to reactive attribute when it has a signal (state) inside", () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const bar = state(0);
@@ -97,7 +97,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it('should transform to reactive attribute when it has a signal (store) inside', () => {
+      it("should transform to reactive attribute when it has a signal (store) inside", () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
