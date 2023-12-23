@@ -19,6 +19,17 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should transform JSX to an array if is a web-component arrow fn", () => {
+        const input = parseCodeToAST(
+          `export default ({ name = 'foo' }) => <div>{name}</div>`,
+        );
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(
+          `export default ({name = 'foo'}) => ['div', {}, name];`,
+        );
+        expect(output).toBe(expected);
+      });
+
       it("should transform JSX to an array if is a web-component", () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {

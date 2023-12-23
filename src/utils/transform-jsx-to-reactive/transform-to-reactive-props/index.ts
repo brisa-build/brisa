@@ -122,11 +122,12 @@ export function transformComponentToReactiveProps(
   ]);
   const allVariableNames = new Set([...propsNames, ...componentVariableNames]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
+
+  addDefaultPropsToBody(defaultPropsEntries, component, allVariableNames);
+
   const declaration = component?.declarations?.[0];
   const params = declaration?.init?.params ?? component?.params ?? [];
   const componentBody = component?.body ?? declaration?.init.body;
-
-  addDefaultPropsToBody(defaultPropsEntries, component, allVariableNames);
 
   // Remove props from component params
   for (let propParam of params[0]?.properties ?? []) {
@@ -218,8 +219,6 @@ function addDefaultPropsToBody(
     component?.declarations?.[0]?.init?.body;
 
   for (let [propName, propValue, usedOperator = "??"] of defaultPropsEntries) {
-    if (componentBody == null) continue;
-
     const operator =
       ((propValue as any)?.usedOperator ?? usedOperator) === "??"
         ? "??="
@@ -245,7 +244,7 @@ function addDefaultPropsToBody(
           name: propName,
         };
 
-    componentBody.unshift({
+    const effectStatement = {
       type: "ExpressionStatement",
       isEffect: true,
       expression: {
@@ -269,7 +268,22 @@ function addDefaultPropsToBody(
           },
         ],
       },
-    } as ESTree.ExpressionStatement);
+    } as ESTree.ExpressionStatement;
+
+    if (Array.isArray(componentBody)) {
+      componentBody.unshift(effectStatement);
+    } else if (componentBody === component?.body) {
+      component.body = {
+        type: "BlockStatement",
+        body: [
+          effectStatement,
+          {
+            type: "ReturnStatement",
+            argument: componentBody,
+          },
+        ],
+      };
+    }
 
     isAddedDefaultProps = true;
   }

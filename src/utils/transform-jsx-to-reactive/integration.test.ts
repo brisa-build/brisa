@@ -2287,6 +2287,28 @@ describe("integration", () => {
       expect(window.mockCallback.mock.calls[0][0]).toBe("cleanup");
     });
 
+    it("should keep reactivity when a prop has default value", () => {
+      const code = `export default ({ name = "Aral" }) => <div>{name}</div>;`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+
+      testComponent.setAttribute("name", "Barbara");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Barbara</div>");
+
+      testComponent.removeAttribute("name");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
     it("should be possible to use derived to default props with || operator", () => {
       const code = `export default ({ name }, { derived }) => {
         const superName = derived(() => name || "Aral");
