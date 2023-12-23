@@ -32,7 +32,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `store`](https://brisa.dev/docs/components-details/server-components#store-store-method)
+   * - [How to use `store`](https://brisa.build/docs/components-details/server-components#store-store-method)
    */
   store: Map<string | symbol, any>;
 
@@ -51,7 +51,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `useContext`](https://brisa.dev/docs/components-details/context)
+   * - [How to use `useContext`](https://brisa.build/docs/components-details/context)
    */
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
@@ -88,7 +88,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `i18n`](https://brisa.dev/docs/building-your-application/routing/internationalization)
+   * - [How to use `i18n`](https://brisa.build/docs/building-your-application/routing/internationalization)
    */
   i18n: I18nFromRequest;
 
@@ -105,7 +105,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `ws`](https://brisa.dev/docs/building-your-application/routing/websockets)
+   * - [How to use `ws`](https://brisa.build/docs/building-your-application/routing/websockets)
    */
   ws: ServerWebSocket<unknown>;
 
@@ -141,7 +141,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `finalURL`](https://brisa.dev/docs/building-your-application/routing/internationalization#final-url)
+   * - [How to use `finalURL`](https://brisa.build/docs/building-your-application/routing/internationalization#final-url)
    */
   finalURL: string;
 
@@ -159,7 +159,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `id`](https://brisa.dev/docs/building-your-application/data-fetching/request-context)
+   * - [How to use `id`](https://brisa.build/docs/building-your-application/data-fetching/request-context)
    */
   id: string;
 }
@@ -195,7 +195,7 @@ export interface WebContext {
    *
    * Docs:
    *
-   * - [How to use `store`](https://brisa.dev/docs/components-details/web-components#store-store-method)
+   * - [How to use `store`](https://brisa.build/docs/components-details/web-components#store-store-method)
    */
   store: ReactiveMap;
 
@@ -214,7 +214,7 @@ export interface WebContext {
    *
    * Docs:
    *
-   * - [How to use `useContext`](https://brisa.dev/docs/components-details/context)
+   * - [How to use `useContext`](https://brisa.build/docs/components-details/context)
    */
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
@@ -244,7 +244,7 @@ export interface WebContext {
    * ```
    *
    * Docs:
-   *  - [How to use `state`](https://brisa.dev/docs/components-details/web-components#state-state-method)
+   *  - [How to use `state`](https://brisa.build/docs/components-details/web-components#state-state-method)
    */
   state<T>(initialValue?: T): { value: T };
 
@@ -270,7 +270,7 @@ export interface WebContext {
    *
    * Docs:
    *
-   * - [How to use `effect`](https://brisa.dev/docs/components-details/web-components#effect-effect-method)
+   * - [How to use `effect`](https://brisa.build/docs/components-details/web-components#effect-effect-method)
    */
   effect(fn: Effect): void;
 
@@ -295,7 +295,7 @@ export interface WebContext {
    *
    * Docs:
    *
-   * - [How to use `cleanup`](https://brisa.dev/docs/components-details/web-components#clean-effects-cleanup-method)
+   * - [How to use `cleanup`](https://brisa.build/docs/components-details/web-components#clean-effects-cleanup-method)
    */
   cleanup(fn: Cleanup): void;
 
@@ -318,7 +318,7 @@ export interface WebContext {
    *
    * Docs:
    *
-   * - [How to use `derived`](https://brisa.dev/docs/components-details/web-components#derived-state-and-props-derived-method)
+   * - [How to use `derived`](https://brisa.build/docs/components-details/web-components#derived-state-and-props-derived-method)
    */
   derived<T>(fn: () => T): { value: T };
 
@@ -343,7 +343,7 @@ export interface WebContext {
    *
    * Docs:
    *
-   * - [How to use `onMount`](https://brisa.dev/docs/components-details/web-components#effect-on-mount-onmount-method)
+   * - [How to use `onMount`](https://brisa.build/docs/components-details/web-components#effect-on-mount-onmount-method)
    */
   onMount(fn: Effect): void;
 
@@ -565,7 +565,7 @@ export type BrisaContext<T> = {
  *
  * Docs:
  *
- * - [How to use `createContext`](https://brisa.dev/docs/components-details/server-components#create-context-createcontext)
+ * - [How to use `createContext`](https://brisa.build/docs/components-details/server-components#create-context-createcontext)
  */
 export function createContext<T>(defaultValue?: T): BrisaContext<T>;
 
@@ -582,7 +582,7 @@ export function createContext<T>(defaultValue?: T): BrisaContext<T>;
  *
  * Docs:
  *
- * - [How to use `dangerHTML`](https://brisa.dev/docs/components-details/web-components#inject-html-dangerhtml)
+ * - [How to use `dangerHTML`](https://brisa.build/docs/components-details/web-components#inject-html-dangerhtml)
  */
 export function dangerHTML(html: string): DangerHTMLOutput;
 
@@ -608,7 +608,7 @@ type DangerHTMLOutput = {
  *
  * Docs:
  *
- * - [How to use `createPortal`](https://brisa.dev/docs/components-details/web-components#portals-createportal)
+ * - [How to use `createPortal`](https://brisa.build/docs/components-details/web-components#portals-createportal)
  */
 export function createPortal(
   element: JSX.Element,

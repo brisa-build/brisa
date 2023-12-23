@@ -609,7 +609,7 @@ describe("utils", () => {
         ]);
         expect(logs[6]).toEqual([
           LOG_PREFIX.ERROR,
-          `Docs: https://brisa.dev/docs/component-details/web-components`,
+          `Docs: https://brisa.build/docs/component-details/web-components`,
         ]);
       });
 

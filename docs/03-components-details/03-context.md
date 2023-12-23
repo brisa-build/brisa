@@ -93,6 +93,7 @@ This means:
 Is going to be transformed to just this HTML: `<div>Hello</div>`. Without the `context-provider` on top.
 
 > [!CAUTION]
+>
 > The `serverOnly` property in **runtime always works** and there is **no need to worry**. However, if you don't use any client context and you don't want to carry the `context-provider` code in the client we recommend that you use literal values, like `true|false` directly, since during the build we don't evaluate if there are dynamic values, then in this case the provider code will be carried in the client even if it is not used later and you will never see any sensitive data.
 
 ### Consume Context (`useContext`)
