@@ -14,6 +14,7 @@ export default function Custom404() {
 ```
 
 > [!TIP]
+>
 > **Good to know**: In this page you can access to the `request context`, `fetch` data, change the `head` content (meta tags, etc), and change the `response headers`, in the same way of the rest of pages.
 
 ## 500 Page
@@ -27,6 +28,7 @@ export default function Custom500({ error }, requestContext) {
 ```
 
 > [!TIP]
+>
 > **Good to know**: In this page you can access to the `request context`, `fetch` data, change the `head` content (meta tags, etc), and change the `response headers`, in the same way of the rest of pages.
 
 ### Errors in component-level

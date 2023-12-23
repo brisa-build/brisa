@@ -147,6 +147,7 @@ Catch all routes can be made optional by including the parameter in double brack
 - `/api/post/a/b`, and so on. → `pages/api/post/[[...slug]].js`
 
 > [!TIP]
+>
 > **Good to know**: You can use names other than `slug`, such as: `[[...param]]`
 
 ## CORS

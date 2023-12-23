@@ -14,7 +14,7 @@ const config: Configuration = {
   tls: {
     key: Bun.file("./key.pem"),
     cert: Bun.file("./cert.pem"),
-  }
+  },
 };
 
 export default config;
@@ -37,7 +37,7 @@ const config: Configuration = {
     key: fs.readFileSync("./key.pem", "utf8"),
     // array of above
     key: [Bun.file("./key1.pem"), Bun.file("./key2.pem")],
-  }
+  },
 };
 
 export default config;
@@ -55,7 +55,7 @@ const config: Configuration = {
     key: Bun.file("./key.pem"),
     cert: Bun.file("./cert.pem"),
     passphrase: "my-secret-passphrase",
-  }
+  },
 };
 
 export default config;
@@ -73,7 +73,7 @@ const config: Configuration = {
     key: Bun.file("./key.pem"), // path to TLS key
     cert: Bun.file("./cert.pem"), // path to TLS cert
     ca: Bun.file("./ca.pem"), // path to root CA certificate
-  }
+  },
 };
 
 export default config;
@@ -88,7 +88,7 @@ const config: Configuration = {
   tls: {
     // other config
     dhParamsFile: "/path/to/dhparams.pem", // path to Diffie Helman parameters
-  }
+  },
 };
 
 export default config;

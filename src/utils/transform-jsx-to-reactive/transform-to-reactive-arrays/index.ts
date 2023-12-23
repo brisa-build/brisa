@@ -35,7 +35,7 @@ export default function transformToReactiveArrays(
 
         logError(
           errorMessages,
-          "Docs: https://brisa.dev/docs/component-details/web-components",
+          "Docs: https://brisa.build/docs/component-details/web-components",
         );
       }
 
@@ -81,7 +81,7 @@ export default function transformToReactiveArrays(
 
           logWarning(
             warnMessages,
-            "Docs: https://brisa.dev/docs/component-details/web-components",
+            "Docs: https://brisa.build/docs/component-details/web-components",
           );
         }
 
