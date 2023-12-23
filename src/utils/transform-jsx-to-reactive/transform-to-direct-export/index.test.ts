@@ -19,6 +19,7 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
       });
+
       it("should transform the web-component to a direct export if the component is a variable declaration", () => {
         const ast = parseCodeToAST(`
           const MyComponent = (props) => <div>{props.foo}</div>;
@@ -103,6 +104,20 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
         const expectedCode = normalizeQuotes(`
           export default props => jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
+
+      it("should not transform the web-component to a direct export if the component is a direct export with default props", () => {
+        const ast = parseCodeToAST(`
+          export default ({ name = "Aral"}) => <div>{name}</div>;
+        `);
+
+        const outputAst = transformToDirectExport(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeQuotes(`
+          export default ({name = "Aral"}) => jsxDEV("div", {children: name}, undefined, false, undefined, this);
         `);
 
         expect(outputCode).toBe(expectedCode);
