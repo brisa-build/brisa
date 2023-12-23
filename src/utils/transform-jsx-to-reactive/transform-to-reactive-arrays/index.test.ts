@@ -74,6 +74,49 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it('should transform to reactive attribute when it has a signal (state) inside', () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { state }) {
+            const bar = state(0);
+
+            return (
+              <some-component value={{ foo: bar.value }}>
+                Hello world
+              </some-component>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {state}) {
+            const bar = state(0);
+            return ['some-component', {value: () => ({foo: bar.value})}, 'Hello world'];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it('should transform to reactive attribute when it has a signal (store) inside', () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { store }) {
+            return (
+              <some-component value={{ foo: store.get('bar') }}>
+                Hello world
+              </some-component>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {store}) {
+            return ['some-component', {value: () => ({foo: store.get('bar')})}, 'Hello world'];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
       it("should transform JSX to an reactive array if have some signal (state) inside suspense", () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {

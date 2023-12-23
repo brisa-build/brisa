@@ -3961,7 +3961,7 @@ describe("integration", () => {
       expect(child.shadowRoot?.innerHTML).toBe("<div>bar</div>");
     });
 
-    it.todo(
+    it(
       "should work reactivity an array with different context providers",
       async () => {
         const child = `
