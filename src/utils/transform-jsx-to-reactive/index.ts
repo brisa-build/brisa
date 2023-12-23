@@ -10,12 +10,18 @@ import transformToDirectExport from "./transform-to-direct-export";
 import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
 import mapComponentStatics from "./map-component-statics";
+import replaceExportDefault from "./replace-export-default";
 import getReactiveReturnStatement from "./get-reactive-return-statement";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
+const BRISA_INTERNAL_PATH = "__BRISA_CLIENT__";
 
 export default function transformJSXToReactive(code: string, path: string) {
-  if (path.match(ALTERNATIVE_FOLDER_REGEX)) return code;
+  const isInternal = path.startsWith(BRISA_INTERNAL_PATH);
+
+  if (path.match(ALTERNATIVE_FOLDER_REGEX) && !isInternal) {
+    return code;
+  }
 
   const ast = parseCodeToAST(code);
   const astWithDirectExport = transformToDirectExport(ast);
@@ -25,7 +31,7 @@ export default function transformJSXToReactive(code: string, path: string) {
   let [componentBranch, exportIndex, identifierIndex] =
     getWebComponentAst(reactiveAst);
 
-  if (!componentBranch || !path.match(WEB_COMPONENT_REGEX)) {
+  if (!componentBranch || (!path.match(WEB_COMPONENT_REGEX) && !isInternal)) {
     return generateCodeFromAST(reactiveAst);
   }
 
@@ -74,6 +80,14 @@ export default function transformJSXToReactive(code: string, path: string) {
 
   // Add the import declaration
   reactiveAst.body.unshift(importDeclaration as ESTree.ImportDeclaration);
+
+  // Useful for internal web components as context-provider
+  if (isInternal) {
+    const internalComponentName = path.split(BRISA_INTERNAL_PATH).at(-1)!;
+    return generateCodeFromAST(
+      replaceExportDefault(reactiveAst, internalComponentName),
+    );
+  }
 
   return generateCodeFromAST(reactiveAst);
 }

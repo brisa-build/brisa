@@ -5,6 +5,7 @@ node_modules
 
 /out/
 **/inject-unsuspense-code/out
+**/context-provider/out
 **/__fixtures__/out*
 /jsx-runtime/
 /jsx-dev-runtime/

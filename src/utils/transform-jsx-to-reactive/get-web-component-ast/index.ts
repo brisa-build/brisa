@@ -5,7 +5,10 @@ export default function getWebComponentAst(
 ): null[] | [ESTree.FunctionDeclaration, number, number] {
   const empty = [null];
   const defaultExportIndex = ast.body.findIndex(
-    (node) => node.type === "ExportDefaultDeclaration",
+    (node: any) =>
+      node.type === "ExportDefaultDeclaration" &&
+      node.declaration.type !== "Literal" &&
+      node.declaration.value !== null,
   );
 
   let identifierDeclarationIndex = -1;

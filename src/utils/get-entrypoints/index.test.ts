@@ -18,6 +18,7 @@ describe("utils", () => {
         "_404.tsx",
         "page-with-web-component.tsx",
         "somepage.tsx",
+        "somepage-with-context.tsx",
         "/index.tsx",
         "user/[username].tsx",
       ].map((route) => path.join(pagesDir, route));

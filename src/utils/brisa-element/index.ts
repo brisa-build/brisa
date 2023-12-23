@@ -1,3 +1,5 @@
+import { WebContext, BrisaContext } from "../../types";
+import getProviderId from "../get-provider-id";
 import { deserialize, serialize } from "../serialization";
 import signals from "../signals";
 
@@ -5,12 +7,6 @@ type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
 type Props = Record<string, unknown>;
 type ReactiveArray = [string, Attr, Children];
-type Signals = ReturnType<typeof signals>;
-type WebContext = Signals & {
-  onMount(cb: () => void): void;
-  css(strings: string[], ...values: string[]): void;
-  h(tagName: string, attributes: Attr, children: unknown): void;
-};
 type Render = {
   (props: Props, webContext: WebContext): Children;
   suspense?(props: Props, webContext: WebContext): Children;
@@ -41,6 +37,7 @@ const INNER_HTML = "inner" + HTML;
 const PROPS: "p" = "p";
 const SUSPENSE_PROPS = "l";
 const NULL = null;
+const CONTEXT = "context";
 
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
@@ -276,7 +273,7 @@ export default function brisaElement(
             : renderSignals.state(deserialize(self.getAttribute(attr)));
         }
         const props = {
-          children: SLOT_TAG,
+          children: [SLOT_TAG, {}, NULL],
           ...self[propsField],
           ...extraProps,
         };
@@ -287,11 +284,23 @@ export default function brisaElement(
           onMount(cb: () => void) {
             fnToExecuteAfterMount.push(cb);
           },
+          // Context
+          useContext<T>(context: BrisaContext<T>) {
+            const pId = getProviderId(self, context.id);
+
+            if (pId) {
+              const id = `${CONTEXT}:${context.id}:${pId}`;
+              return renderSignals.derived(() => renderSignals.store.get(id));
+            }
+
+            return renderSignals.state(context.defaultValue);
+          },
           // Handle CSS
           css(strings: string[], ...values: string[]) {
             cssStyle += strings[0] + values.join("");
           },
-        } as WebContext;
+          self,
+        } as unknown as WebContext;
 
         cssStyle = "";
         return mount(

@@ -2,10 +2,10 @@ import { createContext } from "../../../out/core";
 
 const context = createContext("foo");
 
-export default async function SomePage() {
+export default function WithContext() {
   return (
-    <context-provider serverOnly context={context} value="bar">
-      <h1>Some page</h1>
+    <context-provider context={context} value="bar">
+      <h1>With Context</h1>
     </context-provider>
   );
 }

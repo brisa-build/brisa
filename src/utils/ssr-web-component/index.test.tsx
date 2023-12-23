@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import SSRWebComponent from ".";
 import { WebContext } from "../../types";
 import extendRequestContext from "../extend-request-context";
+import createContext from "../create-context";
 
 const requestContext = extendRequestContext({
   originalRequest: new Request("http://localhost"),
@@ -349,6 +350,34 @@ describe("utils", () => {
       } catch (error: any) {
         expect(error.message).toBe("error");
       }
+    });
+
+    it('should work with "useContext"', async () => {
+      const Ctx = createContext<{ name: string }>(
+        {
+          name: "world",
+        },
+        "name",
+      );
+
+      const Component = ({}, { useContext }: WebContext) => {
+        const context = useContext<{ name: string }>(Ctx);
+
+        return `hello ${context.value.name}`;
+      };
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].props.children[0]).toBe("hello world");
     });
   });
 });

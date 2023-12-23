@@ -103,5 +103,25 @@ describe("utils", () => {
       expect(output!.code).toContain('"web-component"');
       expect(output!.code).toContain('"native-some-example"');
     });
+
+    it("should add context-provider if the page has a context-provider without serverOnly attribute", async () => {
+      const input = path.join(pages, "somepage-with-context.tsx");
+      const output = await getClientCodeInPage(
+        input,
+        allWebComponents,
+        pageWebComponents,
+      );
+      expect(output!.code).toContain('"context-provider"');
+    });
+
+    it("should not add context-provider if the page has a context-provider with serverOnly attribute", async () => {
+      const input = path.join(pages, "somepage.tsx");
+      const output = await getClientCodeInPage(
+        input,
+        allWebComponents,
+        pageWebComponents,
+      );
+      expect(output!.code).not.toContain('"context-provider"');
+    });
   });
 });
