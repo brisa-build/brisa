@@ -2,8 +2,8 @@ import { rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import getConstants from "../../constants";
 import AST from "../ast";
-import { injectUnsuspenseCode } from "../inject-unsuspense-code" assert { type: "macro" };
-import { injectClientContextProviderCode } from "../context-provider/inject-client" assert { type: "macro" };
+import { injectUnsuspenseCode } from "../inject-unsuspense-code" with { type: "macro" };
+import { injectClientContextProviderCode } from "../context-provider/inject-client" with { type: "macro" };
 import transformJSXToReactive from "../transform-jsx-to-reactive";
 import createContextPlugin from "../create-context/create-context-plugin";
 

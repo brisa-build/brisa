@@ -5,7 +5,7 @@ export default function getProviderId(el: HTMLElement, id: string) {
       if (pid) return pid;
     }
 
-    el = (el as any).host ?? el.parentNode;
+    el = el.assignedSlot ?? (el as any).host ?? el.parentNode;
   }
 
   return null;
