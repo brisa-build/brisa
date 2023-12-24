@@ -602,11 +602,39 @@ export default function DoubleCounter({}, { state, derived }) {
 
 ## Context
 
-Web Components do not have access to the [`request context`](/docs/building-your-application/data-fetching/request-context) directly as they are executed on the client. If they need something from the request context, it has to be passed as a parameter.
+To share context between Web Components without prop drilling you can use [context](/docs/components-details/context).
 
-To share context between Web Components without prop drilling you can use the web context.
+To use context take a look to:
 
-TODO: Implement and show an example
+- [`createContext`](/docs/components-details/context#create-context-createcontext)
+- [`context-provider`](/docs/components-details/context#provider)
+- [`useContext`](/docs/components-details/context#consume-context-usecontext)
+
+Example parent:
+
+```tsx
+import { createContext } from "brisa";
+
+const ctx = createContext({});
+
+export default function ThemeProvider({ color, children }) {
+  <context-provider context={ctx} value={{ color }}>
+    {children}
+  </context-provider>;
+}
+```
+
+Example sub-tree child component:
+
+```tsx
+export default function SomeChildComponent(props, { useContext }) {
+  const theme = useContext(ThemeContext);
+  return <div style={{ color: theme.value.color }}>Hello world</div>
+```
+
+> [!NOTE]
+>
+> Learn more about it [here]([context](/docs/components-details/context).
 
 ## Portals (`createPortal`)
 

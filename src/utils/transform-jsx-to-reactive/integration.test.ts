@@ -4237,6 +4237,59 @@ describe("integration", () => {
       expect(item[3].shadowRoot?.innerHTML).toBe("<li>4</li>");
     });
 
+    // TODO: This test should work after this happydom issue about assignedSlot
+    // https://github.com/capricorn86/happy-dom/issues/583
+    it.todo(
+      'shoud work "useContext" method with context-provider children prop',
+      async () => {
+        window.mockEffect = mock((s: string) => {});
+
+        const themeProviderCode = `
+        const ctx = createContext({}, '0:0');
+        
+        export default function ThemeProvider({ color, children }) {
+          return (
+            <context-provider context={ctx} value={{ color }}>
+              {children}
+            </context-provider>
+          );
+        }
+      `;
+
+        const childCode = `
+        const ctx = createContext({}, '0:0');
+        
+        export default function ChildComponent({}, {effect,useContext}) {
+          const context = useContext(ctx);
+          effect(() => window.mockEffect(context.value));
+          return <div>child</div>;
+        }
+      `;
+
+        document.body.innerHTML =
+          "<theme-provider color='red'><child-component /></theme-provider>";
+
+        window._pid = 0;
+        defineBrisaWebComponent(
+          await getContextProviderCode(),
+          "src/web-components/context-provider.tsx",
+        );
+
+        defineBrisaWebComponent(
+          themeProviderCode,
+          "src/web-components/theme-provider.tsx",
+        );
+
+        defineBrisaWebComponent(
+          childCode,
+          "src/web-components/child-component.tsx",
+        );
+
+        expect(window.mockEffect).toHaveBeenCalledTimes(1);
+        expect(window.mockEffect.mock.calls[0][0]).toBe("red");
+      },
+    );
+
     it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
       () => {
