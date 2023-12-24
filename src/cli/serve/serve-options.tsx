@@ -51,8 +51,13 @@ export const serveOptions = {
   development: !IS_PRODUCTION,
   async fetch(req: Request, server) {
     const requestId = crypto.randomUUID();
+    const attachedData = wsModule?.attach
+      ? (await wsModule.attach(req)) ?? {}
+      : {};
 
-    if (server.upgrade(req, { data: { id: requestId } })) return;
+    if (server.upgrade(req, { data: { id: requestId, ...attachedData } })) {
+      return;
+    }
 
     const request = extendRequestContext({
       originalRequest: req,
