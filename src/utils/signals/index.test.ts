@@ -1,7 +1,21 @@
-import { describe, expect, it, mock } from "bun:test";
-import signals from ".";
+import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
+
+let signals: typeof import(".").default;
 
 describe("signals", () => {
+  beforeAll(async () => {
+    (globalThis as any)["_S"] = [["foo", "bar"]];
+    signals = await import(".").then((m) => m.default);
+  });
+  afterAll(() => {
+    (globalThis as any)["_S"] = undefined;
+  });
+
+  it('should init the store depending window["_S"] (transferred server store)', () => {
+    const { store } = signals();
+    expect(store.get<string>("foo")).toBe("bar");
+  });
+
   it("should register effects", () => {
     const { state, effect } = signals();
     const initValue = 0;
@@ -390,7 +404,7 @@ describe("signals", () => {
     const mockEffect = mock<(count?: number) => void>(() => {});
 
     store.set("count", 0);
-    const double = derived<number>(() => store.get("count") * 2);
+    const double = derived<number>(() => store.get<number>("count") * 2);
 
     expect(double.value).toBe(0);
 
@@ -413,8 +427,8 @@ describe("signals", () => {
 
     store2.set("count", 1);
 
-    expect(store2.get("count")).toBe(1);
-    expect(store.get("count")).toBe(1);
+    expect(store2.get<number>("count")).toBe(1);
+    expect(store.get<number>("count")).toBe(1);
     expect(double.value).toBe(2);
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[2][0]).toBe(2);
@@ -428,7 +442,7 @@ describe("signals", () => {
 
     store.set("count", 0);
 
-    expect(store.get("count")).toBe(0);
+    expect(store.get<number>("count")).toBe(0);
 
     effect(() => {
       mockEffect(store.get("count"));

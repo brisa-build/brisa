@@ -154,6 +154,16 @@ async function enqueueDuringRendering(
         "/pages-client",
       );
 
+      // Transfer store to client
+      if ((request as any).webStore.size > 0) {
+        controller.enqueue(
+          `<script>window._S=${JSON.stringify([
+            ...(request as any).webStore,
+          ])}</script>`,
+          suspenseId,
+        );
+      }
+
       if (fs.existsSync(clientFile!)) {
         controller.enqueue(
           `<script>${await Bun.file(clientFile!).text()}</script>`,
