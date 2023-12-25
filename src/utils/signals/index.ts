@@ -1,3 +1,5 @@
+import { WebContext } from "../../types";
+
 type Effect = ((
   addSubEffect: (effect: Effect) => Effect,
 ) => void | Promise<void>) & { id?: Effect };
@@ -13,7 +15,7 @@ const SUBSCRIBE = "s";
 const UNSUBSCRIBE = "u";
 
 const subscription = createSubscription();
-const storeMap = new Map();
+const storeMap = new Map((globalThis as any)._S);
 const globalStore = {} as Record<string, any>;
 
 // Only get/set/delete from store are reactive
@@ -170,7 +172,7 @@ export default function signals() {
     get Map() {
       return storeMap;
     },
-  };
+  } as WebContext["store"];
 
   return { state, store, effect, reset, cleanup, derived };
 }

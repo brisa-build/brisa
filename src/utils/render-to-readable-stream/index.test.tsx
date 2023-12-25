@@ -1241,10 +1241,44 @@ describe("brisa core", () => {
       };
 
       const stream = renderToReadableStream(<Component />, testRequest);
-
       const result = Bun.readableStreamToText(stream);
 
       expect(result).resolves.toMatch(`<div>[object Object]</div>`);
+    });
+
+    it("should transfer request store data into the web store", () => {
+      const Component = ({}, { store }: RequestContext) => {
+        store.set("test", "test");
+        store.transferToClient(["test"]);
+
+        return <div>TEST</div>;
+      };
+
+      const element = (
+        <html>
+          <head>
+            <title>Test</title>
+          </head>
+          <body>
+            <Component />
+          </body>
+        </html>
+      );
+
+      const stream = renderToReadableStream(element, testRequest);
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toMatch(
+        toInline(`<html>
+          <head>
+            <title>Test</title>
+          </head>
+          <body>
+            <div>TEST</div>
+            <script>window._S=[["test","test"]]</script>
+          </body>
+        </html>`),
+      );
     });
   });
 });

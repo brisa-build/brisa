@@ -37,6 +37,18 @@ export default function extendRequestContext({
     originalRequest.store ??
     new Map<string, any>();
 
+  originalRequest.webStore = new Map<string, any>();
+
+  // store.transferToClient
+  originalRequest.store.transferToClient = (keys: string[]) => {
+    const store = originalRequest.store;
+    const webStore = originalRequest.webStore;
+
+    for (let key of keys) {
+      webStore.set(key, store.get(key));
+    }
+  };
+
   // useContext
   originalRequest.useContext = (ctx) => {
     const store = originalRequest.store;
