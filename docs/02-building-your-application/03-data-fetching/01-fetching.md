@@ -203,7 +203,7 @@ export default function UserInfo({}: Props, { useContext }: WebContext) {
 }
 ```
 
-We recommend that whenever possible you add the data to the `store` inside the request. And use the Context API only in specific cases where you only want to share this data with a piece of the component tree.
+We recommend that whenever possible you add the data to the `store`. And use the Context API only in specific cases where you only want to share this data with a piece of the component tree.
 
 The reason is that the **Context API is more expensive** and it creates a DOM element (`context-provider`).
 
@@ -272,6 +272,7 @@ Main.suspense = ({}: Props, request: RequestContext) => (
 import { type WebContext } from "brisa";
 
 export function UserInfo({}: Props, { store }: WebContext) {
+  // Consuming "user" store value in a web-component:
   return <div>Hello {store.get("user").name}</div>;
 }
 ```
