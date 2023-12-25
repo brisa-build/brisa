@@ -164,6 +164,7 @@ async function enqueueDuringRendering(
         );
       }
 
+      // Client file
       if (fs.existsSync(clientFile!)) {
         controller.enqueue(
           `<script>${await Bun.file(clientFile!).text()}</script>`,
