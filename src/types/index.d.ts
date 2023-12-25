@@ -34,7 +34,24 @@ export interface RequestContext extends Request {
    *
    * - [How to use `store`](https://brisa.build/docs/components-details/server-components#store-store-method)
    */
-  store: Map<string | symbol, any>;
+  store: Map<string | symbol, any> & {
+    /**
+     * Description:
+     *
+     * The `transferToClient` method is used to transfer the store values to the client.
+     *
+     * Example:
+     *
+     * ```ts
+     * store.transferToClient(['count']);
+     * ```
+     *
+     * Docs:
+     *
+     * - [How to use `transferToClient`](https://brisa.build/docs/building-your-application/data-fetching/fetching#share-server-web-data-between-components)
+     */
+    transferToClient: (keys: string[]) => void;
+  };
 
   /**
    * Description:

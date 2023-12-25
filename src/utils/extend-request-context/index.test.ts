@@ -133,5 +133,21 @@ describe("brisa core", () => {
       cleanProviderParent();
       expect(useContext(context).value).toBe("foo");
     });
+
+    it("should transferToClient works", () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      requestContext.store.set("foo", "bar");
+      requestContext.store.set("baz", "qux");
+      requestContext.store.transferToClient(["foo"]);
+      expect((requestContext as any).webStore.get("foo")).toBe("bar");
+      expect((requestContext as any).webStore.get("baz")).toBe(undefined);
+    });
   });
 });

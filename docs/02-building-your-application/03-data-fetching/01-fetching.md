@@ -44,6 +44,8 @@ SomeComponent.suspense = ({}, { i18n }) => {
 }
 ```
 
+Suspense is useful during HTML streaming, while the server loads the data the suspense content is displayed, and once the server loads the data, during streaming the suspense is changed to the real content, all this without the client having to make any request to the server.
+
 ### Share server-server data between components
 
 To share data across all parts of the server ([`middleware`](/docs/building-your-application/routing/middleware), [`layout`](/docs/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`suspense` phase](/docs/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
@@ -210,8 +212,11 @@ The reason is that the **Context API is more expensive** and it creates a DOM el
 [Web-components](/docs/components-detailsweb-components) are reactive, and although they are only rendered once when the component is mounted, an [`effect`](/docs/components-details/web-components#effects-effect-method) can be used to do a `re-fetch` whenever a signal (prop, state, store, context...) changes.
 
 ```tsx
-export default function MainApp({ foo }: Props, { store, store }: WebContext) {
-  effect(async () => {
+export default async function WebComponent(
+  { foo }: Props,
+  { store, store }: WebContext,
+) {
+  await effect(async () => {
     if (foo === "bar") {
       const res = await fetch(/* */);
       const user = await res.json();
@@ -323,3 +328,7 @@ export function UserInfo({}: Props, { useContext }: WebContext) {
 ```
 
 The Context API by default shares server-web data unless we pass the `serverOnly` attribute to make it server-server only.
+
+> [!CAUTION]
+>
+> All data transferred between server-web must be [serializable](https://developer.mozilla.org/en-US/docs/Glossary/Serialization).
