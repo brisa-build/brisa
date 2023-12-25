@@ -21,10 +21,10 @@ This page provides an overview of the file and folder structure of a Brisa proje
 
 ## Top-level files
 
-|                                                              |                              |
-| ------------------------------------------------------------ | ---------------------------- |
-|                                                              |                              |
-| [`brisa.config.js`](/docs/app/api-reference/brisa-config-js) | Configuration file for Next. |
+|                                                              |                               |
+| ------------------------------------------------------------ | ----------------------------- |
+|                                                              |                               |
+| [`brisa.config.js`](/docs/app/api-reference/brisa-config-js) | Configuration file for Brisa. |
 
 ### Special Files in `src/pages`
 
