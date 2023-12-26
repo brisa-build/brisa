@@ -487,4 +487,26 @@ describe("CLI: serve", () => {
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain("<h1>Page not found 404</h1>");
   });
+
+  it("should return an asset in gzip if the browser accept it", async () => {
+    const textDecoder = new TextDecoder("utf-8");
+    const req = new Request(`http:///localhost:1234/some-dir/some-text.txt`, {
+      headers: {
+        "accept-encoding": "gzip",
+      },
+    });
+    const response = await testRequest(req);
+    const textBuffer = Bun.gunzipSync(
+      new Uint8Array(await response.arrayBuffer()),
+    );
+    const text = textDecoder.decode(textBuffer);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-encoding")).toBe("gzip");
+    expect(response.headers.get("vary")).toBe("Accept-Encoding");
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8",
+    );
+    expect(text).toBe("Some text :D");
+  });
 });
