@@ -394,7 +394,7 @@ type ReactiveMap = {
 };
 
 type Props = Record<string, unknown> & {
-  children?: Child;
+  children?: JSXElement;
 };
 
 export type ResponseHeaders = (
@@ -402,9 +402,7 @@ export type ResponseHeaders = (
   status: number,
 ) => HeadersInit;
 
-export type JSXNode = string | number | JSXElement | JSXNode[];
-
-type Child = JSXNode | Child[];
+export type JSXNode = string | number | null | JSXElement | JSXNode[];
 
 export type Type = string | number | ComponentType | Promise<ComponentType>;
 
@@ -416,24 +414,15 @@ export type Configuration = {
   tls?: TLSOptions;
 };
 
-export type JSXElement = {
+export type JSXElement = Promise<JSXElement> | JSXElement[] | JSXNode | {
   type: Type;
   props: Props;
-} & (number | string);
+};
 
 export type JSXComponent = (
   props: Props,
   request: RequestContext,
 ) => JSXNode | Promise<JSXNode>;
-
-export interface ParsedFilePkg {
-  program: ts.Program;
-  checker: ts.TypeChecker;
-  sourceFile: ts.SourceFile;
-  fileSymbol?: ts.Symbol;
-  transform: (transformer: Transformer) => void;
-  getCode: () => string;
-}
 
 export interface I18nDictionary {
   [key: string]: string | I18nDictionary;
@@ -649,10 +638,10 @@ interface ContextProviderAttributes {
 
 declare global {
   export namespace JSX {
-    type Element = JSXElement | Promise<JSXElement>;
+    type Element = JSXElement;
 
     interface ElementChildrenAttribute {
-      children: Child;
+      children: JSXElement;
     }
     interface IntrinsicElements extends IntrinsicCustomElements {
       // HTML
