@@ -38,13 +38,6 @@ const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
 const customMiddleware = middlewareModule?.default;
 const tls = CONFIG?.tls;
 
-const responseInitWithGzip = {
-  headers: {
-    "content-encoding": "gzip",
-    vary: "Accept-Encoding",
-  },
-};
-
 // Options to start server
 export const serveOptions = {
   port: PORT,
@@ -177,10 +170,22 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   if (isAnAsset) {
     const assetPath = path.join(ASSETS_DIR, url.pathname);
     const isGzip = req.headers.get("accept-encoding")?.includes?.("gzip");
-    const file = Bun.file(isGzip ? `${assetPath}.gz` : assetPath);
-    const responseOptions = isGzip ? responseInitWithGzip : {};
+    const file = Bun.file(assetPath);
+    const gzipHeaders = {
+      "content-encoding": "gzip",
+      vary: "Accept-Encoding",
+    };
+    const responseOptions = {
+      headers: {
+        "content-type": file.type,
+        ...(isGzip ? gzipHeaders : {}),
+      },
+    };
 
-    return new Response(file, responseOptions);
+    return new Response(
+      isGzip ? Bun.file(`${assetPath}.gz`) : file,
+      responseOptions,
+    );
   }
 
   // 404 page

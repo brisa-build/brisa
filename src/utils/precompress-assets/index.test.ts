@@ -17,7 +17,9 @@ describe("utils", () => {
       Promise.all([
         unlink(`${assetsPath}/favicon.ico.gz`),
         unlink(`${assetsPath}/some-dir/some-img.png.gz`),
-        unlink(`${assetsPath}/some-dir/some-text.txt.gz`),
+        // some-text.txt.gz is not deleted here because it is used in
+        // other tests to check if is seved correctly as text
+        // encoding with gzip
       ]),
     );
 
