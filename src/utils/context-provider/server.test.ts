@@ -20,7 +20,7 @@ describe("utils", () => {
       const providerStore = contextStore.get(context.id);
       const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId).toBeTypeOf("symbol");
-      expect(providerStore.get(currentProviderId)).toBe(value);
+      expect(providerStore.get(currentProviderId).value).toBe(value);
 
       res.clearProvider();
 
@@ -45,7 +45,7 @@ describe("utils", () => {
       const providerStore = contextStore.get(context.id);
       const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId).toBeTypeOf("symbol");
-      expect(providerStore.get(currentProviderId)).toBe(value);
+      expect(providerStore.get(currentProviderId).value).toBe(value);
 
       res.pauseProvider();
 
@@ -60,7 +60,7 @@ describe("utils", () => {
       const providerStore3 = contextStore.get(context.id);
       const currentProviderId3 = providerStore3.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId3).toBeTypeOf("symbol");
-      expect(providerStore3.get(currentProviderId3)).toBe(value);
+      expect(providerStore3.get(currentProviderId3).value).toBe(value);
       expect(res.isProviderPaused()).toBeFalse();
 
       res.clearProvider();
@@ -83,7 +83,7 @@ describe("utils", () => {
       const providerStore = contextStore.get(context.id);
       const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId).toBeTypeOf("symbol");
-      expect(providerStore.get(currentProviderId)).toBe(value);
+      expect(providerStore.get(currentProviderId).value).toBe(value);
 
       const value2 = "baz";
       const res = contextProvider({
@@ -96,14 +96,14 @@ describe("utils", () => {
       const contextStore2 = contextStore.get(context.id);
       const currentProviderId2 = contextStore2.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId2).toBeTypeOf("symbol");
-      expect(contextStore2.get(currentProviderId2)).toBe(value2);
+      expect(contextStore2.get(currentProviderId2).value).toBe(value2);
 
       res.clearProvider();
 
       const newContextStore = contextStore.get(context.id);
       const newCurrentProviderId = newContextStore.get(CURRENT_PROVIDER_ID);
       expect(newCurrentProviderId).toBeTypeOf("symbol");
-      expect(newContextStore.get(newCurrentProviderId)).toBe("bar");
+      expect(newContextStore.get(newCurrentProviderId).value).toBe("bar");
 
       resParent.clearProvider();
 

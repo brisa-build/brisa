@@ -17,10 +17,6 @@ export function contextProvider<T>({
   const detectedSlots = new Set<string>();
   let isPaused = false;
 
-  providerStore.set(id, value);
-  providerStore.set(CURRENT_PROVIDER_ID, id);
-  setStores(contextStore, providerStore);
-
   function setStores(
     contextStore: ContextStore,
     providerStore: Map<symbol, unknown>,
@@ -103,7 +99,8 @@ export function contextProvider<T>({
     return isPaused;
   }
 
-  return {
+  const providerContent = {
+    value,
     clearProvider,
     pauseProvider,
     restoreProvider,
@@ -111,4 +108,10 @@ export function contextProvider<T>({
     addSlot,
     hasSlot,
   };
+
+  providerStore.set(id, providerContent);
+  providerStore.set(CURRENT_PROVIDER_ID, id);
+  setStores(contextStore, providerStore);
+
+  return providerContent;
 }
