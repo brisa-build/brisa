@@ -14,6 +14,8 @@ export function contextProvider<T>({
   const id = Symbol("context-provider");
   const { contextStore, providerStore } = getStores();
   const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
+  const detectedSlots = new Set<string>();
+  let isPaused = false;
 
   providerStore.set(id, value);
   providerStore.set(CURRENT_PROVIDER_ID, id);
@@ -48,6 +50,20 @@ export function contextProvider<T>({
   }
 
   /**
+   * Add a detected slot
+   */
+  function addSlot(slotId: string) {
+    detectedSlots.add(slotId);
+  }
+
+  /**
+   * Check if a slot was detected
+   */
+  function hasSlot(slotId: string) {
+    return detectedSlots.has(slotId);
+  }
+
+  /**
    * Clear the context provider
    *
    * Remove the context provider from the store.
@@ -67,6 +83,7 @@ export function contextProvider<T>({
    */
   function pauseProvider() {
     const { contextStore, providerStore } = getStores();
+    isPaused = true;
     setStores(contextStore, changeCurrentProvider(providerStore));
   }
 
@@ -78,8 +95,20 @@ export function contextProvider<T>({
    */
   function restoreProvider() {
     const { contextStore, providerStore } = getStores();
+    isPaused = false;
     setStores(contextStore, changeCurrentProvider(providerStore, id));
   }
 
-  return { clearProvider, pauseProvider, restoreProvider };
+  function isProviderPaused() {
+    return isPaused;
+  }
+
+  return {
+    clearProvider,
+    pauseProvider,
+    restoreProvider,
+    isProviderPaused,
+    addSlot,
+    hasSlot,
+  };
 }

@@ -39,6 +39,7 @@ describe("utils", () => {
       expect(res.clearProvider).toBeTypeOf("function");
       expect(res.pauseProvider).toBeTypeOf("function");
       expect(res.restoreProvider).toBeTypeOf("function");
+      expect(res.isProviderPaused()).toBeFalse();
 
       const contextStore = store.get(CONTEXT_STORE_ID);
       const providerStore = contextStore.get(context.id);
@@ -52,6 +53,7 @@ describe("utils", () => {
       const currentProviderId2 = providerStore2.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId2).toBeUndefined();
       expect(providerStore2.get(currentProviderId2)).toBeUndefined();
+      expect(res.isProviderPaused()).toBeTrue();
 
       res.restoreProvider();
 
@@ -59,6 +61,7 @@ describe("utils", () => {
       const currentProviderId3 = providerStore3.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId3).toBeTypeOf("symbol");
       expect(providerStore3.get(currentProviderId3)).toBe(value);
+      expect(res.isProviderPaused()).toBeFalse();
 
       res.clearProvider();
 
@@ -108,6 +111,21 @@ describe("utils", () => {
       const newCurrentProviderId2 = newContextStore2.get(CURRENT_PROVIDER_ID);
       expect(newCurrentProviderId2).toBeUndefined();
       expect(newContextStore2.get(newCurrentProviderId2)).toBeUndefined();
+    });
+
+    it("should be possible to register a slot", () => {
+      const context = createContext("foo");
+      const value = "bar";
+      const store = new Map();
+
+      const res = contextProvider({ context, value, store });
+      expect(res.clearProvider).toBeTypeOf("function");
+      expect(res.addSlot).toBeTypeOf("function");
+      expect(res.hasSlot).toBeTypeOf("function");
+
+      res.addSlot("foo");
+      expect(res.hasSlot("foo")).toBeTrue();
+      expect(res.hasSlot("bar")).toBeFalse();
     });
   });
 });
