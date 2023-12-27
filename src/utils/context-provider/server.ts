@@ -1,4 +1,4 @@
-import { ContextProvider } from "../../types";
+import { ContextProvider, RequestContext } from "../../types";
 
 type ContextStoreKey = symbol | string;
 type ContextStore = Map<ContextStoreKey, Map<symbol, unknown>>;
@@ -114,4 +114,39 @@ export function contextProvider<T>({
   setStores(contextStore, providerStore);
 
   return providerContent;
+}
+
+export function getActiveProviders(requestContext: RequestContext) {
+  const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
+  const providers = [];
+
+  for (const providerStore of contextStore.values()) {
+    const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
+    if (currentProviderId) {
+      providers.push(providerStore.get(currentProviderId));
+    }
+  }
+
+  return providers;
+}
+
+export function restoreSlotProviders(
+  slotId: string,
+  requestContext: RequestContext,
+) {
+  const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
+  const providers = [];
+
+  for (const providerStore of contextStore.values()) {
+    for (const providerId of providerStore.keys()) {
+      const provider = providerStore.get(providerId);
+      if (!provider || typeof provider === "symbol") continue;
+      if (provider.isProviderPaused() && provider.hasSlot(slotId)) {
+        provider.restoreProvider();
+        providers.push(provider);
+      }
+    }
+  }
+
+  return providers;
 }
