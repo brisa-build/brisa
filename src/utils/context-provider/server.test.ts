@@ -3,7 +3,7 @@ import {
   CONTEXT_STORE_ID,
   CURRENT_PROVIDER_ID,
   contextProvider,
-  getActiveProviders,
+  registerSlotToActiveProviders,
   restoreSlotProviders,
 } from "./server";
 import createContext from "../create-context";
@@ -127,79 +127,47 @@ describe("utils", () => {
       expect(res.hasSlot).toBeTypeOf("function");
 
       res.addSlot("foo");
+      expect(res.hasSomeSlot()).toBeTrue();
       expect(res.hasSlot("foo")).toBeTrue();
       expect(res.hasSlot("bar")).toBeFalse();
     });
   });
 
-  describe("server getActiveProviders", () => {
-    it("should return the active providers", () => {
+  describe("server registerSlotToActiveProviders", () => {
+    it("should register the slot to active providers", () => {
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost"),
       });
       const context = createContext("foo");
       const value = "bar";
       const store = req.store;
+      const provider = contextProvider({ context, value, store });
 
-      contextProvider({ context, value, store });
+      registerSlotToActiveProviders("foo-slot", req);
 
-      const activeProviders = getActiveProviders(req);
-      expect(activeProviders).toBeTypeOf("object");
-      expect(activeProviders.length).toBe(1);
-      expect(activeProviders[0].value).toBe("bar");
-      expect(activeProviders[0].clearProvider).toBeTypeOf("function");
-      expect(activeProviders[0].pauseProvider).toBeTypeOf("function");
-      expect(activeProviders[0].restoreProvider).toBeTypeOf("function");
-      expect(activeProviders[0].isProviderPaused).toBeTypeOf("function");
-      expect(activeProviders[0].addSlot).toBeTypeOf("function");
-      expect(activeProviders[0].hasSlot).toBeTypeOf("function");
-
-      activeProviders[0].clearProvider();
-
-      const activeProviders2 = getActiveProviders(req);
-      expect(activeProviders2).toBeTypeOf("object");
-      expect(activeProviders2.length).toBe(0);
+      expect(provider.value).toBe("bar");
+      expect(provider.hasSlot("foo-slot")).toBeTrue();
     });
 
-    it("should not return the paused providers but yes the restored", () => {
+    it("should not register the slot to paused providers", () => {
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost"),
       });
       const context = createContext("foo");
-      const value = "bar";
       const store = req.store;
+      const activeProv = contextProvider({ context, value: "actived", store });
+      const pausedProv = contextProvider({ context, value: "paused", store });
 
-      contextProvider({ context, value, store });
+      pausedProv.pauseProvider();
+      registerSlotToActiveProviders("foo-slot", req);
 
-      const activeProviders = getActiveProviders(req);
-      expect(activeProviders).toBeTypeOf("object");
-      expect(activeProviders.length).toBe(1);
-      expect(activeProviders[0].value).toBe("bar");
-      expect(activeProviders[0].clearProvider).toBeTypeOf("function");
-      expect(activeProviders[0].pauseProvider).toBeTypeOf("function");
-      expect(activeProviders[0].restoreProvider).toBeTypeOf("function");
-      expect(activeProviders[0].isProviderPaused).toBeTypeOf("function");
-      expect(activeProviders[0].addSlot).toBeTypeOf("function");
-      expect(activeProviders[0].hasSlot).toBeTypeOf("function");
+      expect(activeProv.value).toBe("actived");
+      expect(activeProv.isProviderPaused()).toBeFalse();
+      expect(activeProv.hasSlot("foo-slot")).toBeTrue();
 
-      activeProviders[0].pauseProvider();
-
-      const activeProviders2 = getActiveProviders(req);
-      expect(activeProviders2).toBeTypeOf("object");
-      expect(activeProviders2.length).toBe(0);
-
-      activeProviders[0].restoreProvider();
-
-      const activeProviders3 = getActiveProviders(req);
-      expect(activeProviders3).toBeTypeOf("object");
-      expect(activeProviders3.length).toBe(1);
-      expect(activeProviders3[0].value).toBe("bar");
-      expect(activeProviders3[0].clearProvider).toBeTypeOf("function");
-      expect(activeProviders3[0].pauseProvider).toBeTypeOf("function");
-      expect(activeProviders3[0].restoreProvider).toBeTypeOf("function");
-      expect(activeProviders3[0].isProviderPaused).toBeTypeOf("function");
-      expect(activeProviders3[0].addSlot).toBeTypeOf("function");
-      expect(activeProviders3[0].hasSlot).toBeTypeOf("function");
+      expect(pausedProv.value).toBe("paused");
+      expect(pausedProv.isProviderPaused()).toBeTrue();
+      expect(pausedProv.hasSlot("foo-slot")).toBeFalse();
     });
   });
 
