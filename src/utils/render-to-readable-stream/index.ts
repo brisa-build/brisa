@@ -61,8 +61,7 @@ async function enqueueDuringRendering(
     }
 
     const { type, props } = elementContent;
-    const isProvider = type === CONTEXT_PROVIDER;
-    const isServerProvider = isProvider && props.serverOnly;
+    const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
     const isTagToIgnore = type?.__isFragment || isServerProvider;
 
     // Cases that is rendered an object <div>{object}</div>
@@ -112,11 +111,11 @@ async function enqueueDuringRendering(
 
     const attributes = renderAttributes({ props, request, type });
     const isContextProvider = type === CONTEXT_PROVIDER;
-    let cleanContext;
+    let ctx: ReturnType<typeof contextProvider> | undefined;
 
     // Register context provider
     if (isContextProvider) {
-      cleanContext = contextProvider({
+      ctx = contextProvider({
         context: props.context,
         value: props.value,
         store: request.store,
@@ -174,7 +173,9 @@ async function enqueueDuringRendering(
     }
 
     // Clean consumed context
-    if (cleanContext) cleanContext();
+    if (ctx) {
+      ctx.clearProvider();
+    }
 
     // Node tag end
     controller.endTag(isTagToIgnore ? null : `</${type}>`, suspenseId);

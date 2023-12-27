@@ -1,5 +1,9 @@
 import { describe, expect, it } from "bun:test";
-import { CURRENT_PROVIDER_ID, contextProvider } from "./server";
+import {
+  CONTEXT_STORE_ID,
+  CURRENT_PROVIDER_ID,
+  contextProvider,
+} from "./server";
 import createContext from "../create-context";
 
 describe("utils", () => {
@@ -9,20 +13,59 @@ describe("utils", () => {
       const value = "bar";
       const store = new Map();
 
-      const cleanProviderFn = contextProvider({ context, value, store });
-      expect(cleanProviderFn).toBeTypeOf("function");
+      const res = contextProvider({ context, value, store });
+      expect(res.clearProvider).toBeTypeOf("function");
 
-      const contextStore = store.get(context.id);
-      const currentProviderId = contextStore.get(CURRENT_PROVIDER_ID);
+      const contextStore = store.get(CONTEXT_STORE_ID);
+      const providerStore = contextStore.get(context.id);
+      const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId).toBeTypeOf("symbol");
-      expect(contextStore.get(currentProviderId)).toBe(value);
+      expect(providerStore.get(currentProviderId)).toBe(value);
 
-      cleanProviderFn();
+      res.clearProvider();
 
-      const newContextStore = store.get(context.id);
+      const newContextStore = contextStore.get(context.id);
       const newCurrentProviderId = newContextStore.get(CURRENT_PROVIDER_ID);
       expect(newCurrentProviderId).toBeUndefined();
       expect(newContextStore.get(newCurrentProviderId)).toBeUndefined();
+    });
+
+    it("should pause and restore a context provider", () => {
+      const context = createContext("foo");
+      const value = "bar";
+      const store = new Map();
+
+      const res = contextProvider({ context, value, store });
+      expect(res.clearProvider).toBeTypeOf("function");
+      expect(res.pauseProvider).toBeTypeOf("function");
+      expect(res.restoreProvider).toBeTypeOf("function");
+
+      const contextStore = store.get(CONTEXT_STORE_ID);
+      const providerStore = contextStore.get(context.id);
+      const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
+      expect(currentProviderId).toBeTypeOf("symbol");
+      expect(providerStore.get(currentProviderId)).toBe(value);
+
+      res.pauseProvider();
+
+      const providerStore2 = contextStore.get(context.id);
+      const currentProviderId2 = providerStore2.get(CURRENT_PROVIDER_ID);
+      expect(currentProviderId2).toBeUndefined();
+      expect(providerStore2.get(currentProviderId2)).toBeUndefined();
+
+      res.restoreProvider();
+
+      const providerStore3 = contextStore.get(context.id);
+      const currentProviderId3 = providerStore3.get(CURRENT_PROVIDER_ID);
+      expect(currentProviderId3).toBeTypeOf("symbol");
+      expect(providerStore3.get(currentProviderId3)).toBe(value);
+
+      res.clearProvider();
+
+      const newProviderStore = contextStore.get(context.id);
+      const newCurrentProviderId = newProviderStore.get(CURRENT_PROVIDER_ID);
+      expect(newCurrentProviderId).toBeUndefined();
+      expect(newProviderStore.get(newCurrentProviderId)).toBeUndefined();
     });
 
     it("should return the last provider value on clean", () => {
@@ -30,37 +73,38 @@ describe("utils", () => {
       const value = "bar";
       const store = new Map();
 
-      const cleanProviderParent = contextProvider({ context, value, store });
-      expect(cleanProviderParent).toBeTypeOf("function");
+      const resParent = contextProvider({ context, value, store });
+      expect(resParent.clearProvider).toBeTypeOf("function");
 
-      const contextStore = store.get(context.id);
-      const currentProviderId = contextStore.get(CURRENT_PROVIDER_ID);
+      const contextStore = store.get(CONTEXT_STORE_ID);
+      const providerStore = contextStore.get(context.id);
+      const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId).toBeTypeOf("symbol");
-      expect(contextStore.get(currentProviderId)).toBe(value);
+      expect(providerStore.get(currentProviderId)).toBe(value);
 
       const value2 = "baz";
-      const cleanProviderChild = contextProvider({
+      const res = contextProvider({
         context,
         value: value2,
         store,
       });
-      expect(cleanProviderChild).toBeTypeOf("function");
+      expect(res.clearProvider).toBeTypeOf("function");
 
-      const contextStore2 = store.get(context.id);
+      const contextStore2 = contextStore.get(context.id);
       const currentProviderId2 = contextStore2.get(CURRENT_PROVIDER_ID);
       expect(currentProviderId2).toBeTypeOf("symbol");
       expect(contextStore2.get(currentProviderId2)).toBe(value2);
 
-      cleanProviderChild();
+      res.clearProvider();
 
-      const newContextStore = store.get(context.id);
+      const newContextStore = contextStore.get(context.id);
       const newCurrentProviderId = newContextStore.get(CURRENT_PROVIDER_ID);
       expect(newCurrentProviderId).toBeTypeOf("symbol");
       expect(newContextStore.get(newCurrentProviderId)).toBe("bar");
 
-      cleanProviderParent();
+      resParent.clearProvider();
 
-      const newContextStore2 = store.get(context.id);
+      const newContextStore2 = contextStore.get(context.id);
       const newCurrentProviderId2 = newContextStore2.get(CURRENT_PROVIDER_ID);
       expect(newCurrentProviderId2).toBeUndefined();
       expect(newContextStore2.get(newCurrentProviderId2)).toBeUndefined();

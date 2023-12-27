@@ -101,9 +101,9 @@ describe("brisa core", () => {
         originalRequest: request,
         route,
       });
-      const cleanProvider = contextProvider({ context, value: "bar", store });
+      const ctx = contextProvider({ context, value: "bar", store });
       expect(useContext(context).value).toBe("bar");
-      cleanProvider();
+      ctx.clearProvider();
       expect(useContext(context).value).toBe("foo");
     });
 
@@ -117,20 +117,20 @@ describe("brisa core", () => {
         originalRequest: request,
         route,
       });
-      const cleanProviderParent = contextProvider({
+      const ctxParent = contextProvider({
         context,
         value: "bar",
         store,
       });
-      const cleanProviderChild = contextProvider({
+      const ctxChild = contextProvider({
         context,
         value: "baz",
         store,
       });
       expect(useContext(context).value).toBe("baz");
-      cleanProviderChild();
+      ctxChild.clearProvider();
       expect(useContext(context).value).toBe("bar");
-      cleanProviderParent();
+      ctxParent.clearProvider();
       expect(useContext(context).value).toBe("foo");
     });
 
