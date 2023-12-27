@@ -3,11 +3,14 @@ import {
   CONTEXT_STORE_ID,
   CURRENT_PROVIDER_ID,
   contextProvider,
+  getActiveProviders,
+  restoreSlotProviders,
 } from "./server";
 import createContext from "../create-context";
+import extendRequestContext from "../extend-request-context";
 
 describe("utils", () => {
-  describe("context provider: server", () => {
+  describe("server context provider", () => {
     it("should create a context provider", () => {
       const context = createContext("foo");
       const value = "bar";
@@ -126,6 +129,161 @@ describe("utils", () => {
       res.addSlot("foo");
       expect(res.hasSlot("foo")).toBeTrue();
       expect(res.hasSlot("bar")).toBeFalse();
+    });
+  });
+
+  describe("server getActiveProviders", () => {
+    it("should return the active providers", () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost"),
+      });
+      const context = createContext("foo");
+      const value = "bar";
+      const store = req.store;
+
+      contextProvider({ context, value, store });
+
+      const activeProviders = getActiveProviders(req);
+      expect(activeProviders).toBeTypeOf("object");
+      expect(activeProviders.length).toBe(1);
+      expect(activeProviders[0].value).toBe("bar");
+      expect(activeProviders[0].clearProvider).toBeTypeOf("function");
+      expect(activeProviders[0].pauseProvider).toBeTypeOf("function");
+      expect(activeProviders[0].restoreProvider).toBeTypeOf("function");
+      expect(activeProviders[0].isProviderPaused).toBeTypeOf("function");
+      expect(activeProviders[0].addSlot).toBeTypeOf("function");
+      expect(activeProviders[0].hasSlot).toBeTypeOf("function");
+
+      activeProviders[0].clearProvider();
+
+      const activeProviders2 = getActiveProviders(req);
+      expect(activeProviders2).toBeTypeOf("object");
+      expect(activeProviders2.length).toBe(0);
+    });
+
+    it("should not return the paused providers but yes the restored", () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost"),
+      });
+      const context = createContext("foo");
+      const value = "bar";
+      const store = req.store;
+
+      contextProvider({ context, value, store });
+
+      const activeProviders = getActiveProviders(req);
+      expect(activeProviders).toBeTypeOf("object");
+      expect(activeProviders.length).toBe(1);
+      expect(activeProviders[0].value).toBe("bar");
+      expect(activeProviders[0].clearProvider).toBeTypeOf("function");
+      expect(activeProviders[0].pauseProvider).toBeTypeOf("function");
+      expect(activeProviders[0].restoreProvider).toBeTypeOf("function");
+      expect(activeProviders[0].isProviderPaused).toBeTypeOf("function");
+      expect(activeProviders[0].addSlot).toBeTypeOf("function");
+      expect(activeProviders[0].hasSlot).toBeTypeOf("function");
+
+      activeProviders[0].pauseProvider();
+
+      const activeProviders2 = getActiveProviders(req);
+      expect(activeProviders2).toBeTypeOf("object");
+      expect(activeProviders2.length).toBe(0);
+
+      activeProviders[0].restoreProvider();
+
+      const activeProviders3 = getActiveProviders(req);
+      expect(activeProviders3).toBeTypeOf("object");
+      expect(activeProviders3.length).toBe(1);
+      expect(activeProviders3[0].value).toBe("bar");
+      expect(activeProviders3[0].clearProvider).toBeTypeOf("function");
+      expect(activeProviders3[0].pauseProvider).toBeTypeOf("function");
+      expect(activeProviders3[0].restoreProvider).toBeTypeOf("function");
+      expect(activeProviders3[0].isProviderPaused).toBeTypeOf("function");
+      expect(activeProviders3[0].addSlot).toBeTypeOf("function");
+      expect(activeProviders3[0].hasSlot).toBeTypeOf("function");
+    });
+  });
+
+  describe("server restoreSlotProviders", () => {
+    it("should restore the slot providers", () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost"),
+      });
+      const context = createContext("foo");
+      const store = req.store;
+
+      const provider = contextProvider({ context, value: "foo", store });
+      const provider2 = contextProvider({ context, value: "bar", store });
+      const provider3 = contextProvider({ context, value: "baz", store });
+      const provider4 = contextProvider({ context, value: "qux", store });
+
+      provider.addSlot("foo");
+      provider.pauseProvider();
+      provider2.addSlot("bar");
+      provider3.addSlot("");
+      provider3.pauseProvider();
+      provider4.pauseProvider();
+
+      expect(provider.isProviderPaused()).toBeTrue();
+      expect(provider2.isProviderPaused()).toBeFalse();
+      expect(provider3.isProviderPaused()).toBeTrue();
+      expect(provider4.isProviderPaused()).toBeTrue();
+
+      const r = restoreSlotProviders("foo", req);
+
+      expect(r.length).toBe(1);
+      expect(r[0]).toEqual(provider);
+      expect(provider.isProviderPaused()).toBeFalse();
+      expect(provider2.isProviderPaused()).toBeFalse();
+      expect(provider3.isProviderPaused()).toBeTrue();
+      expect(provider4.isProviderPaused()).toBeTrue();
+
+      const r2 = restoreSlotProviders("", req);
+
+      expect(r2.length).toBe(1);
+      expect(r2[0]).toEqual(provider3);
+      expect(provider.isProviderPaused()).toBeFalse();
+      expect(provider2.isProviderPaused()).toBeFalse();
+      expect(provider3.isProviderPaused()).toBeFalse();
+      expect(provider4.isProviderPaused()).toBeTrue();
+    });
+
+    it("should restore multiple slot providers", () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost"),
+      });
+      const context = createContext("foo");
+      const store = req.store;
+
+      const provider = contextProvider({ context, value: "foo", store });
+      const provider2 = contextProvider({ context, value: "bar", store });
+      const provider3 = contextProvider({ context, value: "baz", store });
+      const provider4 = contextProvider({ context, value: "qux", store });
+
+      provider.addSlot("foo");
+      provider.pauseProvider();
+      provider2.addSlot("foo");
+      provider2.pauseProvider();
+      provider3.addSlot("foo");
+      provider3.pauseProvider();
+      provider4.addSlot("foo");
+      provider4.pauseProvider();
+
+      expect(provider.isProviderPaused()).toBeTrue();
+      expect(provider2.isProviderPaused()).toBeTrue();
+      expect(provider3.isProviderPaused()).toBeTrue();
+      expect(provider4.isProviderPaused()).toBeTrue();
+
+      const r = restoreSlotProviders("foo", req);
+
+      expect(r.length).toBe(4);
+      expect(r[0]).toEqual(provider);
+      expect(r[1]).toEqual(provider2);
+      expect(r[2]).toEqual(provider3);
+      expect(r[3]).toEqual(provider4);
+      expect(provider.isProviderPaused()).toBeFalse();
+      expect(provider2.isProviderPaused()).toBeFalse();
+      expect(provider3.isProviderPaused()).toBeFalse();
+      expect(provider4.isProviderPaused()).toBeFalse();
     });
   });
 });
