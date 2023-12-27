@@ -414,10 +414,14 @@ export type Configuration = {
   tls?: TLSOptions;
 };
 
-export type JSXElement = Promise<JSXElement> | JSXElement[] | JSXNode | {
-  type: Type;
-  props: Props;
-};
+export type JSXElement =
+  | Promise<JSXElement>
+  | JSXElement[]
+  | JSXNode
+  | {
+      type: Type;
+      props: Props;
+    };
 
 export type JSXComponent = (
   props: Props,

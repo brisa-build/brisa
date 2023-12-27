@@ -1146,6 +1146,141 @@ describe("brisa core", () => {
       );
     });
 
+    it('should work "useContext" method with context-provider children prop', () => {
+      type Theme = { color: string };
+      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+
+      function ThemeProvider({
+        color,
+        children,
+      }: Theme & { children: JSX.Element }) {
+        return (
+          <context-provider context={ThemeCtx} value={{ color }}>
+            {children}
+          </context-provider>
+        );
+      }
+
+      function ChildComponent({}, { useContext }: RequestContext) {
+        const context = useContext(ThemeCtx);
+        return <div>{context.value.color}</div>;
+      }
+
+      const stream = renderToReadableStream(
+        <ThemeProvider color="red">
+          <ChildComponent />
+        </ThemeProvider>,
+        testRequest,
+      );
+
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toMatch(
+        `<context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}"><div>red</div></context-provider>`,
+      );
+    });
+
+    it('should work "useContext" method with context-provider children prop and web-components (SSR)', () => {
+      type Theme = { color: string };
+      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+
+      function ThemeProvider({
+        color,
+        children,
+      }: Theme & { children: JSX.Element }) {
+        return (
+          <context-provider context={ThemeCtx} value={{ color }}>
+            {children}
+          </context-provider>
+        );
+      }
+
+      function ChildComponent({}, { useContext }: RequestContext) {
+        const context = useContext(ThemeCtx);
+        return <div>{context.value.color}</div>;
+      }
+
+      const stream = renderToReadableStream(
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+          ></SSRWebComponent>
+        </SSRWebComponent>,
+        testRequest,
+      );
+
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toMatch(
+        `<context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}"><div>red</div></context-provider>`,
+      );
+    });
+
+    it("should work context-provider inside another context-provider in web-components SSR", async () => {
+      type Theme = { color: string };
+      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+
+      function ColorTest({ color }: Theme) {
+        return (
+          <context-provider context={ThemeCtx} value={{ color }}>
+            <context-provider context={ThemeCtx} value={{ color: "blue" }}>
+              <SSRWebComponent
+                Component={ChildComponent}
+                selector="child-component"
+              ></SSRWebComponent>
+            </context-provider>
+            <SSRWebComponent
+              Component={ChildComponent}
+              selector="child-component"
+            ></SSRWebComponent>
+          </context-provider>
+        );
+      }
+
+      function ChildComponent({}, { useContext }: RequestContext) {
+        const context = useContext(ThemeCtx);
+        return <div>{context.value.color}</div>;
+      }
+
+      const stream = renderToReadableStream(
+        <SSRWebComponent
+          Component={ColorTest}
+          selector="theme-provider"
+          color="red"
+        />,
+        testRequest,
+      );
+
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toMatch(
+        toInline(`
+          <theme-provider color="red">
+            <template shadowrootmode="open">
+              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+                <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'blue'}">
+                  <child-component>
+                    <template shadowrootmode="open">
+                      <div>blue</div>
+                    </template>
+                  </child-component>
+                </context-provider>
+              <child-component>
+              <template shadowrootmode="open">
+                <div>red</div>
+              </template>
+            </child-component>
+            </context-provider>
+          </template>
+        </theme-provider>`),
+      );
+    });
+
     it('should work context with "useContext" hook with "serverOnly" with context-provider', async () => {
       type TestContext = { name: string };
       const context = createContext<TestContext>({ name: "bar" });

@@ -1,4 +1,5 @@
 import { toInline } from "../../helpers";
+import { Fragment } from "../../jsx-runtime";
 import { RequestContext } from "../../types";
 
 type Props = {
@@ -51,7 +52,7 @@ export default async function SSRWebComponent(
         {content}
         {style.length > 0 && <style>{toInline(style)}</style>}
       </template>
-      {props.children}
+      <Fragment slot="">{props.children}</Fragment>
     </Selector>
   );
 }
