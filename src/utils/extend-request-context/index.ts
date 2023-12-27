@@ -60,7 +60,9 @@ export default function extendRequestContext({
     if (!context) return { value: ctx.defaultValue };
 
     return {
-      value: context.get(context.get(CURRENT_PROVIDER_ID)) ?? ctx.defaultValue,
+      value:
+        context.get(context.get(CURRENT_PROVIDER_ID))?.value ??
+        ctx.defaultValue,
     };
   };
 
