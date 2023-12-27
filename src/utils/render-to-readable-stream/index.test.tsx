@@ -1217,7 +1217,20 @@ describe("brisa core", () => {
       const result = Bun.readableStreamToText(stream);
 
       expect(result).resolves.toMatch(
-        `<context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}"><div>red</div></context-provider>`,
+        toInline(`
+          <theme-provider color="red">
+            <template shadowrootmode="open">
+              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+                <slot></slot>
+              </context-provider>
+            </template>
+            <child-component>
+              <template shadowrootmode="open">
+                <div>red</div>
+              </template>
+            </child-component>
+          </theme-provider>
+        `),
       );
     });
 
