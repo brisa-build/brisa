@@ -48,15 +48,22 @@ export function contextProvider<T>({
   /**
    * Add a detected slot
    */
-  function addSlot(slotId: string) {
-    detectedSlots.add(slotId);
+  function addSlot(slotName: string) {
+    detectedSlots.add(slotName);
   }
 
   /**
    * Check if a slot was detected
    */
-  function hasSlot(slotId: string) {
-    return detectedSlots.has(slotId);
+  function hasSlot(slotName: string) {
+    return detectedSlots.has(slotName);
+  }
+
+  /**
+   * Check if some slot was detected
+   */
+  function hasSomeSlot() {
+    return detectedSlots.size > 0;
   }
 
   /**
@@ -107,6 +114,7 @@ export function contextProvider<T>({
     isProviderPaused,
     addSlot,
     hasSlot,
+    hasSomeSlot,
   };
 
   providerStore.set(id, providerContent);
@@ -116,32 +124,38 @@ export function contextProvider<T>({
   return providerContent;
 }
 
-export function getActiveProviders(requestContext: RequestContext) {
-  const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
-  const providers = [];
-
-  for (const providerStore of contextStore.values()) {
-    const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
-    if (currentProviderId) {
-      providers.push(providerStore.get(currentProviderId));
-    }
-  }
-
-  return providers;
-}
-
-export function restoreSlotProviders(
-  slotId: string,
+/**
+ * Register the slot name to the active context providers
+ */
+export function registerSlotToActiveProviders(
+  slotName: string,
   requestContext: RequestContext,
 ) {
   const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
-  const providers = [];
+
+  for (const providerStore of contextStore.values()) {
+    const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
+
+    if (!currentProviderId) continue;
+    providerStore.get(currentProviderId).addSlot(slotName);
+  }
+}
+
+/**
+ * Restore the context providers and return the restored providers
+ */
+export function restoreSlotProviders(
+  slotName: string,
+  requestContext: RequestContext,
+) {
+  const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
+  const providers: ReturnType<typeof contextProvider>[] = [];
 
   for (const providerStore of contextStore.values()) {
     for (const providerId of providerStore.keys()) {
       const provider = providerStore.get(providerId);
       if (!provider || typeof provider === "symbol") continue;
-      if (provider.isProviderPaused() && provider.hasSlot(slotId)) {
+      if (provider.isProviderPaused() && provider.hasSlot(slotName)) {
         provider.restoreProvider();
         providers.push(provider);
       }

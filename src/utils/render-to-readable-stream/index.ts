@@ -5,7 +5,13 @@ import extendStreamController, {
 } from "../extend-stream-controller";
 import generateHrefLang from "../generate-href-lang";
 import renderAttributes from "../render-attributes";
-import { contextProvider } from "../context-provider/server";
+import {
+  contextProvider,
+  registerSlotToActiveProviders,
+  restoreSlotProviders,
+} from "../context-provider/server";
+
+type ProviderType = ReturnType<typeof contextProvider>;
 
 const CONTEXT_PROVIDER = "context-provider";
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
@@ -111,7 +117,10 @@ async function enqueueDuringRendering(
 
     const attributes = renderAttributes({ props, request, type });
     const isContextProvider = type === CONTEXT_PROVIDER;
-    let ctx: ReturnType<typeof contextProvider> | undefined;
+    const isSlotTag = type === "slot";
+    const isSlotContent = typeof props.slot === "string";
+    let ctx: ProviderType | undefined;
+    let slotContentProviders: ProviderType[] | undefined;
 
     // Register context provider
     if (isContextProvider) {
@@ -120,6 +129,16 @@ async function enqueueDuringRendering(
         value: props.value,
         store: request.store,
       });
+    }
+
+    // Register slug to active context providers
+    if (isSlotTag) {
+      registerSlotToActiveProviders(props.name ?? "", request);
+    }
+
+    // Restore context providers paused to wait for slot content
+    if (isSlotContent) {
+      slotContentProviders = restoreSlotProviders(props.slot!, request);
     }
 
     // Node tag start
@@ -172,9 +191,18 @@ async function enqueueDuringRendering(
       }
     }
 
-    // Clean consumed context
     if (ctx) {
-      ctx.clearProvider();
+      // Pause context provider to wait for slots
+      if (ctx.hasSomeSlot()) ctx.pauseProvider();
+      // Clean consumed context
+      else ctx.clearProvider();
+    }
+
+    // Clean context providers after slot content
+    if (isSlotContent && slotContentProviders) {
+      for (const provider of slotContentProviders) {
+        provider.clearProvider();
+      }
     }
 
     // Node tag end
