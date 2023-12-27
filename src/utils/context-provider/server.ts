@@ -1,6 +1,10 @@
 import { ContextProvider } from "../../types";
 
-export const CURRENT_PROVIDER_ID = Symbol("current-provider-id");
+type ContextStoreKey = symbol | string;
+type ContextStore = Map<ContextStoreKey, Map<symbol, unknown>>;
+
+export const CURRENT_PROVIDER_ID = Symbol.for("current-provider-id");
+export const CONTEXT_STORE_ID = Symbol.for("context");
 
 export function contextProvider<T>({
   context,
@@ -8,25 +12,74 @@ export function contextProvider<T>({
   store,
 }: ContextProvider<T>) {
   const id = Symbol("context-provider");
-  const contextStore = store.get(context.id) ?? new Map<symbol, T>();
-  const currentProviderId = contextStore.get(CURRENT_PROVIDER_ID);
+  const { contextStore, providerStore } = getStores();
+  const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
 
-  contextStore.set(id, value);
-  contextStore.set(CURRENT_PROVIDER_ID, id);
+  providerStore.set(id, value);
+  providerStore.set(CURRENT_PROVIDER_ID, id);
+  setStores(contextStore, providerStore);
 
-  store.set(context.id, contextStore);
+  function setStores(
+    contextStore: ContextStore,
+    providerStore: Map<symbol, unknown>,
+  ) {
+    contextStore.set(context.id, providerStore);
+    store.set(CONTEXT_STORE_ID, contextStore);
+  }
 
-  return () => {
-    const contextStore = store.get(context.id);
+  function getStores() {
+    const contextStore =
+      store.get(CONTEXT_STORE_ID) ??
+      new Map<ContextStoreKey, Map<symbol, unknown>>();
+    const providerStore = contextStore.get(context.id) ?? new Map<symbol, T>();
+    return { contextStore, providerStore };
+  }
 
-    contextStore.delete(id);
-
-    if (currentProviderId) {
-      contextStore.set(CURRENT_PROVIDER_ID, currentProviderId);
+  function changeCurrentProvider(
+    providerStore: Map<symbol, T>,
+    providerId = currentProviderId,
+  ) {
+    if (providerId) {
+      providerStore.set(CURRENT_PROVIDER_ID, providerId);
     } else {
-      contextStore.delete(CURRENT_PROVIDER_ID);
+      providerStore.delete(CURRENT_PROVIDER_ID);
     }
+    return providerStore;
+  }
 
-    store.set(context.id, contextStore);
-  };
+  /**
+   * Clear the context provider
+   *
+   * Remove the context provider from the store.
+   * Useful on close <context-provider>.
+   */
+  function clearProvider() {
+    const { contextStore, providerStore } = getStores();
+    providerStore.delete(id);
+    setStores(contextStore, changeCurrentProvider(providerStore));
+  }
+
+  /**
+   * Pause the context provider
+   *
+   * Useful on close <context-provider> after detecting an <slot>,
+   * pausing to then restore the context provider on the slot content.
+   */
+  function pauseProvider() {
+    const { contextStore, providerStore } = getStores();
+    setStores(contextStore, changeCurrentProvider(providerStore));
+  }
+
+  /**
+   * Restore the context provider
+   *
+   * Useful on close <context-provider> after detecting an <slot>,
+   * pausing to then restore the context provider on the slot content.
+   */
+  function restoreProvider() {
+    const { contextStore, providerStore } = getStores();
+    setStores(contextStore, changeCurrentProvider(providerStore, id));
+  }
+
+  return { clearProvider, pauseProvider, restoreProvider };
 }

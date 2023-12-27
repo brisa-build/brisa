@@ -1,7 +1,10 @@
 // @ts-nocheck
 import { MatchedRoute } from "bun";
 import { I18nFromRequest, RequestContext } from "../../types";
-import { CURRENT_PROVIDER_ID } from "../context-provider/server";
+import {
+  CURRENT_PROVIDER_ID,
+  CONTEXT_STORE_ID,
+} from "../context-provider/server";
 
 type ExtendRequestContext = {
   originalRequest: Request;
@@ -52,7 +55,7 @@ export default function extendRequestContext({
   // useContext
   originalRequest.useContext = (ctx) => {
     const store = originalRequest.store;
-    const context = store.get(ctx.id);
+    const context = store.get(CONTEXT_STORE_ID)?.get(ctx.id);
 
     if (!context) return { value: ctx.defaultValue };
 

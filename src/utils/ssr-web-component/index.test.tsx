@@ -215,7 +215,7 @@ describe("utils", () => {
       expect(
         output.props.children[0].props.children[0].props.children[1].type,
       ).toBe("slot");
-      expect(output.props.children[1]).toBe("world");
+      expect(output.props.children[1].props.children).toBe("world");
     });
 
     it("should work with async components", async () => {
@@ -244,7 +244,7 @@ describe("utils", () => {
       expect(
         output.props.children[0].props.children[0].props.children[1].type,
       ).toBe("slot");
-      expect(output.props.children[1]).toBe("world");
+      expect(output.props.children[1].props.children).toBe("world");
     });
 
     it("should work the suspense component in async components", async () => {
