@@ -13,8 +13,8 @@ export function contextProvider<T>({
 }: ContextProvider<T>) {
   const id = Symbol("context-provider");
   const { contextStore, providerStore } = getStores();
-  const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
   const detectedSlots = new Set<string>();
+  let currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
   let isPaused = false;
 
   function setStores(
@@ -31,18 +31,6 @@ export function contextProvider<T>({
       new Map<ContextStoreKey, Map<symbol, unknown>>();
     const providerStore = contextStore.get(context.id) ?? new Map<symbol, T>();
     return { contextStore, providerStore };
-  }
-
-  function changeCurrentProvider(
-    providerStore: Map<symbol, T>,
-    providerId = currentProviderId,
-  ) {
-    if (providerId) {
-      providerStore.set(CURRENT_PROVIDER_ID, providerId);
-    } else {
-      providerStore.delete(CURRENT_PROVIDER_ID);
-    }
-    return providerStore;
   }
 
   /**
@@ -75,7 +63,8 @@ export function contextProvider<T>({
   function clearProvider() {
     const { contextStore, providerStore } = getStores();
     providerStore.delete(id);
-    setStores(contextStore, changeCurrentProvider(providerStore));
+    providerStore.set(CURRENT_PROVIDER_ID, currentProviderId);
+    setStores(contextStore, providerStore);
   }
 
   /**
@@ -87,7 +76,8 @@ export function contextProvider<T>({
   function pauseProvider() {
     const { contextStore, providerStore } = getStores();
     isPaused = true;
-    setStores(contextStore, changeCurrentProvider(providerStore));
+    providerStore.set(CURRENT_PROVIDER_ID, currentProviderId);
+    setStores(contextStore, providerStore);
   }
 
   /**
@@ -99,7 +89,9 @@ export function contextProvider<T>({
   function restoreProvider() {
     const { contextStore, providerStore } = getStores();
     isPaused = false;
-    setStores(contextStore, changeCurrentProvider(providerStore, id));
+    currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
+    providerStore.set(CURRENT_PROVIDER_ID, id);
+    setStores(contextStore, providerStore);
   }
 
   function isProviderPaused() {
