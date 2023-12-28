@@ -1448,16 +1448,16 @@ describe("brisa core", () => {
       );
     });
 
-    it("should render [object Object] in case of rendering an object", () => {
+    it("should render [object Object] in case of rendering an object", async () => {
       const Component = () => {
         const object = {};
         return <div>{object}</div>;
       };
 
       const stream = renderToReadableStream(<Component />, testRequest);
-      const result = Bun.readableStreamToText(stream);
+      const result = await Bun.readableStreamToText(stream);
 
-      expect(result).resolves.toBe(`<div>[object Object]</div>`);
+      expect(result).toBe(`<div>[object Object]</div>`);
     });
 
     it("should transfer request store data into the web store", () => {

@@ -69,6 +69,9 @@ async function enqueueDuringRendering(
     const { type, props } = elementContent;
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
     const isTagToIgnore = type?.__isFragment || isServerProvider;
+    const isSlotTag = type === "slot";
+    const isSlotContent = typeof props?.slot === "string";
+    let slotContentProviders: ProviderType[] | undefined;
 
     // Cases that is rendered an object <div>{object}</div>
     if (!type && !props) {
@@ -76,9 +79,20 @@ async function enqueueDuringRendering(
       continue;
     }
 
+    // Danger HTML content using dangerHTML function
     if (type === "HTML") {
       controller.enqueue(props.html, suspenseId);
       continue;
+    }
+
+    // Register slug to active context providers
+    if (isSlotTag) {
+      registerSlotToActiveProviders(props.name ?? "", request);
+    }
+
+    // Restore context providers paused to wait for slot content
+    if (isSlotContent) {
+      slotContentProviders = restoreSlotProviders(props.slot!, request);
     }
 
     if (isComponent(type) && !isTagToIgnore) {
@@ -117,10 +131,7 @@ async function enqueueDuringRendering(
 
     const attributes = renderAttributes({ props, request, type });
     const isContextProvider = type === CONTEXT_PROVIDER;
-    const isSlotTag = type === "slot";
-    const isSlotContent = typeof props.slot === "string";
     let ctx: ProviderType | undefined;
-    let slotContentProviders: ProviderType[] | undefined;
 
     // Register context provider
     if (isContextProvider) {
@@ -129,16 +140,6 @@ async function enqueueDuringRendering(
         value: props.value,
         store: request.store,
       });
-    }
-
-    // Register slug to active context providers
-    if (isSlotTag) {
-      registerSlotToActiveProviders(props.name ?? "", request);
-    }
-
-    // Restore context providers paused to wait for slot content
-    if (isSlotContent) {
-      slotContentProviders = restoreSlotProviders(props.slot!, request);
     }
 
     // Node tag start
@@ -198,11 +199,9 @@ async function enqueueDuringRendering(
       else ctx.clearProvider();
     }
 
-    // Clean context providers after slot content
-    if (isSlotContent && slotContentProviders) {
-      for (const provider of slotContentProviders) {
-        provider.clearProvider();
-      }
+    // Pause context providers after slot content (paused to wait for another slots)
+    if (isSlotContent && slotContentProviders?.length) {
+      for (const provider of slotContentProviders) provider.pauseProvider();
     }
 
     // Node tag end
