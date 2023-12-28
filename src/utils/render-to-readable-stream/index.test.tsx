@@ -1329,7 +1329,7 @@ describe("brisa core", () => {
               slot={useTheme ? "with-theme" : undefined}
             ></SSRWebComponent>
           </>
-        )
+        );
       }
 
       const stream = renderToReadableStream(
