@@ -1300,6 +1300,81 @@ describe("brisa core", () => {
       );
     });
 
+    it('should work "useContext" method with context-provider and repeated slots with name and web-components (SSR)', () => {
+      type Theme = { color: string };
+      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+
+      function ThemeProvider({ color }: Theme) {
+        return (
+          <>
+            <context-provider context={ThemeCtx} value={{ color }}>
+              <slot name="with-theme" />
+            </context-provider>
+            <slot />
+          </>
+        );
+      }
+
+      function ChildComponent({}, { useContext }: RequestContext) {
+        const context = useContext(ThemeCtx);
+        return <div>{context.value.color}</div>;
+      }
+
+      const stream = renderToReadableStream(
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+            slot="with-theme"
+          ></SSRWebComponent>
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+          ></SSRWebComponent>
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+            slot="with-theme"
+          ></SSRWebComponent>
+        </SSRWebComponent>,
+        testRequest,
+      );
+
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toBe(
+        toInline(`
+          <theme-provider color="red">
+            <template shadowrootmode="open">
+              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+                <slot name="with-theme"></slot>
+              </context-provider>
+              <slot></slot>
+            </template>
+            <child-component slot="with-theme">
+              <template shadowrootmode="open">
+                <div>red</div>
+              </template>
+            </child-component>
+            <child-component>
+              <template shadowrootmode="open">
+                <div>yellow</div>
+              </template>
+            </child-component>
+            <child-component slot="with-theme">
+              <template shadowrootmode="open">
+                <div>red</div>
+              </template>
+            </child-component>
+          </theme-provider>
+        `),
+      );
+    });
+
     it("should work context-provider inside another context-provider in web-components SSR", async () => {
       type Theme = { color: string };
       const ThemeCtx = createContext<Theme>({ color: "yellow" });
