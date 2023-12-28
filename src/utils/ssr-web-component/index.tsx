@@ -33,6 +33,7 @@ export default async function SSRWebComponent(
   const componentProps = { ...props, children: <slot /> };
 
   let content: any;
+  let hasSlotContent = false;
 
   try {
     content = await (typeof Component.suspense === "function"
@@ -46,13 +47,29 @@ export default async function SSRWebComponent(
     }
   }
 
+  // TODO: This is a hack to check if the component has a slot,
+  // probably there are a better way to do this
+  if (Array.isArray(props.children)) {
+    hasSlotContent = props.children.some(
+      (child) => typeof child?.props?.slot === "string",
+    );
+  } else {
+    hasSlotContent = typeof props.children?.props?.slot === "string";
+  }
+
+  const children = hasSlotContent ? (
+    props.children
+  ) : (
+    <Fragment slot="">{props.children}</Fragment>
+  );
+
   return (
     <Selector {...props}>
       <template shadowrootmode="open">
         {content}
         {style.length > 0 && <style>{toInline(style)}</style>}
       </template>
-      <Fragment slot="">{props.children}</Fragment>
+      {children}
     </Selector>
   );
 }

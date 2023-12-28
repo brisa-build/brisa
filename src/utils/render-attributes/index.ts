@@ -4,6 +4,8 @@ import routeMatchPathname from "../route-match-pathname";
 import { serialize } from "../serialization";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
+const PROPS_TO_IGNORE = new Set(["children", "_webComponent"]);
+
 export default function renderAttributes({
   props,
   request,
@@ -20,7 +22,8 @@ export default function renderAttributes({
     const key = prop.toLowerCase();
     let value = props[prop];
 
-    if (prop === "children" || (type === "html" && prop === "lang")) continue;
+    if (PROPS_TO_IGNORE.has(prop) || (type === "html" && prop === "lang"))
+      continue;
 
     // Add the assetPrefix to internal assets (img, picture, video, audio, script)
     if (
