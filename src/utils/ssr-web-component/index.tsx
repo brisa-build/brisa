@@ -55,3 +55,5 @@ export default async function SSRWebComponent(
     </Selector>
   );
 }
+
+SSRWebComponent.__isWebComponent = true;

@@ -68,9 +68,23 @@ async function enqueueDuringRendering(
 
     const { type, props } = elementContent;
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
-    const isTagToIgnore = type?.__isFragment || isServerProvider;
-    const isSlottedContent = typeof props?.slot === "string";
+    const isFragment = type?.__isFragment;
+    const isTagToIgnore = isFragment || isServerProvider;
+    const isWebComponent = type?.__isWebComponent;
+    const isElement = typeof type === "string";
     let slottedContentProviders: ProviderType[] | undefined;
+
+    // In reality, only the Element have the slot attribute. Web-component is
+    // an element, but during the renderToReadableStream it's executed as
+    // server-component (function), and the fragment is used inside to wrap the
+    // children with the slot="".
+    //
+    // Fragment component is not being exposed, it is only used internally.
+    // To use it externally we use <></> to which you can't set properties like
+    // slot.
+    const isSlottedContent =
+      typeof props?.slot === "string" &&
+      (isElement || isWebComponent || isFragment);
 
     // Cases that is rendered an object <div>{object}</div>
     if (!type && !props) {
@@ -134,7 +148,7 @@ async function enqueueDuringRendering(
         suspenseId,
       );
 
-      // Pause context providers from slotted web-component to wait 
+      // Pause context providers from slotted web-component to wait
       // for more slots
       pauseSlottedContentProviders();
 
@@ -214,7 +228,7 @@ async function enqueueDuringRendering(
       else ctx.clearProvider();
     }
 
-    // Pause context providers from slotted content to wait 
+    // Pause context providers from slotted content to wait
     // for more slots
     pauseSlottedContentProviders();
 
