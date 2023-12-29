@@ -69,8 +69,8 @@ async function enqueueDuringRendering(
     const { type, props } = elementContent;
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
     const isTagToIgnore = type?.__isFragment || isServerProvider;
-    const isSlotContent = typeof props?.slot === "string";
-    let slotContentProviders: ProviderType[] | undefined;
+    const isSlottedContent = typeof props?.slot === "string";
+    let slottedContentProviders: ProviderType[] | undefined;
 
     // Cases that is rendered an object <div>{object}</div>
     if (!type && !props) {
@@ -92,20 +92,17 @@ async function enqueueDuringRendering(
     // Restore context providers paused to wait for slot content.
     // It's important to do it before execute the component, in this case
     // the web-component can use the context provider value
-    if (isSlotContent) {
-      slotContentProviders = restoreSlotProviders(props.slot!, request);
+    if (isSlottedContent) {
+      slottedContentProviders = restoreSlotProviders(props.slot, request);
     }
 
     // Pause again the context providers to wait for the next slot content
-    // This is important to be executed after executing the web-component, 
+    // This is important to be executed after executing the web-component,
     // or after the element
-    const pauseSlotContentProviders = () => {
-      if (isSlotContent && slotContentProviders?.length) {
-        for (const provider of slotContentProviders) {
-          provider.pauseProvider();
-        }
-      }
-    }
+    const pauseSlottedContentProviders = () => {
+      if (!isSlottedContent || !slottedContentProviders?.length) return;
+      for (const provider of slottedContentProviders) provider.pauseProvider();
+    };
 
     if (isComponent(type) && !isTagToIgnore) {
       const componentContent = { component: type, props };
@@ -137,7 +134,9 @@ async function enqueueDuringRendering(
         suspenseId,
       );
 
-      pauseSlotContentProviders();
+      // Pause context providers from slotted web-component to wait 
+      // for more slots
+      pauseSlottedContentProviders();
 
       return res;
     }
@@ -215,7 +214,9 @@ async function enqueueDuringRendering(
       else ctx.clearProvider();
     }
 
-    pauseSlotContentProviders();
+    // Pause context providers from slotted content to wait 
+    // for more slots
+    pauseSlottedContentProviders();
 
     // Node tag end
     controller.endTag(isTagToIgnore ? null : `</${type}>`, suspenseId);
