@@ -69,7 +69,6 @@ async function enqueueDuringRendering(
     const { type, props } = elementContent;
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
     const isTagToIgnore = type?.__isFragment || isServerProvider;
-    const isSlotTag = type === "slot";
     const isSlotContent = typeof props?.slot === "string";
     let slotContentProviders: ProviderType[] | undefined;
 
@@ -86,13 +85,26 @@ async function enqueueDuringRendering(
     }
 
     // Register slug to active context providers
-    if (isSlotTag) {
+    if (type === "slot") {
       registerSlotToActiveProviders(props.name ?? "", request);
     }
 
-    // Restore context providers paused to wait for slot content
+    // Restore context providers paused to wait for slot content.
+    // It's important to do it before execute the component, in this case
+    // the web-component can use the context provider value
     if (isSlotContent) {
       slotContentProviders = restoreSlotProviders(props.slot!, request);
+    }
+
+    // Pause again the context providers to wait for the next slot content
+    // This is important to be executed after executing the web-component, 
+    // or after the element
+    const pauseSlotContentProviders = () => {
+      if (isSlotContent && slotContentProviders?.length) {
+        for (const provider of slotContentProviders) {
+          provider.pauseProvider();
+        }
+      }
     }
 
     if (isComponent(type) && !isTagToIgnore) {
@@ -118,12 +130,16 @@ async function enqueueDuringRendering(
         );
       }
 
-      return enqueueComponent(
+      const res = await enqueueComponent(
         componentContent,
         request,
         controller,
         suspenseId,
       );
+
+      pauseSlotContentProviders();
+
+      return res;
     }
 
     if (controller.insideHeadTag && controller.hasId(props.id)) return;
@@ -199,10 +215,7 @@ async function enqueueDuringRendering(
       else ctx.clearProvider();
     }
 
-    // Pause context providers after slot content (paused to wait for another slots)
-    if (isSlotContent && slotContentProviders?.length) {
-      for (const provider of slotContentProviders) provider.pauseProvider();
-    }
+    pauseSlotContentProviders();
 
     // Node tag end
     controller.endTag(isTagToIgnore ? null : `</${type}>`, suspenseId);
