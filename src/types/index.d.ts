@@ -535,6 +535,7 @@ export type ContextProvider<T> = {
   context: BrisaContext<T>;
   value: T;
   store: Map<string | symbol, any>;
+  webComponentSymbol?: symbol;
 };
 
 export type BrisaContext<T> = {

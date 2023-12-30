@@ -56,13 +56,16 @@ export default function extendRequestContext({
   originalRequest.useContext = (ctx) => {
     const store = originalRequest.store;
     const context = store.get(CONTEXT_STORE_ID)?.get(ctx.id);
+    let value = ctx.defaultValue;
 
-    if (!context) return { value: ctx.defaultValue };
+    if (!context) return { value };
+
+    const provider = context.get(context.get(CURRENT_PROVIDER_ID));
+
+    if (!provider || provider.isProviderPaused()) return { value };
 
     return {
-      value:
-        context.get(context.get(CURRENT_PROVIDER_ID))?.value ??
-        ctx.defaultValue,
+      value: provider.value ?? value,
     };
   };
 

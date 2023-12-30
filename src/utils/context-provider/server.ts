@@ -10,6 +10,7 @@ export function contextProvider<T>({
   context,
   value,
   store,
+  webComponentSymbol,
 }: ContextProvider<T>) {
   const id = Symbol("context-provider");
   const { contextStore, providerStore } = getStores();
@@ -107,6 +108,7 @@ export function contextProvider<T>({
     addSlot,
     hasSlot,
     hasSomeSlot,
+    webComponentSymbol,
   };
 
   providerStore.set(id, providerContent);
@@ -155,4 +157,24 @@ export function restoreSlotProviders(
   }
 
   return providers;
+}
+
+/**
+ * Clear the context providers by webComponentSymbol
+ */
+export function clearProvidersByWCSymbol(
+  webComponentSymbol: symbol,
+  requestContext: RequestContext,
+) {
+  const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
+
+  for (const providerStore of contextStore.values()) {
+    for (const providerId of providerStore.keys()) {
+      const provider = providerStore.get(providerId);
+      if (!provider || typeof provider === "symbol") continue;
+      if (provider.webComponentSymbol === webComponentSymbol) {
+        provider.clearProvider();
+      }
+    }
+  }
 }
