@@ -4,7 +4,7 @@ import routeMatchPathname from "../route-match-pathname";
 import { serialize } from "../serialization";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
-const PROPS_TO_IGNORE = new Set(["children", "_webComponent"]);
+const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 
 export default function renderAttributes({
   props,
