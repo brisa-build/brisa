@@ -11,6 +11,8 @@ export type Controller = {
   nextSuspenseIndex(): number;
   suspensePromise(promise: Promise<void>): void;
   waitSuspensedPromises(): Promise<void>;
+  setCurrentWebComponentSymbol(symbol?: symbol): void;
+  getCurrentWebComponentSymbol(): symbol | undefined;
   startTag(chunk: string | null, suspenseId?: number): void;
   endTag(chunk: string | null, suspenseId?: number): void;
   flushAllReady(): void;
@@ -34,6 +36,7 @@ export default function extendStreamController(
   head?: ComponentType,
 ): Controller {
   const ids = new Set<string>();
+  const openWebComponents: symbol[] = [];
   const suspensePromises: Promise<void>[] = [];
   const suspensedMap = new Map<number, SuspensedState>();
   const getSuspensedState = (id: number) =>
@@ -46,6 +49,13 @@ export default function extendStreamController(
     head,
     hasHeadTag: false,
     insideHeadTag: false,
+    setCurrentWebComponentSymbol(symbol) {
+      if (symbol) openWebComponents.push(symbol);
+      else openWebComponents.pop();
+    },
+    getCurrentWebComponentSymbol() {
+      return openWebComponents.at(-1);
+    },
     addId(id) {
       ids.add(id);
     },

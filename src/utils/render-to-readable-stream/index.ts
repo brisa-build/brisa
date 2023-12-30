@@ -6,6 +6,7 @@ import extendStreamController, {
 import generateHrefLang from "../generate-href-lang";
 import renderAttributes from "../render-attributes";
 import {
+  clearProvidersByWCSymbol,
   contextProvider,
   registerSlotToActiveProviders,
   restoreSlotProviders,
@@ -73,8 +74,10 @@ async function enqueueDuringRendering(
     const isTagToIgnore = isFragment || isServerProvider;
     const isWebComponent = type?.__isWebComponent || props?.__isWebComponent;
     const isElement = typeof type === "string";
+    const isWebComponentSelector = isWebComponent && isElement;
     let slottedContentProviders: ProviderType[] | undefined;
     let isNextInSlottedPosition = isSlottedPosition;
+    let webComponentSymbol: symbol | undefined;
 
     // In reality, only the Element have the slot attribute. Web-component is
     // an element, but during the renderToReadableStream it's executed as
@@ -89,9 +92,17 @@ async function enqueueDuringRendering(
       isSlottedPosition &&
       (isElement || isWebComponent || isFragment);
 
-    // Calculate next position if can be slotted
-    if (isWebComponent) isNextInSlottedPosition = true;
-    else if (isElement) isNextInSlottedPosition = false;
+    // Set that the next element is in slotted position and register the
+    // web-component symbol. This is important to control the context provider
+    // on the slotted content because these information will be necessary to
+    // restore the provider in the slotted content, pause and clear it.
+    if (isWebComponentSelector) {
+      isNextInSlottedPosition = true;
+      webComponentSymbol = Symbol("web-component");
+      controller.setCurrentWebComponentSymbol(webComponentSymbol);
+    } else if (isElement) {
+      isNextInSlottedPosition = false;
+    }
 
     // Cases that is rendered an object <div>{object}</div>
     if (!type && !props) {
@@ -105,7 +116,7 @@ async function enqueueDuringRendering(
       continue;
     }
 
-    // Register slug to active context providers
+    // Register slot to active context providers
     if (type === "slot") {
       registerSlotToActiveProviders(props.name ?? "", request);
     }
@@ -117,12 +128,18 @@ async function enqueueDuringRendering(
       slottedContentProviders = restoreSlotProviders(props.slot, request);
     }
 
-    // Pause again the context providers to wait for the next slot content
-    // This is important to be executed after executing the web-component,
-    // or after the element
-    const pauseSlottedContentProviders = () => {
+    // Manage context provider completion to wait for more slots (pause) or
+    // clean the provider (clear) when the web-component that registered the
+    // provider is completed.
+    const manageContextProviderCompletion = () => {
+      if (isWebComponentSelector && webComponentSymbol) {
+        clearProvidersByWCSymbol(webComponentSymbol, request);
+        return controller.setCurrentWebComponentSymbol();
+      }
       if (!isSlottedContent || !slottedContentProviders?.length) return;
-      for (const provider of slottedContentProviders) provider.pauseProvider();
+      for (const provider of slottedContentProviders) {
+        provider.pauseProvider();
+      }
     };
 
     if (isComponent(type) && !isTagToIgnore) {
@@ -165,7 +182,7 @@ async function enqueueDuringRendering(
 
       // Pause context providers from slotted web-component to wait
       // for more slots
-      pauseSlottedContentProviders();
+      manageContextProviderCompletion();
 
       return res;
     }
@@ -183,6 +200,7 @@ async function enqueueDuringRendering(
         context: props.context,
         value: props.value,
         store: request.store,
+        webComponentSymbol: controller.getCurrentWebComponentSymbol(),
       });
     }
 
@@ -252,7 +270,7 @@ async function enqueueDuringRendering(
 
     // Pause context providers from slotted content to wait
     // for more slots
-    pauseSlottedContentProviders();
+    manageContextProviderCompletion();
 
     // Node tag end
     controller.endTag(isTagToIgnore ? null : `</${type}>`, suspenseId);
