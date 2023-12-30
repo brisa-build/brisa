@@ -2,6 +2,17 @@ import { ContextProvider, RequestContext } from "../../types";
 
 type ContextStoreKey = symbol | string;
 type ContextStore = Map<ContextStoreKey, Map<symbol, unknown>>;
+type ProviderContent = {
+  value: unknown;
+  clearProvider: () => void;
+  pauseProvider: () => void;
+  restoreProvider: () => void;
+  isProviderPaused: () => boolean;
+  addSlot: (slotName: string) => void;
+  hasSlot: (slotName: string) => boolean;
+  hasSomeSlot: () => boolean;
+  webComponentSymbol?: symbol;
+};
 
 export const CURRENT_PROVIDER_ID = Symbol.for("current-provider-id");
 export const CONTEXT_STORE_ID = Symbol.for("context");
@@ -11,7 +22,7 @@ export function contextProvider<T>({
   value,
   store,
   webComponentSymbol,
-}: ContextProvider<T>) {
+}: ContextProvider<T>): ProviderContent {
   const id = Symbol("context-provider");
   const { contextStore, providerStore } = getStores();
   const detectedSlots = new Set<string>();
@@ -20,7 +31,7 @@ export function contextProvider<T>({
 
   function setStores(
     contextStore: ContextStore,
-    providerStore: Map<symbol, unknown>,
+    providerStore: Map<symbol, ProviderContent>,
   ) {
     contextStore.set(context.id, providerStore);
     store.set(CONTEXT_STORE_ID, contextStore);
@@ -99,7 +110,7 @@ export function contextProvider<T>({
     return isPaused;
   }
 
-  const providerContent = {
+  const providerContent: ProviderContent = {
     value,
     clearProvider,
     pauseProvider,
@@ -135,6 +146,20 @@ export function registerSlotToActiveProviders(
   }
 }
 
+function forEachActiveProvider(
+  requestContext: RequestContext,
+  callback: (provider: ProviderContent) => void,
+) {
+  const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
+
+  for (const providerStore of contextStore.values()) {
+    for (const provider of providerStore.values()) {
+      if (!provider || typeof provider === "symbol") continue;
+      callback(provider);
+    }
+  }
+}
+
 /**
  * Restore the context providers and return the restored providers
  */
@@ -142,19 +167,14 @@ export function restoreSlotProviders(
   slotName: string,
   requestContext: RequestContext,
 ) {
-  const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
   const providers: ReturnType<typeof contextProvider>[] = [];
 
-  for (const providerStore of contextStore.values()) {
-    for (const providerId of providerStore.keys()) {
-      const provider = providerStore.get(providerId);
-      if (!provider || typeof provider === "symbol") continue;
-      if (provider.isProviderPaused() && provider.hasSlot(slotName)) {
-        provider.restoreProvider();
-        providers.push(provider);
-      }
+  forEachActiveProvider(requestContext, (provider) => {
+    if (provider.isProviderPaused() && provider.hasSlot(slotName)) {
+      provider.restoreProvider();
+      providers.push(provider);
     }
-  }
+  });
 
   return providers;
 }
@@ -166,15 +186,9 @@ export function clearProvidersByWCSymbol(
   webComponentSymbol: symbol,
   requestContext: RequestContext,
 ) {
-  const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
-
-  for (const providerStore of contextStore.values()) {
-    for (const providerId of providerStore.keys()) {
-      const provider = providerStore.get(providerId);
-      if (!provider || typeof provider === "symbol") continue;
-      if (provider.webComponentSymbol === webComponentSymbol) {
-        provider.clearProvider();
-      }
+  forEachActiveProvider(requestContext, (provider) => {
+    if (provider.webComponentSymbol === webComponentSymbol) {
+      provider.clearProvider();
     }
-  }
+  });
 }
