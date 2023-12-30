@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 import {
   CONTEXT_STORE_ID,
   CURRENT_PROVIDER_ID,
+  clearProvidersByWCSymbol,
   contextProvider,
   registerSlotToActiveProviders,
   restoreSlotProviders,
@@ -37,12 +38,22 @@ describe("utils", () => {
       const context = createContext("foo");
       const value = "bar";
       const store = new Map();
+      const webComponentSymbol = Symbol("web-component");
 
-      const res = contextProvider({ context, value, store });
+      const res = contextProvider({
+        context,
+        value,
+        store,
+        webComponentSymbol,
+      });
       expect(res.clearProvider).toBeTypeOf("function");
       expect(res.pauseProvider).toBeTypeOf("function");
       expect(res.restoreProvider).toBeTypeOf("function");
       expect(res.isProviderPaused()).toBeFalse();
+      expect(res.addSlot).toBeTypeOf("function");
+      expect(res.hasSlot).toBeTypeOf("function");
+      expect(res.hasSomeSlot).toBeTypeOf("function");
+      expect(res.webComponentSymbol).toBeTypeOf("symbol");
 
       const contextStore = store.get(CONTEXT_STORE_ID);
       const providerStore = contextStore.get(context.id);
@@ -252,6 +263,69 @@ describe("utils", () => {
       expect(provider2.isProviderPaused()).toBeFalse();
       expect(provider3.isProviderPaused()).toBeFalse();
       expect(provider4.isProviderPaused()).toBeFalse();
+    });
+  });
+
+  describe("server clearProvidersByWCSymbol", () => {
+    it("should clear the providers by web component symbol", () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost"),
+      });
+      const context = createContext("foo");
+      const store = req.store;
+
+      const webComponentSymbol = Symbol("foo");
+      const webComponentSymbol2 = Symbol("bar");
+      const webComponentSymbol3 = Symbol("baz");
+      const webComponentSymbol4 = Symbol("qux");
+      const currProviderSymbolId = 1;
+
+      contextProvider({
+        context,
+        value: "foo",
+        store,
+        webComponentSymbol: webComponentSymbol,
+      });
+      contextProvider({
+        context,
+        value: "bar",
+        store,
+        webComponentSymbol: webComponentSymbol2,
+      });
+      contextProvider({
+        context,
+        value: "baz",
+        store,
+        webComponentSymbol: webComponentSymbol3,
+      });
+      contextProvider({
+        context,
+        value: "qux",
+        store,
+        webComponentSymbol: webComponentSymbol4,
+      });
+
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(
+        4 + currProviderSymbolId,
+      );
+
+      clearProvidersByWCSymbol(webComponentSymbol, req);
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(
+        3 + currProviderSymbolId,
+      );
+
+      clearProvidersByWCSymbol(webComponentSymbol2, req);
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(
+        2 + currProviderSymbolId,
+      );
+
+      clearProvidersByWCSymbol(webComponentSymbol3, req);
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(
+        1 + currProviderSymbolId,
+      );
+
+      clearProvidersByWCSymbol(webComponentSymbol4, req);
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(0);
     });
   });
 });
