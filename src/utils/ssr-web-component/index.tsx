@@ -46,7 +46,7 @@ export default async function SSRWebComponent(
   }
 
   return (
-    <Selector {...props}>
+    <Selector {...props} __isWebComponent>
       <template shadowrootmode="open">
         {content}
         {style.length > 0 && <style>{toInline(style)}</style>}
