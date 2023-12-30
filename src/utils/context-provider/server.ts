@@ -131,7 +131,7 @@ export function registerSlotToActiveProviders(
     const currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
 
     if (!currentProviderId) continue;
-    providerStore.get(currentProviderId).addSlot(slotName);
+    providerStore.get(currentProviderId)?.addSlot(slotName);
   }
 }
 
