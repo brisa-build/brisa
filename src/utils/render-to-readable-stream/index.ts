@@ -55,6 +55,7 @@ async function enqueueDuringRendering(
   request: RequestContext,
   controller: Controller,
   suspenseId?: number,
+  isSlottedPosition = false,
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
@@ -70,9 +71,10 @@ async function enqueueDuringRendering(
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
     const isFragment = type?.__isFragment;
     const isTagToIgnore = isFragment || isServerProvider;
-    const isWebComponent = type?.__isWebComponent;
+    const isWebComponent = type?.__isWebComponent || props?.__isWebComponent;
     const isElement = typeof type === "string";
     let slottedContentProviders: ProviderType[] | undefined;
+    let isNextInSlottedPosition = isSlottedPosition;
 
     // In reality, only the Element have the slot attribute. Web-component is
     // an element, but during the renderToReadableStream it's executed as
@@ -84,7 +86,12 @@ async function enqueueDuringRendering(
     // slot.
     const isSlottedContent =
       typeof props?.slot === "string" &&
+      isSlottedPosition &&
       (isElement || isWebComponent || isFragment);
+
+    // Calculate next position if can be slotted
+    if (isWebComponent) isNextInSlottedPosition = true;
+    else if (isElement) isNextInSlottedPosition = false;
 
     // Cases that is rendered an object <div>{object}</div>
     if (!type && !props) {
@@ -132,12 +139,19 @@ async function enqueueDuringRendering(
           request,
           controller,
           suspenseId,
+          isNextInSlottedPosition,
         );
 
         controller.endTag(`</div>`, suspenseId);
 
         return controller.suspensePromise(
-          enqueueComponent(componentContent, request, controller, id),
+          enqueueComponent(
+            componentContent,
+            request,
+            controller,
+            id,
+            isNextInSlottedPosition,
+          ),
         );
       }
 
@@ -146,6 +160,7 @@ async function enqueueDuringRendering(
         request,
         controller,
         suspenseId,
+        isNextInSlottedPosition,
       );
 
       // Pause context providers from slotted web-component to wait
@@ -184,11 +199,18 @@ async function enqueueDuringRendering(
         request,
         controller,
         suspenseId,
+        isNextInSlottedPosition,
       );
     }
 
     // Node Content
-    await enqueueChildren(props.children, request, controller, suspenseId);
+    await enqueueChildren(
+      props.children,
+      request,
+      controller,
+      suspenseId,
+      isNextInSlottedPosition,
+    );
 
     if (type === "head") {
       controller.enqueue(generateHrefLang(request), suspenseId);
@@ -242,6 +264,7 @@ async function enqueueComponent(
   request: RequestContext,
   controller: Controller,
   suspenseId?: number,
+  isSlottedPosition = false,
 ): Promise<void> {
   const componentValue = (await getValueOfComponent(
     component,
@@ -257,7 +280,13 @@ async function enqueueComponent(
   }
 
   if (Array.isArray(componentValue)) {
-    return enqueueChildren(componentValue, request, controller, suspenseId);
+    return enqueueChildren(
+      componentValue,
+      request,
+      controller,
+      suspenseId,
+      isSlottedPosition,
+    );
   }
 
   return enqueueDuringRendering(
@@ -265,6 +294,7 @@ async function enqueueComponent(
     request,
     controller,
     suspenseId,
+    isSlottedPosition,
   );
 }
 
@@ -273,11 +303,24 @@ async function enqueueChildren(
   request: RequestContext,
   controller: Controller,
   suspenseId?: number,
+  isSlottedPosition = false,
 ): Promise<void> {
   if (Array.isArray(children)) {
-    await enqueueArrayChildren(children, request, controller, suspenseId);
+    await enqueueArrayChildren(
+      children,
+      request,
+      controller,
+      suspenseId,
+      isSlottedPosition,
+    );
   } else if (typeof children === "object") {
-    await enqueueDuringRendering(children, request, controller, suspenseId);
+    await enqueueDuringRendering(
+      children,
+      request,
+      controller,
+      suspenseId,
+      isSlottedPosition,
+    );
   } else if (typeof children?.toString === "function") {
     await controller.enqueue(Bun.escapeHTML(children.toString()), suspenseId);
   }
@@ -288,12 +331,25 @@ async function enqueueArrayChildren(
   request: RequestContext,
   controller: Controller,
   suspenseId?: number,
+  isSlottedPosition = false,
 ): Promise<void> {
   for (const child of children) {
     if (Array.isArray(child)) {
-      await enqueueArrayChildren(child, request, controller, suspenseId);
+      await enqueueArrayChildren(
+        child,
+        request,
+        controller,
+        suspenseId,
+        isSlottedPosition,
+      );
     } else {
-      await enqueueDuringRendering(child, request, controller, suspenseId);
+      await enqueueDuringRendering(
+        child,
+        request,
+        controller,
+        suspenseId,
+        isSlottedPosition,
+      );
     }
   }
 }
