@@ -148,14 +148,14 @@ export function registerSlotToActiveProviders(
 
 function forEachActiveProvider(
   requestContext: RequestContext,
-  callback: (provider: ProviderContent) => void,
+  callback: (provider: ProviderContent, context: Map<symbol, unknown>) => void,
 ) {
   const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
 
   for (const providerStore of contextStore.values()) {
     for (const provider of providerStore.values()) {
       if (!provider || typeof provider === "symbol") continue;
-      callback(provider);
+      callback(provider, providerStore);
     }
   }
 }
@@ -186,9 +186,13 @@ export function clearProvidersByWCSymbol(
   webComponentSymbol: symbol,
   requestContext: RequestContext,
 ) {
-  forEachActiveProvider(requestContext, (provider) => {
+  forEachActiveProvider(requestContext, (provider, providerStore) => {
     if (provider.webComponentSymbol === webComponentSymbol) {
       provider.clearProvider();
+
+      // Clear if the only one is the symbol for current provider id
+      // because now there aren't providers in this context
+      if (providerStore.size === 1) providerStore.clear();
     }
   });
 }
