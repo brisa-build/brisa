@@ -162,7 +162,7 @@ async function compileClientCodePage(
   ${Object.entries(allWebComponents)
     .map(
       ([name, location]) =>
-        `'${name}': HTMLAttributes<typeof import("${location}")>;`,
+        `'${name}': JSX.HTMLAttributes<typeof import("${location}")>;`,
     )
     .join("\n")}
 }`;
