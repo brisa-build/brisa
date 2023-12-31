@@ -180,7 +180,6 @@ async function enqueueDuringRendering(
         isNextInSlottedPosition,
       );
 
-      // for more slots
       manageContextProviderCompletion();
 
       return res;
