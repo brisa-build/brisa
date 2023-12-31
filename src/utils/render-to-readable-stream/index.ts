@@ -266,7 +266,6 @@ async function enqueueDuringRendering(
       else ctx.clearProvider();
     }
 
-    // Pause context providers from slotted content to wait
     // for more slots
     manageContextProviderCompletion();
 
