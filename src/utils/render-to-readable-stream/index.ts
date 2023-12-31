@@ -266,7 +266,6 @@ async function enqueueDuringRendering(
       else ctx.clearProvider();
     }
 
-    // for more slots
     manageContextProviderCompletion();
 
     // Node tag end
