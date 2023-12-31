@@ -24,7 +24,7 @@ const mockConsoleError = mock(() => {});
 const consoleError = console.error;
 console.error = mockConsoleError;
 
-describe("brisa core", () => {
+describe("utils", () => {
   afterEach(() => {
     testRequest.store.clear();
     mockConsoleError.mockClear();
