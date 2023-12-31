@@ -180,7 +180,6 @@ async function enqueueDuringRendering(
         isNextInSlottedPosition,
       );
 
-      // Pause context providers from slotted web-component to wait
       // for more slots
       manageContextProviderCompletion();
 
