@@ -557,7 +557,11 @@ describe("utils", () => {
             ],
             [
               "span",
-              { style: () => `color:${color.value}` },
+              {
+                style: () => ({
+                  color: color.value,
+                }),
+              },
               () => color.value,
             ],
           ],
@@ -582,7 +586,7 @@ describe("utils", () => {
       ) as HTMLInputElement;
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
-        '<div><input type="color" value="#000000"><span style="color:#000000">#000000</span></div>',
+        '<div><input type="color" value="#000000"><span style="color:#000000;">#000000</span></div>',
       );
 
       input.value = "#ffffff";
@@ -590,7 +594,7 @@ describe("utils", () => {
       input.dispatchEvent(new Event("input"));
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
-        '<div><input type="color" value="#ffffff"><span style="color:#ffffff">#ffffff</span></div>',
+        '<div><input type="color" value="#ffffff"><span style="color:#ffffff;">#ffffff</span></div>',
       );
     });
 
@@ -1024,7 +1028,11 @@ describe("utils", () => {
             [
               "g",
               {
-                style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
+                style: {
+                  fillOpacity: "0.7",
+                  stroke: "black",
+                  strokeWidth: "0.1cm",
+                },
               },
               [
                 [
@@ -1082,7 +1090,7 @@ describe("utils", () => {
       });
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
       );
 
       colorSVG.setAttribute("color1", "#0000ff");
@@ -1090,7 +1098,7 @@ describe("utils", () => {
       colorSVG.setAttribute("color3", "#00ff00");
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
       );
     });
 
@@ -1103,7 +1111,11 @@ describe("utils", () => {
             [
               "g",
               {
-                style: "fill-opacity:0.7; stroke:black; stroke-width:0.1cm;",
+                style: {
+                  fillOpacity: "0.7",
+                  stroke: "black",
+                  strokeWidth: "0.1cm",
+                },
               },
               [
                 [
@@ -1161,7 +1173,7 @@ describe("utils", () => {
       const colorSVG = document.querySelector("color-svg") as HTMLElement;
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>',
       );
 
       colorSVG.setAttribute("firstColor", "#0000ff");
@@ -1169,7 +1181,7 @@ describe("utils", () => {
       colorSVG.setAttribute("thirdColor", "#00ff00");
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
       );
     });
 
@@ -1599,7 +1611,9 @@ describe("utils", () => {
             [
               "div",
               {
-                style: () => `display:${active.value === 0 ? "none" : "block"}`,
+                style: () => ({
+                  display: active.value === 0 ? "none" : "block",
+                }),
               },
               "content",
             ],
@@ -1619,19 +1633,19 @@ describe("utils", () => {
       ) as HTMLButtonElement;
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:none">content</div></div>',
+        '<div><button>toggle</button><div style="display:none;">content</div></div>',
       );
 
       button.click();
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:block">content</div></div>',
+        '<div><button>toggle</button><div style="display:block;">content</div></div>',
       );
 
       button.click();
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:none">content</div></div>',
+        '<div><button>toggle</button><div style="display:none;">content</div></div>',
       );
     });
 
@@ -1652,16 +1666,18 @@ describe("utils", () => {
                 onMouseOut: () => {
                   visible.value = false;
                 },
-                style: "position:relative;",
+                style: {
+                  position: "relative",
+                },
               },
               [
                 [
                   "span",
                   {
-                    style: () =>
-                      `position:absolute; visibility:${
-                        visible.value ? "visible" : "hidden"
-                      };`,
+                    style: () => ({
+                      position: "absolute",
+                      visibility: visible.value ? "visible" : "hidden",
+                    }),
                   },
                   "Tooltip text",
                 ],
@@ -1682,19 +1698,19 @@ describe("utils", () => {
       ) as HTMLSpanElement;
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
+        '<div><span style="position:relative;"><span style="position:absolute;visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
       );
 
       span.dispatchEvent(new Event("mouseover"));
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:visible;">Tooltip text</span>Hover over me</span></div>',
+        '<div><span style="position:relative;"><span style="position:absolute;visibility:visible;">Tooltip text</span>Hover over me</span></div>',
       );
 
       span.dispatchEvent(new Event("mouseout"));
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
+        '<div><span style="position:relative;"><span style="position:absolute;visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
       );
     });
 
@@ -2658,6 +2674,23 @@ describe("utils", () => {
       ) as HTMLElement;
 
       expect(contextComponent?.shadowRoot?.innerHTML).toBe("<div>Aral</div>");
+    });
+
+    it("should transform style props object to string", () => {
+      const Component = () => {
+        return ["div", { style: { color: "red" } }, ""];
+      };
+
+      customElements.define("style-component", brisaElement(Component));
+      document.body.innerHTML = "<style-component />";
+
+      const styleComponent = document.querySelector(
+        "style-component",
+      ) as HTMLElement;
+
+      expect(styleComponent?.shadowRoot?.innerHTML).toBe(
+        '<div style="color:red;"></div>',
+      );
     });
   });
 });
