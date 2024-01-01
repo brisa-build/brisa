@@ -722,7 +722,10 @@ declare global {
 
     export type WebComponentAttributes<T extends (...args: any[]) => any> = {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
-    } & { children?: JSXElement } & HTMLAttributes<HTMLElement>;
+    } & {
+      children?: JSXElement;
+      skipSSR?: boolean;
+    } & HTMLAttributes<HTMLElement>;
 
     export interface CSSProperties extends CSS.Properties<string | number> {
       /**
