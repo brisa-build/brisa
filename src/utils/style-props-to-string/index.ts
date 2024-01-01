@@ -3,8 +3,12 @@ export const lowercase = (str: string) => str.toLowerCase();
 export default function stylePropsToString(
   styleProps: JSX.CSSProperties,
 ): string {
-  return Object.entries(styleProps).reduce((acc, [key, value]) => {
+  let res = "";
+
+  for (const key in styleProps) {
     const cssKey = lowercase(key.replace(/([A-Z])/g, "-$1"));
-    return `${acc}${cssKey}:${value};`;
-  }, "");
+    res += `${cssKey}:${(styleProps as any)[key]};`;
+  }
+
+  return res;
 }
