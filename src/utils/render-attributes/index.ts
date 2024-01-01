@@ -2,6 +2,7 @@ import getConstants from "../../constants";
 import { I18nConfig, Props, RequestContext, Translations } from "../../types";
 import routeMatchPathname from "../route-match-pathname";
 import { serialize } from "../serialization";
+import stylePropsToString from "../style-props-to-string";
 import substituteI18nRouteValues from "../substitute-i18n-route-values";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
@@ -46,7 +47,9 @@ export default function renderAttributes({
 
     // Example data-test={ bar: "foo" } => <div data-test="{'bar':'foo'}">
     if (typeof value === "object") {
-      attributes += ` ${key}="${serialize(value)}"`;
+      attributes += ` ${key}="${
+        value && key === "style" ? stylePropsToString(value) : serialize(value)
+      }"`;
       continue;
     }
 

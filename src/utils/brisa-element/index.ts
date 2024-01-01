@@ -2,7 +2,7 @@ import { WebContext, BrisaContext } from "../../types";
 import getProviderId from "../get-provider-id";
 import { deserialize, serialize } from "../serialization";
 import signals from "../signals";
-import stylePropsToString from "../style-props-to-string";
+import stylePropsToString, { lowercase } from "../style-props-to-string";
 
 type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
@@ -47,11 +47,10 @@ const createTextNode = (text: Children) => {
   );
 };
 
-const isReactiveArray = (a: any) =>
-  a?.some?.((v: unknown) => typeof v === "object");
+const isObject = (o: unknown) => typeof o === "object";
+const isReactiveArray = (a: any) => a?.some?.(isObject);
 const arr = Array.from;
 const isFunction = (fn: unknown) => typeof fn === "function";
-const lowercase = (str: string) => str.toLowerCase();
 const isAttributeAnEvent = (key: string) => key.startsWith("on");
 const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
   parent.appendChild(child);
@@ -70,9 +69,10 @@ const createElement = (
 const setAttribute = (el: HTMLElement, key: string, value: string) => {
   const on = (value as unknown as symbol) === _on;
   const off = (value as unknown as symbol) === _off;
-  const serializedValue = serialize(
-    key === "style" ? stylePropsToString(value as JSX.CSSProperties) : value,
-  );
+  const isStyleObj = key === "style" && isObject(value);
+  const serializedValue = isStyleObj
+    ? stylePropsToString(value as JSX.CSSProperties)
+    : serialize(value);
 
   const isWithNamespace =
     el.namespaceURI === SVG_NAMESPACE &&
