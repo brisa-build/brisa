@@ -635,13 +635,6 @@ type CreatePortalOutput = {
   };
 };
 
-interface ContextProviderAttributes {
-  context: BrisaContext<unknown>;
-  value: unknown;
-  children: unknown;
-  serverOnly?: boolean;
-}
-
 export interface BrisaDOMAttributes {
   /**
    * Description:
@@ -716,6 +709,13 @@ declare global {
 
     interface ElementChildrenAttribute {
       children: JSXElement;
+    }
+
+    interface ContextProviderAttributes<Target extends EventTarget = HTMLElement> extends HTMLAttributes<Target> {
+      context: BrisaContext<unknown>;
+      value: unknown;
+      children: unknown;
+      serverOnly?: boolean;
     }
 
     export interface CSSProperties extends CSS.Properties<string | number> {
@@ -2123,7 +2123,7 @@ declare global {
        *
        * - [How to use `context-provider`](https://brisa.build/docs/components-details/context)
        */
-      "context-provider": ContextProviderAttributes;
+      "context-provider": ContextProviderAttributes<HTMLElement>;
     }
   }
 }
