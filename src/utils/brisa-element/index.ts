@@ -2,6 +2,7 @@ import { WebContext, BrisaContext } from "../../types";
 import getProviderId from "../get-provider-id";
 import { deserialize, serialize } from "../serialization";
 import signals from "../signals";
+import stylePropsToString from "../style-props-to-string";
 
 type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
@@ -69,7 +70,10 @@ const createElement = (
 const setAttribute = (el: HTMLElement, key: string, value: string) => {
   const on = (value as unknown as symbol) === _on;
   const off = (value as unknown as symbol) === _off;
-  const serializedValue = serialize(value);
+  const serializedValue = serialize(
+    key === "style" ? stylePropsToString(value as JSX.CSSProperties) : value,
+  );
+
   const isWithNamespace =
     el.namespaceURI === SVG_NAMESPACE &&
     (key.startsWith("xlink:") || key === "href");

@@ -664,7 +664,7 @@ describe("integration", () => {
         return (
           <div>
             <input type="color" value={color} onInput={(e: any) => color = e.target.value} />
-            <span style={\`color:\${color}\`}>{color}</span>
+            <span style={{ color }}>{color}</span>
           </div>
         );
       }`;
@@ -684,7 +684,7 @@ describe("integration", () => {
       ) as HTMLInputElement;
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
-        '<div><input type="color" value="#000000"><span style="color:#000000">#000000</span></div>',
+        '<div><input type="color" value="#000000"><span style="color:#000000;">#000000</span></div>',
       );
 
       input.value = "#ffffff";
@@ -692,7 +692,7 @@ describe("integration", () => {
       input.dispatchEvent(new Event("input"));
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
-        '<div><input type="color" value="#ffffff"><span style="color:#ffffff">#ffffff</span></div>',
+        '<div><input type="color" value="#ffffff"><span style="color:#ffffff;">#ffffff</span></div>',
       );
     });
 
@@ -1081,7 +1081,7 @@ describe("integration", () => {
       const code = `export default function ColorSVG({ color1, color2, color3 }: any) {
         return (
           <svg width="12cm" height="12cm">
-            <g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;">
+            <g style={{ fillOpacity: 0.7, stroke: "black", strokeWidth: "0.1cm" }}>
               <circle cx="6cm" cy="2cm" r="100" fill={color1} transform="translate(0,50)" />
               <circle cx="6cm" cy="2cm" r="100" fill={color2} transform="translate(70,150)" />
               <circle cx="6cm" cy="2cm" r="100" fill={color3} transform="translate(-70,150)" />
@@ -1103,7 +1103,7 @@ describe("integration", () => {
       });
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
       );
 
       colorSVG.setAttribute("color1", "#0000ff");
@@ -1111,7 +1111,7 @@ describe("integration", () => {
       colorSVG.setAttribute("color3", "#00ff00");
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
       );
     });
 
@@ -1119,7 +1119,7 @@ describe("integration", () => {
       const code = `export default function ColorSVG({ firstColor, secondColor, thirdColor }) {
         return (
           <svg width="12cm" height="12cm">
-            <g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;">
+            <g style={{ fillOpacity: 0.7, stroke: "black", strokeWidth: "0.1cm" }}>
               <circle cx="6cm" cy="2cm" r="100" fill={firstColor} transform="translate(0,50)" />
               <circle cx="6cm" cy="2cm" r="100" fill={secondColor} transform="translate(70,150)" />
               <circle cx="6cm" cy="2cm" r="100" fill={thirdColor} transform="translate(-70,150)" />
@@ -1135,7 +1135,7 @@ describe("integration", () => {
       const colorSVG = document.querySelector("color-svg") as HTMLElement;
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>',
       );
 
       colorSVG.setAttribute("firstColor", "#0000ff");
@@ -1143,7 +1143,7 @@ describe("integration", () => {
       colorSVG.setAttribute("thirdColor", "#00ff00");
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7; stroke:black; stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
       );
     });
 
@@ -1501,7 +1501,7 @@ describe("integration", () => {
         return (
           <div>
             <button onClick={() => active.value = active.value === 0 ? 1 : 0}>toggle</button>
-            <div style={\`display:\${active.value === 0 ? "none" : "block"}\`} >content</div>
+            <div style={{display: active.value === 0 ? "none" : "block"}} >content</div>
           </div>
         );
       }`;
@@ -1518,19 +1518,19 @@ describe("integration", () => {
       ) as HTMLButtonElement;
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:none">content</div></div>',
+        '<div><button>toggle</button><div style="display:none;">content</div></div>',
       );
 
       button.click();
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:block">content</div></div>',
+        '<div><button>toggle</button><div style="display:block;">content</div></div>',
       );
 
       button.click();
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
-        '<div><button>toggle</button><div style="display:none">content</div></div>',
+        '<div><button>toggle</button><div style="display:none;">content</div></div>',
       );
     });
 
@@ -1540,8 +1540,8 @@ describe("integration", () => {
 
         return (
           <div>
-            <span onMouseOver={() => visible.value = true} onMouseOut={() => visible.value = false} style="position:relative;">
-              <span style={\`position:absolute; visibility:\${visible.value ? "visible" : "hidden"};\`} >Tooltip text</span>
+            <span onMouseOver={() => visible.value = true} onMouseOut={() => visible.value = false} style={{position: "relative"}}>
+              <span style={{position: "absolute", visibility: visible.value ? "visible" : "hidden"}} >Tooltip text</span>
               Hover over me
             </span>
           </div>
@@ -1558,19 +1558,19 @@ describe("integration", () => {
       ) as HTMLSpanElement;
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
+        '<div><span style="position:relative;"><span style="position:absolute;visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
       );
 
       span.dispatchEvent(new Event("mouseover"));
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:visible;">Tooltip text</span>Hover over me</span></div>',
+        '<div><span style="position:relative;"><span style="position:absolute;visibility:visible;">Tooltip text</span>Hover over me</span></div>',
       );
 
       span.dispatchEvent(new Event("mouseout"));
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
-        '<div><span style="position:relative;"><span style="position:absolute; visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
+        '<div><span style="position:relative;"><span style="position:absolute;visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
       );
     });
 
