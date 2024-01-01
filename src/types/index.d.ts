@@ -711,12 +711,18 @@ declare global {
       children: JSXElement;
     }
 
-    interface ContextProviderAttributes<Target extends EventTarget = HTMLElement> extends HTMLAttributes<Target> {
+    interface ContextProviderAttributes<
+      Target extends EventTarget = HTMLElement,
+    > extends HTMLAttributes<Target> {
       context: BrisaContext<unknown>;
       value: unknown;
       children: unknown;
       serverOnly?: boolean;
     }
+
+    export type WebComponentAttributes<T extends (...args: any[]) => any> = {
+      [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
+    } & { children?: JSXElement } & HTMLAttributes<HTMLElement>;
 
     export interface CSSProperties extends CSS.Properties<string | number> {
       /**
