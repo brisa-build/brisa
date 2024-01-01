@@ -2692,5 +2692,22 @@ describe("utils", () => {
         '<div style="color:red;"></div>',
       );
     });
+
+    it('should also work with "style" prop as string', () => {
+      const Component = () => {
+        return ["div", { style: "color:red;" }, ""];
+      };
+
+      customElements.define("style-component", brisaElement(Component));
+      document.body.innerHTML = "<style-component />";
+
+      const styleComponent = document.querySelector(
+        "style-component",
+      ) as HTMLElement;
+
+      expect(styleComponent?.shadowRoot?.innerHTML).toBe(
+        '<div style="color:red;"></div>',
+      );
+    });
   });
 });

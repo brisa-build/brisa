@@ -370,5 +370,45 @@ describe("utils", () => {
 
       expect(attributes).toBe(" foo=\"{'bar':'baz'}\"");
     });
+
+    it('should transform style prop from obj to string in the "style" attribute', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          style: {
+            color: "red",
+            backgroundColor: "blue",
+            padding: "10px",
+            margin: "10px",
+            border: "1px solid black",
+          },
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(
+        ' style="color:red;background-color:blue;padding:10px;margin:10px;border:1px solid black;"',
+      );
+    });
+
+    it('should also allow style prop as string in the "style" attribute', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          style: "color:red;",
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(' style="color:red;"');
+    });
   });
 });
