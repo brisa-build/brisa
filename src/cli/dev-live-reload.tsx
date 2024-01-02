@@ -1,15 +1,8 @@
-import { SpawnOptions } from "bun";
 import { watch } from "node:fs";
 import path from "node:path";
 import getConstants from "../constants";
 import dangerHTML from "../utils/danger-html";
 import compileAll from "../utils/compile-all";
-
-type Spawn = SpawnOptions.OptionsObject<
-  SpawnOptions.Writable,
-  SpawnOptions.Readable,
-  SpawnOptions.Readable
-> & { cmd: string[] };
 
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT } = getConstants();
 const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
@@ -20,15 +13,19 @@ let waitFilename = "";
 
 if (IS_DEVELOPMENT) {
   console.log(LOG_PREFIX.INFO, "hot reloading enabled");
-  const watcher = watch(SRC_DIR, { recursive: true }, async (event, filename) => {
-    const filePath = path.join(SRC_DIR, filename as string);
+  const watcher = watch(
+    SRC_DIR,
+    { recursive: true },
+    async (event, filename) => {
+      const filePath = path.join(SRC_DIR, filename as string);
 
-    if (event !== "change" && Bun.file(filePath).size !== 0) return;
+      if (event !== "change" && Bun.file(filePath).size !== 0) return;
 
-    console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
-    if (semaphore) waitFilename = filename as string;
-    else recompile(filename as string);
-  });
+      console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
+      if (semaphore) waitFilename = filename as string;
+      else recompile(filename as string);
+    },
+  );
 
   process.on("SIGINT", () => {
     watcher.close();
@@ -46,10 +43,7 @@ async function recompile(filename: string) {
   const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
 
   if (!success) {
-    console.log(
-      LOG_PREFIX.ERROR,
-      `failed to recompile ${filename}`,
-    );
+    console.log(LOG_PREFIX.ERROR, `failed to recompile ${filename}`);
     semaphore = false;
     return;
   }
