@@ -18,7 +18,7 @@ related:
 We recommend starting a new Brisa app using `create-brisa-app``, which sets up everything automatically for you.
 
 ```sh
-npx create-brisa-app
+bunx create-brisa-app
 ```
 
 After the prompts, `create-brisa-app` will create a folder with your project name and install the required dependencies.
