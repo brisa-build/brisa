@@ -3,6 +3,7 @@ import { watch } from "node:fs";
 import path from "node:path";
 import getConstants from "../constants";
 import dangerHTML from "../utils/danger-html";
+import compileAll from "../utils/compile-all";
 
 type Spawn = SpawnOptions.OptionsObject<
   SpawnOptions.Writable,
@@ -13,12 +14,6 @@ type Spawn = SpawnOptions.OptionsObject<
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT } = getConstants();
 const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
 const LIVE_RELOAD_COMMAND = "reload";
-const buildPath = path.join(import.meta.dir, "..", "build.js");
-const spawnOptions: Spawn = {
-  cmd: [process.execPath, buildPath],
-  env: process.env,
-  stderr: "pipe",
-};
 
 let semaphore = false;
 let waitFilename = "";
@@ -41,20 +36,19 @@ if (IS_DEVELOPMENT) {
   });
 }
 
-function recompile(filename: string) {
+async function recompile(filename: string) {
   semaphore = true;
   globalThis.Loader.registry.clear();
 
   const nsStart = Bun.nanoseconds();
-  const { exitCode, stderr } = Bun.spawnSync(spawnOptions);
+  const success = await compileAll();
   const nsEnd = Bun.nanoseconds();
   const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
 
-  if (exitCode !== 0) {
+  if (!success) {
     console.log(
       LOG_PREFIX.ERROR,
       `failed to recompile ${filename}`,
-      stderr.toString(),
     );
     semaphore = false;
     return;
@@ -69,7 +63,7 @@ function recompile(filename: string) {
   if (waitFilename) {
     let popFilename = waitFilename;
     waitFilename = "";
-    recompile(popFilename);
+    await recompile(popFilename);
   }
   semaphore = false;
 }
