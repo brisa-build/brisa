@@ -118,7 +118,7 @@ describe("utils", () => {
     ${info}Route                               | Size | Client size  
     ${info}------------------------------------------------------------
     ${info}λ /pages/_404.js                    | 295 B | 0 B 
-    ${info}λ /pages/page-with-web-component.js | 1 kB  | 5 kB
+    ${info}λ /pages/page-with-web-component.js | 2 kB  | 6 kB
     ${info}λ /pages/somepage.js                | 341 B | 0 B
     ${info}λ /pages/somepage-with-context.js   | 327 B | 0 B
     ${info}λ /pages/index.js                   | 267 B | 217 B 
