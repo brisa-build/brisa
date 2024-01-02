@@ -65,6 +65,7 @@ describe.skip("compileAll", () => {
         "user",
         "_404.js",
         "page-with-web-component.js",
+        "somepage-with-context.js",
       ].toSorted(),
     );
     expect(fs.readdirSync(path.join(OUT_DIR, "api"))).toEqual(["example.js"]);
