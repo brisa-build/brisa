@@ -25,7 +25,7 @@ let waitFilename = "";
 
 if (IS_DEVELOPMENT) {
   console.log(LOG_PREFIX.INFO, "hot reloading enabled");
-  watch(SRC_DIR, { recursive: true }, async (event, filename) => {
+  const watcher = watch(SRC_DIR, { recursive: true }, async (event, filename) => {
     const filePath = path.join(SRC_DIR, filename as string);
 
     if (event !== "change" && Bun.file(filePath).size !== 0) return;
@@ -33,6 +33,11 @@ if (IS_DEVELOPMENT) {
     console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
     if (semaphore) waitFilename = filename as string;
     else recompile(filename as string);
+  });
+
+  process.on("SIGINT", () => {
+    watcher.close();
+    process.exit(0);
   });
 }
 
