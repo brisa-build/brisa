@@ -3,7 +3,7 @@
 if command -v bun >/dev/null 2>&1; then
   BUN_EXEC="bun"
 else
-  BUN_EXEC="~/.bun/bin/bun"
+  BUN_EXEC="$HOME/.bun/bin/bun"
 fi
 
 # brisa dev
