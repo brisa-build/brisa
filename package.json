@@ -3,7 +3,7 @@
   "module": "./out/core/index.js",
   "main": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
@@ -68,7 +68,7 @@
   },
   "bin": {
     "brisa": "./cli.sh",
-    "create-brisa-app": "./create-brisa-app.sh"
+    "create-brisa-app": "./create-brisa-app.cjs"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "12.10.3",
