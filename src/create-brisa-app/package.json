@@ -12,9 +12,9 @@
     "url": "https://github.com/aralroca/brisa.git"
   },
   "files": [
-    "create-brisa-app.sh"
+    "create-brisa-app.cjs"
   ],
   "bin": {
-    "create-brisa-app": "./create-brisa-app.sh"
+    "create-brisa-app": "./create-brisa-app.cjs"
   }
 }
