@@ -6,6 +6,7 @@ import { injectUnsuspenseCode } from "../inject-unsuspense-code" with { type: "m
 import { injectClientContextProviderCode } from "../context-provider/inject-client" with { type: "macro" };
 import transformJSXToReactive from "../transform-jsx-to-reactive";
 import createContextPlugin from "../create-context/create-context-plugin";
+import snakeToCamelCase from "../snake-to-camelcase";
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
@@ -150,12 +151,6 @@ async function transformToWebComponents(
   }
 
   return { code: await outputs[0].text(), size: outputs[0].size };
-}
-
-function snakeToCamelCase(str: string) {
-  return str.replace(/([-_][a-z])/g, (group) =>
-    group.toUpperCase().replace("-", "").replace("_", ""),
-  );
 }
 
 async function analyzeClientPath(
