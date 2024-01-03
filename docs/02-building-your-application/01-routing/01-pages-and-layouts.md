@@ -145,7 +145,32 @@ export function responseHeaders(request, responseStatus) {
 }
 ```
 
-## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders`
+## Head
+
+The Head is a method that you can export in the pages to overwrite any element of the `<head>` tag.
+
+If for example you have the `title` defined in the layout but in the page `/about-us` you want to put a different title. You can use the same id to override the title of the layout:
+
+```tsx
+export function Head({}, { route }: RequestContext) {
+  return (
+    <>
+      <title id="title">About us</title>
+      <link rel="canonical" href="https://my-web.com" />
+    </>
+  );
+}
+
+export default function AboutUsPage() {
+  // ...
+}
+```
+
+> [!NOTE]
+>
+> If you want to mash existing head fields (title, link, meta, etc) because you already have them defined in the layout, you must use the `id` attribute in both parts, and only this one will be rendered. On pages that do not overwrite it, the one in the layout will be rendered.
+
+## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders` → `Head`
 
 You can share data between different parts of the application using the [`request context`](/docs/building-your-application/data-fetching/request-context).
 
@@ -183,4 +208,4 @@ export default function SomeComponent(props: Props, { store }: RequestContext) {
 }
 ```
 
-If you want to know more [check this out](<(/docs/building-your-application/data-fetching/request-context)>).
+If you want to know more about store [check this out](/docs/components-details/web-components#store-store-method).
