@@ -7,7 +7,7 @@ The Pages Router has a file-system based router built on the concept of pages (l
 
 When a file is added to the `pages` directory, it's automatically available as a route.
 
-In Brisa framework, a **page** is a [Brisa Component](/docs/components-details) exported from a `.js`, `.jsx`, `.ts`, or `.tsx` file in the `pages` directory. Each page is associated with a route based on its file name.
+In Brisa framework, a **page** is a [Brisa Server Component](/docs/components-details/server-components) exported from a `.js`, `.jsx`, `.ts`, or `.tsx` file in the `pages` directory. Each page is associated with a route based on its file name.
 
 **Example**: If you create `pages/about.js` that exports a Brisa component like below, it will be accessible at `/about`.
 
@@ -17,7 +17,7 @@ export default function About() {
 }
 ```
 
-See the difference between React Components and Brisa Components [here](/docs/components-details).
+See the difference between Brisa Components and React Components [here](/docs/components-details).
 
 ## Index routes
 
@@ -147,9 +147,9 @@ export function responseHeaders(request, responseStatus) {
 
 ## Head
 
-The Head is a method that you can export in the pages to overwrite any element of the `<head>` tag.
+The `Head` is a method that you can export in the pages to overwrite any element of the `<head>` tag.
 
-If for example you have the `title` defined in the layout but in the page `/about-us` you want to put a different title. You can use the same id to override the title of the layout:
+If for example you have the `title` defined in the layout but in the page `/about-us` you want to put a different title. You can use the same `id` to override the title of the layout:
 
 ```tsx
 export function Head({}, { route }: RequestContext) {
@@ -170,7 +170,7 @@ export default function AboutUsPage() {
 >
 > If you want to mash existing head fields (title, link, meta, etc) because you already have them defined in the layout, you must use the `id` attribute in both parts, and only this one will be rendered. On pages that do not overwrite it, the one in the layout will be rendered.
 
-## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders` → `Head`
+## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders` → `Head` → `web-components`
 
 You can share data between different parts of the application using the [`request context`](/docs/building-your-application/data-fetching/request-context).
 
@@ -208,4 +208,43 @@ export default function SomeComponent(props: Props, { store }: RequestContext) {
 }
 ```
 
-If you want to know more about store [check this out](/docs/components-details/web-components#store-store-method).
+### Transfer data to client (web-components):
+
+This data is only available on the server. So you can store sensitive data without worrying. However, you can transfer certain data to the client side (web-components) using `store.transferToClient` method.
+
+```tsx
+import { type RequestContext } from "brisa";
+
+export default async function Layout({}, request: RequestContext) {
+  const data = await getData(request);
+
+  request.store.set("data", data);
+
+  // Transfer "data" from store to client
+  request.store.transferToClient(["data"]);
+
+  return (
+    <html>
+      <head>
+        <title>My page</title>
+        <link rel="icon" href="favicon.ico" />
+      </head>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+### Consume data on client (web-components):
+
+In the web-components instead of the [`RequestContext`](/docs/building-your-application/data-fetching/request-context), there is the [`WebContext`](/docs/building-your-application/data-fetching/web-context), where you have a different [`store`](/docs/components-details/web-components#store-store-method), but if you have transferred the data from the `RequestContext` `store`, you will be able to consume it from the `WebContext` `store`.
+
+```tsx
+import { WebContext } from "brisa";
+
+export default function WebComponent({}, { store }: WebContext) {
+  return <button onClick={() => alert(store.get("example"))}>Click</button>;
+}
+```
+
+If you want to know more about `store` [check this out](/docs/components-details/web-components#store-store-method).
