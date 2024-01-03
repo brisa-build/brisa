@@ -32,7 +32,7 @@ export default async function WebComponent() {
 }
 ```
 
-In the same way, you can fetch data in the [`middleware`](/docs/building-your-application/routing/middleware), [`layout`](/docs/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`suspense` phase](/docs/building-your-application/routing/suspense-and-streaming), etc, and share the data with the rest of the application.
+In the same way, you can fetch data in the [`middleware`](/docs/building-your-application/routing/middleware), [`layout`](/docs/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/docs/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/docs/building-your-application/routing/suspense-and-streaming), etc, and share the data with the rest of the application.
 
 ### Suspense phase
 
@@ -48,7 +48,7 @@ Suspense is useful during HTML streaming, while the server loads the data the su
 
 ### Share server-server data between components
 
-To share data across all parts of the server ([`middleware`](/docs/building-your-application/routing/middleware), [`layout`](/docs/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`suspense` phase](/docs/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
+To share data across all parts of the server ([`middleware`](/docs/building-your-application/routing/middleware), [`layout`](/docs/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/docs/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/docs/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
 
 1. Request [`store`](docs/building-your-application/data-fetching/request-context#store)
 2. [Context API](/docs/components-details/context)
