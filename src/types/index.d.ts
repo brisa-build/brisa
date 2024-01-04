@@ -457,9 +457,9 @@ export type I18nConfig<T = I18nDictionary> = {
   domains?: Record<string, I18nDomainConfig>;
   messages?: Record<string, T>;
   interpolation?: {
-    prefix: string;
-    suffix: string;
-    format: (value: unknown, format: string, locale: string) => string;
+    prefix?: string;
+    suffix?: string;
+    format?: (value: unknown, format: string, locale: string) => string;
   };
   allowEmptyStrings?: boolean;
   keySeparator?: string;
@@ -504,15 +504,17 @@ type I18nKey = typeof import("@/i18n").default extends I18nConfig<infer T>
   ? Paths<T extends object ? T : I18nDictionary>
   : string;
 
+export type TranslateOptions = {
+  returnObjects?: boolean;
+  fallback?: string | string[];
+  default?: T | string;
+  elements?: JSX.Element[] | Record<string, JSX.Element>;
+};
+
 export type Translate = <T extends unknown = string>(
   i18nKey: I18nKey | TemplateStringsArray,
   query?: TranslationQuery | null,
-  options?: {
-    returnObjects?: boolean;
-    fallback?: string | string[];
-    default?: T | string;
-    elements?: JSX.Element[] | Record<string, JSX.Element>;
-  },
+  options?: TranslateOptions,
 ) => T | JSX.Element[] | string;
 
 export type I18nFromRequest = {
@@ -1990,7 +1992,10 @@ declare global {
       wmode?: string | undefined;
       wrap?: string | undefined;
 
-      // Non-standard Attributes
+      // template attributes
+      shadowrootmode?: ShadowRootMode | undefined;
+
+      // Non-standard attributes
       autocapitalize?:
         | "off"
         | "none"

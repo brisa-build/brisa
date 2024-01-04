@@ -373,7 +373,7 @@ describe("signals", () => {
     const mockEffect = mock<(count?: number) => void>(() => {});
     store.set("count", 0);
 
-    expect(store.get("count")).toBe(0);
+    expect(store.get<number>("count")).toBe(0);
 
     effect(() => {
       mockEffect(store.get("count"));
@@ -384,14 +384,14 @@ describe("signals", () => {
 
     store.set("count", 2);
 
-    expect(store.get("count")).toBe(2);
+    expect(store.get<number>("count")).toBe(2);
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[1][0]).toBe(2);
 
     store2.set("count", 1);
 
-    expect(store2.get("count")).toBe(1);
-    expect(store.get("count")).toBe(1);
+    expect(store2.get<number>("count")).toBe(1);
+    expect(store.get<number>("count")).toBe(1);
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[2][0]).toBe(1);
 

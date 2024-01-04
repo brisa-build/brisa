@@ -12,7 +12,6 @@ describe("utils", () => {
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
-          locale: "es",
           locales: ["es", "en"],
           defaultLocale: "es",
           pages: {
@@ -35,7 +34,6 @@ describe("utils", () => {
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
-          locale: "es",
           locales: ["es", "en"],
           defaultLocale: "es",
           pages: {

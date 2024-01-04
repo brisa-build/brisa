@@ -16,8 +16,14 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "types": [
-      "bun-types" // add Bun global
-    ]
-  }
+    "types": ["bun-types"]
+  },
+  "exclude": [
+    "node_modules",
+    "out",
+    "server",
+    "client",
+    "jsx-runtime",
+    "jsx-dev-runtime"
+  ]
 }
