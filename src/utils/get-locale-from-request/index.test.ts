@@ -46,7 +46,7 @@ describe("utils", () => {
     });
 
     it("should return domain default locale if not locale", () => {
-      globalThis.mockConstants!.I18N_CONFIG.domains = {
+      (globalThis.mockConstants as any).I18N_CONFIG.domains = {
         "example.com": {
           defaultLocale: "ru",
         },
@@ -60,7 +60,7 @@ describe("utils", () => {
     });
 
     it("should return domain default locale if locale is not supported", () => {
-      globalThis.mockConstants!.I18N_CONFIG.domains = {
+      (globalThis.mockConstants as any).I18N_CONFIG.domains = {
         "example.com": {
           defaultLocale: "ru",
         },

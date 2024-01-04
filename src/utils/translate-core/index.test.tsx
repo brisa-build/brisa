@@ -2,7 +2,32 @@ import { describe, expect, it, afterAll } from "bun:test";
 import translateCore from ".";
 import { JSXElement } from "../../types";
 
-const nsNestedKeys = {
+type NestedKeysType = {
+  key_1: {
+    key_1_nested: string;
+    key_2_nested: string;
+  };
+  key_2: string;
+};
+
+type RootKeysType = {
+  root_key_1: string;
+  root_key_2: string;
+};
+
+type InterpolateType = {
+  key_1: {
+    key_1_nested: string;
+    key_2_nested: string;
+  };
+  key_2: string;
+};
+
+type WithEmptyType = {
+  emptyKey: string;
+};
+
+const nsNestedKeys: NestedKeysType = {
   key_1: {
     key_1_nested: "message 1 nested",
     key_2_nested: "message 2 nested",
@@ -10,12 +35,12 @@ const nsNestedKeys = {
   key_2: "message 2",
 };
 
-const nsRootKeys = {
+const nsRootKeys: RootKeysType = {
   root_key_1: "root message 1",
   root_key_2: "root message 2",
 };
 
-const nsInterpolate = {
+const nsInterpolate: InterpolateType = {
   key_1: {
     key_1_nested: "message 1 {{count}}",
     key_2_nested: "message 2 {{count}}",
@@ -23,11 +48,11 @@ const nsInterpolate = {
   key_2: "message 2",
 };
 
-const nsWithEmpty = {
+const nsWithEmpty: WithEmptyType = {
   emptyKey: "",
 };
 
-function mockDir(dir) {
+function mockDir<T>(dir: T extends Record<string, any> ? T : never) {
   globalThis.mockConstants = {
     I18N_CONFIG: {
       locales: ["en", "ru"],
@@ -73,7 +98,9 @@ describe("utils", () => {
       const t = translateCore("en");
 
       expect(typeof t).toBe("function");
-      expect(t(".", null, { returnObjects: true })).toEqual(nsRootKeys);
+      expect(t<RootKeysType>(".", null, { returnObjects: true })).toEqual(
+        nsRootKeys,
+      );
     });
 
     it("should return an object of nested keys", async () => {
@@ -89,19 +116,20 @@ describe("utils", () => {
       const t = translateCore("en");
 
       expect(typeof t).toBe("function");
-      expect(t("key_1", null, { returnObjects: true })).toEqual(
-        nsNestedKeys.key_1,
-      );
-      expect(t("key_2", null, { returnObjects: true })).toEqual(
-        nsNestedKeys.key_2,
-      );
+      expect(
+        t<NestedKeysType["key_1"]>("key_1", null, { returnObjects: true }),
+      ).toEqual(nsNestedKeys.key_1);
+      expect(
+        t<NestedKeysType["key_2"]>("key_2", null, { returnObjects: true }),
+      ).toEqual(nsNestedKeys.key_2);
     });
 
     it("should return an object of nested keys and interpolate correctly", async () => {
       mockDir(nsInterpolate);
+
       const t = translateCore("en");
       const count = 999;
-      const expected = {
+      const expected: NestedKeysType = {
         key_1: {
           key_1_nested: `message 1 ${count}`,
           key_2_nested: `message 2 ${count}`,
@@ -110,7 +138,9 @@ describe("utils", () => {
       };
 
       expect(typeof t).toBe("function");
-      expect(t(".", { count }, { returnObjects: true })).toEqual(expected);
+      expect(
+        t<NestedKeysType>(".", { count }, { returnObjects: true }),
+      ).toEqual(expected);
     });
 
     it("should return empty string when allowEmptyStrings is passed as true", () => {
@@ -195,6 +225,7 @@ describe("utils", () => {
           },
           interpolation: {
             format: (value, format) => {
+              if (typeof value !== "string") return "";
               if (format === "uppercase") {
                 return value.toUpperCase();
               }

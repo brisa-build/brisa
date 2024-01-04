@@ -59,6 +59,7 @@
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
     "test": "bun test",
     "test:coverage": "bun test --coverage",
+    "tsc:check": "tsc --noEmit --skipLibCheck",
     "release-create-brisa-app": "cd src/create-brisa-app && npm publish && cd ../..",
     "release-create-brisa-app:alpha": "cd src/create-brisa-app && npm publish --tag next  && cd ../..",
     "release-all": "bun run build && npm publish && bun run clean && bun run release-create-brisa-app",

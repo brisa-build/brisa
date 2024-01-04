@@ -3,6 +3,7 @@ import {
   I18nConfig,
   I18nDictionary,
   Translate,
+  TranslateOptions,
   TranslationQuery,
 } from "../../types";
 import formatElements from "./format-elements";
@@ -11,7 +12,10 @@ export default function translateCore(locale: string) {
   const config: I18nConfig = getConstants().I18N_CONFIG || {};
   const { allowEmptyStrings = true } = config;
   const pluralRules = new Intl.PluralRules(locale);
-  const interpolateUnknown = (value, query): typeof value => {
+  const interpolateUnknown = (
+    value: unknown,
+    query: TranslationQuery | null | undefined,
+  ): typeof value => {
     if (Array.isArray(value)) {
       return value.map((val) => interpolateUnknown(val, query));
     }
@@ -28,8 +32,8 @@ export default function translateCore(locale: string) {
 
   const translate = (
     i18nKey: string | TemplateStringsArray = "",
-    query,
-    options,
+    query: TranslationQuery | null | undefined,
+    options?: TranslateOptions,
   ) => {
     const dic = config.messages?.[locale] || {};
     const keyWithPlural = plural(

@@ -30,7 +30,7 @@ export default function formatElements(
   const allElements = getElements(parts);
 
   for (const [key, children, after] of allElements) {
-    const element = elements[key as string] || <></>;
+    const element = (elements as any)[key!] || <></>;
     const elementWithChildren = {
       ...element,
       props: {

@@ -36,7 +36,7 @@ export default function handleI18n(req: RequestContext): {
   // Redirect to default locale if there is no locale in the URL
   if (localeFromUrl !== locale) {
     const { route } = routers.pagesRouter.match(req);
-    const translatedRoute = pages?.[route?.name]?.[locale] ?? pathname;
+    const translatedRoute = pages?.[route?.name!]?.[locale] ?? pathname;
     const [domain, domainConf] =
       Object.entries(domains || {}).find(
         ([, domainConf]) => domainConf.defaultLocale === locale,
