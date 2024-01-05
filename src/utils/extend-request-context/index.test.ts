@@ -2,6 +2,7 @@ import { describe, it, expect, mock, afterEach } from "bun:test";
 import extendRequestContext from ".";
 import createContext from "../create-context";
 import { contextProvider } from "../context-provider/server";
+import { ServerWebSocket } from "bun";
 
 describe("brisa core", () => {
   afterEach(() => {
@@ -61,9 +62,12 @@ describe("brisa core", () => {
 
     it("should be linked with websockets", () => {
       const requestId = "some-id";
+      const mockSend = mock((m: string | BufferSource) => 1);
 
       globalThis.sockets = new Map();
-      globalThis.sockets.set(requestId, { send: mock(() => "some message") });
+      globalThis.sockets.set(requestId, {
+        send: (m) => mockSend(m),
+      } as ServerWebSocket<unknown>);
 
       const request = new Request("https://example.com");
       const route = {
@@ -75,7 +79,9 @@ describe("brisa core", () => {
         id: requestId,
       });
 
-      expect(requestContext.ws.send()).toBe("some message");
+      requestContext.ws.send("some message");
+
+      expect(mockSend).toHaveBeenCalledWith("some message");
     });
 
     it("should return the default value when the context is not found", () => {
