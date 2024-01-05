@@ -647,7 +647,11 @@ Example defining a custom hook:
 ```tsx
 import { WebContext } from "brisa";
 
-export default function useRandomColorInterval({ state, effect, cleanup }: WebContext) {
+export default function useRandomColorInterval({
+  state,
+  effect,
+  cleanup,
+}: WebContext) {
   const getRandomColor = () =>
     "#" + Math.floor(Math.random() * 16777215).toString(16);
 
