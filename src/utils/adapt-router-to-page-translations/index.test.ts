@@ -4,7 +4,6 @@ import adaptRouterToPageTranslations from ".";
 import getRouteMatcher from "../get-route-matcher";
 import getConstants from "../../constants";
 import extendRequestContext from "../extend-request-context";
-import { RequestContext } from "../../types";
 
 const PAGES_DIR = path.join(
   import.meta.dir,
@@ -91,7 +90,7 @@ describe("utils", () => {
           createRequest("https://example.com/alguna-pagina"),
         );
         expect(route).not.toBe(null);
-        expect(route.filePath).toBe(path.join(PAGES_DIR, "somepage.tsx"));
+        expect(route?.filePath).toBe(path.join(PAGES_DIR, "somepage.tsx"));
         expect(isReservedPathname).toBe(false);
         expect(reservedRoutes["/_404"]).toBeDefined();
       });
@@ -105,7 +104,7 @@ describe("utils", () => {
           createRequest("https://example.com/usuario/aral"),
         );
         expect(route).not.toBe(null);
-        expect(route.filePath).toBe(
+        expect(route?.filePath).toBe(
           path.join(PAGES_DIR, "user", "[username].tsx"),
         );
         expect(isReservedPathname).toBe(false);
@@ -116,10 +115,9 @@ describe("utils", () => {
     describe("given a mock router", () => {
       it("should detect all the translated routes", () => {
         const mockRouter = {
-          match: (v: RequestContext) =>
-            typeof v.finalURL === "string"
-              ? new URL(v.finalURL).pathname
-              : null,
+          match: (v: any) => ({
+            route: typeof v.finalURL === "string" ? new URL(v.finalURL) : null,
+          }),
         };
         const mockPages = {
           "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },
@@ -136,37 +134,37 @@ describe("utils", () => {
           mockRouter as any,
         );
 
-        expect(match(createRequest("https://example.com/alguna-pagina"))).toBe(
+        const getPathname = (v: any) =>
+          match(createRequest(v))?.route?.pathname;
+
+        expect(getPathname("https://example.com/alguna-pagina")).toBe(
           "/somepage",
         );
-        expect(match(createRequest("https://example.com/usuario/aral"))).toBe(
+        expect(getPathname("https://example.com/usuario/aral")).toBe(
           "/user/aral",
         );
-        expect(match(createRequest("https://example.com/algo/1/2/3"))).toBe(
+        expect(getPathname("https://example.com/algo/1/2/3")).toBe(
           "/some/1/2/3",
         );
+        expect(getPathname("https://example.com/otra-cosa/1/2/3")).toBe(
+          "/another/1/2/3",
+        );
+        expect(getPathname("https://example.com/")).toBe("/");
         expect(
-          match(createRequest("https://example.com/otra-cosa/1/2/3")),
-        ).toBe("/another/1/2/3");
-        expect(match(createRequest("https://example.com/"))).toBe("/");
-        expect(
-          match(
-            createRequest("https://example.com/usuario/aral/configuracion/1"),
-          ),
+          getPathname("https://example.com/usuario/aral/configuracion/1"),
         ).toBe("/user/aral/settings/1");
 
         // not untranslated because is not in the current locale "es"
-        expect(
-          match(createRequest("https://example.com/qualsiasi-pagina")),
-        ).toBe("/qualsiasi-pagina");
+        expect(getPathname("https://example.com/qualsiasi-pagina")).toBe(
+          "/qualsiasi-pagina",
+        );
       });
 
       it("should detect all the translated routes with locale prefix", () => {
         const mockRouter = {
-          match: (v: any) =>
-            typeof v.finalURL === "string"
-              ? new URL(v.finalURL).pathname
-              : null,
+          match: (v: any) => ({
+            route: typeof v.finalURL === "string" ? new URL(v.finalURL) : null,
+          }),
         };
         const mockPages = {
           "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },
@@ -183,39 +181,37 @@ describe("utils", () => {
           mockRouter as any,
         );
 
-        expect(
-          match(createRequest("https://example.com/es/alguna-pagina")),
-        ).toBe("/somepage");
-        expect(
-          match(createRequest("https://example.com/es/usuario/aral")),
-        ).toBe("/user/aral");
-        expect(match(createRequest("https://example.com/es/algo/1/2/3"))).toBe(
+        const getPathname = (v: any) =>
+          match(createRequest(v))?.route?.pathname;
+
+        expect(getPathname("https://example.com/es/alguna-pagina")).toBe(
+          "/somepage",
+        );
+        expect(getPathname("https://example.com/es/usuario/aral")).toBe(
+          "/user/aral",
+        );
+        expect(getPathname("https://example.com/es/algo/1/2/3")).toBe(
           "/some/1/2/3",
         );
+        expect(getPathname("https://example.com/es/otra-cosa/1/2/3")).toBe(
+          "/another/1/2/3",
+        );
+        expect(getPathname("https://example.com/es")).toBe("/");
         expect(
-          match(createRequest("https://example.com/es/otra-cosa/1/2/3")),
-        ).toBe("/another/1/2/3");
-        expect(match(createRequest("https://example.com/es"))).toBe("/");
-        expect(
-          match(
-            createRequest(
-              "https://example.com/es/usuario/aral/configuracion/1",
-            ),
-          ),
+          getPathname("https://example.com/es/usuario/aral/configuracion/1"),
         ).toBe("/user/aral/settings/1");
 
         // not untranslated because is not in the current locale "es"
-        expect(
-          match(createRequest("https://example.com/es/qualsiasi-pagina")),
-        ).toBe("/qualsiasi-pagina");
+        expect(getPathname("https://example.com/es/qualsiasi-pagina")).toBe(
+          "/qualsiasi-pagina",
+        );
       });
 
       it("should detect all the translated routes with trailingSlash", () => {
         const mockRouter = {
-          match: (v: any) =>
-            typeof v.finalURL === "string"
-              ? new URL(v.finalURL).pathname
-              : null,
+          match: (v: any) => ({
+            route: typeof v.finalURL === "string" ? new URL(v.finalURL) : null,
+          }),
         };
         const mockPages = {
           "/somepage": { es: "/alguna-pagina", it: "/qualsiasi-pagina" },
@@ -233,35 +229,32 @@ describe("utils", () => {
           mockRouter as any,
         );
 
-        expect(
-          match(createRequest("https://example.com/es/alguna-pagina/")),
-        ).toBe("/somepage");
-        expect(
-          match(createRequest("https://example.com/es/usuario/aral/")),
-        ).toBe("/user/aral");
-        expect(match(createRequest("https://example.com/es/algo/1/2/3/"))).toBe(
+        const getPathname = (v: any) =>
+          match(createRequest(v))?.route?.pathname;
+
+        expect(getPathname("https://example.com/es/alguna-pagina/")).toBe(
+          "/somepage",
+        );
+        expect(getPathname("https://example.com/es/usuario/aral/")).toBe(
+          "/user/aral",
+        );
+        expect(getPathname("https://example.com/es/algo/1/2/3/")).toBe(
           "/some/1/2/3",
         );
+        expect(getPathname("https://example.com/es/otra-cosa/1/2/3/")).toBe(
+          "/another/1/2/3",
+        );
+        expect(getPathname("https://example.com/es/")).toBe("/");
         expect(
-          match(createRequest("https://example.com/es/otra-cosa/1/2/3/")),
-        ).toBe("/another/1/2/3");
-        expect(match(createRequest("https://example.com/es/"))).toBe("/");
-        expect(
-          match(
-            createRequest(
-              "https://example.com/es/usuario/aral/configuracion/1/",
-            ),
-          ),
+          getPathname("https://example.com/es/usuario/aral/configuracion/1/"),
         ).toBe("/user/aral/settings/1");
 
         // not untranslated because is not in the current locale "es"
+        expect(getPathname("https://example.com/es/qualsiasi-pagina/")).toBe(
+          "/qualsiasi-pagina",
+        );
         expect(
-          match(createRequest("https://example.com/es/qualsiasi-pagina/")),
-        ).toBe("/qualsiasi-pagina");
-        expect(
-          match(
-            createRequest("https://example.com/es/somepage-without-spanish/"),
-          ),
+          getPathname("https://example.com/es/somepage-without-spanish/"),
         ).toBe("/somepage-without-spanish");
       });
     });
