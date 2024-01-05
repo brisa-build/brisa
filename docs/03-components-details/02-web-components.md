@@ -647,7 +647,7 @@ Example defining a custom hook:
 ```tsx
 import { WebContext } from "brisa";
 
-export function useRandomColorInterval({ state, effect, cleanup }: WebContext) {
+export default function useRandomColorInterval({ state, effect, cleanup }: WebContext) {
   const getRandomColor = () =>
     "#" + Math.floor(Math.random() * 16777215).toString(16);
 
@@ -671,7 +671,7 @@ How to consume it:
 
 ```tsx
 import { WebContext } from "brisa";
-import { useRandomColorInterval } from "@/hooks/useRandomColorInterval";
+import useRandomColorInterval from "@/web-hooks/use-random-color-interval";
 
 export default function ThemeProvider(
   { color }: Theme,
@@ -687,7 +687,7 @@ How **NOT** to consume it:
 
 ```tsx
 import { WebContext } from "brisa";
-import { useRandomColorInterval } from "@/hooks/useRandomColorInterval";
+import useRandomColorInterval from "@/web-hooks/use-random-color-interval";
 
 export default function ThemeProvider(
   { color }: Theme,
@@ -697,6 +697,10 @@ export default function ThemeProvider(
   return <div>{useRandomColorInterval(webContext).value}</div>;
 }
 ```
+
+> [!IMPORTANT]
+>
+> Avoid having all hooks (server and client) in the same file. There are no "use client", "use server" directives here, so it is important to check with the type-safe whether it is WebContext or RequestContext that the custom hook expects.
 
 ## Portals (`createPortal`)
 
