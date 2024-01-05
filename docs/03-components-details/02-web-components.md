@@ -636,6 +636,68 @@ export default function SomeChildComponent(props, { useContext }) {
 >
 > Learn more about it [here]([context](/docs/components-details/context).
 
+## Custom hooks
+
+To use [`effect`](#effects-effect-method), [`cleanup`](#clean-effects-cleanup-method), [`state`](#state-state-method), [`store`](#store-store-method), [`derived`](#derived-state-and-props-derived-method), [`useContext`](#context) and [`onMount`](#effect-on-mount-onmount-method) functions outside the component it is necessary to create a **custom hook**. This hook should be used before the JSX, not inside.
+
+Unlike other frameworks, in Brisa it is necessary to propagate the [`WebContext`](/docs/building-your-application/data-fetching/web-context), since each web component has a different one and self-manages its own life.
+
+Example defining a custom hook:
+
+```tsx
+import { WebContext } from "brisa";
+
+export function useRandomColorInterval({ state, effect, cleanup }: WebContext) {
+  const getRandomColor = () =>
+    "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+  const color = state(getRandomColor());
+
+  effect(() => {
+    let interval = setInterval(() => {
+      color.value = getRandomColor();
+    }, 1000);
+
+    cleanup(() => {
+      clearInterval(interval);
+    });
+  });
+
+  return color;
+}
+```
+
+How to consume it:
+
+```tsx
+import { WebContext } from "brisa";
+import { useRandomColorInterval } from "@/hooks/useRandomColorInterval";
+
+export default function ThemeProvider(
+  { color }: Theme,
+  webContext: WebContext,
+) {
+  const randomColor = useRandomColorInterval(webContext);
+
+  return <div style={{ color: randomColor.value }}>{randomColor.value}</div>;
+}
+```
+
+How **NOT** to consume it:
+
+```tsx
+import { WebContext } from "brisa";
+import { useRandomColorInterval } from "@/hooks/useRandomColorInterval";
+
+export default function ThemeProvider(
+  { color }: Theme,
+  webContext: WebContext,
+) {
+  // ❌ BAD
+  return <div>{useRandomColorInterval(webContext).value}</div>;
+}
+```
+
 ## Portals (`createPortal`)
 
 `createPortal` lets you render some children into a different part of the DOM. `createPortal(children, domNode)`.
