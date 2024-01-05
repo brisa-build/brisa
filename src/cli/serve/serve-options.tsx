@@ -3,17 +3,15 @@ import path from "node:path";
 
 import { MatchedRoute, type Serve, ServerWebSocket } from "bun";
 import getConstants from "../../constants";
-import { RequestContext } from "../../types";
-import dangerHTML from "../../utils/danger-html";
+import { PageModule, RequestContext } from "../../types";
 import extendRequestContext from "../../utils/extend-request-context";
 import getImportableFilepath from "../../utils/get-importable-filepath";
 import getRouteMatcher from "../../utils/get-route-matcher";
 import handleI18n from "../../utils/handle-i18n";
 import importFileIfExists from "../../utils/import-file-if-exists";
-import LoadLayout from "../../utils/load-layout";
 import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
 import renderToReadableStream from "../../utils/render-to-readable-stream";
-import { LiveReloadScript } from "../dev-live-reload";
+import getElementFromModule from "../../utils/get-element-from-module";
 
 const {
   IS_PRODUCTION,
@@ -225,24 +223,17 @@ async function responseRenderedPage({
   status?: number;
   error?: Error;
 }) {
-  const module = await import(route.filePath);
-  const PageComponent = module.default;
+  const module = (await import(route.filePath)) as PageModule;
   const layoutPath = getImportableFilepath("layout", BUILD_DIR);
   const layoutModule = layoutPath ? await import(layoutPath) : undefined;
-
-  const pageElement = (
-    <>
-      {dangerHTML("<!DOCTYPE html>")}
-      <PageLayout layoutModule={layoutModule}>
-        <PageComponent error={error} />
-      </PageLayout>
-    </>
-  );
+  const pageElement = getElementFromModule(module, { error, layoutModule });
 
   const middlewareResponseHeaders =
     middlewareModule?.responseHeaders?.(req, status) ?? {};
+
   const layoutResponseHeaders =
     layoutModule?.responseHeaders?.(req, status) ?? {};
+
   const pageResponseHeaders = module.responseHeaders?.(req, status) ?? {};
   const htmlStream = renderToReadableStream(pageElement, req, module.Head);
   const responseOptions = {
@@ -258,26 +249,6 @@ async function responseRenderedPage({
   };
 
   return new Response(htmlStream, responseOptions);
-}
-
-function PageLayout({
-  children,
-  layoutModule,
-}: {
-  children: JSX.Element;
-  layoutModule?: { default: (props: { children: JSX.Element }) => JSX.Element };
-}) {
-  const childrenWithLiveReload = IS_PRODUCTION ? (
-    children
-  ) : (
-    <LiveReloadScript port={PORT}>{children}</LiveReloadScript>
-  );
-
-  return (
-    <LoadLayout layoutModule={layoutModule}>
-      {childrenWithLiveReload}
-    </LoadLayout>
-  );
 }
 
 declare global {

@@ -511,6 +511,12 @@ export type TranslateOptions = {
   elements?: JSX.Element[] | Record<string, JSX.Element>;
 };
 
+export type PageModule = {
+  default: (props: { error?: Error }) => JSX.Element;
+  responseHeaders?: (req: Request, status: number) => HeadersInit;
+  Head?: ComponentType;
+};
+
 export type Translate = <T extends unknown = string>(
   i18nKey: I18nKey | TemplateStringsArray,
   query?: TranslationQuery | null,
