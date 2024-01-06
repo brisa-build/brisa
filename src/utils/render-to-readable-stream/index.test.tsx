@@ -8,6 +8,7 @@ import extendRequestContext from "../extend-request-context";
 import SSRWebComponent from "../ssr-web-component";
 import createContext from "../create-context";
 import { MatchedRoute } from "bun";
+import notFound from "../not-found";
 
 const emptyI18n = {
   locale: "",
@@ -20,6 +21,10 @@ const emptyI18n = {
 const testRequest = extendRequestContext({
   originalRequest: new Request("http://test.com/"),
 });
+const testOptions = {
+  request: testRequest,
+};
+
 const mockConsoleError = mock(() => {});
 const consoleError = console.error;
 console.error = mockConsoleError;
@@ -38,7 +43,7 @@ describe("utils", () => {
   describe("renderToReadableStream", () => {
     it("should render a simple JSX element", async () => {
       const element = <div class="test">Hello World</div>;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       const expected = `<div class="test">Hello World</div>`;
@@ -55,7 +60,7 @@ describe("utils", () => {
           <body></body>
         </html>
       );
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       await Bun.readableStreamToText(stream);
       expect(mockConsoleError.mock.calls.length).toEqual(0);
     });
@@ -68,7 +73,7 @@ describe("utils", () => {
         </div>
       );
       const element = <Component name="World" title="Test" />;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello World</h1><p>This is a paragraph</p></div>';
@@ -89,7 +94,7 @@ describe("utils", () => {
       );
       const stream = renderToReadableStream(
         <AsyncComponent title="Test" />,
-        testRequest,
+        testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
       const expected =
@@ -108,7 +113,7 @@ describe("utils", () => {
         </div>
       );
       const element = <Component name="World" title="Test" />;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       const expected =
         '<div title="Test"><h1>Hello World</h1><p>The URL is: http://test.com/</p></div>';
@@ -133,16 +138,16 @@ describe("utils", () => {
       };
 
       const element = <Component name="World" />;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       const expected = "<div>Hello World</div>";
 
-      const stream2 = await renderToReadableStream(
-        element,
-        extendRequestContext({
+      const stream2 = await renderToReadableStream(element, {
+        ...testOptions,
+        request: extendRequestContext({
           originalRequest: new Request("http://test.com/?name=Test"),
         }),
-      );
+      });
       const result2 = await Bun.readableStreamToText(stream2);
       const expected2 = "<div>Hello Test</div>";
 
@@ -156,7 +161,7 @@ describe("utils", () => {
       };
 
       try {
-        await renderToReadableStream(<Component />, testRequest);
+        await renderToReadableStream(<Component />, testOptions);
       } catch (e: any) {
         expect(e.message).toEqual("Test");
       }
@@ -175,7 +180,7 @@ describe("utils", () => {
 
       const stream = renderToReadableStream(
         <Component name="world" />,
-        testRequest,
+        testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<div>Error Test, hello world</div>");
@@ -197,7 +202,7 @@ describe("utils", () => {
         );
       };
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         "<div><h1>Parent component</h1><div>Error</div></div>",
@@ -219,7 +224,7 @@ describe("utils", () => {
             <script>{`alert('test')`}</script>
           </AnotherComponent>
         </Component>,
-        testRequest,
+        testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
@@ -242,7 +247,7 @@ describe("utils", () => {
             <>{` a `}</>
           </Component>
         </>,
-        testRequest,
+        testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("This is a <b>test</b>");
@@ -264,7 +269,7 @@ describe("utils", () => {
             <Bold>{v}</Bold>
           ))}
         </Component>,
-        testRequest,
+        testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>");
@@ -299,7 +304,7 @@ describe("utils", () => {
         </div>
       );
 
-      const stream = renderToReadableStream(<ServerComponent />, testRequest);
+      const stream = renderToReadableStream(<ServerComponent />, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
@@ -339,7 +344,7 @@ describe("utils", () => {
         </>
       );
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<div>TRUE</div><div>TRUE</div>0");
     });
@@ -351,7 +356,7 @@ describe("utils", () => {
         </div>
       );
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<div>This is 1 example</div>");
     });
@@ -363,7 +368,7 @@ describe("utils", () => {
         </>
       );
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("This is 1 example");
     });
@@ -376,7 +381,7 @@ describe("utils", () => {
         </>
       );
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe('<div class="empty"></div><div class="empty"></div>');
     });
@@ -388,7 +393,7 @@ describe("utils", () => {
 
       const stream = renderToReadableStream(
         <Component name={undefined as any} />,
-        testRequest,
+        testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<div>Hello </div>");
@@ -418,7 +423,10 @@ describe("utils", () => {
           <body></body>
         </html>
       );
-      const stream = renderToReadableStream(element, req);
+      const stream = renderToReadableStream(element, {
+        ...testOptions,
+        request: req,
+      });
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html lang="es" dir="ltr"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><\/head><body><\/body><\/html>/gm,
@@ -449,7 +457,10 @@ describe("utils", () => {
           <body></body>
         </html>
       );
-      const stream = renderToReadableStream(element, req);
+      const stream = renderToReadableStream(element, {
+        ...testOptions,
+        request: req,
+      });
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html lang="ar" dir="rtl"><head><link rel="alternate" hreflang="en" href="https:\/\/test.com\/en" \/><\/head><body><\/body><\/html>/gm,
@@ -463,7 +474,7 @@ describe("utils", () => {
           <body></body>
         </html>
       );
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toMatch(/<html><head><\/head><body><\/body><\/html>/gm);
     });
@@ -476,7 +487,7 @@ describe("utils", () => {
 
       Component.suspense = () => <b>Loading...</b>;
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(
         `<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
@@ -500,7 +511,7 @@ describe("utils", () => {
         </>
       );
 
-      const stream = renderToReadableStream(<Page />, testRequest);
+      const stream = renderToReadableStream(<Page />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(
         `<div id="S:1"><b>Loading...</b></div><h2>Another</h2><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
@@ -516,7 +527,7 @@ describe("utils", () => {
 
       Component.suspense = () => <b>Loading...</b>;
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1"><div>This is 1 example</div></template><script id="R:1">u$(\'1\')</script>',
@@ -532,7 +543,7 @@ describe("utils", () => {
 
       Component.suspense = () => <b>Loading...</b>;
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is 1 example</template><script id="R:1">u$(\'1\')</script>',
@@ -549,7 +560,7 @@ describe("utils", () => {
 
       Component.suspense = () => <b>Loading...</b>;
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is <b>1</b> example</template><script id="R:1">u$(\'1\')</script>',
@@ -566,7 +577,7 @@ describe("utils", () => {
 
       Component.suspense = () => <b>Loading...</b>;
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         '<div id="S:1"><b>Loading...</b></div><template id="U:1">This is 1 example</template><script id="R:1">u$(\'1\')</script>',
@@ -584,7 +595,7 @@ describe("utils", () => {
 
       Component.suspense = () => <b>Loading...</b>;
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         toInline(`
@@ -612,7 +623,7 @@ describe("utils", () => {
           <body></body>
         </html>
       );
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
       expect(result).toStartWith(`<html lang="en" dir="ltr"><head>`);
@@ -660,7 +671,7 @@ describe("utils", () => {
         );
       }
 
-      const stream = renderToReadableStream(<ChangeLocale />, testRequest);
+      const stream = renderToReadableStream(<ChangeLocale />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
       expect(result).toBe(
@@ -697,7 +708,7 @@ describe("utils", () => {
           <body></body>
         </html>
       );
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
       expect(result).toStartWith(`<html lang="es" dir="ltr"><head>`);
@@ -712,13 +723,13 @@ describe("utils", () => {
         pages: {},
       };
       const home = await Bun.readableStreamToText(
-        renderToReadableStream(<a href="/">Test</a>, testRequest),
+        renderToReadableStream(<a href="/">Test</a>, testOptions),
       );
       const withParam = await Bun.readableStreamToText(
-        renderToReadableStream(<a href="/test?some=true">Test</a>, testRequest),
+        renderToReadableStream(<a href="/test?some=true">Test</a>, testOptions),
       );
       const withHash = await Bun.readableStreamToText(
-        renderToReadableStream(<a href="/test#some">Test</a>, testRequest),
+        renderToReadableStream(<a href="/test#some">Test</a>, testOptions),
       );
 
       testRequest.i18n = emptyI18n;
@@ -736,16 +747,16 @@ describe("utils", () => {
         pages: {},
       };
       const essencePage = await Bun.readableStreamToText(
-        renderToReadableStream(<a href="/essence">Test</a>, testRequest),
+        renderToReadableStream(<a href="/essence">Test</a>, testOptions),
       );
       const withParam = await Bun.readableStreamToText(
         renderToReadableStream(
           <a href="/essence?some=true">Test</a>,
-          testRequest,
+          testOptions,
         ),
       );
       const withHash = await Bun.readableStreamToText(
-        renderToReadableStream(<a href="/essence#some">Test</a>, testRequest),
+        renderToReadableStream(<a href="/essence#some">Test</a>, testOptions),
       );
 
       testRequest.i18n = emptyI18n;
@@ -763,7 +774,7 @@ describe("utils", () => {
         pages: {},
       };
       const element = <a href="http://test.com/test">Test</a>;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
       expect(result).toBe(`<a href="http://test.com/test">Test</a>`);
@@ -777,7 +788,7 @@ describe("utils", () => {
         defaultLocale: "en",
       };
       const element = <a href="mailto:test@test.com">Test</a>;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = {} as any;
       expect(result).toBe(`<a href="mailto:test@test.com">Test</a>`);
@@ -791,7 +802,7 @@ describe("utils", () => {
         defaultLocale: "en",
       };
       const element = <a href="/en/test">Test</a>;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       testRequest.i18n = emptyI18n;
       expect(result).toBe(`<a href="/en/test">Test</a>`);
@@ -799,7 +810,7 @@ describe("utils", () => {
 
     it("should not be possible to inject HTML as string directly in the JSX element", async () => {
       const element = <div>{`<script>alert('test')</script>`}</div>;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         `<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`,
@@ -813,7 +824,7 @@ describe("utils", () => {
           {`<script>alert('test')</script>`}
         </div>
       );
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         `<div><h1>Example</h1>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`,
@@ -822,7 +833,7 @@ describe("utils", () => {
 
     it('should be possible to inject HTML as string in the JSX using the "dangerHTML" helper', async () => {
       const element = <div>{dangerHTML(`<script>alert('test')</script>`)}</div>;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(`<div><script>alert('test')</script></div>`);
     });
@@ -830,7 +841,7 @@ describe("utils", () => {
     it("should not be possible to inject HTML as children string directly in the JSX", async () => {
       const Component = () => <>{`<script>alert('test')</script>`}</>;
       const element = <Component />;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         `&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`,
@@ -842,15 +853,12 @@ describe("utils", () => {
         <>{dangerHTML(`<script>alert('test')</script>`)}</>
       );
       const element = <Component />;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(`<script>alert('test')</script>`);
     });
 
     it("should render the head element with the canonical", () => {
-      const req = extendRequestContext({
-        originalRequest: new Request(testRequest),
-      });
       const element = (
         <html>
           <head>
@@ -864,11 +872,10 @@ describe("utils", () => {
         return <link rel="canonical" href="/" />;
       }
 
-      const stream = renderToReadableStream(
-        element,
-        req,
-        Head as unknown as ComponentType,
-      );
+      const stream = renderToReadableStream(element, {
+        ...testOptions,
+        head: Head as unknown as ComponentType,
+      });
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html><head><link rel="canonical" href="\/"><\/link><title>Test<\/title><\/head><body><\/body><\/html>/gm,
@@ -876,9 +883,6 @@ describe("utils", () => {
     });
 
     it("should render the head element with the title replacing the original title", () => {
-      const req = extendRequestContext({
-        originalRequest: new Request(testRequest),
-      });
       const element = (
         <html>
           <head>
@@ -892,11 +896,10 @@ describe("utils", () => {
         return <title id="title">Test 2</title>;
       }
 
-      const stream = renderToReadableStream(
-        element,
-        req,
-        Head as unknown as ComponentType,
-      );
+      const stream = renderToReadableStream(element, {
+        ...testOptions,
+        head: Head as unknown as ComponentType,
+      });
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html><head><title id="title">Test 2<\/title><\/head><body><\/body><\/html>/gm,
@@ -904,9 +907,6 @@ describe("utils", () => {
     });
 
     it("should allow multiple ids outside the head (not ideal but should not break the render)", () => {
-      const req = extendRequestContext({
-        originalRequest: new Request(testRequest),
-      });
       const element = (
         <html>
           <head></head>
@@ -917,7 +917,7 @@ describe("utils", () => {
         </html>
       );
 
-      const stream = renderToReadableStream(element, req);
+      const stream = renderToReadableStream(element, testOptions);
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toMatch(
         /<html><head><\/head><body><h1 id="a">A<\/h1><h1 id="a">B<\/h1><\/body><\/html>/gm,
@@ -936,7 +936,10 @@ describe("utils", () => {
         </html>
       );
 
-      const stream = renderToReadableStream(element, req);
+      const stream = renderToReadableStream(element, {
+        ...testOptions,
+        request: req,
+      });
 
       // wait the first chunk
       const reader = stream.getReader();
@@ -965,7 +968,7 @@ describe("utils", () => {
           <h1>Test</h1>
         </dialog>
       );
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<dialog open><h1>Test</h1></dialog>");
     });
@@ -976,7 +979,7 @@ describe("utils", () => {
           <h1>Test</h1>
         </dialog>
       );
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<dialog open><h1>Test</h1></dialog>");
     });
@@ -987,7 +990,7 @@ describe("utils", () => {
           <h1>Test</h1>
         </dialog>
       );
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<dialog><h1>Test</h1></dialog>");
     });
@@ -998,14 +1001,14 @@ describe("utils", () => {
           <h1>Test</h1>
         </dialog>
       );
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe("<dialog><h1>Test</h1></dialog>");
     });
 
     it("should serialize an attribute that is an object as a string", async () => {
       const element = <div data-test={{ a: 1, b: 2 }} />;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(`<div data-test="{'a':1,'b':2}"></div>`);
     });
@@ -1019,7 +1022,7 @@ describe("utils", () => {
         return <div>{contextSignal.value.name}</div>;
       };
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
 
       const result = await Bun.readableStreamToText(stream);
 
@@ -1039,7 +1042,7 @@ describe("utils", () => {
         <context-provider context={context} value={{ name: "foo" }}>
           <Component />
         </context-provider>,
-        testRequest,
+        testOptions,
       );
 
       const result = await Bun.readableStreamToText(stream);
@@ -1072,7 +1075,7 @@ describe("utils", () => {
         ));
       };
 
-      const stream = renderToReadableStream(<Parent />, testRequest);
+      const stream = renderToReadableStream(<Parent />, testOptions);
 
       const result = await Bun.readableStreamToText(stream);
 
@@ -1115,7 +1118,7 @@ describe("utils", () => {
       };
 
       const element = <Parent />;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
@@ -1171,7 +1174,7 @@ describe("utils", () => {
         <ThemeProvider color="red">
           <ChildComponent />
         </ThemeProvider>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1212,7 +1215,7 @@ describe("utils", () => {
             selector="child-component"
           ></SSRWebComponent>
         </SSRWebComponent>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1271,7 +1274,7 @@ describe("utils", () => {
             slot="with-theme"
           ></SSRWebComponent>
         </SSRWebComponent>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1338,7 +1341,7 @@ describe("utils", () => {
             ></SSRWebComponent>
           </div>
         </SSRWebComponent>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1420,7 +1423,7 @@ describe("utils", () => {
             slot="with-theme"
           ></SSRWebComponent>
         </SSRWebComponent>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1505,7 +1508,7 @@ describe("utils", () => {
             ></SSRWebComponent>
           </div>
         </SSRWebComponent>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1577,7 +1580,7 @@ describe("utils", () => {
           <ServerComponent useTheme={false} />
           <ServerComponent useTheme={true} />
         </SSRWebComponent>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1647,7 +1650,7 @@ describe("utils", () => {
             slot="with-theme"
           ></SSRWebComponent>
         </SSRWebComponent>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1720,7 +1723,7 @@ describe("utils", () => {
           <ServerComponent />
           <ServerComponent slot="with-theme" />
         </SSRWebComponent>,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1786,7 +1789,7 @@ describe("utils", () => {
           selector="theme-provider"
           color="red"
         />,
-        testRequest,
+        testOptions,
       );
 
       const result = Bun.readableStreamToText(stream);
@@ -1827,7 +1830,7 @@ describe("utils", () => {
         <context-provider serverOnly context={context} value={{ name: "foo" }}>
           <Component />
         </context-provider>,
-        testRequest,
+        testOptions,
       );
 
       const result = await Bun.readableStreamToText(stream);
@@ -1857,7 +1860,7 @@ describe("utils", () => {
         ));
       };
 
-      const stream = renderToReadableStream(<Parent />, testRequest);
+      const stream = renderToReadableStream(<Parent />, testOptions);
 
       const result = await Bun.readableStreamToText(stream);
 
@@ -1894,7 +1897,7 @@ describe("utils", () => {
       };
 
       const element = <Parent />;
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
@@ -1908,7 +1911,7 @@ describe("utils", () => {
         return <div>{object}</div>;
       };
 
-      const stream = renderToReadableStream(<Component />, testRequest);
+      const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(`<div>[object Object]</div>`);
@@ -1933,7 +1936,7 @@ describe("utils", () => {
         </html>
       );
 
-      const stream = renderToReadableStream(element, testRequest);
+      const stream = renderToReadableStream(element, testOptions);
       const result = Bun.readableStreamToText(stream);
 
       expect(result).resolves.toBe(
@@ -1946,6 +1949,23 @@ describe("utils", () => {
             <script>window._S=[["test","test"]]</script>
           </body>
         </html>`),
+      );
+    });
+
+    it('should add the meta with noindex and soft redirect to 404 when the "notFound" method is called', async () => {
+      const Component = () => {
+        notFound();
+        return <div>TEST</div>;
+      };
+
+      const stream = renderToReadableStream(<Component />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        toInline(`
+          <meta name="robots" content="noindex" />
+          <script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>
+        `),
       );
     });
   });

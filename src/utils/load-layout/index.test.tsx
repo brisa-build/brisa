@@ -11,6 +11,9 @@ const join = path.join;
 const testRequest = extendRequestContext({
   originalRequest: new Request("https://test.com"),
 });
+const testOptions = {
+  request: testRequest,
+};
 
 describe("utils", () => {
   afterEach(() => {
@@ -25,7 +28,7 @@ describe("utils", () => {
         <LoadLayout layoutModule={layoutModule}>
           <div>Hello world</div>
         </LoadLayout>,
-        testRequest,
+        testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toContain("<title>Brisa</title>");
@@ -41,7 +44,7 @@ describe("utils", () => {
         <LoadLayout layoutModule={layoutModule}>
           <div>Hello world</div>
         </LoadLayout>,
-        testRequest,
+        testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toContain('<title id="title">CUSTOM LAYOUT</title>');
