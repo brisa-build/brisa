@@ -46,6 +46,11 @@ export default async function UserProfile({}, req: RequestContext) {
 }
 ```
 
+Useful to control response status during streaming:
+
+- **Before response streaming** (`middleware`, `responseHeaders`): It's returning the response with 404 status and the 404 page
+- **During response streaming** (`layout`, `page`, `components`): Adds the `meta` tag with `noindex`, stop rendering the page and sends a client script to replace the page to the 404 page. This redirect is for UX to display the 404 content, here the bots will no longer see that because it has the noindex. However, this soft redirect that is done on the client does not change the browsing history and does receive the 404 status. The browsers normally cache very well the pages that return status 404.
+
 > [!TIP]
 >
 > `notFound()` does not require you to use `return notFound()` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
