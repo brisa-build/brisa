@@ -1,4 +1,12 @@
-import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  describe,
+  expect,
+  it,
+  mock,
+  spyOn,
+} from "bun:test";
 import renderToReadableStream from ".";
 import getConstants from "../../constants";
 import { toInline } from "../../helpers";
@@ -1960,13 +1968,26 @@ describe("utils", () => {
 
       const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
+      const script404 = `(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()`;
 
       expect(result).toBe(
         toInline(`
           <meta name="robots" content="noindex" />
-          <script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>
+          <script>${script404}</script>
         `),
       );
+
+      // Test script 404 behavior
+      globalThis.location = {
+        href: "http://localhost/",
+        replace: mock((v) => v),
+      } as any;
+
+      eval(script404);
+      expect(globalThis.location.replace).toHaveBeenCalledWith(
+        "http://localhost/?_not-found=1",
+      );
+      globalThis.location = undefined as any;
     });
   });
 });
