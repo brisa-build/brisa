@@ -1,22 +1,14 @@
-import {
-  afterAll,
-  afterEach,
-  describe,
-  expect,
-  it,
-  mock,
-  spyOn,
-} from "bun:test";
+import { MatchedRoute } from "bun";
+import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
 import getConstants from "../../constants";
 import { toInline } from "../../helpers";
 import { ComponentType, RequestContext, Translate } from "../../types";
+import createContext from "../create-context";
 import dangerHTML from "../danger-html";
 import extendRequestContext from "../extend-request-context";
-import SSRWebComponent from "../ssr-web-component";
-import createContext from "../create-context";
-import { MatchedRoute } from "bun";
 import notFound from "../not-found";
+import SSRWebComponent from "../ssr-web-component";
 
 const emptyI18n = {
   locale: "",
