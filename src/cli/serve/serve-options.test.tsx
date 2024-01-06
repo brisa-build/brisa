@@ -40,6 +40,37 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = undefined;
   });
 
+  it("should return 500 page if the middleware throws an error", async () => {
+    const response = await testRequest(
+      // "throws-error" parameter is managed by __fixtures__/middleware.tsx
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?throws-error=1",
+      ),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(500);
+    expect(html).toStartWith("<!DOCTYPE html>");
+    expect(html).toContain('<title id="title">Some internal error</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain(
+      "<h1>Some internal error <web-component></web-component></h1>",
+    );
+    expect(html).toContain("500 client code");
+  });
+
+  it('should be possible to redirect to "/" in the middleware', async () => {
+    const response = await testRequest(
+      // "redirect" parameter is managed by __fixtures__/middleware.tsx
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?redirect=1",
+      ),
+    );
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe("/es");
+  });
+
   it("should return 404 page without redirect to the locale if the page doesn't exist", async () => {
     const response = await testRequest(
       new Request("http://localhost:1234/not-found-page"),
@@ -53,7 +84,7 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain('404 client code');
+    expect(html).toContain("404 client code");
   });
 
   it("should return 404 page without redirect to the trailingSlash if the page doesn't exist", async () => {
@@ -75,7 +106,7 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain('404 client code');
+    expect(html).toContain("404 client code");
   });
 
   it("should return 404 page without redirect to the locale and trailingSlash if the page doesn't exist", async () => {
@@ -97,7 +128,7 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain('404 client code');
+    expect(html).toContain("404 client code");
   });
 
   it("should return 404 page", async () => {
@@ -113,7 +144,7 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain('404 client code');
+    expect(html).toContain("404 client code");
   });
 
   it("should return 404 page with a valid url but with the param _not-found in the query string", async () => {
@@ -131,7 +162,7 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain('404 client code');
+    expect(html).toContain("404 client code");
   });
 
   it("should return 200 page with web component", async () => {
@@ -504,7 +535,7 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain('404 client code');
+    expect(html).toContain("404 client code");
   });
 
   it("should return 404 page if the api route exist but the method does not", async () => {
@@ -521,7 +552,7 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain('404 client code');
+    expect(html).toContain("404 client code");
   });
 
   it("should return an asset in gzip if the browser accept it", async () => {

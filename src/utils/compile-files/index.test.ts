@@ -120,14 +120,15 @@ describe("utils", () => {
     ${info}Route                               | Size | Client size  
     ${info}------------------------------------------------------------
     ${info}λ /pages/_404.js                    | 421 B | 6 kB 
+    ${info}λ /pages/_500.js                    | 427 B | 6 kB 
     ${info}λ /pages/page-with-web-component.js | 360 B | 6 kB
     ${info}λ /pages/somepage.js                | 341 B | 0 B
     ${info}λ /pages/somepage-with-context.js   | 327 B | 0 B
     ${info}λ /pages/index.js                   | 267 B | 217 B 
     ${info}λ /pages/user/[username].js         | 175 B | 0 B 
+    ${info}ƒ /middleware.js                    | 255 B | 0 B
     ${info}λ /api/example.js                   | 275 B | 0 B 
     ${info}Δ /layout.js                        | 342 B | 0 B
-    ${info}ƒ /middleware.js                    | 151 B | 0 B
     ${info}Ω /i18n.js                          | 154 B | 0 B
     ${info}Ψ /websocket.js                     | 199 B | 0 B
     ${info}Φ /chunk-${generatedHash}.js        | 2 kB  | 0 B
