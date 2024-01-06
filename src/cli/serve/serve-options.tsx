@@ -113,7 +113,11 @@ export const serveOptions = {
         // 500 page
         .catch((error) => {
           const route500 = pagesRouter.reservedRoutes[PAGE_500];
+
           if (!route500) throw error;
+
+          request.route = route500;
+
           return responseRenderedPage({
             req: request,
             route: route500,
