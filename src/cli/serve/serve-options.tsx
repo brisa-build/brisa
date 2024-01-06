@@ -1,6 +1,6 @@
+import { MatchedRoute, ServerWebSocket, type Serve } from "bun";
 import fs from "node:fs";
 import path from "node:path";
-import { MatchedRoute, ServerWebSocket, type Serve } from "bun";
 
 import getConstants from "../../constants";
 import { RequestContext } from "../../types";
@@ -9,6 +9,7 @@ import getImportableFilepath from "../../utils/get-importable-filepath";
 import getRouteMatcher from "../../utils/get-route-matcher";
 import handleI18n from "../../utils/handle-i18n";
 import importFileIfExists from "../../utils/import-file-if-exists";
+import { isNotFoundError } from "../../utils/not-found";
 import processPageRoute from "../../utils/process-page-route";
 import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
 import renderToReadableStream from "../../utils/render-to-readable-stream";
@@ -108,24 +109,24 @@ export const serveOptions = {
 
     request.getIP = () => server.requestIP(req);
 
-    return (
-      handleRequest(request, isAnAsset)
-        // 500 page
-        .catch((error) => {
-          const route500 = pagesRouter.reservedRoutes[PAGE_500];
+    return handleRequest(request, isAnAsset).catch((error) => {
+      // 404 page
+      if (isNotFoundError(error)) return error404(request);
 
-          if (!route500) throw error;
+      // 500 page
+      const route500 = pagesRouter.reservedRoutes[PAGE_500];
 
-          request.route = route500;
+      if (!route500) throw error;
 
-          return responseRenderedPage({
-            req: request,
-            route: route500,
-            status: 500,
-            error,
-          });
-        })
-    );
+      request.route = route500;
+
+      return responseRenderedPage({
+        req: request,
+        route: route500,
+        status: 500,
+        error,
+      });
+    });
   },
   tls,
   websocket: {

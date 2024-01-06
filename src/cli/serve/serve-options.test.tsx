@@ -71,6 +71,25 @@ describe("CLI: serve", () => {
     expect(response.headers.get("Location")).toBe("/es");
   });
 
+  it("should return 404 page when the middleware throws a not found error", async () => {
+    const response = await testRequest(
+      // "throws-not-found" parameter is managed by __fixtures__/middleware.tsx
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?throws-not-found=1",
+      ),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(html).toStartWith("<!DOCTYPE html>");
+    expect(html).toContain('<title id="title">Page not found</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain(
+      "<h1>Page not found 404 <web-component></web-component></h1>",
+    );
+    expect(html).toContain("404 client code");
+  });
+
   it("should return 404 page without redirect to the locale if the page doesn't exist", async () => {
     const response = await testRequest(
       new Request("http://localhost:1234/not-found-page"),
