@@ -126,7 +126,7 @@ describe("utils", () => {
     ${info}λ /pages/somepage-with-context.js   | 327 B | 0 B
     ${info}λ /pages/index.js                   | 267 B | 217 B 
     ${info}λ /pages/user/[username].js         | 175 B | 0 B 
-    ${info}ƒ /middleware.js                    | 255 B | 0 B
+    ${info}ƒ /middleware.js                    | 412 B | 0 B
     ${info}λ /api/example.js                   | 275 B | 0 B 
     ${info}Δ /layout.js                        | 342 B | 0 B
     ${info}Ω /i18n.js                          | 154 B | 0 B
