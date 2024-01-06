@@ -3,19 +3,20 @@ import dangerHTML from "../danger-html";
 import { LiveReloadScript } from "../../cli/dev-live-reload";
 import LoadLayout from "../load-layout";
 import { PageModule } from "../../types";
+import { MatchedRoute } from "bun";
+import getImportableFilepath from "../get-importable-filepath";
 
-type PageOptions = {
-  error?: Error;
-  layoutModule?: { default: (props: { children: JSX.Element }) => JSX.Element };
-};
-
-export default async function getElementFromModule(
-  module: PageModule,
-  { error, layoutModule }: PageOptions,
+export default async function processPageRoute(
+  route: MatchedRoute,
+  error?: Error,
 ) {
+  const { BUILD_DIR } = getConstants();
+  const module = (await import(route.filePath)) as PageModule;
+  const layoutPath = getImportableFilepath("layout", BUILD_DIR);
+  const layoutModule = layoutPath ? await import(layoutPath) : undefined;
   const PageComponent = module.default;
 
-  return (
+  const pageElement = (
     <>
       {dangerHTML("<!DOCTYPE html>")}
       <PageLayout layoutModule={layoutModule}>
@@ -23,6 +24,8 @@ export default async function getElementFromModule(
       </PageLayout>
     </>
   );
+
+  return { pageElement, module, layoutModule } as const;
 }
 
 function PageLayout({

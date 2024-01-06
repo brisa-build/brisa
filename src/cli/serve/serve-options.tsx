@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { MatchedRoute, type Serve, ServerWebSocket } from "bun";
 import getConstants from "../../constants";
-import { PageModule, RequestContext } from "../../types";
+import { RequestContext } from "../../types";
 import extendRequestContext from "../../utils/extend-request-context";
 import getImportableFilepath from "../../utils/get-importable-filepath";
 import getRouteMatcher from "../../utils/get-route-matcher";
@@ -11,7 +11,7 @@ import handleI18n from "../../utils/handle-i18n";
 import importFileIfExists from "../../utils/import-file-if-exists";
 import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
 import renderToReadableStream from "../../utils/render-to-readable-stream";
-import getElementFromModule from "../../utils/get-element-from-module";
+import processPageRoute from "../../utils/process-page-route";
 
 const {
   IS_PRODUCTION,
@@ -91,6 +91,11 @@ export const serveOptions = {
       route404
         ? responseRenderedPage({ req: request, route: route404, status: 404 })
         : new Response("Not found", { status: 404 });
+
+    // This parameter is added after "notFound" function call, during the stream
+    if (url.searchParams.get("_not-found")) {
+      return error404();
+    }
 
     if (i18nRes.response) {
       return isValidRoute() ? i18nRes.response : error404();
@@ -223,10 +228,10 @@ async function responseRenderedPage({
   status?: number;
   error?: Error;
 }) {
-  const module = (await import(route.filePath)) as PageModule;
-  const layoutPath = getImportableFilepath("layout", BUILD_DIR);
-  const layoutModule = layoutPath ? await import(layoutPath) : undefined;
-  const pageElement = getElementFromModule(module, { error, layoutModule });
+  const { pageElement, module, layoutModule } = await processPageRoute(
+    route,
+    error,
+  );
 
   const middlewareResponseHeaders =
     middlewareModule?.responseHeaders?.(req, status) ?? {};
@@ -235,7 +240,11 @@ async function responseRenderedPage({
     layoutModule?.responseHeaders?.(req, status) ?? {};
 
   const pageResponseHeaders = module.responseHeaders?.(req, status) ?? {};
-  const htmlStream = renderToReadableStream(pageElement, req, module.Head);
+  const htmlStream = renderToReadableStream(pageElement, {
+    request: req,
+    head: module.Head,
+  });
+
   const responseOptions = {
     headers: {
       ...middlewareResponseHeaders,

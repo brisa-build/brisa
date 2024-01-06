@@ -104,6 +104,21 @@ describe("CLI: serve", () => {
     expect(html).toContain("<h1>Page not found 404</h1>");
   });
 
+  it("should return 404 page with a valid url but with the param _not-found in the query string", async () => {
+    const response = await testRequest(
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?_not-found=1",
+      ),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(html).toStartWith("<!DOCTYPE html>");
+    expect(html).toContain('<title id="title">Page not found</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain("<h1>Page not found 404</h1>");
+  });
+
   it("should return 200 page with web component", async () => {
     const mockFs = spyOn(fs, "existsSync").mockImplementation(() => true);
     const mockFile = spyOn(Bun, "file").mockImplementation(

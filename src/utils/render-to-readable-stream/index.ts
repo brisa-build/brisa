@@ -5,6 +5,7 @@ import extendStreamController, {
 } from "../extend-stream-controller";
 import generateHrefLang from "../generate-href-lang";
 import renderAttributes from "../render-attributes";
+import { isNotFoundError } from "../not-found";
 import {
   clearProvidersByWCSymbol,
   contextProvider,
@@ -14,14 +15,20 @@ import {
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
+type Options = {
+  request: RequestContext;
+  head?: ComponentType;
+};
+
 const CONTEXT_PROVIDER = "context-provider";
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const NO_INDEX = '<meta name="robots" content="noindex" />';
+const SCRIPT_404 = `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>`;
 
 export default function renderToReadableStream(
   element: JSX.Element,
-  request: RequestContext,
-  head?: ComponentType,
+  { request, head }: Options,
 ) {
   return new ReadableStream({
     async start(controller) {
@@ -36,7 +43,14 @@ export default function renderToReadableStream(
         extendedController,
       )
         .then(() => extendedController.waitSuspensedPromises())
-        .catch((e) => controller.error(e));
+        .catch(async (e) => {
+          if (isNotFoundError(e)) {
+            extendedController.enqueue(NO_INDEX);
+            extendedController.enqueue(SCRIPT_404);
+          } else {
+            controller.error(e);
+          }
+        });
 
       await Promise.race([abortPromise, renderingPromise]);
 
@@ -208,15 +222,18 @@ async function enqueueDuringRendering(
       suspenseId,
     );
 
-    if (type === "head" && controller.head) {
+    // Open head tag
+    if (type === "head") {
       controller.insideHeadTag = true;
-      await enqueueComponent(
-        { component: controller.head, props: {} },
-        request,
-        controller,
-        suspenseId,
-        isNextInSlottedPosition,
-      );
+      if (controller.head) {
+        await enqueueComponent(
+          { component: controller.head, props: {} },
+          request,
+          controller,
+          suspenseId,
+          isNextInSlottedPosition,
+        );
+      }
     }
 
     // Node Content
@@ -228,13 +245,15 @@ async function enqueueDuringRendering(
       isNextInSlottedPosition,
     );
 
+    // Close head tag
     if (type === "head") {
       controller.enqueue(generateHrefLang(request), suspenseId);
       controller.hasHeadTag = true;
       controller.insideHeadTag = false;
     }
 
-    if (type === "body") {
+    // Close body tag
+    else if (type === "body") {
       const clientFile = request.route?.filePath?.replace(
         "/pages",
         "/pages-client",
