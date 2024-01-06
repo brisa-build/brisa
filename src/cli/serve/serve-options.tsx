@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { MatchedRoute, type Serve, ServerWebSocket } from "bun";
+import { MatchedRoute, ServerWebSocket, type Serve } from "bun";
 import getConstants from "../../constants";
 import { RequestContext } from "../../types";
 import extendRequestContext from "../../utils/extend-request-context";
@@ -9,9 +9,9 @@ import getImportableFilepath from "../../utils/get-importable-filepath";
 import getRouteMatcher from "../../utils/get-route-matcher";
 import handleI18n from "../../utils/handle-i18n";
 import importFileIfExists from "../../utils/import-file-if-exists";
+import processPageRoute from "../../utils/process-page-route";
 import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
 import renderToReadableStream from "../../utils/render-to-readable-stream";
-import processPageRoute from "../../utils/process-page-route";
 
 const {
   IS_PRODUCTION,
@@ -86,19 +86,13 @@ export const serveOptions = {
       );
     };
 
-    // 404 page
-    const error404 = () =>
-      route404
-        ? responseRenderedPage({ req: request, route: route404, status: 404 })
-        : new Response("Not found", { status: 404 });
-
     // This parameter is added after "notFound" function call, during the stream
     if (url.searchParams.get("_not-found")) {
-      return error404();
+      return error404(request);
     }
 
     if (i18nRes.response) {
-      return isValidRoute() ? i18nRes.response : error404();
+      return isValidRoute() ? i18nRes.response : error404(request);
     }
 
     if (i18nRes.pagesRouter && i18nRes.rootRouter) {
@@ -109,7 +103,7 @@ export const serveOptions = {
     if (!isAnAsset) {
       const redirect = redirectTrailingSlash(request);
 
-      if (redirect) return isValidRoute() ? redirect : error404();
+      if (redirect) return isValidRoute() ? redirect : error404(request);
     }
 
     request.getIP = () => server.requestIP(req);
@@ -212,9 +206,7 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   }
 
   // 404 page
-  return route404
-    ? responseRenderedPage({ req, route: route404, status: 404 })
-    : new Response("Not found", { status: 404 });
+  return error404(req);
 }
 
 async function responseRenderedPage({
@@ -258,6 +250,14 @@ async function responseRenderedPage({
   };
 
   return new Response(htmlStream, responseOptions);
+}
+
+function error404(req: RequestContext) {
+  if (!route404) return new Response("Not found", { status: 404 });
+
+  req.route = route404;
+
+  return responseRenderedPage({ req, route: route404, status: 404 });
 }
 
 declare global {
