@@ -606,6 +606,23 @@ export function createContext<T>(defaultValue?: T): BrisaContext<T>;
  */
 export function dangerHTML(html: string): DangerHTMLOutput;
 
+/**
+ * Description:
+ *
+ * The `notFound` method throws an error and is used to render the 404 page.
+ *
+ * Example:
+ *
+ * ```ts
+ * notFound();
+ * ```
+ *
+ * Docs:
+ *
+ * - [How to use `notFound`](https://brisa.build/docs/building-your-application/routing/custom-error#notfound-method)
+ */
+export function notFound(): never;
+
 type DangerHTMLOutput = {
   type: "HTML";
   props: {
