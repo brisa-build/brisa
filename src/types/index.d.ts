@@ -619,7 +619,7 @@ export function dangerHTML(html: string): DangerHTMLOutput;
  *
  * Docs:
  *
- * - [How to use `notFound`](https://brisa.build/docs/building-your-application/routing/custom-error#notfound-method)
+ * - [How to use `notFound`](https://brisa.build/docs/building-your-application/routing/custom-error#notfound-function)
  */
 export function notFound(): never;
 
