@@ -13,9 +13,41 @@ export default function Custom404() {
 }
 ```
 
+This page will be displayed when the user tries to access a page that does not exist.
+
 > [!TIP]
 >
-> **Good to know**: In this page you can access to the `request context`, `fetch` data, change the `head` content (meta tags, etc), and change the `response headers`, in the same way of the rest of pages.
+> In this page you can access to the `request context`, `fetch` data, change the `head` content (meta tags, etc), and change the `response headers`, in the same way of the rest of pages.
+
+## `notFound` function
+
+The `notFound` function allows you to render the [`_404`](#404-page) page within a route segment as well as inject a `<meta name="robots" content="noindex" />` tag.
+
+Invoking the `notFound()` function throws a `NotFoundError` error and terminates rendering of the route segment in which it was thrown.
+
+```jsx filename="src/pages/user/[id].js"
+import { notFound } from "brisa";
+
+async function fetchUser(id) {
+  const res = await fetch("https://...");
+  if (!res.ok) return undefined;
+  return res.json();
+}
+
+export default async function UserProfile({ params }) {
+  const user = await fetchUser(params.id);
+
+  if (!user) {
+    notFound();
+  }
+
+  // ...
+}
+```
+
+> [!TIP]
+>
+> `notFound()` does not require you to use `return notFound()` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
 
 ## 500 Page
 
@@ -29,7 +61,7 @@ export default function Custom500({ error }, requestContext) {
 
 > [!TIP]
 >
-> **Good to know**: In this page you can access to the `request context`, `fetch` data, change the `head` content (meta tags, etc), and change the `response headers`, in the same way of the rest of pages.
+> In this page you can access to the `request context`, `fetch` data, change the `head` content (meta tags, etc), and change the `response headers`, in the same way of the rest of pages.
 
 ### Errors in component-level
 
