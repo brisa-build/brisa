@@ -8,7 +8,6 @@ export async function injectClientContextProviderCode() {
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [pathname],
-    outdir: path.join(import.meta.dir, "out"),
     target: "browser",
     external: ["brisa"],
     plugins: [
