@@ -3,7 +3,7 @@ title: Environment Variables
 description: Learn to add and access environment variables in your Brisa application.
 ---
 
-Brisa comes with built-in support for environment variables, which allows you to do the following:
+Brisa comes with built-in support for environment variables thanks to Bun, which allows you to do the following:
 
 - [Use `.env.local` to load environment variables](#loading-environment-variables)
 - [Bundle environment variables for the browser by prefixing with `BRISA_PUBLIC_`](#bundling-environment-variables-for-the-browser)
@@ -36,11 +36,7 @@ export default async function middleware(request: RequestContext) {
 }
 ```
 
-> [!NOTE]
->
-> Please note that Brisa will load the `.env` files **only** from the root folder and **not** from the `/src` folder.
-
-For example, using [API Routes](/docs/building-your-application/routing/api-routes):
+Using [API Routes](/docs/building-your-application/routing/api-routes):
 
 ```ts filename="src/api/hello.ts"
 import { type RequestContext } from "brisa";
@@ -54,6 +50,17 @@ export function GET(request: RequestContext) {
   // ...
 }
 ```
+
+Bun also exposes these variables via `Bun.env` and `import.meta.env`, which is a simple alias of `process.env` and you can use it in server files.
+
+```ts
+Bun.env.DB_PASS; // => "secret"
+import.meta.env.DB_PASS; // => "secret"
+```
+
+> [!NOTE]
+>
+> Please note that Brisa will load the `.env` files **only** from the root folder and **not** from the `/src` folder.
 
 ## Bundling Environment Variables for the Browser
 
@@ -143,3 +150,76 @@ For example, if `NODE_ENV` is `development` and you define a variable in both `.
 > [!TIP]
 >
 > If the environment variable `NODE_ENV` is unassigned, Brisa automatically assigns `development` when running the `brisa dev` command, or `production` for `brisa build` and `brisa start`.
+
+### Quotation marks
+
+Brisa supports double quotes, single quotes, and template literal backticks:
+
+```txt#.env
+FOO='hello'
+FOO="hello"
+FOO=`hello`
+```
+
+### Expansion
+
+Environment variables are automatically _expanded_. This means you can reference previously-defined variables in your environment variables.
+
+```txt#.env
+FOO=world
+BAR=hello$FOO
+```
+
+```ts
+process.env.BAR; // => "helloworld"
+```
+
+This is useful for constructing connection strings or other compound values.
+
+```txt#.env
+DB_USER=postgres
+DB_PASSWORD=secret
+DB_HOST=localhost
+DB_PORT=5432
+DB_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME
+```
+
+This can be disabled by escaping the `$` with a backslash.
+
+```txt#.env
+FOO=world
+BAR=hello\$FOO
+```
+
+```ts
+process.env.BAR; // => "hello$FOO"
+```
+
+### `dotenv`
+
+Generally speaking, you won't need `dotenv` or `dotenv-expand` anymore, because Bun reads `.env` files automatically.
+
+## TypeScript
+
+In TypeScript, all properties of `process.env` are typed as `string | undefined`.
+
+```ts
+Bun.env.whatever;
+// string | undefined
+```
+
+To get autocompletion and tell TypeScript to treat a variable as a non-optional string, we'll use [interface merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#merging-interfaces).
+
+```ts
+declare module "bun" {
+  interface Env {
+    AWESOME: string;
+  }
+}
+```
+
+Add this line to any file in your project. It will globally add the `AWESOME` property to `process.env` and `Bun.env`.
+
+```ts
+process.env.AWESOME; // => string
+```
