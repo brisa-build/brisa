@@ -1,7 +1,6 @@
 import { ESTree } from "meriyah";
 
 import AST from "../ast";
-import { ALTERNATIVE_FOLDER_REGEX, WEB_COMPONENT_REGEX } from "./constants";
 import defineBrisaElement from "./define-brisa-element";
 import getWebComponentAst from "./get-web-component-ast";
 import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
@@ -12,6 +11,11 @@ import transformToReactiveProps from "./transform-to-reactive-props";
 import mapComponentStatics from "./map-component-statics";
 import replaceExportDefault from "./replace-export-default";
 import getReactiveReturnStatement from "./get-reactive-return-statement";
+import {
+  ALTERNATIVE_PREFIX,
+  NATIVE_FOLDER,
+  WEB_COMPONENT_REGEX,
+} from "./constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const BRISA_INTERNAL_PATH = "__BRISA_CLIENT__";
@@ -19,7 +23,7 @@ const BRISA_INTERNAL_PATH = "__BRISA_CLIENT__";
 export default function transformJSXToReactive(code: string, path: string) {
   const isInternal = path.startsWith(BRISA_INTERNAL_PATH);
 
-  if (path.match(ALTERNATIVE_FOLDER_REGEX) && !isInternal) {
+  if (path.includes(NATIVE_FOLDER) && !isInternal) {
     return code;
   }
 
@@ -31,7 +35,11 @@ export default function transformJSXToReactive(code: string, path: string) {
   let [componentBranch, exportIndex, identifierIndex] =
     getWebComponentAst(reactiveAst);
 
-  if (!componentBranch || (!path.match(WEB_COMPONENT_REGEX) && !isInternal)) {
+  if (
+    !componentBranch ||
+    (path.includes(ALTERNATIVE_PREFIX) && !isInternal) ||
+    (!path.match(WEB_COMPONENT_REGEX) && !isInternal)
+  ) {
     return generateCodeFromAST(reactiveAst);
   }
 
