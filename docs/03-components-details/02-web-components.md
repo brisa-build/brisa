@@ -937,6 +937,58 @@ To do this, all web components have available the `skipSSR` attribute. It's `tru
 <some-web-component skipSSR />
 ```
 
+## Re-use elements without [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM)
+
+In Brisa, it is **not possible** to consume components in this way `<Component />` **inside** a **web-component**, since this way of invoking components is only for server components. Brisa does it this way to make a separation of concerns, in client components **only** client code is written, and in server components **only** server code and markup of the `web-components` is written, as well as other elements such as a `div`.
+
+And then we have worked on the communication between both worlds to make it easy and without getting into confusion of mixing code from both worlds.
+
+This makes it different to re-use web-component code without creating shadow DOM.
+
+In other frameworks like React, to reuse markup (html elements) you have to make dummy components. That is, components that have no state.
+
+In Brisa, we recommend using **markup generators** (functions) and calling them in the rendering.
+
+```tsx filename="src/web-components/@-partials/generate-percentage.tsx" switcher
+import { type Signal } from "brisa";
+
+function generatePercentage(percentage: Signal<number>) {
+  return (
+    <span>
+      Percentage:{" "}
+      {percentage.value > 0 ? `+${percentage.value}` : percentage.value}%
+    </span>
+  );
+}
+```
+
+Then, you can call directly the markup generator inside your JSX:
+
+```tsx filename="src/web-components/counter.tsx" switcher
+import { type WebContext } from "brisa";
+import generatePercentage from "./@-partials/generate-percentage";
+
+export default function Counter({}, { state }: WebContext) {
+  const count = state(0);
+
+  return (
+    <div>
+      <button onClick={() => count.value++}>+</button>
+      {generatePercentage(count)}
+      <button onClick={() => count.value--}>-</button>
+    </div>
+  );
+}
+```
+
+You don't have to worry about performance because Brisa has no rerenders. It only renders once and then the code is reactive.
+
+> [!TIP]
+>
+> You can create directories or files with the `@-` prefix to avoid creating web-components. Useful to add reusable markup generators in web-components. The only exception is `@-native`, which is a directory for creating native web-components, without Brisa neither JSX.
+
+> [!IMPORTANT]
+
 ## UI-agnostic
 
 If instead of using the Brisa mode you want to transform React, Vue, Svelte, Solid, Lit components, you can do it easily. Or even if you want to use native Web Components.

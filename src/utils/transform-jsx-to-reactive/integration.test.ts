@@ -102,6 +102,126 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("Hello World");
     });
 
+    it("should work interactivity returning an array from signal", () => {
+      const code = `export default function Test({ count }) {
+        return Array.from({ length: count }, (_, i) => (
+          <span>{i}</span>
+        ));
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component count='3' />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<span>0</span><span>1</span><span>2</span>",
+      );
+
+      testComponent.setAttribute("count", "5");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>",
+      );
+    });
+
+    it("should work interactivity returning a fragment with an array from signal", () => {
+      const code = `export default function Test({ count }) {
+        return (
+          <>
+            {Array.from({ length: count }, (_, i) => (
+              <span>{i}</span>
+            ))}
+          </>
+        );
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component count='3' />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<span>0</span><span>1</span><span>2</span>",
+      );
+
+      testComponent.setAttribute("count", "5");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>",
+      );
+    });
+
+    it("should work interactivity using a markup generator that returns an array from signal", () => {
+      const code = `export default function Test({}, { state }) {
+        const count = state(3);
+        return <div onClick={() => count.value+=1}>{generateMarkup(count)}</div>;
+      }
+      
+      function generateMarkup(count) {
+        return Array.from({ length: count.value }, (_, i) => (
+          <span>{i}</span>
+        ));
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>0</span><span>1</span><span>2</span></div>",
+      );
+
+      const div = testComponent?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLDivElement;
+
+      div.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>0</span><span>1</span><span>2</span><span>3</span></div>",
+      );
+    });
+
+    it("should work interactivity using a markup generator that returns a signal", () => {
+      const code = `export default function Test({}, { state }) {
+        const count = state(3);
+        return <div onClick={() => count.value+=1}>{generateMarkup(count)}</div>;
+      }
+      
+      function generateMarkup(count) {
+        return count.value;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>3</div>");
+
+      const div = testComponent?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLDivElement;
+
+      div.click();
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>4</div>");
+    });
+
     it("should work returning directly the children", () => {
       const code = `export default function Test({ children }) {
         return children;
