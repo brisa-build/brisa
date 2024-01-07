@@ -8,12 +8,6 @@ Brisa comes with built-in support for environment variables, which allows you to
 - [Use `.env.local` to load environment variables](#loading-environment-variables)
 - [Bundle environment variables for the browser by prefixing with `BRISA_PUBLIC_`](#bundling-environment-variables-for-the-browser)
 
-Brisa reads the following files automatically (listed in order of increasing precedence).
-
-- `.env`
-- `.env.production`, `.env.development`, `.env.test` (depending on value of NODE_ENV)
-- `.env.local`
-
 ## Loading Environment Variables
 
 Brisa has built-in support for loading environment variables from `.env.local` into `process.env`.
