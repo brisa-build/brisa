@@ -70,7 +70,7 @@ describe("utils", () => {
         pageWebComponents,
       );
       const brisaSize = 5129;
-      const webComponents = 626;
+      const webComponents = 670;
 
       expect(output).not.toBeNull();
       expect(output!.size).toEqual(brisaSize + webComponents);
@@ -122,6 +122,17 @@ describe("utils", () => {
         pageWebComponents,
       );
       expect(output!.code).not.toContain('"context-provider"');
+    });
+
+    it("should allow environment variables in web components with BRISA_PUBLIC_ prefix", async () => {
+      const input = path.join(pages, "page-with-web-component.tsx");
+      Bun.env.BRISA_PUBLIC_TEST = "value of test env variable";
+      const output = await getClientCodeInPage(
+        input,
+        allWebComponents,
+        pageWebComponents,
+      );
+      expect(output!.code).toContain("value of test env variable");
     });
   });
 });

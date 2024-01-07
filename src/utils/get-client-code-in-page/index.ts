@@ -10,6 +10,7 @@ import snakeToCamelCase from "../snake-to-camelcase";
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
+const ENV_VAR_PREFIX = "BRISA_PUBLIC_";
 
 export default async function getClientCodeInPage(
   pagepath: string,
@@ -104,6 +105,14 @@ async function transformToWebComponents(
 
   await writeFile(webEntrypoint, code);
 
+  const envVar: Record<string, string> = {};
+
+  for (const envKey in Bun.env) {
+    if (envKey.startsWith(ENV_VAR_PREFIX)) {
+      envVar[`process.env.${envKey}`] = Bun.env[envKey] ?? "";
+    }
+  }
+
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [webEntrypoint],
     root: SRC_DIR,
@@ -111,6 +120,7 @@ async function transformToWebComponents(
     minify: IS_PRODUCTION,
     define: {
       __DEV__: (!IS_PRODUCTION).toString(),
+      ...envVar,
     },
     // TODO: format: "iife" when Bun support it
     // https://bun.sh/docs/bundler#format
