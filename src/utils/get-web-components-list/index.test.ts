@@ -26,7 +26,7 @@ describe("utils", () => {
         "native-some-example": path.join(
           fixturesDir,
           "web-components",
-          "@native",
+          "@-native",
           "some-example.tsx",
         ),
         "web-component": path.join(

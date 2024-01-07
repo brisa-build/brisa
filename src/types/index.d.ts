@@ -264,7 +264,7 @@ export interface WebContext {
    * Docs:
    *  - [How to use `state`](https://brisa.build/docs/components-details/web-components#state-state-method)
    */
-  state<T>(initialValue?: T): { value: T };
+  state<T>(initialValue?: T): Signal<T>;
 
   /**
    * Description:
@@ -338,7 +338,7 @@ export interface WebContext {
    *
    * - [How to use `derived`](https://brisa.build/docs/components-details/web-components#derived-state-and-props-derived-method)
    */
-  derived<T>(fn: () => T): { value: T };
+  derived<T>(fn: () => T): Signal<T>;
 
   /**
    * Description:
@@ -552,6 +552,8 @@ export type BrisaContext<T> = {
   id: string;
 };
 
+export type Signal<T> = { value: T };
+
 /**
  * Description:
  *
@@ -725,7 +727,7 @@ export interface BrisaDOMAttributes {
    *
    * - [How to use `ref`](https://brisa.build/docs/components-details/web-components#events-on-ref)
    */
-  ref?: { value: unknown };
+  ref?: Signal<unknown>;
 }
 
 declare global {

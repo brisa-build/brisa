@@ -128,24 +128,21 @@ async function transformToWebComponents(
       {
         name: "web-components-transformer",
         setup(build) {
-          build.onLoad(
-            { filter: /.*web-components.*\.(tsx|jsx)$/ },
-            async ({ path, loader }) => {
-              let code = await Bun.file(path).text();
+          build.onLoad({ filter: /.*(tsx|jsx)$/ }, async ({ path, loader }) => {
+            let code = await Bun.file(path).text();
 
-              try {
-                code = transformJSXToReactive(code, path);
-              } catch (error) {
-                console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
-                console.log(LOG_PREFIX.ERROR, (error as Error).message);
-              }
+            try {
+              code = transformJSXToReactive(code, path);
+            } catch (error) {
+              console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
+              console.log(LOG_PREFIX.ERROR, (error as Error).message);
+            }
 
-              return {
-                contents: code,
-                loader,
-              };
-            },
-          );
+            return {
+              contents: code,
+              loader,
+            };
+          });
         },
       },
       createContextPlugin(),

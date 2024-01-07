@@ -91,7 +91,7 @@ describe("utils", () => {
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
         minifyText(`
           export interface IntrinsicCustomElements {
-            'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/@native/some-example.tsx").default>;
+            'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/@-native/some-example.tsx").default>;
             'web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx").default>;
             'with-context': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/with-context.tsx").default>;
           }`),
@@ -110,8 +110,10 @@ describe("utils", () => {
       expect(files[9]).toBe("websocket.js");
 
       const info = constants.LOG_PREFIX.INFO;
-      const generatedHash = files[2].replace("chunk-", "").replace(".js", "");
-      const generatedHash2 = files[3].replace("chunk-", "").replace(".js", "");
+      const chunkHash = files[2].replace("chunk-", "").replace(".js", "");
+      const anotherChunkHash = files[3]
+        .replace("chunk-", "")
+        .replace(".js", "");
       const logOutput = minifyText(mockLog.mock.calls.flat().join("\n"));
       mockLog.mockRestore();
 
@@ -131,8 +133,8 @@ describe("utils", () => {
     ${info}Δ /layout.js                        | 342 B | 0 B
     ${info}Ω /i18n.js                          | 154 B | 0 B
     ${info}Ψ /websocket.js                     | 199 B | 0 B
-    ${info}Φ /chunk-${generatedHash}.js        | 2 kB  | 0 B
-    ${info}Φ /chunk-${generatedHash2}.js       | 66 B  | 0 B
+    ${info}Φ /chunk-${anotherChunkHash}.js        | 2 kB  | 0 B
+    ${info}Φ /chunk-${chunkHash}.js       | 66 B  | 0 B
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
