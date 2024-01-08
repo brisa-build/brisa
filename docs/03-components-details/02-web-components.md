@@ -702,9 +702,9 @@ export default function ThemeProvider(
 }
 ```
 
-> [!IMPORTANT]
+> [!CAUTION]
 >
-> Avoid having all hooks (server and client) in the same file. There are no "use client", "use server" directives here, so it is important to check with the type-safe whether it is WebContext or RequestContext that the custom hook expects.
+> Avoid having all hooks (server and client) in the same file. There are no `"use client"`, `"use server"` directives here, so it is important to check with the type-safe whether it is WebContext or RequestContext that the custom hook expects.
 
 ## Portals (`createPortal`)
 
@@ -981,13 +981,39 @@ export default function Counter({}, { state }: WebContext) {
 }
 ```
 
-You don't have to worry about performance because Brisa has no rerenders. It only renders once and then the code is reactive.
+The markup generators are only executed when the web-component is mounted. And the content returned by the markup generator will become reactive. There is one exception, when the argument has the value of a signal instead of the full signal.
+
+Do this:
+
+```tsx
+// ✅ Good: the content of the markup generator
+// is going to be reactive because is going to
+// consume the signal. It's not going to execute
+// generatePercentage again.
+<div>{generatePercentage(count)}</div>
+```
+
+Avoid this:
+
+```tsx
+// ❌ Bad: it's going to be reactive, but the
+// generatePercentage markup generator is going
+// to be executed again because the content only
+// has the signal value and not the full signal
+<div>{generatePercentage(count.value)}</div>
+```
+
+> [!NOTE]
+>
+> You don't have to worry about performance because Brisa has no rerenders.
 
 > [!TIP]
 >
 > You can create directories or files with the `@-` prefix to avoid creating web-components. Useful to add reusable markup generators in web-components. The only exception is `@-native`, which is a directory for creating native web-components, without Brisa neither JSX.
 
-> [!IMPORTANT]
+> [!CAUTION]
+>
+> Avoid sending the [`WebContext`](/docs/building-your-application/data-fetching/web-context) or parts of them to the markup generators, you can send signals ([props](#props), [state](#state-state-method), [derived](#derived-state-and-props-derived-method), [`context`](#context) and [store](#store-store-method) signals) and static values without problems.
 
 ## UI-agnostic
 
