@@ -2,7 +2,7 @@ import { BunFile } from "bun";
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
-import getConstants from "../../constants";
+import getConstants from "@/constants";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");

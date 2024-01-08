@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "bun:test";
 import renderAttributes from ".";
-import getConstants from "../../constants";
-import extendRequestContext from "../extend-request-context";
+import getConstants from "@/constants";
+import extendRequestContext from "@/utils/extend-request-context";
 
 describe("utils", () => {
   describe("renderAttributes", () => {

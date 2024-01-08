@@ -1,6 +1,6 @@
 import fs from "node:fs";
-import compileAll from "../utils/compile-all";
-import getConstants from "../constants";
+import compileAll from "@/utils/compile-all";
+import getConstants from "@/constants";
 
 const { IS_PRODUCTION, LOG_PREFIX, BUILD_DIR } = getConstants();
 

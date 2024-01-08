@@ -2,6 +2,7 @@
   "compilerOptions": {
     "lib": ["ESNext"],
     "module": "esnext",
+    "baseUrl": "./src",
     "target": "esnext",
     "moduleResolution": "bundler",
     "moduleDetection": "force",
@@ -16,7 +17,10 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "types": ["bun-types"]
+    "types": ["bun-types"],
+    "paths": {
+      "@/*": ["*"]
+    }
   },
   "exclude": [
     "node_modules",

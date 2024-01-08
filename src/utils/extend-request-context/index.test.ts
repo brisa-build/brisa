@@ -1,8 +1,9 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
-import extendRequestContext from ".";
-import createContext from "../create-context";
-import { contextProvider } from "../context-provider/server";
 import { ServerWebSocket } from "bun";
+
+import extendRequestContext from ".";
+import createContext from "@/utils/create-context";
+import { contextProvider } from "@/utils/context-provider/server";
 
 describe("brisa core", () => {
   afterEach(() => {

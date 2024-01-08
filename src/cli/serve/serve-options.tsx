@@ -2,17 +2,17 @@ import { MatchedRoute, ServerWebSocket, type Serve } from "bun";
 import fs from "node:fs";
 import path from "node:path";
 
-import getConstants from "../../constants";
-import { RequestContext } from "../../types";
-import extendRequestContext from "../../utils/extend-request-context";
-import getImportableFilepath from "../../utils/get-importable-filepath";
-import getRouteMatcher from "../../utils/get-route-matcher";
-import handleI18n from "../../utils/handle-i18n";
-import importFileIfExists from "../../utils/import-file-if-exists";
-import { isNotFoundError } from "../../utils/not-found";
-import processPageRoute from "../../utils/process-page-route";
-import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
-import renderToReadableStream from "../../utils/render-to-readable-stream";
+import getConstants from "@/constants";
+import { RequestContext } from "@/types";
+import extendRequestContext from "@/utils/extend-request-context";
+import getImportableFilepath from "@/utils/get-importable-filepath";
+import getRouteMatcher from "@/utils/get-route-matcher";
+import handleI18n from "@/utils/handle-i18n";
+import importFileIfExists from "@/utils/import-file-if-exists";
+import { isNotFoundError } from "@/utils/not-found";
+import processPageRoute from "@/utils/process-page-route";
+import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
+import renderToReadableStream from "@/utils/render-to-readable-stream";
 
 const {
   IS_PRODUCTION,

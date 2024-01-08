@@ -1,6 +1,6 @@
 import { describe, it, expect } from "bun:test";
-import AST from "../../ast";
-import getWebComponentAst from "../get-web-component-ast";
+import AST from "@/utils/ast";
+import getWebComponentAst from "@/utils/transform-jsx-to-reactive/get-web-component-ast";
 import getVariableNames from ".";
 
 const { parseCodeToAST } = AST();

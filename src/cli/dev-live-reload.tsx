@@ -1,8 +1,8 @@
 import { watch } from "node:fs";
 import path from "node:path";
-import getConstants from "../constants";
-import dangerHTML from "../utils/danger-html";
-import compileAll from "../utils/compile-all";
+import getConstants from "@/constants";
+import dangerHTML from "@/utils/danger-html";
+import compileAll from "@/utils/compile-all";
 
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT } = getConstants();
 const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";

@@ -10,7 +10,7 @@ import {
   expect,
 } from "bun:test";
 import compileAssets from ".";
-import getConstants from "../../constants";
+import getConstants from "@/constants";
 
 const SRC_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const BUILD_DIR = path.join(SRC_DIR, "build");

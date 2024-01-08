@@ -2,15 +2,15 @@ import { BuildArtifact } from "bun";
 import fs from "node:fs";
 import path from "node:path";
 
-import getConstants from "../../constants";
-import byteSizeToString from "../byte-size-to-string";
-import getClientCodeInPage from "../get-client-code-in-page";
-import getEntrypoints from "../get-entrypoints";
-import getImportableFilepath from "../get-importable-filepath";
-import getWebComponentsList from "../get-web-components-list";
-import { logTable } from "../log/log-build";
-import ssrWebComponentPlugin from "../ssr-web-component/ssr-web-component-plugin";
-import createContextPlugin from "../create-context/create-context-plugin";
+import getConstants from "@/constants";
+import byteSizeToString from "@/utils/byte-size-to-string";
+import getClientCodeInPage from "@/utils/get-client-code-in-page";
+import getEntrypoints from "@/utils/get-entrypoints";
+import getImportableFilepath from "@/utils/get-importable-filepath";
+import getWebComponentsList from "@/utils/get-web-components-list";
+import { logTable } from "@/utils/log/log-build";
+import ssrWebComponentPlugin from "@/utils/ssr-web-component/ssr-web-component-plugin";
+import createContextPlugin from "@/utils/create-context/create-context-plugin";
 
 export default async function compileFiles() {
   const { SRC_DIR, BUILD_DIR, CONFIG, IS_PRODUCTION, LOG_PREFIX } =

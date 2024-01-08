@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import mapComponentStatics from ".";
-import { normalizeQuotes } from "../../../helpers";
-import AST from "../../ast";
+import { normalizeQuotes } from "@/helpers";
+import AST from "@/utils/ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const toOutput = (ast: any) => normalizeQuotes(generateCodeFromAST(ast));

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import SSRWebComponent from ".";
-import { WebContext } from "../../types";
-import extendRequestContext from "../extend-request-context";
-import createContext from "../create-context";
+import { WebContext } from "@/types";
+import extendRequestContext from "@/utils/extend-request-context";
+import createContext from "@/utils/create-context";
 
 const requestContext = extendRequestContext({
   originalRequest: new Request("http://localhost"),

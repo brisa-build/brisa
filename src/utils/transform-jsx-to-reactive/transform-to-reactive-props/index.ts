@@ -1,10 +1,12 @@
 import { ESTree } from "meriyah";
-import generateUniqueVariableName from "../generate-unique-variable-name";
-import getComponentVariableNames from "../get-component-variable-names";
-import getPropsNames, { getPropNamesFromExport } from "../get-props-names";
-import getWebComponentAst from "../get-web-component-ast";
-import manageWebContextField from "../manage-web-context-field";
-import mapComponentStatics from "../map-component-statics";
+import generateUniqueVariableName from "@/utils/transform-jsx-to-reactive/generate-unique-variable-name";
+import getComponentVariableNames from "@/utils/transform-jsx-to-reactive/get-component-variable-names";
+import getPropsNames, {
+  getPropNamesFromExport,
+} from "@/utils/transform-jsx-to-reactive/get-props-names";
+import getWebComponentAst from "@/utils/transform-jsx-to-reactive/get-web-component-ast";
+import manageWebContextField from "@/utils/transform-jsx-to-reactive/manage-web-context-field";
+import mapComponentStatics from "@/utils/transform-jsx-to-reactive/map-component-statics";
 
 type Prop = (ESTree.MemberExpression | ESTree.Identifier) & {
   isSignal?: true;

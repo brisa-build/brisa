@@ -1,9 +1,9 @@
 import { describe, expect, it, beforeEach, afterEach } from "bun:test";
 import path from "node:path";
 import adaptRouterToPageTranslations from ".";
-import getRouteMatcher from "../get-route-matcher";
-import getConstants from "../../constants";
-import extendRequestContext from "../extend-request-context";
+import getRouteMatcher from "@/utils/get-route-matcher";
+import getConstants from "@/constants";
+import extendRequestContext from "@/utils/extend-request-context";
 
 const PAGES_DIR = path.join(
   import.meta.dir,

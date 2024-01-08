@@ -80,7 +80,7 @@ This will tell Brisa to replace all references to `process.env.BRISA_PUBLIC_ANAL
 
 ```tsx filename="src/web-components/web-component.tsx"
 import { type WebContext } from "brisa";
-import setupAnalyticsService from "../lib/my-analytics-service";
+import setupAnalyticsService from "@/lib/my-analytics-service";
 
 function WebComponent({}, { effect }: WebContext) {
   effect(() => {

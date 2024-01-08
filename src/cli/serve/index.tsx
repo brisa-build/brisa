@@ -1,4 +1,4 @@
-import getConstants from "../../constants";
+import getConstants from "@/constants";
 import { serveOptions } from "./serve-options";
 import { ServeOptions, Server } from "bun";
 

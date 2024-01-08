@@ -1,4 +1,4 @@
-import { ContextProvider, RequestContext } from "../../types";
+import { ContextProvider, RequestContext } from "@/types";
 
 type ContextStoreKey = symbol | string;
 type ContextStore = Map<ContextStoreKey, Map<symbol, unknown>>;

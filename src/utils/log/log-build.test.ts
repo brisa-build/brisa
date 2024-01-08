@@ -1,6 +1,6 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
 import { logTable } from "./log-build";
-import getConstants from "../../constants";
+import getConstants from "@/constants";
 
 const originalConsoleLog = console.log;
 const { LOG_PREFIX } = getConstants();

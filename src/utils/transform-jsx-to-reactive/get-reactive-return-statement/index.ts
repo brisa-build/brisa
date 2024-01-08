@@ -1,6 +1,6 @@
 import { ESTree } from "meriyah";
-import getConstants from "../../../constants";
-import wrapWithArrowFn from "../wrap-with-arrow-fn";
+import getConstants from "@/constants";
+import wrapWithArrowFn from "@/utils/transform-jsx-to-reactive/wrap-with-arrow-fn";
 
 const FRAGMENT = { type: "Literal", value: null };
 const EMPTY_ATTRIBUTES = { type: "ObjectExpression", properties: [] };

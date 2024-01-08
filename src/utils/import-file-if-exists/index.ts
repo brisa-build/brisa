@@ -1,6 +1,6 @@
 import path from "node:path";
-import getRootDir from "../get-root-dir";
-import getImportableFilepath from "../get-importable-filepath";
+import getRootDir from "@/utils/get-root-dir";
+import getImportableFilepath from "@/utils/get-importable-filepath";
 
 export default async function importFileIfExists(
   filename: "middleware" | "i18n" | "brisa.config",

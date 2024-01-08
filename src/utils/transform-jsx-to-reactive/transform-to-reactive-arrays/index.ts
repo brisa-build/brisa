@@ -1,8 +1,11 @@
 import { ESTree } from "meriyah";
-import getConstants from "../../../constants";
-import { JSX_NAME, NO_REACTIVE_CHILDREN_EXPRESSION } from "../constants";
-import wrapWithArrowFn from "../wrap-with-arrow-fn";
-import { logError, logWarning } from "../../log/log-build";
+import getConstants from "@/constants";
+import {
+  JSX_NAME,
+  NO_REACTIVE_CHILDREN_EXPRESSION,
+} from "@/utils/transform-jsx-to-reactive/constants";
+import wrapWithArrowFn from "@/utils/transform-jsx-to-reactive/wrap-with-arrow-fn";
+import { logError, logWarning } from "@/utils/log/log-build";
 
 export default function transformToReactiveArrays(
   ast: ESTree.Program,

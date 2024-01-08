@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { logError } from "../log/log-build";
+import { logError } from "@/utils/log/log-build";
 import {
   ALTERNATIVE_PREFIX,
   NATIVE_FOLDER,
-} from "../transform-jsx-to-reactive/constants";
+} from "@/utils/transform-jsx-to-reactive/constants";
 
 const CONTEXT_PROVIDER = "context-provider";
 

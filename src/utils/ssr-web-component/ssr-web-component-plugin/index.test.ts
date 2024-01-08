@@ -1,7 +1,8 @@
 import { describe, expect, it } from "bun:test";
+
 import wrapWithSSRWebComponent, { workaroundText } from ".";
-import { normalizeQuotes } from "../../../helpers";
-import AST from "../../ast";
+import { normalizeQuotes } from "@/helpers";
+import AST from "@/utils/ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 

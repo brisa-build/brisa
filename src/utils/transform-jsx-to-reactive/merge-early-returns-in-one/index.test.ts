@@ -1,9 +1,9 @@
 import { describe, expect, it } from "bun:test";
 import { ESTree } from "meriyah";
 import mergeEarlyReturnsInOne from ".";
-import { normalizeQuotes } from "../../../helpers";
-import AST from "../../ast";
-import getWebComponentAst from "../get-web-component-ast";
+import { normalizeQuotes } from "@/helpers";
+import AST from "@/utils/ast";
+import getWebComponentAst from "@/utils/transform-jsx-to-reactive/get-web-component-ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutput = (code: string) => {

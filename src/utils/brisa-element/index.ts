@@ -1,8 +1,8 @@
-import { WebContext, BrisaContext } from "../../types";
-import getProviderId from "../get-provider-id";
-import { deserialize, serialize } from "../serialization";
-import signals from "../signals";
-import stylePropsToString, { lowercase } from "../style-props-to-string";
+import { WebContext, BrisaContext } from "@/types";
+import getProviderId from "@/utils/get-provider-id";
+import { deserialize, serialize } from "@/utils/serialization";
+import signals from "@/utils/signals";
+import stylePropsToString, { lowercase } from "@/utils/style-props-to-string";
 
 type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
