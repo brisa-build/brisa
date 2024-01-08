@@ -688,6 +688,73 @@ describe("utils", () => {
         `);
         expect(output).toBe(expected);
       });
+
+      it("should return a reactive array when a signal array is mapped", () => {
+        const input = parseCodeToAST(`
+          export default function TodoList({ todos }: any) {
+            return (
+              <ul>
+                {todos.value.map((todo: string) => (
+                  <li>{todo}</li>
+                ))}
+              </ul>
+            );
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = normalizeQuotes(`
+          export default function TodoList({todos}) {
+            return ['ul', {}, () => todos.value.map(todo => ['li', {}, todo])];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should executing functions for events to be reactive", () => {
+        const input = parseCodeToAST(`
+          export default function TodoList({ todos }: any) {
+            const someEvent = todos => () => window.someEvent(value);
+            return (
+              <button onClick={someEvent(todos.value)}>Click</button>
+            );
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = normalizeQuotes(`
+          export default function TodoList({todos}) {
+            const someEvent = todos => () => window.someEvent(value);
+            return ['button', {onClick: e => someEvent(todos.value)(e)}, 'Click'];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should return a reactive array when an array is created with a signal", () => {
+        const input = parseCodeToAST(`
+          export default function Test({ num }: any) {
+            return (
+              <ul>
+                {Array.from({ length: num.value }).map((_, i) => (
+                  <li>{i}</li>
+                ))}
+              </ul>
+            );
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = normalizeQuotes(`
+          export default function Test({num}) {
+            return ['ul', {}, () => Array.from({length: num.value}).map((_, i) => ['li', {}, i])];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
     });
   });
 });
