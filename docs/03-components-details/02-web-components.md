@@ -1014,7 +1014,7 @@ When to use a **web-component vs markup generator**:
 
 > [!TIP]
 >
-> You can create directories or files with the `@-` prefix to avoid creating web-components. Useful to add reusable markup generators in web-components. The only exception is `@-native`, which is a directory for creating native web-components, without Brisa neither JSX.
+> You can create directories or files with the `@-` prefix to avoid creating web-components inside `src/web-components`. Useful to add reusable markup generators in web-components. The only exception is `@-native`, which is a directory for creating native web-components, without Brisa neither JSX.
 
 > [!CAUTION]
 >
