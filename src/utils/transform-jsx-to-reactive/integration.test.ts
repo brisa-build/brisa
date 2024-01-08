@@ -1,12 +1,13 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
-import transformJSXToReactive from ".";
-import { normalizeQuotes, toInline } from "../../helpers";
-import createPortal from "../create-portal";
-import dangerHTML from "../danger-html";
-import { serialize } from "../serialization";
-import createContext from "../create-context";
 import { join } from "node:path";
+
+import transformJSXToReactive from ".";
+import { normalizeQuotes, toInline } from "@/helpers";
+import createPortal from "@/utils/create-portal";
+import dangerHTML from "@/utils/danger-html";
+import { serialize } from "@/utils/serialization";
+import createContext from "@/utils/create-context";
 
 declare global {
   interface Window {

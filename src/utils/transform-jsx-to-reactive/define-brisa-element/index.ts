@@ -1,6 +1,6 @@
 import { ESTree } from "meriyah";
-import { BRISA_IMPORT } from "../constants";
-import getReactiveReturnStatement from "../get-reactive-return-statement";
+import { BRISA_IMPORT } from "@/utils/transform-jsx-to-reactive/constants";
+import getReactiveReturnStatement from "@/utils/transform-jsx-to-reactive/get-reactive-return-statement";
 
 export default function defineBrisaElement(
   component: ESTree.FunctionDeclaration,

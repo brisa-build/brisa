@@ -1,5 +1,5 @@
 import { MatchedRoute } from "bun";
-import { RequestContext, RouterType } from "../../types";
+import { RequestContext, RouterType } from "@/types";
 
 export default function getRouteMatcher(
   dir: string,

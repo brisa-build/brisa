@@ -1,4 +1,4 @@
-import getConstants from "../../constants";
+import getConstants from "@/constants";
 
 export default function routeMatchPathname(route: string, pathname: string) {
   const { REGEX } = getConstants();

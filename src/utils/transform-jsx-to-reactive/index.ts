@@ -1,6 +1,6 @@
 import { ESTree } from "meriyah";
 
-import AST from "../ast";
+import AST from "@/utils/ast";
 import defineBrisaElement from "./define-brisa-element";
 import getWebComponentAst from "./get-web-component-ast";
 import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";

@@ -1,8 +1,9 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
-import generateHrefLang from ".";
-import getConstants from "../../constants";
 import { MatchedRoute } from "bun";
-import extendRequestContext from "../extend-request-context";
+
+import generateHrefLang from ".";
+import getConstants from "@/constants";
+import extendRequestContext from "@/utils/extend-request-context";
 
 const warn = console.warn.bind(console);
 const emptyI18n = {

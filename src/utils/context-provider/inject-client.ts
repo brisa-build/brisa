@@ -1,5 +1,5 @@
 import path from "node:path";
-import transformJSXToReactive from "../transform-jsx-to-reactive";
+import transformJSXToReactive from "@/utils/transform-jsx-to-reactive";
 
 // Should be used via macro
 export async function injectClientContextProviderCode() {

@@ -1,11 +1,11 @@
-import getConstants from "../../constants";
+import getConstants from "@/constants";
 import {
   I18nConfig,
   I18nDictionary,
   Translate,
   TranslateOptions,
   TranslationQuery,
-} from "../../types";
+} from "@/types";
 import formatElements from "./format-elements";
 
 export default function translateCore(locale: string) {

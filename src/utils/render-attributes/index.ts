@@ -1,9 +1,9 @@
-import getConstants from "../../constants";
-import { I18nConfig, Props, RequestContext, Translations } from "../../types";
-import routeMatchPathname from "../route-match-pathname";
-import { serialize } from "../serialization";
-import stylePropsToString from "../style-props-to-string";
-import substituteI18nRouteValues from "../substitute-i18n-route-values";
+import getConstants from "@/constants";
+import { I18nConfig, Props, RequestContext, Translations } from "@/types";
+import routeMatchPathname from "@/utils/route-match-pathname";
+import { serialize } from "@/utils/serialization";
+import stylePropsToString from "@/utils/style-props-to-string";
+import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 

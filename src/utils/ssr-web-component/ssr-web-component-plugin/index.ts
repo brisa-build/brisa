@@ -1,4 +1,4 @@
-import AST from "../../ast";
+import AST from "@/utils/ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const JSX_NAME = new Set(["jsx", "jsxDEV"]);

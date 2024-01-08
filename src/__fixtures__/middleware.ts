@@ -1,5 +1,5 @@
-import { RequestContext } from "../types";
-import notFound from "../utils/not-found";
+import { RequestContext } from "@/types";
+import notFound from "@/utils/not-found";
 
 export default async function middleware(request: RequestContext) {
   const url = new URL(request.finalURL);

@@ -1,12 +1,13 @@
 import { rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import getConstants from "../../constants";
-import AST from "../ast";
-import { injectUnsuspenseCode } from "../inject-unsuspense-code" with { type: "macro" };
-import { injectClientContextProviderCode } from "../context-provider/inject-client" with { type: "macro" };
-import transformJSXToReactive from "../transform-jsx-to-reactive";
-import createContextPlugin from "../create-context/create-context-plugin";
-import snakeToCamelCase from "../snake-to-camelcase";
+
+import getConstants from "@/constants";
+import AST from "@/utils/ast";
+import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
+import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
+import transformJSXToReactive from "@/utils/transform-jsx-to-reactive";
+import createContextPlugin from "@/utils/create-context/create-context-plugin";
+import snakeToCamelCase from "@/utils/snake-to-camelcase";
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();

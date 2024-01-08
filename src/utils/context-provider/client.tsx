@@ -1,4 +1,4 @@
-import { WebContext } from "../../types";
+import { WebContext } from "@/types";
 
 type Props = {
   children: unknown;

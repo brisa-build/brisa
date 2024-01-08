@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { generateContextID } from "./create-context-plugin";
-import { toInline } from "../../helpers";
+import { toInline } from "@/helpers";
 
 describe("utils", () => {
   describe("create-context-plugin", () => {

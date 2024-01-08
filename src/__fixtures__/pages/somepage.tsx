@@ -1,4 +1,4 @@
-import { createContext } from "../../../out/core";
+import { createContext } from "@/../out/core";
 
 const context = createContext("foo");
 

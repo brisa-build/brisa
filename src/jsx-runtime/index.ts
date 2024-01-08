@@ -1,4 +1,4 @@
-import type { Type, Props } from "../types";
+import type { Type, Props } from "@/types";
 
 const Fragment = (props: Props) => props.children;
 const createNode = (type: Type, props: Props) => ({ type, props });

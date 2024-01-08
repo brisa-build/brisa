@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import path from "node:path";
 import { MatchedRoute } from "bun";
 
-import getConstants from "../../constants";
-import renderToReadableStream from "../render-to-readable-stream";
-import extendRequestContext from "../extend-request-context";
+import getConstants from "@/constants";
+import renderToReadableStream from "@/utils/render-to-readable-stream";
+import extendRequestContext from "@/utils/extend-request-context";
 import processPageRoute from ".";
-import { toInline } from "../../helpers";
+import { toInline } from "@/helpers";
 
 const request = extendRequestContext({
   originalRequest: new Request("http://localhost:3000"),

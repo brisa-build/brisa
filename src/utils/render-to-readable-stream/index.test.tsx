@@ -1,14 +1,14 @@
 import { MatchedRoute } from "bun";
 import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
-import getConstants from "../../constants";
-import { toInline } from "../../helpers";
-import { ComponentType, RequestContext, Translate } from "../../types";
-import createContext from "../create-context";
-import dangerHTML from "../danger-html";
-import extendRequestContext from "../extend-request-context";
-import notFound from "../not-found";
-import SSRWebComponent from "../ssr-web-component";
+import getConstants from "@/constants";
+import { toInline } from "@/helpers";
+import { ComponentType, RequestContext, Translate } from "@/types";
+import createContext from "@/utils/create-context";
+import dangerHTML from "@/utils/danger-html";
+import extendRequestContext from "@/utils/extend-request-context";
+import notFound from "@/utils/not-found";
+import SSRWebComponent from "@/utils/ssr-web-component";
 
 const emptyI18n = {
   locale: "",
