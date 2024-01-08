@@ -128,6 +128,36 @@ describe("integration", () => {
       );
     });
 
+    it("should work interactivity returning a fragment with an mapped array from signal", () => {
+      const code = `export default function Test({ items }) {
+        return (
+          <>
+            {items?.map((v) => (
+              <span>{v}</span>
+            ))}
+          </>
+        );
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = `<test-component items="['1','2','3']"" />`;
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<span>1</span><span>2</span><span>3</span>",
+      );
+
+      testComponent.setAttribute("items", "['1','2','3','4','5']");
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>",
+      );
+    });
+
     it("should work interactivity returning a fragment with an array from signal", () => {
       const code = `export default function Test({ count }) {
         return (
@@ -156,6 +186,69 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         "<span>0</span><span>1</span><span>2</span><span>3</span><span>4</span>",
       );
+    });
+
+    it('should work an event from a executed function with "on" prefix', () => {
+      const code = `export default function Test() {
+        const handleClick = name => e => window.onClick(name+e.type);
+        return <button onClick={handleClick('test')}>Click me</button>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      const onClickMock = mock((v: string) => v);
+
+      window.onClick = onClickMock;
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      const button = testComponent?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(onClickMock).toHaveBeenCalledTimes(1);
+      expect(onClickMock.mock.calls[0][0]).toBe("testclick");
+    });
+
+    it("should work reactivity in an event executed from a function", () => {
+      const code = `export default function Test({test}) {
+        const handleClick = v => () => window.onClick(v);
+        return <button onClick={handleClick(test)}>Click me</button>;
+      }`;
+
+      document.body.innerHTML = "<test-component test='works' />";
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      const onClickMock = mock((v: string) => v);
+
+      window.onClick = onClickMock;
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      const button = testComponent?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(onClickMock).toHaveBeenCalledTimes(1);
+      expect(onClickMock.mock.calls[0][0]).toBe("works");
+
+      testComponent.setAttribute("test", "works2");
+
+      button.click();
+
+      expect(onClickMock).toHaveBeenCalledTimes(2);
+      expect(onClickMock.mock.calls[1][0]).toBe("works2");
     });
 
     it("should work interactivity using a markup generator that returns an array from signal", () => {

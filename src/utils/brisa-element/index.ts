@@ -169,7 +169,7 @@ export default function brisaElement(
           if (isEvent) {
             el.addEventListener(lowercase(attribute.slice(2)), (e) =>
               (attrValue as (detail: unknown) => EventListener)(
-                (e as CustomEvent)?.detail ?? e,
+                e instanceof CustomEvent ? e.detail : e,
               ),
             );
           } else if (!isEvent && isFunction(attrValue)) {
