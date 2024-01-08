@@ -286,6 +286,86 @@ describe("integration", () => {
       );
     });
 
+    it("should call markup generator once unless the signal value change", () => {
+      const code = `export default function Test({}, { state }) {
+        const count = state(3);
+        return <div onClick={() => count.value+=1}>{generateMarkup(count)}</div>;
+      }
+      
+      function generateMarkup(count) {
+        window.insideGenerateMarkup();
+        return<span>{count.value}</span>
+      }`;
+
+      window.insideGenerateMarkup = mock(() => {});
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(window.insideGenerateMarkup).toHaveBeenCalledTimes(1);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>3</span></div>",
+      );
+
+      const div = testComponent?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLDivElement;
+
+      div.click();
+
+      expect(window.insideGenerateMarkup).toHaveBeenCalledTimes(1);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>4</span></div>",
+      );
+    });
+
+    it("should call markup generator twice when using signal value as attribute", () => {
+      const code = `export default function Test({}, { state }) {
+        const count = state(3);
+        return <div onClick={() => count.value+=1}>{generateMarkup(count.value)}</div>;
+      }
+      
+      function generateMarkup(count) {
+        window.insideGenerateMarkup();
+        return<span>{count}</span>
+      }`;
+
+      window.insideGenerateMarkup = mock(() => {});
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(window.insideGenerateMarkup).toHaveBeenCalledTimes(1);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>3</span></div>",
+      );
+
+      const div = testComponent?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLDivElement;
+
+      div.click();
+
+      expect(window.insideGenerateMarkup).toHaveBeenCalledTimes(2);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        "<div><span>4</span></div>",
+      );
+    });
+
     it("should work interactivity using a markup generator that returns a signal", () => {
       const code = `export default function Test({}, { state }) {
         const count = state(3);

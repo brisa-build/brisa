@@ -943,11 +943,9 @@ In Brisa, it is **not possible** to consume components in this way `<Component /
 
 And then we have worked on the communication between both worlds to make it easy and without getting into confusion of mixing code from both worlds.
 
-This makes it different to re-use web-component code without creating shadow DOM.
+This makes it different to re-use web-component code without creating [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM).
 
-In other frameworks like React, to reuse markup (html elements) you have to make dummy components. That is, components that have no state.
-
-In Brisa, we recommend using **markup generators** (functions) and calling them in the rendering.
+In other frameworks like React, to reuse markup (html elements) you have to make dummy components. That is, components that have no state. However, in Brisa, we recommend using **markup generators** (functions) and calling them in the rendering.
 
 ```tsx filename="src/web-components/@-partials/generate-percentage.tsx" switcher
 import { type Signal } from "brisa";
@@ -1003,9 +1001,16 @@ Avoid this:
 <div>{generatePercentage(count.value)}</div>
 ```
 
+Unlike web-components, markup generators do not have their own state, they are dumb, similar to dummy components of other frameworks or stateless Brisa server components.
+
+When to use a **web-component vs markup generator**:
+
+- If you need to encapsulate logic in a state, use a **web-component**.
+- If it is just to generate HTML for re-use in web-components and it has no state _(you can use the state of the web-component where it is or not but it has no state of its own)_ then use a **markup generator**.
+
 > [!NOTE]
 >
-> You don't have to worry about performance because Brisa has no rerenders.
+> You don't have to worry about performance because Brisa has no rerenders and markup generators are executed once.
 
 > [!TIP]
 >
