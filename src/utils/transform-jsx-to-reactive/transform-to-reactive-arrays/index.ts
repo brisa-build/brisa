@@ -4,8 +4,6 @@ import { JSX_NAME, NO_REACTIVE_CHILDREN_EXPRESSION } from "../constants";
 import wrapWithArrowFn from "../wrap-with-arrow-fn";
 import { logError, logWarning } from "../../log/log-build";
 
-const SIGNAL_PROPERTIES = new Set(["value", "get"]);
-
 export default function transformToReactiveArrays(
   ast: ESTree.Program,
   path?: string,
@@ -112,10 +110,16 @@ export default function transformToReactiveArrays(
 
         const isPropAnEvent = name?.startsWith("on");
 
-        value =
-          isPropAnEvent || !hasNodeASignal(prop.value, true)
-            ? prop.value
-            : wrapWithArrowFn(prop.value);
+        if (isPropAnEvent) {
+          value =
+            prop.value?.type === "CallExpression"
+              ? createReactiveEvent(prop.value)
+              : prop.value;
+        } else {
+          value = hasNodeASignal(prop.value, true)
+            ? wrapWithArrowFn(prop.value)
+            : prop.value;
+        }
 
         restOfProps.push({ ...prop, value });
       }
@@ -142,8 +146,13 @@ export default function transformToReactiveArrays(
         });
       }
 
+      const isChildrenJSX =
+        children?.type === "CallExpression" &&
+        JSX_NAME.has(children?.callee?.name ?? "");
+
       // <div>{someVar.value}</div> -> ["div", {}, () => someVar.value]
-      if (hasNodeASignal(children)) children = wrapWithArrowFn(children);
+      if (hasNodeASignal(children, !isChildrenJSX))
+        children = wrapWithArrowFn(children);
 
       // <span></span> -> ["span", {}, ""]
       if (Array.isArray(children) && children.length === 0) {
@@ -179,14 +188,52 @@ function hasNodeASignal(node: ESTree.Node, allowProperties = false) {
   JSON.stringify(node, (key, value) => {
     if (!allowProperties && value?.type === "Property") return null;
 
+    // It's a signal
     hasSignal ||=
       value?.type === "MemberExpression" &&
       value?.object?.type === "Identifier" &&
       value?.property?.type === "Identifier" &&
-      SIGNAL_PROPERTIES.has(value?.property?.name);
+      value?.property?.name === "value";
+
+    // It's a markup generator function
+    hasSignal ||=
+      value?.type === "CallExpression" &&
+      !JSX_NAME.has(value?.callee?.name ?? "");
 
     return value;
   });
 
   return hasSignal;
+}
+
+/**
+ * Evaluate signals on event time and not only during render time.
+ *
+ * Transform:
+ *  <button onClick={someEvent(signal.value)} />
+ *
+ * to:
+ *  <button onClick={e => someEvent(signal.value)(e)} />
+ */
+function createReactiveEvent(eventCallee: ESTree.Expression) {
+  return {
+    type: "ArrowFunctionExpression",
+    expression: true,
+    params: [
+      {
+        type: "Identifier",
+        name: "e",
+      },
+    ],
+    body: {
+      type: "CallExpression",
+      callee: eventCallee,
+      arguments: [
+        {
+          type: "Identifier",
+          name: "e",
+        },
+      ],
+    },
+  };
 }
