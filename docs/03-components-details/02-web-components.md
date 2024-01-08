@@ -937,15 +937,24 @@ To do this, all web components have available the `skipSSR` attribute. It's `tru
 <some-web-component skipSSR />
 ```
 
-## Re-use elements without [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM)
+## Reusing Elements without [Shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM)
 
-In Brisa, it is **not possible** to consume components in this way `<Component />` **inside** a **web-component**, since this way of invoking components is only for server components. Brisa does it this way to make a separation of concerns, in client components **only** client code is written, and in server components **only** server code and markup of the `web-components` is written, as well as other elements such as a `div`.
+In Brisa, incorporating components using the syntax `<Component />` within a web component is **not feasible**. This invocation method is exclusive to server components. Brisa follows this approach to maintain a clear separation of concerns, where client components solely contain client code, and server components house server code, along with the markup of the `web-components` and other elements like a `div`.
 
-And then we have worked on the communication between both worlds to make it easy and without getting into confusion of mixing code from both worlds.
+- `<Component />` - Smart/dummy server component.
+- `<web-component />` - Smart web component element. Dummy versions can be created, but it's advisable to leverage server components to avoid client-side JavaScript or use markup generators inside.
+- `{markupGenerator()}` - Generates dummy markup within web-server components.
 
-This makes it different to re-use web-component code without creating [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM).
+Efforts have been invested in facilitating communication between these two realms, ensuring a seamless integration without confusion from intermingling code.
 
-In other frameworks like React, to reuse markup (html elements) you have to make dummy components. That is, components that have no state. However, in Brisa, we recommend using **markup generators** (functions) and calling them in the rendering.
+Concepts:
+
+- Smart: Possesses an internal state.
+- Dummy: Can utilize external state, but lacks a state created and housed internally.
+
+This distinctive approach distinguishes Brisa from other frameworks in reusing web component code without necessitating the creation of [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM).
+
+In frameworks like React, to reuse markup (HTML elements), dummy components must be created—components without state. However, in Brisa, it is recommended to employ **markup generators** (functions) and invoke them during rendering.
 
 ```tsx filename="src/web-components/@-partials/generate-percentage.tsx" switcher
 import { type Signal } from "brisa";
@@ -960,7 +969,7 @@ function generatePercentage(percentage: Signal<number>) {
 }
 ```
 
-Then, you can call directly the markup generator inside your JSX:
+Subsequently, these markup generators can be directly invoked within JSX:
 
 ```tsx filename="src/web-components/counter.tsx" switcher
 import { type WebContext } from "brisa";
@@ -979,38 +988,37 @@ export default function Counter({}, { state }: WebContext) {
 }
 ```
 
-The markup generators are only executed when the web-component is mounted. And the content returned by the markup generator will become reactive. There is one exception, when the argument has the value of a signal instead of the full signal.
+Markup generators execute only when the web component is mounted, and the content returned by the generator becomes reactive. However, an exception exists when the argument holds the value of a signal rather than the full signal.
 
 Do this:
 
 ```tsx
-// ✅ Good: the content of the markup generator
-// is going to be reactive because is going to
-// consume the signal. It's not going to execute
-// generatePercentage again.
+// ✅ Good: The content of the markup generator
+// will be reactive as it consumes the signal. It
+// won't execute generatePercentage again.
 <div>{generatePercentage(count)}</div>
 ```
 
 Avoid this:
 
 ```tsx
-// ❌ Bad: it's going to be reactive, but the
-// generatePercentage markup generator is going
-// to be executed again because the content only
-// has the signal value and not the full signal
+// ❌ Bad: It will be reactive, but the
+// generatePercentage markup generator will be
+// executed again because the content only
+// has the signal value and not the full signal.
 <div>{generatePercentage(count.value)}</div>
 ```
 
-Unlike web-components, markup generators do not have their own state, they are dumb, similar to dummy components of other frameworks or stateless Brisa server components.
+Unlike web components, markup generators lack their own state.
 
-When to use a **web-component vs markup generator**:
+Choosing between a **web component** and a **markup generator** depends on the need:
 
-- If you need to encapsulate logic in a state, use a **web-component**.
-- If it is just to generate HTML for re-use in web-components and it has no state _(you can use the state of the web-component where it is or not but it has no state of its own)_ then use a **markup generator**.
+- Use a **web component** if encapsulating logic in a state is required.
+- Use a **markup generator** if generating HTML for reuse in web components without internal state is sufficient.
 
 > [!NOTE]
 >
-> You don't have to worry about performance because Brisa has no rerenders and markup generators are executed once.
+> Performance concerns are alleviated in Brisa, as there are no rerenders, and markup generators execute only once.
 
 > [!TIP]
 >
@@ -1018,7 +1026,7 @@ When to use a **web-component vs markup generator**:
 
 > [!CAUTION]
 >
-> Avoid sending the [`WebContext`](/docs/building-your-application/data-fetching/web-context) or parts of them to the markup generators, you can send signals ([props](#props), [state](#state-state-method), [derived](#derived-state-and-props-derived-method), [`context`](#context) and [store](#store-store-method) signals) and static values without problems.
+> Avoid sending the [`WebContext`](/docs/building-your-application/data-fetching/web-context) or parts of them to the markup generators, you can send signals ([props](#props), [state](#state-state-method), [derived](#derived-state-and-props-derived-method), [`context`](#context) and [store](#store-store-method) signals) and static values without issues.
 
 ## UI-agnostic
 
