@@ -645,10 +645,8 @@ import { WebContext } from "brisa";
 
 export default function Counter(
   { color }: { color: string },
-  { state, css }: WebContext,
+  { css }: WebContext,
 ) {
-  const count = state<number>(0);
-
   css`
     p {
       color: ${color};
