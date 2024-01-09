@@ -368,14 +368,17 @@ export interface WebContext {
   /**
    * Description:
    *
-   * The `css` method is used to inject CSS into the DOM.
+   * The `css` method is used to inject reactive CSS into the DOM.
    *
    * Example:
    *
    * ```ts
-   * css`body { background-color: red; }`
+   * css`div { background-color: ${color.value}; }`
    * ```
    *
+   * Docs:
+   *
+   * - [How to use `css`](https://brisa.build/docs/components-details/web-components#template-literal-css)
    */
   css(strings: TemplateStringsArray, ...values: string[]): void;
 

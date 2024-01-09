@@ -636,6 +636,43 @@ export default function SomeChildComponent(props, { useContext }) {
 >
 > Learn more about it [here]([context](/docs/components-details/context).
 
+## Template literal `css`
+
+You can write CSS in your web components using the template literal named `css`. The return value of `css` is nothing. As it runs, the css is generated in the web component and the signals are registered to update it.
+
+```tsx
+import { WebContext } from "brisa";
+
+export default function Counter(
+  { color }: { color: string },
+  { state, css }: WebContext,
+) {
+  const count = state<number>(0);
+
+  css`
+    p {
+      color: ${color};
+    }
+  `;
+
+  return <p>{color}</p>;
+}
+```
+
+You can use the name of the elements directly as the web components by their nature encapsulate the styles and there is no conflict with other web components. In this example, whenever the `color` property changes, it shall be updated reactively.
+
+Useful for creating animations, keyframes, pseudo classes or other things that can't be done with the style property and have more control of the css and signals.
+
+If you use VSCode we recommend [this extension](https://marketplace.visualstudio.com/items?itemName=styled-components.vscode-styled-components) to improve DX.
+
+> [!NOTE]
+>
+> You can run this literal template several times and the styles will accumulate.
+
+> [!CAUTION]
+>
+> This function must be executed before the first render, don't put it inside an `effect`, event or `onMount`.
+
 ## Custom hooks
 
 To use [`effect`](#effects-effect-method), [`cleanup`](#clean-effects-cleanup-method), [`state`](#state-state-method), [`store`](#store-store-method), [`derived`](#derived-state-and-props-derived-method), [`useContext`](#context) and [`onMount`](#effect-on-mount-onmount-method) functions outside the component it is necessary to create a **custom hook**. This hook should be used before the JSX, not inside.
