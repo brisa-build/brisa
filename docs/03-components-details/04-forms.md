@@ -1,0 +1,128 @@
+---
+title: Forms
+description: How to use forms in Brisa
+---
+
+## Forms
+
+Forms play a crucial role in user interaction. When dealing with forms, developers often come across the concepts of controlled and uncontrolled components.
+
+### Uncontrolled Forms
+
+An uncontrolled form is a `form` where the values are not bound to the component's state, allowing for a more straightforward and less verbose approach. Uncontrolled forms are useful in scenarios where the form is relatively simple, and the overhead of managing form state through the component is unnecessary.
+
+Uncontrolled forms can be created in both **web components** and **server components**. The [browser events](https://developer.mozilla.org/en-US/docs/Web/Events) in Brisa can be handled in the server.
+
+In fact, we recommend that if you use uncontrolled forms, use a server component. This way:
+
+- You make the app lighter, less JS code to the client.
+- You can handle directly the form on the server.
+
+```tsx
+export default function UncontrolledFormExample() {
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        console.log("Username:", formData.get("username"));
+      }}
+    >
+      <label>
+        Username:
+        <input type="text" name="username" />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+### Controlled Forms
+
+A controlled form in Brisa is a `form` whose state is controlled by the Brisa web component. In other words, the form elements such as `input` fields, `checkbox`, `radio` buttons, etc have their values bound to the component's state. This allows to manage and control the form's behavior and be able to give **instant feedback** to the user about errors.
+
+Despite the benefits of controlled forms, it's important to note that Brisa **doesn't necessarily recommend** their use in all scenarios. The decision to opt for controlled or uncontrolled forms should be driven by specific requirements and architectural considerations. In certain cases, controlled forms may introduce unnecessary complexity, especially when dealing with large forms or integrating with external libraries. Developers should carefully assess the trade-offs and choose the approach that aligns best with their application's needs.
+
+```tsx
+import { type WebContext } from "brisa";
+
+export default function ControlledFormExample({}, { state }: WebContext) {
+  const username = state<string>("");
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        console.log("Username:", username.value);
+      }}
+    >
+      <label>
+        Username:
+        <input
+          type="text"
+          name="username"
+          value={username.value}
+          onInput={(e) => {
+            username.value = e.currentTarget.value;
+          }}
+        />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+If you want to use controlled forms, we recommend that you use it in the web components and not in the server components. If you want to manage the `onSubmit` for the server, you can manage it through a `prop` and the parent server component capture and handle the event.
+
+```tsx
+import { type WebContext } from "brisa";
+
+// Web component:
+export default function ControlledFormExample(
+  { onFormSubmit }, // Event captured and handled by server component
+  { state }: WebContext,
+) {
+  const username = state<string>("");
+
+  return (
+    <form onSubmit={() => onFormSubmit({ username })}>
+      <label>
+        Username:
+        <input
+          type="text"
+          name="username"
+          value={username.value}
+          onInput={(e) => {
+            username.value = e.currentTarget.value;
+          }}
+        />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+And:
+
+```tsx
+// Server component:
+export default function Page() {
+  const onFormSubmit = ({ username }) => {
+    // This event is handled in the server, we can save it to the DB.
+  };
+
+  return <controlled-form-example onFormSubmit={onFormSubmit} />;
+}
+```
+
+> [!CAUTION]
+>
+> Controlled forms introduce additional complexity and more client-side JavaScript code. Developers should carefully weigh these factors when choosing between controlled and uncontrolled forms. The Brisa team recommends using controlled forms primarily when providing instant feedback to users for each modification during form interactions. Otherwise, it is advisable to opt for uncontrolled forms with a server component.
+
+TODO: implement server events and verify that all in these docs is correct
