@@ -4531,6 +4531,291 @@ describe("integration", () => {
       expect(item[3].shadowRoot?.innerHTML).toBe("<li>4</li>");
     });
 
+    it("should work css template with variables that are not signals", () => {
+      const code = `
+        export default function Counter({}, { state, css, effect }) {
+          const count = state<number>(0);
+          const defaultColor = 'red';
+        
+          css\`
+            p {
+              color: \${defaultColor};
+            }
+            .even {
+              color: blue;
+            }
+          \`;
+        
+          return (
+            <p class={count.value % 2 === 0 ? "even" : ""}>
+              <button onClick={() => count.value++}>+</button>
+              <span>
+                {" "}{count.value}{" "}
+              </span>
+              <button onClick={() => count.value--}>-</button>
+            </p>
+          );
+        }`;
+
+      document.body.innerHTML = normalizeQuotes("<web-counter />");
+      defineBrisaWebComponent(code, "src/web-components/web-counter.tsx");
+
+      const webCounter = document.querySelector("web-counter") as HTMLElement;
+
+      expect(webCounter?.shadowRoot?.querySelector("style")?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: red;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+    });
+
+    it("should work css template with state signal", () => {
+      const code = `
+        export default function Counter({}, { state, css, effect }) {
+          const count = state<number>(0);
+          const defaultColor = state<string>("red");
+        
+          effect(() => {
+            if (count.value >= 1) {
+              defaultColor.value = "yellow"
+            }
+          })
+        
+          css\`
+            p {
+              color: \${defaultColor.value};
+            }
+            .even {
+              color: blue;
+            }
+          \`;
+        
+          return (
+            <p class={count.value % 2 === 0 ? "even" : ""}>
+              <button onClick={() => count.value++}>+</button>
+              <span>
+                {" "}{count.value}{" "}
+              </span>
+              <button onClick={() => count.value--}>-</button>
+            </p>
+          );
+        }`;
+
+      document.body.innerHTML = normalizeQuotes("<web-counter />");
+      defineBrisaWebComponent(code, "src/web-components/web-counter.tsx");
+
+      const webCounter = document.querySelector("web-counter") as HTMLElement;
+
+      const button = webCounter?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      const style = webCounter?.shadowRoot?.querySelector("style");
+
+      expect(style?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: red;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+
+      button.click();
+
+      expect(style?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: yellow;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+    });
+
+    it("should work css template with prop signal", () => {
+      const code = `
+        export default function Counter({color}, {css}) {
+          css\`
+            p {
+              color: \${color};
+            }
+            .even {
+              color: blue;
+            }
+          \`;
+        
+          return (
+            <div>{color}</div>
+          );
+        }`;
+
+      document.body.innerHTML = normalizeQuotes("<web-counter color='red' />");
+      defineBrisaWebComponent(code, "src/web-components/web-counter.tsx");
+
+      const webCounter = document.querySelector("web-counter") as HTMLElement;
+      const style = webCounter?.shadowRoot?.querySelector("style");
+
+      expect(style?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: red;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+
+      webCounter.setAttribute("color", "yellow");
+
+      expect(style?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: yellow;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+    });
+
+    it("should work css template with store signal", () => {
+      const code = `
+        export default function Counter({foo}, {css, store, effect}) {
+          store.set('color', 'red');
+
+          effect(() => {
+            if(foo === 'foo') store.set('color', 'yellow')
+          })
+
+          css\`
+            p {
+              color: \${store.get('color')};
+            }
+            .even {
+              color: blue;
+            }
+          \`;
+
+          return (
+            <div>{store.get('color')}</div>
+          );
+        }`;
+
+      document.body.innerHTML = normalizeQuotes("<web-counter />");
+      defineBrisaWebComponent(code, "src/web-components/web-counter.tsx");
+
+      const webCounter = document.querySelector("web-counter") as HTMLElement;
+
+      const style = webCounter?.shadowRoot?.querySelector("style");
+
+      expect(style?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: red;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+
+      webCounter.setAttribute("foo", "foo");
+
+      expect(style?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: yellow;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+    });
+
+    it("should work with 2 css methods in the same component", () => {
+      const code = `
+        export default function Counter({}, { state, css, effect }) {
+          const count = state<number>(0);
+          const defaultColor = state<string>("red");
+        
+          effect(() => {
+            if (count.value >= 1) {
+              defaultColor.value = "yellow"
+            }
+          })
+        
+          css\`
+            p {
+              color: \${defaultColor.value};
+            }
+          \`;
+        
+          css\`
+            .even {
+              color: blue;
+            }
+          \`;
+        
+          return (
+            <p class={count.value % 2 === 0 ? "even" : ""}>
+              <button onClick={() => count.value++}>+</button>
+              <span>
+                {" "}{count.value}{" "}
+              </span>
+              <button onClick={() => count.value--}>-</button>
+            </p>
+          );
+        }`;
+
+      document.body.innerHTML = normalizeQuotes("<web-counter />");
+      defineBrisaWebComponent(code, "src/web-components/web-counter.tsx");
+
+      const webCounter = document.querySelector("web-counter") as HTMLElement;
+
+      const button = webCounter?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      const style = webCounter?.shadowRoot?.querySelector("style");
+
+      expect(style?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: red;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+
+      button.click();
+
+      expect(style?.innerHTML).toBe(
+        toInline(`
+        p {
+          color: yellow;
+        }
+        .even {
+          color: blue;
+        }
+      `),
+      );
+    });
+
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583
     it.todo(

@@ -6,6 +6,8 @@ import stylePropsToString, { lowercase } from "@/utils/style-props-to-string";
 
 type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
+type CSSValue = () => string | number;
+type CSSStyles = [TemplateStringsArray, ...CSSValue[]][];
 type Props = Record<string, unknown>;
 type ReactiveArray = [string, Attr, Children];
 type Render = {
@@ -116,7 +118,7 @@ export default function brisaElement(
       const self = this;
       const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
       const fnToExecuteAfterMount: (() => void)[] = [];
-      let cssStyle = "";
+      const cssStyles: CSSStyles = [];
 
       function handlePortal(
         children: Children,
@@ -148,9 +150,22 @@ export default function brisaElement(
             (self.shadowRoot as any)[INNER_HTML] = "";
           }
           // Handle CSS
-          if (cssStyle) {
+          if (cssStyles.length) {
             const style = createElement("style");
-            style.textContent = cssStyle;
+
+            effect(() => {
+              let cssString = "";
+
+              for (let [template, ...values] of cssStyles) {
+                cssString += String.raw(
+                  template,
+                  ...values.map((v) => (isFunction(v) ? v() : v)),
+                );
+              }
+
+              style.textContent = cssString;
+            });
+
             appendChild(shadowRoot, style);
           }
         }
@@ -300,13 +315,13 @@ export default function brisaElement(
             return renderSignals.state(context.defaultValue);
           },
           // Handle CSS
-          css(strings: string[], ...values: string[]) {
-            cssStyle += strings[0] + values.join("");
+          css(template: TemplateStringsArray, ...values: any[]) {
+            cssStyles.push([template, ...values]);
           },
           self,
         } as unknown as WebContext;
 
-        cssStyle = "";
+        cssStyles.length = 0;
         return mount(
           NULL,
           {},

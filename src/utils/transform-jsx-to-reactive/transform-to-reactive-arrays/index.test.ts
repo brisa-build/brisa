@@ -755,6 +755,54 @@ describe("utils", () => {
         `);
         expect(output).toBe(expected);
       });
+
+      it("should wrap css TaggedTemplate expressions in a function when has a signal", () => {
+        const input = parseCodeToAST(`
+          export default function Test({foo}, {css}) {
+            css\`color: \${foo.value};\`;
+
+            return (
+              <div>foo</div>
+            );
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+
+        const expected = normalizeQuotes(`
+          export default function Test({foo}, {css}) {
+            css\`color: \${() => foo.value};\`;
+            return ['div', {}, 'foo'];
+          }
+        `);
+
+        expect(output).toBe(expected);
+      });
+
+      it("should wrap css TaggedTemplate expressions in a function when has a signal without destructuring", () => {
+        const input = parseCodeToAST(`
+          export default function Test({foo}, webContext) {
+            webContext.css\`color: \${foo.value};\`;
+
+            return (
+              <div>foo</div>
+            );
+          }
+        `);
+
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+
+        const expected = normalizeQuotes(`
+          export default function Test({foo}, webContext) {
+            (webContext.css)\`color: \${() => foo.value};\`;
+            return ['div', {}, 'foo'];
+          }
+        `);
+
+        expect(output).toBe(expected);
+      });
     });
   });
 });
