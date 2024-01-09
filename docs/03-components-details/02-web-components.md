@@ -643,7 +643,7 @@ You can write CSS in your web components using the template literal named `css`.
 ```tsx
 import { WebContext } from "brisa";
 
-export default function Counter(
+export default function WebComponent(
   { color }: { color: string },
   { css }: WebContext,
 ) {
