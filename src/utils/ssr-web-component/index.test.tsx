@@ -77,6 +77,36 @@ describe("utils", () => {
       );
     });
 
+    it("should render a web component with css template literal and signals", async () => {
+      const Component = ({}, { state, css }: WebContext) => {
+        const color = state<string>("red");
+        css`
+          div {
+            color: ${color.value};
+          }
+        `;
+
+        return <div>hello world</div>;
+      };
+      const selector = "my-component";
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("div");
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        "hello world",
+      );
+      expect(output.props.children[0].props.children[1].type).toBe("style");
+      expect(output.props.children[0].props.children[1].props.children).toBe(
+        "div {color: red;}",
+      );
+    });
+
     it("should render a web component with a initial state", async () => {
       const Component = ({}, { state }: WebContext) => {
         const foo = state({ name: "world" });
