@@ -1,5 +1,14 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 const { spawnSync } = require("child_process");
+
+const prodOptions = {
+  stdio: "inherit",
+  env: { ...process.env, NODE_ENV: "production" },
+};
+const devOptions = {
+  stdio: "inherit",
+  env: { ...process.env, NODE_ENV: "development" },
+};
 
 let BUN_EXEC;
 
@@ -46,19 +55,21 @@ try {
     ];
 
     if (DEBUG_MODE) {
-      spawnSync(BUN_EXEC, buildCommand, { stdio: "inherit" });
-      spawnSync(BUN_EXEC, ["--inspect", ...serveCommand], { stdio: "inherit" });
+      spawnSync(BUN_EXEC, buildCommand, devOptions);
+      spawnSync(BUN_EXEC, ["--inspect", ...serveCommand], devOptions);
     } else {
-      spawnSync(BUN_EXEC, buildCommand, { stdio: "inherit" });
-      spawnSync(BUN_EXEC, serveCommand, { stdio: "inherit" });
+      spawnSync(BUN_EXEC, buildCommand, devOptions);
+      spawnSync(BUN_EXEC, serveCommand, devOptions);
     }
   }
 
   // Command: brisa build
   else if (process.argv[2] === "build") {
-    spawnSync(BUN_EXEC, ["node_modules/brisa/out/cli/build.js", "PROD"], {
-      stdio: "inherit",
-    });
+    spawnSync(
+      BUN_EXEC,
+      ["node_modules/brisa/out/cli/build.js", "PROD"],
+      prodOptions,
+    );
   }
 
   // Command: brisa start
@@ -84,7 +95,7 @@ try {
     spawnSync(
       BUN_EXEC,
       ["node_modules/brisa/out/cli/serve/index.js", `${PORT}`, "PROD"],
-      { stdio: "inherit" },
+      prodOptions,
     );
   }
 
