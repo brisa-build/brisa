@@ -14,7 +14,7 @@ let BUN_EXEC;
 
 try {
   // Check if 'bun' is available in the system
-  const bunCheck = spawnSync("command", ["-v", "bun"]);
+  const bunCheck = spawnSync("bun", ["--version"], { stdio: "ignore" });
   if (bunCheck.status === 0) {
     BUN_EXEC = "bun";
   } else {
