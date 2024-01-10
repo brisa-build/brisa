@@ -25,8 +25,11 @@ export default async function SSRWebComponent(
     derived: (fn: () => unknown) => ({ value: fn() }),
     cleanup: voidFn,
     useContext,
-    css: (strings: string[], ...values: string[]) => {
-      style += strings[0] + values.join("");
+    css: (template: TemplateStringsArray, ...values: string[]) => {
+      style += String.raw(
+        template,
+        ...values.map((v) => (typeof v === "function" ? v() : v)),
+      );
     },
   } as unknown as RequestContext;
 

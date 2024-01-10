@@ -13,7 +13,7 @@ console.log(
 
 const start = Bun.nanoseconds();
 
-if (IS_PRODUCTION && fs.existsSync(BUILD_DIR)) {
+if (fs.existsSync(BUILD_DIR)) {
   fs.rmSync(BUILD_DIR, { recursive: true });
 }
 
