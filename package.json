@@ -3,7 +3,7 @@
   "module": "./out/core/index.js",
   "main": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
@@ -45,8 +45,8 @@
       "require": "./server/index.js"
     },
     "./cli.sh": {
-      "import": "./cli.sh",
-      "require": "./cli.sh"
+      "import": "./cli.cjs",
+      "require": "./cli.cjs"
     }
   },
   "scripts": {
@@ -65,10 +65,10 @@
     "release-all": "bun run build && npm publish && bun run clean && bun run release-create-brisa-app",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",
     "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli client",
-    "format": "bunx prettier --write ."
+    "format": "bunx prettier@3.1.1 --write ."
   },
   "bin": {
-    "brisa": "./cli.sh",
+    "brisa": "./cli.cjs",
     "create-brisa-app": "./create-brisa-app.cjs"
   },
   "devDependencies": {
