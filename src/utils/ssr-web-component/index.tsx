@@ -28,7 +28,7 @@ export default async function SSRWebComponent(
     css: (template: TemplateStringsArray, ...values: string[]) => {
       style += String.raw(
         template,
-        ...values.map((v) => (typeof v === "function" ? v() : v)),
+        ...values.map((v: unknown) => (typeof v === "function" ? v() : v)),
       );
     },
   } as unknown as RequestContext;
