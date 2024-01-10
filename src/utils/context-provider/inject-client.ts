@@ -16,7 +16,9 @@ export async function injectClientContextProviderCode() {
         setup(build) {
           build.onLoad({ filter: /.*/ }, async ({ path, loader }) => ({
             contents: transformJSXToReactive(
-              await Bun.file(path).text(),
+              // TODO: use Bun.file(path).text() when Bun fix this issue:
+              // https://github.com/oven-sh/bun/issues/7611
+              await Bun.readableStreamToText(Bun.file(path).stream()),
               internalComponentId,
             ),
             loader,
