@@ -2182,7 +2182,7 @@ describe("utils", () => {
         return null;
       };
 
-      customElements.define("test-component", brisaElement(Component));
+      customElements.define("test-component", brisaElement(Component as any));
       document.body.innerHTML = "<test-component />";
 
       await Bun.sleep(0);
@@ -2208,7 +2208,7 @@ describe("utils", () => {
         return null;
       };
 
-      customElements.define("test-component", brisaElement(Component));
+      customElements.define("test-component", brisaElement(Component as any));
 
       document.body.innerHTML = "<test-component />";
 
@@ -2241,7 +2241,7 @@ describe("utils", () => {
         return null;
       };
 
-      customElements.define("test-component", brisaElement(Component));
+      customElements.define("test-component", brisaElement(Component as any));
 
       document.body.innerHTML = "<test-component />";
 
@@ -2269,7 +2269,7 @@ describe("utils", () => {
         return [["test-component", {}, null]];
       };
 
-      customElements.define("test-component", brisaElement(Component));
+      customElements.define("test-component", brisaElement(Component as any));
       customElements.define("parent-component", brisaElement(ParentComponent));
       document.body.innerHTML = "<parent-component />";
 
