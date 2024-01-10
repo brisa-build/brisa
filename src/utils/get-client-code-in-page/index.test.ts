@@ -1,13 +1,4 @@
-import { BunFile } from "bun";
-import {
-  Mock,
-  afterEach,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  spyOn,
-} from "bun:test";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -19,9 +10,7 @@ const src = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const build = path.join(src, `out-${crypto.randomUUID()}}`);
 const brisaInternals = path.join(build, "_brisa");
 const pages = path.join(src, "pages");
-const transpiler = new Bun.Transpiler({ loader: "js" });
 const allWebComponents = await getWebComponentsList(src);
-let mockCompiledFile: Mock<typeof Bun.file>;
 const pageWebComponents = {
   "web-component": allWebComponents["web-component"],
   "native-some-example": allWebComponents["native-some-example"],
@@ -38,19 +27,10 @@ describe("utils", () => {
       IS_DEVELOPMENT: false,
       BUILD_DIR: build,
     };
-    mockCompiledFile = spyOn(Bun, "file").mockImplementation(
-      (filepath) =>
-        ({
-          async text() {
-            return transpiler.transform(fs.readFileSync(filepath), "tsx");
-          },
-        }) as BunFile,
-    );
   });
 
   afterEach(() => {
     fs.rmSync(build, { recursive: true });
-    mockCompiledFile.mockRestore();
     globalThis.mockConstants = undefined;
   });
 
@@ -69,7 +49,7 @@ describe("utils", () => {
         allWebComponents,
         pageWebComponents,
       );
-      const brisaSize = 5129;
+      const brisaSize = 5282;
       const webComponents = 670;
 
       expect(output).not.toBeNull();

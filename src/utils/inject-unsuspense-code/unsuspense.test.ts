@@ -5,13 +5,16 @@ import { describe, it, expect, beforeAll, afterAll } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const filePathname = path.join(import.meta.dir, "unsuspense.ts");
-const fileToTest = Bun.file(filePathname);
 const transpiler = new Bun.Transpiler({
   loader: "tsx",
   target: "browser",
   minifyWhitespace: true,
 });
-const code = await transpiler.transform(await fileToTest.text());
+
+const code = (await transpiler.transform(await Bun.file(filePathname).text()))
+  .replaceAll("u$", "window.u$")
+  .replaceAll("l$", "window.l$");
+
 const runCode = (ids: string[]) => {
   eval(code + ids.map((id) => `u$(${id});`).join("") + "u$('0')");
 };

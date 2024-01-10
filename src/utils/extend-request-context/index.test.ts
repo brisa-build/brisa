@@ -67,7 +67,7 @@ describe("brisa core", () => {
 
       globalThis.sockets = new Map();
       globalThis.sockets.set(requestId, {
-        send: (m) => mockSend(m),
+        send: (m: string) => mockSend(m),
       } as ServerWebSocket<unknown>);
 
       const request = new Request("https://example.com");

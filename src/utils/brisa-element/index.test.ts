@@ -5,9 +5,7 @@ import dangerHTML from "@/utils/danger-html";
 import { serialize } from "@/utils/serialization";
 import createContext from "@/utils/create-context";
 import { BrisaContext, WebContext } from "@/types";
-
-let brisaElement: any;
-let _on: symbol, _off: symbol;
+import brisaElement, { _on, _off } from ".";
 
 declare global {
   interface Window {
@@ -19,10 +17,6 @@ describe("utils", () => {
   describe("brisa-element", () => {
     beforeAll(async () => {
       GlobalRegistrator.register();
-      const module = await import(".");
-      brisaElement = module.default;
-      _on = module._on;
-      _off = module._off;
     });
     afterAll(() => {
       GlobalRegistrator.unregister();
