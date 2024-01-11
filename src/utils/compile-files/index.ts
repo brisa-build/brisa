@@ -1,4 +1,4 @@
-import { BuildArtifact } from "bun";
+import type { BuildArtifact } from "bun";
 import fs from "node:fs";
 import path from "node:path";
 

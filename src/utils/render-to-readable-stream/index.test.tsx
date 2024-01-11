@@ -1,9 +1,9 @@
-import { MatchedRoute } from "bun";
+import { type MatchedRoute } from "bun";
 import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
 import getConstants from "@/constants";
 import { toInline } from "@/helpers";
-import { ComponentType, RequestContext, Translate } from "@/types";
+import type { ComponentType, RequestContext, Translate } from "@/types";
 import createContext from "@/utils/create-context";
 import dangerHTML from "@/utils/danger-html";
 import extendRequestContext from "@/utils/extend-request-context";

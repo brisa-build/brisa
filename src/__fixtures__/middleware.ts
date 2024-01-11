@@ -1,4 +1,4 @@
-import { RequestContext } from "@/types";
+import type { RequestContext } from "@/types";
 import notFound from "@/utils/not-found";
 
 export default async function middleware(request: RequestContext) {

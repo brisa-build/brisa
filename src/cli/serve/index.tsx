@@ -1,6 +1,6 @@
 import getConstants from "@/constants";
 import { serveOptions } from "./serve-options";
-import { ServeOptions, Server } from "bun";
+import type { ServeOptions, Server } from "bun";
 
 const { LOG_PREFIX } = getConstants();
 

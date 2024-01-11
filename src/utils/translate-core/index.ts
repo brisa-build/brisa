@@ -1,5 +1,5 @@
 import getConstants from "@/constants";
-import {
+import type {
   I18nConfig,
   I18nDictionary,
   Translate,

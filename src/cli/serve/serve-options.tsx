@@ -1,9 +1,9 @@
-import { MatchedRoute, ServerWebSocket, type Serve } from "bun";
+import { type MatchedRoute, type ServerWebSocket, type Serve } from "bun";
 import fs from "node:fs";
 import path from "node:path";
 
 import getConstants from "@/constants";
-import { RequestContext } from "@/types";
+import type { RequestContext } from "@/types";
 import extendRequestContext from "@/utils/extend-request-context";
 import getImportableFilepath from "@/utils/get-importable-filepath";
 import getRouteMatcher from "@/utils/get-route-matcher";

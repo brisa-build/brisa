@@ -1,4 +1,4 @@
-import { BunFile } from "bun";
+import type { BunFile } from "bun";
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";

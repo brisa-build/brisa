@@ -7,7 +7,7 @@
  * - Remove astring and meriyah dependencies
  */
 import { generate } from "astring";
-import { JavaScriptLoader } from "bun";
+import type { JavaScriptLoader } from "bun";
 import { ESTree, parseScript } from "meriyah";
 
 export default function AST(loader: JavaScriptLoader = "tsx") {

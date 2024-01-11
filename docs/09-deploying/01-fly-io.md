@@ -14,9 +14,8 @@ Follow this docs to install `flyctl`:
 Then, login with:
 
 ```sh
-flyctl auth login 
+flyctl auth login
 ```
-
 
 ## Deploy your application
 
@@ -26,6 +25,6 @@ Deploying your Brisa app is done with the following command:
 fly deploy
 ```
 
-That's all 🥳. 
+That's all 🥳.
 
 After executing this command you will have access to the URL of your Brisa app.

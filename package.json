@@ -3,7 +3,7 @@
   "module": "./out/core/index.js",
   "main": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
@@ -73,8 +73,8 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "13.0.0",
-    "brisa": "0.0.15",
-    "bun-types": "1.0.22"
+    "brisa": "0.0.17",
+    "@types/bun": "1.0.1"
   },
   "peerDependencies": {
     "typescript": "5.3.3"

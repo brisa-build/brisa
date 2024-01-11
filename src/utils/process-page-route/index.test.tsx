@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import path from "node:path";
-import { MatchedRoute } from "bun";
+import type { MatchedRoute } from "bun";
 
 import getConstants from "@/constants";
 import renderToReadableStream from "@/utils/render-to-readable-stream";

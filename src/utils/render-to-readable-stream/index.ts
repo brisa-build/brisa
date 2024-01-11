@@ -2,7 +2,7 @@ import fs from "node:fs";
 
 import type { ComponentType, Props, RequestContext } from "@/types";
 import extendStreamController, {
-  Controller,
+  type Controller,
 } from "@/utils/extend-stream-controller";
 import generateHrefLang from "@/utils/generate-href-lang";
 import renderAttributes from "@/utils/render-attributes";

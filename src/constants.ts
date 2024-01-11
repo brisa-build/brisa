@@ -1,5 +1,5 @@
 import path from "node:path";
-import { Configuration, I18nConfig } from "./types";
+import type { Configuration, I18nConfig } from "./types";
 import getRootDir from "./utils/get-root-dir";
 import importFileIfExists from "./utils/import-file-if-exists";
 

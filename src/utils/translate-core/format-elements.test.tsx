@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { JSXElement } from "@/types";
+import { type JSXElement } from "@/types";
 import formatElements, { tagParsingRegex } from "./format-elements";
 
 describe("utils", () => {

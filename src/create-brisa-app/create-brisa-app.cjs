@@ -16,7 +16,7 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
   fs.mkdirSync(PROJECT_NAME);
   process.chdir(PROJECT_NAME);
 
-  const BRISA_VERSION = "0.0.17";
+  const BRISA_VERSION = "0.0.18";
 
   console.log("\n🛠️  Installing brisa...\n");
 
@@ -34,7 +34,7 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
       brisa: BRISA_VERSION,
     },
     devDependencies: {
-      "bun-types": "latest",
+      "@types/bun": "latest",
     },
     peerDependencies: {
       typescript: "latest",
@@ -62,7 +62,9 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
       allowSyntheticDefaultImports: true,
       forceConsistentCasingInFileNames: true,
       allowJs: true,
-      types: ["bun-types", "brisa"],
+      verbatimModuleSyntax: true,
+      noFallthroughCasesInSwitch: true,
+      types: ["brisa"],
       paths: {
         "@/*": ["*"],
       },

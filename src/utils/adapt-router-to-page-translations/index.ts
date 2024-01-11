@@ -1,5 +1,10 @@
 import extendRequestContext from "@/utils/extend-request-context";
-import { I18nConfig, RequestContext, RouterType, Translations } from "@/types";
+import type {
+  I18nConfig,
+  RequestContext,
+  RouterType,
+  Translations,
+} from "@/types";
 import routeMatchPathname from "@/utils/route-match-pathname";
 import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 
