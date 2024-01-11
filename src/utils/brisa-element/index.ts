@@ -1,4 +1,4 @@
-import { WebContext, BrisaContext } from "@/types";
+import type { WebContext, BrisaContext } from "@/types";
 import getProviderId from "@/utils/get-provider-id";
 import { deserialize, serialize } from "@/utils/serialization";
 import signals from "@/utils/signals";

@@ -1,5 +1,5 @@
 import getConstants from "@/constants";
-import { RequestContext } from "@/types";
+import type { RequestContext } from "@/types";
 import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 
 export default function generateHrefLang(request: RequestContext) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import SSRWebComponent from ".";
-import { WebContext } from "@/types";
+import { type WebContext } from "@/types";
 import extendRequestContext from "@/utils/extend-request-context";
 import createContext from "@/utils/create-context";
 

@@ -1,5 +1,5 @@
 import getConstants from "@/constants";
-import { I18nConfig, Props, RequestContext, Translations } from "@/types";
+import type { I18nConfig, Props, RequestContext, Translations } from "@/types";
 import routeMatchPathname from "@/utils/route-match-pathname";
 import { serialize } from "@/utils/serialization";
 import stylePropsToString from "@/utils/style-props-to-string";

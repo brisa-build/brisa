@@ -1,6 +1,6 @@
 import { toInline } from "@/helpers";
 import { Fragment } from "@/jsx-runtime";
-import { RequestContext } from "@/types";
+import { type RequestContext } from "@/types";
 
 type Props = {
   Component: any;

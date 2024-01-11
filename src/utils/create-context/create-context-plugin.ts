@@ -1,4 +1,4 @@
-import { BunPlugin } from "bun";
+import type { BunPlugin } from "bun";
 import { logError } from "@/utils/log/log-build";
 import AST from "@/utils/ast";
 

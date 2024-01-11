@@ -1,5 +1,5 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
-import { MatchedRoute } from "bun";
+import type { MatchedRoute } from "bun";
 
 import generateHrefLang from ".";
 import getConstants from "@/constants";

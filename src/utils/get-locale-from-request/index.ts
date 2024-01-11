@@ -1,5 +1,5 @@
 import getConstants from "@/constants";
-import { I18nConfig, RequestContext } from "@/types";
+import type { I18nConfig, RequestContext } from "@/types";
 
 export default function getLocaleFromRequest(request: RequestContext): string {
   const { I18N_CONFIG = {} as I18nConfig, LOCALES_SET } = getConstants();

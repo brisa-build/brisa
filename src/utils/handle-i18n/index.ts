@@ -3,7 +3,7 @@ import getRouteMatcher from "@/utils/get-route-matcher";
 import getConstants from "@/constants";
 import translateCore from "@/utils/translate-core";
 import adaptRouterToPageTranslations from "@/utils/adapt-router-to-page-translations";
-import { RequestContext } from "@/types";
+import type { RequestContext } from "@/types";
 
 export default function handleI18n(req: RequestContext): {
   response?: Response;

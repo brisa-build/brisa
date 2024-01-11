@@ -1,5 +1,5 @@
 import getConstants from "@/constants";
-import { RequestContext } from "@/types";
+import type { RequestContext } from "@/types";
 
 export default function redirectTrailingSlash(
   request: RequestContext,

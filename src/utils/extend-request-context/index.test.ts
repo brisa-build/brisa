@@ -1,5 +1,5 @@
 import { describe, it, expect, mock, afterEach } from "bun:test";
-import { ServerWebSocket } from "bun";
+import type { ServerWebSocket } from "bun";
 
 import extendRequestContext from ".";
 import createContext from "@/utils/create-context";

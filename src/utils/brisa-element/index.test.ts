@@ -4,7 +4,7 @@ import createPortal from "@/utils/create-portal";
 import dangerHTML from "@/utils/danger-html";
 import { serialize } from "@/utils/serialization";
 import createContext from "@/utils/create-context";
-import { BrisaContext, WebContext } from "@/types";
+import type { BrisaContext, WebContext } from "@/types";
 import brisaElement, { _on, _off } from ".";
 
 declare global {
