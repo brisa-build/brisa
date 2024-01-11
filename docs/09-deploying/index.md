@@ -1,6 +1,6 @@
 ---
 title: Deploying
-description: Learn how to deploy your Next.js app to production, either managed or self-hosted.
+description: Learn how to deploy your Brisa app to production
 ---
 
 Congratulations, it's time to ship to production.
