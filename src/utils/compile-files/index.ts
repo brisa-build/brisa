@@ -1,4 +1,4 @@
-import type { BuildArtifact } from "bun";
+import { gzipSync, type BuildArtifact } from "bun";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -105,8 +105,8 @@ export default async function compileFiles() {
 
       return {
         Route: `${symbol} ${route}`,
-        Size: byteSizeToString(output.size, 0),
-        "Client size": byteSizeToString(clientSizesPerPage[route] ?? 0, 0),
+        "JS server": byteSizeToString(output.size, 0),
+        "JS client (gz)": byteSizeToString(clientSizesPerPage[route] ?? 0, 0),
       };
     }),
   );
@@ -157,9 +157,12 @@ async function compileClientCodePage(
 
     const hash = Bun.hash(code);
     const clientPage = clientCodePath.replace(".js", `-${hash}.js`);
+    const gzipClientPage = gzipSync(new TextEncoder().encode(code));
 
-    fs.writeFileSync(clientCodePath.replace(".js", ".txt"), hash.toString());
-    fs.writeFileSync(clientPage, code);
+    Bun.write(clientCodePath.replace(".js", ".txt"), hash.toString());
+    Bun.write(clientPage, code);
+    Bun.write(`${clientPage}.gz`, gzipClientPage);
+    clientSizesPerPage[route] = gzipClientPage.length;
   }
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
@@ -171,10 +174,7 @@ async function compileClientCodePage(
     .join("\n")}
 }`;
 
-  fs.writeFileSync(
-    path.join(internalPath, "types.ts"),
-    intrinsicCustomElements,
-  );
+  Bun.write(path.join(internalPath, "types.ts"), intrinsicCustomElements);
 
   return clientSizesPerPage;
 }

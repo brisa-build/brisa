@@ -61,8 +61,5 @@ describe("compileAssets", () => {
         "some-text.txt",
       ].toSorted(),
     );
-    expect(
-      fs.readdirSync(path.join(BUILD_DIR, "pages-client")).toSorted(),
-    ).toEqual(["index.js", "index.js.gz"].toSorted());
   });
 });
