@@ -89,6 +89,7 @@ export default async function compileFiles() {
     outputs.map((output) => {
       const route = output.path.replace(BUILD_DIR, "");
       const isChunk = route.startsWith("/chunk-");
+      const isPage = route.startsWith("/pages");
       let symbol = "λ";
 
       if (isChunk) {
@@ -106,7 +107,9 @@ export default async function compileFiles() {
       return {
         Route: `${symbol} ${route}`,
         "JS server": byteSizeToString(output.size, 0),
-        "JS client (gz)": byteSizeToString(clientSizesPerPage[route] ?? 0, 0),
+        "JS client (gz)": isPage
+          ? byteSizeToString(clientSizesPerPage[route] ?? 0, 0, true)
+          : "",
       };
     }),
   );

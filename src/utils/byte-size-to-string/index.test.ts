@@ -34,5 +34,29 @@ describe("utils", () => {
 
       expect(output).toBe(expected);
     });
+
+    it("should display the green color for 0 B", () => {
+      const input = 0;
+      const output = byteSizeToString(input, 0, true);
+      const expected = "\x1b[32m0 B\x1b[0m";
+
+      expect(output).toBe(expected);
+    });
+
+    it("should display the yellow color for more than 70 kB", () => {
+      const input = 70001;
+      const output = byteSizeToString(input, 0, true);
+      const expected = "\x1b[33m70 kB\x1b[0m";
+
+      expect(output).toBe(expected);
+    });
+
+    it("should display the red color for more than 100 kB", () => {
+      const input = 100001;
+      const output = byteSizeToString(input, 0, true);
+      const expected = "\x1b[31m100 kB\x1b[0m";
+
+      expect(output).toBe(expected);
+    });
   });
 });
