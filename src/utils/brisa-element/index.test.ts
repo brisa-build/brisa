@@ -2703,5 +2703,21 @@ describe("utils", () => {
         '<div style="color:red;"></div>',
       );
     });
+
+    it("i18n from webContext is always the window.i18n object", () => {
+      window.i18n = { t: () => "works" };
+      const Component = ({}, { i18n }: WebContext) => {
+        return ["div", {}, i18n.t("test")];
+      };
+
+      customElements.define("i18n-component", brisaElement(Component));
+      document.body.innerHTML = "<i18n-component />";
+
+      const i18nComponent = document.querySelector(
+        "i18n-component",
+      ) as HTMLElement;
+
+      expect(i18nComponent?.shadowRoot?.innerHTML).toBe("<div>works</div>");
+    });
   });
 });
