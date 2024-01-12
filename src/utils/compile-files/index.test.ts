@@ -109,6 +109,20 @@ describe("utils", () => {
       expect(files[8]).toBe("pages-client");
       expect(files[9]).toBe("websocket.js");
 
+      const pagesClient = fs
+        .readdirSync(path.join(BUILD_DIR, "pages-client"))
+        .toSorted();
+
+      expect(pagesClient).toHaveLength(8);
+      expect(pagesClient[0]).toMatch(/_404-\d+\.js/);
+      expect(pagesClient[1]).toBe("_404.txt");
+      expect(pagesClient[2]).toMatch(/_500-\d+\.js/);
+      expect(pagesClient[3]).toBe("_500.txt");
+      expect(pagesClient[4]).toMatch(/index-\d+\.js/);
+      expect(pagesClient[5]).toBe("index.txt");
+      expect(pagesClient[6]).toMatch(/page-with-web-component-\d+\.js/);
+      expect(pagesClient[7]).toBe("page-with-web-component.txt");
+
       const info = constants.LOG_PREFIX.INFO;
       const chunkHash = files[2].replace("chunk-", "").replace(".js", "");
       const anotherChunkHash = files[3]

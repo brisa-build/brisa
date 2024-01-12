@@ -255,10 +255,9 @@ async function enqueueDuringRendering(
 
     // Close body tag
     else if (type === "body") {
-      const clientFile = request.route?.filePath?.replace(
-        "/pages",
-        "/pages-client",
-      );
+      const clientFile = request.route?.filePath
+        ?.replace("/pages", "/pages-client")
+        ?.replace(".js", ".txt");
 
       // Transfer store to client
       if ((request as any).webStore.size > 0) {
@@ -272,8 +271,11 @@ async function enqueueDuringRendering(
 
       // Client file
       if (fs.existsSync(clientFile!)) {
+        const hash = await Bun.file(clientFile).text();
+        const filename = request.route.src.replace(".js", `-${hash}.js`);
+
         controller.enqueue(
-          `<script>${await Bun.file(clientFile!).text()}</script>`,
+          `<script async src="/_brisa/pages/${filename}"></script>`,
           suspenseId,
         );
       }
