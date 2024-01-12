@@ -113,15 +113,19 @@ describe("utils", () => {
         .readdirSync(path.join(BUILD_DIR, "pages-client"))
         .toSorted();
 
-      expect(pagesClient).toHaveLength(8);
+      expect(pagesClient).toHaveLength(12);
       expect(pagesClient[0]).toMatch(/_404-\d+\.js/);
-      expect(pagesClient[1]).toBe("_404.txt");
-      expect(pagesClient[2]).toMatch(/_500-\d+\.js/);
-      expect(pagesClient[3]).toBe("_500.txt");
-      expect(pagesClient[4]).toMatch(/index-\d+\.js/);
-      expect(pagesClient[5]).toBe("index.txt");
-      expect(pagesClient[6]).toMatch(/page-with-web-component-\d+\.js/);
-      expect(pagesClient[7]).toBe("page-with-web-component.txt");
+      expect(pagesClient[1]).toMatch(/_404-\d+\.js.gz/);
+      expect(pagesClient[2]).toBe("_404.txt");
+      expect(pagesClient[3]).toMatch(/_500-\d+\.js/);
+      expect(pagesClient[4]).toMatch(/_500-\d+\.js.gz/);
+      expect(pagesClient[5]).toBe("_500.txt");
+      expect(pagesClient[6]).toMatch(/index-\d+\.js/);
+      expect(pagesClient[7]).toMatch(/index-\d+\.js.gz/);
+      expect(pagesClient[8]).toBe("index.txt");
+      expect(pagesClient[9]).toMatch(/page-with-web-component-\d+\.js/);
+      expect(pagesClient[10]).toMatch(/page-with-web-component-\d+\.js.gz/);
+      expect(pagesClient[11]).toBe("page-with-web-component.txt");
 
       const info = constants.LOG_PREFIX.INFO;
       const chunkHash = files[2].replace("chunk-", "").replace(".js", "");
@@ -133,22 +137,22 @@ describe("utils", () => {
 
       const expected = minifyText(`
     ${info}
-    ${info}Route                               | Size | Client size  
-    ${info}------------------------------------------------------------
-    ${info}λ /pages/_404.js                    | 421 B | 6 kB 
-    ${info}λ /pages/_500.js                    | 427 B | 6 kB 
-    ${info}λ /pages/page-with-web-component.js | 360 B | 6 kB
-    ${info}λ /pages/somepage.js                | 341 B | 0 B
-    ${info}λ /pages/somepage-with-context.js   | 327 B | 0 B
-    ${info}λ /pages/index.js                   | 267 B | 217 B 
-    ${info}λ /pages/user/[username].js         | 175 B | 0 B 
-    ${info}ƒ /middleware.js                    | 412 B | 0 B
-    ${info}λ /api/example.js                   | 275 B | 0 B 
-    ${info}Δ /layout.js                        | 342 B | 0 B
-    ${info}Ω /i18n.js                          | 154 B | 0 B
-    ${info}Ψ /websocket.js                     | 199 B | 0 B
-    ${info}Φ /chunk-${chunkHash}.js        | 2 kB  | 0 B
-    ${info}Φ /chunk-${anotherChunkHash}.js       | 66 B  | 0 B
+    ${info}Route                               | JS server | JS client (gz)  
+    ${info}-------------------------------------------------------------------
+    ${info}λ /pages/_404.js                    | 421 B     | 3 kB 
+    ${info}λ /pages/_500.js                    | 427 B     | 3 kB 
+    ${info}λ /pages/page-with-web-component.js | 360 B     | 3 kB
+    ${info}λ /pages/somepage.js                | 341 B     | 0 B
+    ${info}λ /pages/somepage-with-context.js   | 327 B     | 0 B
+    ${info}λ /pages/index.js                   | 267 B     | 186 B 
+    ${info}λ /pages/user/[username].js         | 175 B     | 0 B 
+    ${info}ƒ /middleware.js                    | 412 B     | 0 B
+    ${info}λ /api/example.js                   | 275 B     | 0 B 
+    ${info}Δ /layout.js                        | 342 B     | 0 B
+    ${info}Ω /i18n.js                          | 154 B     | 0 B
+    ${info}Ψ /websocket.js                     | 199 B     | 0 B
+    ${info}Φ /chunk-${chunkHash}.js            | 2 kB      | 0 B
+    ${info}Φ /chunk-${anotherChunkHash}.js     | 66 B      | 0 B
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
