@@ -7,7 +7,6 @@ import precompressAssets from "@/utils/precompress-assets";
 export default async function compileAssets() {
   const { SRC_DIR, BUILD_DIR } = getConstants();
   const outAssetsDir = path.join(BUILD_DIR, "public");
-  const clientPagesDir = path.join(BUILD_DIR, "pages-client");
   const inAssetsDir = path.join(SRC_DIR, "public");
 
   if (!fs.existsSync(outAssetsDir)) {
@@ -21,7 +20,4 @@ export default async function compileAssets() {
     // Precompress all assets
     await precompressAssets(outAssetsDir).catch(console.error);
   }
-
-  // Precompress all client pages
-  await precompressAssets(clientPagesDir).catch(console.error);
 }
