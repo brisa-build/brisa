@@ -24,6 +24,9 @@ function minifyText(text: string) {
   return text.replace(/\s+/g, " ").trim();
 }
 
+const green = (text: string) =>
+  Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
+
 describe("utils", () => {
   describe("compileFiles DEVELOPMENT", () => {
     afterEach(() => {
@@ -139,20 +142,20 @@ describe("utils", () => {
     ${info}
     ${info}Route                               | JS server | JS client (gz)  
     ${info}-------------------------------------------------------------------
-    ${info}λ /pages/_404.js                    | 421 B     | 3 kB 
-    ${info}λ /pages/_500.js                    | 427 B     | 3 kB 
-    ${info}λ /pages/page-with-web-component.js | 360 B     | 3 kB
-    ${info}λ /pages/somepage.js                | 341 B     | 0 B
-    ${info}λ /pages/somepage-with-context.js   | 327 B     | 0 B
-    ${info}λ /pages/index.js                   | 267 B     | 186 B 
-    ${info}λ /pages/user/[username].js         | 175 B     | 0 B 
-    ${info}ƒ /middleware.js                    | 412 B     | 0 B
-    ${info}λ /api/example.js                   | 275 B     | 0 B 
-    ${info}Δ /layout.js                        | 342 B     | 0 B
-    ${info}Ω /i18n.js                          | 154 B     | 0 B
-    ${info}Ψ /websocket.js                     | 199 B     | 0 B
-    ${info}Φ /chunk-${chunkHash}.js            | 2 kB      | 0 B
-    ${info}Φ /chunk-${anotherChunkHash}.js     | 66 B      | 0 B
+    ${info}λ /pages/_404.js                    | 421 B     | ${green("3 kB")} 
+    ${info}λ /pages/_500.js                    | 427 B     | ${green("3 kB")} 
+    ${info}λ /pages/page-with-web-component.js | 360 B     | ${green("3 kB")} 
+    ${info}λ /pages/somepage.js                | 341 B     | ${green("0 B")} 
+    ${info}λ /pages/somepage-with-context.js   | 327 B     | ${green("0 B")} 
+    ${info}λ /pages/index.js                   | 267 B     | ${green("186 B")}  
+    ${info}λ /pages/user/[username].js         | 175 B     | ${green("0 B")}
+    ${info}ƒ /middleware.js                    | 412 B     |
+    ${info}λ /api/example.js                   | 275 B     |
+    ${info}Δ /layout.js                        | 342 B     |
+    ${info}Ω /i18n.js                          | 154 B     |
+    ${info}Ψ /websocket.js                     | 199 B     |
+    ${info}Φ /chunk-${chunkHash}.js            | 2 kB      |
+    ${info}Φ /chunk-${anotherChunkHash}.js     | 66 B      |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
