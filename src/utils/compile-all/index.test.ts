@@ -47,23 +47,25 @@ describe.skip("compileAll", () => {
     const succes = await compileAll();
     expect(succes).toEqual(true);
     const files = fs.readdirSync(OUT_DIR).toSorted();
-    expect(files).toHaveLength(10);
+    expect(files).toHaveLength(11);
     expect(files[0]).toBe("_brisa");
     expect(files[1]).toBe("api");
     expect(files[2]).toContain("chunk-");
-    expect(files[3]).toBe("i18n.js");
-    expect(files[4]).toBe("layout.js");
-    expect(files[5]).toBe("middleware.js");
-    expect(files[6]).toBe("pages");
-    expect(files[7]).toBe("pages-client");
-    expect(files[8]).toBe("public");
-    expect(files[9]).toBe("websocket.js");
+    expect(files[3]).toContain("chunk-");
+    expect(files[4]).toBe("i18n.js");
+    expect(files[5]).toBe("layout.js");
+    expect(files[6]).toBe("middleware.js");
+    expect(files[7]).toBe("pages");
+    expect(files[8]).toBe("pages-client");
+    expect(files[9]).toBe("public");
+    expect(files[10]).toBe("websocket.js");
     expect(fs.readdirSync(path.join(OUT_DIR, "pages")).toSorted()).toEqual(
       [
         "somepage.js",
         "index.js",
         "user",
         "_404.js",
+        "_500.js",
         "page-with-web-component.js",
         "somepage-with-context.js",
       ].toSorted(),

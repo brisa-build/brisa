@@ -50,6 +50,7 @@ let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
 let rootRouter = getRouteMatcher(BUILD_DIR);
 
 const HOT_RELOAD_TOPIC = "hot-reload";
+const PUBLIC_CLIENT_PAGE_SUFFIX = "/_brisa/pages/";
 const WEBSOCKET_PATH = getImportableFilepath("websocket", BUILD_DIR);
 const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
 const route404 = pagesRouter.reservedRoutes[PAGE_404];
@@ -78,8 +79,18 @@ export const serveOptions = {
     const url = new URL(request.finalURL);
     const assetPath = path.join(ASSETS_DIR, url.pathname);
     const isHome = url.pathname === "/";
+    const isClientPage = url.pathname.startsWith(PUBLIC_CLIENT_PAGE_SUFFIX);
     const isAnAsset = !isHome && fs.existsSync(assetPath);
     const i18nRes = isAnAsset ? {} : handleI18n(request);
+
+    if (isClientPage) {
+      const clientPagePath = path.join(
+        BUILD_DIR,
+        "pages-client",
+        url.pathname.replace(PUBLIC_CLIENT_PAGE_SUFFIX, ""),
+      );
+      return serveAsset(clientPagePath, request);
+    }
 
     const isValidRoute = () => {
       return (
@@ -191,27 +202,29 @@ async function handleRequest(req: RequestContext, isAnAsset: boolean) {
   // Assets
   if (isAnAsset) {
     const assetPath = path.join(ASSETS_DIR, url.pathname);
-    const isGzip = req.headers.get("accept-encoding")?.includes?.("gzip");
-    const file = Bun.file(assetPath);
-    const gzipHeaders = {
-      "content-encoding": "gzip",
-      vary: "Accept-Encoding",
-    };
-    const responseOptions = {
-      headers: {
-        "content-type": file.type,
-        ...(isGzip ? gzipHeaders : {}),
-      },
-    };
-
-    return new Response(
-      isGzip ? Bun.file(`${assetPath}.gz`) : file,
-      responseOptions,
-    );
+    return serveAsset(assetPath, req);
   }
 
   // 404 page
   return error404(req);
+}
+
+function serveAsset(path: string, req: RequestContext) {
+  const isGzip = req.headers.get("accept-encoding")?.includes?.("gzip");
+  const file = Bun.file(path);
+  const gzipHeaders = {
+    "content-encoding": "gzip",
+    vary: "Accept-Encoding",
+  };
+  const responseOptions = {
+    headers: {
+      "content-type": file.type,
+      "cache-control": "public, max-age=31536000, immutable",
+      ...(isGzip ? gzipHeaders : {}),
+    },
+  };
+
+  return new Response(isGzip ? Bun.file(`${path}.gz`) : file, responseOptions);
 }
 
 async function responseRenderedPage({

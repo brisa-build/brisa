@@ -16,10 +16,13 @@ const SRC_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const BUILD_DIR = path.join(SRC_DIR, "build");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
+const CLIENT_PAGES = path.join(BUILD_DIR, "pages-client");
 
 describe("compileAssets", () => {
   beforeAll(() => {
     fs.mkdirSync(BUILD_DIR);
+    fs.mkdirSync(CLIENT_PAGES);
+    fs.writeFileSync(path.join(CLIENT_PAGES, "index.js"), "");
   });
 
   afterAll(() => {
@@ -42,7 +45,9 @@ describe("compileAssets", () => {
 
   it("should compile fixtures assets correctly", async () => {
     await compileAssets();
-    expect(fs.readdirSync(BUILD_DIR)).toEqual(["public"]);
+    expect(fs.readdirSync(BUILD_DIR).toSorted()).toEqual(
+      ["public", "pages-client"].toSorted(),
+    );
     expect(fs.readdirSync(path.join(BUILD_DIR, "public")).toSorted()).toEqual(
       ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted(),
     );
@@ -56,5 +61,8 @@ describe("compileAssets", () => {
         "some-text.txt",
       ].toSorted(),
     );
+    expect(
+      fs.readdirSync(path.join(BUILD_DIR, "pages-client")).toSorted(),
+    ).toEqual(["index.js", "index.js.gz"].toSorted());
   });
 });
