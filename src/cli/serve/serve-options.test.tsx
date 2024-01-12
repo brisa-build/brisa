@@ -56,7 +56,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Some internal error <web-component></web-component></h1>",
     );
-    expect(html).toContain("500 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_500.tsx"></script>`,
+    );
   });
 
   it('should be possible to redirect to "/" in the middleware', async () => {
@@ -87,7 +89,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain("404 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+    );
   });
 
   it("should return 404 page without redirect to the locale if the page doesn't exist", async () => {
@@ -103,7 +107,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain("404 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+    );
   });
 
   it("should return 404 page without redirect to the trailingSlash if the page doesn't exist", async () => {
@@ -125,7 +131,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain("404 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+    );
   });
 
   it("should return 404 page without redirect to the locale and trailingSlash if the page doesn't exist", async () => {
@@ -147,7 +155,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain("404 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+    );
   });
 
   it("should return 404 page", async () => {
@@ -163,7 +173,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain("404 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+    );
   });
 
   it("should return 404 page with a valid url but with the param _not-found in the query string", async () => {
@@ -181,7 +193,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain("404 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+    );
   });
 
   it("should return 200 page with web component", async () => {
@@ -189,7 +203,7 @@ describe("CLI: serve", () => {
     const mockFile = spyOn(Bun, "file").mockImplementation(
       () =>
         ({
-          text: () => Promise.resolve("I am a web component JS code"),
+          text: () => Promise.resolve(""),
         }) as BunFile,
     );
 
@@ -203,7 +217,9 @@ describe("CLI: serve", () => {
 
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain("<script>I am a web component JS code</script>");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/page-with-web-component.tsx"></script`,
+    );
     expect(html).toContain("<web-component></web-component>");
   });
 
@@ -554,7 +570,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain("404 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+    );
   });
 
   it("should return 404 page if the api route exist but the method does not", async () => {
@@ -571,7 +589,9 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
-    expect(html).toContain("404 client code");
+    expect(html).toContain(
+      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+    );
   });
 
   it("should return an asset in gzip if the browser accept it", async () => {
@@ -594,5 +614,23 @@ describe("CLI: serve", () => {
       "text/plain;charset=utf-8",
     );
     expect(text).toBe("Some text :D");
+  });
+
+  it("should cache client page code", async () => {
+    const mockFile = spyOn(Bun, "file").mockImplementation(
+      () =>
+        ({
+          text: (pathname: string) => Promise.resolve(pathname),
+        }) as BunFile,
+    );
+    const response = await testRequest(
+      new Request(`http:///localhost:1234/_brisa/pages/somepage`),
+    );
+
+    mockFile.mockRestore();
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe(
+      "public, max-age=31536000, immutable",
+    );
   });
 });

@@ -155,7 +155,11 @@ async function compileClientCodePage(
 
     if (!code) continue;
 
-    fs.writeFileSync(clientCodePath, code);
+    const hash = Bun.hash(code);
+    const clientPage = clientCodePath.replace(".js", `-${hash}.js`);
+
+    fs.writeFileSync(clientCodePath.replace(".js", ".txt"), hash.toString());
+    fs.writeFileSync(clientPage, code);
   }
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
