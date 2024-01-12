@@ -1,8 +1,9 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it, afterEach } from "bun:test";
 import SSRWebComponent from ".";
 import { type WebContext } from "@/types";
 import extendRequestContext from "@/utils/extend-request-context";
 import createContext from "@/utils/create-context";
+import translateCore from "../translate-core";
 
 const requestContext = extendRequestContext({
   originalRequest: new Request("http://localhost"),
@@ -10,6 +11,9 @@ const requestContext = extendRequestContext({
 
 describe("utils", () => {
   describe("SSRWebComponent", () => {
+    afterEach(() => {
+      globalThis.mockConstants = undefined;
+    });
     it("should render a web component", async () => {
       const Component = () => <div>hello world</div>;
       const selector = "my-component";
@@ -404,6 +408,47 @@ describe("utils", () => {
           selector,
         },
         requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].props.children[0]).toBe("hello world");
+    });
+
+    it("should i18n work correctly", async () => {
+      globalThis.mockConstants = {
+        I18N_CONFIG: {
+          locales: ["en", "ru"],
+          defaultLocale: "en",
+          messages: {
+            en: {
+              key_1: "hello {{name}}",
+            },
+          },
+        },
+      };
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost"),
+        i18n: {
+          t: translateCore("en"),
+          locale: "en",
+          locales: ["en", "ru"],
+          defaultLocale: "en",
+          pages: {},
+        },
+      });
+
+      const Component = ({}, { i18n }: WebContext) => {
+        return i18n.t("key_1", { name: "world" });
+      };
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        request,
       )) as any;
 
       expect(output.type).toBe(selector);
