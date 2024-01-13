@@ -415,21 +415,20 @@ describe("utils", () => {
     });
 
     it("should i18n work correctly", async () => {
-      globalThis.mockConstants = {
-        I18N_CONFIG: {
-          locales: ["en", "ru"],
-          defaultLocale: "en",
-          messages: {
-            en: {
-              key_1: "hello {{name}}",
-            },
+      const I18N_CONFIG = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: {
+            key_1: "hello {{name}}",
           },
         },
       };
+
       const request = extendRequestContext({
         originalRequest: new Request("http://localhost"),
         i18n: {
-          t: translateCore("en"),
+          t: translateCore("en", I18N_CONFIG),
           locale: "en",
           locales: ["en", "ru"],
           defaultLocale: "en",
