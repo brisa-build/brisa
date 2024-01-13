@@ -67,7 +67,7 @@ export default function handleI18n(req: RequestContext): {
     defaultLocale,
     locales,
     locale,
-    t: translateCore(locale),
+    t: translateCore(locale, I18N_CONFIG),
     pages: pages ?? {},
   };
 
