@@ -195,6 +195,10 @@ BAR=hello\$FOO
 process.env.BAR; // => "hello$FOO"
 ```
 
+### Brisa environment variables
+
+- `BRISA_BUILD_FOLDER` - You can **define** it to change the **build folder** and/or **use** it in your code to load files compiled for another process, see an example [here](/docs/building-your-application/configuring/zig-rust-c-files).
+
 ### `dotenv`
 
 Generally speaking, you won't need `dotenv` or `dotenv-expand` anymore, because Bun reads `.env` files automatically.
