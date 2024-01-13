@@ -154,8 +154,8 @@ describe("utils", () => {
     ${info}Δ /layout.js                        | 342 B     |
     ${info}Ω /i18n.js                          | 154 B     |
     ${info}Ψ /websocket.js                     | 199 B     |
-    ${info}Φ /chunk-${chunkHash}.js            | 2 kB      |
-    ${info}Φ /chunk-${anotherChunkHash}.js     | 66 B      |
+    ${info}Φ /chunk-${anotherChunkHash}.js     | 2 kB      |
+    ${info}Φ /chunk-${chunkHash}.js            | 106 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
