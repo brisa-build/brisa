@@ -1,13 +1,17 @@
 #!/usr/bin/env bun
 const { spawnSync } = require("child_process");
+const path = require("node:path");
+
+const BRISA_BUILD_FOLDER =
+  process.env.BRISA_BUILD_FOLDER || path.join(process.cwd(), "build");
 
 const prodOptions = {
   stdio: "inherit",
-  env: { ...process.env, NODE_ENV: "production" },
+  env: { ...process.env, NODE_ENV: "production", BRISA_BUILD_FOLDER },
 };
 const devOptions = {
   stdio: "inherit",
-  env: { ...process.env, NODE_ENV: "development" },
+  env: { ...process.env, NODE_ENV: "development", BRISA_BUILD_FOLDER },
 };
 
 let BUN_EXEC;
