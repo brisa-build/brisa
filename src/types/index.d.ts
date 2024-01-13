@@ -7,6 +7,23 @@ import { IntrinsicCustomElements } from "@/../build/_brisa/types";
 import { BunPlugin, MatchedRoute, ServerWebSocket, TLSOptions } from "bun";
 import * as CSS from "csstype";
 
+declare module "bun" {
+  interface Env {
+    /**
+     * Description:
+     *
+     * The `BRISA_BUILD_FOLDER` is the path to the build folder.
+     *
+     * Useful to compile C ABI libraries inside the build folder.
+     *
+     * Docs:
+     *
+     * - [How to use `BRISA_BUILD_FOLDER`](https://brisa.build/docs/building-your-application/configuring/zig-rust-c-files#create-a-jsts-bridge)
+     */
+    BRISA_BUILD_FOLDER: string;
+  }
+}
+
 /**
  * Description:
  *

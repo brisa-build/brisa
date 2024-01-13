@@ -5,7 +5,7 @@ import importFileIfExists from "./utils/import-file-if-exists";
 
 const rootDir = getRootDir();
 const srcDir = path.join(rootDir, "src");
-const buildDir = path.join(rootDir, "build");
+const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, "build");
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
 const I18N_CONFIG = (await importFileIfExists("i18n", buildDir))

@@ -37,6 +37,8 @@ export default async function compileFiles() {
     outdir: BUILD_DIR,
     sourcemap: IS_PRODUCTION ? undefined : "inline",
     root: SRC_DIR,
+    // Necessary to use bun:ffi and bun API in server files
+    target: "bun",
     minify: IS_PRODUCTION,
     splitting: true,
     plugins: [

@@ -142,18 +142,18 @@ describe("utils", () => {
     ${info}
     ${info}Route                               | JS server | JS client (gz)  
     ${info}-------------------------------------------------------------------
-    ${info}λ /pages/_404.js                    | 421 B     | ${green("3 kB")} 
-    ${info}λ /pages/_500.js                    | 427 B     | ${green("3 kB")} 
-    ${info}λ /pages/page-with-web-component.js | 360 B     | ${green("3 kB")} 
-    ${info}λ /pages/somepage.js                | 341 B     | ${green("0 B")} 
-    ${info}λ /pages/somepage-with-context.js   | 327 B     | ${green("0 B")} 
-    ${info}λ /pages/index.js                   | 267 B     | ${green("186 B")}  
-    ${info}λ /pages/user/[username].js         | 175 B     | ${green("0 B")}
-    ${info}ƒ /middleware.js                    | 412 B     |
-    ${info}λ /api/example.js                   | 275 B     |
-    ${info}Δ /layout.js                        | 342 B     |
-    ${info}Ω /i18n.js                          | 154 B     |
-    ${info}Ψ /websocket.js                     | 199 B     |
+    ${info}λ /pages/_404.js                    | 429 B     | ${green("3 kB")} 
+    ${info}λ /pages/_500.js                    | 435 B     | ${green("3 kB")} 
+    ${info}λ /pages/page-with-web-component.js | 368 B     | ${green("3 kB")} 
+    ${info}λ /pages/somepage.js                | 349 B     | ${green("0 B")} 
+    ${info}λ /pages/somepage-with-context.js   | 335 B     | ${green("0 B")} 
+    ${info}λ /pages/index.js                   | 275 B     | ${green("186 B")}  
+    ${info}λ /pages/user/[username].js         | 183 B     | ${green("0 B")}
+    ${info}ƒ /middleware.js                    | 420 B     |
+    ${info}λ /api/example.js                   | 283 B     |
+    ${info}Δ /layout.js                        | 350 B     |
+    ${info}Ω /i18n.js                          | 162 B     |
+    ${info}Ψ /websocket.js                     | 207 B     |
     ${info}Φ /chunk-${chunkHash}.js            | 2 kB      |
     ${info}Φ /chunk-${anotherChunkHash}.js     | 66 B      |
     ${info}
