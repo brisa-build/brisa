@@ -137,7 +137,18 @@ async function compileClientCodePage(
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
   const internalPath = path.join(BUILD_DIR, "_brisa");
 
-  if (!fs.existsSync(pagesClientPath)) fs.mkdirSync(pagesClientPath);
+  // During hotreloading it is important to clean pages-client because
+  // new client files are generated with hash, this hash can change
+  // and many files would be accumulated during development.
+  //
+  // On the other hand, in production it will always be empty because
+  // the whole build is cleaned at startup.
+  if (fs.existsSync(pagesClientPath)) {
+    fs.rmSync(pagesClientPath, { recursive: true });
+  }
+  // Create pages-client
+  fs.mkdirSync(pagesClientPath);
+
   if (!fs.existsSync(internalPath)) fs.mkdirSync(internalPath);
 
   const clientSizesPerPage: Record<string, Blob["size"]> = {};
