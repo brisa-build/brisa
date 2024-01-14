@@ -70,15 +70,16 @@ Develop a JavaScript/TypeScript file to bridge to the compiled file.
 import { dlopen, FFIType, suffix } from "bun:ffi";
 import path from "node:path";
 
-// You can use BRISA_BUILD_FOLDER env to access to the build folder
 const compileFilePath = path.join(
+  // You can use BRISA_BUILD_FOLDER env to access to the build folder
   Bun.env.BRISA_BUILD_FOLDER,
+  // "prebuild" folder during build time is copied inside the build folder
   "prebuild",
+  // `suffix` is either "dylib", "so", or "dll" depending on the platform
+  // you don't have to use "suffix", it's just there for convenience
   `libadd.${suffix}`,
 );
 
-// `suffix` is either "dylib", "so", or "dll" depending on the platform
-// you don't have to use "suffix", it's just there for convenience
 const lib = dlopen(compileFilePath, {
   add: {
     args: [FFIType.i32, FFIType.i32],
