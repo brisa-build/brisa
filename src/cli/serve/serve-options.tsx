@@ -13,6 +13,7 @@ import { isNotFoundError } from "@/utils/not-found";
 import processPageRoute from "@/utils/process-page-route";
 import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
+import feedbackError from "@/utils/feedback-error";
 
 const {
   IS_PRODUCTION,
@@ -123,6 +124,10 @@ export const serveOptions = {
     return handleRequest(request, isAnAsset).catch((error) => {
       // 404 page
       if (isNotFoundError(error)) return error404(request);
+
+      // Log some feedback in the terminal depending on the error
+      // in development and production
+      feedbackError(error);
 
       // 500 page
       const route500 = pagesRouter.reservedRoutes[PAGE_500];

@@ -4,6 +4,7 @@ import compileAll from "@/utils/compile-all";
 import getConstants from "@/constants";
 
 const { IS_PRODUCTION, LOG_PREFIX, BUILD_DIR, ROOT_DIR } = getConstants();
+const prebuildPath = path.join(ROOT_DIR, "prebuild");
 
 console.log(
   LOG_PREFIX.WAIT,
@@ -24,16 +25,11 @@ const ms = ((end - start) / 1e6).toFixed(2);
 
 if (!success) process.exit(1);
 
-// Move all lib* root files to build dir
+// Copy prebuild folder inside build
 // useful for FFI: https://brisa.build/docs/building-your-application/configuring/zig-rust-c-files
-const rootFiles = fs.readdirSync(ROOT_DIR, { withFileTypes: true });
-
-for (const file of rootFiles) {
-  if (!file.name.startsWith("lib") || !file.isFile()) continue;
-  fs.renameSync(
-    path.join(ROOT_DIR, file.name),
-    path.join(BUILD_DIR, file.name),
-  );
+if (fs.existsSync(prebuildPath)) {
+  const finalPrebuildPath = path.join(BUILD_DIR, "prebuild");
+  fs.cpSync(prebuildPath, finalPrebuildPath, { recursive: true });
 }
 
 if (IS_PRODUCTION) console.info(LOG_PREFIX.INFO, `✨  Done in ${ms}ms.`);
