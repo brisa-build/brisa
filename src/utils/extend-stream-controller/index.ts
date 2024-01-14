@@ -20,6 +20,7 @@ export type Controller = {
   hasId(id: string): boolean;
   hasHeadTag: boolean;
   insideHeadTag: boolean;
+  hasUnsuspense: boolean;
 };
 
 type SuspensedState = {
@@ -49,6 +50,7 @@ export default function extendStreamController(
     head,
     hasHeadTag: false,
     insideHeadTag: false,
+    hasUnsuspense: false,
     setCurrentWebComponentSymbol(symbol) {
       if (symbol) openWebComponents.push(symbol);
       else openWebComponents.pop();

@@ -123,9 +123,9 @@ describe("utils", () => {
       expect(pagesClient[3]).toMatch(/_500-\d+\.js/);
       expect(pagesClient[4]).toMatch(/_500-\d+\.js.gz/);
       expect(pagesClient[5]).toBe("_500.txt");
-      expect(pagesClient[6]).toMatch(/index-\d+\.js/);
-      expect(pagesClient[7]).toMatch(/index-\d+\.js.gz/);
-      expect(pagesClient[8]).toBe("index.txt");
+      expect(pagesClient[6]).toBe("_unsuspense.js");
+      expect(pagesClient[7]).toBe("_unsuspense.js.gz");
+      expect(pagesClient[8]).toBe("_unsuspense.txt");
       expect(pagesClient[9]).toMatch(/page-with-web-component-\d+\.js/);
       expect(pagesClient[10]).toMatch(/page-with-web-component-\d+\.js.gz/);
       expect(pagesClient[11]).toBe("page-with-web-component.txt");
