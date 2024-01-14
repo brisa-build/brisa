@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import renderAttributes from ".";
 import getConstants from "@/constants";
 import extendRequestContext from "@/utils/extend-request-context";
+import type { MatchedRoute } from "bun";
 
 describe("utils", () => {
   describe("renderAttributes", () => {
@@ -46,6 +47,40 @@ describe("utils", () => {
       });
 
       expect(attributes).toBe(' href="/ru/about"');
+    });
+
+    it('should render the "a" href attribute with the same dynamic value', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/en/user/aral"),
+        route: {
+          name: "user",
+          params: {
+            id: "aral",
+          },
+        } as unknown as MatchedRoute,
+      });
+
+      request.i18n = {
+        locale: "ru",
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        pages: {
+          "/user/[id]": {
+            ru: "/пользователь/[id]",
+          },
+        },
+        t: () => "",
+      };
+
+      const attributes = renderAttributes({
+        props: {
+          href: "/пользователь/[id]",
+        },
+        request,
+        type: "a",
+      });
+
+      expect(attributes).toBe(' href="/ru/пользователь/aral"');
     });
 
     it('should add the lang attribute in the "html" tag the ltr direction', () => {

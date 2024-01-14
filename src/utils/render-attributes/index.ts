@@ -89,6 +89,10 @@ export function renderI18nHrefAttribute(
   const trailingSlashSymbol = CONFIG.trailingSlash ? "/" : "";
   let pathname = pagePathname.replace(/\/$/, "");
 
+  for (const [key, value] of Object.entries(request.route?.params ?? {})) {
+    pathname = pathname.replace(`[${key}]`, value);
+  }
+
   if (isExternalUrl || !locale) return pagePathname;
 
   const page = findTranslatedPage(pages, pathname);
