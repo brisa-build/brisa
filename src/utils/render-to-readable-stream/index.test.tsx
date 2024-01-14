@@ -10,7 +10,6 @@ import dangerHTML from "@/utils/danger-html";
 import extendRequestContext from "@/utils/extend-request-context";
 import notFound from "@/utils/not-found";
 import SSRWebComponent from "@/utils/ssr-web-component";
-import type { BunFile } from "bun";
 
 const emptyI18n = {
   locale: "",
