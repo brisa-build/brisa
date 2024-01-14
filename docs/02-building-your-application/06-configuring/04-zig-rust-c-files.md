@@ -42,7 +42,11 @@ or with Rust:
 rustc --crate-type cdylib add.rs
 ```
 
-Then, we need to move the generated files inside the `prebuild` folder. This `prebuild` folder is used during `brisa dev` and `brisa build` where all the `prebuild` files are copied inside `build/prebuild`, to be able to use them later in runtime.
+Then, we need to move the generated files inside the `prebuild` folder.
+
+> [!NOTE]
+>
+> This `prebuild` folder is used during `brisa dev` and `brisa build` where all the `prebuild` files are copied inside `build/prebuild`, to be able to use them later in runtime.
 
 Example of script inside `package.json` to compile inside `prebuild` folder:
 
