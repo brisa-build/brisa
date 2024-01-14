@@ -38,7 +38,7 @@ describe("utils", () => {
     it("should not return client code in page without web components, without suspense, without server actions", async () => {
       const input = path.join(pages, "somepage.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
-      const expected = { code: "", size: 0 };
+      const expected = { code: "", unsuspense: "", size: 0 };
       expect(output).toEqual(expected);
     });
 
@@ -67,7 +67,9 @@ describe("utils", () => {
 
       const output = await getClientCodeInPage(input, allWebComponents);
       const expected = {
-        code: "l$=new Set;u$=(h)=>{const r=(v)=>document.getElementById(v);l$.add(h);for(let v of l$){const g=r(`S:${v}`),f=r(`U:${v}`);if(g&&f)l$.delete(v),g.replaceWith(f.content.cloneNode(!0)),f.remove(),r(`R:${v}`)?.remove()}};\n",
+        code: "",
+        unsuspense:
+          "l$=new Set;u$=(h)=>{const r=(v)=>document.getElementById(v);l$.add(h);for(let v of l$){const g=r(`S:${v}`),f=r(`U:${v}`);if(g&&f)l$.delete(v),g.replaceWith(f.content.cloneNode(!0)),f.remove(),r(`R:${v}`)?.remove()}};\n",
         size: 217,
       };
       expect(output).toEqual(expected);

@@ -1,4 +1,5 @@
 import { type MatchedRoute } from "bun";
+import path from "node:path";
 import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
 import getConstants from "@/constants";
@@ -9,6 +10,7 @@ import dangerHTML from "@/utils/danger-html";
 import extendRequestContext from "@/utils/extend-request-context";
 import notFound from "@/utils/not-found";
 import SSRWebComponent from "@/utils/ssr-web-component";
+import type { BunFile } from "bun";
 
 const emptyI18n = {
   locale: "",
@@ -17,6 +19,8 @@ const emptyI18n = {
   t: () => "",
   pages: {},
 };
+
+const FIXTURES_PATH = path.join(import.meta.dir, "..", "..", "__fixtures__");
 
 const testRequest = extendRequestContext({
   originalRequest: new Request("http://test.com/"),
@@ -474,9 +478,23 @@ describe("utils", () => {
           <body></body>
         </html>
       );
-      const stream = renderToReadableStream(element, testOptions);
+      const request = extendRequestContext({
+        originalRequest: new Request(testRequest),
+        route: {
+          filePath: "/index.js",
+        } as MatchedRoute,
+      });
+
+      globalThis.mockConstants = {
+        ...getConstants(),
+        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+      };
+
+      const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toMatch(/<html><head><\/head><body><\/body><\/html>/gm);
+      expect(result).toContain(
+        '<script src="/_brisa/pages/_unsuspense.js"></script>',
+      );
     });
 
     it("should render the suspense component before if the async component support it", async () => {

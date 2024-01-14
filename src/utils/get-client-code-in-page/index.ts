@@ -38,12 +38,11 @@ export default async function getClientCodeInPage(
     Object.assign(pageWebComponents, item.webComponents);
   }
 
-  if (useSuspense) {
-    code += unsuspenseScriptCode;
-    size += unsuspenseScriptCode.length;
-  }
+  const unsuspense = useSuspense ? unsuspenseScriptCode : "";
 
-  if (!Object.keys(pageWebComponents).length) return { code, size };
+  size += unsuspense.length;
+
+  if (!Object.keys(pageWebComponents).length) return { code, unsuspense, size };
 
   const transformedCode = await transformToWebComponents(
     pageWebComponents,
@@ -55,7 +54,7 @@ export default async function getClientCodeInPage(
   code += transformedCode?.code;
   size += transformedCode?.size ?? 0;
 
-  return { code, size };
+  return { code, unsuspense, size };
 }
 
 async function transformToWebComponents(
