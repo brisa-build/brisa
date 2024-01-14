@@ -694,6 +694,74 @@ describe("utils", () => {
       );
     });
 
+    it("should translate dynamic routes to the correct path", async () => {
+      testRequest.i18n = {
+        locale: "en",
+        locales: ["en", "es", "it", "fr", "de"],
+        defaultLocale: "en",
+        t: ((v: string) => v.toUpperCase()) as Translate,
+        pages: {
+          "/user/[username]": {
+            en: "/user/[username]",
+            es: "/usuario/[username]",
+            it: "/utente/[username]",
+            fr: "/utilisateur/[username]",
+            de: "/benutzer/[username]",
+          },
+        },
+      };
+
+      testRequest.route = {
+        name: "/user/[username]",
+        pathname: "/user/aralroca",
+        params: {
+          username: "aralroca",
+        },
+      } as unknown as MatchedRoute;
+
+      function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
+        const { locales, locale, pages, t } = i18n;
+
+        return (
+          <ul>
+            {locales.map((lang) => {
+              const pathname = pages[route.name]?.[lang] ?? route.pathname;
+
+              if (lang === locale) return null;
+
+              return (
+                <li>
+                  <a href={`/${lang}${pathname}`}>{t(lang)}</a>
+                </li>
+              );
+            })}
+          </ul>
+        );
+      }
+
+      const stream = renderToReadableStream(<ChangeLocale />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+      testRequest.i18n = emptyI18n;
+      expect(result).toBe(
+        toInline(`
+          <ul>
+            <li>
+              <a href="/es/usuario/aralroca">ES</a>
+            </li>
+            <li>
+              <a href="/it/utente/aralroca">IT</a>
+            </li>
+            <li>
+              <a href="/fr/utilisateur/aralroca">FR</a>
+            </li>
+            <li>
+              <a href="/de/benutzer/aralroca">DE</a>
+            </li>
+          </ul>
+        `),
+      );
+    });
+
     it("should replace the lang attribute inside the html tag when i18n locale exist", async () => {
       testRequest.i18n = {
         locale: "es",
