@@ -56,7 +56,9 @@ Example of script inside `package.json` to compile inside `prebuild` folder:
     "dev": "brisa dev",
     "build": "brisa build",
     "start": "brisa start",
-    "build:add.zig": "cd prebuild && zig build-lib ../src/zig/add.zig -dynamic -OReleaseFast && cd .."
+    "build:zig": "cd prebuild && bun run build:zig:for-your-computer && bun run build:zig:docker:oven/bun && cd ..",
+    "build:zig:for-your-computer": "zig build-lib ../src/zig/add.zig -dynamic -OReleaseFast",
+    "build:zig:docker:oven/bun": "zig build-lib ../src/zig/add.zig -dynamic -OReleaseFast -target x86_64-linux-musl",
   }
 }
 ```
