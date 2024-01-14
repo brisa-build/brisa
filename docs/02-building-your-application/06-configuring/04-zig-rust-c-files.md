@@ -98,6 +98,10 @@ Ensure correct typing for the `args` and the `return`.
 
 Access the environment variable `BRISA_BUILD_FOLDER` via `process.env.BRISA_BUILD_FOLDER` or `Bun.env.BRISA_BUILD_FOLDER`. This represents the path to the build folder, where the `prebuild` files are located.
 
+> [!NOTE]
+>
+> `Bun.env.BRISA_BUILD_FOLDER` works in `development` and `production`.
+
 ## Consume it in Your Server Code
 
 Now, you can use it in any server file: components, layout, middleware, API, response headers, etc.
