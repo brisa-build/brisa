@@ -186,7 +186,7 @@ async function compileClientCodePage(
 
     // register page route to _unsuspense.txt
     else if (unsuspense) {
-      const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.text");
+      const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.txt");
       const unsuspenseText = fs.readFileSync(unsuspenseListPath).toString();
 
       Bun.write(
