@@ -275,7 +275,7 @@ async function enqueueDuringRendering(
         const filename = request.route.src.replace(".js", `-${hash}.js`);
 
         controller.enqueue(
-          `<script async src="/_brisa/pages/${filename}"></script>`,
+          `<script async fetchpriority="high" src="/_brisa/pages/${filename}"></script>`,
           suspenseId,
         );
       }
