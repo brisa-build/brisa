@@ -1,8 +1,10 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect, spyOn } from "bun:test";
 import AST from "@/utils/ast";
+import constants from "@/constants";
 import analyzeClientAst from ".";
 
 const { parseCodeToAST } = AST("tsx");
+const { LOG_PREFIX } = constants;
 
 describe("utils", () => {
   describe("analyze-client-ast", () => {
@@ -13,13 +15,13 @@ describe("utils", () => {
         }
       `);
 
-      const { useSuspense, useContextProvider, useI18n, webComponents } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(useI18n).toBeFalse();
-      expect(useContextProvider).toBeFalse();
-      expect(webComponents).toEqual({});
-      expect(useSuspense).toBeFalse();
+      expect(res.useI18n).toBeFalse();
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.webComponents).toEqual({});
+      expect(res.useSuspense).toBeFalse();
+      expect(res.i18nKeys).toBeEmpty();
     });
     it("should detect suspense", async () => {
       const ast = parseCodeToAST(`
@@ -30,13 +32,13 @@ describe("utils", () => {
         Component.suspense = () => <div>loading...</div>
       `);
 
-      const { useSuspense, useContextProvider, useI18n, webComponents } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(useI18n).toBeFalse();
-      expect(useContextProvider).toBeFalse();
-      expect(webComponents).toEqual({});
-      expect(useSuspense).toBeTrue();
+      expect(res.useI18n).toBeFalse();
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.webComponents).toEqual({});
+      expect(res.useSuspense).toBeTrue();
+      expect(res.i18nKeys).toBeEmpty();
     });
 
     it("should detect web components", async () => {
@@ -48,18 +50,18 @@ describe("utils", () => {
         Component.suspense = () => <div>loading...</div>
       `);
 
-      const { webComponents, useI18n, useContextProvider, useSuspense } =
-        await analyzeClientAst(ast, {
-          "my-component": "my-component.js",
-          "another-component": "another-component.js",
-        });
+      const res = await analyzeClientAst(ast, {
+        "my-component": "my-component.js",
+        "another-component": "another-component.js",
+      });
 
-      expect(useI18n).toBeFalse();
-      expect(useContextProvider).toBeFalse();
-      expect(useSuspense).toBeTrue();
-      expect(webComponents).toEqual({
+      expect(res.useI18n).toBeFalse();
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeTrue();
+      expect(res.webComponents).toEqual({
         "my-component": "my-component.js",
       });
+      expect(res.i18nKeys).toBeEmpty();
     });
 
     it("should detect web components inside suspense", async () => {
@@ -71,18 +73,18 @@ describe("utils", () => {
         Component.suspense = () => <another-component>loading...</another-component>
       `);
 
-      const { webComponents, useContextProvider, useI18n, useSuspense } =
-        await analyzeClientAst(ast, {
-          "my-component": "my-component.js",
-          "another-component": "another-component.js",
-        });
-
-      expect(useI18n).toBeFalse();
-      expect(useContextProvider).toBeFalse();
-      expect(useSuspense).toBeTrue();
-      expect(webComponents).toEqual({
+      const res = await analyzeClientAst(ast, {
+        "my-component": "my-component.js",
         "another-component": "another-component.js",
       });
+
+      expect(res.useI18n).toBeFalse();
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeTrue();
+      expect(res.webComponents).toEqual({
+        "another-component": "another-component.js",
+      });
+      expect(res.i18nKeys).toBeEmpty();
     });
 
     it("should not detect context-provider when serverOnly", async () => {
@@ -92,12 +94,13 @@ describe("utils", () => {
         }
       `);
 
-      const { useContextProvider, useSuspense, useI18n } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(useContextProvider).toBeFalse();
-      expect(useSuspense).toBeFalse();
-      expect(useI18n).toBeFalse();
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeFalse();
+      expect(res.webComponents).toEqual({});
+      expect(res.i18nKeys).toBeEmpty();
     });
 
     it("should detect context-provider", async () => {
@@ -107,12 +110,13 @@ describe("utils", () => {
         }
       `);
 
-      const { useContextProvider, useSuspense, useI18n } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(useContextProvider).toBeTrue();
-      expect(useSuspense).toBeFalse();
-      expect(useI18n).toBeFalse();
+      expect(res.useContextProvider).toBeTrue();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeFalse();
+      expect(res.webComponents).toEqual({});
+      expect(res.i18nKeys).toBeEmpty();
     });
 
     it("should detect i18n when is declated and used to consume the locale", async () => {
@@ -123,47 +127,47 @@ describe("utils", () => {
         }
       `);
 
-      const { webComponents, useI18n, useContextProvider, useSuspense } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(webComponents).toEqual({});
-      expect(useContextProvider).toBeFalse();
-      expect(useSuspense).toBeFalse();
-      expect(useI18n).toBeTrue();
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toBeEmpty();
     });
 
-    it("should detect i18n when is used to consume the locale from props identifier", async () => {
+    it("should detect i18n when is used to consume the locale from webContext identifier", async () => {
       const ast = parseCodeToAST(`  
-        export default function Component(props) {
-          const { locale } = props.i18n;
+        export default function Component(webContext) {
+          const { locale } = webContext.i18n;
           return <div>{locale}</div>
         }
       `);
 
-      const { useI18n, useContextProvider, useSuspense, webComponents } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(webComponents).toEqual({});
-      expect(useContextProvider).toBeFalse();
-      expect(useSuspense).toBeFalse();
-      expect(useI18n).toBeTrue();
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toBeEmpty();
     });
 
-    it("should detect i18n when is used to consume the locale from props identifier + destructuring", async () => {
+    it("should detect i18n when is used to consume the locale from webContext identifier + destructuring", async () => {
       const ast = parseCodeToAST(`  
-        export default function Component(props) {
-          const { i18n } = props;
+        export default function Component(webContext) {
+          const { i18n } = webContext;
           return <div>{i18n.locale}</div>
         }
       `);
 
-      const { useI18n, useContextProvider, useSuspense, webComponents } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(webComponents).toEqual({});
-      expect(useContextProvider).toBeFalse();
-      expect(useSuspense).toBeFalse();
-      expect(useI18n).toBeTrue();
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toBeEmpty();
     });
 
     it("should detect i18n when is used to consume t function", async () => {
@@ -173,13 +177,13 @@ describe("utils", () => {
         }
       `);
 
-      const { useI18n, useContextProvider, useSuspense, webComponents } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(webComponents).toEqual({});
-      expect(useContextProvider).toBeFalse();
-      expect(useSuspense).toBeFalse();
-      expect(useI18n).toBeTrue();
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toEqual(new Set(["hello"]));
     });
 
     it("should detect i18n when is used to consume t function from arrow function", async () => {
@@ -191,13 +195,102 @@ describe("utils", () => {
         export default Component;
       `);
 
-      const { useI18n, useContextProvider, useSuspense, webComponents } =
-        await analyzeClientAst(ast, {});
+      const res = await analyzeClientAst(ast, {});
 
-      expect(webComponents).toEqual({});
-      expect(useContextProvider).toBeFalse();
-      expect(useSuspense).toBeFalse();
-      expect(useI18n).toBeTrue();
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toEqual(new Set(["hello"]));
+    });
+
+    it("should return all the i18n keys used in the component", async () => {
+      const ast = parseCodeToAST(`
+        export default function Component({}, {i18n}) {
+          return <div>{i18n.t("hello")}</div>
+        }
+      `);
+
+      const res = await analyzeClientAst(ast, {});
+
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toEqual(new Set(["hello"]));
+    });
+
+    it("should return all the i18n keys used in the component using destructuring", async () => {
+      const ast = parseCodeToAST(`
+        export default function Component({}, {i18n: { t }}) {
+          return <div>{t("hello")}</div>
+        }
+      `);
+
+      const res = await analyzeClientAst(ast, {});
+
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toEqual(new Set(["hello"]));
+    });
+
+    it("should return all the i18n keys used in the component using webContext identifier", async () => {
+      const ast = parseCodeToAST(`
+        export default function Component({}, webContext) {
+          return <div>{webContext.i18n.t("hello")}</div>
+        }
+      `);
+
+      const res = await analyzeClientAst(ast, {});
+
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toEqual(new Set(["hello"]));
+    });
+
+    it("should not return as i18n keys when is not using i18n", async () => {
+      const ast = parseCodeToAST(`
+        import t from "i18n";
+
+        export default function Component() {
+          return <div>{t("hello")}</div>
+        }
+      `);
+
+      const res = await analyzeClientAst(ast, {});
+
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeFalse();
+      expect(res.i18nKeys).toBeEmpty();
+    });
+
+    it("should log a warning and no return i18n keys when there is no literal as first argument", async () => {
+      const mockLog = spyOn(console, "log");
+      const ast = parseCodeToAST(`
+        export default function Component({}, {i18n}) {
+          return <div>{i18n.t(variable)}</div>
+        }
+      `);
+
+      const res = await analyzeClientAst(ast, {});
+
+      const logs = mockLog.mock.calls.toString();
+      mockLog.mockRestore();
+
+      expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toBeEmpty();
+      expect(logs).toContain("Ops! Warning:");
+      expect(logs).toContain("Addressing Dynamic i18n Key Export Limitations");
+      expect(logs).toContain("Code: i18n.t(variable)");
     });
   });
 });

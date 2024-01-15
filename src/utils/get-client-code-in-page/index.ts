@@ -37,7 +37,11 @@ export default async function getClientCodeInPage(
   const nestedComponents = await Promise.all(
     Object.values(pageWebComponents).map(
       async (path) =>
-        await analyzeClientAst(await getAstFromPath(path), allWebComponents),
+        await analyzeClientAst(
+          await getAstFromPath(path),
+          allWebComponents,
+          pagepath,
+        ),
     ),
   );
 
