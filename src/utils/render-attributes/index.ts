@@ -1,4 +1,4 @@
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import type { I18nConfig, Props, RequestContext, Translations } from "@/types";
 import routeMatchPathname from "@/utils/route-match-pathname";
 import { serialize } from "@/utils/serialization";

@@ -2,7 +2,7 @@ import { type MatchedRoute } from "bun";
 import path from "node:path";
 import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
 import type { ComponentType, RequestContext, Translate } from "@/types";
 import createContext from "@/utils/create-context";

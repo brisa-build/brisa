@@ -1,7 +1,7 @@
 import { rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import AST from "@/utils/ast";
 import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
 import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };

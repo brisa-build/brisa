@@ -2,7 +2,7 @@ import { gzipSync, type BuildArtifact } from "bun";
 import fs from "node:fs";
 import path from "node:path";
 
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import byteSizeToString from "@/utils/byte-size-to-string";
 import getClientCodeInPage from "@/utils/get-client-code-in-page";
 import getEntrypoints from "@/utils/get-entrypoints";

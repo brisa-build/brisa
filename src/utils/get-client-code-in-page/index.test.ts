@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import getClientCodeInPage from ".";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import getWebComponentsList from "@/utils/get-web-components-list";
 
 const src = path.join(import.meta.dir, "..", "..", "__fixtures__");

@@ -1,6 +1,6 @@
 import { watch } from "node:fs";
 import path from "node:path";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import dangerHTML from "@/utils/danger-html";
 import compileAll from "@/utils/compile-all";
 
