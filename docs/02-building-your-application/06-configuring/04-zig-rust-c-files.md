@@ -42,40 +42,30 @@ or with Rust:
 rustc --crate-type cdylib add.rs
 ```
 
-Then, we need to move the generated files inside the `build` folder.
+Then, we need to move the generated files inside the `prebuild` folder.
 
-We recommend to use the `predev` and `prebuild` script to your `package.json` to compile and move them.
+> [!NOTE]
+>
+> This `prebuild` folder is used during `brisa dev` and `brisa build` where all the `prebuild` files are copied inside `build/prebuild`, to be able to use them later in runtime.
 
-Instead of:
+Example of script inside `package.json` to compile inside `prebuild` folder:
 
 ```json
 {
   "scripts": {
     "dev": "brisa dev",
-    "build": "brisa build",
-    "start": "brisa start"
-  }
-}
-```
-
-Add these scripts:
-
-```json
-{
-  "scripts": {
-    "predev": "bun run build-ffi",
-    "dev": "brisa dev",
-    "prebuild": "bun run build-ffi",
     "build": "brisa build",
     "start": "brisa start",
-    "build-ffi": "zig build-lib src/zig/add.zig -dynamic -OReleaseFast"
+    "build:zig": "cd prebuild && bun run build:zig:for-your-computer && bun run build:zig:docker:oven/bun && cd ..",
+    "build:zig:for-your-computer": "zig build-lib ../src/zig/add.zig -dynamic -OReleaseFast",
+    "build:zig:docker:oven/bun": "zig build-lib ../src/zig/add.zig -dynamic -OReleaseFast -target x86_64-linux-musl"
   }
 }
 ```
 
-> [!IMPORTANT]
+> [!CAUTION]
 >
-> During the build process, Brisa automatically moves all generated files starting with `lib*` from the root to the build folder in both development (`predev`) and production (`prebuild`).
+> If you do not have the `prebuild` folder you must create it.
 
 ## Create a JS/TS Bridge
 
@@ -86,9 +76,17 @@ Develop a JavaScript/TypeScript file to bridge to the compiled file.
 import { dlopen, FFIType, suffix } from "bun:ffi";
 import path from "node:path";
 
-// `suffix` is either "dylib", "so", or "dll" depending on the platform
-// you don't have to use "suffix", it's just there for convenience
-const lib = dlopen(path.join(Bun.env.BRISA_BUILD_FOLDER, `libadd.${suffix}`), {
+const compileFilePath = path.join(
+  // You can use BRISA_BUILD_FOLDER env to access to the build folder
+  Bun.env.BRISA_BUILD_FOLDER,
+  // "prebuild" folder during build time is copied inside the build folder
+  "prebuild",
+  // `suffix` is either "dylib", "so", or "dll" depending on the platform
+  // you don't have to use "suffix", it's just there for convenience
+  `libadd.${suffix}`,
+);
+
+const lib = dlopen(compileFilePath, {
   add: {
     args: [FFIType.i32, FFIType.i32],
     returns: FFIType.i32,
@@ -100,7 +98,11 @@ export default lib.symbols.add;
 
 Ensure correct typing for the `args` and the `return`.
 
-Access the environment variable `BRISA_BUILD_FOLDER` via `process.env.BRISA_BUILD_FOLDER` or `Bun.env.BRISA_BUILD_FOLDER`. This represents the path to the build folder, where the `lib*` files are located.
+Access the environment variable `BRISA_BUILD_FOLDER` via `process.env.BRISA_BUILD_FOLDER` or `Bun.env.BRISA_BUILD_FOLDER`. This represents the path to the build folder, where the `prebuild` files are located.
+
+> [!NOTE]
+>
+> `Bun.env.BRISA_BUILD_FOLDER` works in `development` and `production`.
 
 ## Consume it in Your Server Code
 

@@ -1,6 +1,6 @@
 import getLocaleFromRequest from "@/utils/get-locale-from-request";
 import getRouteMatcher from "@/utils/get-route-matcher";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import translateCore from "@/utils/translate-core";
 import adaptRouterToPageTranslations from "@/utils/adapt-router-to-page-translations";
 import type { RequestContext } from "@/types";

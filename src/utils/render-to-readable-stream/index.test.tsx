@@ -1,7 +1,8 @@
 import { type MatchedRoute } from "bun";
+import path from "node:path";
 import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
 import type { ComponentType, RequestContext, Translate } from "@/types";
 import createContext from "@/utils/create-context";
@@ -17,6 +18,8 @@ const emptyI18n = {
   t: () => "",
   pages: {},
 };
+
+const FIXTURES_PATH = path.join(import.meta.dir, "..", "..", "__fixtures__");
 
 const testRequest = extendRequestContext({
   originalRequest: new Request("http://test.com/"),
@@ -474,9 +477,23 @@ describe("utils", () => {
           <body></body>
         </html>
       );
-      const stream = renderToReadableStream(element, testOptions);
+      const request = extendRequestContext({
+        originalRequest: new Request(testRequest),
+        route: {
+          filePath: "/index.js",
+        } as MatchedRoute,
+      });
+
+      globalThis.mockConstants = {
+        ...getConstants(),
+        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+      };
+
+      const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toMatch(/<html><head><\/head><body><\/body><\/html>/gm);
+      expect(result).toContain(
+        '<script src="/_brisa/pages/_unsuspense.js"></script>',
+      );
     });
 
     it("should render the suspense component before if the async component support it", async () => {
@@ -688,6 +705,134 @@ describe("utils", () => {
             </li>
             <li>
               <a href="/de/uber-uns">DE</a>
+            </li>
+          </ul>
+        `),
+      );
+    });
+
+    it("should use dynamic routes to the correct path", async () => {
+      testRequest.i18n = {
+        locale: "en",
+        locales: ["en", "es", "it", "fr", "de"],
+        defaultLocale: "en",
+        t: ((v: string) => v.toUpperCase()) as Translate,
+        pages: {},
+      };
+
+      testRequest.route = {
+        name: "/user/[username]",
+        pathname: "/user/aralroca",
+        params: {
+          username: "aralroca",
+        },
+      } as unknown as MatchedRoute;
+
+      function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
+        const { locales, locale, pages, t } = i18n;
+
+        return (
+          <ul>
+            {locales.map((lang) => {
+              const pathname = pages[route.name]?.[lang] ?? route.pathname;
+
+              if (lang === locale) return null;
+
+              return (
+                <li>
+                  <a href={`/${lang}${pathname}`}>{t(lang)}</a>
+                </li>
+              );
+            })}
+          </ul>
+        );
+      }
+
+      const stream = renderToReadableStream(<ChangeLocale />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+      testRequest.i18n = emptyI18n;
+      expect(result).toBe(
+        toInline(`
+          <ul>
+            <li>
+              <a href="/es/user/aralroca">ES</a>
+            </li>
+            <li>
+              <a href="/it/user/aralroca">IT</a>
+            </li>
+            <li>
+              <a href="/fr/user/aralroca">FR</a>
+            </li>
+            <li>
+              <a href="/de/user/aralroca">DE</a>
+            </li>
+          </ul>
+        `),
+      );
+    });
+
+    it("should translate dynamic routes to the correct path", async () => {
+      testRequest.i18n = {
+        locale: "en",
+        locales: ["en", "es", "it", "fr", "de"],
+        defaultLocale: "en",
+        t: ((v: string) => v.toUpperCase()) as Translate,
+        pages: {
+          "/user/[username]": {
+            en: "/user/[username]",
+            es: "/usuario/[username]",
+            it: "/utente/[username]",
+            fr: "/utilisateur/[username]",
+            de: "/benutzer/[username]",
+          },
+        },
+      };
+
+      testRequest.route = {
+        name: "/user/[username]",
+        pathname: "/user/aralroca",
+        params: {
+          username: "aralroca",
+        },
+      } as unknown as MatchedRoute;
+
+      function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
+        const { locales, locale, pages, t } = i18n;
+
+        return (
+          <ul>
+            {locales.map((lang) => {
+              const pathname = pages[route.name]?.[lang] ?? route.pathname;
+
+              if (lang === locale) return null;
+
+              return (
+                <li>
+                  <a href={`/${lang}${pathname}`}>{t(lang)}</a>
+                </li>
+              );
+            })}
+          </ul>
+        );
+      }
+
+      const stream = renderToReadableStream(<ChangeLocale />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+      testRequest.i18n = emptyI18n;
+      expect(result).toBe(
+        toInline(`
+          <ul>
+            <li>
+              <a href="/es/usuario/aralroca">ES</a>
+            </li>
+            <li>
+              <a href="/it/utente/aralroca">IT</a>
+            </li>
+            <li>
+              <a href="/fr/utilisateur/aralroca">FR</a>
+            </li>
+            <li>
+              <a href="/de/benutzer/aralroca">DE</a>
             </li>
           </ul>
         `),

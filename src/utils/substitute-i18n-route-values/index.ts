@@ -1,4 +1,6 @@
-import getConstants from "@/constants";
+import constants from "@/constants";
+
+const { REGEX } = constants;
 
 /**
  *
@@ -13,8 +15,6 @@ export default function substituteI18nRouteValues(
   route: string,
   pathname: string,
 ) {
-  const { REGEX } = getConstants();
-
   if (!route.match(REGEX.DYNAMIC)?.length) return route;
 
   const pathnameParts = pathname.split("/");

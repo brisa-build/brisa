@@ -10,7 +10,7 @@ import {
 import fs from "node:fs";
 import path from "node:path";
 import compileAll from ".";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(ROOT_DIR, "pages");

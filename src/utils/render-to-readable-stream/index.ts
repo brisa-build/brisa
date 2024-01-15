@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 
 import type { ComponentType, Props, RequestContext } from "@/types";
 import extendStreamController, {
@@ -13,6 +14,7 @@ import {
   registerSlotToActiveProviders,
   restoreSlotProviders,
 } from "@/utils/context-provider/server";
+import { getConstants } from "@/constants";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -23,7 +25,6 @@ type Options = {
 
 const CONTEXT_PROVIDER = "context-provider";
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
 const NO_INDEX = '<meta name="robots" content="noindex" />';
 const SCRIPT_404 = `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>`;
 
@@ -31,12 +32,31 @@ export default function renderToReadableStream(
   element: JSX.Element,
   { request, head }: Options,
 ) {
+  const { IS_PRODUCTION, BUILD_DIR } = getConstants();
+  const unsuspenseListPath = path.join(
+    BUILD_DIR,
+    "pages-client",
+    "_unsuspense.txt",
+  );
+
   return new ReadableStream({
     async start(controller) {
+      const unsuspenseListText = fs.existsSync(unsuspenseListPath)
+        ? await Bun.file(unsuspenseListPath).text()
+        : "";
+
       const extendedController = extendStreamController(controller, head);
       const abortPromise = new Promise((res) =>
         request.signal.addEventListener("abort", res),
       );
+
+      // Set to the controller if the page has unsuspense
+      if (unsuspenseListText) {
+        const route = (request.route?.filePath ?? "").replace(BUILD_DIR, "");
+        extendedController.hasUnsuspense = new Set(
+          unsuspenseListText.split("\n"),
+        ).has(route);
+      }
 
       const renderingPromise = enqueueDuringRendering(
         element,
@@ -251,6 +271,14 @@ async function enqueueDuringRendering(
       controller.enqueue(generateHrefLang(request), suspenseId);
       controller.hasHeadTag = true;
       controller.insideHeadTag = false;
+
+      // Script to unsuspense all suspense components
+      if (controller.hasUnsuspense) {
+        controller.enqueue(
+          '<script src="/_brisa/pages/_unsuspense.js"></script>',
+          suspenseId,
+        );
+      }
     }
 
     // Close body tag
@@ -275,7 +303,7 @@ async function enqueueDuringRendering(
         const filename = request.route.src.replace(".js", `-${hash}.js`);
 
         controller.enqueue(
-          `<script async src="/_brisa/pages/${filename}"></script>`,
+          `<script async fetchpriority="high" src="/_brisa/pages/${filename}"></script>`,
           suspenseId,
         );
       }

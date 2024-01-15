@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import path from "node:path";
 import getWebComponentsList from ".";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 
 const fixturesDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const reservedNamesDir = path.join(fixturesDir, "reserved-names");
