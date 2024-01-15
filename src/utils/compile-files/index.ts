@@ -2,7 +2,7 @@ import { gzipSync, type BuildArtifact } from "bun";
 import fs from "node:fs";
 import path from "node:path";
 
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import byteSizeToString from "@/utils/byte-size-to-string";
 import getClientCodeInPage from "@/utils/get-client-code-in-page";
 import getEntrypoints from "@/utils/get-entrypoints";
@@ -134,10 +134,21 @@ async function compileClientCodePage(
   webComponentsPerEntrypoint: Record<string, Record<string, string>>,
 ) {
   const { BUILD_DIR } = getConstants();
-  const clientCodePath = path.join(BUILD_DIR, "pages-client");
+  const pagesClientPath = path.join(BUILD_DIR, "pages-client");
   const internalPath = path.join(BUILD_DIR, "_brisa");
 
-  if (!fs.existsSync(clientCodePath)) fs.mkdirSync(clientCodePath);
+  // During hotreloading it is important to clean pages-client because
+  // new client files are generated with hash, this hash can change
+  // and many files would be accumulated during development.
+  //
+  // On the other hand, in production it will always be empty because
+  // the whole build is cleaned at startup.
+  if (fs.existsSync(pagesClientPath)) {
+    fs.rmSync(pagesClientPath, { recursive: true });
+  }
+  // Create pages-client
+  fs.mkdirSync(pagesClientPath);
+
   if (!fs.existsSync(internalPath)) fs.mkdirSync(internalPath);
 
   const clientSizesPerPage: Record<string, Blob["size"]> = {};
@@ -145,7 +156,7 @@ async function compileClientCodePage(
   for (const page of pages) {
     const route = page.path.replace(BUILD_DIR, "");
     const pagePath = path.join(BUILD_DIR, page.path.replace(BUILD_DIR, ""));
-    const clientCodePath = pagePath.replace("pages", "pages-client");
+    const clientPagePath = pagePath.replace("pages", "pages-client");
     const pageCode = await getClientCodeInPage(
       pagePath,
       allWebComponents,
@@ -154,20 +165,54 @@ async function compileClientCodePage(
 
     if (!pageCode) return null;
 
-    const { size, code } = pageCode;
+    const { size, code, unsuspense } = pageCode;
 
     clientSizesPerPage[route] = size;
 
-    if (!code) continue;
+    if (!size) continue;
 
     const hash = Bun.hash(code);
-    const clientPage = clientCodePath.replace(".js", `-${hash}.js`);
+    const clientPage = clientPagePath.replace(".js", `-${hash}.js`);
     const gzipClientPage = gzipSync(new TextEncoder().encode(code));
+    clientSizesPerPage[route] = 0;
 
-    Bun.write(clientCodePath.replace(".js", ".txt"), hash.toString());
+    // create _unsuspense.js and _unsuspense.txt (list of pages with unsuspense)
+    if (
+      unsuspense &&
+      !fs.existsSync(path.join(pagesClientPath, "_unsuspense.js"))
+    ) {
+      const gzipUnsuspense = gzipSync(new TextEncoder().encode(unsuspense));
+
+      clientSizesPerPage[route] += gzipUnsuspense.length;
+      Bun.write(path.join(pagesClientPath, "_unsuspense.js"), unsuspense);
+      Bun.write(
+        path.join(pagesClientPath, "_unsuspense.js.gz"),
+        gzipUnsuspense,
+      );
+      Bun.write(
+        path.join(pagesClientPath, "_unsuspense.txt"),
+        pagePath.replace(BUILD_DIR, ""),
+      );
+    }
+
+    // register page route to _unsuspense.txt
+    else if (unsuspense) {
+      const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.txt");
+      const unsuspenseText = fs.readFileSync(unsuspenseListPath).toString();
+
+      Bun.write(
+        unsuspenseListPath,
+        `${unsuspenseText}\n${pagePath.replace(BUILD_DIR, "")}`,
+      );
+    }
+
+    if (!code) continue;
+
+    // create page file
+    Bun.write(clientPagePath.replace(".js", ".txt"), hash.toString());
     Bun.write(clientPage, code);
     Bun.write(`${clientPage}.gz`, gzipClientPage);
-    clientSizesPerPage[route] = gzipClientPage.length;
+    clientSizesPerPage[route] += gzipClientPage.length;
   }
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {

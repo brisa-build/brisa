@@ -1,5 +1,5 @@
 import { ESTree } from "meriyah";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import wrapWithArrowFn from "@/utils/transform-jsx-to-reactive/wrap-with-arrow-fn";
 
 const FRAGMENT = { type: "Literal", value: null };

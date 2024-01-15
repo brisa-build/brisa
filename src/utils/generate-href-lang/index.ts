@@ -1,4 +1,4 @@
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
 import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 

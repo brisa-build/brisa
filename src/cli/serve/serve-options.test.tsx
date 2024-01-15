@@ -2,7 +2,7 @@ import type { BunFile } from "bun";
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -57,7 +57,7 @@ describe("CLI: serve", () => {
       "<h1>Some internal error <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_500.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_500.tsx"></script>`,
     );
   });
 
@@ -90,7 +90,7 @@ describe("CLI: serve", () => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -108,7 +108,7 @@ describe("CLI: serve", () => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -132,7 +132,7 @@ describe("CLI: serve", () => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -156,7 +156,7 @@ describe("CLI: serve", () => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -174,7 +174,7 @@ describe("CLI: serve", () => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -194,7 +194,7 @@ describe("CLI: serve", () => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -218,7 +218,7 @@ describe("CLI: serve", () => {
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      `<script async src="/_brisa/pages/page-with-web-component.tsx"></script`,
+      `<script async fetchpriority="high" src="/_brisa/pages/page-with-web-component.tsx"></script`,
     );
     expect(html).toContain("<web-component></web-component>");
   });
@@ -571,7 +571,7 @@ describe("CLI: serve", () => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -590,7 +590,7 @@ describe("CLI: serve", () => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
   });
 

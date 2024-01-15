@@ -1,4 +1,4 @@
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import type { I18nConfig, Props, RequestContext, Translations } from "@/types";
 import routeMatchPathname from "@/utils/route-match-pathname";
 import { serialize } from "@/utils/serialization";
@@ -88,6 +88,10 @@ export function renderI18nHrefAttribute(
   const isExternalUrl = URL.canParse(pagePathname);
   const trailingSlashSymbol = CONFIG.trailingSlash ? "/" : "";
   let pathname = pagePathname.replace(/\/$/, "");
+
+  for (const [key, value] of Object.entries(request.route?.params ?? {})) {
+    pathname = pathname.replace(`[${key}]`, value);
+  }
 
   if (isExternalUrl || !locale) return pagePathname;
 
