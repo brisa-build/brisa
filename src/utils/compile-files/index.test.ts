@@ -147,7 +147,7 @@ describe("utils", () => {
     ${info}λ /pages/page-with-web-component.js | 368 B     | ${green("3 kB")} 
     ${info}λ /pages/somepage.js                | 349 B     | ${green("0 B")} 
     ${info}λ /pages/somepage-with-context.js   | 335 B     | ${green("0 B")} 
-    ${info}λ /pages/index.js                   | 275 B     | ${green("186 B")}  
+    ${info}λ /pages/index.js                   | 291 B     | ${green("186 B")}  
     ${info}λ /pages/user/[username].js         | 183 B     | ${green("0 B")}
     ${info}ƒ /middleware.js                    | 420 B     |
     ${info}λ /api/example.js                   | 283 B     |
