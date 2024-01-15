@@ -1,8 +1,8 @@
-import { getConstants } from "@/constants";
+import constants from "@/constants";
 import { serveOptions } from "./serve-options";
 import type { ServeOptions, Server } from "bun";
 
-const { LOG_PREFIX } = getConstants();
+const { LOG_PREFIX } = constants;
 
 function init(options: ServeOptions) {
   try {
