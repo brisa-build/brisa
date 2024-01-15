@@ -55,11 +55,12 @@ describe("utils", () => {
         allWebComponents,
         pageWebComponents,
       );
+      const i18nCode = 2919;
       const brisaSize = 5264;
       const webComponents = 670;
 
       expect(output).not.toBeNull();
-      expect(output!.size).toEqual(brisaSize + webComponents);
+      expect(output!.size).toEqual(brisaSize + i18nCode + webComponents);
     });
 
     it("shoukld return client code size as 0 when a page does not have web components", async () => {

@@ -1,11 +1,24 @@
-import { afterEach, describe, expect, it, mock, spyOn } from "bun:test";
+import {
+  afterEach,
+  describe,
+  expect,
+  it,
+  mock,
+  spyOn,
+  beforeAll,
+  afterAll,
+  type Mock,
+} from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
 import compileFiles from ".";
 import { getConstants } from "@/constants";
+import { toInline } from "@/helpers";
 
 const originalConsoleLog = console.log;
 const DIR = import.meta.dir;
+const HASH = 123456;
+let mockHash: Mock<(val: any) => any>;
 
 // Development
 const DEV_SRC_DIR = path.join(DIR, "..", "..", "__fixtures__", "dev");
@@ -28,6 +41,12 @@ const green = (text: string) =>
   Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
 
 describe("utils", () => {
+  beforeAll(() => {
+    mockHash = spyOn(Bun, "hash").mockReturnValue(HASH);
+  });
+  afterAll(() => {
+    mockHash.mockRestore();
+  });
   describe("compileFiles DEVELOPMENT", () => {
     afterEach(() => {
       console.log = originalConsoleLog;
@@ -70,6 +89,7 @@ describe("utils", () => {
   describe("compileFiles PRODUCTION", () => {
     it("should compile fixtures routes correctly", async () => {
       const mockLog = spyOn(console, "log");
+      const pagesClientPath = path.join(BUILD_DIR, "pages-client");
       const constants = getConstants();
       globalThis.mockConstants = {
         ...constants,
@@ -79,6 +99,20 @@ describe("utils", () => {
         IS_DEVELOPMENT: false,
         SRC_DIR,
         ASSETS_DIR,
+        I18N_CONFIG: {
+          defaultLocale: "en",
+          locales: ["en", "pt"],
+          messages: {
+            en: {
+              hello: "Hello {{name}}",
+              "some-key": "Some value",
+            },
+            pt: {
+              hello: "Olá {{name}}",
+              "some-key": "Algum valor",
+            },
+          },
+        },
       };
 
       mockLog.mockImplementation(() => {});
@@ -112,23 +146,51 @@ describe("utils", () => {
       expect(files[8]).toBe("pages-client");
       expect(files[9]).toBe("websocket.js");
 
-      const pagesClient = fs
-        .readdirSync(path.join(BUILD_DIR, "pages-client"))
-        .toSorted();
+      const pagesClient = fs.readdirSync(pagesClientPath).toSorted();
 
-      expect(pagesClient).toHaveLength(12);
-      expect(pagesClient[0]).toMatch(/_404-\d+\.js/);
-      expect(pagesClient[1]).toMatch(/_404-\d+\.js.gz/);
-      expect(pagesClient[2]).toBe("_404.txt");
-      expect(pagesClient[3]).toMatch(/_500-\d+\.js/);
-      expect(pagesClient[4]).toMatch(/_500-\d+\.js.gz/);
-      expect(pagesClient[5]).toBe("_500.txt");
-      expect(pagesClient[6]).toBe("_unsuspense.js");
-      expect(pagesClient[7]).toBe("_unsuspense.js.gz");
-      expect(pagesClient[8]).toBe("_unsuspense.txt");
-      expect(pagesClient[9]).toMatch(/page-with-web-component-\d+\.js/);
-      expect(pagesClient[10]).toMatch(/page-with-web-component-\d+\.js.gz/);
-      expect(pagesClient[11]).toBe("page-with-web-component.txt");
+      expect(pagesClient).toEqual([
+        `_404-${HASH}-en.js`,
+        `_404-${HASH}-en.js.gz`,
+        `_404-${HASH}-pt.js`,
+        `_404-${HASH}-pt.js.gz`,
+        `_404-${HASH}.js`,
+        `_404-${HASH}.js.gz`,
+        `_404.txt`,
+        `_500-${HASH}-en.js`,
+        `_500-${HASH}-en.js.gz`,
+        `_500-${HASH}-pt.js`,
+        `_500-${HASH}-pt.js.gz`,
+        `_500-${HASH}.js`,
+        `_500-${HASH}.js.gz`,
+        `_500.txt`,
+        `_unsuspense.js`,
+        `_unsuspense.js.gz`,
+        `_unsuspense.txt`,
+        `page-with-web-component-${HASH}-en.js`,
+        `page-with-web-component-${HASH}-en.js.gz`,
+        `page-with-web-component-${HASH}-pt.js`,
+        `page-with-web-component-${HASH}-pt.js.gz`,
+        `page-with-web-component-${HASH}.js`,
+        `page-with-web-component-${HASH}.js.gz`,
+        `page-with-web-component.txt`,
+      ]);
+
+      // Check i18n content depending the locale
+      expect(
+        await Bun.file(path.join(pagesClientPath, `_404-${HASH}-en.js`)).text(),
+      ).toBe(
+        toInline(`
+          window.i18nMessages={"hello":"Hello {{name}}","some-key":"Some value"};
+      `),
+      );
+
+      expect(
+        await Bun.file(path.join(pagesClientPath, `_404-${HASH}-pt.js`)).text(),
+      ).toBe(
+        toInline(`
+          window.i18nMessages={"hello":"Olá {{name}}","some-key":"Algum valor"};
+      `),
+      );
 
       const info = constants.LOG_PREFIX.INFO;
       const chunkHash = files[2].replace("chunk-", "").replace(".js", "");
@@ -142,9 +204,9 @@ describe("utils", () => {
     ${info}
     ${info}Route                               | JS server | JS client (gz)  
     ${info}-------------------------------------------------------------------
-    ${info}λ /pages/_404.js                    | 429 B     | ${green("3 kB")} 
-    ${info}λ /pages/_500.js                    | 435 B     | ${green("3 kB")} 
-    ${info}λ /pages/page-with-web-component.js | 368 B     | ${green("3 kB")} 
+    ${info}λ /pages/_404.js                    | 429 B     | ${green("4 kB")} 
+    ${info}λ /pages/_500.js                    | 435 B     | ${green("4 kB")} 
+    ${info}λ /pages/page-with-web-component.js | 368 B     | ${green("4 kB")} 
     ${info}λ /pages/somepage.js                | 349 B     | ${green("0 B")} 
     ${info}λ /pages/somepage-with-context.js   | 335 B     | ${green("0 B")} 
     ${info}λ /pages/index.js                   | 291 B     | ${green("186 B")}  
@@ -154,8 +216,8 @@ describe("utils", () => {
     ${info}Δ /layout.js                        | 350 B     |
     ${info}Ω /i18n.js                          | 162 B     |
     ${info}Ψ /websocket.js                     | 207 B     |
-    ${info}Φ /chunk-${anotherChunkHash}.js     | 2 kB      |
-    ${info}Φ /chunk-${chunkHash}.js            | 106 B     |
+    ${info}Φ /chunk-${chunkHash}.js            | 2 kB      |
+    ${info}Φ /chunk-${anotherChunkHash}.js     | 106 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout

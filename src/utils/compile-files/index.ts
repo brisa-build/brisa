@@ -133,7 +133,7 @@ async function compileClientCodePage(
   allWebComponents: Record<string, string>,
   webComponentsPerEntrypoint: Record<string, Record<string, string>>,
 ) {
-  const { BUILD_DIR } = getConstants();
+  const { BUILD_DIR, I18N_CONFIG } = getConstants();
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
   const internalPath = path.join(BUILD_DIR, "_brisa");
 
@@ -165,7 +165,7 @@ async function compileClientCodePage(
 
     if (!pageCode) return null;
 
-    const { size, code, unsuspense } = pageCode;
+    const { size, code, unsuspense, useI18n, i18nKeys } = pageCode;
 
     clientSizesPerPage[route] = size;
 
@@ -207,6 +207,22 @@ async function compileClientCodePage(
     }
 
     if (!code) continue;
+
+    // create i18n page content files
+    if (useI18n && i18nKeys.size && I18N_CONFIG.messages) {
+      for (let locale of I18N_CONFIG.locales) {
+        const i18nPagePath = clientPage.replace(".js", `-${locale}.js`);
+        // TODO: load only the necessary messages instead of all
+        const i18nCode = `window.i18nMessages=${JSON.stringify(
+          I18N_CONFIG.messages[locale],
+        )};`;
+        Bun.write(i18nPagePath, i18nCode);
+        Bun.write(
+          `${i18nPagePath}.gz`,
+          gzipSync(new TextEncoder().encode(i18nCode)),
+        );
+      }
+    }
 
     // create page file
     Bun.write(clientPagePath.replace(".js", ".txt"), hash.toString());
