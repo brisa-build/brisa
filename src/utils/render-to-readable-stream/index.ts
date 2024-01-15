@@ -14,7 +14,7 @@ import {
   registerSlotToActiveProviders,
   restoreSlotProviders,
 } from "@/utils/context-provider/server";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 

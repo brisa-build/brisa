@@ -1,5 +1,5 @@
 import { ESTree } from "meriyah";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import {
   JSX_NAME,
   NO_REACTIVE_CHILDREN_EXPRESSION,

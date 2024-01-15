@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, mock, spyOn } from "bun:test";
 import fs from "node:fs";
 import path from "node:path";
 import compileFiles from ".";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 
 const originalConsoleLog = console.log;
 const DIR = import.meta.dir;

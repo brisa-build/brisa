@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "node:fs";
 
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import precompressAssets from "@/utils/precompress-assets";
 
 export default async function compileAssets() {

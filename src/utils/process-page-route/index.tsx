@@ -1,6 +1,6 @@
 import type { MatchedRoute } from "bun";
 
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import dangerHTML from "@/utils/danger-html";
 import { LiveReloadScript } from "@/cli/dev-live-reload";
 import LoadLayout from "@/utils/load-layout";

@@ -1,8 +1,8 @@
-import { describe, expect, it, beforeEach, afterEach } from "bun:test";
+import { describe, expect, it, beforeEach, mock } from "bun:test";
 import path from "node:path";
 import adaptRouterToPageTranslations from ".";
 import getRouteMatcher from "@/utils/get-route-matcher";
-import getConstants from "@/constants";
+import constants from "@/constants";
 import extendRequestContext from "@/utils/extend-request-context";
 
 const PAGES_DIR = path.join(
@@ -39,20 +39,19 @@ const createRequest = (url: string) => {
 
 describe("utils", () => {
   beforeEach(() => {
-    globalThis.mockConstants = {
-      ...(getConstants() ?? {}),
-      PAGES_DIR,
-      I18N_CONFIG: {
-        locales: ["en", "es"],
-        defaultLocale: "es",
-        pages,
-      },
-    };
+    mock.module("@/constants", () => ({
+      default: () => ({
+        ...constants,
+        PAGES_DIR,
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "es",
+          pages,
+        },
+      }),
+    }));
   });
 
-  afterEach(() => {
-    globalThis.mockConstants = undefined;
-  });
   describe("adaptRouterToPageTranslations", () => {
     describe("given a real router", () => {
       it("should NOT return the route given the original pathname respecting the locale page", () => {

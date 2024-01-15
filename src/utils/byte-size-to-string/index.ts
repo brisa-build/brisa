@@ -1,4 +1,4 @@
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 
 const BYTE_UNITS = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 

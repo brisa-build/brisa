@@ -2,7 +2,7 @@ import { describe, it, expect, mock, afterEach } from "bun:test";
 import type { MatchedRoute } from "bun";
 
 import generateHrefLang from ".";
-import getConstants from "@/constants";
+import { getConstants } from "@/constants";
 import extendRequestContext from "@/utils/extend-request-context";
 
 const warn = console.warn.bind(console);
