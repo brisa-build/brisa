@@ -1,5 +1,3 @@
-import { getConstants } from "@/constants";
-
 const BYTE_UNITS = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
 export default function byteSizeToString(
