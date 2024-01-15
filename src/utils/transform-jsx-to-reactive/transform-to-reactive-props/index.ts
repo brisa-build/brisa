@@ -4,7 +4,7 @@ import getComponentVariableNames from "@/utils/transform-jsx-to-reactive/get-com
 import getPropsNames, {
   getPropNamesFromExport,
 } from "@/utils/transform-jsx-to-reactive/get-props-names";
-import getWebComponentAst from "@/utils/transform-jsx-to-reactive/get-web-component-ast";
+import getWebComponentAst from "@/utils/get-web-component-ast";
 import manageWebContextField from "@/utils/transform-jsx-to-reactive/manage-web-context-field";
 import mapComponentStatics from "@/utils/transform-jsx-to-reactive/map-component-statics";
 

@@ -1,11 +1,11 @@
 import { ESTree } from "meriyah";
 
 import AST from "@/utils/ast";
+import getWebComponentAst from "@/utils/get-web-component-ast";
+import transformToDirectExport from "@/utils/transform-to-direct-export";
 import defineBrisaElement from "./define-brisa-element";
-import getWebComponentAst from "./get-web-component-ast";
 import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
 import optimizeEffects from "./optimize-effects";
-import transformToDirectExport from "./transform-to-direct-export";
 import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
 import mapComponentStatics from "./map-component-statics";
