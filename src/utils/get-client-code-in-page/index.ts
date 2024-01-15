@@ -8,10 +8,15 @@ import { injectClientContextProviderCode } from "@/utils/context-provider/inject
 import transformJSXToReactive from "@/utils/transform-jsx-to-reactive";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import snakeToCamelCase from "@/utils/snake-to-camelcase";
+import analyzeClientAst from "@/utils/analyze-client-ast";
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
 const ENV_VAR_PREFIX = "BRISA_PUBLIC_";
+
+async function getAstFromPath(path: string) {
+  return ASTUtil.parseCodeToAST(await Bun.file(path).text());
+}
 
 export default async function getClientCodeInPage(
   pagepath: string,
@@ -21,15 +26,18 @@ export default async function getClientCodeInPage(
   let size = 0;
   let code = "";
 
-  let { useSuspense, useContextProvider } = await analyzeClientPath(
-    pagepath,
+  const ast = await getAstFromPath(pagepath);
+
+  let { useSuspense, useContextProvider } = await analyzeClientAst(
+    ast,
     allWebComponents,
   );
 
   // Web components inside web components
   const nestedComponents = await Promise.all(
-    Object.values(pageWebComponents).map((path) =>
-      analyzeClientPath(path, allWebComponents),
+    Object.values(pageWebComponents).map(
+      async (path) =>
+        await analyzeClientAst(await getAstFromPath(path), allWebComponents),
     ),
   );
 
@@ -158,47 +166,4 @@ async function transformToWebComponents(
   }
 
   return { code: await outputs[0].text(), size: outputs[0].size };
-}
-
-async function analyzeClientPath(
-  path: string,
-  allWebComponents: Record<string, string>,
-) {
-  const pageFile = Bun.file(path);
-  const ast = ASTUtil.parseCodeToAST(await pageFile.text());
-  const webComponents: Record<string, string> = {};
-  let useSuspense = false;
-  let useContextProvider = false;
-
-  JSON.stringify(ast, (key, value) => {
-    const webComponentSelector = value?.arguments?.[0]?.value ?? "";
-    const webComponentPath = allWebComponents[webComponentSelector];
-    const isCustomElement =
-      value?.type === "CallExpression" &&
-      value?.callee?.type === "Identifier" &&
-      value?.arguments?.[0]?.type === "Literal";
-
-    const isWebComponent = webComponentPath && isCustomElement;
-
-    if (isCustomElement && webComponentSelector === "context-provider") {
-      const serverOnlyProps = value?.arguments?.[1]?.properties?.find?.(
-        (e: any) => e?.key?.name === "serverOnly",
-      );
-
-      useContextProvider ||= serverOnlyProps?.value?.value !== true;
-    }
-
-    if (isWebComponent) {
-      webComponents[webComponentSelector] = webComponentPath;
-    }
-
-    useSuspense ||=
-      value?.type === "ExpressionStatement" &&
-      value?.expression?.operator === "=" &&
-      value?.expression?.left?.property?.name === "suspense";
-
-    return value;
-  });
-
-  return { webComponents, useSuspense, useContextProvider };
 }
