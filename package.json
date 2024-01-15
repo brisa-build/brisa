@@ -72,8 +72,8 @@
     "create-brisa-app": "./create-brisa-app.cjs"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "13.0.0",
-    "brisa": "0.0.17",
+    "@happy-dom/global-registrator": "13.1.2",
+    "brisa": "0.0.19",
     "@types/bun": "1.0.1"
   },
   "peerDependencies": {
