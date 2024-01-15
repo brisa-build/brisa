@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import compileAll from "@/utils/compile-all";
-import { getConstants } from "@/constants";
+import constants from "@/constants";
 
-const { IS_PRODUCTION, LOG_PREFIX, BUILD_DIR, ROOT_DIR } = getConstants();
+const { IS_PRODUCTION, LOG_PREFIX, BUILD_DIR, ROOT_DIR } = constants;
 const prebuildPath = path.join(ROOT_DIR, "prebuild");
 
 console.log(
