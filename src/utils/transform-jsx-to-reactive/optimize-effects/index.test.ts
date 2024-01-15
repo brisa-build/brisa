@@ -3,7 +3,7 @@ import { ESTree } from "meriyah";
 import optimizeEffects from ".";
 import { normalizeQuotes } from "@/helpers";
 import AST from "@/utils/ast";
-import getWebComponentAst from "@/utils/transform-jsx-to-reactive/get-web-component-ast";
+import getWebComponentAst from "@/utils/get-web-component-ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutput = (code: string) => {

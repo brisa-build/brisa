@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { ESTree } from "meriyah";
 import getPropsNames, { getPropNamesFromExport } from ".";
 import AST from "@/utils/ast";
-import getWebComponentAst from "@/utils/transform-jsx-to-reactive/get-web-component-ast";
+import getWebComponentAst from "@/utils/get-web-component-ast";
 
 const { parseCodeToAST } = AST("tsx");
 const inputCode = (code: string) => getWebComponentAst(parseCodeToAST(code));

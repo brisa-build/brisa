@@ -7,6 +7,7 @@ export default async function analyzeClientAst(
   const webComponents: Record<string, string> = {};
   let useSuspense = false;
   let useContextProvider = false;
+  let useI18n = false;
 
   JSON.stringify(ast, (key, value) => {
     const webComponentSelector = value?.arguments?.[0]?.value ?? "";
@@ -30,6 +31,8 @@ export default async function analyzeClientAst(
       webComponents[webComponentSelector] = webComponentPath;
     }
 
+    useI18n ||= value?.type === "Identifier" && value?.name === "i18n";
+
     useSuspense ||=
       value?.type === "ExpressionStatement" &&
       value?.expression?.operator === "=" &&
@@ -38,5 +41,5 @@ export default async function analyzeClientAst(
     return value;
   });
 
-  return { webComponents, useSuspense, useContextProvider };
+  return { webComponents, useSuspense, useContextProvider, useI18n };
 }
