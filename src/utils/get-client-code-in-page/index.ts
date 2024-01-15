@@ -9,6 +9,14 @@ import transformJSXToReactive from "@/utils/transform-jsx-to-reactive";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import snakeToCamelCase from "@/utils/snake-to-camelcase";
 import analyzeClientAst from "@/utils/analyze-client-ast";
+import getI18nClientCode from "../get-i18n-client-code";
+
+type TransformOptions = {
+  webComponentsList: Record<string, string>;
+  useContextProvider: boolean;
+  useI18n: boolean;
+  i18nKeys: Set<string>;
+};
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
@@ -28,25 +36,22 @@ export default async function getClientCodeInPage(
 
   const ast = await getAstFromPath(pagepath);
 
-  let { useSuspense, useContextProvider } = await analyzeClientAst(
-    ast,
-    allWebComponents,
-  );
+  let { useSuspense, useI18n, i18nKeys, useContextProvider } =
+    await analyzeClientAst(ast, allWebComponents);
 
   // Web components inside web components
   const nestedComponents = await Promise.all(
     Object.values(pageWebComponents).map(
       async (path) =>
-        await analyzeClientAst(
-          await getAstFromPath(path),
-          allWebComponents,
-          pagepath,
-        ),
+        await analyzeClientAst(await getAstFromPath(path), allWebComponents),
     ),
   );
 
   for (const item of nestedComponents) {
     useContextProvider ||= item.useContextProvider;
+    useI18n ||= item.useI18n;
+    useSuspense ||= item.useSuspense;
+    i18nKeys = new Set([...i18nKeys, ...item.i18nKeys]);
     Object.assign(pageWebComponents, item.webComponents);
   }
 
@@ -56,10 +61,12 @@ export default async function getClientCodeInPage(
 
   if (!Object.keys(pageWebComponents).length) return { code, unsuspense, size };
 
-  const transformedCode = await transformToWebComponents(
-    pageWebComponents,
+  const transformedCode = await transformToWebComponents({
+    webComponentsList: pageWebComponents,
     useContextProvider,
-  );
+    useI18n,
+    i18nKeys,
+  });
 
   if (!transformedCode) return null;
 
@@ -69,10 +76,12 @@ export default async function getClientCodeInPage(
   return { code, unsuspense, size };
 }
 
-async function transformToWebComponents(
-  webComponentsList: Record<string, string>,
-  useContextProvider: boolean,
-) {
+async function transformToWebComponents({
+  webComponentsList,
+  useContextProvider,
+  useI18n,
+  i18nKeys,
+}: TransformOptions) {
   const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
     getConstants();
 
@@ -110,10 +119,20 @@ async function transformToWebComponents(
     code += contextProviderCode;
   }
 
+  code += `${imports}\n`;
+
+  // It is important that this comes before the customElements
+  // definition, otherwise the web components will not have
+  // access to i18n.
+  //
+  // Besides, it is necessary to add an import also for
+  // the transalteCore.
+  if (useI18n) code += getI18nClientCode(i18nKeys.size > 0);
+
   code +=
     numCustomElements === 1
-      ? `${imports}\n${customElementsDefinitions}`
-      : `${imports}\n${defineElement}\n${customElementsDefinitions}`;
+      ? `${customElementsDefinitions};`
+      : `${defineElement}\n${customElementsDefinitions};`;
 
   await writeFile(webEntrypoint, code);
 
