@@ -318,6 +318,7 @@ export default function brisaElement(
           css(template: TemplateStringsArray, ...values: any[]) {
             cssStyles.push([template, ...values]);
           },
+          i18n: window.i18n,
           self,
         } as unknown as WebContext;
 

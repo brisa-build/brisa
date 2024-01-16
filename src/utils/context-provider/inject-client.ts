@@ -1,5 +1,5 @@
 import path from "node:path";
-import transformJSXToReactive from "@/utils/transform-jsx-to-reactive";
+import clientBuildPlugin from "@/utils/client-build-plugin";
 
 // Should be used via macro
 export async function injectClientContextProviderCode() {
@@ -15,12 +15,12 @@ export async function injectClientContextProviderCode() {
         name: "context-provider-transformer",
         setup(build) {
           build.onLoad({ filter: /.*/ }, async ({ path, loader }) => ({
-            contents: transformJSXToReactive(
+            contents: clientBuildPlugin(
               // TODO: use Bun.file(path).text() when Bun fix this issue:
               // https://github.com/oven-sh/bun/issues/7611
               await Bun.readableStreamToText(Bun.file(path).stream()),
               internalComponentId,
-            ),
+            ).code,
             loader,
           }));
         },

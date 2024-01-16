@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { MatchedRoute } from "bun";
-import { I18nFromRequest, RequestContext } from "@/types";
+import { I18n, RequestContext } from "@/types";
 import {
   CURRENT_PROVIDER_ID,
   CONTEXT_STORE_ID,
@@ -10,7 +10,7 @@ type ExtendRequestContext = {
   originalRequest: Request;
   currentRequestContext?: RequestContext;
   route?: MatchedRoute;
-  i18n?: I18nFromRequest;
+  i18n?: I18n;
   finalURL?: string;
   id?: string;
 };

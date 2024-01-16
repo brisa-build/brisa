@@ -770,3 +770,7 @@ export default function SomeComponent(
   // /about-us - es - /es/sobre-nosotros/
 }
 ```
+
+## Translate in your web components
+
+TODO

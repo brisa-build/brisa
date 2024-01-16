@@ -7,23 +7,28 @@ import renderToReadableStream from "@/utils/render-to-readable-stream";
 import extendRequestContext from "@/utils/extend-request-context";
 import processPageRoute from ".";
 import { toInline } from "@/helpers";
+import translateCore from "../translate-core";
+import type { RequestContext } from "@/types";
+
+const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const HOMEPAGE = path.join(FIXTURES, "pages", "index.tsx");
+const I18N = path.join(FIXTURES, "i18n.ts");
+const i18nConfig = (await import.meta.require(I18N)).default;
 
 const request = extendRequestContext({
   originalRequest: new Request("http://localhost:3000"),
+  i18n: {
+    locale: "en",
+    defaultLocale: i18nConfig.defaultLocale,
+    locales: i18nConfig.locales,
+    pages: i18nConfig.pages ?? {},
+    t: translateCore("en", i18nConfig),
+  } as unknown as RequestContext["i18n"],
 });
 
 const testOptions = {
   request,
 };
-
-const HOMEPAGE = path.join(
-  import.meta.dir,
-  "..",
-  "..",
-  "__fixtures__",
-  "pages",
-  "index.tsx",
-);
 
 const routeHomepage = { filePath: HOMEPAGE } as unknown as MatchedRoute;
 
@@ -53,7 +58,7 @@ describe("utils", () => {
       expect(result).toBe(
         toInline(`
           <!DOCTYPE html>
-            <html>
+            <html lang="en" dir="ltr">
               <head>
                 <meta charset="UTF-8"></meta>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
@@ -64,7 +69,7 @@ describe("utils", () => {
                 <div id="S:1"><div>Loading...</div></div>
               </body>
             </html>
-            <template id="U:1"><div>Hello world</div></template><script id="R:1">u$('1')</script>
+            <template id="U:1"><div>Hello world!</div></template><script id="R:1">u$('1')</script>
           `),
       );
     });
@@ -77,7 +82,7 @@ describe("utils", () => {
       expect(result).toBe(
         toInline(`
           <!DOCTYPE html>
-            <html>
+            <html lang="en" dir="ltr">
               <head>
                 <meta charset="UTF-8"></meta>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
@@ -91,7 +96,7 @@ describe("utils", () => {
                 <div id="S:1"><div>Loading...</div></div>
               </body>
             </html>
-            <template id="U:1"><div>Hello world</div></template><script id="R:1">u$('1')</script>
+            <template id="U:1"><div>Hello world!</div></template><script id="R:1">u$('1')</script>
         `),
       );
     });

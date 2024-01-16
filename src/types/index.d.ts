@@ -110,7 +110,7 @@ export interface RequestContext extends Request {
   /**
    * Description:
    *
-   * The `i18n` object is a set of utilities to use within your server components
+   * The `i18n` object is a set of utilities to use within your components
    * to access to the locale and consume the translations.
    *
    * Example:
@@ -125,7 +125,7 @@ export interface RequestContext extends Request {
    *
    * - [How to use `i18n`](https://brisa.build/docs/building-your-application/routing/internationalization)
    */
-  i18n: I18nFromRequest;
+  i18n: I18n;
 
   /**
    * Description:
@@ -402,6 +402,26 @@ export interface WebContext {
   /**
    * Description:
    *
+   * The `i18n` object is a set of utilities to use within your components
+   * to access to the locale and consume the translations.
+   *
+   * Example:
+   *
+   * ```ts
+   * const { t, locale } = i18n;
+   *
+   * <div>{t('hello-world')}</div>
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `i18n`](https://brisa.build/docs/building-your-application/routing/internationalization)
+   */
+  i18n: I18n;
+
+  /**
+   * Description:
+   *
    * The `self` attribute is the reference to the web-component itself.
    */
   self: HTMLElement;
@@ -450,7 +470,7 @@ export type JSXComponent = (
 ) => JSXNode | Promise<JSXNode>;
 
 export interface I18nDictionary {
-  [key: string]: string | I18nDictionary;
+  [key: string]: string | I18nDictionary | I18nDictionary[];
 }
 
 export interface TranslationQuery {
@@ -538,12 +558,12 @@ export type PageModule = {
 };
 
 export type Translate = <T extends unknown = string>(
-  i18nKey: I18nKey | TemplateStringsArray,
+  i18nKey: I18nKey,
   query?: TranslationQuery | null,
   options?: TranslateOptions,
-) => T | JSX.Element[] | string;
+) => T;
 
-export type I18nFromRequest = {
+export type I18n = {
   locale: string;
   defaultLocale: string;
   locales: string[];

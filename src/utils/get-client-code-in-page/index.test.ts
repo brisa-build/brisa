@@ -20,12 +20,17 @@ describe("utils", () => {
   beforeEach(async () => {
     fs.mkdirSync(build, { recursive: true });
     fs.mkdirSync(brisaInternals, { recursive: true });
+    const constants = getConstants() ?? {};
     globalThis.mockConstants = {
-      ...(getConstants() ?? {}),
+      ...constants,
       SRC_DIR: src,
       IS_PRODUCTION: true,
       IS_DEVELOPMENT: false,
       BUILD_DIR: build,
+      REGEX: {
+        ...constants.REGEX,
+        WEB_COMPONENTS_ISLAND: /.*\/src\/__fixtures__\/.*\.(tsx|jsx|js|ts)$/,
+      },
     };
   });
 
@@ -38,7 +43,13 @@ describe("utils", () => {
     it("should not return client code in page without web components, without suspense, without server actions", async () => {
       const input = path.join(pages, "somepage.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
-      const expected = { code: "", unsuspense: "", size: 0 };
+      const expected = {
+        code: "",
+        unsuspense: "",
+        size: 0,
+        useI18n: false,
+        i18nKeys: new Set<string>(),
+      };
       expect(output).toEqual(expected);
     });
 
@@ -49,11 +60,14 @@ describe("utils", () => {
         allWebComponents,
         pageWebComponents,
       );
+      const i18nCode = 2949;
       const brisaSize = 5264;
       const webComponents = 670;
 
       expect(output).not.toBeNull();
-      expect(output!.size).toEqual(brisaSize + webComponents);
+      expect(output!.size).toEqual(brisaSize + i18nCode + webComponents);
+      expect(output!.useI18n).toBeTrue();
+      expect(output!.i18nKeys).toEqual(new Set(["hello"]));
     });
 
     it("shoukld return client code size as 0 when a page does not have web components", async () => {
@@ -71,6 +85,8 @@ describe("utils", () => {
         unsuspense:
           "l$=new Set;u$=(h)=>{const r=(v)=>document.getElementById(v);l$.add(h);for(let v of l$){const g=r(`S:${v}`),f=r(`U:${v}`);if(g&&f)l$.delete(v),g.replaceWith(f.content.cloneNode(!0)),f.remove(),r(`R:${v}`)?.remove()}};\n",
         size: 217,
+        useI18n: false, // no client code in page
+        i18nKeys: new Set<string>(),
       };
       expect(output).toEqual(expected);
     });

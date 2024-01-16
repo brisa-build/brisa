@@ -12,7 +12,7 @@ const voidFn = () => {};
 
 export default async function SSRWebComponent(
   { Component, selector, ...props }: Props,
-  { store, useContext }: RequestContext,
+  { store, useContext, i18n }: RequestContext,
 ) {
   let style = "";
   let Selector = selector;
@@ -25,6 +25,7 @@ export default async function SSRWebComponent(
     derived: (fn: () => unknown) => ({ value: fn() }),
     cleanup: voidFn,
     useContext,
+    i18n,
     css: (template: TemplateStringsArray, ...values: string[]) => {
       style += String.raw(
         template,
