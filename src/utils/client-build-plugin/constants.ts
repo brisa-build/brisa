@@ -51,3 +51,24 @@ export const BRISA_IMPORT = {
     value: "brisa/client",
   },
 } as ESTree.ImportDeclaration;
+
+export const TRANSLATE_CORE_IMPORT = {
+  type: "ImportDeclaration",
+  specifiers: [
+    {
+      type: "ImportSpecifier",
+      imported: {
+        type: "Identifier",
+        name: "translateCore",
+      },
+      local: {
+        type: "Identifier",
+        name: "translateCore",
+      },
+    },
+  ],
+  source: {
+    type: "Literal",
+    value: "brisa",
+  },
+} as ESTree.ImportDeclaration;

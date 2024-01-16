@@ -55,12 +55,14 @@ describe("utils", () => {
         allWebComponents,
         pageWebComponents,
       );
-      const i18nCode = 2919;
+      const i18nCode = 2949;
       const brisaSize = 5264;
       const webComponents = 670;
 
       expect(output).not.toBeNull();
       expect(output!.size).toEqual(brisaSize + i18nCode + webComponents);
+      expect(output!.useI18n).toBeTrue();
+      expect(output!.i18nKeys).toEqual(new Set(["hello"]));
     });
 
     it("shoukld return client code size as 0 when a page does not have web components", async () => {
@@ -78,8 +80,8 @@ describe("utils", () => {
         unsuspense:
           "l$=new Set;u$=(h)=>{const r=(v)=>document.getElementById(v);l$.add(h);for(let v of l$){const g=r(`S:${v}`),f=r(`U:${v}`);if(g&&f)l$.delete(v),g.replaceWith(f.content.cloneNode(!0)),f.remove(),r(`R:${v}`)?.remove()}};\n",
         size: 217,
-        useI18n: true,
-        i18nKeys: new Set<string>(["hello-world"]),
+        useI18n: false, // no client code in page
+        i18nKeys: new Set<string>(),
       };
       expect(output).toEqual(expected);
     });

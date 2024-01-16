@@ -17,7 +17,7 @@ describe("utils", () => {
           clientBuildPlugin(
             input,
             "/src/web-components/@-native/my-component.tsx",
-          ),
+          ).code,
         );
         const expected = toInline(input);
         expect(output).toBe(expected);
@@ -35,7 +35,7 @@ describe("utils", () => {
           clientBuildPlugin(
             input,
             "/src/web-components/@-partials/my-component.tsx",
-          ),
+          ).code,
         );
         const expected = toInline(`        
           export default function partial() {
@@ -52,7 +52,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "__BRISA_CLIENT__ContextProvider"),
+          clientBuildPlugin(input, "__BRISA_CLIENT__ContextProvider").code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -71,7 +71,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "/src/components/my-component.tsx"),
+          clientBuildPlugin(input, "/src/components/my-component.tsx").code,
         );
         const expected = toInline(`
             export default function MyComponent() {
@@ -86,7 +86,7 @@ describe("utils", () => {
             const element = <div>foo</div>
           `;
         const output = toInline(
-          clientBuildPlugin(input, "/src/components/my-component.tsx"),
+          clientBuildPlugin(input, "/src/components/my-component.tsx").code,
         );
         const expected = toInline(
           `const element = ['div', {}, 'foo'];export default null;`,
@@ -99,7 +99,7 @@ describe("utils", () => {
             const element = () => <div>foo</div>
           `;
         const output = toInline(
-          clientBuildPlugin(input, "/src/components/my-component.tsx"),
+          clientBuildPlugin(input, "/src/components/my-component.tsx").code,
         );
         const expected = toInline(
           `const element = () => ['div', {}, 'foo'];export default null;`,
@@ -114,7 +114,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -135,7 +135,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -156,7 +156,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -181,7 +181,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -206,7 +206,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -229,7 +229,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -253,7 +253,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -276,7 +276,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -299,7 +299,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -336,7 +336,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -380,7 +380,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -438,7 +438,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -463,7 +463,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -493,7 +493,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -522,7 +522,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -545,7 +545,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -569,7 +569,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -591,7 +591,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -611,7 +611,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -633,7 +633,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -657,7 +657,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -681,7 +681,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -705,7 +705,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -727,7 +727,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -747,7 +747,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -767,7 +767,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -787,7 +787,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -808,7 +808,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -831,7 +831,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -855,7 +855,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected =
@@ -878,7 +878,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected =
@@ -902,7 +902,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected =
@@ -927,7 +927,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected =
@@ -952,7 +952,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -981,7 +981,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1010,7 +1010,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1039,7 +1039,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1074,7 +1074,7 @@ describe("utils", () => {
           }        
         `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected =
@@ -1102,7 +1102,7 @@ describe("utils", () => {
           }
         `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected =
@@ -1126,7 +1126,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1152,7 +1152,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1178,7 +1178,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1204,7 +1204,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1235,7 +1235,8 @@ describe("utils", () => {
     }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/conditional-render.tsx"),
+          clientBuildPlugin(input, "src/web-components/conditional-render.tsx")
+            .code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1261,7 +1262,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1287,7 +1288,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1312,7 +1313,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1336,7 +1337,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1359,7 +1360,7 @@ describe("utils", () => {
           }
         `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1383,7 +1384,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1418,7 +1419,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1449,7 +1450,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
 
         const expected = toInline(`
@@ -1479,7 +1480,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx"),
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
