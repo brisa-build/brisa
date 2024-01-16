@@ -157,10 +157,10 @@ async function transformToWebComponents({
         name: "client-build-plugin",
         setup(build) {
           build.onLoad(
-            // TODO: allow also .js and .ts files?
-            { filter: /.*(tsx|jsx)$/ },
+            { filter: /.*\/src\/web-components\/.*\.(tsx|jsx|js|ts)$/ },
             async ({ path, loader }) => {
               let code = await Bun.file(path).text();
+              console.log({ path });
 
               try {
                 const res = clientBuildPlugin(code, path, {
