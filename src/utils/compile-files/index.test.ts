@@ -180,7 +180,7 @@ describe("utils", () => {
         await Bun.file(path.join(pagesClientPath, `_404-${HASH}-en.js`)).text(),
       ).toBe(
         toInline(`
-          window.i18nMessages={"hello":"Hello {{name}}","some-key":"Some value"};
+          window.i18nMessages={"hello":"Hello {{name}}"};
       `),
       );
 
@@ -188,7 +188,7 @@ describe("utils", () => {
         await Bun.file(path.join(pagesClientPath, `_404-${HASH}-pt.js`)).text(),
       ).toBe(
         toInline(`
-          window.i18nMessages={"hello":"Olá {{name}}","some-key":"Algum valor"};
+          window.i18nMessages={"hello":"Olá {{name}}"};
       `),
       );
 
