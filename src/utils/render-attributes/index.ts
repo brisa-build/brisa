@@ -79,39 +79,51 @@ export default function renderAttributes({
 }
 
 export function renderI18nHrefAttribute(
-  pagePathname: string,
+  hrefValue: string,
   request: RequestContext,
 ) {
-  const { I18N_CONFIG, CONFIG } = getConstants();
+  const { I18N_CONFIG } = getConstants();
   const { pages } = I18N_CONFIG ?? {};
   const { locale, locales } = request.i18n ?? {};
-  const isExternalUrl = URL.canParse(pagePathname);
-  const trailingSlashSymbol = CONFIG.trailingSlash ? "/" : "";
-  let pathname = pagePathname.replace(/\/$/, "");
+  const isExternalUrl = URL.canParse(hrefValue);
+  let formattedHref = hrefValue.replace(/\/$/, "");
 
   for (const [key, value] of Object.entries(request.route?.params ?? {})) {
-    pathname = pathname.replace(`[${key}]`, value);
+    formattedHref = formattedHref.replace(`[${key}]`, value);
   }
 
-  if (isExternalUrl || !locale) return pagePathname;
+  if (isExternalUrl || !locale) return hrefValue;
 
-  const page = findTranslatedPage(pages, pathname);
+  const page = findTranslatedPage(pages, formattedHref);
 
   if (page) {
     const [pageName, translations] = page;
     const translatedPage = (translations as Translations)?.[locale] ?? pageName;
-    pathname = substituteI18nRouteValues(translatedPage, pathname);
+    formattedHref = substituteI18nRouteValues(translatedPage, formattedHref);
   }
 
-  if (!locales?.some((locale) => pathname?.split("/")?.[1] === locale)) {
-    return `/${locale}${pathname}${trailingSlashSymbol}`;
+  if (!locales?.some((locale) => formattedHref?.split("/")?.[1] === locale)) {
+    return manageTrailingSlash(`/${locale}${formattedHref}`);
   }
 
-  return pathname;
+  return manageTrailingSlash(formattedHref);
 }
 
 function findTranslatedPage(pages: I18nConfig["pages"], pathname: string) {
   for (const page of Object.entries(pages ?? {})) {
     if (routeMatchPathname(page[0], pathname)) return page;
   }
+}
+
+function manageTrailingSlash(urlString: string) {
+  const { CONFIG } = getConstants();
+
+  if (!CONFIG.trailingSlash) return urlString;
+
+  const fakeOrigin = "http://localhost";
+  const url = new URL(urlString, fakeOrigin);
+
+  url.pathname = url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`;
+
+  return url.toString().replace(fakeOrigin, "");
 }

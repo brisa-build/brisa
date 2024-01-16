@@ -4,7 +4,7 @@ import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
-import type { ComponentType, RequestContext, Translate } from "@/types";
+import type { ComponentType, I18n, RequestContext, Translate } from "@/types";
 import createContext from "@/utils/create-context";
 import dangerHTML from "@/utils/danger-html";
 import extendRequestContext from "@/utils/extend-request-context";
@@ -17,7 +17,7 @@ const emptyI18n = {
   locales: [],
   t: () => "",
   pages: {},
-};
+} as I18n;
 
 const FIXTURES_PATH = path.join(import.meta.dir, "..", "..", "__fixtures__");
 
@@ -908,6 +908,40 @@ describe("utils", () => {
       expect(essencePage).toEqual(`<a href="/es/essence">Test</a>`);
       expect(withParam).toEqual(`<a href="/es/essence?some=true">Test</a>`);
       expect(withHash).toEqual(`<a href="/es/essence#some">Test</a>`);
+    });
+
+    it('should render the "a" tag with the locale if i18n is enabled with trailingSlash', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          trailingSlash: true,
+        },
+      };
+
+      testRequest.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+        t: () => "",
+        pages: {},
+      };
+      const essencePage = await Bun.readableStreamToText(
+        renderToReadableStream(<a href="/essence">Test</a>, testOptions),
+      );
+      const withParam = await Bun.readableStreamToText(
+        renderToReadableStream(
+          <a href="/essence?some=true">Test</a>,
+          testOptions,
+        ),
+      );
+      const withHash = await Bun.readableStreamToText(
+        renderToReadableStream(<a href="/essence#some">Test</a>, testOptions),
+      );
+
+      testRequest.i18n = emptyI18n;
+      expect(essencePage).toEqual(`<a href="/es/essence/">Test</a>`);
+      expect(withParam).toEqual(`<a href="/es/essence/?some=true">Test</a>`);
+      expect(withHash).toEqual(`<a href="/es/essence/#some">Test</a>`);
     });
 
     it('should NOT render the "a" tag with the locale if the url is external', async () => {
