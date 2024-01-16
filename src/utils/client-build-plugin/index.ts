@@ -10,24 +10,55 @@ import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
 import mapComponentStatics from "./map-component-statics";
 import replaceExportDefault from "./replace-export-default";
+import analyzeClientAst from "./analyze-client-ast";
 import getReactiveReturnStatement from "./get-reactive-return-statement";
 import {
   ALTERNATIVE_PREFIX,
   NATIVE_FOLDER,
   WEB_COMPONENT_REGEX,
 } from "./constants";
+import addI18nBridge from "./add-i18n-bridge";
+
+type ClientBuildPluginConfig = {
+  isI18nAdded: boolean;
+  isTranslateCoreAdded: boolean;
+};
+
+type ClientBuildPluginResult = {
+  code: string;
+  useI18n: boolean;
+  i18nKeys: Set<string>;
+};
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const BRISA_INTERNAL_PATH = "__BRISA_CLIENT__";
+const DEFAULT_CONFIG: ClientBuildPluginConfig = {
+  isI18nAdded: false,
+  isTranslateCoreAdded: false,
+};
 
-export default function clientBuildPlugin(code: string, path: string) {
+export default function clientBuildPlugin(
+  code: string,
+  path: string,
+  config = DEFAULT_CONFIG,
+): ClientBuildPluginResult {
   const isInternal = path.startsWith(BRISA_INTERNAL_PATH);
 
   if (path.includes(NATIVE_FOLDER) && !isInternal) {
-    return code;
+    return { code, useI18n: false, i18nKeys: new Set<string>() };
   }
 
-  const ast = parseCodeToAST(code);
+  let ast = parseCodeToAST(code);
+  const { useI18n, i18nKeys } = analyzeClientAst(ast);
+
+  if (useI18n) {
+    ast = addI18nBridge(ast, {
+      usei18nKeysLogic: i18nKeys.size > 0,
+      i18nAdded: config.isI18nAdded,
+      isTranslateCoreAdded: config.isTranslateCoreAdded,
+    });
+  }
+
   const astWithDirectExport = transformToDirectExport(ast);
   const out = transformToReactiveProps(astWithDirectExport);
   const reactiveAst = transformToReactiveArrays(out.ast, path);
@@ -40,7 +71,11 @@ export default function clientBuildPlugin(code: string, path: string) {
     (path.includes(ALTERNATIVE_PREFIX) && !isInternal) ||
     (!path.match(WEB_COMPONENT_REGEX) && !isInternal)
   ) {
-    return generateCodeFromAST(reactiveAst);
+    return {
+      code: generateCodeFromAST(reactiveAst),
+      useI18n,
+      i18nKeys,
+    };
   }
 
   for (const { props = [] } of Object.values(out.statics ?? {})) {
@@ -92,10 +127,14 @@ export default function clientBuildPlugin(code: string, path: string) {
   // Useful for internal web components as context-provider
   if (isInternal) {
     const internalComponentName = path.split(BRISA_INTERNAL_PATH).at(-1)!;
-    return generateCodeFromAST(
-      replaceExportDefault(reactiveAst, internalComponentName),
-    );
+    return {
+      code: generateCodeFromAST(
+        replaceExportDefault(reactiveAst, internalComponentName),
+      ),
+      useI18n,
+      i18nKeys,
+    };
   }
 
-  return generateCodeFromAST(reactiveAst);
+  return { code: generateCodeFromAST(reactiveAst), useI18n, i18nKeys };
 }

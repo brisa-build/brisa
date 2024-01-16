@@ -18,7 +18,9 @@ declare global {
 function defineBrisaWebComponent(code: string, path: string) {
   const componentName = path.split("/").pop()?.split(".")[0] as string;
 
-  const webComponent = `(() => {${normalizeQuotes(clientBuildPlugin(code, path))
+  const webComponent = `(() => {${normalizeQuotes(
+    clientBuildPlugin(code, path).code,
+  )
     .replace('import {brisaElement, _on, _off} from "brisa/client";', "")
     .replace("export default", "const _Test =")}return _Test;})()`;
 
