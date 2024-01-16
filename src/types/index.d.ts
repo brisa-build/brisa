@@ -561,7 +561,7 @@ export type Translate = <T extends unknown = string>(
   i18nKey: I18nKey,
   query?: TranslationQuery | null,
   options?: TranslateOptions,
-) => T | JSX.Element[] | string;
+) => T;
 
 export type I18n = {
   locale: string;
