@@ -160,7 +160,6 @@ async function transformToWebComponents({
             { filter: /.*\/src\/web-components\/.*\.(tsx|jsx|js|ts)$/ },
             async ({ path, loader }) => {
               let code = await Bun.file(path).text();
-              console.log({ path });
 
               try {
                 const res = clientBuildPlugin(code, path, {
