@@ -5,13 +5,23 @@ import { getConstants } from "@/constants";
 import AST from "@/utils/ast";
 import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
 import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
-import transformJSXToReactive from "@/utils/transform-jsx-to-reactive";
+import clientBuildPlugin from "@/utils/client-build-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import snakeToCamelCase from "@/utils/snake-to-camelcase";
+import analyzeServerAst from "@/utils/analyze-server-ast";
+
+type TransformOptions = {
+  webComponentsList: Record<string, string>;
+  useContextProvider: boolean;
+};
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
 const ENV_VAR_PREFIX = "BRISA_PUBLIC_";
+
+async function getAstFromPath(path: string) {
+  return ASTUtil.parseCodeToAST(await Bun.file(path).text());
+}
 
 export default async function getClientCodeInPage(
   pagepath: string,
@@ -21,20 +31,23 @@ export default async function getClientCodeInPage(
   let size = 0;
   let code = "";
 
-  let { useSuspense, useContextProvider } = await analyzeClientPath(
-    pagepath,
+  const ast = await getAstFromPath(pagepath);
+
+  let { useSuspense, useContextProvider } = analyzeServerAst(
+    ast,
     allWebComponents,
   );
 
   // Web components inside web components
   const nestedComponents = await Promise.all(
-    Object.values(pageWebComponents).map((path) =>
-      analyzeClientPath(path, allWebComponents),
+    Object.values(pageWebComponents).map(async (path) =>
+      analyzeServerAst(await getAstFromPath(path), allWebComponents),
     ),
   );
 
   for (const item of nestedComponents) {
     useContextProvider ||= item.useContextProvider;
+    useSuspense ||= item.useSuspense;
     Object.assign(pageWebComponents, item.webComponents);
   }
 
@@ -42,30 +55,45 @@ export default async function getClientCodeInPage(
 
   size += unsuspense.length;
 
-  if (!Object.keys(pageWebComponents).length) return { code, unsuspense, size };
+  if (!Object.keys(pageWebComponents).length)
+    return {
+      code,
+      unsuspense,
+      size,
+      useI18n: false,
+      i18nKeys: new Set<string>(),
+    };
 
-  const transformedCode = await transformToWebComponents(
-    pageWebComponents,
+  const transformedCode = await transformToWebComponents({
+    webComponentsList: pageWebComponents,
     useContextProvider,
-  );
+  });
 
   if (!transformedCode) return null;
 
   code += transformedCode?.code;
   size += transformedCode?.size ?? 0;
 
-  return { code, unsuspense, size };
+  return {
+    code,
+    unsuspense,
+    size,
+    useI18n: transformedCode.useI18n,
+    i18nKeys: transformedCode.i18nKeys,
+  };
 }
 
-async function transformToWebComponents(
-  webComponentsList: Record<string, string>,
-  useContextProvider: boolean,
-) {
-  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
+async function transformToWebComponents({
+  webComponentsList,
+  useContextProvider,
+}: TransformOptions) {
+  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION, REGEX } =
     getConstants();
 
   const internalDir = join(BUILD_DIR, "_brisa");
   const webEntrypoint = join(internalDir, `temp-${crypto.randomUUID()}.ts`);
+  let useI18n = false;
+  let i18nKeys = new Set<string>();
 
   const imports = Object.entries(webComponentsList)
     .map((e) => `import ${snakeToCamelCase(e[0])} from "${e[1]}";`)
@@ -100,8 +128,8 @@ async function transformToWebComponents(
 
   code +=
     numCustomElements === 1
-      ? `${imports}\n${customElementsDefinitions}`
-      : `${imports}\n${defineElement}\n${customElementsDefinitions}`;
+      ? `${imports}\n${customElementsDefinitions};`
+      : `${imports}\n${defineElement}\n${customElementsDefinitions};`;
 
   await writeFile(webEntrypoint, code);
 
@@ -126,23 +154,32 @@ async function transformToWebComponents(
     // https://bun.sh/docs/bundler#format
     plugins: [
       {
-        name: "web-components-transformer",
+        name: "client-build-plugin",
         setup(build) {
-          build.onLoad({ filter: /.*(tsx|jsx)$/ }, async ({ path, loader }) => {
-            let code = await Bun.file(path).text();
+          build.onLoad(
+            { filter: REGEX.WEB_COMPONENTS_ISLAND },
+            async ({ path, loader }) => {
+              let code = await Bun.file(path).text();
 
-            try {
-              code = transformJSXToReactive(code, path);
-            } catch (error) {
-              console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
-              console.log(LOG_PREFIX.ERROR, (error as Error).message);
-            }
+              try {
+                const res = clientBuildPlugin(code, path, {
+                  isI18nAdded: useI18n,
+                  isTranslateCoreAdded: i18nKeys.size > 0,
+                });
+                code = res.code;
+                useI18n ||= res.useI18n;
+                i18nKeys = new Set([...i18nKeys, ...res.i18nKeys]);
+              } catch (error) {
+                console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
+                console.log(LOG_PREFIX.ERROR, (error as Error).message);
+              }
 
-            return {
-              contents: code,
-              loader,
-            };
-          });
+              return {
+                contents: code,
+                loader,
+              };
+            },
+          );
         },
       },
       createContextPlugin(),
@@ -157,48 +194,10 @@ async function transformToWebComponents(
     return null;
   }
 
-  return { code: await outputs[0].text(), size: outputs[0].size };
-}
-
-async function analyzeClientPath(
-  path: string,
-  allWebComponents: Record<string, string>,
-) {
-  const pageFile = Bun.file(path);
-  const ast = ASTUtil.parseCodeToAST(await pageFile.text());
-  const webComponents: Record<string, string> = {};
-  let useSuspense = false;
-  let useContextProvider = false;
-
-  JSON.stringify(ast, (key, value) => {
-    const webComponentSelector = value?.arguments?.[0]?.value ?? "";
-    const webComponentPath = allWebComponents[webComponentSelector];
-    const isCustomElement =
-      value?.type === "CallExpression" &&
-      value?.callee?.type === "Identifier" &&
-      value?.arguments?.[0]?.type === "Literal";
-
-    const isWebComponent = webComponentPath && isCustomElement;
-
-    if (isCustomElement && webComponentSelector === "context-provider") {
-      const serverOnlyProps = value?.arguments?.[1]?.properties?.find?.(
-        (e: any) => e?.key?.name === "serverOnly",
-      );
-
-      useContextProvider ||= serverOnlyProps?.value?.value !== true;
-    }
-
-    if (isWebComponent) {
-      webComponents[webComponentSelector] = webComponentPath;
-    }
-
-    useSuspense ||=
-      value?.type === "ExpressionStatement" &&
-      value?.expression?.operator === "=" &&
-      value?.expression?.left?.property?.name === "suspense";
-
-    return value;
-  });
-
-  return { webComponents, useSuspense, useContextProvider };
+  return {
+    code: await outputs[0].text(),
+    size: outputs[0].size,
+    useI18n,
+    i18nKeys,
+  };
 }

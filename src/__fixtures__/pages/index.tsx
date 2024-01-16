@@ -1,5 +1,7 @@
-export default async function Home() {
-  return <div>Hello world</div>;
+import type { RequestContext } from "@/types";
+
+export default async function Home({}, { i18n }: RequestContext) {
+  return <div>{i18n.t("hello-world")}</div>;
 }
 
 Home.suspense = () => {

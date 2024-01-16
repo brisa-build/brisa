@@ -11,6 +11,7 @@ import getWebComponentsList from "@/utils/get-web-components-list";
 import { logTable } from "@/utils/log/log-build";
 import ssrWebComponentPlugin from "@/utils/ssr-web-component/ssr-web-component-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
+import getI18nClientMessages from "@/utils/get-i18n-client-messages";
 
 export default async function compileFiles() {
   const { SRC_DIR, BUILD_DIR, CONFIG, IS_PRODUCTION, LOG_PREFIX } =
@@ -133,7 +134,7 @@ async function compileClientCodePage(
   allWebComponents: Record<string, string>,
   webComponentsPerEntrypoint: Record<string, Record<string, string>>,
 ) {
-  const { BUILD_DIR } = getConstants();
+  const { BUILD_DIR, I18N_CONFIG } = getConstants();
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
   const internalPath = path.join(BUILD_DIR, "_brisa");
 
@@ -165,7 +166,7 @@ async function compileClientCodePage(
 
     if (!pageCode) return null;
 
-    const { size, code, unsuspense } = pageCode;
+    const { size, code, unsuspense, useI18n, i18nKeys } = pageCode;
 
     clientSizesPerPage[route] = size;
 
@@ -207,6 +208,21 @@ async function compileClientCodePage(
     }
 
     if (!code) continue;
+
+    // create i18n page content files
+    if (useI18n && i18nKeys.size && I18N_CONFIG.messages) {
+      for (let locale of I18N_CONFIG.locales) {
+        const i18nPagePath = clientPage.replace(".js", `-${locale}.js`);
+        const messages = getI18nClientMessages(locale, i18nKeys);
+        const i18nCode = `window.i18nMessages=${JSON.stringify(messages)};`;
+
+        Bun.write(i18nPagePath, i18nCode);
+        Bun.write(
+          `${i18nPagePath}.gz`,
+          gzipSync(new TextEncoder().encode(i18nCode)),
+        );
+      }
+    }
 
     // create page file
     Bun.write(clientPagePath.replace(".js", ".txt"), hash.toString());

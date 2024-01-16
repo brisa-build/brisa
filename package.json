@@ -3,7 +3,7 @@
   "module": "./out/core/index.js",
   "main": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
-  "version": "0.0.19",
+  "version": "0.0.20-canary.1",
   "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "13.1.2",
-    "brisa": "0.0.19",
+    "brisa": "0.0.20-canary.1",
     "@types/bun": "1.0.1"
   },
   "peerDependencies": {

@@ -1,6 +1,6 @@
 import { describe, expect, it, afterAll } from "bun:test";
 import translateCore from ".";
-import { type JSXElement } from "@/types";
+import { type I18nConfig, type JSXElement } from "@/types";
 
 type NestedKeysType = {
   key_1: {
@@ -52,14 +52,12 @@ const nsWithEmpty: WithEmptyType = {
   emptyKey: "",
 };
 
-function mockDir<T>(dir: T extends Record<string, any> ? T : never) {
-  globalThis.mockConstants = {
-    I18N_CONFIG: {
-      locales: ["en", "ru"],
-      defaultLocale: "en",
-      messages: {
-        en: dir,
-      },
+function getI18nConfig<T>(dir: T extends Record<string, any> ? T : never) {
+  return {
+    locales: ["en", "ru"],
+    defaultLocale: "en",
+    messages: {
+      en: dir,
     },
   };
 }
@@ -71,21 +69,21 @@ describe("utils", () => {
 
   describe("translateCore", () => {
     it("should translate a key interpoleting correctly", async () => {
-      mockDir({ hello_world: "Hello {{name}}" });
-      const t = translateCore("en");
+      const config = getI18nConfig({ hello_world: "Hello {{name}}" });
+      const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
       expect(t("hello_world", { name: "Test" })).toBe("Hello Test");
     });
 
     it("should translate a nested key interpoleting correctly", async () => {
-      mockDir({
+      const config = getI18nConfig({
         hello_world: {
           hello_world_nested: "Hello {{name}}",
         },
       });
 
-      const t = translateCore("en");
+      const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
       expect(t("hello_world.hello_world_nested", { name: "Test" })).toBe(
@@ -94,8 +92,8 @@ describe("utils", () => {
     });
 
     it("should return an object of root keys", async () => {
-      mockDir(nsRootKeys);
-      const t = translateCore("en");
+      const config = getI18nConfig(nsRootKeys);
+      const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
       expect(t<RootKeysType>(".", null, { returnObjects: true })).toEqual(
@@ -104,16 +102,14 @@ describe("utils", () => {
     });
 
     it("should return an object of nested keys", async () => {
-      globalThis.mockConstants = {
-        I18N_CONFIG: {
-          locales: ["en", "ru"],
-          defaultLocale: "en",
-          messages: {
-            en: nsNestedKeys,
-          },
+      const config = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: nsNestedKeys,
         },
       };
-      const t = translateCore("en");
+      const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
       expect(
@@ -125,9 +121,9 @@ describe("utils", () => {
     });
 
     it("should return an object of nested keys and interpolate correctly", async () => {
-      mockDir(nsInterpolate);
+      const config = getI18nConfig(nsInterpolate);
 
-      const t = translateCore("en");
+      const t = translateCore("en", config);
       const count = 999;
       const expected: NestedKeysType = {
         key_1: {
@@ -144,113 +140,101 @@ describe("utils", () => {
     });
 
     it("should return empty string when allowEmptyStrings is passed as true", () => {
-      globalThis.mockConstants = {
-        I18N_CONFIG: {
-          locales: ["en", "ru"],
-          defaultLocale: "en",
-          messages: {
-            en: nsWithEmpty,
-          },
-          allowEmptyStrings: true,
+      const config = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: nsWithEmpty,
         },
+        allowEmptyStrings: true,
       };
-      const t = translateCore("en");
+      const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
       expect(t("emptyKey")).toBe("");
     });
 
     it("should return empty string when allowEmptyStrings is omitted", () => {
-      globalThis.mockConstants = {
-        I18N_CONFIG: {
-          locales: ["en", "ru"],
-          defaultLocale: "en",
-          messages: {
-            en: nsWithEmpty,
-          },
+      const config = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: nsWithEmpty,
         },
       };
-      const t = translateCore("en");
+      const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
       expect(t("emptyKey")).toBe("");
     });
 
     it("should return the key name when allowEmptyStrings is omit passed as false.", () => {
-      globalThis.mockConstants = {
-        I18N_CONFIG: {
-          locales: ["en", "ru"],
-          defaultLocale: "en",
-          messages: {
-            en: nsWithEmpty,
-          },
-          allowEmptyStrings: false,
+      const config = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: nsWithEmpty,
         },
+        allowEmptyStrings: false,
       };
-      const t = translateCore("en");
+      const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
       expect(t("emptyKey")).toBe("emptyKey");
     });
 
     it("should work with different interpolation preffix and suffix", () => {
-      globalThis.mockConstants = {
-        I18N_CONFIG: {
-          locales: ["en", "ru"],
-          defaultLocale: "en",
-          messages: {
-            en: {
-              key_1: "hello [[name]]",
-            },
-          },
-          interpolation: {
-            prefix: "[[",
-            suffix: "]]",
+      const config = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: {
+            key_1: "hello [[name]]",
           },
         },
+        interpolation: {
+          prefix: "[[",
+          suffix: "]]",
+        },
       };
-      const t = translateCore("en");
+      const t = translateCore("en", config);
       expect(t("key_1", { name: "test" })).toBe("hello test");
     });
 
     it("should work with format", () => {
-      globalThis.mockConstants = {
-        I18N_CONFIG: {
-          locales: ["en", "ru"],
-          defaultLocale: "en",
-          messages: {
-            en: {
-              key_1: "hello {{name, uppercase}}",
-            },
-          },
-          interpolation: {
-            format: (value, format) => {
-              if (typeof value !== "string") return "";
-              if (format === "uppercase") {
-                return value.toUpperCase();
-              }
-              return value;
-            },
+      const config = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: {
+            key_1: "hello {{name, uppercase}}",
           },
         },
-      };
-      const t = translateCore("en");
+        interpolation: {
+          format: (value, format) => {
+            if (typeof value !== "string") return "";
+            if (format === "uppercase") {
+              return value.toUpperCase();
+            }
+            return value;
+          },
+        },
+      } as I18nConfig;
+      const t = translateCore("en", config);
       expect(t("key_1", { name: "test" })).toBe("hello TEST");
     });
 
     it("should work with html inside the translation", () => {
-      globalThis.mockConstants = {
-        I18N_CONFIG: {
-          locales: ["en", "ru"],
-          defaultLocale: "en",
-          messages: {
-            en: {
-              key_1: "hello <0>{{name}}</0>",
-            },
+      const config = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: {
+            key_1: "hello <0>{{name}}</0>",
           },
         },
       };
-      const t = translateCore("en");
+      const t = translateCore("en", config);
       const output = t("key_1", { name: "test" }, { elements: [<strong />] });
       const element = output[1] as JSXElement;
 

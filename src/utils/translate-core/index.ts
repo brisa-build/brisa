@@ -1,4 +1,3 @@
-import { getConstants } from "@/constants";
 import type {
   I18nConfig,
   I18nDictionary,
@@ -8,8 +7,7 @@ import type {
 } from "@/types";
 import formatElements from "./format-elements";
 
-export default function translateCore(locale: string) {
-  const config: I18nConfig = getConstants().I18N_CONFIG || {};
+export default function translateCore(locale: string, config: I18nConfig) {
   const { allowEmptyStrings = true } = config;
   const pluralRules = new Intl.PluralRules(locale);
   const interpolateUnknown = (

@@ -301,6 +301,25 @@ async function enqueueDuringRendering(
       if (fs.existsSync(clientFile!)) {
         const hash = await Bun.file(clientFile).text();
         const filename = request.route.src.replace(".js", `-${hash}.js`);
+        const { locale } = request.i18n;
+
+        // Script to load the i18n page content (messages and translated pages to navigate)
+        if (locale) {
+          const { BUILD_DIR } = getConstants();
+          const filenameI18n = filename.replace(".js", `-${locale}.js`);
+          const pathPageI18n = path.join(
+            BUILD_DIR,
+            "pages-client",
+            filenameI18n,
+          );
+
+          if (fs.existsSync(pathPageI18n)) {
+            controller.enqueue(
+              `<script src="/_brisa/pages/${filenameI18n}"></script>`,
+              suspenseId,
+            );
+          }
+        }
 
         controller.enqueue(
           `<script async fetchpriority="high" src="/_brisa/pages/${filename}"></script>`,
