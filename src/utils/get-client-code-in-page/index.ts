@@ -5,7 +5,7 @@ import { getConstants } from "@/constants";
 import AST from "@/utils/ast";
 import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
 import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
-import transformJSXToReactive from "@/utils/transform-jsx-to-reactive";
+import clientBuildPlugin from "@/utils/client-build-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import snakeToCamelCase from "@/utils/snake-to-camelcase";
 import analyzeClientAst from "@/utils/analyze-client-ast";
@@ -158,13 +158,13 @@ async function transformToWebComponents({
     // https://bun.sh/docs/bundler#format
     plugins: [
       {
-        name: "web-components-transformer",
+        name: "client-build-plugin",
         setup(build) {
           build.onLoad({ filter: /.*(tsx|jsx)$/ }, async ({ path, loader }) => {
             let code = await Bun.file(path).text();
 
             try {
-              code = transformJSXToReactive(code, path);
+              code = clientBuildPlugin(code, path);
             } catch (error) {
               console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
               console.log(LOG_PREFIX.ERROR, (error as Error).message);
