@@ -470,7 +470,7 @@ export type JSXComponent = (
 ) => JSXNode | Promise<JSXNode>;
 
 export interface I18nDictionary {
-  [key: string]: string | I18nDictionary;
+  [key: string]: string | I18nDictionary | I18nDictionary[];
 }
 
 export interface TranslationQuery {
