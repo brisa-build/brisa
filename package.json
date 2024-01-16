@@ -72,9 +72,9 @@
     "create-brisa-app": "./create-brisa-app.cjs"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "13.1.2",
+    "@happy-dom/global-registrator": "13.1.4",
     "brisa": "0.0.20-canary.1",
-    "@types/bun": "1.0.1"
+    "@types/bun": "1.0.2"
   },
   "peerDependencies": {
     "typescript": "5.3.3"
