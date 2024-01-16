@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
-
-const getI18nClientMessages = import.meta.require(".").default;
+import getI18nClientMessages from ".";
 
 describe("utils", () => {
   describe("getI18nClientMessages", () => {
