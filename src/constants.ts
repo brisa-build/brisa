@@ -13,6 +13,17 @@ const I18N_CONFIG = (await importFileIfExists("i18n", buildDir))
 const CONFIG =
   (await importFileIfExists("brisa.config", rootDir))?.default ?? {};
 
+// Remove trailing slash from pages
+if (I18N_CONFIG?.pages) {
+  I18N_CONFIG.pages = JSON.parse(
+    JSON.stringify(I18N_CONFIG.pages, (key, value) =>
+      typeof value === "string" && value.length > 1
+        ? value.replace(/\/$/g, "")
+        : value,
+    ),
+  );
+}
+
 const defaultConfig = {
   trailingSlash: false,
   assetPrefix: "",
