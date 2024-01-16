@@ -20,12 +20,17 @@ describe("utils", () => {
   beforeEach(async () => {
     fs.mkdirSync(build, { recursive: true });
     fs.mkdirSync(brisaInternals, { recursive: true });
+    const constants = getConstants() ?? {};
     globalThis.mockConstants = {
-      ...(getConstants() ?? {}),
+      ...constants,
       SRC_DIR: src,
       IS_PRODUCTION: true,
       IS_DEVELOPMENT: false,
       BUILD_DIR: build,
+      REGEX: {
+        ...constants.REGEX,
+        WEB_COMPONENTS_ISLAND: /.*\/src\/__fixtures__\/.*\.(tsx|jsx|js|ts)$/,
+      },
     };
   });
 

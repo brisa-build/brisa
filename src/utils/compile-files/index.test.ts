@@ -46,6 +46,7 @@ describe("utils", () => {
   });
   afterAll(() => {
     mockHash.mockRestore();
+    globalThis.mockConstants = undefined;
   });
   describe("compileFiles DEVELOPMENT", () => {
     afterEach(() => {
@@ -61,14 +62,21 @@ describe("utils", () => {
       }
     });
     it("should compile fixtures routes correctly", async () => {
+      const constants = getConstants();
+
       console.log = mock((v) => v);
+
       globalThis.mockConstants = {
-        ...(getConstants() ?? {}),
+        ...constants,
         PAGES_DIR: DEV_PAGES_DIR,
         BUILD_DIR: DEV_BUILD_DIR,
         IS_PRODUCTION: false,
         SRC_DIR: DEV_SRC_DIR,
         ASSETS_DIR: DEV_ASSETS_DIR,
+        REGEX: {
+          ...constants.REGEX,
+          WEB_COMPONENTS_ISLAND: /.*\/src\/__fixtures__\/.*\.(tsx|jsx|js|ts)$/,
+        },
       };
 
       const { success, logs } = await compileFiles();
@@ -112,6 +120,10 @@ describe("utils", () => {
               "some-key": "Algum valor",
             },
           },
+        },
+        REGEX: {
+          ...constants.REGEX,
+          WEB_COMPONENTS_ISLAND: /.*\/src\/__fixtures__\/.*\.(tsx|jsx|js|ts)$/,
         },
       };
 

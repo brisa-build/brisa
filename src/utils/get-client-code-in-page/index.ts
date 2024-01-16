@@ -87,7 +87,7 @@ async function transformToWebComponents({
   webComponentsList,
   useContextProvider,
 }: TransformOptions) {
-  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
+  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION, REGEX } =
     getConstants();
 
   const internalDir = join(BUILD_DIR, "_brisa");
@@ -157,7 +157,7 @@ async function transformToWebComponents({
         name: "client-build-plugin",
         setup(build) {
           build.onLoad(
-            { filter: /.*\/src\/web-components\/.*\.(tsx|jsx|js|ts)$/ },
+            { filter: REGEX.WEB_COMPONENTS_ISLAND },
             async ({ path, loader }) => {
               let code = await Bun.file(path).text();
 

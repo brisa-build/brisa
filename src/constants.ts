@@ -76,6 +76,7 @@ const constants = {
     CATCH_ALL: /\[\[\.{3}.*?\]\]/g,
     DYNAMIC: /\[.*?\]/g,
     REST_DYNAMIC: /\[\.{3}.*?\]/g,
+    WEB_COMPONENTS_ISLAND: /.*\/src\/web-components\/.*\.(tsx|jsx|js|ts)$/,
   },
   BOOLEANS_IN_HTML,
 };
