@@ -27,7 +27,7 @@ export default function analyzeClientAst(ast: ESTree.Program) {
       }
     }
 
-    // Add dynamic keys from: MyWebComponent.i18nKeys = ['footer*'];
+    // Add dynamic keys from: MyWebComponent.i18nKeys = ['footer', /projects.*title/];
     if (
       value?.type === "AssignmentExpression" &&
       value?.left?.property?.name === "i18nKeys" &&
@@ -57,9 +57,9 @@ export default function analyzeClientAst(ast: ESTree.Program) {
         "directly.",
         "",
         "To address this, it is crucial to specify these keys at",
-        `web-component level. Here's an example:`,
+        `web-component level. You can use RegExp. Here's an example:`,
         "",
-        `MyWebComponent.i18nKeys = ['footer.*'] // You can use Glob`,
+        `MyWebComponent.i18nKeys = ['footer', /projects.*title/];`,
         "",
         "If you have any questions or need further assistance,",
         "feel free to contact us. We are happy to help!",
