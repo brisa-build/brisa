@@ -149,7 +149,9 @@ describe("utils", () => {
       expect(res.i18nKeys).toBeEmpty();
       expect(logs).toContain("Ops! Warning:");
       expect(logs).toContain("Addressing Dynamic i18n Key Export Limitations");
-      expect(logs).toContain("Code: i18n.t(variable + variable2), i18n.t(variable)");
+      expect(logs).toContain(
+        "Code: i18n.t(variable + variable2), i18n.t(variable)",
+      );
     });
 
     it("should add the keys specified inside MyWebComponent.i18nKeys array", () => {
