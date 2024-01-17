@@ -47,7 +47,7 @@ export default function analyzeClientAst(ast: ESTree.Program) {
       [
         "Addressing Dynamic i18n Key Export Limitations",
         "",
-        `Code: ${logs.map(v => toInline(generateCodeFromAST(v))).join(", ")}`,
+        `Code: ${logs.map((v) => toInline(generateCodeFromAST(v))).join(", ")}`,
         "",
         "When using dynamic i18n keys like t(someVar) instead of",
         `literal keys such as t('example'), exporting these keys`,

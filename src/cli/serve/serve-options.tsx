@@ -28,6 +28,10 @@ const {
   LOG_PREFIX,
 } = getConstants();
 
+const CACHE_CONTROL = IS_PRODUCTION
+  ? "public, max-age=31536000, immutable"
+  : "no-store, must-revalidate";
+
 if (IS_PRODUCTION && !fs.existsSync(BUILD_DIR)) {
   console.log(
     LOG_PREFIX.ERROR,
@@ -224,9 +228,7 @@ function serveAsset(path: string, req: RequestContext) {
   const responseOptions = {
     headers: {
       "content-type": file.type,
-      "cache-control": IS_PRODUCTION
-        ? "public, max-age=31536000, immutable"
-        : "no-store, must-revalidate",
+      "cache-control": CACHE_CONTROL,
       ...(isGzip ? gzipHeaders : {}),
     },
   };
@@ -264,6 +266,7 @@ async function responseRenderedPage({
 
   const responseOptions = {
     headers: {
+      "cache-control": CACHE_CONTROL,
       ...middlewareResponseHeaders,
       ...layoutResponseHeaders,
       ...pageResponseHeaders,
