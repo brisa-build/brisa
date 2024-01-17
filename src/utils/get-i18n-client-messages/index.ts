@@ -1,19 +1,26 @@
 import translateCore from "@/utils/translate-core";
 import { getConstants } from "@/constants";
 
+type Messages = Record<string, any>;
+type I18nKeys = Set<string | RegExp>;
+
 /**
  * Get the messages that will be sent to the client.
  */
 export default function getI18nClientMessages(
   locale: string,
-  i18nKeys: Set<string>,
+  i18nKeys: I18nKeys,
 ) {
   const config = getConstants().I18N_CONFIG ?? {};
   const messages = config.messages?.[locale] ?? {};
   const values = new Set<string>();
   const t = translateCore(locale, config);
+  const possibleKeys = increaseKeysWithPluralsAndRegexMatches(
+    i18nKeys,
+    messages,
+  );
 
-  for (let i18nKey of i18nKeys) {
+  for (let i18nKey of possibleKeys) {
     const key = new String(i18nKey);
 
     // Mark the key to identify it later.
@@ -55,4 +62,47 @@ export default function getI18nClientMessages(
 
     return typeof value !== "string" || values.has(value) ? value : undefined;
   });
+}
+
+function increaseKeysWithPluralsAndRegexMatches(
+  i18nKeys: Set<string | RegExp>,
+  messages: Messages,
+) {
+  const list = getListOfAllMessages(messages);
+  const result = new Set<string>();
+  const plurals = "(_zero|_one|_two|_few|_many|_other|_[0-9]+)?$";
+
+  for (let i18nKey of i18nKeys) {
+    const regex =
+      i18nKey instanceof RegExp ? i18nKey : new RegExp(i18nKey + plurals);
+    for (let messageKey of list) {
+      if (regex.test(messageKey)) result.add(messageKey);
+    }
+  }
+
+  return result;
+}
+
+function getListOfAllMessages(messages: Messages, prefix = "") {
+  const config = getConstants().I18N_CONFIG ?? {};
+  const separator = config.keySeparator ?? ".";
+  let keys: string[] = [];
+
+  for (let key in messages) {
+    let currentKey = prefix ? `${prefix}${separator}${key}` : key;
+
+    if (messages[key]?.constructor === Object) {
+      keys = keys.concat(getListOfAllMessages(messages[key], currentKey));
+      continue;
+    }
+
+    const parts = currentKey.split(".");
+
+    while (currentKey) {
+      keys.push(currentKey);
+      currentKey = currentKey.replace(parts.pop() ?? "", "").replace(/\.$/, "");
+    }
+  }
+
+  return keys;
 }
