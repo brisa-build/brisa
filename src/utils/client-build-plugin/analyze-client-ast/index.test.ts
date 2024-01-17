@@ -149,5 +149,20 @@ describe("utils", () => {
       expect(logs).toContain("Addressing Dynamic i18n Key Export Limitations");
       expect(logs).toContain("Code: i18n.t(variable)");
     });
+
+    it("should add the keys specified inside MyWebComponent.i18nKeys array", () => {
+      const ast = parseCodeToAST(`
+        export default function Component({}, {i18n}) {
+          return <div>{i18n.t("hello")}</div>
+        }
+
+        Component.i18nKeys = ["hello-world"];
+      `);
+
+      const res = analyzeClientAst(ast);
+
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toEqual(new Set(["hello", "hello-world"]));
+    });
   });
 });
