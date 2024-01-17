@@ -134,7 +134,9 @@ describe("utils", () => {
       const mockLog = spyOn(console, "log");
       const ast = parseCodeToAST(`
         export default function Component({}, {i18n}) {
-          return <div>{i18n.t(variable)}</div>
+          const variable = "hello";
+          const variable2 = "world";
+          return <div>{i18n.t(variable + variable2)}<span>{i18n.t(variable)}</span></div>
         }
       `);
 
@@ -147,7 +149,7 @@ describe("utils", () => {
       expect(res.i18nKeys).toBeEmpty();
       expect(logs).toContain("Ops! Warning:");
       expect(logs).toContain("Addressing Dynamic i18n Key Export Limitations");
-      expect(logs).toContain("Code: i18n.t(variable)");
+      expect(logs).toContain("Code: i18n.t(variable + variable2), i18n.t(variable)");
     });
 
     it("should add the keys specified inside MyWebComponent.i18nKeys array", () => {
@@ -163,6 +165,25 @@ describe("utils", () => {
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello", "hello-world"]));
+    });
+
+    it("should not log the warning if already has the i18nKeys", () => {
+      const mockLog = spyOn(console, "log");
+      const ast = parseCodeToAST(`
+        export default function Component({}, {i18n}) {
+          const someVar = "hello-world";
+          return <div>{i18n.t(someVar)}</div>
+        }
+
+        Component.i18nKeys = ["hello-world"];
+      `);
+
+      const res = analyzeClientAst(ast);
+
+      expect(mockLog).not.toHaveBeenCalled();
+      mockLog.mockRestore();
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toEqual(new Set(["hello-world"]));
     });
   });
 });
