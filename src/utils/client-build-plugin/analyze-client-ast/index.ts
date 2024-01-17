@@ -1,6 +1,7 @@
 import type { ESTree } from "meriyah";
 import { logWarning } from "@/utils/log/log-build";
 import AST from "@/utils/ast";
+import { toInline } from "@/helpers";
 
 const { generateCodeFromAST } = AST("tsx");
 
@@ -46,7 +47,7 @@ export default function analyzeClientAst(ast: ESTree.Program) {
       [
         "Addressing Dynamic i18n Key Export Limitations",
         "",
-        `Code: ${logs.map(generateCodeFromAST).join(", ")}`,
+        `Code: ${logs.map(v => toInline(generateCodeFromAST(v))).join(", ")}`,
         "",
         "When using dynamic i18n keys like t(someVar) instead of",
         `literal keys such as t('example'), exporting these keys`,
