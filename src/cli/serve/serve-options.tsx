@@ -281,7 +281,12 @@ async function responseRenderedPage({
 }
 
 function error404(req: RequestContext) {
-  if (!route404) return new Response("Not found", { status: 404 });
+  if (!route404) {
+    return new Response("Not found", {
+      status: 404,
+      headers: { "cache-control": CACHE_CONTROL },
+    });
+  }
 
   req.route = route404;
 
