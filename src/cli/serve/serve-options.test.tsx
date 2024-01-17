@@ -616,7 +616,11 @@ describe("CLI: serve", () => {
     expect(text).toBe("Some text :D");
   });
 
-  it("should cache client page code", async () => {
+  it("should cache client page code in production", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+    };
     const mockFile = spyOn(Bun, "file").mockImplementation(
       () =>
         ({
@@ -631,6 +635,24 @@ describe("CLI: serve", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toBe(
       "public, max-age=31536000, immutable",
+    );
+  });
+
+  it.todo("should not cache client page code in development", async () => {
+    const mockFile = spyOn(Bun, "file").mockImplementation(
+      () =>
+        ({
+          text: (pathname: string) => Promise.resolve(pathname),
+        }) as BunFile,
+    );
+    const response = await testRequest(
+      new Request(`http:///localhost:1234/_brisa/pages/somepage`),
+    );
+
+    mockFile.mockRestore();
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toBe(
+      "no-store, must-revalidate",
     );
   });
 });
