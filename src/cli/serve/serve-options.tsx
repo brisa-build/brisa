@@ -224,7 +224,9 @@ function serveAsset(path: string, req: RequestContext) {
   const responseOptions = {
     headers: {
       "content-type": file.type,
-      "cache-control": "public, max-age=31536000, immutable",
+      "cache-control": IS_PRODUCTION
+        ? "public, max-age=31536000, immutable"
+        : "no-store, must-revalidate",
       ...(isGzip ? gzipHeaders : {}),
     },
   };
