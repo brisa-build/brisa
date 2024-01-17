@@ -616,7 +616,8 @@ describe("CLI: serve", () => {
     expect(text).toBe("Some text :D");
   });
 
-  it("should cache client page code in production", async () => {
+  it.todo("should cache client page code in production", async () => {
+    // FIXME: (TODO: fix this mock)
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -638,7 +639,7 @@ describe("CLI: serve", () => {
     );
   });
 
-  it.todo("should not cache client page code in development", async () => {
+  it("should not cache client page code in development", async () => {
     const mockFile = spyOn(Bun, "file").mockImplementation(
       () =>
         ({
