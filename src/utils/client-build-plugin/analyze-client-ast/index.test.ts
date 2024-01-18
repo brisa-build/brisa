@@ -1,8 +1,9 @@
 import { describe, it, expect, spyOn } from "bun:test";
 import AST from "@/utils/ast";
 import analyzeClientAst from ".";
+import { toInline } from "@/helpers";
 
-const { parseCodeToAST } = AST("tsx");
+const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
 describe("utils", () => {
   describe("analyze-client-ast", () => {
@@ -157,7 +158,7 @@ describe("utils", () => {
     it("should add the keys specified inside MyWebComponent.i18nKeys array", () => {
       const ast = parseCodeToAST(`
         export default function Component({}, {i18n}) {
-          return <div>{i18n.t("hello")}</div>
+          return i18n.t("hello");
         }
 
         Component.i18nKeys = ["hello-world"];
@@ -167,6 +168,13 @@ describe("utils", () => {
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello", "hello-world"]));
+      expect(toInline(generateCodeFromAST(res.ast))).toBe(
+        toInline(`
+        export default function Component({}, {i18n}) {
+          return i18n.t("hello");
+        }
+      `),
+      );
     });
 
     it("should not log the warning if already has the i18nKeys", () => {
@@ -174,7 +182,7 @@ describe("utils", () => {
       const ast = parseCodeToAST(`
         export default function Component({}, {i18n}) {
           const someVar = "hello-world";
-          return <div>{i18n.t(someVar)}</div>
+          return i18n.t(someVar);
         }
 
         Component.i18nKeys = ["hello-world"];
@@ -186,6 +194,42 @@ describe("utils", () => {
       mockLog.mockRestore();
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello-world"]));
+      expect(toInline(generateCodeFromAST(res.ast))).toBe(
+        toInline(`
+        export default function Component({}, {i18n}) {
+          const someVar = "hello-world";
+          return i18n.t(someVar);
+        }
+      `),
+      );
+    });
+
+    it("should work i18nKeys inside a conditional", () => {
+      const ast = parseCodeToAST(`
+        export default function Component({}, {i18n}) {
+          const someVar = "hello-world";
+          return i18n.t(someVar);
+        }
+        
+        if (true) {
+          Component.i18nKeys = ["hello-world"];
+        }
+      `);
+
+      const res = analyzeClientAst(ast);
+
+      expect(res.useI18n).toBeTrue();
+      expect(res.i18nKeys).toEqual(new Set(["hello-world"]));
+      expect(toInline(generateCodeFromAST(res.ast))).toBe(
+        toInline(`
+        export default function Component({}, {i18n}) {
+          const someVar = "hello-world";
+          return i18n.t(someVar);
+        }
+
+        if (true) {}
+      `),
+      );
     });
   });
 });
