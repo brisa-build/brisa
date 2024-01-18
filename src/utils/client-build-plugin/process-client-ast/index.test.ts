@@ -1,12 +1,12 @@
 import { describe, it, expect, spyOn } from "bun:test";
 import AST from "@/utils/ast";
-import analyzeClientAst from ".";
+import processClientAst from ".";
 import { toInline } from "@/helpers";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
 describe("utils", () => {
-  describe("analyze-client-ast", () => {
+  describe("process-client-ast", () => {
     it("should detect i18n when is declated and used to consume the locale", () => {
       const ast = parseCodeToAST(`  
         export default function Component({i18n}) {
@@ -15,7 +15,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toBeEmpty();
@@ -29,7 +29,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toBeEmpty();
@@ -43,7 +43,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toBeEmpty();
@@ -56,7 +56,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello"]));
@@ -71,7 +71,7 @@ describe("utils", () => {
         export default Component;
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello"]));
@@ -84,7 +84,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello"]));
@@ -97,7 +97,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello"]));
@@ -110,7 +110,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello"]));
@@ -125,7 +125,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeFalse();
       expect(res.i18nKeys).toBeEmpty();
@@ -141,7 +141,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       const logs = mockLog.mock.calls.toString();
       mockLog.mockRestore();
@@ -164,7 +164,7 @@ describe("utils", () => {
         Component.i18nKeys = ["hello-world"];
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello", "hello-world"]));
@@ -188,7 +188,7 @@ describe("utils", () => {
         Component.i18nKeys = ["hello-world"];
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(mockLog).not.toHaveBeenCalled();
       mockLog.mockRestore();
@@ -216,7 +216,7 @@ describe("utils", () => {
         }
       `);
 
-      const res = analyzeClientAst(ast);
+      const res = processClientAst(ast);
 
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(["hello-world"]));

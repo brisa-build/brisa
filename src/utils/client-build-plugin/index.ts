@@ -10,7 +10,7 @@ import transformToReactiveArrays from "./transform-to-reactive-arrays";
 import transformToReactiveProps from "./transform-to-reactive-props";
 import mapComponentStatics from "./map-component-statics";
 import replaceExportDefault from "./replace-export-default";
-import analyzeClientAst from "./analyze-client-ast";
+import processClientAst from "./process-client-ast";
 import getReactiveReturnStatement from "./get-reactive-return-statement";
 import {
   ALTERNATIVE_PREFIX,
@@ -48,8 +48,8 @@ export default function clientBuildPlugin(
     return { code, useI18n: false, i18nKeys: new Set<string>() };
   }
 
-  let ast = parseCodeToAST(code);
-  const { useI18n, i18nKeys } = analyzeClientAst(ast);
+  let rawAst = parseCodeToAST(code);
+  let { useI18n, i18nKeys, ast } = processClientAst(rawAst);
 
   if (useI18n) {
     ast = addI18nBridge(ast, {
