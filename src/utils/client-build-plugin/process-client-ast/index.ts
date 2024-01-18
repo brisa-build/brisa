@@ -5,7 +5,7 @@ import { toInline } from "@/helpers";
 
 const { generateCodeFromAST } = AST("tsx");
 
-export default function analyzeClientAst(ast: ESTree.Program) {
+export default function processClientAst(ast: ESTree.Program) {
   let i18nKeys = new Set<string>();
   let useI18n = false;
   let logs: any[] = [];
