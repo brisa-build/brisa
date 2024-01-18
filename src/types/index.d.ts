@@ -515,8 +515,35 @@ export type Configuration = {
    * - [How to use `plugins`](https://brisa.build/docs/building-your-application/configuring/plugins)
    */
   plugins?: BunPlugin[];
+
+  /**
+   * @todo TODO: implement it
+   */
   basePath?: string;
+
+  /**
+   * Description:
+   *
+   * The `tls` config property is used to enable HTTPS.
+   *
+   * Example:
+   *
+   * ```ts
+   * tls: {
+   *  cert: Bun.file("cert.pem"),
+   *  key: Bun.file("key.pem"),
+   * }
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `tls`](https://brisa.build/docs/building-your-application/configuring/tls)
+   */
   tls?: TLSOptions;
+
+  /**
+   * @todo TODO: implement it
+   */
   output?: "static" | "server";
 };
 
