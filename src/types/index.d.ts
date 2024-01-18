@@ -486,6 +486,34 @@ export type Configuration = {
    * - [How to use `assetPrefix`](https://brisa.build/docs/building-your-application/configuring/asset-prefix)
    */
   assetPrefix?: string;
+
+  /**
+   * Description:
+   *
+   * The `plugins` config property is used to add Bun/esbuild plugins
+   * to the build process.
+   *
+   * Example:
+   *
+   * ```ts
+   * plugins: [
+   *  {
+   *   name: 'my-plugin',
+   *   setup(build) {
+   *    build.onLoad({ filter: /\.txt$/ }, async (args) => {
+   *      return {
+   *        contents: 'export default ' + JSON.stringify(args.path) + ';',
+   *        loader: 'js',
+   *      };
+   *    });
+   *   },
+   * }],
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `plugins`](https://brisa.build/docs/building-your-application/configuring/plugins)
+   */
   plugins?: BunPlugin[];
   basePath?: string;
   tls?: TLSOptions;
