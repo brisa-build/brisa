@@ -773,4 +773,80 @@ export default function SomeComponent(
 
 ## Translate in your web components
 
-TODO
+Brisa's web components allow direct consumption of translation keys within the component. You can seamlessly integrate translation into your components without the need for extensive configurations.
+
+Brisa intelligently identifies and imports only the necessary translation keys required by a web component. This eliminates unnecessary overhead, ensuring optimal performance by importing only the keys relevant to the component's functionality.
+
+```tsx
+export default function WebComponent({}, { i18n }: WebContext) {
+  return <h2>{i18n.t("hello-world")}</h2>;
+}
+```
+
+### Dynamic keys
+
+Brisa excels in supporting dynamic translation keys at the web component level using the `i18nKeys` feature. This becomes particularly valuable when managing dynamic content, such as generating translation keys based on runtime variables.
+
+Consider the example below:
+
+```tsx
+export default function Item({ itemId }, { i18n: { t } }: WebContext) {
+  return (
+    <>
+      <h2>{t(`item.${itemId}.title`)}</h2>
+      <p>{t(`item.${itemId}.description`)}</p>
+      <a href={`/item/${itemId}`}>{t("more")}</a>
+    </>
+  );
+}
+
+Item.i18nKeys = [/item.*(title|description)/];
+```
+
+In this scenario, the static key `more` imports seamlessly, while the other dynamic keys require explicit specification in `Item.i18nKeys`. The `i18nKeys` field accepts both [`string`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) and [`RegExp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) types for flexibility.
+
+Example Usage:
+
+```tsx
+Item.i18nKeys = ["item"];
+```
+
+For more precision, utilize `RegExp`:
+
+```tsx
+Item.i18nKeys = [/item.*(title|description)/];
+```
+
+### Plurals
+
+Brisa seamlessly manages the importation of all plural rules associated with a translation key. The following translations exemplify the pluralization handling:
+
+```ts
+{
+  "cart-message_0": "The cart is empty",
+  "cart-message_one": "The cart has only {{count}} product",
+  "cart-message_other": "The cart has {{count}} products",
+  "cart-message_999": "The cart is full",
+}
+```
+
+or
+
+```ts
+{
+  "cart-message": {
+     "0": "The cart is empty",
+     "one": "The cart has only {{count}} product",
+     "other": "The cart has {{count}} products",
+     "999": "The cart is full",
+  }
+}
+```
+
+All associated plural rules are imported to the client code after consuming the key:
+
+```ts
+t("cart-message", { count });
+```
+
+Brisa's comprehensive translation handling, dynamic key support, and intelligent importation make it a powerful tool for developers seeking efficient localization in web development projects.
