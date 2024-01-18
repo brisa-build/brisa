@@ -467,6 +467,24 @@ export type Configuration = {
    * - [How to use `trailingSlash`](https://brisa.build/docs/building-your-application/configuring/trailing-slash)
    */
   trailingSlash?: boolean;
+
+  /**
+   * Description:
+   *
+   * The `assetPrefix` config property is used to add a prefix to the assets.
+   *
+   * Example:
+   *
+   * ```ts
+   * assetPrefix: 'https://cdn.example.com'
+   * ```
+   *
+   * Then, the image `/assets/image.png` will be redirected to `https://cdn.example.com/assets/image.png`.
+   *
+   * Docs:
+   *
+   * - [How to use `assetPrefix`](https://brisa.build/docs/building-your-application/configuring/asset-prefix)
+   */
   assetPrefix?: string;
   plugins?: BunPlugin[];
   basePath?: string;
