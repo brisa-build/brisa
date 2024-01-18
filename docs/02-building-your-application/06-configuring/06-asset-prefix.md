@@ -1,6 +1,6 @@
 ---
-title: `assetPrefix`
-description: Learn how to use the `assetPrefix` config option to configure your CDN.
+title: assetPrefix
+description: Learn how to use the assetPrefix config option to configure your CDN.
 ---
 
 By default, Brisa serves assets from the same domain as the application. However, you can configure Brisa to use a Content Delivery Network (CDN) for serving assets. This is useful for improving the performance of your application by offloading static assets to a separate, geographically distributed server.
