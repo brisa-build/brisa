@@ -11,7 +11,7 @@ export default function analyzeClientAst(ast: ESTree.Program) {
   let logs: any[] = [];
   let isDynamicKeysSpecified = false;
 
-  JSON.stringify(ast, function (key, value) {
+  const newAst = JSON.parse(JSON.stringify(ast), function (key, value) {
     useI18n ||= value?.type === "Identifier" && value?.name === "i18n";
 
     if (
@@ -29,15 +29,20 @@ export default function analyzeClientAst(ast: ESTree.Program) {
 
     // Add dynamic keys from: MyWebComponent.i18nKeys = ['footer', /projects.*title/];
     if (
-      value?.type === "AssignmentExpression" &&
-      value?.left?.property?.name === "i18nKeys" &&
-      value?.right?.type === "ArrayExpression"
+      value?.type === "ExpressionStatement" &&
+      value.expression.left?.property?.name === "i18nKeys" &&
+      value.expression?.right?.type === "ArrayExpression"
     ) {
-      for (let element of value?.right?.elements ?? []) {
+      for (let element of value.expression.right.elements ?? []) {
         i18nKeys.add(element.value);
         isDynamicKeysSpecified = true;
       }
+      // Remove the expression statement
+      return null;
     }
+
+    // Remove arrays with empty values
+    if (Array.isArray(value)) return value.filter((v) => v);
 
     return value;
   });
@@ -70,5 +75,5 @@ export default function analyzeClientAst(ast: ESTree.Program) {
 
   if (!useI18n) i18nKeys = new Set();
 
-  return { useI18n, i18nKeys };
+  return { useI18n, i18nKeys, ast: newAst };
 }
