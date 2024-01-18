@@ -14,6 +14,12 @@ const I18N_CONFIG = {
       "hello-plural": "Hello World {{count}}",
       "hello-plural_other": "Hello another world {{count}}",
       "hello-plural_42": "Hello life {{count}}",
+      "cart-message": {
+        "0": "The cart is empty",
+        one: "The cart has only {{count}} product",
+        other: "The cart has {{count}} products",
+        "999": "The cart is full",
+      },
       nested: {
         "very-nested": {
           content: "Very nested content",
@@ -35,6 +41,12 @@ const I18N_CONFIG = {
       "hello-plural": "Olá Mundo {{count}}",
       "hello-plural_other": "Olá outro mundo {{count}}",
       "hello-plural_42": "Olá vida {{count}}",
+      "cart-message": {
+        "0": "O carrinho está vazio",
+        one: "O carrinho tem apenas {{count}} produto",
+        other: "O carrinho tem {{count}} produtos",
+        "999": "O carrinho está cheio",
+      },
       nested: {
         "very-nested": {
           content: "Conteúdo muito aninhado",
@@ -127,6 +139,21 @@ describe("utils", () => {
         "hello-plural": "Hello World {{count}}",
         "hello-plural_other": "Hello another world {{count}}",
         "hello-plural_42": "Hello life {{count}}",
+      };
+
+      expect(output).toEqual(expected);
+    });
+
+    it('should return the plural message when the key is "cart-message"', () => {
+      const i18nKeys = new Set<string>(["cart-message"]);
+      const output = getI18nClientMessages("en-US", i18nKeys);
+      const expected = {
+        "cart-message": {
+          "0": "The cart is empty",
+          one: "The cart has only {{count}} product",
+          other: "The cart has {{count}} products",
+          "999": "The cart is full",
+        },
       };
 
       expect(output).toEqual(expected);
