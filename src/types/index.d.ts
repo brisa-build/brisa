@@ -448,11 +448,30 @@ export type JSXNode = string | number | null | JSXElement | JSXNode[];
 export type Type = string | number | ComponentType | Promise<ComponentType>;
 
 export type Configuration = {
+  /**
+   * Description:
+   *
+   * The `trailingSlash` config property is used to add or
+   * remove the trailing slash from the URL.
+   *
+   * Example:
+   *
+   * ```ts
+   * trailingSlash: true
+   * ```
+   *
+   * Then, the URL `/about` will be redirected to `/about/`.
+   *
+   * Docs:
+   *
+   * - [How to use `trailingSlash`](https://brisa.build/docs/building-your-application/configuring/trailing-slash)
+   */
   trailingSlash?: boolean;
   assetPrefix?: string;
   plugins?: BunPlugin[];
   basePath?: string;
   tls?: TLSOptions;
+  output?: "static" | "server";
 };
 
 export type JSXElement =
