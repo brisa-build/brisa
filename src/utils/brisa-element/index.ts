@@ -37,7 +37,7 @@ const KEY = "key";
 const CONNECTED_CALLBACK = "connectedCallback";
 const DISCONNECTED_CALLBACK = "dis" + CONNECTED_CALLBACK;
 const INNER_HTML = "inner" + HTML;
-const PROPS: "p" = "p";
+const PROPS = "p";
 const SUSPENSE_PROPS = "l";
 const NULL = null;
 const CONTEXT = "context";
@@ -108,6 +108,7 @@ export default function brisaElement(
 
   return class extends HTMLElement {
     p: Record<string, StateSignal | Event> | undefined;
+    l: Record<string, StateSignal | Event> | undefined;
     s: ReturnType<typeof signals> | undefined;
 
     static get observedAttributes() {
@@ -279,7 +280,7 @@ export default function brisaElement(
         fn: Render,
         extraProps?: { [key: string]: unknown } | null,
         renderSignals = signals(),
-        propsField = PROPS,
+        propsField: "p" | "l" = PROPS,
       ) => {
         // Save signals to reset them later in the disconnectedCallback
         self.s = renderSignals;
@@ -344,13 +345,13 @@ export default function brisaElement(
             render.suspense!,
             NULL,
             suspenseSignals,
-            SUSPENSE_PROPS as "p",
+            SUSPENSE_PROPS,
           );
         }
         // Handle render
         await startRender(render);
         suspenseSignals.reset();
-        delete self[SUSPENSE_PROPS as "p"];
+        delete self[SUSPENSE_PROPS];
       } catch (e) {
         // Handle error
         suspenseSignals.reset();
