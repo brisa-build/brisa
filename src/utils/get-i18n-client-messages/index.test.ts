@@ -17,6 +17,7 @@ const I18N_CONFIG = {
       nested: {
         "very-nested": {
           content: "Very nested content",
+          anotherContent: "Another content",
         },
       },
       array: [
@@ -37,6 +38,7 @@ const I18N_CONFIG = {
       nested: {
         "very-nested": {
           content: "Conteúdo muito aninhado",
+          anotherContent: "Outro conteúdo",
         },
       },
       array: [
@@ -95,6 +97,7 @@ describe("utils", () => {
         nested: {
           "very-nested": {
             content: "Very nested content",
+            anotherContent: "Another content",
           },
         },
       };
@@ -152,6 +155,35 @@ describe("utils", () => {
         "hello-plural": "Hello World {{count}}",
         "hello-plural_other": "Hello another world {{count}}",
         "hello-plural_42": "Hello life {{count}}",
+      };
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should work regex with nested values as object", () => {
+      const i18nKeys = new Set<RegExp>([/nested.*/]);
+      const output = getI18nClientMessages("en-US", i18nKeys);
+      const expected = {
+        nested: {
+          "very-nested": {
+            content: "Very nested content",
+            anotherContent: "Another content",
+          },
+        },
+      };
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should work regex with nested values as string", () => {
+      const i18nKeys = new Set<RegExp>([/nested.*anotherContent/]);
+      const output = getI18nClientMessages("en-US", i18nKeys);
+      const expected = {
+        nested: {
+          "very-nested": {
+            anotherContent: "Another content",
+          },
+        },
       };
 
       expect(output).toEqual(expected);
