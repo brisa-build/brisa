@@ -14,8 +14,14 @@ import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import getI18nClientMessages from "@/utils/get-i18n-client-messages";
 
 export default async function compileFiles() {
-  const { SRC_DIR, BUILD_DIR, CONFIG, IS_PRODUCTION, LOG_PREFIX } =
-    getConstants();
+  const {
+    SRC_DIR,
+    BUILD_DIR,
+    CONFIG,
+    IS_PRODUCTION,
+    LOG_PREFIX,
+    IS_STATIC_EXPORT,
+  } = getConstants();
   const pagesDir = path.join(SRC_DIR, "pages");
   const apiDir = path.join(SRC_DIR, "api");
   const pagesEntrypoints = getEntrypoints(pagesDir);
@@ -86,7 +92,7 @@ export default async function compileFiles() {
     return { success: false, logs: ["Error compiling web components"] };
   }
 
-  if (!IS_PRODUCTION) return { success, logs };
+  if (!IS_PRODUCTION || IS_STATIC_EXPORT) return { success, logs };
 
   logTable(
     outputs.map((output) => {
@@ -210,8 +216,8 @@ async function compileClientCodePage(
     if (!code) continue;
 
     // create i18n page content files
-    if (useI18n && i18nKeys.size && I18N_CONFIG.messages) {
-      for (let locale of I18N_CONFIG.locales) {
+    if (useI18n && i18nKeys.size && I18N_CONFIG?.messages) {
+      for (let locale of I18N_CONFIG?.locales ?? []) {
         const i18nPagePath = clientPage.replace(".js", `-${locale}.js`);
         const messages = getI18nClientMessages(locale, i18nKeys);
         const i18nCode = `window.i18nMessages=${JSON.stringify(messages)};`;
