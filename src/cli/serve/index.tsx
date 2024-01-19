@@ -1,5 +1,5 @@
 import constants from "@/constants";
-import { serveOptions } from "./serve-options";
+import { getServeOptions } from "./serve-options";
 import type { ServeOptions, Server } from "bun";
 
 const { LOG_PREFIX } = constants;
@@ -25,6 +25,10 @@ function init(options: ServeOptions) {
     }
   }
 }
+
+const serveOptions = await getServeOptions();
+
+if (!serveOptions) process.exit(1);
 
 init(serveOptions);
 

@@ -1,22 +1,35 @@
 import type { BunFile } from "bun";
-import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
-import fs from "node:fs";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  spyOn,
+  mock,
+} from "bun:test";
 import path from "node:path";
 import { getConstants } from "@/constants";
+import type { ServerWebSocket } from "bun";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
 
-async function testRequest(request: Request): Promise<Response> {
-  const serveOptions = (await import("./serve-options")).serveOptions;
+async function testRequest(
+  request: Request,
+  upgrade = false,
+): Promise<Response> {
+  const serveOptions = await (
+    await import("./serve-options")
+  ).getServeOptions();
 
   return (
     // @ts-ignore
     ((await serveOptions.fetch(request, {
       requestIP: () => {},
-      upgrade: () => {},
-    })) || new Response()) as Response
+      upgrade: () => upgrade,
+    })) || new Response("", { status: 101 })) as Response
   );
 }
 
@@ -38,6 +51,86 @@ describe("CLI: serve", () => {
 
   afterEach(() => {
     globalThis.mockConstants = undefined;
+  });
+
+  it('should log an error and exit if there are no "build" directory in production', async () => {
+    const constants = getConstants();
+    globalThis.mockConstants = {
+      ...constants,
+      IS_PRODUCTION: true,
+      BUILD_DIR: "/some-path",
+    };
+    const mockLog = spyOn(console, "log");
+
+    const serveOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    expect(mockLog).toHaveBeenCalledWith(
+      constants.LOG_PREFIX.ERROR,
+      'Not exist "build" yet. Please run "brisa build" first',
+    );
+
+    mockLog.mockRestore();
+
+    expect(serveOptions).toBeNull();
+  });
+
+  it('should log an error and exit if there are no "pages" directory in production', async () => {
+    const constants = getConstants();
+    globalThis.mockConstants = {
+      ...constants,
+      IS_PRODUCTION: true,
+      PAGES_DIR: "/some-path",
+    };
+    const mockLog = spyOn(console, "log");
+
+    const serveOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    expect(mockLog).toHaveBeenCalledWith(
+      constants.LOG_PREFIX.ERROR,
+      `Not exist build/pages" directory. It's required to run "brisa start"`,
+    );
+
+    mockLog.mockRestore();
+
+    expect(serveOptions).toBeNull();
+  });
+
+  it('should log an error and exit if there are no "pages" directory in development', async () => {
+    const constants = getConstants();
+    globalThis.mockConstants = {
+      ...constants,
+      IS_PRODUCTION: false,
+      PAGES_DIR: "/some-path",
+    };
+    const mockLog = spyOn(console, "log");
+
+    const serveOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    expect(mockLog).toHaveBeenCalledWith(
+      constants.LOG_PREFIX.ERROR,
+      `Not exist src/pages" directory. It's required to run "brisa dev"`,
+    );
+
+    mockLog.mockRestore();
+
+    expect(serveOptions).toBeNull();
+  });
+
+  it("should no fetch anything when server upgrades to websocket", async () => {
+    const upgrade = true;
+    const response = await testRequest(
+      new Request(`http:///localhost:1234/somepage`),
+      upgrade,
+    );
+
+    expect(response.status).toBe(101);
+    expect(response.text()).resolves.toBe("");
   });
 
   it("should return 500 page if the middleware throws an error", async () => {
@@ -110,6 +203,20 @@ describe("CLI: serve", () => {
     expect(html).toContain(
       `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
     );
+  });
+
+  it("should return 404 error if the 404 page does not exist and the page does not exist", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      PAGE_404: "",
+    };
+    const response = await testRequest(
+      new Request("http://localhost:1234/not-found-page"),
+    );
+    const text = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(text).toBe("Not found");
   });
 
   it("should return 404 page without redirect to the trailingSlash if the page doesn't exist", async () => {
@@ -198,27 +305,16 @@ describe("CLI: serve", () => {
     );
   });
 
-  it("should return 200 page with web component", async () => {
-    const mockFs = spyOn(fs, "existsSync").mockImplementation(() => true);
-    const mockFile = spyOn(Bun, "file").mockImplementation(
-      () =>
-        ({
-          text: () => Promise.resolve(""),
-        }) as BunFile,
-    );
-
+  it("should return 200 page with client page code", async () => {
     const response = await testRequest(
       new Request("http://localhost:1234/es/page-with-web-component"),
     );
     const html = await response.text();
 
-    mockFs.mockRestore();
-    mockFile.mockRestore();
-
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/page-with-web-component.tsx"></script`,
+      `<script async fetchpriority="high" src="/_brisa/pages/page-with-web-component.tsx"></script>`,
     );
     expect(html).toContain("<web-component></web-component>");
   });
@@ -655,5 +751,151 @@ describe("CLI: serve", () => {
     expect(response.headers.get("cache-control")).toBe(
       "no-store, must-revalidate",
     );
+  });
+
+  it('should subscribe to hotload when "open" the websocket connection in development', async () => {
+    const serverOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    const socket = serverOptions!.websocket;
+    const mockSubscribe = mock(() => {});
+    const ws = {
+      data: { id: "1234" },
+      subscribe: mockSubscribe,
+    } as unknown as ServerWebSocket;
+
+    socket.open(ws);
+
+    expect(mockSubscribe).toHaveBeenCalledWith("hot-reload");
+  });
+
+  it('should NOT subscribe to hotload when "open" the websocket connection in production', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+    };
+
+    const serverOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    const socket = serverOptions!.websocket;
+    const mockSubscribe = mock(() => {});
+    const ws = {
+      data: { id: "1234" },
+      subscribe: mockSubscribe,
+    } as unknown as ServerWebSocket;
+
+    socket.open(ws);
+
+    expect(mockSubscribe).not.toHaveBeenCalled();
+  });
+
+  it('should call the "open" method of the websocket module', async () => {
+    const serverOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    const socket = serverOptions!.websocket;
+    const mockLog = spyOn(console, "log");
+    const ws = {
+      data: { id: "1234" },
+      subscribe: () => {},
+    } as unknown as ServerWebSocket;
+
+    socket.open(ws);
+
+    expect(mockLog).toHaveBeenCalledWith("open");
+  });
+
+  it('should unsubscribe to hotload when "close" the websocket connection in development', async () => {
+    const serverOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    const socket = serverOptions!.websocket;
+    const mockUnsubscribe = mock(() => {});
+    const ws = {
+      data: { id: "1234" },
+      unsubscribe: mockUnsubscribe,
+    } as unknown as ServerWebSocket;
+
+    socket.close(ws);
+
+    expect(mockUnsubscribe).toHaveBeenCalledWith("hot-reload");
+  });
+
+  it('should NOT unsubscribe to hotload when "close" the websocket connection in production', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+    };
+
+    const serverOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    const socket = serverOptions!.websocket;
+    const mockUnsubscribe = mock(() => {});
+    const ws = {
+      data: { id: "1234" },
+      unsubscribe: mockUnsubscribe,
+    } as unknown as ServerWebSocket;
+
+    socket.close(ws);
+
+    expect(mockUnsubscribe).not.toHaveBeenCalled();
+  });
+
+  it('should call the "close" method of the websocket module', async () => {
+    const serverOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    const socket = serverOptions!.websocket;
+    const mockLog = spyOn(console, "log");
+    const ws = {
+      data: { id: "1234" },
+      unsubscribe: () => {},
+    } as unknown as ServerWebSocket;
+
+    socket.close(ws);
+
+    expect(mockLog).toHaveBeenCalledWith("close");
+  });
+
+  it('should call the "drain" method of the websocket module', async () => {
+    const serverOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    const socket = serverOptions!.websocket;
+    const mockLog = spyOn(console, "log");
+    const ws = {
+      data: { id: "1234" },
+      subscribe: () => {},
+    } as unknown as ServerWebSocket;
+
+    socket.drain(ws);
+
+    expect(mockLog).toHaveBeenCalledWith("drain");
+  });
+
+  it('should call the "message" method of the websocket module', async () => {
+    const serverOptions = await (
+      await import("./serve-options")
+    ).getServeOptions();
+
+    const socket = serverOptions!.websocket;
+    const mockLog = spyOn(console, "log");
+    const ws = {
+      data: { id: "1234" },
+      subscribe: () => {},
+    } as unknown as ServerWebSocket;
+
+    socket.message(ws, "hello test");
+
+    expect(mockLog).toHaveBeenCalledWith("message", "hello test");
   });
 });
