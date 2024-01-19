@@ -544,7 +544,7 @@ export type Configuration = {
   /**
    * @todo TODO: implement it
    */
-  output?: "static" | "server";
+  output?: "static" | "server" | "desktop";
 };
 
 export type JSXElement =

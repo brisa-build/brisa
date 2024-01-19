@@ -4,6 +4,7 @@ import getRootDir from "./utils/get-root-dir";
 import importFileIfExists from "./utils/import-file-if-exists";
 
 const rootDir = getRootDir();
+const staticExportOutputOption = new Set(["static", "desktop"]);
 const srcDir = path.join(rootDir, "src");
 const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, "build");
 const PAGE_404 = "/_404";
@@ -80,9 +81,11 @@ const constants = {
     INFO: Bun.enableANSIColors ? `[ \x1b[34minfo\x1b[0m ]  ` : "[ info ] ",
     ERROR: Bun.enableANSIColors ? `[ \x1b[31merror\x1b[0m ] ` : "[ error ] ",
     WARN: Bun.enableANSIColors ? `[ \x1b[33mwarn\x1b[0m ]  ` : "[ warn ] ",
+    TICK: Bun.enableANSIColors ? `\x1b[32m✓\x1b[0m ` : "✓ ",
   },
   LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
   CONFIG: { ...defaultConfig, ...CONFIG } as Configuration,
+  IS_STATIC_EXPORT: staticExportOutputOption.has(CONFIG?.output),
   REGEX: {
     CATCH_ALL: /\[\[\.{3}.*?\]\]/g,
     DYNAMIC: /\[.*?\]/g,
