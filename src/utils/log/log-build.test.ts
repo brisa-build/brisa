@@ -1,17 +1,19 @@
-import { describe, it, expect, mock, afterEach } from "bun:test";
+import { describe, it, expect, mock, afterEach, spyOn } from "bun:test";
 import { logTable } from "./log-build";
 import { getConstants } from "@/constants";
 
-const originalConsoleLog = console.log;
-const { LOG_PREFIX } = getConstants();
-
 describe("utils", () => {
-  afterEach(() => {
-    console.log = originalConsoleLog;
-  });
   describe("logTable", () => {
+    afterEach(() => {
+      mock.restore();
+    });
+
     it("should log a table", () => {
-      const info = LOG_PREFIX.INFO;
+      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
+
+      spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
+
+      const info = getConstants().LOG_PREFIX.INFO;
       const data = [
         { name: "John", age: "23" },
         { name: "Jane", age: "42" },
@@ -22,9 +24,6 @@ describe("utils", () => {
         [" name | age", " -------------", " John | 23 ", " Jane | 42 "]
           .map((t) => info + t)
           .join("\n");
-
-      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
-      console.log = mockLog;
 
       logTable(data);
 

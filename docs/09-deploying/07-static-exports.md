@@ -34,3 +34,7 @@ After running `brisa build`, Brisa will produce an `out` folder which contains t
 > [!CAUTION]
 >
 > Pure server stuff like api endpoints and server interactions will not work in runtime. All the interaction part should be in web-components only.
+
+## Hard redirects
+
+TODO
