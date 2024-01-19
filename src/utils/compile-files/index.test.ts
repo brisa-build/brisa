@@ -215,21 +215,21 @@ describe("utils", () => {
       const expected = minifyText(`
     ${info}
     ${info}Route                               | JS server | JS client (gz)  
-    ${info}-------------------------------------------------------------------
-    ${info}λ /pages/_404.js                    | 429 B     | ${green("4 kB")} 
-    ${info}λ /pages/_500.js                    | 435 B     | ${green("4 kB")} 
-    ${info}λ /pages/page-with-web-component.js | 368 B     | ${green("4 kB")} 
-    ${info}λ /pages/somepage.js                | 349 B     | ${green("0 B")} 
-    ${info}λ /pages/somepage-with-context.js   | 335 B     | ${green("0 B")} 
-    ${info}λ /pages/index.js                   | 291 B     | ${green("186 B")}  
-    ${info}λ /pages/user/[username].js         | 183 B     | ${green("0 B")}
-    ${info}ƒ /middleware.js                    | 420 B     |
-    ${info}λ /api/example.js                   | 283 B     |
-    ${info}Δ /layout.js                        | 350 B     |
-    ${info}Ω /i18n.js                          | 162 B     |
-    ${info}Ψ /websocket.js                     | 207 B     |
-    ${info}Φ /chunk-${chunkHash}.js            | 2 kB      |
-    ${info}Φ /chunk-${anotherChunkHash}.js     | 106 B     |
+    ${info}----------------------------------------------------------------
+    ${info}λ /pages/_404                    | 429 B     | ${green("4 kB")} 
+    ${info}λ /pages/_500                    | 435 B     | ${green("4 kB")} 
+    ${info}λ /pages/page-with-web-component | 368 B     | ${green("4 kB")} 
+    ${info}λ /pages/somepage                | 349 B     | ${green("0 B")} 
+    ${info}λ /pages/somepage-with-context   | 335 B     | ${green("0 B")} 
+    ${info}λ /pages/index                   | 291 B     | ${green("186 B")}  
+    ${info}λ /pages/user/[username]         | 183 B     | ${green("0 B")}
+    ${info}ƒ /middleware                    | 420 B     |
+    ${info}λ /api/example                   | 283 B     |
+    ${info}Δ /layout                        | 350 B     |
+    ${info}Ω /i18n                          | 162 B     |
+    ${info}Ψ /websocket                     | 207 B     |
+    ${info}Φ /chunk-${chunkHash}            | 2 kB      |
+    ${info}Φ /chunk-${anotherChunkHash}     | 106 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
