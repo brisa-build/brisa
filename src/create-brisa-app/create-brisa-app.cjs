@@ -120,7 +120,7 @@ bun start
 }`,
   );
 
-  fs.writeFileSync(".gitignore", "build\nnode_modules\n");
+  fs.writeFileSync(".gitignore", "build\nnode_modules\nout\n");
 
   execSync("bun install");
 

@@ -12,27 +12,41 @@ import path from "node:path";
 import build from "./build";
 import { getConstants } from "@/constants";
 
-const mockCompileAll = mock(async () => true);
+const defaultResult = {
+  success: true,
+  pagesSize: {
+    "/pages/index.js": 100,
+  },
+} as const;
+
+const mockCompileAll = mock(async () => defaultResult);
+const mockTable = mock((v: any) => null);
 const mockGenerateStaticExport = mock(async () => true);
-const mockLog = mock((v: string) => {});
+const mockLog = mock((...logs: string[]) => {});
+const green = (text: string) =>
+  Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
 
 describe("cli", () => {
   describe("build", () => {
     beforeEach(() => {
       spyOn(process, "exit").mockImplementation(() => null as never);
-      spyOn(console, "log").mockImplementation((v) => mockLog(v));
+      spyOn(console, "log").mockImplementation((...logs) => mockLog(...logs));
       mock.module("@/utils/compile-all", () => ({
-        default: async () => (await mockCompileAll()) || true,
+        default: async () => (await mockCompileAll()) || defaultResult,
       }));
-      mock.module("@/utils/generate-static-export", () => ({
-        default: async () => (await mockGenerateStaticExport()) || true,
+      mock.module("./build-utils", () => ({
+        logTable: (v: any) => mockTable(v),
+        generateStaticExport: async () =>
+          (await mockGenerateStaticExport()) || true,
       }));
     });
 
     afterEach(() => {
       mockCompileAll.mockRestore();
       mockGenerateStaticExport.mockRestore();
+      mockTable.mockRestore();
       mock.restore();
+      globalThis.mockConstants = undefined;
     });
 
     it("should remove the build directory if it exists", async () => {
@@ -104,6 +118,56 @@ describe("cli", () => {
       await build();
       expect(mockCompileAll).toHaveBeenCalled();
       expect(mockGenerateStaticExport).toHaveBeenCalled();
+    });
+
+    it("should log the table with the generated static export pages", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: true,
+        IS_STATIC_EXPORT: true,
+        CONFIG: {
+          output: "static",
+        },
+      };
+
+      await build();
+      const logs = mockLog.mock.calls.flat().toString();
+      expect(mockTable).toHaveBeenCalledWith([
+        {
+          "JS client (gz)": green("100 B"),
+          Route: "○ /pages/index",
+        },
+      ]);
+      expect(logs).toContain("Generated static pages successfully!");
+      expect(logs).not.toContain("Ω (i18n) prerendered for each locale");
+    });
+
+    it('should log "Ω (i18n) prerendered for each locale" if i18n is enabled', async () => {
+      const constants = getConstants() ?? {};
+
+      globalThis.mockConstants = {
+        ...constants,
+        IS_PRODUCTION: true,
+        IS_STATIC_EXPORT: true,
+        CONFIG: {
+          output: "static",
+        },
+        I18N_CONFIG: {
+          ...constants?.I18N_CONFIG,
+          locales: ["en", "pt"],
+        },
+      };
+
+      await build();
+      const logs = mockLog.mock.calls.flat().toString();
+      expect(mockTable).toHaveBeenCalledWith([
+        {
+          "JS client (gz)": green("100 B"),
+          Route: "○ /pages/index",
+        },
+      ]);
+      expect(logs).toContain("Generated static pages successfully!");
+      expect(logs).toContain("Ω  (i18n) prerendered for each locale");
     });
   });
 });

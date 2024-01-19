@@ -44,8 +44,8 @@ describe.skip("compileAll", () => {
   // TODO: there is a bug in Bun compiling multiple-times the same entrypoints.
   // This test pass in isolation but not running the whole tests
   it("should compile everything in fixtures correctly", async () => {
-    const succes = await compileAll();
-    expect(succes).toEqual(true);
+    const { success } = await compileAll();
+    expect(success).toEqual(true);
     const files = fs.readdirSync(OUT_DIR).toSorted();
     expect(files).toHaveLength(11);
     expect(files[0]).toBe("_brisa");

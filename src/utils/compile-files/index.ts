@@ -80,19 +80,25 @@ export default async function compileFiles() {
     ],
   });
 
-  if (!success) return { success, logs };
+  if (!success) return { success, logs, pagesSize: {} };
 
-  const clientSizesPerPage = await compileClientCodePage(
+  const pagesSize = await compileClientCodePage(
     outputs,
     allWebComponents,
     webComponentsPerEntrypoint,
   );
 
-  if (!clientSizesPerPage) {
-    return { success: false, logs: ["Error compiling web components"] };
+  if (!pagesSize) {
+    return {
+      success: false,
+      logs: ["Error compiling web components"],
+      pagesSize,
+    };
   }
 
-  if (!IS_PRODUCTION || IS_STATIC_EXPORT) return { success, logs };
+  if (!IS_PRODUCTION || IS_STATIC_EXPORT) {
+    return { success, logs, pagesSize };
+  }
 
   logTable(
     outputs.map((output) => {
@@ -114,10 +120,10 @@ export default async function compileFiles() {
       }
 
       return {
-        Route: `${symbol} ${route}`,
+        Route: `${symbol} ${route.replace(".js", "")}`,
         "JS server": byteSizeToString(output.size, 0),
         "JS client (gz)": isPage
-          ? byteSizeToString(clientSizesPerPage[route] ?? 0, 0, true)
+          ? byteSizeToString(pagesSize[route] ?? 0, 0, true)
           : "",
       };
     }),
@@ -132,7 +138,7 @@ export default async function compileFiles() {
   console.log(LOG_PREFIX.INFO, "Φ  JS shared by all");
   console.log(LOG_PREFIX.INFO);
 
-  return { success, logs };
+  return { success, logs, pagesSize: pagesSize };
 }
 
 async function compileClientCodePage(

@@ -2,11 +2,18 @@ import fs from "node:fs";
 import path from "node:path";
 import compileAll from "@/utils/compile-all";
 import { getConstants } from "@/constants";
-import generateStaticExport from "@/utils/generate-static-export";
+import byteSizeToString from "@/utils/byte-size-to-string";
+import { logTable, generateStaticExport } from "./build-utils";
 
 export default async function build() {
-  const { IS_PRODUCTION, LOG_PREFIX, BUILD_DIR, ROOT_DIR, IS_STATIC_EXPORT } =
-    getConstants();
+  const {
+    IS_PRODUCTION,
+    I18N_CONFIG,
+    LOG_PREFIX,
+    BUILD_DIR,
+    ROOT_DIR,
+    IS_STATIC_EXPORT,
+  } = getConstants();
   const prebuildPath = path.join(ROOT_DIR, "prebuild");
 
   console.log(
@@ -22,7 +29,7 @@ export default async function build() {
     fs.rmSync(BUILD_DIR, { recursive: true });
   }
 
-  const success = await compileAll();
+  const { success, pagesSize } = await compileAll();
 
   if (!success) return process.exit(1);
 
@@ -42,13 +49,36 @@ export default async function build() {
     if (IS_PRODUCTION && !IS_STATIC_EXPORT) console.log(LOG_PREFIX.INFO);
   }
 
-  if (IS_PRODUCTION && IS_STATIC_EXPORT) {
+  if (IS_PRODUCTION && IS_STATIC_EXPORT && pagesSize) {
     console.log(LOG_PREFIX.INFO);
     console.log(LOG_PREFIX.WAIT, "📄 Generating static pages...");
-    console.log(LOG_PREFIX.INFO);
     const success = await generateStaticExport();
 
     if (!success) return process.exit(1);
+
+    const logs = [];
+
+    for (const [pageName, size] of Object.entries(pagesSize)) {
+      const route = pageName.replace(BUILD_DIR, "");
+      const isPage = route.startsWith("/pages");
+
+      if (!isPage) continue;
+
+      logs.push({
+        Route: `○ ${route.replace(".js", "")}`,
+        "JS client (gz)": byteSizeToString(size ?? 0, 0, true),
+      });
+    }
+
+    console.log(LOG_PREFIX.INFO);
+    logTable(logs);
+
+    console.log(LOG_PREFIX.INFO);
+    console.log(LOG_PREFIX.INFO, "○  (Static)  prerendered as static content");
+    if (I18N_CONFIG?.locales?.length) {
+      console.log(LOG_PREFIX.INFO, "Ω  (i18n) prerendered for each locale");
+    }
+    console.log(LOG_PREFIX.INFO);
 
     console.log(
       LOG_PREFIX.INFO,
