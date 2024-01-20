@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 const { spawnSync } = require("child_process");
 const path = require("node:path");
+const fs = require("node:fs");
 
 const BRISA_BUILD_FOLDER =
   process.env.BRISA_BUILD_FOLDER || path.join(process.cwd(), "build");
@@ -15,23 +16,38 @@ const devOptions = {
 };
 
 let BUN_EXEC;
+let BUNX_EXEC;
 
 try {
   // Check if 'bun' is available in the system
   const bunCheck = spawnSync("bun", ["--version"], { stdio: "ignore" });
   if (bunCheck.status === 0) {
     BUN_EXEC = "bun";
+    BUNX_EXEC = "bunx";
   } else {
     BUN_EXEC = `${process.env.HOME}/.bun/bin/bun`;
+    BUNX_EXEC = `${process.env.HOME}/.bun/bin/bunx`;
   }
 
   // Command: brisa dev
   if (process.argv[2] === "dev") {
     let PORT = 3000; // default port
     let DEBUG_MODE = false; // default debug mode
+    let IS_DESKTOP_APP = false; // default value depends on brisa.config.ts
+
+    // Check if is desktop app
+    try {
+      const config = await import(path.join(process.cwd(), "brisa.config.ts")).then((m) => m.default);
+
+      IS_DESKTOP_APP = typeof config.output === 'string' && config.output === "desktop";
+    } catch (error) { }
 
     for (let i = 3; i < process.argv.length; i++) {
       switch (process.argv[i]) {
+        case "--skip-desktop":
+        case "-s":
+          IS_DESKTOP_APP = false;
+          break;
         case "-p":
         case "--port":
           PORT = process.argv[i + 1];
@@ -44,9 +60,10 @@ try {
         case "--help":
           console.log("Usage: brisa dev [options]");
           console.log("Options:");
-          console.log(" -p, --port    Specify port");
-          console.log(" -d, --debug   Enable debug mode");
-          console.log(" --help        Show help");
+          console.log(" -p, --port         Specify port");
+          console.log(" -d, --debug        Enable debug mode");
+          console.log(" -s, --skip-desktop Skip open desktop app when 'output': 'desktop' in brisa.config.ts");
+          console.log(" --help             Show help");
           process.exit(0);
       }
     }
@@ -58,7 +75,22 @@ try {
       "DEV",
     ];
 
-    if (DEBUG_MODE) {
+    // DEV mode for desktop app
+    if(IS_DESKTOP_APP) {
+      // init tauri if not exists
+      if(!fs.existsSync(path.join(process.cwd(), "src-tauri", "tauri.conf.json"))) {
+        const packageJSON = await import(path.join(process.cwd(), "package.json")).then((m) => m.default);
+        const name = packageJSON.name ?? "my-app";
+        const initTauriCommand = [
+          "tauri", "init", "-A", name, "-W", name, "-D", "../out", "--dev-path", "http://localhost:3000", "--before-dev-command", "bun dev -- -s", "--before-build-command", "bun run build"
+        ];
+        spawnSync(BUNX_EXEC, initTauriCommand, devOptions);
+      }
+      // spawn tauri dev
+      spawnSync(BUNX_EXEC, "tauri dev --port 3000".split(" "), devOptions);
+    }
+
+    else if (DEBUG_MODE) {
       spawnSync(BUN_EXEC, buildCommand, devOptions);
       spawnSync(BUN_EXEC, ["--inspect", ...serveCommand], devOptions);
     } else {

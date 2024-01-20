@@ -5,9 +5,9 @@ description: Learn how build a static site in Brisa
 
 Brisa enables starting as a static site.
 
-When running `brisa build`, Brisa generates an HTML file per route. Brisa can avoid loading unnecessary JavaScript code on the client-side, reducing the bundle size and enabling faster page loads.
+When running `brisa build`, Brisa generates an HTML file per route in SSG (Static Site Generation) mode. This approach helps in reducing the client-side JavaScript code, leading to smaller bundles and faster page loads.
 
-Since Brisa supports this static export, it can be deployed and hosted on any web server that can serve HTML/CSS/JS static assets.
+Since Brisa supports this static export, it can be deployed and hosted on Content Delivery Networks ([CDNs](https://developer.mozilla.org/en-US/docs/Glossary/CDN)) on any web server that can serve HTML/CSS/JS static assets.
 
 ## Configuration
 
