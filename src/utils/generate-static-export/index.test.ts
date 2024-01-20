@@ -275,5 +275,14 @@ describe("utils", () => {
 
       expect(console.log).not.toHaveBeenCalled();
     });
+
+    it("should not generate a page that during the streaming returns the soft redirect to 404 (notFound method)", () => {
+      const constants = getConstants();
+      mockFetch.mockImplementation(() => new Response(constants.SCRIPT_404));
+
+      expect(generateStaticExport()).resolves.toBeTrue();
+
+      expect(mockWrite).not.toHaveBeenCalled();
+    });
   });
 });

@@ -9,7 +9,8 @@ const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = "http://localhost";
 
 export default async function generateStaticExport() {
-  const { ROOT_DIR, BUILD_DIR, I18N_CONFIG, CONFIG } = getConstants();
+  const { ROOT_DIR, BUILD_DIR, I18N_CONFIG, CONFIG, SCRIPT_404 } =
+    getConstants();
   const outDir = path.join(ROOT_DIR, "out");
   const serveOptions = await getServeOptions();
 
@@ -44,6 +45,8 @@ export default async function generateStaticExport() {
       } else {
         htmlPath = path.join(outDir, routeName.replace(/\/$/, "") + ".html");
       }
+
+      if (html.includes(SCRIPT_404)) return;
 
       return Bun.write(htmlPath, html);
     }),
