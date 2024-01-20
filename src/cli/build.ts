@@ -95,4 +95,7 @@ export default async function build() {
   else console.log(LOG_PREFIX.INFO, `compiled successfully in ${ms}ms.`);
 }
 
-if (import.meta.main) build();
+if (import.meta.main) {
+  await build();
+  process.exit(0);
+}
