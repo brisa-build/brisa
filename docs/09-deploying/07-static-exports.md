@@ -37,4 +37,14 @@ After running `brisa build`, Brisa will produce an `out` folder which contains t
 
 ## Hard redirects
 
-TODO
+Redirects are no longer done through a server since there is no server once you make a static export. However, to support i18n and let the apps work when you want to put them in a desktop app, by default we do a [**soft redirect**](https://en.wikipedia.org/wiki/Wikipedia:Soft_redirect).
+
+The soft redirect we apply does not have a 301/307 status. Instead, the `/index.html` page is loaded and when the browser opens it, the redirect is made to the user's browser language or to the `defaultLocale` through the client JavaScript.
+
+To solve this, you must apply the redirects in the hosting where you host your web application.
+
+Here are some links to documentation that may help you depending on the hosting you use:
+
+- [Vercel](https://vercel.com/docs/projects/project-configuration#redirects) redirects.
+- [AWS](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/example-function-redirect-url.html) redirects.
+- [Netlify](https://docs.netlify.com/routing/redirects/) redirects
