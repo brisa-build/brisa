@@ -60,7 +60,7 @@ describe("utils", () => {
         allWebComponents,
         pageWebComponents,
       );
-      const i18nCode = 2949;
+      const i18nCode = 2951;
       const brisaSize = 5264;
       const webComponents = 670;
 
