@@ -56,7 +56,7 @@ To view the changes in the output, run the `brisa build` command. In the case of
 
 > [!NOTE]
 >
-> Learn more details about static export [here](docs/deploying/static-exports).
+> Learn more details about static export [here](/docs/deploying/static-exports).
 
 > [!TIP]
 >
