@@ -9,15 +9,21 @@ const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = "http://localhost";
 
 export default async function generateStaticExport() {
-  const { ROOT_DIR, BUILD_DIR, I18N_CONFIG, CONFIG, SCRIPT_404 } =
-    getConstants();
+  const {
+    ROOT_DIR,
+    BUILD_DIR,
+    I18N_CONFIG,
+    CONFIG,
+    SCRIPT_404,
+    IS_PRODUCTION,
+  } = getConstants();
   const outDir = path.join(ROOT_DIR, "out");
   const serveOptions = await getServeOptions();
 
   if (!serveOptions) return null;
 
-  if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
-  else fs.rmSync(outDir, { recursive: true, force: true });
+  if (IS_PRODUCTION && !fs.existsSync(outDir)) fs.mkdirSync(outDir);
+  else if (IS_PRODUCTION) fs.rmSync(outDir, { recursive: true, force: true });
 
   const router = new Bun.FileSystemRouter({
     style: "nextjs",
