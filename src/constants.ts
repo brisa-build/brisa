@@ -29,6 +29,7 @@ const defaultConfig = {
   trailingSlash: false,
   assetPrefix: "",
   plugins: [],
+  output: "server",
 };
 
 const BOOLEANS_IN_HTML = new Set([
