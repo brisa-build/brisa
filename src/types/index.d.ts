@@ -542,7 +542,27 @@ export type Configuration = {
   tls?: TLSOptions;
 
   /**
-   * @todo TODO: implement it
+   * Description:
+   *
+   * The `output` config property is used to change the output type.
+   *
+   * The default value is `server`.
+   *
+   * Difference between `server`, `static` and `desktop`:
+   *
+   * - `server`: The output is a server that can be deployed to a server.
+   * - `static`: The output is a static export that can be deployed to a static hosting.
+   * - `desktop`: The output is a desktop app that can be deployed to a desktop.
+   *
+   * Example:
+   *
+   * ```ts
+   * output: 'static'
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `output`](https://brisa.build/docs/building-your-application/configuring/output)
    */
   output?: "static" | "server" | "desktop";
 };
