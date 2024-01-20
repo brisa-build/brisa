@@ -60,6 +60,8 @@ const BOOLEANS_IN_HTML = new Set([
 
 const { NODE_ENV } = process.env;
 
+const SCRIPT_404 = `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>`;
+
 const constants = {
   PAGE_404,
   PAGE_500,
@@ -92,6 +94,7 @@ const constants = {
     REST_DYNAMIC: /\[\.{3}.*?\]/g,
     WEB_COMPONENTS_ISLAND: /.*\/src\/web-components\/.*\.(tsx|jsx|js|ts)$/,
   },
+  SCRIPT_404,
   BOOLEANS_IN_HTML,
 };
 

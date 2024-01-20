@@ -26,13 +26,12 @@ type Options = {
 const CONTEXT_PROVIDER = "context-provider";
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
 const NO_INDEX = '<meta name="robots" content="noindex" />';
-const SCRIPT_404 = `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>`;
 
 export default function renderToReadableStream(
   element: JSX.Element,
   { request, head }: Options,
 ) {
-  const { IS_PRODUCTION, BUILD_DIR } = getConstants();
+  const { IS_PRODUCTION, BUILD_DIR, SCRIPT_404 } = getConstants();
   const unsuspenseListPath = path.join(
     BUILD_DIR,
     "pages-client",
