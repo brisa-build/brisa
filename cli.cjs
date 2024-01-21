@@ -1,11 +1,12 @@
 #!/usr/bin/env bun
-const cp = require("child_process");
-const path = require("node:path");
-const fs = require("node:fs");
+import cp from "child_process";
+import path from "node:path";
+import fs from "node:fs";
+
 const outPath = path.join(import.meta.dir, 'out');
 
 export async function main() {
-  const packageJSON = require(path.join(process.cwd(), "package.json"));
+  const packageJSON = await import(path.join(process.cwd(), "package.json")).then(m => m.default);
   const BRISA_BUILD_FOLDER =
     process.env.BRISA_BUILD_FOLDER || path.join(process.cwd(), "build");
 
@@ -24,7 +25,7 @@ export async function main() {
 
   // Check if is desktop app
   try {
-    const config = require(path.join(process.cwd(), "brisa.config.ts")).default;
+    const config = await import(path.join(process.cwd(), "brisa.config.ts")).then(m => m.default);
 
     IS_DESKTOP_APP =
       typeof config.output === "string" && config.output === "desktop";
