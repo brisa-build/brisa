@@ -1,5 +1,5 @@
 {
-  "name": "create-brisa-app",
+  "name": "create-brisa",
   "version": "0.0.22",
   "license": "MIT",
   "type": "module",
@@ -12,9 +12,9 @@
     "url": "https://github.com/aralroca/brisa.git"
   },
   "files": [
-    "create-brisa-app.cjs"
+    "create-brisa.cjs"
   ],
   "bin": {
-    "create-brisa-app": "./create-brisa-app.cjs"
+    "create-brisa": "./create-brisa.cjs"
   }
 }
