@@ -3,9 +3,9 @@ title: Tauri
 description: Learn how build a Brisa application with Tauri
 ---
 
-## Init your desktop Brisa desktop app
+## Tauri Integration for Brisa Desktop Applications
 
-Brisa integrated [Tauri](https://tauri.app/) by adding this configuration to `brisa.config.ts`:
+This documentation outlines the process of building a Brisa desktop application using [Tauri](https://tauri.app/). Tauri is seamlessly integrated into Brisa by configuring the `brisa.config.ts` file as follows:
 
 ```ts
 import type { Configuration } from "brisa";
@@ -15,33 +15,29 @@ export default {
 } satisfies Configuration;
 ```
 
-To init them, run:
+To initialize the development environment, run the following command:
 
 ```sh
 brisa dev
 ```
 
-When you run it you will see that it opens a desktop app with your web and you can work with it in development, hotreload works the same as in the browser.
+Executing this command launches a desktop app, integrating your web application. The development environment supports hot-reloading, mirroring the behavior of a browser. Notably, the integration creates a `src-tauri` folder, representing the fusion of Brisa with Tauri.
 
-You will see that a folder `src-tauri` has been created. This is the folder with the integration of Brisa with Tauri.
-
-If you want to change the size of the window, the icons, the title or more, you can do it in the file `src-tauri/tauri.conf.json`.
+Customizing the window size, icons, title, and other attributes can be achieved by modifying the `src-tauri/tauri.conf.json` file.
 
 > [!NOTE]
 >
-> Take a look at Tauri configuration fields [here](https://tauri.app/v1/api/config).
+> Explore Tauri's configuration fields [here](https://tauri.app/v1/api/config).
 
-## Build your Brisa desktop app
+## Building your Brisa Desktop App
 
-When you have `output: "desktop"` in your `brisa.config.ts` enabled, you can run:
+When the `output: "desktop"` configuration is set in your `brisa.config.ts`, execute the following command to build the application:
 
 ```sh
 bun run build
 ```
 
-Then, the corresponding executables with your OS will be created.
-
-It will detect your operating system and build a bundle accordingly. It currently supports:
+This command generates the corresponding executables tailored to your operating system. The supported platforms include:
 
 - [Windows](https://tauri.app/v1/guides/building/windows): -setup.exe, .msi
 - [macOS](https://tauri.app/v1/guides/building/macos): .app, .dmg
@@ -49,15 +45,15 @@ It will detect your operating system and build a bundle accordingly. It currentl
 
 > [!IMPORTANT]
 >
-> The behavior of the build of Brisa will be like [static export](/docs/deploying/static-exports) since there will no longer be an active server but the desktop app is created with the assets (HTML, CSS, JS).
+> The build behavior is akin to [static export](/docs/deploying/static-exports), as there won't be an active server, and the desktop app is created with the bundled assets (HTML, CSS, JS).
 
 > [!CAUTION]
 >
-> Pure server stuff like api endpoints and server interactions will not work in runtime. All the interaction part should be in web-components only.
+> Pure server-related functionalities, such as API endpoints and server interactions, will not function at runtime. All interactions should be encapsulated within web components.
 
-### Cross-platform build
+### Cross-Platform Build
 
-Tauri is using native libraries of each OS, it is not possible to do a cross-platform build directly. To do so, it has to be done through a pipeline that has a matrix of different OS.
+Tauri relies on native libraries for each OS, preventing a direct cross-platform build. A cross-platform build can be achieved through a matrix-based pipeline.
 
 ```yml
 # ...
@@ -69,12 +65,12 @@ runs-on: ${{ matrix.platform }}
 # ...
 ```
 
-See a GitHub action example [here](https://tauri.app/v1/guides/building/cross-platform/#example-workflow).
+[Here's the full example](https://tauri.app/v1/guides/building/cross-platform/#example-workflow) YAML configuration for GitHub Actions.
 
 > [!NOTE]
 >
-> The GitHub Token is automatically issued by GitHub for each workflow run without further configuration, which means there is no risk of secret leakage.
+> The GitHub Token is automatically issued by GitHub for each workflow run without further configuration, ensuring no risk of secret leakage.
 
 > [!NOTE]
 >
-> To learn more, take a look at [Tauri documentation](https://tauri.app/v1/guides/building/cross-platform/#example-workflow) about cross-platform build.
+> For more details, refer to the [Tauri documentation](https://tauri.app/v1/guides/building/cross-platform/#example-workflow) on cross-platform builds.
