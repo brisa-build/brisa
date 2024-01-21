@@ -21,7 +21,7 @@
     "jsx-dev-runtime",
     "client",
     "server",
-    "cli.sh"
+    "cli.cjs"
   ],
   "exports": {
     ".": {
@@ -44,7 +44,7 @@
       "import": "./server/index.js",
       "require": "./server/index.js"
     },
-    "./cli.sh": {
+    "./cli.cjs": {
       "import": "./cli.cjs",
       "require": "./cli.cjs"
     }

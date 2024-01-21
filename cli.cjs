@@ -2,6 +2,9 @@
 const { spawnSync } = require("child_process");
 const path = require("node:path");
 const fs = require("node:fs");
+const packageJSON = await import(path.join(process.cwd(), "package.json")).then(
+  (m) => m.default,
+);
 
 const BRISA_BUILD_FOLDER =
   process.env.BRISA_BUILD_FOLDER || path.join(process.cwd(), "build");
@@ -17,6 +20,17 @@ const devOptions = {
 
 let BUN_EXEC;
 let BUNX_EXEC;
+let IS_DESKTOP_APP = false; // default value depends on brisa.config.ts
+
+// Check if is desktop app
+try {
+  const config = await import(path.join(process.cwd(), "brisa.config.ts")).then(
+    (m) => m.default,
+  );
+
+  IS_DESKTOP_APP =
+    typeof config.output === "string" && config.output === "desktop";
+} catch (error) {}
 
 try {
   // Check if 'bun' is available in the system
@@ -33,14 +47,6 @@ try {
   if (process.argv[2] === "dev") {
     let PORT = 3000; // default port
     let DEBUG_MODE = false; // default debug mode
-    let IS_DESKTOP_APP = false; // default value depends on brisa.config.ts
-
-    // Check if is desktop app
-    try {
-      const config = await import(path.join(process.cwd(), "brisa.config.ts")).then((m) => m.default);
-
-      IS_DESKTOP_APP = typeof config.output === 'string' && config.output === "desktop";
-    } catch (error) { }
 
     for (let i = 3; i < process.argv.length; i++) {
       switch (process.argv[i]) {
@@ -62,7 +68,9 @@ try {
           console.log("Options:");
           console.log(" -p, --port         Specify port");
           console.log(" -d, --debug        Enable debug mode");
-          console.log(" -s, --skip-desktop Skip open desktop app when 'output': 'desktop' in brisa.config.ts");
+          console.log(
+            " -s, --skip-desktop Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+          );
           console.log(" --help             Show help");
           process.exit(0);
       }
@@ -76,21 +84,10 @@ try {
     ];
 
     // DEV mode for desktop app
-    if(IS_DESKTOP_APP) {
-      // init tauri if not exists
-      if(!fs.existsSync(path.join(process.cwd(), "src-tauri", "tauri.conf.json"))) {
-        const packageJSON = await import(path.join(process.cwd(), "package.json")).then((m) => m.default);
-        const name = packageJSON.name ?? "my-app";
-        const initTauriCommand = [
-          "tauri", "init", "-A", name, "-W", name, "-D", "../out", "--dev-path", "http://localhost:3000", "--before-dev-command", "bun dev -- -s", "--before-build-command", "bun run build"
-        ];
-        spawnSync(BUNX_EXEC, initTauriCommand, devOptions);
-      }
-      // spawn tauri dev
+    if (IS_DESKTOP_APP) {
+      await initTauri();
       spawnSync(BUNX_EXEC, "tauri dev --port 3000".split(" "), devOptions);
-    }
-
-    else if (DEBUG_MODE) {
+    } else if (DEBUG_MODE) {
       spawnSync(BUN_EXEC, buildCommand, devOptions);
       spawnSync(BUN_EXEC, ["--inspect", ...serveCommand], devOptions);
     } else {
@@ -101,11 +98,33 @@ try {
 
   // Command: brisa build
   else if (process.argv[2] === "build") {
-    spawnSync(
-      BUN_EXEC,
-      ["node_modules/brisa/out/cli/build.js", "PROD"],
-      prodOptions,
-    );
+    for (let i = 3; i < process.argv.length; i++) {
+      switch (process.argv[i]) {
+        case "--skip-desktop":
+        case "-s":
+          IS_DESKTOP_APP = false;
+          break;
+        case "--help":
+          console.log("Usage: brisa build [options]");
+          console.log("Options:");
+          console.log(
+            " -s, --skip-desktop Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+          );
+          console.log(" --help             Show help");
+          process.exit(0);
+      }
+    }
+
+    if (IS_DESKTOP_APP) {
+      await initTauri();
+      spawnSync(BUNX_EXEC, ["tauri", "build"], devOptions);
+    } else {
+      spawnSync(
+        BUN_EXEC,
+        ["node_modules/brisa/out/cli/build.js", "PROD"],
+        prodOptions,
+      );
+    }
   }
 
   // Command: brisa start
@@ -153,4 +172,47 @@ try {
 } catch (error) {
   console.error("Error:", error.message);
   process.exit(1);
+}
+
+async function initTauri() {
+  if (!packageJSON.dependencies["@tauri-apps/cli"]) {
+    console.log("Installing @tauri-apps/cli...");
+    spawnSync(BUN_EXEC, ["i", "@tauri-apps/cli"], devOptions);
+  }
+
+  if (
+    !fs.existsSync(path.join(process.cwd(), "src-tauri", "tauri.conf.json"))
+  ) {
+    const name = packageJSON.name ?? "my-app";
+    const initTauriCommand = [
+      "tauri",
+      "init",
+      "-A",
+      name,
+      "-W",
+      name,
+      "-D",
+      "../out",
+      "--dev-path",
+      "http://localhost:3000",
+      "--before-dev-command",
+      "bun dev -- -s",
+      "--before-build-command",
+      "bun run build -- -s",
+    ];
+
+    console.log("Initializing Tauri...");
+    spawnSync(BUNX_EXEC, initTauriCommand, devOptions);
+
+    const tauriConf = await import(
+      path.join(process.cwd(), "src-tauri", "tauri.conf.json")
+    ).then((m) => m.default);
+
+    // change the bundle identifier in `tauri.conf.json > tauri > bundle > identifier` to `com.${name}`
+    tauriConf.tauri.bundle.identifier = `com.${name}`;
+    fs.writeFileSync(
+      path.join(process.cwd(), "src-tauri", "tauri.conf.json"),
+      JSON.stringify(tauriConf, null, 2),
+    );
+  }
 }
