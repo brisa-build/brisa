@@ -36,6 +36,10 @@ export default {
 } satisfies Configuration;
 ```
 
+> [!CAUTION]
+>
+> Pure server stuff like api endpoints and server interactions will not work in runtime. All the interaction part should be in web-components only.
+
 ### 3. Desktop Output (`desktop`)
 
 The `desktop` output type is designed for creating deployable desktop applications, integrated with [Tauri](https://tauri.app/). To set up your Brisa project for desktop output, modify your `brisa.config.ts` as shown below:
@@ -47,6 +51,21 @@ export default {
   output: "desktop",
 } satisfies Configuration;
 ```
+
+Once activated you can call `brisa dev` to work locally with hotreloading in the desktop app or `brisa build` to build the desktop app native executables.
+
+> [!TIP]
+>
+> You can do `brisa dev --skip-desktop` or `brisa build --skip-desktop` if you want to avoid creating and loading the desktop application.
+
+> [!CAUTION]
+>
+> In production the build is done as static export, since there is no server.
+> Pure server stuff like api endpoints and server interactions will not work in runtime. All the interaction part should be in web-components only.
+
+> [!NOTE]
+>
+> Lean how to [deploy a desktop app here](/docs/deploying/tauri).
 
 ## Additional Considerations
 
