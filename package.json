@@ -60,16 +60,16 @@
     "test": "bun test",
     "test:coverage": "bun test --coverage",
     "tsc:check": "tsc --noEmit --skipLibCheck",
-    "release-create-brisa-app": "cd src/create-brisa-app && npm publish && cd ../..",
-    "release-create-brisa-app:alpha": "cd src/create-brisa-app && npm publish --tag next  && cd ../..",
-    "release-all": "bun run build && npm publish && bun run clean && bun run release-create-brisa-app",
+    "release-create-brisa": "cd src/create-brisa && npm publish && cd ../..",
+    "release-create-brisa:alpha": "cd src/create-brisa && npm publish --tag next  && cd ../..",
+    "release-all": "bun run build && npm publish && bun run clean && bun run release-create-brisa",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",
     "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli client",
     "format": "bunx prettier@3.1.1 --write ."
   },
   "bin": {
     "brisa": "./cli.cjs",
-    "create-brisa-app": "./create-brisa-app.cjs"
+    "create-brisa": "./create-brisa.cjs"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "13.2.0",

@@ -15,13 +15,13 @@ related:
 
 ### Automatic Installation
 
-We recommend starting a new Brisa app using `create-brisa-app``, which sets up everything automatically for you.
+We recommend starting a new Brisa app using `bun create brisa`, which sets up everything automatically for you.
 
 ```sh
-bunx create-brisa-app@latest
+bun create brisa
 ```
 
-After the prompts, `create-brisa-app` will create a folder with your project name and install the required dependencies.
+After the prompts, it will create a folder with your project name and install the required dependencies.
 
 ### Manual Installation
 
