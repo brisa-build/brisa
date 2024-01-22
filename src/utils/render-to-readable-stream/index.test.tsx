@@ -4,12 +4,18 @@ import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
-import type { ComponentType, I18n, RequestContext, Translate } from "@/types";
+import type {
+  ComponentType,
+  I18nFromRequest,
+  RequestContext,
+  Translate,
+} from "@/types";
 import createContext from "@/utils/create-context";
 import dangerHTML from "@/utils/danger-html";
 import extendRequestContext from "@/utils/extend-request-context";
 import notFound from "@/utils/not-found";
 import SSRWebComponent from "@/utils/ssr-web-component";
+import handleI18n from "../handle-i18n";
 
 const emptyI18n = {
   locale: "",
@@ -17,7 +23,8 @@ const emptyI18n = {
   locales: [],
   t: () => "",
   pages: {},
-} as I18n;
+  overrideMessages: () => {},
+} as I18nFromRequest;
 
 const FIXTURES_PATH = path.join(import.meta.dir, "..", "..", "__fixtures__");
 
@@ -496,6 +503,120 @@ describe("utils", () => {
       );
     });
 
+    it("should inject client i18n script if some web component consumes translations", () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "en",
+          messages: {
+            en: {
+              hello: "test",
+            },
+          },
+        },
+        PAGES_DIR: path.join(FIXTURES_PATH, "pages"),
+        BUILD_DIR: FIXTURES_PATH,
+      };
+
+      const request = extendRequestContext({
+        originalRequest: extendRequestContext({
+          originalRequest: new Request("http://test.com/en"),
+        }),
+        route: {
+          src: "page-with-web-component.js",
+          filePath: path.join(
+            FIXTURES_PATH,
+            "pages",
+            "page-with-web-component.js",
+          ),
+        } as MatchedRoute,
+      });
+
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+
+      handleI18n(request);
+
+      const stream = renderToReadableStream(element, { request });
+      const result = Bun.readableStreamToText(stream);
+      expect(result).resolves.toBe(
+        toInline(`
+          <html lang="en" dir="ltr">
+            <head></head>
+            <body>
+              <script src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
+            </body>
+          </html>
+      `),
+      );
+    });
+
+    it("should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used", () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "en",
+          messages: {
+            en: {
+              clientOne: "test",
+              serverOne: "test2",
+            },
+          },
+        },
+        PAGES_DIR: path.join(FIXTURES_PATH, "pages"),
+        BUILD_DIR: FIXTURES_PATH,
+      };
+
+      const request = extendRequestContext({
+        originalRequest: extendRequestContext({
+          originalRequest: new Request("http://test.com/en"),
+        }),
+        route: {
+          src: "page-with-web-component.js",
+          filePath: path.join(
+            FIXTURES_PATH,
+            "pages",
+            "page-with-web-component.js",
+          ),
+        } as MatchedRoute,
+      });
+
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+
+      handleI18n(request);
+
+      request.i18n.overrideMessages(() => ({
+        clientOne: "foo",
+        serverOne: "bar",
+      }));
+
+      const stream = renderToReadableStream(element, { request });
+      const result = Bun.readableStreamToText(stream);
+      expect(result).resolves.toBe(
+        toInline(`
+          <html lang="en" dir="ltr">
+            <head></head>
+            <body>
+              <script>window.i18nMessages={"clientOne":"foo"}</script>
+              <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
+            </body>
+          </html>
+      `),
+      );
+    });
+
     it("should render the suspense component before if the async component support it", async () => {
       const Component = async () => {
         await Promise.resolve();
@@ -628,6 +749,7 @@ describe("utils", () => {
 
     it("should add the lang attribute inside the html tag when i18n locale exist", async () => {
       testRequest.i18n = {
+        overrideMessages: () => {},
         locale: "en",
         locales: ["en", "es"],
         defaultLocale: "en",
@@ -648,6 +770,7 @@ describe("utils", () => {
 
     it("should translate the URLs to the correct path", async () => {
       testRequest.i18n = {
+        overrideMessages: () => {},
         locale: "en",
         locales: ["en", "es", "it", "fr", "de"],
         defaultLocale: "en",
@@ -717,6 +840,7 @@ describe("utils", () => {
         locales: ["en", "es", "it", "fr", "de"],
         defaultLocale: "en",
         t: ((v: string) => v.toUpperCase()) as Translate,
+        overrideMessages: () => {},
         pages: {},
       };
 
@@ -777,6 +901,7 @@ describe("utils", () => {
         locales: ["en", "es", "it", "fr", "de"],
         defaultLocale: "en",
         t: ((v: string) => v.toUpperCase()) as Translate,
+        overrideMessages: () => {},
         pages: {
           "/user/[username]": {
             en: "/user/[username]",
@@ -845,6 +970,7 @@ describe("utils", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        overrideMessages: () => {},
         pages: {},
       };
       const element = (
@@ -865,6 +991,7 @@ describe("utils", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        overrideMessages: () => {},
         pages: {},
       };
       const home = await Bun.readableStreamToText(
@@ -889,6 +1016,7 @@ describe("utils", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        overrideMessages: () => {},
         pages: {},
       };
       const essencePage = await Bun.readableStreamToText(
@@ -923,6 +1051,7 @@ describe("utils", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         t: () => "",
+        overrideMessages: () => {},
         pages: {},
       };
       const essencePage = await Bun.readableStreamToText(
