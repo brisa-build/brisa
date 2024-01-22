@@ -136,6 +136,7 @@ You can access the locale information via the [`request context`](/docs/building
 - `defaultLocale` contains the configured default locale.
 - `pages` contains the configured pages.
 - `t` function to consume translations.
+- `overrideMessages` function to override messages at request level
 
 Example in a page:
 
@@ -269,6 +270,60 @@ The `t` function:
     - **default**: `string` - Default translation for the key. If fallback keys are used, it will be used only after exhausting all the fallbacks.
     - **elements** - `JSX.Element[]` | `Record<string, JSX.Element>` - Useful to use HTML inside translations. In case of Array each index corresponds to the defined tag `<0>`/`<1>`. In case of object each key corresponds to the defined tag `<example>`.
 - **Output**: `string` | `JSX.Element`
+
+### Override Translations
+
+You can utilize the `i18n.overrideMessages` method to override messages at the request level.
+
+In scenarios where we have pages connected to external i18n services, and we desire that a request to this page fetches the latest translations from the external service, this function becomes handy.
+
+```tsx filename="src/pages/index.tsx" switcher
+import { type RequestContext } from "brisa";
+
+export default async function Page({}, { i18n }: RequestContext) {
+  await i18n.overrideMessages(async (originalMessages) => {
+    const newMessages = await fetch(/* */).then((r) => r.json());
+    return { ...originalMessages, ...newMessages };
+  });
+
+  // This translation may have been overwritten
+  return <div>{i18n.t("foo")}</div>;
+}
+```
+
+Consider the following middleware example for scenarios where a language is specific to one page and not available on others.
+
+```ts filename="src/middleware.ts" switcher
+import { type RequestContext, notFound } from "brisa";
+
+export default async function middleware(request: RequestContext) {
+  const { route, locale, overrideMessages } = request.i18n;
+
+  // "ca" locale is only available on the home page
+  if (locale === "ca") {
+    // Throw 404 error for other pages with the same locale
+    if (route !== "/") notFound();
+
+    // Load "ca" messages from an external service
+    const caMessages = await fetch(/* */).then((r) => r.json());
+
+    // Save "ca" messages
+    i18n.overrideMessages(() => caMessages);
+  }
+}
+```
+
+> [!NOTE]
+>
+> Messages are already filtered by the current `locale` of the request. Therefore, you can only override messages for the specific locale of the request.
+
+> [!NOTE]
+>
+> The `overrideMessages` function does not globally override the original values; it only changes them at the request level.
+
+> [!CAUTION]
+>
+> The `overrideMessages` function is exclusive to the request level; web components do not have access to it.
 
 ### Interpolation
 
