@@ -1,5 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import path from "node:path";
+import { getConstants } from "@/constants";
 import handleI18n from ".";
 import extendRequestContext from "@/utils/extend-request-context";
 
@@ -10,6 +11,7 @@ describe("handleI18n util", () => {
   describe("without trailing slash", () => {
     beforeEach(() => {
       globalThis.mockConstants = {
+        ...getConstants(),
         CONFIG: {
           trailingSlash: false,
         },
@@ -30,10 +32,9 @@ describe("handleI18n util", () => {
 
     it("should not do anything if there is no i18n config", () => {
       globalThis.mockConstants = {
-        CONFIG: {
-          trailingSlash: false,
-        },
-      };
+        ...globalThis.mockConstants,
+        I18N_CONFIG: {},
+      } as any;
       const req = new Request("https://example.com");
       const { response, pagesRouter, rootRouter } = handleI18n(
         extendRequestContext({ originalRequest: req }),
@@ -315,6 +316,7 @@ describe("handleI18n util", () => {
   describe("with trailing slash", () => {
     beforeEach(() => {
       globalThis.mockConstants = {
+        ...getConstants(),
         CONFIG: {
           trailingSlash: true,
         },
@@ -335,10 +337,9 @@ describe("handleI18n util", () => {
 
     it("should not do anything if there is no i18n config", () => {
       globalThis.mockConstants = {
-        CONFIG: {
-          trailingSlash: true,
-        },
-      };
+        ...globalThis.mockConstants,
+        I18N_CONFIG: {},
+      } as any;
       const req = new Request("https://example.com");
       const { response, pagesRouter, rootRouter } = handleI18n(
         extendRequestContext({ originalRequest: req }),
@@ -347,6 +348,40 @@ describe("handleI18n util", () => {
       expect(response).toBeUndefined();
       expect(pagesRouter).not.toBeDefined();
       expect(rootRouter).not.toBeDefined();
+    });
+
+    it("should log an error when overrideMessages is called without a callback", () => {
+      const mockLog = spyOn(console, "log");
+      const req = extendRequestContext({
+        originalRequest: new Request("https://example.com/en"),
+      });
+      handleI18n(req);
+      (req.i18n.overrideMessages as any)();
+      expect(mockLog.mock.calls.toString()).toContain(
+        "overrideMessages requires a callback function",
+      );
+    });
+
+    it("should inject correctly the overrideMessages inside transCore", () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("https://example.com/en"),
+      });
+      handleI18n(req);
+      req.i18n.overrideMessages(() => ({
+        hello: "hi {{name}}",
+      }));
+      expect(req.i18n.t<string>("hello", { name: "test" })).toBe("hi test");
+    });
+
+    it("should inject correctly the async overrideMessages inside transCore", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("https://example.com/en"),
+      });
+      handleI18n(req);
+      await req.i18n.overrideMessages(async () => ({
+        hello: "hi {{name}}",
+      }));
+      expect(req.i18n.t<string>("hello", { name: "test" })).toBe("hi test");
     });
 
     it("should redirect to default locale if there is no locale in the URL", () => {
