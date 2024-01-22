@@ -15,6 +15,7 @@ import {
   restoreSlotProviders,
 } from "@/utils/context-provider/server";
 import { getConstants } from "@/constants";
+import overrideClientTranslations from "../translate-core/override-client-translations";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -311,12 +312,29 @@ async function enqueueDuringRendering(
             "pages-client",
             filenameI18n,
           );
+          const i18nFile = Bun.file(pathPageI18n);
 
-          if (fs.existsSync(pathPageI18n)) {
-            controller.enqueue(
-              `<script src="/_brisa/pages/${filenameI18n}"></script>`,
-              suspenseId,
-            );
+          if (await i18nFile.exists()) {
+            let script = `<script src="/_brisa/pages/${filenameI18n}"></script>`;
+
+            // Script to override client translations caused by "overrideMessages" function
+            if (request.store.has("_messages")) {
+              const clientI18nMessagesCode = (await i18nFile.text()).replace(
+                /^window.i18nMessages ?=/,
+                "return ",
+              );
+
+              const scriptContent = JSON.stringify(
+                overrideClientTranslations(
+                  new Function(clientI18nMessagesCode)(),
+                  request.store.get("_messages"),
+                ),
+              );
+
+              script = `<script>window.i18nMessages=${scriptContent}</script>`;
+            }
+
+            controller.enqueue(script, suspenseId);
           }
         }
 
