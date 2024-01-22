@@ -7,7 +7,10 @@ import type {
 } from "@/types";
 import formatElements from "./format-elements";
 
-export default function translateCore(locale: string, config: I18nConfig) {
+export default function translateCore(
+  locale: string,
+  config: I18nConfig & { _messages?: I18nDictionary },
+) {
   const { allowEmptyStrings = true } = config;
   const pluralRules = new Intl.PluralRules(locale);
   const interpolateUnknown = (
@@ -33,7 +36,8 @@ export default function translateCore(locale: string, config: I18nConfig) {
     query: TranslationQuery | null | undefined,
     options?: TranslateOptions,
   ) => {
-    const dic = config.messages?.[locale] || {};
+    const overrideMessages = config._messages || {};
+    const dic = { ...(config.messages?.[locale] || {}), ...overrideMessages };
     const keyWithPlural = plural(
       pluralRules,
       dic,
@@ -113,10 +117,10 @@ function getDicValue(
   if (key === keySeparator && options.returnObjects) return dic;
 
   const value: string | object = keyParts.reduce(
-    (val: I18nDictionary | string, key: string) => {
+    (val: I18nDictionary | I18nDictionary[] | string, key: string) => {
       if (typeof val === "string") return {};
 
-      const res = val[key as keyof typeof val];
+      const res = (val as any)[key];
 
       // pass all truthy values or (empty) strings
       return res || (typeof res === "string" ? res : {});

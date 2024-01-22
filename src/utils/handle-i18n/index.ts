@@ -4,6 +4,7 @@ import { getConstants } from "@/constants";
 import translateCore from "@/utils/translate-core";
 import adaptRouterToPageTranslations from "@/utils/adapt-router-to-page-translations";
 import type { RequestContext } from "@/types";
+import { logError } from "../log/log-build";
 
 export default function handleI18n(req: RequestContext): {
   response?: Response;
@@ -62,13 +63,36 @@ export default function handleI18n(req: RequestContext): {
     };
   }
 
+  // Inject messages from overrideMessages callback
+  const translateCoreConfig = {
+    ...I18N_CONFIG,
+    get _messages() {
+      console.log("get _messages", req.store.get("_messages"));
+      return req.store.get("_messages");
+    },
+  };
+
   // Set i18n to the request
   req.i18n = {
     defaultLocale,
     locales,
     locale,
-    t: translateCore(locale, I18N_CONFIG),
+    t: translateCore(locale, translateCoreConfig),
     pages: pages ?? {},
+    overrideMessages: (callback) => {
+      if (typeof callback !== "function")
+        return logError(["overrideMessages requires a callback function"]);
+
+      const messages = callback(I18N_CONFIG?.messages?.[locale]);
+      const save = (messages: Record<string, any>) =>
+        req.store.set("_messages", messages);
+
+      if (messages instanceof Promise) {
+        messages.then(save);
+      } else {
+        save(messages as Record<string, any>);
+      }
+    },
   };
 
   if (pages) {

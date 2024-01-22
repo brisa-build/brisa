@@ -84,6 +84,7 @@ export default function extendRequestContext({
       locales: [],
       locale: "",
       t: () => "",
+      overrideMessages: () => {},
       pages: {},
     };
 
