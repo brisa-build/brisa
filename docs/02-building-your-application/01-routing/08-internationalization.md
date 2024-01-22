@@ -297,12 +297,12 @@ Consider the following middleware example for scenarios where a language is spec
 import { type RequestContext, notFound } from "brisa";
 
 export default async function middleware(request: RequestContext) {
-  const { route, locale, overrideMessages } = request.i18n;
+  const { locale, overrideMessages } = request.i18n;
 
   // "ca" locale is only available on the home page
   if (locale === "ca") {
     // Throw 404 error for other pages with the same locale
-    if (route !== "/") notFound();
+    if (request.route.pathname !== "/") notFound();
 
     // Load "ca" messages from an external service
     const caMessages = await fetch(/* */).then((r) => r.json());

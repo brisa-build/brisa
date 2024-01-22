@@ -52,13 +52,15 @@ describe("brisa core", () => {
           defaultLocale: "en",
           locales: ["en", "es"],
           t: mockT,
+          overrideMessages: () => {},
         },
       });
 
       expect(requestContext.i18n.locale).toBe("es");
       expect(requestContext.i18n.defaultLocale).toBe("en");
       expect(requestContext.i18n.locales).toEqual(["en", "es"]);
-      expect(requestContext.i18n.t("some-key")).toBe("foo");
+      expect(requestContext.i18n.t<string>("some-key")).toBe("foo");
+      expect(requestContext.i18n.overrideMessages).toBeTypeOf("function");
     });
 
     it("should be linked with websockets", () => {

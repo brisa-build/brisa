@@ -73,7 +73,7 @@ describe("utils", () => {
       const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
-      expect(t("hello_world", { name: "Test" })).toBe("Hello Test");
+      expect(t<string>("hello_world", { name: "Test" })).toBe("Hello Test");
     });
 
     it("should translate a nested key interpoleting correctly", async () => {
@@ -86,9 +86,9 @@ describe("utils", () => {
       const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
-      expect(t("hello_world.hello_world_nested", { name: "Test" })).toBe(
-        "Hello Test",
-      );
+      expect(
+        t<string>("hello_world.hello_world_nested", { name: "Test" }),
+      ).toBe("Hello Test");
     });
 
     it("should return an object of root keys", async () => {
@@ -151,7 +151,7 @@ describe("utils", () => {
       const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
-      expect(t("emptyKey")).toBe("");
+      expect(t<string>("emptyKey")).toBe("");
     });
 
     it("should return empty string when allowEmptyStrings is omitted", () => {
@@ -165,7 +165,7 @@ describe("utils", () => {
       const t = translateCore("en", config);
 
       expect(typeof t).toBe("function");
-      expect(t("emptyKey")).toBe("");
+      expect(t<string>("emptyKey")).toBe("");
     });
 
     it("should return the key name when allowEmptyStrings is omit passed as false.", () => {
@@ -198,7 +198,7 @@ describe("utils", () => {
         },
       };
       const t = translateCore("en", config);
-      expect(t("key_1", { name: "test" })).toBe("hello test");
+      expect(t<string>("key_1", { name: "test" })).toBe("hello test");
     });
 
     it("should work with format", () => {
@@ -221,7 +221,7 @@ describe("utils", () => {
         },
       } as I18nConfig;
       const t = translateCore("en", config);
-      expect(t("key_1", { name: "test" })).toBe("hello TEST");
+      expect(t<string>("key_1", { name: "test" })).toBe("hello TEST");
     });
 
     it("should work with html inside the translation", () => {
@@ -241,6 +241,29 @@ describe("utils", () => {
       expect(output[0]).toBe("hello ");
       expect(element.type).toBe("strong");
       expect(element.props.children).toBe("test");
+    });
+
+    it("should _messages override _defaultMessages", () => {
+      const config = {
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        messages: {
+          en: {
+            key_1: "hello {{name}}",
+            key_2: "hello 2 {{name}}",
+          },
+          ru: {
+            key_1: "привет {{name}}",
+            key_2: "привет 2 {{name}}",
+          },
+        },
+        _messages: {
+          key_1: "new hello {{name}}",
+        },
+      };
+      const t = translateCore("en", config);
+      expect(t<string>("key_1", { name: "test" })).toBe("new hello test");
+      expect(t<string>("key_2", { name: "test" })).toBe("hello 2 test");
     });
   });
 });
