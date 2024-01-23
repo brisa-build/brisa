@@ -2,6 +2,13 @@ import path from "node:path";
 import type { Configuration, I18nConfig } from "./types";
 import getRootDir from "./utils/get-root-dir";
 import importFileIfExists from "./utils/import-file-if-exists";
+import {
+  blueLog,
+  cyanLog,
+  greenLog,
+  redLog,
+  yellowLog,
+} from "./utils/log/log-build";
 
 const rootDir = getRootDir();
 const staticExportOutputOption = new Set(["static", "desktop"]);
@@ -79,12 +86,12 @@ const constants = {
   PAGES_DIR: path.join(buildDir, "pages"),
   I18N_CONFIG,
   LOG_PREFIX: {
-    WAIT: Bun.enableANSIColors ? `[ \x1b[36mwait\x1b[0m ]  ` : "[ wait ] ",
-    READY: Bun.enableANSIColors ? `[ \x1b[32mready\x1b[0m ] ` : "[ ready ] ",
-    INFO: Bun.enableANSIColors ? `[ \x1b[34minfo\x1b[0m ]  ` : "[ info ] ",
-    ERROR: Bun.enableANSIColors ? `[ \x1b[31merror\x1b[0m ] ` : "[ error ] ",
-    WARN: Bun.enableANSIColors ? `[ \x1b[33mwarn\x1b[0m ]  ` : "[ warn ] ",
-    TICK: Bun.enableANSIColors ? `\x1b[32m✓\x1b[0m ` : "✓ ",
+    WAIT: cyanLog("[ wait ]") + " ",
+    READY: greenLog("[ ready ] ") + " ",
+    INFO: blueLog("[ info ] ") + " ",
+    ERROR: redLog("[ error ] ") + " ",
+    WARN: yellowLog("[ warn ] ") + " ",
+    TICK: greenLog("✓ ") + " ",
   },
   LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
   CONFIG: { ...defaultConfig, ...CONFIG } as Configuration,
