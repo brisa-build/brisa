@@ -1,14 +1,16 @@
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
 
 let signals: typeof import(".").default;
 
 describe("signals", () => {
   beforeAll(async () => {
-    (globalThis as any)["_S"] = [["foo", "bar"]];
+    GlobalRegistrator.register();
+    (window as any)["_S"] = [["foo", "bar"]];
     signals = await import(".").then((m) => m.default);
   });
   afterAll(() => {
-    (globalThis as any)["_S"] = undefined;
+    GlobalRegistrator.unregister();
   });
 
   it('should init the store depending window["_S"] (transferred server store)', () => {
