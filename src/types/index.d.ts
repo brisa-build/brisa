@@ -125,7 +125,7 @@ export interface RequestContext extends Request {
    *
    * - [How to use `i18n`](https://brisa.build/docs/building-your-application/routing/internationalization)
    */
-  i18n: I18nFromRequest;
+  i18n: I18n;
 
   /**
    * Description:
@@ -675,7 +675,7 @@ export type Translate = <T extends unknown = string>(
   options?: TranslateOptions,
 ) => T;
 
-export type I18nFromRequest = {
+export type I18n = {
   locale: string;
   defaultLocale: string;
   locales: string[];
@@ -685,7 +685,7 @@ export type I18nFromRequest = {
   /**
    * Description:
    *
-   * The `overrideMessages` method is used to override the messages of the current request.
+   * The `overrideMessages` method is used to override the messages of the current session.
    *
    * Example:
    *
@@ -698,14 +698,6 @@ export type I18nFromRequest = {
    * - [How to use `overrideMessages`](https://brisa.build/docs/building-your-application/routing/internationalization#override-translations)
    */
   overrideMessages: <T = Record<string, unknown>>(callback: (T) => T) => void;
-};
-
-export type I18n = {
-  locale: string;
-  defaultLocale: string;
-  locales: string[];
-  pages: i18nPages;
-  t: Translate;
 };
 
 export interface ComponentType extends JSXComponent {

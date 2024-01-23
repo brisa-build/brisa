@@ -39,6 +39,9 @@ export default function renderAttributes({
     // Skip undefined values
     if (typeof value === "undefined") continue;
 
+    // Skip events during SSR for now (TODO: implement it)
+    if (typeof value === "function") continue;
+
     // Example <dialog open> => <dialog>
     if (typeof value === "boolean" && BOOLEANS_IN_HTML.has(key)) {
       if (value) attributes += ` ${key}`;
