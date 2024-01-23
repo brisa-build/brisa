@@ -361,7 +361,7 @@ export default async function DynamicDictionary(
 
 > [!NOTE]
 >
-> The `overrideMessages` function does not globally override the original values; it only changes them at the request level.
+> The `overrideMessages` function does not perform global overrides on the original values; instead, it exclusively modifies them at the request level in server parts or on the client side for a specific session. This ensures that changes made with this function are scoped appropriately, preventing unintended global alterations.
 
 ### Interpolation
 
