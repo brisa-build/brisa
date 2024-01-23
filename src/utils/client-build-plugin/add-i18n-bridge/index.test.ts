@@ -82,7 +82,12 @@ describe("utils", () => {
 
           Object.assign(window.i18n, {
             get t() {return translateCore(this.locale, {...i18nConfig,messages: this.messages});},
-            get messages() {return {[this.locale]: window.i18nMessages};}
+            get messages() {return {[this.locale]: window.i18nMessages};},
+            overrideMessages(callback) {
+              const p = callback(window.i18nMessages);
+              const a = m => Object.assign(window.i18nMessages, m);
+              return p.then?.(a) ?? a(p);
+            }
           });
         `);
         expect(outputCode).toBe(expectedCode);
@@ -117,7 +122,12 @@ describe("utils", () => {
             ...i18nConfig,
             get locale() {return document.documentElement.lang;},
             get t() {return translateCore(this.locale, {...i18nConfig,messages: this.messages});},
-            get messages() {return {[this.locale]: window.i18nMessages};}
+            get messages() {return {[this.locale]: window.i18nMessages};},
+            overrideMessages(callback) {
+              const p = callback(window.i18nMessages);
+              const a = m => Object.assign(window.i18nMessages, m);
+              return p.then?.(a) ?? a(p);
+            }
           };
         `);
         expect(outputCode).toBe(expectedCode);
@@ -163,7 +173,12 @@ describe("utils", () => {
             ...i18nConfig,
             get locale() {return document.documentElement.lang;},
             get t() {return translateCore(this.locale, {...i18nConfig,messages: this.messages});},
-            get messages() {return {[this.locale]: window.i18nMessages};}
+            get messages() {return {[this.locale]: window.i18nMessages};},
+            overrideMessages(callback) {
+              const p = callback(window.i18nMessages);
+              const a = m => Object.assign(window.i18nMessages, m);
+              return p.then?.(a) ?? a(p);
+            }
           };
         `);
         expect(outputCode).toBe(expectedCode);
@@ -201,7 +216,7 @@ describe("utils", () => {
           'const translateCore = () => (k) => "Olá John";',
         );
 
-        window.i18nMessages = I18N_CONFIG.messages;
+        window.i18nMessages = I18N_CONFIG.messages["pt"];
 
         const script = document.createElement("script");
         script.innerHTML = output;
@@ -231,7 +246,7 @@ describe("utils", () => {
           'const translateCore = () => (k) => "Olá John";',
         );
 
-        window.i18nMessages = I18N_CONFIG.messages;
+        window.i18nMessages = I18N_CONFIG.messages["pt"];
 
         const script = document.createElement("script");
         script.innerHTML = output;
@@ -240,6 +255,74 @@ describe("utils", () => {
 
         expect(window.i18n.locale).toBe("pt");
         expect(window.i18n.t("hello", { name: "John" })).toBe("Olá John");
+      });
+
+      it("should override messages using i18n.overrideMessages util", () => {
+        const ast = addI18nBridge(emptyAst, {
+          usei18nKeysLogic: true,
+          i18nAdded: false,
+          isTranslateCoreAdded: true,
+        });
+        let output = generateCodeFromAST(ast);
+
+        output = output.replace(
+          normalizeQuotes("import {translateCore} from 'brisa';"),
+          "const translateCore = () => (k) => window.i18nMessages[k].replace('{{name}}', 'John');",
+        );
+
+        window.i18nMessages = structuredClone(I18N_CONFIG.messages["pt"]);
+
+        const script = document.createElement("script");
+        script.innerHTML = output;
+        document.documentElement.lang = "pt";
+        document.body.appendChild(script);
+
+        expect(window.i18n.locale).toBe("pt");
+        expect(window.i18n.t("hello", { name: "John" })).toBe("Olá John");
+
+        window.i18n.overrideMessages((messages: Record<string, any>) => ({
+          ...messages,
+          hello: "Olááá {{name}}",
+        }));
+
+        expect(window.i18n.messages).toEqual({ pt: window.i18nMessages });
+        expect(window.i18nMessages).toEqual({ hello: "Olááá {{name}}" });
+        expect(window.i18n.t("hello", { name: "John" })).toBe("Olááá John");
+      });
+
+      it("should override messages using ASYNC i18n.overrideMessages util", async () => {
+        const ast = addI18nBridge(emptyAst, {
+          usei18nKeysLogic: true,
+          i18nAdded: false,
+          isTranslateCoreAdded: true,
+        });
+        let output = generateCodeFromAST(ast);
+
+        output = output.replace(
+          normalizeQuotes("import {translateCore} from 'brisa';"),
+          "const translateCore = () => (k) => window.i18nMessages[k].replace('{{name}}', 'John');",
+        );
+
+        window.i18nMessages = structuredClone(I18N_CONFIG.messages["pt"]);
+
+        const script = document.createElement("script");
+        script.innerHTML = output;
+        document.documentElement.lang = "pt";
+        document.body.appendChild(script);
+
+        expect(window.i18n.locale).toBe("pt");
+        expect(window.i18n.t("hello", { name: "John" })).toBe("Olá John");
+
+        await window.i18n.overrideMessages(
+          async (messages: Record<string, any>) => ({
+            ...messages,
+            hello: "Olááá {{name}}",
+          }),
+        );
+
+        expect(window.i18n.messages).toEqual({ pt: window.i18nMessages });
+        expect(window.i18nMessages).toEqual({ hello: "Olááá {{name}}" });
+        expect(window.i18n.t("hello", { name: "John" })).toBe("Olááá John");
       });
     });
   });

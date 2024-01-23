@@ -136,7 +136,7 @@ You can access the locale information via the [`request context`](/docs/building
 - `defaultLocale` contains the configured default locale.
 - `pages` contains the configured pages.
 - `t` function to consume translations.
-- `overrideMessages` function to override messages at request level
+- `overrideMessages` function to override messages at session level
 
 Example in a page:
 
@@ -273,9 +273,11 @@ The `t` function:
 
 ### Override Translations
 
-You can utilize the `i18n.overrideMessages` method to override messages at the request level.
+You can employ the `i18n.overrideMessages` method to override messages at the session level. This method is applicable to all server parts using the [RequestContext](/docs/building-your-application/data-fetching/request-context) or in web components utilizing the [WebContext](/docs/building-your-application/data-fetching/web-context).
 
-In scenarios where we have pages connected to external i18n services, and we desire that a request to this page fetches the latest translations from the external service, this function becomes handy.
+#### Override Translations in Server Parts
+
+In situations where pages are connected to external i18n services and there is a need to fetch the latest translations from the external service on each request, this function proves useful.
 
 ```tsx filename="src/pages/index.tsx" switcher
 import { type RequestContext } from "brisa";
@@ -313,17 +315,53 @@ export default async function middleware(request: RequestContext) {
 }
 ```
 
+#### Override Translations in Web Components
+
+Consider scenarios where you want to use it in web components to load a dynamically dictionary:
+
+```tsx
+import type { WebContext } from "brisa";
+
+export default async function DynamicDictionary(
+  {},
+  { state, i18n }: WebContext,
+) {
+  const open = state<boolean>(false);
+  let isDictionaryLoaded = false;
+
+  async function onToggle() {
+    if (!open.value && !isDictionaryLoaded) {
+      isDictionaryLoaded = true;
+
+      await i18n.overrideMessages(async (messages) => ({
+        ...messages,
+        dynamicDictionary: await fetch(/* some url */).then((res) =>
+          res.json(),
+        ),
+      }));
+    }
+
+    open.value = !open.value;
+  }
+
+  return (
+    <>
+      <button onClick={onToggle}>
+        {open.value ? i18n.t("close") : i18n.t("open")}
+      </button>
+      {open.value && i18n.t("dynamicDictionary.someKey")}
+    </>
+  );
+}
+```
+
 > [!NOTE]
 >
-> Messages are already filtered by the current `locale` of the request. Therefore, you can only override messages for the specific locale of the request.
+> Messages are already filtered by the current `locale`. Therefore, you can only override messages for the specific locale during the session (request in server parts and globalThis in web components).
 
 > [!NOTE]
 >
 > The `overrideMessages` function does not globally override the original values; it only changes them at the request level.
-
-> [!CAUTION]
->
-> The `overrideMessages` function is exclusive to the request level; web components do not have access to it.
 
 ### Interpolation
 

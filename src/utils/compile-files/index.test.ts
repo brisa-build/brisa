@@ -78,7 +78,9 @@ describe("utils", () => {
       };
 
       const { success, logs } = await compileFiles();
-      const files = fs.readdirSync(DEV_BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(DEV_BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
       const brisaInternals = fs.readdirSync(path.join(DEV_BUILD_DIR, "_brisa"));
 
       expect(logs).toEqual([]);
@@ -132,7 +134,9 @@ describe("utils", () => {
       expect(logs).toEqual([]);
       expect(success).toBe(true);
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
@@ -156,7 +160,9 @@ describe("utils", () => {
       expect(files[8]).toBe("pages-client");
       expect(files[9]).toBe("websocket.js");
 
-      const pagesClient = fs.readdirSync(pagesClientPath).toSorted((a, b) => a.localeCompare(b));
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
         `_404-${HASH}-en.js`,
