@@ -14,6 +14,7 @@ import path from "node:path";
 import compileFiles from ".";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
+import { greenLog } from "../log/log-build";
 
 const originalConsoleLog = console.log;
 const DIR = import.meta.dir;
@@ -36,9 +37,6 @@ const TYPES = path.join(BUILD_DIR, "_brisa", "types.ts");
 function minifyText(text: string) {
   return text.replace(/\s+/g, " ").trim();
 }
-
-const green = (text: string) =>
-  Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
 
 describe("utils", () => {
   beforeAll(() => {
@@ -205,8 +203,9 @@ describe("utils", () => {
       );
 
       const info = constants.LOG_PREFIX.INFO;
-      const chunkHash = files[2].replace("chunk-", "").replace(".js", "");
-      const anotherChunkHash = files[3]
+      const chunks = [files[2], files[3]].toSorted();
+      const chunkHash = chunks[0].replace("chunk-", "").replace(".js", "");
+      const anotherChunkHash = chunks[1]
         .replace("chunk-", "")
         .replace(".js", "");
       const logOutput = minifyText(mockLog.mock.calls.flat().join("\n"));
@@ -216,13 +215,13 @@ describe("utils", () => {
     ${info}
     ${info}Route                               | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
-    ${info}λ /pages/_404                    | 429 B     | ${green("4 kB")} 
-    ${info}λ /pages/_500                    | 435 B     | ${green("4 kB")} 
-    ${info}λ /pages/page-with-web-component | 368 B     | ${green("4 kB")} 
-    ${info}λ /pages/somepage                | 349 B     | ${green("0 B")} 
-    ${info}λ /pages/somepage-with-context   | 335 B     | ${green("0 B")} 
-    ${info}λ /pages/index                   | 291 B     | ${green("186 B")}  
-    ${info}λ /pages/user/[username]         | 183 B     | ${green("0 B")}
+    ${info}λ /pages/_404                    | 429 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/_500                    | 435 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/page-with-web-component | 368 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/somepage                | 349 B     | ${greenLog("0 B")} 
+    ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("0 B")} 
+    ${info}λ /pages/index                   | 291 B     | ${greenLog("186 B")}  
+    ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
     ${info}ƒ /middleware                    | 420 B     |
     ${info}λ /api/example                   | 283 B     |
     ${info}Δ /layout                        | 350 B     |
