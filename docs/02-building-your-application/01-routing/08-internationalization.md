@@ -355,6 +355,8 @@ export default async function DynamicDictionary(
 }
 ```
 
+In this example, the `DynamicDictionary` web component demonstrates dynamic loading of translations in an event. Upon toggling, it checks whether the dictionary is already loaded; if not, it fetches translations from a specified URL and uses `overrideMessages` to integrate them seamlessly into the current session. The translated key, `dynamicDictionary.someKey`, is then displayed based on the component's state. This approach allows on-the-fly language customization for improved user experience.
+
 > [!NOTE]
 >
 > Messages are already filtered by the current `locale`. Therefore, you can only override messages for the specific locale during the session (request in server parts and globalThis in web components).
