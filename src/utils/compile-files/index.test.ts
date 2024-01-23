@@ -210,11 +210,12 @@ describe("utils", () => {
 
       const info = constants.LOG_PREFIX.INFO;
 
-      const chunkHash = files[2].replace("chunk-", "").replace(".js", "");
-      const anotherChunkHash = files[3]
-        .replace("chunk-", "")
-        .replace(".js", "");
-      const logOutput = minifyText(mockLog.mock.calls.flat().join("\n"));
+      const logOutput = minifyText(
+        mockLog.mock.calls
+          .flat()
+          .join("\n")
+          .replace(/chunk-\S*/g, "chunk-hash"),
+      );
       mockLog.mockRestore();
 
       const expected = minifyText(`
@@ -233,8 +234,8 @@ describe("utils", () => {
     ${info}Δ /layout                        | 350 B     |
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
-    ${info}Φ /chunk-${chunkHash}            | 2 kB      |
-    ${info}Φ /chunk-${anotherChunkHash}     | 106 B     |
+    ${info}Φ /chunk-hash                    | 2 kB      |
+    ${info}Φ /chunk-hash                    | 106 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
