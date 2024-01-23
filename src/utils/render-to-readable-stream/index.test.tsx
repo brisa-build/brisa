@@ -4,12 +4,7 @@ import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
-import type {
-  ComponentType,
-  I18nFromRequest,
-  RequestContext,
-  Translate,
-} from "@/types";
+import type { ComponentType, I18n, RequestContext, Translate } from "@/types";
 import createContext from "@/utils/create-context";
 import dangerHTML from "@/utils/danger-html";
 import extendRequestContext from "@/utils/extend-request-context";
@@ -24,7 +19,7 @@ const emptyI18n = {
   t: () => "",
   pages: {},
   overrideMessages: () => {},
-} as I18nFromRequest;
+} as I18n;
 
 const FIXTURES_PATH = path.join(import.meta.dir, "..", "..", "__fixtures__");
 
@@ -2288,6 +2283,28 @@ describe("utils", () => {
         "http://localhost/?_not-found=1",
       );
       globalThis.location = undefined as any;
+    });
+
+    // TODO: in the future server events should be able, for now just ignore
+    it("should render correctly if there is an async event in some element", () => {
+      async function ComponentWithAsyncEvent({}, { i18n }: RequestContext) {
+        async function onAsyncEvent() {
+          console.log("foo");
+          await i18n.overrideMessages(async (messages) => ({
+            ...messages,
+            modalDictionary: { someKey: "Some key" },
+          }));
+        }
+
+        return <button onClick={onAsyncEvent}>TEST</button>;
+      }
+
+      const element = <ComponentWithAsyncEvent />;
+
+      const stream = renderToReadableStream(element, testOptions);
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toBe(toInline(`<button>TEST</button>`));
     });
   });
 });

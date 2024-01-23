@@ -15,7 +15,12 @@ const i18nKeysLogic = `
   get t() {
     return translateCore(this.locale, { ...i18nConfig, messages: this.messages })
   },
-  get messages() { return {[this.locale]: window.i18nMessages } }
+  get messages() { return {[this.locale]: window.i18nMessages } },
+  overrideMessages(callback) {
+    const p = callback(window.i18nMessages);
+    const a = m => Object.assign(window.i18nMessages, m);
+    return p.then?.(a) ?? a(p);
+  }
 `;
 
 export default function addI18nBridge(

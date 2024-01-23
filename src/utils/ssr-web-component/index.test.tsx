@@ -453,5 +453,42 @@ describe("utils", () => {
       expect(output.type).toBe(selector);
       expect(output.props.children[0].props.children[0]).toBe("hello world");
     });
+
+    it("should an async event work correctly", async () => {
+      async function ComponentWithAsyncEvent({}, { i18n }: WebContext) {
+        async function onAsyncEvent() {
+          console.log("foo");
+          await i18n.overrideMessages(async (messages) => ({
+            ...messages,
+            modalDictionary: { someKey: "Some key" },
+          }));
+        }
+
+        return <button onClick={onAsyncEvent}>TEST</button>;
+      }
+
+      const selector = "component-with-async-event";
+
+      const output = (await SSRWebComponent(
+        {
+          Component: ComponentWithAsyncEvent,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+
+      expect(output.props.children[0].props.children[0].type).toBe("button");
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        "TEST",
+      );
+      expect(
+        output.props.children[0].props.children[0].props.onClick,
+      ).toBeInstanceOf(Function);
+    });
   });
 });
