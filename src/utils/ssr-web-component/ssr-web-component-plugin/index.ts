@@ -36,6 +36,9 @@ export default function ssrWebComponentPlugin(
 
         detectedWebComponents[selector] = componentPath;
 
+        // Avoid transformation if it is a native web-component
+        if (selector?.startsWith("native-")) return value;
+
         // Avoid transformation if it has the "skipSSR" attribute
         if (
           value?.arguments?.[1]?.properties?.some(

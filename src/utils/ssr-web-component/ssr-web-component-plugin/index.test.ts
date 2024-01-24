@@ -96,6 +96,27 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
+    it("should not convert a web-component that starts with native-", () => {
+      const code = `
+        export default function ServerComponent() {
+          return <native-web-component />;
+        }
+      `;
+      const allWebComponents = {
+        "native-web-component": "src/components/native-web-component.tsx",
+      };
+      const output = normalizeQuotes(
+        wrapWithSSRWebComponent(code, allWebComponents).code,
+      );
+      const expected = toExpected(`
+        export default function ServerComponent() {
+          return <native-web-component />;
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
     it('should not convert a web-component to ServerComponent if has the attribute "skipSSR" set to true', () => {
       const code = `
         export default function ServerComponent() {

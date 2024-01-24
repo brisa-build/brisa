@@ -7,7 +7,7 @@ const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 describe("utils", () => {
   describe("client-build-plugin", () => {
     describe("without transformation", () => {
-      it("should not transform if is inside @-native folder", () => {
+      it("should not transform if is inside _native folder", () => {
         const input = `
             export default function MyComponent() {
               return <div>foo</div>
@@ -16,7 +16,7 @@ describe("utils", () => {
         const output = toInline(
           clientBuildPlugin(
             input,
-            "/src/web-components/@-native/my-component.tsx",
+            "/src/web-components/_native/my-component.tsx",
           ).code,
         );
         const expected = toInline(input);
@@ -25,7 +25,7 @@ describe("utils", () => {
     });
 
     describe("basic components with transformation", () => {
-      it("should transform if is inside @-partials folder", () => {
+      it("should transform if is inside _partials folder", () => {
         const input = `
             export default function partial() {
               return <div>foo</div>
@@ -34,7 +34,7 @@ describe("utils", () => {
         const output = toInline(
           clientBuildPlugin(
             input,
-            "/src/web-components/@-partials/my-component.tsx",
+            "/src/web-components/_partials/my-component.tsx",
           ).code,
         );
         const expected = toInline(`        
