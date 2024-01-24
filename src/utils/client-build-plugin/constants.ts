@@ -4,11 +4,14 @@ export const NO_REACTIVE_CHILDREN_EXPRESSION = new Set([
   "Literal",
   "ArrayExpression",
 ]);
-export const ALTERNATIVE_PREFIX = "@-";
+export const ALTERNATIVE_PREFIX = "_";
 export const NATIVE_FOLDER = `${ALTERNATIVE_PREFIX}native`;
 export const SUPPORTED_DEFAULT_PROPS_OPERATORS = new Set(["??", "||"]);
 export const JSX_NAME = new Set(["jsx", "jsxDEV"]);
 export const WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
+export const WEB_COMPONENT_ALTERNATIVE_REGEX = new RegExp(
+  `web-components.*(/|\)${ALTERNATIVE_PREFIX}`,
+);
 export const BRISA_IMPORT = {
   type: "ImportDeclaration",
   specifiers: [

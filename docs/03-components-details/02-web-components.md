@@ -991,10 +991,10 @@ This distinctive approach distinguishes Brisa from other frameworks in reusing w
 
 In frameworks like React, to reuse markup (HTML elements), dummy components must be created—components without state. However, in Brisa, it is recommended to employ **markup generators** (functions) and invoke them during rendering.
 
-```tsx filename="src/web-components/@-partials/generate-percentage.tsx" switcher
+```tsx filename="src/web-components/_partials/generate-percentage.tsx" switcher
 import { type Signal } from "brisa";
 
-function generatePercentage(percentage: Signal<number>) {
+export function generatePercentage(percentage: Signal<number>) {
   return (
     <span>
       Percentage:{" "}
@@ -1008,7 +1008,7 @@ Subsequently, these markup generators can be directly invoked within JSX:
 
 ```tsx filename="src/web-components/counter.tsx" switcher
 import { type WebContext } from "brisa";
-import generatePercentage from "./@-partials/generate-percentage";
+import generatePercentage from "./_partials/generate-percentage";
 
 export default function Counter({}, { state }: WebContext) {
   const count = state(0);
@@ -1057,7 +1057,7 @@ Choosing between a **web component** and a **markup generator** depends on the n
 
 > [!TIP]
 >
-> You have the flexibility to establish directories or files with the `@-` prefix, steering clear of the need to create web components within the `src/web-components` directory. This proves beneficial when incorporating reusable markup generators within web components. The sole exception to this practice is `@-native`, a dedicated directory specifically designed for crafting native web components, free from both Brisa and JSX influences.
+> You have the flexibility to establish directories or files with the \_ prefix, steering clear of the need to create web components within the `src/web-components` directory. This proves beneficial when incorporating reusable markup generators within web components. The sole exceptions to this practice are `_native`, a dedicated directory specifically designed for crafting native web components, free from both Brisa and JSX influences, and `_integrations.tsx`, an additional file exempt from this convention.
 
 > [!CAUTION]
 >

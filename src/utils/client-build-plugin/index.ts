@@ -13,7 +13,7 @@ import replaceExportDefault from "./replace-export-default";
 import processClientAst from "./process-client-ast";
 import getReactiveReturnStatement from "./get-reactive-return-statement";
 import {
-  ALTERNATIVE_PREFIX,
+  WEB_COMPONENT_ALTERNATIVE_REGEX,
   NATIVE_FOLDER,
   WEB_COMPONENT_REGEX,
 } from "./constants";
@@ -68,7 +68,7 @@ export default function clientBuildPlugin(
 
   if (
     !componentBranch ||
-    (path.includes(ALTERNATIVE_PREFIX) && !isInternal) ||
+    (WEB_COMPONENT_ALTERNATIVE_REGEX.test(path) && !isInternal) ||
     (!path.match(WEB_COMPONENT_REGEX) && !isInternal)
   ) {
     return {

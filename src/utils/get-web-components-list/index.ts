@@ -29,7 +29,7 @@ export default async function getWebComponentsList(
           !key.includes(ALTERNATIVE_PREFIX) || key.includes(NATIVE_FOLDER),
       )
       .map(([key, path]) => {
-        const selector = key.replace(/^\/(@-)?/g, "").replaceAll("/", "-");
+        const selector = key.replace(/^\/(_)?/g, "").replaceAll("/", "-");
 
         if (selector === CONTEXT_PROVIDER) {
           logError([

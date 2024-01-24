@@ -142,7 +142,7 @@ describe("utils", () => {
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
         minifyText(`
           export interface IntrinsicCustomElements {
-            'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/@-native/some-example.tsx").default>;
+            'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/_native/some-example.tsx").default>;
             'web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx").default>;
             'with-context': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/with-context.tsx").default>;
           }`),
@@ -234,7 +234,7 @@ describe("utils", () => {
     ${info}Δ /layout                        | 350 B     |
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
-    ${info}Φ /chunk-hash                    | 2 kB      |
+    ${info}Φ /chunk-hash                    | 1 kB      |
     ${info}Φ /chunk-hash                    | 106 B     |
     ${info}
     ${info}λ Server entry-points
