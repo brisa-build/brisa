@@ -58,7 +58,7 @@ describe("utils", () => {
       const result = await getWebComponentsList(fixturesDir, integrationsPath);
 
       expect(result).toEqual({
-        "foo-component": path.join(fixturesDir, "lib", "foo"),
+        "foo-component": path.join(fixturesDir, "lib", "foo.tsx"),
         "native-some-example": path.join(
           fixturesDir,
           "web-components",

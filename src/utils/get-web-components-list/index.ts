@@ -28,10 +28,11 @@ export default async function getWebComponentsList(
 
   if (integrationsPath) {
     plugin(integrationsRuntimePlugin(integrationsPath));
-    const webComponentsToIntegrate = await import(integrationsPath).then(
-      (m) => m.default,
+    entries.push(
+      ...Object.entries<string>(
+        await import(integrationsPath).then((m) => m.default),
+      ),
     );
-    entries.push(...Object.entries<string>(webComponentsToIntegrate));
   }
 
   const result = Object.fromEntries(
