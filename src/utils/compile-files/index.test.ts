@@ -137,7 +137,7 @@ describe("utils", () => {
             'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/_native/some-example.tsx").default>;
             'web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx").default>;
             'with-context': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/with-context.tsx").default>;
-            'foo-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/lib/foo").default>;
+            'foo-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/lib/foo.tsx").default>;
           }`),
       );
       expect(console.log).toHaveBeenCalled();
