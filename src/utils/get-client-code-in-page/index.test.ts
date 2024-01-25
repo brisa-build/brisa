@@ -27,10 +27,6 @@ describe("utils", () => {
       IS_PRODUCTION: true,
       IS_DEVELOPMENT: false,
       BUILD_DIR: build,
-      REGEX: {
-        ...constants.REGEX,
-        WEB_COMPONENTS_ISLAND: /.*\/src\/__fixtures__\/.*\.(tsx|jsx|js|ts)$/,
-      },
     };
   });
 
@@ -62,7 +58,7 @@ describe("utils", () => {
       );
       const i18nCode = 3072;
       const brisaSize = 5264;
-      const webComponents = 670;
+      const webComponents = 636;
 
       expect(output).not.toBeNull();
       expect(output!.size).toEqual(brisaSize + i18nCode + webComponents);

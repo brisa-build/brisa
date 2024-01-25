@@ -87,14 +87,14 @@ async function transformToWebComponents({
   webComponentsList,
   useContextProvider,
 }: TransformOptions) {
-  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION, REGEX } =
+  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
     getConstants();
 
   const internalDir = join(BUILD_DIR, "_brisa");
   const webEntrypoint = join(internalDir, `temp-${crypto.randomUUID()}.ts`);
   let useI18n = false;
   let i18nKeys = new Set<string>();
-
+  const webComponentsPath = Object.values(webComponentsList);
   const imports = Object.entries(webComponentsList)
     .map((e) => `import ${snakeToCamelCase(e[0])} from "${e[1]}";`)
     .join("\n");
@@ -157,7 +157,13 @@ async function transformToWebComponents({
         name: "client-build-plugin",
         setup(build) {
           build.onLoad(
-            { filter: REGEX.WEB_COMPONENTS_ISLAND },
+            {
+              filter: new RegExp(
+                `(.*/src/web-components/.*\\.(tsx|jsx|js|ts)|${webComponentsPath.join(
+                  "|",
+                )})$`,
+              ),
+            },
             async ({ path, loader }) => {
               let code = await Bun.file(path).text();
 
