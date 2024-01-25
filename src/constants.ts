@@ -100,7 +100,6 @@ const constants = {
     CATCH_ALL: /\[\[\.{3}.*?\]\]/g,
     DYNAMIC: /\[.*?\]/g,
     REST_DYNAMIC: /\[\.{3}.*?\]/g,
-    WEB_COMPONENTS_ISLAND: /.*\/src\/web-components\/.*\.(tsx|jsx|js|ts)$/,
   },
   SCRIPT_404,
   BOOLEANS_IN_HTML,
