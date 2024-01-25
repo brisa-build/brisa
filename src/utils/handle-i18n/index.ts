@@ -67,7 +67,6 @@ export default function handleI18n(req: RequestContext): {
   const translateCoreConfig = {
     ...I18N_CONFIG,
     get _messages() {
-      console.log("get _messages", req.store.get("_messages"));
       return req.store.get("_messages");
     },
   };
