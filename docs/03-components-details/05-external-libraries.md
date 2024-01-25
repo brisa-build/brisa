@@ -68,5 +68,9 @@ Usage of web components within server components does not require additional imp
 </div>
 ```
 
+This approach allows seamless integration of web components within your server components, maintaining a clean and concise code structure.
+
 > [!NOTE]
-> This approach allows seamless integration of web components within your server components, maintaining a clean and concise code structure.
+> This dynamic loading approach allows seamless integration of web components within your server components, optimizing the performance by loading only the necessary libraries when they are required.
+
+**Note for Developers:** The web components specified in `web-components/_integrations` will be dynamically included in the client-side code only when they are used on a particular page. This behavior ensures optimal loading, preventing unnecessary libraries from being carried until they are explicitly required by the page.
