@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
+import { plugin } from "bun";
 import { logError } from "@/utils/log/log-build";
 import {
   ALTERNATIVE_PREFIX,
   NATIVE_FOLDER,
 } from "@/utils/client-build-plugin/constants";
+import integrationsRuntimePlugin from "@/utils/integrations-runtime-plugin";
 
 const CONTEXT_PROVIDER = "context-provider";
 
@@ -25,6 +27,7 @@ export default async function getWebComponentsList(
   const entries = Object.entries(webRouter.routes);
 
   if (integrationsPath) {
+    plugin(integrationsRuntimePlugin(integrationsPath));
     const webComponentsToIntegrate = await import(integrationsPath).then(
       (m) => m.default,
     );
