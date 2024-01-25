@@ -3,7 +3,7 @@ import byteSizeToString from ".";
 
 describe("utils", () => {
   beforeEach(() => {
-    mock.module("@/utils/log/log-colors", () => ({
+    mock.module("@/utils/log/log-color", () => ({
       greenLog: (v: string) => `\x1b[32m${v}\x1b[0m`,
       yellowLog: (v: string) => `\x1b[33m${v}\x1b[0m`,
       redLog: (v: string) => `\x1b[31m${v}\x1b[0m`,
