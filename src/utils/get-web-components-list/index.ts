@@ -10,6 +10,7 @@ const CONTEXT_PROVIDER = "context-provider";
 
 export default async function getWebComponentsList(
   dir: string,
+  integrationsPath?: string | null,
 ): Promise<Record<string, string>> {
   const webDir = path.join(dir, "web-components");
 
@@ -21,9 +22,17 @@ export default async function getWebComponentsList(
   });
 
   const existingSelectors = new Set<string>();
+  const entries = Object.entries(webRouter.routes);
+
+  if (integrationsPath) {
+    const webComponentsToIntegrate = await import(integrationsPath).then(
+      (m) => m.default,
+    );
+    entries.push(...Object.entries<string>(webComponentsToIntegrate));
+  }
 
   const result = Object.fromEntries(
-    Object.entries(webRouter.routes)
+    entries
       .filter(
         ([key]) =>
           !key.includes(ALTERNATIVE_PREFIX) || key.includes(NATIVE_FOLDER),

@@ -14,7 +14,7 @@ import path from "node:path";
 import compileFiles from ".";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
-import { greenLog } from "../log/log-build";
+import { greenLog } from "../log/log-color";
 
 const originalConsoleLog = console.log;
 const DIR = import.meta.dir;
@@ -145,6 +145,7 @@ describe("utils", () => {
             'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/_native/some-example.tsx").default>;
             'web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx").default>;
             'with-context': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/with-context.tsx").default>;
+            'foo-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/lib/foo").default>;
           }`),
       );
       expect(console.log).toHaveBeenCalled();
