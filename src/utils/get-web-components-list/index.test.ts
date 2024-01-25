@@ -43,6 +43,36 @@ describe("utils", () => {
       });
     });
 
+    it("should return a list of web components with integrations", async () => {
+      const integrationsPath = path.join(
+        fixturesDir,
+        "web-components",
+        "_integrations.tsx",
+      );
+      const result = await getWebComponentsList(fixturesDir, integrationsPath);
+
+      expect(result).toEqual({
+        "foo-component": path.join(fixturesDir, "lib", "foo"),
+        "native-some-example": path.join(
+          fixturesDir,
+          "web-components",
+          "_native",
+          "some-example.tsx",
+        ),
+        "web-component": path.join(
+          fixturesDir,
+          "web-components",
+          "web",
+          "component.tsx",
+        ),
+        "with-context": path.join(
+          fixturesDir,
+          "web-components",
+          "with-context.tsx",
+        ),
+      });
+    });
+
     it("should alert if there is a web component with the same name, taking one the first one", async () => {
       await getWebComponentsList(fixturesDir);
 

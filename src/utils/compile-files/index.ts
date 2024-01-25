@@ -22,6 +22,7 @@ export default async function compileFiles() {
     LOG_PREFIX,
     IS_STATIC_EXPORT,
   } = getConstants();
+  const webComponentsDir = path.join(SRC_DIR, "web-components");
   const pagesDir = path.join(SRC_DIR, "pages");
   const apiDir = path.join(SRC_DIR, "api");
   const pagesEntrypoints = getEntrypoints(pagesDir);
@@ -30,7 +31,14 @@ export default async function compileFiles() {
   const websocketPath = getImportableFilepath("websocket", SRC_DIR);
   const layoutPath = getImportableFilepath("layout", SRC_DIR);
   const i18nPath = getImportableFilepath("i18n", SRC_DIR);
-  const allWebComponents = await getWebComponentsList(SRC_DIR);
+  const integrationsPath = getImportableFilepath(
+    "_integrations",
+    webComponentsDir,
+  );
+  const allWebComponents = await getWebComponentsList(
+    SRC_DIR,
+    integrationsPath,
+  );
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
 

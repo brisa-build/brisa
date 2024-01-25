@@ -1,4 +1,4 @@
-import { greenLog, redLog, yellowLog } from "../log/log-build";
+import { greenLog, redLog, yellowLog } from "../log/log-color";
 
 const BYTE_UNITS = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 

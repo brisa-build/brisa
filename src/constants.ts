@@ -8,7 +8,7 @@ import {
   greenLog,
   redLog,
   yellowLog,
-} from "./utils/log/log-build";
+} from "./utils/log/log-color";
 
 const rootDir = getRootDir();
 const staticExportOutputOption = new Set(["static", "desktop"]);
