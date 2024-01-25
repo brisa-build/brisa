@@ -64,23 +64,6 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an array if is not a web-component", () => {
-        const input = `
-            export default function MyComponent() {
-              return <div>foo</div>
-            }
-          `;
-        const output = toInline(
-          clientBuildPlugin(input, "/src/components/my-component.tsx").code,
-        );
-        const expected = toInline(`
-            export default function MyComponent() {
-              return ['div', {}, 'foo'];
-            }
-          `);
-        expect(output).toBe(expected);
-      });
-
       it("should transform JSX to an array if is a variable", () => {
         const input = `
             const element = <div>foo</div>

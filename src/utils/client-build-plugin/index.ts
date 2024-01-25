@@ -68,8 +68,7 @@ export default function clientBuildPlugin(
 
   if (
     !componentBranch ||
-    (WEB_COMPONENT_ALTERNATIVE_REGEX.test(path) && !isInternal) ||
-    (!path.match(WEB_COMPONENT_REGEX) && !isInternal)
+    (WEB_COMPONENT_ALTERNATIVE_REGEX.test(path) && !isInternal)
   ) {
     return {
       code: generateCodeFromAST(reactiveAst),

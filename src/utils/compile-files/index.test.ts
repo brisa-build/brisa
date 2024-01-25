@@ -71,10 +71,6 @@ describe("utils", () => {
         IS_PRODUCTION: false,
         SRC_DIR: DEV_SRC_DIR,
         ASSETS_DIR: DEV_ASSETS_DIR,
-        REGEX: {
-          ...constants.REGEX,
-          WEB_COMPONENTS_ISLAND: /.*\/src\/__fixtures__\/.*\.(tsx|jsx|js|ts)$/,
-        },
       };
 
       const { success, logs } = await compileFiles();
@@ -120,10 +116,6 @@ describe("utils", () => {
               "some-key": "Algum valor",
             },
           },
-        },
-        REGEX: {
-          ...constants.REGEX,
-          WEB_COMPONENTS_ISLAND: /.*\/src\/__fixtures__\/.*\.(tsx|jsx|js|ts)$/,
         },
       };
 
