@@ -1,4 +1,12 @@
-import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  spyOn,
+  type Mock,
+} from "bun:test";
 import path from "node:path";
 import getWebComponentsList from ".";
 import { getConstants } from "@/constants";
@@ -6,17 +14,15 @@ import { getConstants } from "@/constants";
 const fixturesDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const reservedNamesDir = path.join(fixturesDir, "reserved-names");
 const { LOG_PREFIX } = getConstants();
-const originalConsoleLog = console.log;
-const mockConsoleLog = mock((v) => v) as any;
+let mockConsoleLog: Mock<typeof console.log>;
 
 describe("utils", () => {
   describe("getWebComponentsList", () => {
     beforeEach(() => {
-      console.log = mockConsoleLog;
+      mockConsoleLog = spyOn(console, "log");
     });
     afterEach(() => {
       mockConsoleLog.mockClear();
-      console.log = originalConsoleLog;
     });
 
     it("should return a list of web components", async () => {
