@@ -202,13 +202,7 @@ export interface RequestContext extends Request {
 type Effect = () => void | Promise<void>;
 type Cleanup = Effect;
 
-/**
- * Description:
- *
- *  Web Context is a set of utilities to use within your web components without losing the context where you are.
- *  The state, cleanups, effects, and so on, will be applied without conflicting with other components.
- */
-export interface WebContext {
+export interface BaseWebContext {
   /**
    * Description:
    *
@@ -425,6 +419,22 @@ export interface WebContext {
    * The `self` attribute is the reference to the web-component itself.
    */
   self: HTMLElement;
+}
+
+/**
+ * Description:
+ *
+ *  Web Context is a set of utilities to use within your web components without losing the context where you are.
+ *  The state, cleanups, effects, and so on, will be applied without conflicting with other components.
+ */
+export interface WebContext extends BaseWebContext {
+  /**
+   * The "WebContext" interface extends the BaseWebContext, serving as a foundation
+   * for web-related contextual information. It is intentionally void to facilitate
+   * extensibility. Developers can leverage the webContextPlugins mechanism to
+   * seamlessly augment the WebContext with additional properties, enabling the
+   * creation of customized signals as needed.
+   */
 }
 
 type ReactiveMap = {
@@ -651,6 +661,9 @@ export type Paths<T> = RemovePlural<
       : K;
   }[Extract<keyof T, string>]
 >;
+
+type ExtendedWebContext =
+  typeof import("@/web-components/_integrations").ExtendedWebContext;
 
 type I18nKey = typeof import("@/i18n").default extends I18nConfig<infer T>
   ? Paths<T extends object ? T : I18nDictionary>
