@@ -46,6 +46,7 @@ export default async function compileFiles() {
   if (layoutPath) entrypoints.push(layoutPath);
   if (i18nPath) entrypoints.push(i18nPath);
   if (websocketPath) entrypoints.push(websocketPath);
+  if (integrationsPath) entrypoints.push(integrationsPath);
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints,
@@ -90,11 +91,11 @@ export default async function compileFiles() {
 
   if (!success) return { success, logs, pagesSize: {} };
 
-  const pagesSize = await compileClientCodePage(
-    outputs,
+  const pagesSize = await compileClientCodePage(outputs, {
     allWebComponents,
     webComponentsPerEntrypoint,
-  );
+    integrationsPath,
+  });
 
   if (!pagesSize) {
     return {
@@ -125,6 +126,8 @@ export default async function compileFiles() {
         symbol = "Ω";
       } else if (route.startsWith("/websocket")) {
         symbol = "Ψ";
+      } else if (route.startsWith("/web-components/_integrations")) {
+        symbol = "Θ";
       }
 
       return {
@@ -143,6 +146,15 @@ export default async function compileFiles() {
   if (middlewarePath) console.log(LOG_PREFIX.INFO, "ƒ  Middleware");
   if (i18nPath) console.log(LOG_PREFIX.INFO, "Ω  i18n");
   if (websocketPath) console.log(LOG_PREFIX.INFO, "Ψ  Websocket");
+  if (integrationsPath) {
+    console.log(LOG_PREFIX.INFO, "Θ  Web components integrations");
+    console.log(
+      LOG_PREFIX.INFO,
+      `\t- client code already included in each page`,
+    );
+    console.log(LOG_PREFIX.INFO, `\t- server code is used for SSR`);
+    console.log(LOG_PREFIX.INFO);
+  }
   console.log(LOG_PREFIX.INFO, "Φ  JS shared by all");
   console.log(LOG_PREFIX.INFO);
 
@@ -151,8 +163,15 @@ export default async function compileFiles() {
 
 async function compileClientCodePage(
   pages: BuildArtifact[],
-  allWebComponents: Record<string, string>,
-  webComponentsPerEntrypoint: Record<string, Record<string, string>>,
+  {
+    allWebComponents,
+    webComponentsPerEntrypoint,
+    integrationsPath,
+  }: {
+    allWebComponents: Record<string, string>;
+    webComponentsPerEntrypoint: Record<string, Record<string, string>>;
+    integrationsPath?: string | null;
+  },
 ) {
   const { BUILD_DIR, I18N_CONFIG } = getConstants();
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
@@ -182,6 +201,7 @@ async function compileClientCodePage(
       pagePath,
       allWebComponents,
       webComponentsPerEntrypoint[pagePath],
+      integrationsPath,
     );
 
     if (!pageCode) return null;

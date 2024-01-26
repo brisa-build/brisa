@@ -323,6 +323,13 @@ export default function brisaElement(
           self,
         } as unknown as WebContext;
 
+        // This code is removed by the bundler when plugins are not used
+        if (__WEB_CONTEXT_PLUGINS__) {
+          for (let plugin of window._P) {
+            Object.assign(webContext, plugin(webContext));
+          }
+        }
+
         cssStyles.length = 0;
         return mount(
           NULL,
