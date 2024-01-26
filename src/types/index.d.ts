@@ -416,9 +416,42 @@ export interface BaseWebContext {
   /**
    * Description:
    *
-   * The `self` attribute is the reference to the web-component itself.
+   * The `reset` method calls all the cleanups and then remove all the
+   * effects and cleanups from memory.
+   *
+   * Please, use it carefully, it is used internally by Brisa. We expose it,
+   * but it is not recommended to use it.
+   *
+   * Example:
+   *
+   * ```ts
+   * reset();
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `reset`](https://brisa.build/docs/building-your-application/data-fetching/web-context#reset)
    */
-  self: HTMLElement;
+  reset: () => void;
+
+  /**
+   * Description:
+   *
+   * The `self` attribute is the reference to the web-component itself.
+   *
+   * It is necessary to watch when to use it, it does not exist during SSR.
+   *
+   * Example:
+   *
+   * ```ts
+   * effect(() => self.addEventListener('click', () => { console.log('Hello World') }));
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `self`](https://brisa.build/docs/building-your-application/data-fetching/web-context#self)
+   */
+  self?: HTMLElement;
 }
 
 /**

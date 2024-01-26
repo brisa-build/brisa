@@ -224,6 +224,27 @@ describe("utils", () => {
       );
     });
 
+    it('should render a web component with a "reset" method', async () => {
+      const Component = ({}, { reset }: WebContext) => {
+        reset();
+        return <div>hello world</div>;
+      };
+
+      const selector = "my-component";
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("div");
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        "hello world",
+      );
+    });
+
     it("should render a web component with a children slot", async () => {
       const Component = ({ children }: any) => {
         return <div>hello {children}</div>;
