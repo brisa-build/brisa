@@ -434,6 +434,19 @@ export interface WebContext extends BaseWebContext {
    * extensibility. Developers can leverage the webContextPlugins mechanism to
    * seamlessly augment the WebContext with additional properties, enabling the
    * creation of customized signals as needed.
+   *
+   * Example (web-context.d.ts):
+   *
+   * ```ts
+   * import 'brisa';
+   *
+   * declare module 'brisa' {
+   *  interface WebContext {
+   *    store: BaseWebContext['store'] & {
+   *      sync: (key: string, storage?: 'localStorage' | 'sessionStorage') => void;
+   *   }
+   * }
+   * ```
    */
 }
 
