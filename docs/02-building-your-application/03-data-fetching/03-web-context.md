@@ -228,4 +228,136 @@ self.addEventListener("click", () => {
 
 ## Expanding the WebContext
 
-TODO
+The `WebContext` in Brisa is intentionally designed to be extensible, providing developers with the flexibility to enhance its capabilities based on project-specific requirements. This extensibility is achieved through the integration of plugins, which are custom functionalities injected into the core of each web component.
+
+### Web Context Plugins
+
+To add plugins, you must add them in the `webContextPlugins` named export of the `/src/web-components/_integrations.(ts|tsx|js|jsx)` file.
+
+**src/web-components/\_integrations.tsx:**
+
+```tsx
+import type { WebContextPlugin } from "brisa";
+
+export const webContextPlugins: WebContextPlugin[] = [
+  (ctx, extras) => {
+    ctx.store.sync = (
+      key: string,
+      storage: "localStorage" | "sessionStorage" = "localStorage",
+    ) => {
+      // Skip execution on server side (SSR)
+      if (typeof window === "undefined") return;
+
+      // Sync from storage to store
+      const sync = (event?: StorageEvent) => {
+        if (event && event.key !== key) return;
+        const storageValue = window[storage].getItem(key);
+        if (storageValue != null) ctx.store.set(key, JSON.parse(storageValue));
+      };
+
+      // Add and remove "storage" event listener
+      ctx.effect(() => {
+        window.addEventListener("storage", sync);
+        ctx.cleanup(() => window.removeEventListener("storage", sync));
+      });
+
+      // Update storage when store changes
+      ctx.effect(() => {
+        const val = ctx.store.get(key);
+        if (val != null) window[storage].setItem(key, JSON.stringify(val));
+      });
+
+      sync();
+    };
+
+    // The ctx now has a new method "sync" that can be used to sync a
+    // store key with localStorage
+    return ctx;
+  },
+];
+```
+
+In this example, the behavior of the `store` property is modified, enabling any web component to possess the `store` with an additional `sync` method. This method facilitates reactive synchronization of a store entry with the `localStorage`. If another tab modifies the value, the update will be reflected reactively in the DOM.
+
+In any web component:
+
+```tsx
+export default async function WebComponent({ }, { store }: WebContext) {
+  store.sync("count", 'localStorage');
+
+  // This value will change reactively if the localStorage
+  // "count" item is updated.
+  return store.get('count');
+```
+
+The approach to synchronizing tabs can be implemented in various ways: using web sockets, monitoring tab focus, or utilizing storage events, as demonstrated in this example. From Brisa's perspective, implementing specific signals for such scenarios might be too project-specific. Therefore, we offer the flexibility to extend these signals and access web component core extras for greater control.
+
+Ultimately, we believe that the JavaScript community will contribute more refined signals than this example of tab synchronization.
+
+#### Web Context Plugin type
+
+The `WebContextPlugin` type in Brisa defines a standardized structure for creating extensible plugins, allowing developers to seamlessly integrate additional functionalities into the `WebContext` of web components. This type encapsulates the contract that any plugin must adhere to when augmenting the `WebContext`.
+
+**Type Definition**
+
+```ts
+type WebContextPluginExtras = {
+  /**
+   * Description:
+   *
+   * The `transferredStore` is a map transferred from the server to the client.
+   *
+   * This is the store after applied the `transferToClient` method.
+   */
+  transferredStore: Map<string | symbol, any>;
+
+  /**
+   *
+   * Description:
+   *
+   * The `reset` method is used to reset all effects, calling all the cleanups.
+   */
+  reset: () => void;
+};
+
+export type WebContextPlugin = (
+  webContext: WebContext,
+  extras: WebContextPluginExtras,
+) => WebContext;
+```
+
+**Params**:
+
+- `transferredStore`: A Map containing data transferred from the server to the client. This data reflects the state of the store after applying the [`store.transferToClient`](/docs/building-your-application/routing/pages-and-layouts#transfer-data-to-client-web-components) method _(available in server via [`RequestContext`](/docs/building-your-application/data-fetching/request-context))_.
+- `reset`: A method that resets all effects, triggering the execution of cleanup functions. This mechanism is essential for ensuring a clean slate in the web component's environment.
+
+**Return**:
+
+The result will be the `WebContext` extended by your plugin.
+
+> [!CAUTION]
+>
+> At all times it is mandatory to return the rest of the context properties, otherwise you can break its use in the web-components.
+
+### TypeScript
+
+To extend the `WebContext` interface in TypeScript, create a file in the root and define the typings for your extensions:
+
+**web-context.d.ts:**
+
+```ts
+import "brisa";
+
+declare module "brisa" {
+  interface WebContext {
+    /**
+     * Augmented store with sync method
+     */
+    store: BaseWebContext["store"] & {
+      sync: (key: string, storage?: "localStorage" | "sessionStorage") => void;
+    };
+  }
+}
+```
+
+Modify the `WebContext` accordingly, and if you wish to utilize elements like the current store, you can leverage the `BaseWebContext`.
