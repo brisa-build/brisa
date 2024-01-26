@@ -450,6 +450,30 @@ export interface WebContext extends BaseWebContext {
    */
 }
 
+type WebContextPluginExtras = {
+  /**
+   * Description:
+   *
+   * The `transferredStore` is a map transferred from the server to the client.
+   *
+   * This is the store after applied the `transferToClient` method.
+   */
+  transferredStore: Map<string | symbol, any>;
+
+  /**
+   *
+   * Description:
+   *
+   * The `reset` method is used to reset all effects, calling all the cleanups.
+   */
+  reset: () => void;
+};
+
+export type WebContextPlugin = (
+  webContext: WebContext,
+  extras: WebContextPluginExtras,
+) => WebContext;
+
 type ReactiveMap = {
   get: <T>(key: string) => T;
   set: <T>(key: string, value: T) => void;
