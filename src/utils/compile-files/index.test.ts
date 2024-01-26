@@ -214,7 +214,7 @@ describe("utils", () => {
 
       const expected = minifyText(`
     ${info}
-    ${info}Route                               | JS server | JS client (gz)  
+    ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
     ${info}λ /pages/_404                    | 429 B     | ${greenLog("4 kB")} 
     ${info}λ /pages/_500                    | 435 B     | ${greenLog("4 kB")} 
