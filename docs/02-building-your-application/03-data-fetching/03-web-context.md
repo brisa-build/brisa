@@ -22,6 +22,7 @@ export default function WebComponent(props, webContext: WebContext) {
     effect,
     cleanup,
     onMount,
+    reset,
 
     // Add reactive styles
     css,
@@ -177,6 +178,22 @@ onMount(() => {
 
 For more details, refer to the [onMount](/docs/components-details/web-components#effect-on-mount-onmount-method) documentation.
 
+## `reset`
+
+`reset(): void`
+
+The `reset` method is used to invoke all cleanup functions and clear all effects and cleanups from the memory of the web component. It is primarily intended for internal use and is exposed but may have limited applicability in many cases.
+
+Example:
+
+```ts
+reset();
+```
+
+> [!CAUTION]
+>
+> The `reset` method is a powerful tool that should be used judiciously. It clears all effects and cleanups, potentially affecting the web component's behavior. Ensure that its usage aligns with the desired functionality and doesn't compromise the integrity of the web component.
+
 ## `css`
 
 `css(strings: TemplateStringsArray, ...values: string[]): void`
@@ -226,6 +243,10 @@ self.addEventListener("click", () => {
 });
 ```
 
+> [!CAUTION]
+>
+> It is necessary to watch when to use it, it does not exist during SSR.
+
 ## Expanding the WebContext
 
 The `WebContext` in Brisa is intentionally designed to be extensible, providing developers with the flexibility to enhance its capabilities based on project-specific requirements. This extensibility is achieved through the integration of plugins, which are custom functionalities injected into the core of each web component.
@@ -240,7 +261,7 @@ To add plugins, you must add them in the `webContextPlugins` named export of the
 import type { WebContextPlugin } from "brisa";
 
 export const webContextPlugins: WebContextPlugin[] = [
-  (ctx, extras) => {
+  (ctx) => {
     ctx.store.sync = (
       key: string,
       storage: "localStorage" | "sessionStorage" = "localStorage",
@@ -294,50 +315,21 @@ The approach to synchronizing tabs can be implemented in various ways: using web
 
 Ultimately, we believe that the JavaScript community will contribute more refined signals than this example of tab synchronization.
 
-#### Web Context Plugin type
-
-The `WebContextPlugin` type in Brisa defines a standardized structure for creating extensible plugins, allowing developers to seamlessly integrate additional functionalities into the `WebContext` of web components. This type encapsulates the contract that any plugin must adhere to when augmenting the `WebContext`.
-
-**Type Definition**
-
-```ts
-type WebContextPluginExtras = {
-  /**
-   * Description:
-   *
-   * The `transferredStore` is a map transferred from the server to the client.
-   *
-   * This is the store after applied the `transferToClient` method.
-   */
-  transferredStore: Map<string | symbol, any>;
-
-  /**
-   *
-   * Description:
-   *
-   * The `reset` method is used to reset all effects, calling all the cleanups.
-   */
-  reset: () => void;
-};
-
-export type WebContextPlugin = (
-  webContext: WebContext,
-  extras: WebContextPluginExtras,
-) => WebContext;
-```
-
 **Params**:
 
-- `transferredStore`: A Map containing data transferred from the server to the client. This data reflects the state of the store after applying the [`store.transferToClient`](/docs/building-your-application/routing/pages-and-layouts#transfer-data-to-client-web-components) method _(available in server via [`RequestContext`](/docs/building-your-application/data-fetching/request-context))_.
-- `reset`: A method that resets all effects, triggering the execution of cleanup functions. This mechanism is essential for ensuring a clean slate in the web component's environment.
+Receives the preceding `WebContext`. Plugins are executed sequentially; if it is the initial plugin, it will contain the original `WebContext`, whereas for subsequent plugins, it will incorporate the `WebContext` modified by the preceding plugin.
 
 **Return**:
 
-The result will be the `WebContext` extended by your plugin.
+The output will be the `WebContext` extended by the functionalities implemented in your plugin.
 
 > [!CAUTION]
 >
-> At all times it is mandatory to return the rest of the context properties, otherwise you can break its use in the web-components.
+> It is imperative to consistently return the remaining context properties to prevent potential disruptions in web-component functionality.
+
+> [!CAUTION]
+>
+> Note that the `WebContext` is utilized in server-side rendering (SSR) as well. Take this into consideration, as certain extensions may not be suitable for server-side usage. Therefore, it is recommended to employ `typeof window === 'undefined'` to determine if the code is running on the server.
 
 ### TypeScript
 

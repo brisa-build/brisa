@@ -24,6 +24,7 @@ export default async function SSRWebComponent(
     state: (value: unknown) => ({ value }),
     effect: voidFn,
     onMount: voidFn,
+    reset: voidFn,
     derived: (fn: () => unknown) => ({ value: fn() }),
     cleanup: voidFn,
     useContext,
