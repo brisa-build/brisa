@@ -8,6 +8,7 @@ import createPortal from "@/utils/create-portal";
 import dangerHTML from "@/utils/danger-html";
 import { serialize } from "@/utils/serialization";
 import createContext from "@/utils/create-context";
+import type { WebContextPlugin } from "@/types";
 
 declare global {
   interface Window {
@@ -5048,5 +5049,61 @@ describe("integration", () => {
         await Bun.sleep(0);
       },
     );
+
+    it("should sync with localStorage using a Web Context Plugin", async () => {
+      window.__WEB_CONTEXT_PLUGINS__ = true;
+      window._P = [
+        (ctx) => {
+          // @ts-ignore
+          ctx.store.sync = (
+            key: string,
+            storage: "localStorage" | "sessionStorage" = "localStorage",
+          ) => {
+            if (typeof window === "undefined") return;
+
+            const sync = (event?: StorageEvent) => {
+              if (event && event.key !== key) return;
+              const storageValue = window[storage].getItem(key);
+              if (storageValue != null)
+                ctx.store.set(key, JSON.parse(storageValue));
+            };
+
+            ctx.effect(() => {
+              window.addEventListener("storage", sync);
+              ctx.cleanup(() => window.removeEventListener("storage", sync));
+            });
+
+            ctx.effect(() => {
+              const val = ctx.store.get(key);
+              if (val != null)
+                window[storage].setItem(key, JSON.stringify(val));
+            });
+
+            sync();
+          };
+
+          return ctx;
+        },
+      ] satisfies WebContextPlugin[];
+
+      window.localStorage.setItem("foo", JSON.stringify("bar"));
+
+      const code = `
+      export default function Component({}, { store }) {
+        store.sync('foo', 'localStorage')
+        return <div>{store.get('foo')}</div>
+      }
+    `;
+
+      document.body.innerHTML = "<test-component />";
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
+    });
   });
 });
