@@ -59,7 +59,7 @@ describe("utils", () => {
       );
       const i18nCode = 3072;
       const brisaSize = 5264;
-      const webComponents = 636;
+      const webComponents = 660;
 
       expect(output).not.toBeNull();
       expect(output!.size).toEqual(brisaSize + i18nCode + webComponents);
