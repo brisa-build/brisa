@@ -1,6 +1,7 @@
 import { toInline } from "@/helpers";
 import { Fragment } from "@/jsx-runtime";
 import { type RequestContext } from "@/types";
+import { getConstants } from "@/constants";
 
 type Props = {
   Component: any;
@@ -14,6 +15,7 @@ export default async function SSRWebComponent(
   { Component, selector, ...props }: Props,
   { store, useContext, i18n }: RequestContext,
 ) {
+  const { WEB_CONTEXT_PLUGINS } = getConstants();
   let style = "";
   let Selector = selector;
 
@@ -33,6 +35,10 @@ export default async function SSRWebComponent(
       );
     },
   } as unknown as RequestContext;
+
+  for (const plugin of WEB_CONTEXT_PLUGINS) {
+    Object.assign(webContext, plugin(webContext));
+  }
 
   const componentProps = { ...props, children: <slot /> };
   let content: any;

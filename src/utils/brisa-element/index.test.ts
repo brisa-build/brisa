@@ -1,11 +1,14 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import createPortal from "@/utils/create-portal";
 import dangerHTML from "@/utils/danger-html";
 import { serialize } from "@/utils/serialization";
 import createContext from "@/utils/create-context";
-import type { BrisaContext, WebContext } from "@/types";
-import brisaElement, { _on, _off } from ".";
+import type { BrisaContext, WebContext, WebContextPlugin } from "@/types";
+
+let brisaElement: typeof import(".").default;
+let _on: typeof import(".")._on;
+let _off: typeof import(".")._off;
 
 declare global {
   interface Window {
@@ -15,10 +18,16 @@ declare global {
 
 describe("utils", () => {
   describe("brisa-element", () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       GlobalRegistrator.register();
+      window.__WEB_CONTEXT_PLUGINS__ = false;
+      const module = await import(".");
+      brisaElement = module.default;
+      _on = module._on;
+      _off = module._off;
     });
-    afterAll(() => {
+    afterEach(() => {
+      window.__WEB_CONTEXT_PLUGINS__ = false;
       GlobalRegistrator.unregister();
     });
     it("should work props and state with a counter", () => {
@@ -2718,6 +2727,29 @@ describe("utils", () => {
       ) as HTMLElement;
 
       expect(i18nComponent?.shadowRoot?.innerHTML).toBe("<div>works</div>");
+    });
+
+    it("should web context plugin work", () => {
+      window.__WEB_CONTEXT_PLUGINS__ = true;
+      window._P = [
+        (ctx) => ({ ...ctx, test: "this is a test" }),
+      ] satisfies WebContextPlugin[];
+
+      // @ts-ignore
+      const Component = ({}, { test }: WebContext) => {
+        return ["div", {}, test];
+      };
+
+      customElements.define("store-component", brisaElement(Component));
+      document.body.innerHTML = "<store-component />";
+
+      const storeComponent = document.querySelector(
+        "store-component",
+      ) as HTMLElement;
+
+      expect(storeComponent?.shadowRoot?.innerHTML).toBe(
+        "<div>this is a test</div>",
+      );
     });
   });
 });

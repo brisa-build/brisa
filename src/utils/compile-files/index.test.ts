@@ -141,7 +141,7 @@ describe("utils", () => {
           }`),
       );
       expect(console.log).toHaveBeenCalled();
-      expect(files).toHaveLength(10);
+      expect(files).toHaveLength(11);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("api");
       expect(files[2]).toStartWith("chunk-");
@@ -151,7 +151,8 @@ describe("utils", () => {
       expect(files[6]).toBe("middleware.js");
       expect(files[7]).toBe("pages");
       expect(files[8]).toBe("pages-client");
-      expect(files[9]).toBe("websocket.js");
+      expect(files[9]).toBe("web-components");
+      expect(files[10]).toBe("websocket.js");
 
       const pagesClient = fs
         .readdirSync(pagesClientPath)
@@ -227,6 +228,7 @@ describe("utils", () => {
     ${info}Δ /layout                        | 350 B     |
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
+    ${info}Θ /web-components/_integrations  | 103 B     |
     ${info}Φ /chunk-hash                    | 1 kB      |
     ${info}Φ /chunk-hash                    | 106 B     |
     ${info}
@@ -235,6 +237,10 @@ describe("utils", () => {
     ${info}ƒ Middleware
     ${info}Ω i18n
     ${info}Ψ Websocket
+    ${info}Θ Web components integrations
+    ${info}  - client code already included in each page
+    ${info}  - server code is used for SSR
+    ${info}
     ${info}Φ JS shared by all
     ${info}
   `);
