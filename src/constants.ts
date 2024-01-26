@@ -16,6 +16,10 @@ const srcDir = path.join(rootDir, "src");
 const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, "build");
 const PAGE_404 = "/_404";
 const PAGE_500 = "/_500";
+const integrations = await importFileIfExists(
+  "_integrations",
+  path.join(buildDir, "web-components"),
+);
 const I18N_CONFIG = (await importFileIfExists("i18n", buildDir))
   ?.default as I18nConfig;
 const CONFIG =
@@ -73,6 +77,7 @@ const SCRIPT_404 = `<script>(()=>{let u=new URL(location.href);u.searchParams.se
 const constants = {
   PAGE_404,
   PAGE_500,
+  WEB_CONTEXT_PLUGINS: integrations?.webContextPlugins ?? [],
   RESERVED_PAGES: [PAGE_404, PAGE_500],
   IS_PRODUCTION:
     process.argv.some((t) => t === "PROD") || NODE_ENV === "production",
@@ -121,6 +126,7 @@ declare global {
   var mockConstants: Partial<typeof constants> | undefined;
   var BrisaRegistry: Map<string, number>;
   var lastContextProviderId: number;
+  var __WEB_CONTEXT_PLUGINS__: boolean;
 }
 
 export default constants;

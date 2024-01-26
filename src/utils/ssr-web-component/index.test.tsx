@@ -1,9 +1,10 @@
 import { describe, expect, it, afterEach } from "bun:test";
 import SSRWebComponent from ".";
-import { type WebContext } from "@/types";
+import { type WebContext, type WebContextPlugin } from "@/types";
 import extendRequestContext from "@/utils/extend-request-context";
 import createContext from "@/utils/create-context";
 import translateCore from "../translate-core";
+import { getConstants } from "@/constants";
 
 const requestContext = extendRequestContext({
   originalRequest: new Request("http://localhost"),
@@ -433,6 +434,7 @@ describe("utils", () => {
           locales: ["en", "ru"],
           defaultLocale: "en",
           pages: {},
+          overrideMessages: async () => {},
         },
       });
 
@@ -489,6 +491,37 @@ describe("utils", () => {
       expect(
         output.props.children[0].props.children[0].props.onClick,
       ).toBeInstanceOf(Function);
+    });
+
+    it('should extend the "webContext" in SSR when plugins are defined', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        WEB_CONTEXT_PLUGINS: [
+          (ctx) => ({ ...ctx, newOne: "hello world" }),
+        ] satisfies WebContextPlugin[],
+      };
+
+      const Component = ({}, { newOne }: any) => {
+        return <div>{newOne}</div>;
+      };
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].props.children[0]).toEqual({
+        type: "div",
+        props: {
+          children: "hello world",
+        },
+      });
     });
   });
 });

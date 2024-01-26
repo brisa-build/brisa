@@ -13,6 +13,7 @@ import analyzeServerAst from "@/utils/analyze-server-ast";
 type TransformOptions = {
   webComponentsList: Record<string, string>;
   useContextProvider: boolean;
+  integrationsPath?: string | null;
 };
 
 const ASTUtil = AST("tsx");
@@ -27,6 +28,7 @@ export default async function getClientCodeInPage(
   pagepath: string,
   allWebComponents: Record<string, string> = {},
   pageWebComponents: Record<string, string> = {},
+  integrationsPath?: string | null,
 ) {
   let size = 0;
   let code = "";
@@ -67,6 +69,7 @@ export default async function getClientCodeInPage(
   const transformedCode = await transformToWebComponents({
     webComponentsList: pageWebComponents,
     useContextProvider,
+    integrationsPath,
   });
 
   if (!transformedCode) return null;
@@ -86,6 +89,7 @@ export default async function getClientCodeInPage(
 async function transformToWebComponents({
   webComponentsList,
   useContextProvider,
+  integrationsPath,
 }: TransformOptions) {
   const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
     getConstants();
@@ -95,9 +99,19 @@ async function transformToWebComponents({
   let useI18n = false;
   let i18nKeys = new Set<string>();
   const webComponentsPath = Object.values(webComponentsList);
-  const imports = Object.entries(webComponentsList)
+  let useWebContextPlugins = false;
+  let imports = Object.entries(webComponentsList)
     .map((e) => `import ${snakeToCamelCase(e[0])} from "${e[1]}";`)
     .join("\n");
+
+  // Add web context plugins import only if there is a web context plugin
+  if (integrationsPath) {
+    const module = await import(integrationsPath);
+    if (module.webContextPlugins?.length > 0) {
+      useWebContextPlugins = true;
+      imports += `import {webContextPlugins} from "${integrationsPath}";`;
+    }
+  }
 
   const defineElement =
     "const defineElement = (name, component) => name && customElements.define(name, component);";
@@ -126,10 +140,17 @@ async function transformToWebComponents({
     code += contextProviderCode;
   }
 
+  code += `${imports}\n`;
+
+  // Inject web context plugins to window to be used inside web components
+  if (useWebContextPlugins) {
+    code += "window._P=webContextPlugins;\n";
+  }
+
   code +=
     numCustomElements === 1
-      ? `${imports}\n${customElementsDefinitions};`
-      : `${imports}\n${defineElement}\n${customElementsDefinitions};`;
+      ? customElementsDefinitions
+      : `${defineElement}\n${customElementsDefinitions};`;
 
   await writeFile(webEntrypoint, code);
 
@@ -148,6 +169,7 @@ async function transformToWebComponents({
     minify: IS_PRODUCTION,
     define: {
       __DEV__: (!IS_PRODUCTION).toString(),
+      __WEB_CONTEXT_PLUGINS__: useWebContextPlugins.toString(),
       ...envVar,
     },
     // TODO: format: "iife" when Bun support it
@@ -159,7 +181,7 @@ async function transformToWebComponents({
           build.onLoad(
             {
               filter: new RegExp(
-                `(.*/src/web-components/.*\\.(tsx|jsx|js|ts)|${webComponentsPath.join(
+                `(.*/src/web-components/(?!_integrations).*\\.(tsx|jsx|js|ts)|${webComponentsPath.join(
                   "|",
                 )})$`,
               ),

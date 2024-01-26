@@ -7,6 +7,7 @@ import { getConstants } from "@/constants";
 import getWebComponentsList from "@/utils/get-web-components-list";
 
 const src = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const webComponentsDir = path.join(src, "web-components");
 const build = path.join(src, `out-${crypto.randomUUID()}}`);
 const brisaInternals = path.join(build, "_brisa");
 const pages = path.join(src, "pages");
@@ -127,6 +128,36 @@ describe("utils", () => {
         pageWebComponents,
       );
       expect(output!.code).toContain("value of test env variable");
+    });
+
+    it("should NOT add the integrations web context plugins when there are not plugins", async () => {
+      const input = path.join(pages, "page-with-web-component.tsx");
+      const integrationPathWithoutPlugins = path.join(
+        webComponentsDir,
+        "_integrations.tsx",
+      );
+      const output = await getClientCodeInPage(
+        input,
+        allWebComponents,
+        pageWebComponents,
+        integrationPathWithoutPlugins,
+      );
+      expect(output!.code).not.toContain("window._P=");
+    });
+
+    it("should add the integrations web context plugins when there are plugins", async () => {
+      const input = path.join(pages, "page-with-web-component.tsx");
+      const integrationPathWitPlugins = path.join(
+        webComponentsDir,
+        "_integrations2.tsx",
+      );
+      const output = await getClientCodeInPage(
+        input,
+        allWebComponents,
+        pageWebComponents,
+        integrationPathWitPlugins,
+      );
+      expect(output!.code).toContain("window._P=");
     });
   });
 });
