@@ -72,9 +72,9 @@
     "create-brisa": "./create-brisa.cjs"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "13.2.1",
+    "@happy-dom/global-registrator": "13.3.1",
     "brisa": "0.0.23",
-    "@types/bun": "1.0.3"
+    "@types/bun": "1.0.4"
   },
   "peerDependencies": {
     "typescript": "5.3.3"
