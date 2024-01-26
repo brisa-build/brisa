@@ -79,6 +79,35 @@ describe("utils", () => {
       });
     });
 
+    it("should return a list of web components without integrations because the integrationsPath does not have an export default", async () => {
+      const integrationsPath = path.join(
+        fixturesDir,
+        "web-components",
+        "_integrations2.tsx",
+      );
+      const result = await getWebComponentsList(fixturesDir, integrationsPath);
+
+      expect(result).toEqual({
+        "native-some-example": path.join(
+          fixturesDir,
+          "web-components",
+          "_native",
+          "some-example.tsx",
+        ),
+        "web-component": path.join(
+          fixturesDir,
+          "web-components",
+          "web",
+          "component.tsx",
+        ),
+        "with-context": path.join(
+          fixturesDir,
+          "web-components",
+          "with-context.tsx",
+        ),
+      });
+    });
+
     it("should alert if there is a web component with the same name, taking one the first one", async () => {
       await getWebComponentsList(fixturesDir);
 

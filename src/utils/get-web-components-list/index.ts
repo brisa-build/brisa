@@ -30,7 +30,7 @@ export default async function getWebComponentsList(
     plugin(integrationsRuntimePlugin(integrationsPath));
     entries.push(
       ...Object.entries<string>(
-        await import(integrationsPath).then((m) => m.default),
+        await import(integrationsPath).then((m) => m.default ?? {}),
       ),
     );
   }
