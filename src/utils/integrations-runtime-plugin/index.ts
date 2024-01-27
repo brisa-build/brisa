@@ -32,6 +32,11 @@ export default function integrationsRuntimePlugin(integrationsPath: string) {
  *  'foo-component': '@/lib/foo',
  * }).map(([key, value]) => [key, import.meta.resolveSync(value)]))
  *
+ * Note: It is not possible to use Bun.resolveSync(importPath, filePath) 
+ * instead of the plugin because it not resolves the aliases from the 
+ * tsconfig.json project file ,that is different from the tsconfig.json 
+ * from Brisa. So, we need a runtime plugin to resolve the paths in 
+ * the same file on the fly.
  */
 export function convertPathsToAbsolute(code: string) {
   const ast = parseCodeToAST(code);
