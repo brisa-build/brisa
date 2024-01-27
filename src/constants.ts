@@ -1,6 +1,5 @@
 import path from "node:path";
 import type { Configuration, I18nConfig } from "./types";
-import getRootDir from "./utils/get-root-dir";
 import importFileIfExists from "./utils/import-file-if-exists";
 import {
   blueLog,
@@ -10,7 +9,7 @@ import {
   yellowLog,
 } from "./utils/log/log-color";
 
-const rootDir = getRootDir();
+const rootDir = process.cwd();
 const staticExportOutputOption = new Set(["static", "desktop"]);
 const srcDir = path.join(rootDir, "src");
 const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, "build");

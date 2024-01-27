@@ -3,10 +3,9 @@ import LoadLayout from ".";
 import path from "node:path";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
 import getImportableFilepath from "@/utils/get-importable-filepath";
-import getRootDir from "@/utils/get-root-dir";
 import extendRequestContext from "@/utils/extend-request-context";
 
-const buildDir = path.join(getRootDir(), "build");
+const buildDir = path.join(process.cwd(), "build");
 const join = path.join;
 const testRequest = extendRequestContext({
   originalRequest: new Request("https://test.com"),
