@@ -33,6 +33,7 @@ Choose your hosting to deploy:
 - [Deploy Brisa app to **Vercel**](/docs/deploying/vercel)
 - [Deploy Brisa app to **Netlify**](/docs/deploying/netlify)
 - [Deploy Brisa app to **AWS**](/docs/deploying/aws)
+- [Deploy Brisa app to **Render.com**](/docs/deploying/render-com)
 
 ## Learn more
 
