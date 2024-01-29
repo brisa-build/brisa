@@ -1,6 +1,6 @@
 import { gzipSync, type BuildArtifact } from "bun";
 import fs from "node:fs";
-import path from "node:path";
+import { join } from "node:path";
 
 import { getConstants } from "@/constants";
 import byteSizeToString from "@/utils/byte-size-to-string";
@@ -22,9 +22,9 @@ export default async function compileFiles() {
     LOG_PREFIX,
     IS_STATIC_EXPORT,
   } = getConstants();
-  const webComponentsDir = path.join(SRC_DIR, "web-components");
-  const pagesDir = path.join(SRC_DIR, "pages");
-  const apiDir = path.join(SRC_DIR, "api");
+  const webComponentsDir = join(SRC_DIR, "web-components");
+  const pagesDir = join(SRC_DIR, "pages");
+  const apiDir = join(SRC_DIR, "api");
   const pagesEntrypoints = getEntrypoints(pagesDir);
   const apiEntrypoints = getEntrypoints(apiDir);
   const middlewarePath = getImportableFilepath("middleware", SRC_DIR);
@@ -41,6 +41,7 @@ export default async function compileFiles() {
   );
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
+  const actionsEntrypoints = [];
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -78,7 +79,15 @@ export default async function compileFiles() {
                 .replace(/\.tsx?$/, ".js");
 
               if (result.hasActions) {
+                const actionEntrypoint = join(
+                  BUILD_DIR,
+                  "actions",
+                  `${actionId}_raw.${loader}`,
+                );
+
+                actionsEntrypoints.push(actionEntrypoint);
                 actionIdCount += 1;
+                await Bun.write(actionEntrypoint, result.code);
               }
 
               code = result.code;
@@ -186,8 +195,8 @@ async function compileClientCodePage(
   },
 ) {
   const { BUILD_DIR, I18N_CONFIG } = getConstants();
-  const pagesClientPath = path.join(BUILD_DIR, "pages-client");
-  const internalPath = path.join(BUILD_DIR, "_brisa");
+  const pagesClientPath = join(BUILD_DIR, "pages-client");
+  const internalPath = join(BUILD_DIR, "_brisa");
 
   // During hotreloading it is important to clean pages-client because
   // new client files are generated with hash, this hash can change
@@ -207,7 +216,7 @@ async function compileClientCodePage(
 
   for (const page of pages) {
     const route = page.path.replace(BUILD_DIR, "");
-    const pagePath = path.join(BUILD_DIR, page.path.replace(BUILD_DIR, ""));
+    const pagePath = join(BUILD_DIR, page.path.replace(BUILD_DIR, ""));
     const clientPagePath = pagePath.replace("pages", "pages-client");
     const pageCode = await getClientCodeInPage(
       pagePath,
@@ -230,27 +239,21 @@ async function compileClientCodePage(
     clientSizesPerPage[route] = 0;
 
     // create _unsuspense.js and _unsuspense.txt (list of pages with unsuspense)
-    if (
-      unsuspense &&
-      !fs.existsSync(path.join(pagesClientPath, "_unsuspense.js"))
-    ) {
+    if (unsuspense && !fs.existsSync(join(pagesClientPath, "_unsuspense.js"))) {
       const gzipUnsuspense = gzipSync(new TextEncoder().encode(unsuspense));
 
       clientSizesPerPage[route] += gzipUnsuspense.length;
-      Bun.write(path.join(pagesClientPath, "_unsuspense.js"), unsuspense);
+      Bun.write(join(pagesClientPath, "_unsuspense.js"), unsuspense);
+      Bun.write(join(pagesClientPath, "_unsuspense.js.gz"), gzipUnsuspense);
       Bun.write(
-        path.join(pagesClientPath, "_unsuspense.js.gz"),
-        gzipUnsuspense,
-      );
-      Bun.write(
-        path.join(pagesClientPath, "_unsuspense.txt"),
+        join(pagesClientPath, "_unsuspense.txt"),
         pagePath.replace(BUILD_DIR, ""),
       );
     }
 
     // register page route to _unsuspense.txt
     else if (unsuspense) {
-      const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.txt");
+      const unsuspenseListPath = join(pagesClientPath, "_unsuspense.txt");
       const unsuspenseText = fs.readFileSync(unsuspenseListPath).toString();
 
       Bun.write(
@@ -292,7 +295,7 @@ async function compileClientCodePage(
     .join("\n")}
 }`;
 
-  Bun.write(path.join(internalPath, "types.ts"), intrinsicCustomElements);
+  Bun.write(join(internalPath, "types.ts"), intrinsicCustomElements);
 
   return clientSizesPerPage;
 }
