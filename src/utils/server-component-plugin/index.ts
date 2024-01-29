@@ -14,20 +14,56 @@ function jsx(type, props){ return { type, props }};
 Fragment.__isFragment = true;
 `;
 
-export default function ssrWebComponentPlugin(
+export default function serverComponentPlugin(
   code: string,
   allWebComponents: Record<string, string>,
+  fileID: string,
 ) {
   const ast = parseCodeToAST(code);
   const detectedWebComponents: Record<string, string> = {};
   const usedWebComponents = new Map<string, string>();
+  let actionIdCount = 1;
   let count = 1;
+  let hasActions = false;
 
   const modifiedAst = JSON.parse(
     JSON.stringify(ast, (key, value) => {
+      const isJSX =
+        value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
+
+      // Register each JSX action id
+      if (isJSX) {
+        const actionProperties = [];
+        const properties = value.arguments[1]?.properties ?? [];
+
+        for (let attributeAst of properties) {
+          if (attributeAst?.key?.name?.startsWith("on")) {
+            hasActions = true;
+            actionProperties.push({
+              type: "Property",
+              key: {
+                type: "Literal",
+                value: `actionId-${attributeAst?.key?.name}`,
+              },
+              value: {
+                type: "Literal",
+                value: `${fileID}_${actionIdCount++}`,
+              },
+              kind: "init",
+              computed: false,
+              method: false,
+              shorthand: false,
+            });
+          }
+        }
+
+        if (actionProperties.length) {
+          value.arguments[1].properties = [...properties, ...actionProperties];
+        }
+      }
+
       if (
-        value?.type === "CallExpression" &&
-        JSX_NAME.has(value?.callee?.name) &&
+        isJSX &&
         value?.arguments?.[0]?.type === "Literal" &&
         allWebComponents[value?.arguments?.[0]?.value]
       ) {
@@ -132,5 +168,6 @@ export default function ssrWebComponentPlugin(
   return {
     code: generateCodeFromAST(modifiedAst) + workaroundText,
     detectedWebComponents,
+    hasActions,
   };
 }

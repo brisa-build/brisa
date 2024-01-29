@@ -9,7 +9,7 @@ import getEntrypoints from "@/utils/get-entrypoints";
 import getImportableFilepath from "@/utils/get-importable-filepath";
 import getWebComponentsList from "@/utils/get-web-components-list";
 import { logTable } from "@/utils/log/log-build";
-import ssrWebComponentPlugin from "@/utils/ssr-web-component/ssr-web-component-plugin";
+import serverComponentPlugin from "@/utils/server-component-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import getI18nClientMessages from "@/utils/get-i18n-client-messages";
 
@@ -59,13 +59,13 @@ export default async function compileFiles() {
     splitting: true,
     plugins: [
       {
-        name: "ssr-web-components",
+        name: "server-components",
         setup(build) {
           build.onLoad({ filter: /\.(tsx|jsx)$/ }, async ({ path, loader }) => {
             let code = await Bun.file(path).text();
 
             try {
-              const result = ssrWebComponentPlugin(code, allWebComponents);
+              const result = serverComponentPlugin(code, allWebComponents);
               const buildPath = path
                 .replace(SRC_DIR, BUILD_DIR)
                 .replace(/\.tsx?$/, ".js");
