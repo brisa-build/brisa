@@ -29,8 +29,13 @@ export default async function getWebComponentsList(
     entries.push(
       ...Object.entries<string>(
         await import(integrationsPath).then((m) => m.default ?? {}),
-      )
-      .map(([key, value]) => [key, import.meta.resolveSync(value, integrationsPath)] satisfies [string, string]),
+      ).map(
+        ([key, value]) =>
+          [key, import.meta.resolveSync(value, integrationsPath)] satisfies [
+            string,
+            string,
+          ],
+      ),
     );
   }
 
