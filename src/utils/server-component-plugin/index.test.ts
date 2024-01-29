@@ -18,7 +18,29 @@ describe("utils", () => {
         }
       `;
 
-      const out = serverComponentPlugin(code, {}, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
+      expect(out.hasActions).toBeFalse();
+    });
+
+    it('should not add the action if is a web-component"', () => {
+      const code = `
+        export default function WebComponent() {
+          return <button onClick={() => console.log('clicked')}>click</button>;
+        }
+      `;
+      const allWebComponents = {
+        "web-component": "src/web-components/web-component.tsx",
+      };
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: "src/web-components/web-component.tsx",
+      });
       expect(out.hasActions).toBeFalse();
     });
 
@@ -28,7 +50,11 @@ describe("utils", () => {
           return <Component onClick={() => console.log('clicked')} />;
         }
       `;
-      const out = serverComponentPlugin(code, {}, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
@@ -50,7 +76,11 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const out = serverComponentPlugin(code, allWebComponents, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
@@ -72,7 +102,11 @@ describe("utils", () => {
           return <Component onClick={() => console.log('clicked')} onMouseEnter={() => console.log('mouse-enter')} />;
         }
       `;
-      const out = serverComponentPlugin(code, {}, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
@@ -96,7 +130,11 @@ describe("utils", () => {
           );
         }
       `;
-      const out = serverComponentPlugin(code, {}, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
@@ -125,7 +163,11 @@ describe("utils", () => {
         }
       `;
 
-      const out = serverComponentPlugin(code, {}, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
 
       expect(out.hasActions).toBeTrue();
       expect(normalizeQuotes(out.code)).toBe(
@@ -150,7 +192,11 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const out = serverComponentPlugin(code, allWebComponents, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
@@ -182,7 +228,11 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const out = serverComponentPlugin(code, allWebComponents, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
@@ -214,7 +264,11 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const out = serverComponentPlugin(code, allWebComponents, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         export default function ServerComponent() {
@@ -235,7 +289,11 @@ describe("utils", () => {
       const allWebComponents = {
         "native-web-component": "src/components/native-web-component.tsx",
       };
-      const out = serverComponentPlugin(code, allWebComponents, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         export default function ServerComponent() {
@@ -256,7 +314,11 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const out = serverComponentPlugin(code, allWebComponents, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         export default function ServerComponent() {
@@ -282,7 +344,11 @@ describe("utils", () => {
       const allWebComponents = {
         "web-component": "src/components/web-component.tsx",
       };
-      const out = serverComponentPlugin(code, allWebComponents, "a1");
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";

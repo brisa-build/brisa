@@ -12,11 +12,7 @@ import mapComponentStatics from "./map-component-statics";
 import replaceExportDefault from "./replace-export-default";
 import processClientAst from "./process-client-ast";
 import getReactiveReturnStatement from "./get-reactive-return-statement";
-import {
-  WEB_COMPONENT_ALTERNATIVE_REGEX,
-  NATIVE_FOLDER,
-  WEB_COMPONENT_REGEX,
-} from "./constants";
+import { WEB_COMPONENT_ALTERNATIVE_REGEX, NATIVE_FOLDER } from "./constants";
 import addI18nBridge from "./add-i18n-bridge";
 
 type ClientBuildPluginConfig = {

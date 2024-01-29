@@ -68,12 +68,12 @@ export default async function compileFiles() {
             let code = await Bun.file(path).text();
 
             try {
-              const actionId = `a${actionIdCount}`;
-              const result = serverComponentPlugin(
-                code,
+              const fileID = `a${actionIdCount}`;
+              const result = serverComponentPlugin(code, {
+                path,
                 allWebComponents,
-                actionId,
-              );
+                fileID,
+              });
               const buildPath = path
                 .replace(SRC_DIR, BUILD_DIR)
                 .replace(/\.tsx?$/, ".js");
@@ -82,7 +82,7 @@ export default async function compileFiles() {
                 const actionEntrypoint = join(
                   BUILD_DIR,
                   "actions",
-                  `${actionId}_raw.${loader}`,
+                  `${fileID}_raw.${loader}`,
                 );
 
                 actionsEntrypoints.push(actionEntrypoint);
