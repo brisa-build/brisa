@@ -141,18 +141,19 @@ describe("utils", () => {
           }`),
       );
       expect(console.log).toHaveBeenCalled();
-      expect(files).toHaveLength(11);
+      expect(files).toHaveLength(12);
       expect(files[0]).toBe("_brisa");
-      expect(files[1]).toBe("api");
-      expect(files[2]).toStartWith("chunk-");
+      expect(files[1]).toBe("actions");
+      expect(files[2]).toBe("api");
       expect(files[3]).toStartWith("chunk-");
-      expect(files[4]).toBe("i18n.js");
-      expect(files[5]).toBe("layout.js");
-      expect(files[6]).toBe("middleware.js");
-      expect(files[7]).toBe("pages");
-      expect(files[8]).toBe("pages-client");
-      expect(files[9]).toBe("web-components");
-      expect(files[10]).toBe("websocket.js");
+      expect(files[4]).toStartWith("chunk-");
+      expect(files[5]).toBe("i18n.js");
+      expect(files[6]).toBe("layout.js");
+      expect(files[7]).toBe("middleware.js");
+      expect(files[8]).toBe("pages");
+      expect(files[9]).toBe("pages-client");
+      expect(files[10]).toBe("web-components");
+      expect(files[11]).toBe("websocket.js");
 
       // Test actions
       const homePageContent = await Bun.file(
