@@ -1,4 +1,5 @@
 import AST from "@/utils/ast";
+import replaceAstImportsToAbsolute from "@/utils/replace-ast-imports-to-absolute";
 
 type ServerComponentPluginOptions = {
   allWebComponents: Record<string, string>;
@@ -33,7 +34,7 @@ export default function serverComponentPlugin(
   let count = 1;
   let hasActions = false;
 
-  const modifiedAst = JSON.parse(
+  let modifiedAst = JSON.parse(
     JSON.stringify(ast, (key, value) => {
       const isJSX =
         value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
@@ -142,6 +143,10 @@ export default function serverComponentPlugin(
       return value;
     }),
   );
+
+  if (hasActions) {
+    modifiedAst = replaceAstImportsToAbsolute(modifiedAst, path);
+  }
 
   // Add imports of web-components used for SSR
   modifiedAst.body.unshift(
