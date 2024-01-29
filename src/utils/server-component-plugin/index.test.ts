@@ -41,6 +41,31 @@ describe("utils", () => {
       );
     });
 
+    it('should add the attribute "actionId-onClick" to web-components inside server-components', () => {
+      const code = `
+        export default function ServerComponent() {
+          return <web-component onClick={() => console.log('clicked')} />;
+        }
+      `;
+      const allWebComponents = {
+        "web-component": "src/components/web-component.tsx",
+      };
+      const out = serverComponentPlugin(code, allWebComponents, "a1");
+      const outputCode = normalizeQuotes(out.code);
+
+      expect(out.hasActions).toBeTrue();
+      expect(outputCode).toBe(
+        toExpected(`
+        import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
+        import _Brisa_WC1 from "src/components/web-component.tsx";
+
+        export default function ServerComponent() {
+          return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" onClick={() => console.log('clicked')} actionId-onClick="a1_1" />;
+        }
+      `),
+      );
+    });
+
     it("should register different action ids for each event of a server-component", () => {
       const code = `
         export default function ServerComponent() {
