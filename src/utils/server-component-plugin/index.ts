@@ -1,7 +1,14 @@
 import AST from "@/utils/ast";
 
+type ServerComponentPluginOptions = {
+  allWebComponents: Record<string, string>;
+  fileID: string;
+  path: string;
+};
+
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const JSX_NAME = new Set(["jsx", "jsxDEV"]);
+const WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
 
 // TODO: Remove this workaround when this issue will be fixed:
 // https://github.com/oven-sh/bun/issues/7499
@@ -16,10 +23,10 @@ Fragment.__isFragment = true;
 
 export default function serverComponentPlugin(
   code: string,
-  allWebComponents: Record<string, string>,
-  fileID: string,
+  { allWebComponents, fileID, path }: ServerComponentPluginOptions,
 ) {
   const ast = parseCodeToAST(code);
+  const isWebComponent = WEB_COMPONENT_REGEX.test(path);
   const detectedWebComponents: Record<string, string> = {};
   const usedWebComponents = new Map<string, string>();
   let actionIdCount = 1;
@@ -32,7 +39,7 @@ export default function serverComponentPlugin(
         value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
 
       // Register each JSX action id
-      if (isJSX) {
+      if (isJSX && !isWebComponent) {
         const actionProperties = [];
         const properties = value.arguments[1]?.properties ?? [];
 
