@@ -61,14 +61,26 @@ export default async function compileFiles() {
       {
         name: "server-components",
         setup(build) {
+          let actionIdCount = 1;
+
           build.onLoad({ filter: /\.(tsx|jsx)$/ }, async ({ path, loader }) => {
             let code = await Bun.file(path).text();
 
             try {
-              const result = serverComponentPlugin(code, allWebComponents);
+              const actionId = `a${actionIdCount}`;
+              const result = serverComponentPlugin(
+                code,
+                allWebComponents,
+                actionId,
+              );
               const buildPath = path
                 .replace(SRC_DIR, BUILD_DIR)
                 .replace(/\.tsx?$/, ".js");
+
+              if (result.hasActions) {
+                actionIdCount += 1;
+              }
+
               code = result.code;
               webComponentsPerEntrypoint[buildPath] =
                 result.detectedWebComponents;
