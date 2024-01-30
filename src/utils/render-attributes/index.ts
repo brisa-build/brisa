@@ -16,7 +16,7 @@ export default function renderAttributes({
   request: RequestContext;
   type: string;
 }): string {
-  const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
+  const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML, SYMBOLS } = getConstants();
   let attributes = "";
 
   for (const prop in props) {
@@ -52,6 +52,7 @@ export default function renderAttributes({
 
       // Set action event
       attributes += ` ${key}="$a('${actionId}', event)"`;
+      request.store.set(SYMBOLS.HAS_ACTION, true);
       continue;
     }
 
