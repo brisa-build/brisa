@@ -17,6 +17,7 @@ describe("utils", () => {
 
       expect(res.useContextProvider).toBeFalse();
       expect(res.webComponents).toEqual({});
+      expect(res.useActions).toBeFalse();
       expect(res.useSuspense).toBeFalse();
     });
     it("should detect suspense", () => {
@@ -32,6 +33,7 @@ describe("utils", () => {
 
       expect(res.useContextProvider).toBeFalse();
       expect(res.webComponents).toEqual({});
+      expect(res.useActions).toBeFalse();
       expect(res.useSuspense).toBeTrue();
     });
 
@@ -51,6 +53,7 @@ describe("utils", () => {
 
       expect(res.useContextProvider).toBeFalse();
       expect(res.useSuspense).toBeTrue();
+      expect(res.useActions).toBeFalse();
       expect(res.webComponents).toEqual({
         "my-component": "my-component.js",
       });
@@ -72,6 +75,7 @@ describe("utils", () => {
 
       expect(res.useContextProvider).toBeFalse();
       expect(res.useSuspense).toBeTrue();
+      expect(res.useActions).toBeFalse();
       expect(res.webComponents).toEqual({
         "another-component": "another-component.js",
       });
@@ -89,6 +93,7 @@ describe("utils", () => {
       expect(res.useContextProvider).toBeFalse();
       expect(res.useSuspense).toBeFalse();
       expect(res.webComponents).toEqual({});
+      expect(res.useActions).toBeFalse();
     });
 
     it("should detect context-provider", () => {
@@ -100,9 +105,25 @@ describe("utils", () => {
 
       const res = analyzeServerAst(ast, {});
 
-      expect(res.useContextProvider).toBeTrue();
+      expect(res.useActions).toBeFalse();
       expect(res.useSuspense).toBeFalse();
       expect(res.webComponents).toEqual({});
+      expect(res.useContextProvider).toBeTrue();
+    });
+
+    it("should detect useActions when is used the attribute data-action", () => {
+      const ast = parseCodeToAST(`
+        export default function Component() {
+          return <div data-action="action">hello</div>
+        }
+      `);
+
+      const res = analyzeServerAst(ast, {});
+
+      expect(res.useContextProvider).toBeFalse();
+      expect(res.useSuspense).toBeFalse();
+      expect(res.webComponents).toEqual({});
+      expect(res.useActions).toBeTrue();
     });
   });
 });

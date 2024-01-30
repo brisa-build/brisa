@@ -1,28 +1,33 @@
 /// <reference lib="dom.iterable" />
 
-function rpc(actionId: string, ...args: unknown[]) {
-  console.log("RPC", actionId, args);
-  // TODO: Implement RPC bridge between client and server
+// RPC (Remote Procedure Call)
+async function rpc(actionId: string, ...args: unknown[]) {
+  // TODO: Implement RPC communication correctly, now is a POC (proof of concept)
+  await fetch(`/_action/${actionId}`, {
+    method: "POST",
+    body: JSON.stringify(args),
+  });
 }
 
 function registerActionsFromElements(elements: NodeListOf<Element>) {
+  const actionPrefix = "actionon";
+
   for (let element of elements) {
     if (!element.hasAttribute("data-action")) continue;
 
     element.removeAttribute("data-action");
 
-    const allActions = (element as HTMLElement).dataset ?? {};
+    const dataSet = (element as HTMLElement).dataset;
 
-    for (let action of Object.keys(allActions)) {
+    for (let [action, actionId] of Object.entries(dataSet)) {
       const actionName = action.toLowerCase();
-      const actionPrefix = "actionon";
 
-      if (!actionName.startsWith(actionPrefix)) continue;
-
-      element.addEventListener(
-        actionName.replace(actionPrefix, ""),
-        (...args: unknown[]) => rpc(allActions[action]!, ...args),
-      );
+      if (actionName.startsWith(actionPrefix)) {
+        element.addEventListener(
+          actionName.replace(actionPrefix, ""),
+          (...args: unknown[]) => rpc(actionId!, ...args),
+        );
+      }
     }
   }
 }

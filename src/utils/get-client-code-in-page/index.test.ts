@@ -42,6 +42,7 @@ describe("utils", () => {
       const output = await getClientCodeInPage(input, allWebComponents);
       const expected = {
         code: "",
+        actionRPC: "",
         unsuspense: "",
         size: 0,
         useI18n: false,
@@ -73,19 +74,18 @@ describe("utils", () => {
       expect(output!.size).toEqual(0);
     });
 
-    it("should return client code in page with suspense", async () => {
+    it("should return client code in page with suspense and actionRPC", async () => {
       const input = path.join(pages, "index.tsx");
-
       const output = await getClientCodeInPage(input, allWebComponents);
-      const expected = {
-        code: "",
-        unsuspense:
-          "l$=new Set;u$=(h)=>{const r=(v)=>document.getElementById(v);l$.add(h);for(let v of l$){const g=r(`S:${v}`),f=r(`U:${v}`);if(g&&f)l$.delete(v),g.replaceWith(f.content.cloneNode(!0)),f.remove(),r(`R:${v}`)?.remove()}};\n",
-        size: 217,
-        useI18n: false, // no client code in page
-        i18nKeys: new Set<string>(),
-      };
-      expect(output).toEqual(expected);
+      const unsuspenseSize = 217;
+      const actionRPCSize = 561;
+
+      expect(output?.unsuspense.length).toBe(unsuspenseSize);
+      expect(output?.actionRPC.length).toBe(actionRPCSize);
+      expect(output?.size).toBe(unsuspenseSize + actionRPCSize);
+      expect(output?.code).toBeEmpty();
+      expect(output?.useI18n).toBeFalse();
+      expect(output?.i18nKeys).toBeEmpty();
     });
 
     it("should define 2 web components if there is 1 web component and another one inside", async () => {

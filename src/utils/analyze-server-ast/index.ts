@@ -6,6 +6,7 @@ export default function analyzeServerAst(
 ) {
   const webComponents: Record<string, string> = {};
   let useSuspense = false;
+  let useActions = false;
   let useContextProvider = false;
 
   JSON.stringify(ast, (key, value) => {
@@ -30,6 +31,10 @@ export default function analyzeServerAst(
       webComponents[webComponentSelector] = webComponentPath;
     }
 
+    // Detect actions
+    useActions ||= value === "data-action";
+
+    // Detect suspense
     useSuspense ||=
       value?.type === "ExpressionStatement" &&
       value?.expression?.operator === "=" &&
@@ -38,5 +43,5 @@ export default function analyzeServerAst(
     return value;
   });
 
-  return { webComponents, useSuspense, useContextProvider };
+  return { webComponents, useSuspense, useContextProvider, useActions };
 }
