@@ -23,8 +23,9 @@ export default function renderAttributes({
     const key = prop.toLowerCase();
     let value = props[prop];
 
-    if (PROPS_TO_IGNORE.has(prop) || (type === "html" && prop === "lang"))
+    if (PROPS_TO_IGNORE.has(prop) || (type === "html" && prop === "lang")) {
       continue;
+    }
 
     // Add the assetPrefix to internal assets (img, picture, video, audio, script)
     if (
@@ -36,11 +37,23 @@ export default function renderAttributes({
       value = `${CONFIG.assetPrefix}${value}`;
     }
 
+    // Skip actionId-[event] attributes
+    if (key.startsWith("actionid-")) continue;
+
     // Skip undefined values
     if (typeof value === "undefined") continue;
 
-    // Skip events during SSR for now (TODO: implement it)
-    if (typeof value === "function") continue;
+    // Actions
+    if (typeof value === "function") {
+      const actionId = props[`actionId-${prop}`];
+
+      // Skip functions that are not actions
+      if (!actionId || !key.startsWith("on")) continue;
+
+      // Set action event
+      attributes += ` ${key}="$a('${actionId}', event)"`;
+      continue;
+    }
 
     // Example <dialog open> => <dialog>
     if (typeof value === "boolean" && BOOLEANS_IN_HTML.has(key)) {
