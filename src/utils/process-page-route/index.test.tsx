@@ -69,7 +69,7 @@ describe("utils", () => {
                 <div id="S:1"><div>Loading...</div></div>
               </body>
             </html>
-            <template id="U:1"><div>Hello world!</div></template><script id="R:1">u$('1')</script>
+            <template id="U:1"><div data-action="true">Hello world!</div></template><script id="R:1">u$('1')</script>
           `),
       );
     });
@@ -96,7 +96,7 @@ describe("utils", () => {
                 <div id="S:1"><div>Loading...</div></div>
               </body>
             </html>
-            <template id="U:1"><div>Hello world!</div></template><script id="R:1">u$('1')</script>
+            <template id="U:1"><div data-action="true">Hello world!</div></template><script id="R:1">u$('1')</script>
         `),
       );
     });
