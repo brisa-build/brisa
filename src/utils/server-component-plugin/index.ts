@@ -51,7 +51,7 @@ export default function serverComponentPlugin(
               type: "Property",
               key: {
                 type: "Literal",
-                value: `actionId-${attributeAst?.key?.name}`,
+                value: `data-action-${attributeAst?.key?.name?.toLowerCase()}`,
               },
               value: {
                 type: "Literal",
@@ -66,7 +66,27 @@ export default function serverComponentPlugin(
         }
 
         if (actionProperties.length) {
-          value.arguments[1].properties = [...properties, ...actionProperties];
+          const dataActionProperty = {
+            type: "Property",
+            key: {
+              type: "Literal",
+              value: "data-action",
+            },
+            value: {
+              type: "Literal",
+              value: true,
+            },
+            kind: "init",
+            computed: false,
+            method: false,
+            shorthand: false,
+          };
+
+          value.arguments[1].properties = [
+            ...properties,
+            ...actionProperties,
+            dataActionProperty,
+          ];
         }
       }
 

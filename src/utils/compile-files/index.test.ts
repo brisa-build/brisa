@@ -159,8 +159,12 @@ describe("utils", () => {
       const homePageContent = await Bun.file(
         path.join(PAGES_DIR, "index.js"),
       ).text();
-      expect(homePageContent).toContain(`"actionId-onClick":"a1_1"}`);
-      expect(homePageContent).toContain(`"actionId-onClick":"a1_2"}`);
+      expect(homePageContent).toContain(
+        `"data-action-onclick":"a1_1","data-action"`,
+      );
+      expect(homePageContent).toContain(
+        `"data-action-onclick":"a1_2","data-action"`,
+      );
 
       const pagesClient = fs
         .readdirSync(pagesClientPath)
@@ -229,7 +233,7 @@ describe("utils", () => {
     ${info}λ /pages/page-with-web-component | 368 B     | ${greenLog("4 kB")} 
     ${info}λ /pages/somepage                | 349 B     | ${greenLog("0 B")} 
     ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("0 B")} 
-    ${info}λ /pages/index                   | 429 B     | ${greenLog("186 B")}  
+    ${info}λ /pages/index                   | 469 B     | ${greenLog("186 B")}  
     ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
     ${info}ƒ /middleware                    | 420 B     |
     ${info}λ /api/example                   | 283 B     |
