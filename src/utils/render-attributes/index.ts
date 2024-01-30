@@ -6,6 +6,7 @@ import stylePropsToString from "@/utils/style-props-to-string";
 import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
+const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
 
 export default function renderAttributes({
   props,
@@ -36,11 +37,8 @@ export default function renderAttributes({
       value = `${CONFIG.assetPrefix}${value}`;
     }
 
-    // Skip undefined values
-    if (typeof value === "undefined") continue;
-
-    // Skip events during SSR for now (TODO: implement it)
-    if (typeof value === "function") continue;
+    // Skip types that are not supported in HTML
+    if (VALUES_TYPE_TO_IGNORE.has(typeof value)) continue;
 
     // Example <dialog open> => <dialog>
     if (typeof value === "boolean" && BOOLEANS_IN_HTML.has(key)) {

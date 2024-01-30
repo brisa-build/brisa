@@ -44,7 +44,7 @@ describe("utils", () => {
       expect(out.hasActions).toBeFalse();
     });
 
-    it('should add the attribute "actionId-onClick" when a server-component has an event defined', () => {
+    it('should add the attribute "data-action-onclick" when a server-component has an event defined', () => {
       const code = `
         export default function ServerComponent() {
           return <Component onClick={() => console.log('clicked')} />;
@@ -61,13 +61,13 @@ describe("utils", () => {
       expect(outputCode).toBe(
         toExpected(`
         export default function ServerComponent() {
-          return <Component onClick={() => console.log('clicked')} actionId-onClick="a1_1" />;
+          return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
         }
       `),
       );
     });
 
-    it('should add the attribute "actionId-onClick" to web-components inside server-components', () => {
+    it('should add the attribute "data-action-onclick" to web-components inside server-components', () => {
       const code = `
         export default function ServerComponent() {
           return <web-component onClick={() => console.log('clicked')} />;
@@ -90,7 +90,7 @@ describe("utils", () => {
         import _Brisa_WC1 from "src/components/web-component.tsx";
 
         export default function ServerComponent() {
-          return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" onClick={() => console.log('clicked')} actionId-onClick="a1_1" />;
+          return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
         }
       `),
       );
@@ -113,7 +113,7 @@ describe("utils", () => {
       expect(outputCode).toBe(
         toExpected(`
         export default function ServerComponent() {
-          return <Component onClick={() => console.log('clicked')} onMouseEnter={() => console.log('mouse-enter')} actionId-onClick="a1_1" actionId-onMouseEnter="a1_2" />;
+          return <Component onClick={() => console.log('clicked')} onMouseEnter={() => console.log('mouse-enter')} data-action-onclick="a1_1" data-action-onmouseenter="a1_2" data-action />;
         }
       `),
       );
@@ -143,8 +143,8 @@ describe("utils", () => {
         export default function ServerComponent() {
           return (
             <>
-              <Component onClick={() => console.log('clicked')} actionId-onClick="a1_1" />
-              <Component onClick={() => console.log('clicked')} actionId-onClick="a1_2" />
+              <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />
+              <Component onClick={() => console.log('clicked')} data-action-onclick="a1_2" data-action />
             </>
           );
         }
@@ -155,11 +155,11 @@ describe("utils", () => {
     it("should register different action ids of different outer server-components", () => {
       const code = `
         export default function ServerComponent1() {
-          return <ServerComponent2 onFoo={() => console.log('foo')} />;
+          return <div onClick={() => console.log('foo')} />;
         }
 
         export function ServerComponent2({ onFoo }) {
-          return <Component onClick={onFoo} />;
+          return <div onClick={onFoo} />;
         }
       `;
 
@@ -173,11 +173,11 @@ describe("utils", () => {
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
         export default function ServerComponent1() {
-          return <ServerComponent2 onFoo={() => console.log('foo')} actionId-onFoo="a1_1" />;
+          return <div onClick={() => console.log('foo')} data-action-onclick="a1_1" data-action />;
         }
 
         export function ServerComponent2({ onFoo }) {
-          return <Component onClick={onFoo} actionId-onClick="a1_2" />;
+          return <div onClick={onFoo} data-action-onclick="a1_2" data-action />;
         }
       `),
       );
