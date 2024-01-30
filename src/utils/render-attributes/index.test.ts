@@ -445,5 +445,43 @@ describe("utils", () => {
 
       expect(attributes).toBe(' style="color:red;"');
     });
+
+    it("should set the action event when receives actionId-[event] attribute", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          "actionId-onClick": "a1_1",
+          onClick: () => {},
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(" onclick=\"$a('a1_1', event)\"");
+    });
+
+    it("should set different action events when receives different actionId-[event] attributes", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          "actionId-onClick": "a1_1",
+          onClick: () => {},
+          "actionId-onMouseEnter": "a1_2",
+          onMouseEnter: () => {},
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(
+        " onclick=\"$a('a1_1', event)\" onmouseenter=\"$a('a1_2', event)\"",
+      );
+    });
   });
 });
