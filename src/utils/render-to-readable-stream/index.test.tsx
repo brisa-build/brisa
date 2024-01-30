@@ -493,8 +493,40 @@ describe("utils", () => {
 
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
+      expect(result).not.toContain(
+        '<script src="/_brisa/pages/_action.js"></script>',
+      );
       expect(result).toContain(
         '<script src="/_brisa/pages/_unsuspense.js"></script>',
+      );
+    });
+
+    it("should inject the action rpc script", async () => {
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const request = extendRequestContext({
+        originalRequest: new Request(testRequest),
+        route: {
+          filePath: "/somepage.js",
+        } as MatchedRoute,
+      });
+
+      globalThis.mockConstants = {
+        ...getConstants(),
+        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+      };
+
+      const stream = renderToReadableStream(element, { request });
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).not.toContain(
+        '<script src="/_brisa/pages/_unsuspense.js"></script>',
+      );
+      expect(result).toContain(
+        '<script src="/_brisa/pages/_action.js"></script>',
       );
     });
 

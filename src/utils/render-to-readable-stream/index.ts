@@ -33,30 +33,25 @@ export default function renderToReadableStream(
   { request, head }: Options,
 ) {
   const { IS_PRODUCTION, BUILD_DIR, SCRIPT_404 } = getConstants();
-  const unsuspenseListPath = path.join(
-    BUILD_DIR,
-    "pages-client",
-    "_unsuspense.txt",
-  );
+  const pagesClientPath = path.join(BUILD_DIR, "pages-client");
+  const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.txt");
+  const actionRPCListPath = path.join(pagesClientPath, "_action.txt");
 
   return new ReadableStream({
     async start(controller) {
-      const unsuspenseListText = fs.existsSync(unsuspenseListPath)
-        ? await Bun.file(unsuspenseListPath).text()
-        : "";
-
       const extendedController = extendStreamController(controller, head);
       const abortPromise = new Promise((res) =>
         request.signal.addEventListener("abort", res),
       );
 
-      // Set to the controller if the page has unsuspense
-      if (unsuspenseListText) {
-        const route = (request.route?.filePath ?? "").replace(BUILD_DIR, "");
-        extendedController.hasUnsuspense = new Set(
-          unsuspenseListText.split("\n"),
-        ).has(route);
-      }
+      extendedController.hasUnsuspense = await isInPathList(
+        unsuspenseListPath,
+        request,
+      );
+      extendedController.hasActionRPC = await isInPathList(
+        actionRPCListPath,
+        request,
+      );
 
       const renderingPromise = enqueueDuringRendering(
         element,
@@ -279,6 +274,12 @@ async function enqueueDuringRendering(
           suspenseId,
         );
       }
+      if (controller.hasActionRPC) {
+        controller.enqueue(
+          '<script src="/_brisa/pages/_action.js"></script>',
+          suspenseId,
+        );
+      }
     }
 
     // Close body tag
@@ -469,4 +470,16 @@ async function getValueOfComponent(
       if (!isComponent(componentFn.error)) throw error;
       return componentFn.error({ error, ...props }, request);
     });
+}
+
+async function isInPathList(pathname: string, request: RequestContext) {
+  const { BUILD_DIR } = getConstants();
+  const listFile = Bun.file(pathname);
+  const listText = (await listFile.exists()) ? await listFile.text() : "";
+
+  if (!listText) return false;
+
+  const route = (request.route?.filePath ?? "").replace(BUILD_DIR, "");
+
+  return new Set(listText.split("\n")).has(route);
 }
