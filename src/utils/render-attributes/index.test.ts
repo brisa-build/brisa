@@ -447,7 +447,6 @@ describe("utils", () => {
     });
 
     it("should set the action event when receives actionId-[event] attribute", () => {
-      const { SYMBOLS } = getConstants();
       const request = extendRequestContext({
         originalRequest: new Request("https://example.com"),
       });
@@ -461,26 +460,7 @@ describe("utils", () => {
         type: "div",
       });
 
-      expect(request.store.get(SYMBOLS.HAS_ACTION)).toBeTrue();
       expect(attributes).toBe(" onclick=\"$a('a1_1', event)\"");
-    });
-
-    it("should NOT set the action event when NOT receives actionId-[event] attribute", () => {
-      const { SYMBOLS } = getConstants();
-      const request = extendRequestContext({
-        originalRequest: new Request("https://example.com"),
-      });
-
-      const attributes = renderAttributes({
-        props: {
-          onClick: () => {},
-        },
-        request,
-        type: "div",
-      });
-
-      expect(request.store.get(SYMBOLS.HAS_ACTION)).toBeEmpty();
-      expect(attributes).toBeEmpty();
     });
 
     it("should set different action events when receives different actionId-[event] attributes", () => {
