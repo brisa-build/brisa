@@ -105,9 +105,6 @@ const constants = {
     DYNAMIC: /\[.*?\]/g,
     REST_DYNAMIC: /\[\.{3}.*?\]/g,
   },
-  SYMBOLS: {
-    HAS_ACTION: Symbol("hasAction"),
-  },
   SCRIPT_404,
   BOOLEANS_IN_HTML,
 };
