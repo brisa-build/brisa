@@ -21,6 +21,7 @@ export type Controller = {
   hasHeadTag: boolean;
   insideHeadTag: boolean;
   hasUnsuspense: boolean;
+  hasActionRPC: boolean;
 };
 
 type SuspensedState = {
@@ -51,6 +52,7 @@ export default function extendStreamController(
     hasHeadTag: false,
     insideHeadTag: false,
     hasUnsuspense: false,
+    hasActionRPC: false,
     setCurrentWebComponentSymbol(symbol) {
       if (symbol) openWebComponents.push(symbol);
       else openWebComponents.pop();
