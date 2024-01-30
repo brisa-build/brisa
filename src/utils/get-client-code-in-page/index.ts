@@ -3,6 +3,7 @@ import { join } from "node:path";
 
 import { getConstants } from "@/constants";
 import AST from "@/utils/ast";
+import { injectActionRPCCode } from "@/utils/inject-action-rpc" with { type: "macro" };
 import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
 import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
 import clientBuildPlugin from "@/utils/client-build-plugin";
@@ -18,6 +19,7 @@ type TransformOptions = {
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
+const actionRPCCode = await injectActionRPCCode();
 const ENV_VAR_PREFIX = "BRISA_PUBLIC_";
 
 async function getAstFromPath(path: string) {
@@ -35,7 +37,7 @@ export default async function getClientCodeInPage(
 
   const ast = await getAstFromPath(pagepath);
 
-  let { useSuspense, useContextProvider } = analyzeServerAst(
+  let { useSuspense, useContextProvider, useActions } = analyzeServerAst(
     ast,
     allWebComponents,
   );
@@ -54,13 +56,16 @@ export default async function getClientCodeInPage(
   }
 
   const unsuspense = useSuspense ? unsuspenseScriptCode : "";
+  const actionRPC = useActions ? actionRPCCode : "";
 
   size += unsuspense.length;
+  size += actionRPC.length;
 
   if (!Object.keys(pageWebComponents).length)
     return {
       code,
       unsuspense,
+      actionRPC,
       size,
       useI18n: false,
       i18nKeys: new Set<string>(),
@@ -80,6 +85,7 @@ export default async function getClientCodeInPage(
   return {
     code,
     unsuspense,
+    actionRPC,
     size,
     useI18n: transformedCode.useI18n,
     i18nKeys: transformedCode.i18nKeys,

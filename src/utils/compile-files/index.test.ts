@@ -185,6 +185,9 @@ describe("utils", () => {
         `_500-${HASH}.js`,
         `_500-${HASH}.js.gz`,
         `_500.txt`,
+        `_action.js`,
+        `_action.js.gz`,
+        `_action.txt`,
         `_unsuspense.js`,
         `_unsuspense.js.gz`,
         `_unsuspense.txt`,
@@ -233,7 +236,7 @@ describe("utils", () => {
     ${info}λ /pages/page-with-web-component | 368 B     | ${greenLog("4 kB")} 
     ${info}λ /pages/somepage                | 349 B     | ${greenLog("0 B")} 
     ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("0 B")} 
-    ${info}λ /pages/index                   | 469 B     | ${greenLog("186 B")}  
+    ${info}λ /pages/index                   | 486 B     | ${greenLog("564 B")}  
     ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
     ${info}ƒ /middleware                    | 420 B     |
     ${info}λ /api/example                   | 283 B     |

@@ -2,7 +2,7 @@ import type { RequestContext } from "@/types";
 
 export default async function Home({}, { i18n }: RequestContext) {
   return (
-    <div onClick={() => console.log("Hello world")}>
+    <div onClick={() => console.log("Hello world")} data-action>
       {i18n.t("hello-world")}
     </div>
   );

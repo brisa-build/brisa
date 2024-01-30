@@ -227,7 +227,7 @@ async function compileClientCodePage(
 
     if (!pageCode) return null;
 
-    const { size, code, unsuspense, useI18n, i18nKeys } = pageCode;
+    const { size, code, unsuspense, actionRPC, useI18n, i18nKeys } = pageCode;
 
     clientSizesPerPage[route] = size;
 
@@ -239,28 +239,16 @@ async function compileClientCodePage(
     clientSizesPerPage[route] = 0;
 
     // create _unsuspense.js and _unsuspense.txt (list of pages with unsuspense)
-    if (unsuspense && !fs.existsSync(join(pagesClientPath, "_unsuspense.js"))) {
-      const gzipUnsuspense = gzipSync(new TextEncoder().encode(unsuspense));
+    clientSizesPerPage[route] += addExtraChunk(unsuspense, "_unsuspense", {
+      pagesClientPath,
+      pagePath,
+    });
 
-      clientSizesPerPage[route] += gzipUnsuspense.length;
-      Bun.write(join(pagesClientPath, "_unsuspense.js"), unsuspense);
-      Bun.write(join(pagesClientPath, "_unsuspense.js.gz"), gzipUnsuspense);
-      Bun.write(
-        join(pagesClientPath, "_unsuspense.txt"),
-        pagePath.replace(BUILD_DIR, ""),
-      );
-    }
-
-    // register page route to _unsuspense.txt
-    else if (unsuspense) {
-      const unsuspenseListPath = join(pagesClientPath, "_unsuspense.txt");
-      const unsuspenseText = fs.readFileSync(unsuspenseListPath).toString();
-
-      Bun.write(
-        unsuspenseListPath,
-        `${unsuspenseText}\n${pagePath.replace(BUILD_DIR, "")}`,
-      );
-    }
+    // create _action.js and _action.txt (list of pages with actions)
+    clientSizesPerPage[route] += addExtraChunk(actionRPC, "_action", {
+      pagesClientPath,
+      pagePath,
+    });
 
     if (!code) continue;
 
@@ -298,4 +286,39 @@ async function compileClientCodePage(
   Bun.write(join(internalPath, "types.ts"), intrinsicCustomElements);
 
   return clientSizesPerPage;
+}
+
+function addExtraChunk(
+  code: string,
+  filename: string,
+  { pagesClientPath, pagePath }: { pagesClientPath: string; pagePath: string },
+) {
+  const { BUILD_DIR } = getConstants();
+
+  if (!code) return 0;
+
+  if (fs.existsSync(join(pagesClientPath, `${filename}.js`))) {
+    const listPath = join(pagesClientPath, `${filename}.txt`);
+
+    Bun.write(
+      listPath,
+      `${fs.readFileSync(listPath).toString()}\n${pagePath.replace(
+        BUILD_DIR,
+        "",
+      )}`,
+    );
+
+    return 0;
+  }
+
+  const gzipUnsuspense = gzipSync(new TextEncoder().encode(code));
+
+  Bun.write(join(pagesClientPath, `${filename}.js`), code);
+  Bun.write(join(pagesClientPath, `${filename}.js.gz`), gzipUnsuspense);
+  Bun.write(
+    join(pagesClientPath, `${filename}.txt`),
+    pagePath.replace(BUILD_DIR, ""),
+  );
+
+  return gzipUnsuspense.length;
 }
