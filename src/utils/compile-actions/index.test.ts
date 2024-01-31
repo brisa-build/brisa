@@ -28,7 +28,7 @@ describe("utils", () => {
             const __action = () => console.log('hello world');
             await __action(req.store.get('_action_params'));
             return new Response(null);
-          } catch (e) {
+          } catch (error) {
             return resolveAction({ 
               req, 
               error, 
@@ -61,7 +61,7 @@ describe("utils", () => {
             const __action = function foo() { console.log('hello world') };
             await __action(req.store.get('_action_params'));
             return new Response(null);
-          } catch (e) {
+          } catch (error) {
             return resolveAction({ 
               req, 
               error, 
@@ -97,7 +97,7 @@ describe("utils", () => {
             const onClick = () => console.log('hello world');
             await onClick(req.store.get('_action_params'));
             return new Response(null);
-          } catch (e) {
+          } catch (error) {
             return resolveAction({ 
               req, 
               error, 
@@ -132,7 +132,7 @@ describe("utils", () => {
             const onClick = () => console.log('hello world');
             await onClick(requestContext.store.get('_action_params'));
             return new Response(null);
-          } catch (e) {
+          } catch (error) {
             return resolveAction({ 
               req: requestContext, 
               error, 
