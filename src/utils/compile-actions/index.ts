@@ -200,7 +200,7 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
         name: info.actionId,
       },
       params,
-      body,
+      body: wrapWithTypeCatch(body),
       async: true,
       generator: false,
     },
@@ -320,5 +320,135 @@ function getResponseReturn(): ESTree.ReturnStatement {
         },
       ],
     },
+  };
+}
+
+function wrapWithTypeCatch(body: ESTree.BlockStatement): ESTree.BlockStatement {
+  return {
+    ...body,
+    body: [
+      {
+        type: "TryStatement",
+        block: {
+          type: "BlockStatement",
+          body: body.body,
+        },
+        handler: {
+          type: "CatchClause",
+          param: {
+            type: "Identifier",
+            name: "error",
+          },
+          body: {
+            type: "BlockStatement",
+            body: [
+              {
+                type: "ReturnStatement",
+                argument: {
+                  type: "CallExpression",
+                  callee: {
+                    type: "Identifier",
+                    name: "resolveAction",
+                  },
+                  arguments: [
+                    {
+                      type: "ObjectExpression",
+                      properties: [
+                        {
+                          type: "Property",
+                          key: {
+                            type: "Identifier",
+                            name: "req",
+                          },
+                          value: {
+                            type: "Identifier",
+                            name: "req",
+                          },
+                          kind: "init",
+                          computed: false,
+                          method: false,
+                          shorthand: true,
+                        },
+                        {
+                          type: "Property",
+                          key: {
+                            type: "Identifier",
+                            name: "error",
+                          },
+                          value: {
+                            type: "Identifier",
+                            name: "error",
+                          },
+                          kind: "init",
+                          computed: false,
+                          method: false,
+                          shorthand: true,
+                        },
+                        {
+                          type: "Property",
+                          key: {
+                            type: "Identifier",
+                            name: "pagePath",
+                          },
+                          value: {
+                            type: "CallExpression",
+                            callee: {
+                              type: "MemberExpression",
+                              object: {
+                                type: "MemberExpression",
+                                object: {
+                                  type: "Identifier",
+                                  name: "req",
+                                },
+                                computed: false,
+                                property: {
+                                  type: "Identifier",
+                                  name: "store",
+                                },
+                              },
+                              computed: false,
+                              property: {
+                                type: "Identifier",
+                                name: "get",
+                              },
+                            },
+                            arguments: [
+                              {
+                                type: "Literal",
+                                value: "_action_page",
+                              },
+                            ],
+                          },
+                          kind: "init",
+                          computed: false,
+                          method: false,
+                          shorthand: false,
+                        },
+                        {
+                          type: "Property",
+                          key: {
+                            type: "Identifier",
+                            name: "component",
+                          },
+                          value: {
+                            type: "Literal",
+                            value: "TODO",
+                          },
+                          kind: "init",
+                          computed: false,
+                          method: false,
+                          shorthand: false,
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+        finalizer: null,
+      },
+    ],
   };
 }
