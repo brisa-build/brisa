@@ -8,20 +8,16 @@ type CompileActionsParams = {
   actionsEntrypoints: string[];
 };
 
-type ActionContent =
-  | { actionIdentifierName: string }
-  | {
-      actionFnExpression:
-        | ESTree.ArrowFunctionExpression
-        | ESTree.FunctionExpression;
-    };
-
 type ActionInfo = {
   actionId: string;
+  actionIdentifierName?: string;
+  actionFnExpression?:
+    | ESTree.ArrowFunctionExpression
+    | ESTree.FunctionExpression;
   componentFnExpression?:
     | ESTree.ArrowFunctionExpression
     | ESTree.FunctionExpression;
-} & ActionContent;
+};
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const { BUILD_DIR, SRC_DIR, IS_PRODUCTION } = getConstants();
@@ -161,8 +157,32 @@ function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
 
 function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   const defaultBody = { type: "BlockStatement", body: [] };
-  const body = info.componentFnExpression?.body ?? (defaultBody as any);
   const { params, requestDestructuring } = getActionParams(info);
+  const declareActionVar =
+    !info.actionIdentifierName && info.actionFnExpression;
+  const body = purgeBody(
+    info.componentFnExpression?.body ?? (defaultBody as any),
+  );
+
+  if (declareActionVar) {
+    body.body.unshift({
+      type: "VariableDeclaration",
+      kind: "const",
+      declarations: [
+        {
+          type: "VariableDeclarator",
+          id: {
+            type: "Identifier",
+            name: "__action",
+          },
+          init: info.actionFnExpression!,
+        },
+      ],
+    });
+  }
+
+  // Add the action call: await __action(req.store.get('_action_params'))
+  body.body.push(getActionCall(info));
 
   if (requestDestructuring) {
     body.body.unshift(requestDestructuring);
@@ -186,8 +206,16 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   };
 }
 
+function purgeBody(body: ESTree.BlockStatement): ESTree.BlockStatement {
+  const NODE_TO_PURGE = new Set(["IfStatement", "ReturnStatement"]);
+  return {
+    ...body,
+    body: body?.body?.filter((e) => !NODE_TO_PURGE.has(e?.type)),
+  };
+}
+
 function getActionParams(info: ActionInfo) {
-  const params = info.componentFnExpression?.params ?? [];
+  const params = (info.componentFnExpression?.params ?? []).slice();
   let requestParamName = "req";
   let requestDestructuring;
 
@@ -216,9 +244,56 @@ function getActionParams(info: ActionInfo) {
             },
           },
         ],
-      };
+      } satisfies ESTree.VariableDeclaration;
     }
   }
 
   return { params, requestDestructuring, requestParamName };
+}
+
+function getActionCall(info: ActionInfo): ESTree.ExpressionStatement {
+  return {
+    type: "ExpressionStatement",
+    expression: {
+      type: "AwaitExpression",
+      argument: {
+        type: "CallExpression",
+        callee: {
+          type: "Identifier",
+          name: info.actionIdentifierName ?? "__action",
+        },
+        arguments: [
+          {
+            type: "CallExpression",
+            callee: {
+              type: "MemberExpression",
+              object: {
+                type: "MemberExpression",
+                object: {
+                  type: "Identifier",
+                  name: "req",
+                },
+                computed: false,
+                property: {
+                  type: "Identifier",
+                  name: "store",
+                },
+              },
+              computed: false,
+              property: {
+                type: "Identifier",
+                name: "get",
+              },
+            },
+            arguments: [
+              {
+                type: "Literal",
+                value: "_action_params",
+              },
+            ],
+          },
+        ],
+      },
+    },
+  };
 }
