@@ -157,7 +157,8 @@ function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
 
 function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   const defaultBody = { type: "BlockStatement", body: [] };
-  const { params, requestDestructuring } = getActionParams(info);
+  const { params, requestDestructuring, requestParamName } =
+    getActionParams(info);
   const declareActionVar =
     !info.actionIdentifierName && info.actionFnExpression;
   const body = purgeBody(
@@ -181,8 +182,10 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
     });
   }
 
-  // Add the action call: await __action(req.store.get('_action_params'))
-  body.body.push(getActionCall(info));
+  // await __action(req.store.get('_action_params'));
+  body.body.push(getActionCall(info, requestParamName));
+  // return new Response(null);
+  body.body.push(getResponseReturn());
 
   if (requestDestructuring) {
     body.body.unshift(requestDestructuring);
@@ -251,7 +254,10 @@ function getActionParams(info: ActionInfo) {
   return { params, requestDestructuring, requestParamName };
 }
 
-function getActionCall(info: ActionInfo): ESTree.ExpressionStatement {
+function getActionCall(
+  info: ActionInfo,
+  requestParamName: string,
+): ESTree.ExpressionStatement {
   return {
     type: "ExpressionStatement",
     expression: {
@@ -271,7 +277,7 @@ function getActionCall(info: ActionInfo): ESTree.ExpressionStatement {
                 type: "MemberExpression",
                 object: {
                   type: "Identifier",
-                  name: "req",
+                  name: requestParamName,
                 },
                 computed: false,
                 property: {
@@ -294,6 +300,25 @@ function getActionCall(info: ActionInfo): ESTree.ExpressionStatement {
           },
         ],
       },
+    },
+  };
+}
+
+function getResponseReturn(): ESTree.ReturnStatement {
+  return {
+    type: "ReturnStatement",
+    argument: {
+      type: "NewExpression",
+      callee: {
+        type: "Identifier",
+        name: "Response",
+      },
+      arguments: [
+        {
+          type: "Literal",
+          value: null,
+        },
+      ],
     },
   };
 }
