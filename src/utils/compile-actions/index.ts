@@ -63,10 +63,12 @@ function actionPlugin() {
 
 export function transformToActionCode(code: string) {
   let ast = parseCodeToAST(code);
-  const actionsInfo = getActionsInfo(ast);
 
   ast = addResolveActionImport(ast);
-  ast = unexportAll(ast);
+  ast = convertToFunctionDeclarations(ast);
+
+  // Order matters, it needs the lastest version of the AST
+  const actionsInfo = getActionsInfo(ast);
 
   for (const actionInfo of actionsInfo) {
     const action = createActionFn(actionInfo);
@@ -105,25 +107,43 @@ function addResolveActionImport(ast: ESTree.Program): ESTree.Program {
   };
 }
 
-function unexportAll(ast: ESTree.Program): ESTree.Program {
+function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
+  let count = 0;
+
+  const isArrowFn = (node: any) => node?.type === "ArrowFunctionExpression";
+  const arrowToFn = (declaration: ESTree.ArrowFunctionExpression) => ({
+    type: "FunctionDeclaration",
+    id: {
+      type: "Identifier",
+      name: `Component__${count++}__`,
+    },
+    params: declaration.params,
+    body: declaration.body,
+    async: declaration.async,
+    generator: false,
+  });
+
   return {
     ...ast,
-    body: ast.body.map((node) =>
-      EXPORT_TYPES.has(node.type) ? (node as any).declaration : node,
-    ),
-  };
-}
+    body: ast.body.map((node) => {
+      if (!EXPORT_TYPES.has(node.type)) {
+        return isArrowFn(node)
+          ? arrowToFn(node as unknown as ESTree.ArrowFunctionExpression)
+          : node;
+      }
 
-function isPascalCase(str: string) {
-  if (typeof str !== "string") return false;
-  return str[0] === str[0].toUpperCase();
+      const { declaration } = node as any;
+
+      return isArrowFn(declaration) ? arrowToFn(declaration) : declaration;
+    }),
+  };
 }
 
 function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
   const actionInfo: ActionInfo[] = [];
 
   JSON.stringify(ast, function (k, comp) {
-    if (FN_DECLARATION_TYPES.has(comp?.type) && isPascalCase(comp?.id?.name)) {
+    if (FN_DECLARATION_TYPES.has(comp?.type)) {
       JSON.stringify(comp, function (k, curr) {
         if (
           curr?.type === "Property" &&
@@ -133,6 +153,7 @@ function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           const eventContent = this.find?.(
             (e: any) => e?.key?.name === eventName,
           )?.value;
+
           actionInfo.push({
             actionId: curr?.value?.value,
             componentFnExpression: comp,
@@ -450,30 +471,13 @@ function wrapWithTypeCatch({
                               {
                                 type: "Identifier",
                                 name:
-                                  (info.componentFnExpression as ESTree.FunctionExpression)?.id?.name ??
+                                  (
+                                    info.componentFnExpression as ESTree.FunctionExpression
+                                  )?.id?.name ??
                                   // TODO: Support arrow function names
                                   "Component",
                               },
-                              {
-                                type: "ObjectExpression",
-                                properties: [
-                                  {
-                                    type: "Property",
-                                    key: {
-                                      type: "Identifier",
-                                      name: "text",
-                                    },
-                                    value: {
-                                      type: "Identifier",
-                                      name: "text",
-                                    },
-                                    kind: "init",
-                                    computed: false,
-                                    method: false,
-                                    shorthand: true,
-                                  },
-                                ],
-                              },
+                              params[0],
                               ...((IS_PRODUCTION
                                 ? []
                                 : [
