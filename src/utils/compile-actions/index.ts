@@ -200,7 +200,7 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
         name: info.actionId,
       },
       params,
-      body: wrapWithTypeCatch(body),
+      body: wrapWithTypeCatch({ body, info, params, requestParamName }),
       async: true,
       generator: false,
     },
@@ -323,7 +323,17 @@ function getResponseReturn(): ESTree.ReturnStatement {
   };
 }
 
-function wrapWithTypeCatch(body: ESTree.BlockStatement): ESTree.BlockStatement {
+function wrapWithTypeCatch({
+  body,
+  info,
+  params,
+  requestParamName,
+}: {
+  body: ESTree.BlockStatement;
+  info: ActionInfo;
+  params: ESTree.FunctionDeclaration["params"];
+  requestParamName: string;
+}): ESTree.BlockStatement {
   return {
     ...body,
     body: [
@@ -362,12 +372,12 @@ function wrapWithTypeCatch(body: ESTree.BlockStatement): ESTree.BlockStatement {
                           },
                           value: {
                             type: "Identifier",
-                            name: "req",
+                            name: requestParamName,
                           },
                           kind: "init",
                           computed: false,
                           method: false,
-                          shorthand: true,
+                          shorthand: requestParamName === "req",
                         },
                         {
                           type: "Property",
@@ -398,7 +408,7 @@ function wrapWithTypeCatch(body: ESTree.BlockStatement): ESTree.BlockStatement {
                                 type: "MemberExpression",
                                 object: {
                                   type: "Identifier",
-                                  name: "req",
+                                  name: requestParamName,
                                 },
                                 computed: false,
                                 property: {
@@ -431,8 +441,59 @@ function wrapWithTypeCatch(body: ESTree.BlockStatement): ESTree.BlockStatement {
                             name: "component",
                           },
                           value: {
-                            type: "Literal",
-                            value: "TODO",
+                            type: "CallExpression",
+                            callee: {
+                              type: "Identifier",
+                              name: IS_PRODUCTION ? "jsx" : "jsxDEV",
+                            },
+                            arguments: [
+                              {
+                                type: "Identifier",
+                                name:
+                                  (info.componentFnExpression as ESTree.FunctionExpression)?.id?.name ??
+                                  // TODO: Support arrow function names
+                                  "Component",
+                              },
+                              {
+                                type: "ObjectExpression",
+                                properties: [
+                                  {
+                                    type: "Property",
+                                    key: {
+                                      type: "Identifier",
+                                      name: "text",
+                                    },
+                                    value: {
+                                      type: "Identifier",
+                                      name: "text",
+                                    },
+                                    kind: "init",
+                                    computed: false,
+                                    method: false,
+                                    shorthand: true,
+                                  },
+                                ],
+                              },
+                              ...((IS_PRODUCTION
+                                ? []
+                                : [
+                                    {
+                                      type: "Identifier",
+                                      name: "undefined",
+                                    },
+                                    {
+                                      type: "Literal",
+                                      value: false,
+                                    },
+                                    {
+                                      type: "Identifier",
+                                      name: "undefined",
+                                    },
+                                    {
+                                      type: "ThisExpression",
+                                    },
+                                  ]) as any),
+                            ],
                           },
                           kind: "init",
                           computed: false,
