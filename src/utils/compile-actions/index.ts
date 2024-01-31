@@ -182,14 +182,14 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
     });
   }
 
+  if (requestDestructuring) {
+    body.body.unshift(requestDestructuring);
+  }
+
   // await __action(req.store.get('_action_params'));
   body.body.push(getActionCall(info, requestParamName));
   // return new Response(null);
   body.body.push(getResponseReturn());
-
-  if (requestDestructuring) {
-    body.body.unshift(requestDestructuring);
-  }
 
   return {
     type: "ExportNamedDeclaration",

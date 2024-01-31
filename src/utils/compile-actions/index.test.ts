@@ -32,7 +32,7 @@ describe("utils", () => {
             return resolveAction({ 
               req, 
               error, 
-              pagePath: '/hardcoded-page-route', 
+              pagePath: req.store.get('_action_page'), 
               component: <Component text={text} />
             })
           }
@@ -65,7 +65,7 @@ describe("utils", () => {
             return resolveAction({ 
               req, 
               error, 
-              pagePath: '/hardcoded-page-route', 
+              pagePath: req.store.get('_action_page'), 
               component: <Component text={text} />
             })
           }
@@ -101,7 +101,7 @@ describe("utils", () => {
             return resolveAction({ 
               req, 
               error, 
-              pagePath: '/hardcoded-page-route', 
+              pagePath: req.store.get('_action_page'), 
               component: <Component text={text} />
             })
           }
@@ -136,7 +136,7 @@ describe("utils", () => {
             return resolveAction({ 
               req: requestContext, 
               error, 
-              pagePath: '/hardcoded-page-route', 
+              pagePath: req.store.get('_action_page'), 
               component: <Component text={text} />
             })
           }
