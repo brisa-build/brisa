@@ -140,5 +140,59 @@ describe("utils", () => {
 
       expect(output).toEqual(expected);
     });
+
+    it("should transform a simple arrow function component with 1 action", () => {
+      const code = `
+        export default ({foo}) => {
+          return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{foo}</div>
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+      import {resolveAction} from "brisa/server";
+
+      function Component__0__({foo}) {
+        return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: foo}, undefined, false, undefined, this);
+      }
+
+      export async function a1_1({foo}, req) {
+        try {
+          const __action = () => console.log('hello world');
+          await __action(req.store.get('_action_params'));
+          return new Response(null);
+        } catch (error) {
+          return resolveAction({ 
+            req, 
+            error, 
+            pagePath: req.store.get('_action_page'), 
+            component: jsxDEV(Component__0__, {foo}, undefined, false, undefined, this)
+          });
+        }
+      }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
+    it.todo("should work with export default in different line");
+    it.todo("should work with exports in different lines separated by comma");
+    it.todo("should transform a simple HOC with an action");
+    it.todo("should transform a component with 2 actions");
+    it.todo("should transform different components with different actions");
+    it.todo("should work with an element with an action");
+    it.todo("should work with an element with multiple actions");
+    it.todo("should work with a function jsx generator with an action");
+    it.todo("should work with a function jsx generator with multiple actions");
+    it.todo(
+      "should purge a switch-case with different retuns and actions in each one",
+    );
+    it.todo(
+      "should purge an if-ifelse-else with different retuns and actions in each one",
+    );
+    it.todo("should generate the jsx code correctly in prod");
+    it.todo(
+      "should work without conflicts if already exists a resolveAction variable",
+    );
+    it.todo("should keep variables used inside the action but defined outside");
   });
 });
