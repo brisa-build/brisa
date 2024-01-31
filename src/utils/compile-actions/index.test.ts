@@ -1,11 +1,6 @@
 import { describe, it, expect } from "bun:test";
 import { transformToActionCode } from ".";
 import { normalizeQuotes } from "@/helpers";
-import AST from "../ast";
-
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const processExpected = (code: string) =>
-  normalizeQuotes(generateCodeFromAST(parseCodeToAST(code)));
 
 describe("utils", () => {
   describe("transformToActionCode", () => {
@@ -16,11 +11,11 @@ describe("utils", () => {
         }
       `;
       const output = normalizeQuotes(transformToActionCode(code));
-      const expected = processExpected(`
+      const expected = normalizeQuotes(`
         import {resolveAction} from 'brisa/server';
 
         function Component({text}) {
-          return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
+          return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
         }
 
         export async function a1_1({text}, req) {
@@ -33,8 +28,8 @@ describe("utils", () => {
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
-              component: <Component text={text} />
-            })
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
           }
         }
       `);
@@ -49,16 +44,16 @@ describe("utils", () => {
         }
       `;
       const output = normalizeQuotes(transformToActionCode(code));
-      const expected = processExpected(`
+      const expected = normalizeQuotes(`
         import {resolveAction} from 'brisa/server';
 
         function Component({text}) {
-          return <div onClick={function foo() { console.log('hello world')}} data-action-onClick="a1_1" data-action>{text}</div>
+          return jsxDEV("div", {onClick: function foo() {console.log('hello world');},"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
         }
 
         export async function a1_1({text}, req) {
           try {
-            const __action = function foo() { console.log('hello world') };
+            const __action = function foo() {console.log('hello world');};
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
@@ -66,8 +61,8 @@ describe("utils", () => {
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
-              component: <Component text={text} />
-            })
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
           }
         }
       `);
@@ -83,17 +78,17 @@ describe("utils", () => {
         }
       `;
       const output = normalizeQuotes(transformToActionCode(code));
-      const expected = processExpected(`
+      const expected = normalizeQuotes(`
         import {resolveAction} from 'brisa/server';
 
         function Component({text}, {store}) {
           const onClick = () => console.log('hello world');
-          return <div onClick={onClick} data-action-onClick="a1_1" data-action>{text}</div>
+          return jsxDEV("div", {onClick,"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
         }
 
         export async function a1_1({text}, req) {
-          const {store} = req;
           try {
+            const {store} = req;
             const onClick = () => console.log('hello world');
             await onClick(req.store.get('_action_params'));
             return new Response(null);
@@ -102,8 +97,8 @@ describe("utils", () => {
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
-              component: <Component text={text} />
-            })
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
           }
         }
       `);
@@ -113,18 +108,18 @@ describe("utils", () => {
 
     it("should transform a simple component with 1 action identifier and request identifier", () => {
       const code = `
-        export default function Component({text}, requestContext) {
+        export default function SomeComponent({text}, requestContext){
           const onClick = () => console.log('hello world');
           return <div onClick={onClick} data-action-onClick="a1_1" data-action>{text}</div>
         }
       `;
       const output = normalizeQuotes(transformToActionCode(code));
-      const expected = processExpected(`
-        import {resolveAction} from 'brisa/server';
+      const expected = normalizeQuotes(`
+        import {resolveAction} from "brisa/server";
 
-        function Component({text}, requestContext) {
+        function SomeComponent({text}, requestContext) {
           const onClick = () => console.log('hello world');
-          return <div onClick={onClick} data-action-onClick="a1_1" data-action>{text}</div>
+          return jsxDEV("div", {onClick,"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
         }
 
         export async function a1_1({text}, requestContext) {
@@ -136,9 +131,9 @@ describe("utils", () => {
             return resolveAction({ 
               req: requestContext, 
               error, 
-              pagePath: req.store.get('_action_page'), 
-              component: <Component text={text} />
-            })
+              pagePath: requestContext.store.get('_action_page'), 
+              component: jsxDEV(SomeComponent, {text}, undefined, false, undefined, this)
+            });
           }
         }
       `);
