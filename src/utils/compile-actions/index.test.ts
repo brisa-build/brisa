@@ -25,8 +25,41 @@ describe("utils", () => {
 
         export async function a1_1({text}, req) {
           try {
-            const action = () => console.log('hello world');
-            await action(req.store.get('_action_params'));
+            const __action = () => console.log('hello world');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (e) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: '/hardcoded-page-route', 
+              component: <Component text={text} />
+            })
+          }
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should transform a simple component with 1 function action", () => {
+      const code = `
+        export default function Component({text}) {
+          return <div onClick={function foo() { console.log('hello world')}} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = processExpected(`
+        import {resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          return <div onClick={function foo() { console.log('hello world')}} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = function foo() { console.log('hello world') };
+            await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (e) {
             return resolveAction({ 
