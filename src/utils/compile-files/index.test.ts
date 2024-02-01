@@ -231,7 +231,7 @@ describe("utils", () => {
     ${info}λ /pages/page-with-web-component | 368 B     | ${greenLog("4 kB")} 
     ${info}λ /pages/somepage                | 349 B     | ${greenLog("0 B")} 
     ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("0 B")} 
-    ${info}λ /pages/index                   | 486 B     | ${greenLog("563 B")}  
+    ${info}λ /pages/index                   | 486 B     | ${greenLog("592 B")}  
     ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
     ${info}ƒ /middleware                    | 420 B     |
     ${info}λ /api/example                   | 283 B     |
@@ -239,7 +239,7 @@ describe("utils", () => {
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 103 B     |
-    ${info}Φ /chunk-hash                    | 4 kB      |
+    ${info}Φ /chunk-hash                    | 3 kB      |
     ${info}Φ /chunk-hash                    | 106 B     |
     ${info}
     ${info}λ Server entry-points
