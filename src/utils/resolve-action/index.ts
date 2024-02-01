@@ -6,6 +6,11 @@ type ResolveActionParams = {
 };
 
 // TODO: #47 - Implement rerender component and page
+
+/**
+ *
+ * This method is called inside the catch block of the action function.
+ */
 export default function resolveAction({
   req,
   error,

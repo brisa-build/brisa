@@ -3,7 +3,9 @@
 // RPC (Remote Procedure Call)
 async function rpc(actionId: string, ...args: unknown[]) {
   // TODO: #47 Implement RPC communication correctly, now is a POC (proof of concept)
-  await fetch(`/_action/${actionId}`, {
+  const lang = document.documentElement.lang;
+  const langPrefix = lang ? `/${lang}` : "";
+  await fetch(`${langPrefix}/_action/${actionId}`, {
     method: "POST",
     body: JSON.stringify(args),
   });

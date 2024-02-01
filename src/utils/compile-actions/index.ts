@@ -1,5 +1,6 @@
 import type { BunPlugin } from "bun";
 import type { ESTree } from "meriyah";
+import fs from "node:fs";
 
 import AST from "@/utils/ast";
 import { getConstants } from "@/constants";
@@ -20,7 +21,7 @@ type ActionInfo = {
 };
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const { BUILD_DIR, SRC_DIR, IS_PRODUCTION } = getConstants();
+const { BUILD_DIR, IS_PRODUCTION } = getConstants();
 const EXPORT_TYPES = new Set([
   "ExportDefaultDeclaration",
   "ExportNamedDeclaration",
@@ -41,21 +42,27 @@ export default async function compileActions({
     entrypoints: actionsEntrypoints,
     outdir: BUILD_DIR,
     sourcemap: IS_PRODUCTION ? undefined : "inline",
-    root: SRC_DIR,
+    root: BUILD_DIR,
     target: "bun",
     minify: IS_PRODUCTION,
     splitting: true,
-    plugins: [actionPlugin()],
+    plugins: [actionPlugin({ actionsEntrypoints })],
   });
 }
 
-function actionPlugin() {
+function actionPlugin({ actionsEntrypoints }: CompileActionsParams) {
+  const filter = new RegExp(`(${actionsEntrypoints.join("|")})$`);
+
   return {
     name: "action-plugin",
     setup(build) {
-      build.onLoad({ filter: /.*/ }, async ({ path, loader }) => {
+      build.onLoad({ filter }, async ({ path, loader }) => {
         const code = await Bun.file(path).text();
-        return { contents: transformToActionCode(code), loader };
+        const contents = transformToActionCode(code);
+
+        fs.rmSync(path);
+
+        return { contents, loader };
       });
     },
   } satisfies BunPlugin;
@@ -137,7 +144,7 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
   return {
     ...ast,
     body: ast.body.map((node) => {
-      if (!EXPORT_TYPES.has(node.type)) {
+      if (!EXPORT_TYPES.has(node?.type)) {
         return isArrowFn(node)
           ? arrowToFn(node as unknown as ESTree.ArrowFunctionExpression)
           : node;
@@ -265,7 +272,7 @@ function getActionParams(info: ActionInfo) {
     const currentReq = params[1];
 
     requestParamName =
-      currentReq.type === "Identifier" ? currentReq.name : "req";
+      currentReq?.type === "Identifier" ? currentReq?.name : "req";
     params[1] = { type: "Identifier", name: requestParamName };
 
     if (currentReq.type === "ObjectPattern") {
