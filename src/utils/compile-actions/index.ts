@@ -118,7 +118,18 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
       name: `Component__${count++}__`,
     },
     params: declaration.params,
-    body: declaration.body,
+    body:
+      declaration.body.type === "BlockStatement"
+        ? declaration.body
+        : {
+            type: "BlockStatement",
+            body: [
+              {
+                type: "ReturnStatement",
+                argument: declaration.body,
+              },
+            ],
+          },
     async: declaration.async,
     generator: false,
   });
@@ -149,9 +160,12 @@ function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           curr?.type === "Property" &&
           curr?.key?.value?.startsWith?.("data-action-")
         ) {
-          const eventName = curr?.key?.value?.replace?.("data-action-", "");
+          const eventName = curr?.key?.value
+            ?.replace?.("data-action-", "")
+            ?.toLowerCase();
+
           const eventContent = this.find?.(
-            (e: any) => e?.key?.name === eventName,
+            (e: any) => e?.key?.name?.toLowerCase() === eventName,
           )?.value;
 
           actionInfo.push({
