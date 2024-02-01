@@ -7,10 +7,12 @@ import {
   it,
   spyOn,
   mock,
+  jest,
 } from "bun:test";
 import path from "node:path";
 import { getConstants } from "@/constants";
 import type { ServerWebSocket } from "bun";
+import type { RequestContext } from "@/types";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -51,6 +53,7 @@ describe("CLI: serve", () => {
 
   afterEach(() => {
     globalThis.mockConstants = undefined;
+    jest.restoreAllMocks();
   });
 
   it('should log an error and exit if there are no "build" directory in production', async () => {
@@ -897,5 +900,35 @@ describe("CLI: serve", () => {
     socket.message(ws, "hello test");
 
     expect(mockLog).toHaveBeenCalledWith("message", "hello test");
+  });
+
+  it("should call responseAction method when is an action", async () => {
+    const mockResponseAction = mock((req: RequestContext) => {});
+
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+    mock.module("@/utils/response-action", () => ({
+      default: (req: RequestContext) => mockResponseAction(req),
+    }));
+
+    await testRequest(new Request("http://localhost:1234/_action/a1_1"));
+
+    expect(mockResponseAction).toHaveBeenCalled();
+    expect(mockResponseAction.mock.calls[0][0].i18n.locale).toBeEmpty();
+  });
+
+  it("should call responseAction method when is an action and has i18n", async () => {
+    const mockResponseAction = mock((req: RequestContext) => {});
+
+    mock.module("@/utils/response-action", () => ({
+      default: (req: RequestContext) => mockResponseAction(req),
+    }));
+
+    await testRequest(new Request("http://localhost:1234/es/_action/a1_1"));
+
+    expect(mockResponseAction).toHaveBeenCalled();
+    expect(mockResponseAction.mock.calls[0][0].i18n.locale).toBe("es");
   });
 });
