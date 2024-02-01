@@ -1,5 +1,5 @@
 import type { BunPlugin } from "bun";
-import type { ESTree } from "meriyah";
+import { ESTree } from "meriyah";
 import fs from "node:fs";
 import { join } from "node:path";
 
@@ -121,69 +121,81 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
 
   const convert = (declaration: any) => {
     // Convert: let Component = () => {} --> function Component() {}
-    if (
-      declaration?.type === "VariableDeclaration" &&
-      FN_EXPRESSION_TYPES.has(declaration.declarations[0]?.init?.type)
-    ) {
-      let body = declaration.declarations[0].init.body;
+    if (declaration?.type === "VariableDeclaration") {
+      const res = [];
 
-      if (body.type !== "BlockStatement") {
-        body = {
-          type: "BlockStatement",
-          body: [
-            {
-              type: "ReturnStatement",
-              argument: body,
-            },
-          ],
-        };
+      for (const declarator of declaration.declarations) {
+        if (!FN_EXPRESSION_TYPES.has(declarator.init.type)) continue;
+
+        let body = declarator.init.body;
+
+        if (body.type !== "BlockStatement") {
+          body = {
+            type: "BlockStatement",
+            body: [
+              {
+                type: "ReturnStatement",
+                argument: body,
+              },
+            ],
+          };
+        }
+
+        res.push({
+          type: "FunctionDeclaration",
+          id: declarator.id,
+          params: declarator.init.params,
+          body,
+          async: declarator.init.async,
+          generator: declarator.init.generator ?? false,
+        });
       }
 
-      return {
-        type: "FunctionDeclaration",
-        id: declaration.declarations[0].id,
-        params: declaration.declarations[0].init.params,
-        body,
-        async: declaration.declarations[0].init.async,
-        generator: declaration.declarations[0].init.generator ?? false,
-      };
+      return res;
     }
 
     // Convert: () => {} --> function Component() {}
     if (declaration?.type === "ArrowFunctionExpression") {
-      return {
-        type: "FunctionDeclaration",
-        id: {
-          type: "Identifier",
-          name: `Component__${count++}__`,
+      return [
+        {
+          type: "FunctionDeclaration",
+          id: {
+            type: "Identifier",
+            name: `Component__${count++}__`,
+          },
+          params: declaration.params,
+          body:
+            declaration.body.type === "BlockStatement"
+              ? declaration.body
+              : {
+                  type: "BlockStatement",
+                  body: [
+                    {
+                      type: "ReturnStatement",
+                      argument: declaration.body,
+                    },
+                  ],
+                },
+          async: declaration.async,
+          generator: false,
         },
-        params: declaration.params,
-        body:
-          declaration.body.type === "BlockStatement"
-            ? declaration.body
-            : {
-                type: "BlockStatement",
-                body: [
-                  {
-                    type: "ReturnStatement",
-                    argument: declaration.body,
-                  },
-                ],
-              },
-        async: declaration.async,
-        generator: false,
-      };
+      ];
     }
-    return declaration;
+    return [declaration];
   };
 
   const body = [];
 
   for (const node of ast.body) {
-    if (!EXPORT_TYPES.has(node?.type)) {
-      body.push(convert(node));
-    } else if ((node as any).declaration?.type !== "Identifier") {
-      body.push(convert((node as any).declaration));
+    const isExport = EXPORT_TYPES.has(node?.type);
+    const isExportWithSpecifiers = isExport && (node as any).specifiers?.length;
+    const isExportWithIdentifier =
+      isExport && (node as any).declaration?.type === "Identifier";
+
+    if (!isExportWithSpecifiers && !isExportWithIdentifier) {
+      body.push(
+        ...(isExport ? convert((node as any).declaration) : convert(node)),
+      );
     }
   }
 
