@@ -174,7 +174,156 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo("should work with export default in different line");
+    it("should transform a simple arrow function without block statement component with 1 action", () => {
+      const code = `
+        export default ({foo}) => <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{foo}</div>
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+      import {resolveAction} from "brisa/server";
+
+      function Component__0__({foo}) {
+        return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: foo}, undefined, false, undefined, this);
+      }
+
+      export async function a1_1({foo}, req) {
+        try {
+          const __action = () => console.log('hello world');
+          await __action(req.store.get('_action_params'));
+          return new Response(null);
+        } catch (error) {
+          return resolveAction({ 
+            req, 
+            error, 
+            pagePath: req.store.get('_action_page'), 
+            component: jsxDEV(Component__0__, {foo}, undefined, false, undefined, this)
+          });
+        }
+      }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should transform an async component", () => {
+      const code = `
+        export default async function Component({text}) {
+          return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        async function Component({text}) {
+          return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should work the action with suspense", () => {
+      const code = `
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+        
+        export default async function SlowComponent({}, {store}) {
+          const example = store.get("example");
+          await sleep(5000);
+
+          return <div onClick={() => console.log('Vale')} data-action-onclick="a2_1" data-action>
+            Slow component loaded 🐢 <b>{example}</b>
+          </div>
+        }
+
+        SlowComponent.suspense = () => <>Loading slow component...</>
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction} from "brisa/server";
+
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        async function SlowComponent({}, {store}) {
+          const example = store.get("example");
+          await sleep(5000);
+          return jsxDEV("div", {onClick: () => console.log('Vale'),"data-action-onclick": "a2_1","data-action": true,children: ["Slow component loaded 🐢 ", jsxDEV("b", {children: example}, undefined, false, undefined, this)]}, undefined, true, undefined, this);
+        }
+
+        SlowComponent.suspense = () => jsxDEV(Fragment, {children: "Loading slow component..."}, undefined, false, undefined, this);
+
+        export async function a2_1({}, req) {
+          try {
+            const {store} = req;
+            const __action = () => console.log('Vale');
+            const example = store.get("example");
+            await sleep(5000);
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(SlowComponent, {}, undefined, false, undefined, this)
+            });
+          }
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
+    it.todo("should work with export default in different line", () => {
+      const code = `        
+        function Component({text}) {
+          return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+
+        export default Component;
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
     it.todo("should work with exports in different lines separated by comma");
     it.todo("should transform a simple HOC with an action");
     it.todo("should transform a component with 2 actions");
@@ -194,5 +343,6 @@ describe("utils", () => {
       "should work without conflicts if already exists a resolveAction variable",
     );
     it.todo("should keep variables used inside the action but defined outside");
+    it.todo("should work an action inside a function inside the component");
   });
 });
