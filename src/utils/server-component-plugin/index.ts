@@ -1,6 +1,7 @@
 import { getConstants } from "@/constants";
 import AST from "@/utils/ast";
 import replaceAstImportsToAbsolute from "@/utils/replace-ast-imports-to-absolute";
+import { logWarning } from "@/utils/log/log-build";
 
 type ServerComponentPluginOptions = {
   allWebComponents: Record<string, string>;
@@ -27,9 +28,10 @@ export default function serverComponentPlugin(
   code: string,
   { allWebComponents, fileID, path }: ServerComponentPluginOptions,
 ) {
-  const { CONFIG } = getConstants();
+  const { IS_PRODUCTION, CONFIG } = getConstants();
   const ast = parseCodeToAST(code);
   const isServerOutput = CONFIG.output === "server";
+  const analyzeAction = isServerOutput || !IS_PRODUCTION;
   const isWebComponent = WEB_COMPONENT_REGEX.test(path);
   const detectedWebComponents: Record<string, string> = {};
   const usedWebComponents = new Map<string, string>();
@@ -43,13 +45,14 @@ export default function serverComponentPlugin(
         value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
 
       // Register each JSX action id
-      if (isServerOutput && isJSX && !isWebComponent) {
+      if (analyzeAction && isJSX && !isWebComponent) {
         const actionProperties = [];
         const properties = value.arguments[1]?.properties ?? [];
 
         for (let attributeAst of properties) {
-          if (attributeAst?.key?.name?.startsWith("on")) {
-            hasActions = true;
+          const isAction = attributeAst?.key?.name?.startsWith("on");
+          if (isAction) hasActions = true;
+          if (isAction && isServerOutput) {
             actionProperties.push({
               type: "Property",
               key: {
@@ -167,7 +170,23 @@ export default function serverComponentPlugin(
     }),
   );
 
-  if (hasActions) {
+  if (!isServerOutput && hasActions) {
+    logWarning([
+      `Actions are not supported with the "output": "${CONFIG.output}" option.`,
+      "",
+      `The warn arises in: ${path}`,
+      "",
+      "This limitation is due to the requirement of a server infrastructure for the proper functioning",
+      "of server actions.",
+      "",
+      'To resolve this, ensure that the "output" option is set to "server" when using server actions.',
+      "",
+      "Feel free to reach out if you have any further questions or encounter challenges during this process.",
+      "",
+      "Documentation: https://brisa.dev/docs/components-details/server-actions",
+    ]);
+    hasActions = false;
+  } else if (hasActions) {
     modifiedAst = replaceAstImportsToAbsolute(modifiedAst, path);
   }
 
