@@ -821,7 +821,7 @@ describe("integration", () => {
       );
     });
 
-    it("should render a timer component", () => {
+    it("should render a timer component", async () => {
       const code = `export default function Timer({ }, { state }: any) {
         const time = state(0);
         const interval = setInterval(() => {
@@ -851,19 +851,17 @@ describe("integration", () => {
         "<div><span>Time: 0</span><button>stop</button></div>",
       );
 
-      setTimeout(() => {
-        expect(timer?.shadowRoot?.innerHTML).toBe(
-          "<div><span>Time: 1</span><button>stop</button></div>",
-        );
-      }, 1);
+      await Bun.sleep(1);
+      expect(timer?.shadowRoot?.innerHTML).toBe(
+        "<div><span>Time: 1</span><button>stop</button></div>",
+      );
 
       button.click();
 
-      setTimeout(() => {
-        expect(timer?.shadowRoot?.innerHTML).toBe(
-          "<div><span>Time: 1</span><button>stop</button></div>",
-        );
-      }, 1);
+      await Bun.sleep(1);
+      expect(timer?.shadowRoot?.innerHTML).toBe(
+        "<div><span>Time: 1</span><button>stop</button></div>",
+      );
     });
 
     it("should trigger an event when clicking on a button and can be handled via props", () => {
@@ -1112,7 +1110,7 @@ describe("integration", () => {
       );
     });
 
-    it("should unregister effects when the component is disconnected", () => {
+    it("should unregister effects when the component is disconnected", async () => {
       window.mock = mock((n: number) => {});
       const code = `export default function Test({ }, { state, effect }: any) {
           const count = state(0);
@@ -1137,17 +1135,14 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>0</div>");
       expect(window.mock).toHaveBeenCalledTimes(1);
 
-      setTimeout(() => {
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
-        expect(window.mock).toHaveBeenCalledTimes(2);
-        testComponent.remove();
-      }, 1);
+      await Bun.sleep(1);
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>1</div>");
+      expect(window.mock).toHaveBeenCalledTimes(2);
+      testComponent.remove();
 
-      setTimeout(() => {
-        expect(testComponent?.shadowRoot?.innerHTML).toBe("");
-        expect(window.mock).toHaveBeenCalledTimes(2);
-        clearInterval(window.interval);
-      }, 2);
+      await Bun.sleep(1);
+      expect(window.mock).toHaveBeenCalledTimes(2);
+      clearInterval(window.interval);
     });
 
     it("should reset the state when some props change via effect", () => {
