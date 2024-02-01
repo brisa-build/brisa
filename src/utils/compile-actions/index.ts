@@ -120,21 +120,36 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
   let count = 0;
 
   const convert = (declaration: any) => {
-    // Convert: let Component = function() {} --> function Component() {}
+    // Convert: let Component = () => {} --> function Component() {}
     if (
       declaration?.type === "VariableDeclaration" &&
-      declaration.declarations[0]?.init?.type === "FunctionExpression"
+      FN_EXPRESSION_TYPES.has(declaration.declarations[0]?.init?.type)
     ) {
+      let body = declaration.declarations[0].init.body;
+
+      if (body.type !== "BlockStatement") {
+        body = {
+          type: "BlockStatement",
+          body: [
+            {
+              type: "ReturnStatement",
+              argument: body,
+            },
+          ],
+        };
+      }
+
       return {
         type: "FunctionDeclaration",
         id: declaration.declarations[0].id,
         params: declaration.declarations[0].init.params,
-        body: declaration.declarations[0].init.body,
+        body,
         async: declaration.declarations[0].init.async,
-        generator: declaration.declarations[0].init.generator,
+        generator: declaration.declarations[0].init.generator ?? false,
       };
     }
-    // Convert: let Component = () => {} --> function Component() {}
+
+    // Convert: () => {} --> function Component() {}
     if (declaration?.type === "ArrowFunctionExpression") {
       return {
         type: "FunctionDeclaration",
