@@ -290,7 +290,7 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo("should work with export default in different line", () => {
+    it("should work with export default in different line", () => {
       const code = `        
         function Component({text}) {
           return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
