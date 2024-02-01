@@ -12,6 +12,7 @@ import { logTable } from "@/utils/log/log-build";
 import serverComponentPlugin from "@/utils/server-component-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import getI18nClientMessages from "@/utils/get-i18n-client-messages";
+import compileActions from "@/utils/compile-actions";
 
 export default async function compileFiles() {
   const {
@@ -41,7 +42,7 @@ export default async function compileFiles() {
   );
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
-  const actionsEntrypoints = [];
+  const actionsEntrypoints: string[] = [];
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -82,7 +83,7 @@ export default async function compileFiles() {
                 const actionEntrypoint = join(
                   BUILD_DIR,
                   "actions",
-                  `${fileID}_raw.${loader}`,
+                  `${fileID}.${loader}`,
                 );
 
                 actionsEntrypoints.push(actionEntrypoint);
@@ -111,6 +112,11 @@ export default async function compileFiles() {
   });
 
   if (!success) return { success, logs, pagesSize: {} };
+
+  if (actionsEntrypoints.length) {
+    const actionResult = await compileActions({ actionsEntrypoints });
+    if (!actionResult.success) logs.push(...actionResult.logs);
+  }
 
   const pagesSize = await compileClientCodePage(outputs, {
     allWebComponents,

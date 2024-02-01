@@ -3,10 +3,8 @@ import {
   describe,
   expect,
   it,
-  mock,
   spyOn,
-  beforeAll,
-  afterAll,
+  beforeEach,
   type Mock,
 } from "bun:test";
 import fs from "node:fs";
@@ -14,12 +12,12 @@ import path from "node:path";
 import compileFiles from ".";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
-import { greenLog } from "../log/log-color";
+import { greenLog } from "@/utils/log/log-color";
 
-const originalConsoleLog = console.log;
 const DIR = import.meta.dir;
 const HASH = 123456;
 let mockHash: Mock<(val: any) => any>;
+let mockConsoleLog: Mock<typeof console.log>;
 
 // Development
 const DEV_SRC_DIR = path.join(DIR, "..", "..", "__fixtures__", "dev");
@@ -39,16 +37,17 @@ function minifyText(text: string) {
 }
 
 describe("utils", () => {
-  beforeAll(() => {
+  beforeEach(() => {
     mockHash = spyOn(Bun, "hash").mockReturnValue(HASH);
+    mockConsoleLog = spyOn(console, "log");
   });
-  afterAll(() => {
+  afterEach(() => {
     mockHash.mockRestore();
+    mockConsoleLog.mockRestore();
     globalThis.mockConstants = undefined;
   });
   describe("compileFiles DEVELOPMENT", () => {
     afterEach(() => {
-      console.log = originalConsoleLog;
       globalThis.mockConstants = undefined;
 
       if (fs.existsSync(DEV_BUILD_DIR)) {
@@ -61,8 +60,6 @@ describe("utils", () => {
     });
     it("should compile fixtures routes correctly", async () => {
       const constants = getConstants();
-
-      console.log = mock((v) => v);
 
       globalThis.mockConstants = {
         ...constants,
@@ -81,7 +78,7 @@ describe("utils", () => {
 
       expect(logs).toEqual([]);
       expect(success).toBe(true);
-      expect(console.log).toHaveBeenCalledTimes(0);
+      expect(mockConsoleLog).toHaveBeenCalledTimes(0);
       expect(files).toHaveLength(3);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("pages");
@@ -92,7 +89,6 @@ describe("utils", () => {
 
   describe("compileFiles PRODUCTION", () => {
     it("should compile fixtures routes correctly", async () => {
-      const mockLog = spyOn(console, "log");
       const pagesClientPath = path.join(BUILD_DIR, "pages-client");
       const constants = getConstants();
       globalThis.mockConstants = {
@@ -119,7 +115,7 @@ describe("utils", () => {
         },
       };
 
-      mockLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => {});
 
       const { success, logs } = await compileFiles();
 
@@ -140,7 +136,7 @@ describe("utils", () => {
             'foo-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/lib/foo.tsx").default>;
           }`),
       );
-      expect(console.log).toHaveBeenCalled();
+      expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toHaveLength(12);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("actions");
@@ -220,12 +216,11 @@ describe("utils", () => {
       const info = constants.LOG_PREFIX.INFO;
 
       const logOutput = minifyText(
-        mockLog.mock.calls
+        mockConsoleLog.mock.calls
           .flat()
           .join("\n")
           .replace(/chunk-\S*/g, "chunk-hash"),
       );
-      mockLog.mockRestore();
 
       const expected = minifyText(`
     ${info}

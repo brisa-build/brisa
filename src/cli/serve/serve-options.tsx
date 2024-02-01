@@ -14,6 +14,7 @@ import processPageRoute from "@/utils/process-page-route";
 import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
 import feedbackError from "@/utils/feedback-error";
+import responseAction from "@/utils/response-action";
 
 export async function getServeOptions() {
   const {
@@ -88,6 +89,9 @@ export async function getServeOptions() {
       const isClientPage = url.pathname.startsWith(PUBLIC_CLIENT_PAGE_SUFFIX);
       const isAnAsset = !isHome && fs.existsSync(assetPath);
       const i18nRes = isAnAsset ? {} : handleI18n(request);
+      const isAnAction = url.pathname.startsWith(
+        request.i18n?.locale ? `/${request.i18n.locale}/_action/` : "/_action/",
+      );
 
       if (isClientPage) {
         const clientPagePath = path.join(
@@ -118,7 +122,7 @@ export async function getServeOptions() {
         rootRouter = i18nRes.rootRouter;
       }
 
-      if (!isAnAsset) {
+      if (!isAnAsset && !isAnAction) {
         const redirect = redirectTrailingSlash(request);
 
         if (redirect) return isValidRoute() ? redirect : error404(request);
@@ -126,28 +130,30 @@ export async function getServeOptions() {
 
       request.getIP = () => server.requestIP(req);
 
-      return handleRequest(request, isAnAsset).catch((error) => {
-        // 404 page
-        if (isNotFoundError(error)) return error404(request);
+      return handleRequest(request, { isAnAsset, isAnAction }).catch(
+        (error) => {
+          // 404 page
+          if (isNotFoundError(error)) return error404(request);
 
-        // Log some feedback in the terminal depending on the error
-        // in development and production
-        feedbackError(error);
+          // Log some feedback in the terminal depending on the error
+          // in development and production
+          feedbackError(error);
 
-        // 500 page
-        const route500 = pagesRouter.reservedRoutes[PAGE_500];
+          // 500 page
+          const route500 = pagesRouter.reservedRoutes[PAGE_500];
 
-        if (!route500) throw error;
+          if (!route500) throw error;
 
-        request.route = route500;
+          request.route = route500;
 
-        return responseRenderedPage({
-          req: request,
-          route: route500,
-          status: 500,
-          error,
-        });
-      });
+          return responseRenderedPage({
+            req: request,
+            route: route500,
+            status: 500,
+            error,
+          });
+        },
+      );
     },
     tls,
     websocket: {
@@ -176,7 +182,10 @@ export async function getServeOptions() {
   ///////////////////////////////////////////////////////
   ////////////////////// HELPERS ///////////////////////
   ///////////////////////////////////////////////////////
-  async function handleRequest(req: RequestContext, isAnAsset: boolean) {
+  async function handleRequest(
+    req: RequestContext,
+    { isAnAsset, isAnAction }: { isAnAsset: boolean; isAnAction: boolean },
+  ) {
     const locale = req.i18n.locale;
     const url = new URL(req.finalURL);
     const pathname = url.pathname;
@@ -195,6 +204,17 @@ export async function getServeOptions() {
       if (middlewareResponse) return middlewareResponse;
     }
 
+    // Actions
+    if (isAnAction) {
+      return responseAction(req);
+    }
+
+    // Assets
+    if (isAnAsset) {
+      const assetPath = path.join(ASSETS_DIR, url.pathname);
+      return serveAsset(assetPath, req);
+    }
+
     // Pages
     if (!isApi && route && !isReservedPathname) {
       return responseRenderedPage({ req, route });
@@ -207,12 +227,6 @@ export async function getServeOptions() {
       const response = module[method]?.(req);
 
       if (response) return response;
-    }
-
-    // Assets
-    if (isAnAsset) {
-      const assetPath = path.join(ASSETS_DIR, url.pathname);
-      return serveAsset(assetPath, req);
     }
 
     // 404 page
