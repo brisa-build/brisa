@@ -82,7 +82,7 @@ export default async function compileFiles() {
               if (result.hasActions) {
                 const actionEntrypoint = join(
                   BUILD_DIR,
-                  "actions",
+                  "actions_raw",
                   `${fileID}.${loader}`,
                 );
 

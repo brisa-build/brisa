@@ -1,6 +1,7 @@
 import type { BunPlugin } from "bun";
 import type { ESTree } from "meriyah";
 import fs from "node:fs";
+import {join} from "node:path";
 
 import AST from "@/utils/ast";
 import { getConstants } from "@/constants";
@@ -20,6 +21,7 @@ type ActionInfo = {
     | ESTree.FunctionExpression;
 };
 
+const { BUILD_DIR, IS_PRODUCTION } = getConstants();
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const EXPORT_TYPES = new Set([
   "ExportDefaultDeclaration",
@@ -37,17 +39,21 @@ const FN_DECLARATION_TYPES = new Set([
 export default async function compileActions({
   actionsEntrypoints,
 }: CompileActionsParams) {
-  const { BUILD_DIR, IS_PRODUCTION } = getConstants();
-  return Bun.build({
+  const rawActionsDir = join(BUILD_DIR, 'actions_raw');
+  const res = await Bun.build({
     entrypoints: actionsEntrypoints,
-    outdir: BUILD_DIR,
+    outdir: join(BUILD_DIR, 'actions'),
     sourcemap: IS_PRODUCTION ? undefined : "inline",
-    root: BUILD_DIR,
+    root: rawActionsDir,
     target: "bun",
     minify: IS_PRODUCTION,
     splitting: true,
     plugins: [actionPlugin({ actionsEntrypoints })],
   });
+
+  fs.rmSync(rawActionsDir, { recursive: true });
+
+  return res;
 }
 
 function actionPlugin({ actionsEntrypoints }: CompileActionsParams) {
@@ -58,11 +64,7 @@ function actionPlugin({ actionsEntrypoints }: CompileActionsParams) {
     setup(build) {
       build.onLoad({ filter }, async ({ path, loader }) => {
         const code = await Bun.file(path).text();
-        const contents = transformToActionCode(code);
-
-        fs.rmSync(path);
-
-        return { contents, loader };
+        return { contents: transformToActionCode(code), loader };
       });
     },
   } satisfies BunPlugin;
@@ -376,8 +378,6 @@ function wrapWithTypeCatch({
   params: ESTree.FunctionDeclaration["params"];
   requestParamName: string;
 }): ESTree.BlockStatement {
-  const { IS_PRODUCTION } = getConstants();
-
   return {
     ...body,
     body: [
