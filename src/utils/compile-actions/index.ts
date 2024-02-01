@@ -119,44 +119,60 @@ function addResolveActionImport(ast: ESTree.Program): ESTree.Program {
 function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
   let count = 0;
 
-  const isArrowFn = (node: any) => node?.type === "ArrowFunctionExpression";
-  const arrowToFn = (declaration: ESTree.ArrowFunctionExpression) => ({
-    type: "FunctionDeclaration",
-    id: {
-      type: "Identifier",
-      name: `Component__${count++}__`,
-    },
-    params: declaration.params,
-    body:
-      declaration.body.type === "BlockStatement"
-        ? declaration.body
-        : {
-            type: "BlockStatement",
-            body: [
-              {
-                type: "ReturnStatement",
-                argument: declaration.body,
+  const convert = (declaration: any) => {
+    // Convert: let Component = function() {} --> function Component() {}
+    if (
+      declaration?.type === "VariableDeclaration" &&
+      declaration.declarations[0]?.init?.type === "FunctionExpression"
+    ) {
+      return {
+        type: "FunctionDeclaration",
+        id: declaration.declarations[0].id,
+        params: declaration.declarations[0].init.params,
+        body: declaration.declarations[0].init.body,
+        async: declaration.declarations[0].init.async,
+        generator: declaration.declarations[0].init.generator,
+      };
+    }
+    // Convert: let Component = () => {} --> function Component() {}
+    if (declaration?.type === "ArrowFunctionExpression") {
+      return {
+        type: "FunctionDeclaration",
+        id: {
+          type: "Identifier",
+          name: `Component__${count++}__`,
+        },
+        params: declaration.params,
+        body:
+          declaration.body.type === "BlockStatement"
+            ? declaration.body
+            : {
+                type: "BlockStatement",
+                body: [
+                  {
+                    type: "ReturnStatement",
+                    argument: declaration.body,
+                  },
+                ],
               },
-            ],
-          },
-    async: declaration.async,
-    generator: false,
-  });
-
-  return {
-    ...ast,
-    body: ast.body.map((node) => {
-      if (!EXPORT_TYPES.has(node?.type)) {
-        return isArrowFn(node)
-          ? arrowToFn(node as unknown as ESTree.ArrowFunctionExpression)
-          : node;
-      }
-
-      const { declaration } = node as any;
-
-      return isArrowFn(declaration) ? arrowToFn(declaration) : declaration;
-    }),
+        async: declaration.async,
+        generator: false,
+      };
+    }
+    return declaration;
   };
+
+  const body = [];
+
+  for (const node of ast.body) {
+    if (!EXPORT_TYPES.has(node?.type)) {
+      body.push(convert(node));
+    } else if ((node as any).declaration?.type !== "Identifier") {
+      body.push(convert((node as any).declaration));
+    }
+  }
+
+  return { ...ast, body };
 }
 
 function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
