@@ -1,8 +1,9 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it, afterEach } from "bun:test";
 
 import serverComponentPlugin, { workaroundText } from ".";
 import { normalizeQuotes } from "@/helpers";
 import AST from "@/utils/ast";
+import { getConstants } from "@/constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
@@ -10,6 +11,9 @@ const toExpected = (s: string) =>
   normalizeQuotes(generateCodeFromAST(parseCodeToAST(s)) + workaroundText);
 
 describe("utils", () => {
+  afterEach(() => {
+    globalThis.mockConstants = undefined;
+  });
   describe("serverComponentPlugin", () => {
     it('should not register action ids if the attribute event does not start with "on"', () => {
       const code = `
@@ -180,6 +184,80 @@ describe("utils", () => {
           return <div onClick={onFoo} data-action-onclick="a1_2" data-action />;
         }
       `),
+      );
+    });
+
+    it('should return hasActions false and NOT do the transformation if the config.output is "static"', () => {
+      const code = `
+        export default function ServerComponent1() {
+          return <div onClick={() => console.log('foo')} />;
+        }
+
+        export function ServerComponent2({ onFoo }) {
+          return <div onClick={onFoo} />;
+        }
+      `;
+
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          output: "static",
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
+
+      expect(out.hasActions).toBeFalse();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent1() {
+          return <div onClick={() => console.log('foo')} />;
+        }
+
+        export function ServerComponent2({ onFoo }) {
+          return <div onClick={onFoo} />;
+        }
+      `),
+      );
+    });
+
+    it('should return hasActions false and NOT do the transformation if the config.output is "desktop"', () => {
+      const code = `
+      export default function ServerComponent1() {
+        return <div onClick={() => console.log('foo')} />;
+      }
+
+      export function ServerComponent2({ onFoo }) {
+        return <div onClick={onFoo} />;
+      }
+    `;
+
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          output: "desktop",
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
+
+      expect(out.hasActions).toBeFalse();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+      export default function ServerComponent1() {
+        return <div onClick={() => console.log('foo')} />;
+      }
+
+      export function ServerComponent2({ onFoo }) {
+        return <div onClick={onFoo} />;
+      }
+    `),
       );
     });
 
