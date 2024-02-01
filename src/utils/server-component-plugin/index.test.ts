@@ -1,4 +1,4 @@
-import { describe, expect, it, afterEach } from "bun:test";
+import { describe, expect, it, afterEach, spyOn, jest } from "bun:test";
 
 import serverComponentPlugin, { workaroundText } from ".";
 import { normalizeQuotes } from "@/helpers";
@@ -13,6 +13,7 @@ const toExpected = (s: string) =>
 describe("utils", () => {
   afterEach(() => {
     globalThis.mockConstants = undefined;
+    jest.restoreAllMocks();
   });
   describe("serverComponentPlugin", () => {
     it('should not register action ids if the attribute event does not start with "on"', () => {
@@ -224,6 +225,67 @@ describe("utils", () => {
       );
     });
 
+    it('should warn in DEV when there are actions and the config.output is "static"', () => {
+      const code = `
+        export default function ServerComponent1() {
+          return <div onClick={() => console.log('foo')} />;
+        }
+
+        export function ServerComponent2({ onFoo }) {
+          return <div onClick={onFoo} />;
+        }
+      `;
+      const mockConsoleLog = spyOn(console, "log");
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          output: "static",
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
+
+      const logs = mockConsoleLog.mock.calls.toString();
+
+      expect(out.hasActions).toBeFalse();
+      expect(mockConsoleLog).toHaveBeenCalled();
+      expect(logs).toContain(
+        'Actions are not supported with the "output": "static" option.',
+      );
+      expect(logs).toContain("The warn arises in: /component/some.tsx");
+    });
+
+    it('should not warn in PROD when there are actions and the config.output is "static"', () => {
+      const code = `
+        export default function ServerComponent1() {
+          return <div onClick={() => console.log('foo')} />;
+        }
+
+        export function ServerComponent2({ onFoo }) {
+          return <div onClick={onFoo} />;
+        }
+      `;
+      const mockConsoleLog = spyOn(console, "log");
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_PRODUCTION: true,
+        CONFIG: {
+          output: "static",
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
+
+      expect(out.hasActions).toBeFalse();
+      expect(mockConsoleLog).not.toHaveBeenCalled();
+    });
+
     it('should return hasActions false and NOT do the transformation if the config.output is "desktop"', () => {
       const code = `
       export default function ServerComponent1() {
@@ -259,6 +321,67 @@ describe("utils", () => {
       }
     `),
       );
+    });
+
+    it('should warn in DEV when there are actions and the config.output is "desktop"', () => {
+      const code = `
+        export default function ServerComponent1() {
+          return <div onClick={() => console.log('foo')} />;
+        }
+
+        export function ServerComponent2({ onFoo }) {
+          return <div onClick={onFoo} />;
+        }
+      `;
+      const mockConsoleLog = spyOn(console, "log");
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          output: "desktop",
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
+
+      const logs = mockConsoleLog.mock.calls.toString();
+
+      expect(out.hasActions).toBeFalse();
+      expect(mockConsoleLog).toHaveBeenCalled();
+      expect(logs).toContain(
+        'Actions are not supported with the "output": "desktop" option.',
+      );
+      expect(logs).toContain("The warn arises in: /component/some.tsx");
+    });
+
+    it('should not warn in PROD when there are actions and the config.output is "desktop"', () => {
+      const code = `
+        export default function ServerComponent1() {
+          return <div onClick={() => console.log('foo')} />;
+        }
+
+        export function ServerComponent2({ onFoo }) {
+          return <div onClick={onFoo} />;
+        }
+      `;
+      const mockConsoleLog = spyOn(console, "log");
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_PRODUCTION: true,
+        CONFIG: {
+          output: "desktop",
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: "/component/some.tsx",
+      });
+
+      expect(out.hasActions).toBeFalse();
+      expect(mockConsoleLog).not.toHaveBeenCalled();
     });
 
     it("should convert a web-component to ServerComponent", () => {

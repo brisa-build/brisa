@@ -2317,7 +2317,6 @@ describe("utils", () => {
       globalThis.location = undefined as any;
     });
 
-    // TODO: in the future server events should be able, for now just ignore
     it("should render correctly if there is an async event in some element", () => {
       async function ComponentWithAsyncEvent({}, { i18n }: RequestContext) {
         async function onAsyncEvent() {
