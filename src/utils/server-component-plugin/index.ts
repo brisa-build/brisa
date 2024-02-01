@@ -1,3 +1,4 @@
+import { getConstants } from "@/constants";
 import AST from "@/utils/ast";
 import replaceAstImportsToAbsolute from "@/utils/replace-ast-imports-to-absolute";
 
@@ -26,7 +27,9 @@ export default function serverComponentPlugin(
   code: string,
   { allWebComponents, fileID, path }: ServerComponentPluginOptions,
 ) {
+  const { CONFIG } = getConstants();
   const ast = parseCodeToAST(code);
+  const isServerOutput = CONFIG.output === "server";
   const isWebComponent = WEB_COMPONENT_REGEX.test(path);
   const detectedWebComponents: Record<string, string> = {};
   const usedWebComponents = new Map<string, string>();
@@ -40,7 +43,7 @@ export default function serverComponentPlugin(
         value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
 
       // Register each JSX action id
-      if (isJSX && !isWebComponent) {
+      if (isServerOutput && isJSX && !isWebComponent) {
         const actionProperties = [];
         const properties = value.arguments[1]?.properties ?? [];
 

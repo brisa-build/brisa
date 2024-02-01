@@ -1,7 +1,7 @@
 import type { BunPlugin } from "bun";
 import type { ESTree } from "meriyah";
 import fs from "node:fs";
-import {join} from "node:path";
+import { join } from "node:path";
 
 import AST from "@/utils/ast";
 import { getConstants } from "@/constants";
@@ -39,10 +39,10 @@ const FN_DECLARATION_TYPES = new Set([
 export default async function compileActions({
   actionsEntrypoints,
 }: CompileActionsParams) {
-  const rawActionsDir = join(BUILD_DIR, 'actions_raw');
+  const rawActionsDir = join(BUILD_DIR, "actions_raw");
   const res = await Bun.build({
     entrypoints: actionsEntrypoints,
-    outdir: join(BUILD_DIR, 'actions'),
+    outdir: join(BUILD_DIR, "actions"),
     sourcemap: IS_PRODUCTION ? undefined : "inline",
     root: rawActionsDir,
     target: "bun",
