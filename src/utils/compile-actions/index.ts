@@ -21,7 +21,6 @@ type ActionInfo = {
     | ESTree.FunctionExpression;
 };
 
-const { BUILD_DIR, IS_PRODUCTION } = getConstants();
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const EXPORT_TYPES = new Set([
   "ExportDefaultDeclaration",
@@ -39,6 +38,7 @@ const FN_DECLARATION_TYPES = new Set([
 export default async function compileActions({
   actionsEntrypoints,
 }: CompileActionsParams) {
+  const { BUILD_DIR, IS_PRODUCTION } = getConstants();
   const rawActionsDir = join(BUILD_DIR, "actions_raw");
   const res = await Bun.build({
     entrypoints: actionsEntrypoints,
@@ -378,6 +378,8 @@ function wrapWithTypeCatch({
   params: ESTree.FunctionDeclaration["params"];
   requestParamName: string;
 }): ESTree.BlockStatement {
+  const { IS_PRODUCTION } = getConstants();
+
   return {
     ...body,
     body: [
