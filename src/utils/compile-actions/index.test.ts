@@ -508,7 +508,169 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo("should transform different components with different actions");
+    it("should transform different components with different actions", () => {
+      const code = `
+        export default () => (
+            <button 
+              onClick={() => console.log('First action')}
+              data-action-onClick="a1_1"
+              data-action
+            >
+              Click me
+            </button>
+        );
+
+        const Foo = function () {
+          return (
+            <input 
+              type="text" 
+              onInput={() => console.log('Second action')} 
+              data-action-onInput="a1_2"
+              onClick={() => console.log('Third action')}
+              data-action-onClick="a1_3"
+              data-action
+            />
+          );
+        }
+
+        export {Foo};
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        function Component__0__() {
+          return jsxDEV("button", {onClick: () => console.log('First action'),"data-action-onClick": "a1_1","data-action": true,children: "Click me"}, undefined, false, undefined, this);
+        }
+
+        function Foo() {
+          return jsxDEV("input", {type: "text",onInput: () => console.log('Second action'),"data-action-onInput": "a1_2",onClick: () => console.log('Third action'),"data-action-onClick": "a1_3","data-action": true}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({}, req) {
+          try {
+            const __action = () => console.log('First action');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Component__0__, {}, undefined, false, undefined, this)
+            });
+          }
+        }
+        
+        export async function a1_2({}, req) {
+          try {
+            const __action = () => console.log('Second action');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Foo, {}, undefined, false, undefined, this)
+            });
+          }
+        }
+
+        export async function a1_3({}, req) {
+          try {
+            const __action = () => console.log('Third action');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Foo, {}, undefined, false, undefined, this)
+            });
+          }
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should purge an if-ifelse-else with different retuns and actions in each one", () => {
+      const code = `
+        export default function Component({text}) {
+          if (text === 'a') {
+            return <div onClick={() => console.log('a')} data-action-onClick="a1_1" data-action>{text}</div>
+          } else if (text === 'b') {
+            return <div onClick={() => console.log('b')} data-action-onClick="a1_2" data-action>{text}</div>
+          } else {
+            return <div onClick={() => console.log('c')} data-action-onClick="a1_3" data-action>{text}</div>
+          }
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          if (text === 'a') {
+            return jsxDEV("div", {onClick: () => console.log('a'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+          } else if (text === 'b') {
+            return jsxDEV("div", {onClick: () => console.log('b'),"data-action-onClick": "a1_2","data-action": true,children: text}, undefined, false, undefined, this);
+          } else {
+            return jsxDEV("div", {onClick: () => console.log('c'),"data-action-onClick": "a1_3","data-action": true,children: text}, undefined, false, undefined, this);
+          }
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log('a');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }
+
+        export async function a1_2({text}, req) {
+          try {
+            const __action = () => console.log('b');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }
+
+        export async function a1_3({text}, req) {
+          try {
+            const __action = () => console.log('c');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
     it.todo("should work with an element with an action");
     it.todo("should work with an element with multiple actions");
     it.todo("should transform a simple HOC with an action");
@@ -516,9 +678,6 @@ describe("utils", () => {
     it.todo("should work with a function jsx generator with multiple actions");
     it.todo(
       "should purge a switch-case with different retuns and actions in each one",
-    );
-    it.todo(
-      "should purge an if-ifelse-else with different retuns and actions in each one",
     );
     it.todo("should generate the jsx code correctly in prod");
     it.todo(
