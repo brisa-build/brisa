@@ -309,9 +309,13 @@ function getActionParams(info: ActionInfo) {
   let requestParamName = "req";
   let requestDestructuring;
 
+  // Add props as first param if there's no params
   if (!params.length) {
     params.push({ type: "ObjectPattern", properties: [] });
-  } else if (params.length === 1) {
+  }
+
+  // Add "req" as second param
+  if (params.length === 1) {
     params.push({ type: "Identifier", name: requestParamName });
   } else {
     const currentReq = params[1];

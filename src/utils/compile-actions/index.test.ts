@@ -448,11 +448,70 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo("should transform a simple HOC with an action");
-    it.todo("should transform a component with 2 actions");
+    it("should transform a component with 2 actions", () => {
+      const code = `
+        export default function Component() {
+          const onLoad = () => console.log('loaded');
+          return (
+            <body 
+              onClick={() => console.log('hello world')} 
+              data-action-onClick="a1_1"
+              onLoad={onLoad}
+              data-action-onLoad="a1_2"
+              data-action 
+            />
+          );
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        function Component() {
+          const onLoad = () => console.log('loaded');
+          return jsxDEV("body", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1",onLoad,"data-action-onLoad": "a1_2","data-action": true}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            const onLoad = () => console.log('loaded');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Component, {}, undefined, false, undefined, this)
+            });
+          }
+        }
+
+        export async function a1_2({}, req) {
+          try {
+            const onLoad = () => console.log('loaded');
+            await onLoad(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({ 
+              req, 
+              error, 
+              pagePath: req.store.get('_action_page'), 
+              component: jsxDEV(Component, {}, undefined, false, undefined, this)
+            });
+          }
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
     it.todo("should transform different components with different actions");
     it.todo("should work with an element with an action");
     it.todo("should work with an element with multiple actions");
+    it.todo("should transform a simple HOC with an action");
     it.todo("should work with a function jsx generator with an action");
     it.todo("should work with a function jsx generator with multiple actions");
     it.todo(
