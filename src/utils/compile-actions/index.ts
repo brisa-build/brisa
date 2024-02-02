@@ -5,20 +5,12 @@ import { join } from "node:path";
 
 import AST from "@/utils/ast";
 import { getConstants } from "@/constants";
+import type { ActionInfo } from "./get-actions-info";
+import getActionsInfo from "./get-actions-info";
+import { getPurgedBody } from "./get-purged-body";
 
 type CompileActionsParams = {
   actionsEntrypoints: string[];
-};
-
-type ActionInfo = {
-  actionId: string;
-  actionIdentifierName?: string;
-  actionFnExpression?:
-    | ESTree.ArrowFunctionExpression
-    | ESTree.FunctionExpression;
-  componentFnExpression?:
-    | ESTree.ArrowFunctionExpression
-    | ESTree.FunctionExpression;
 };
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
@@ -29,10 +21,6 @@ const EXPORT_TYPES = new Set([
 const FN_EXPRESSION_TYPES = new Set([
   "ArrowFunctionExpression",
   "FunctionExpression",
-]);
-const FN_DECLARATION_TYPES = new Set([
-  "FunctionDeclaration",
-  "ArrowFunctionExpression",
 ]);
 
 export default async function compileActions({
@@ -202,55 +190,12 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
   return { ...ast, body };
 }
 
-function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
-  const actionInfo: ActionInfo[] = [];
-
-  JSON.stringify(ast, function (k, comp) {
-    if (FN_DECLARATION_TYPES.has(comp?.type)) {
-      JSON.stringify(comp, function (k, curr) {
-        if (
-          curr?.type === "Property" &&
-          curr?.key?.value?.startsWith?.("data-action-")
-        ) {
-          const eventName = curr?.key?.value
-            ?.replace?.("data-action-", "")
-            ?.toLowerCase();
-
-          const eventContent = this.find?.(
-            (e: any) => e?.key?.name?.toLowerCase() === eventName,
-          )?.value;
-
-          actionInfo.push({
-            actionId: curr?.value?.value,
-            componentFnExpression: comp,
-            actionFnExpression: FN_EXPRESSION_TYPES.has(eventContent?.type)
-              ? eventContent
-              : undefined,
-            actionIdentifierName:
-              eventContent?.type === "Identifier"
-                ? eventContent?.name
-                : undefined,
-          });
-        }
-        return curr;
-      });
-    }
-
-    return comp;
-  });
-
-  return actionInfo;
-}
-
 function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
-  const defaultBody = { type: "BlockStatement", body: [] };
   const { params, requestDestructuring, requestParamName } =
     getActionParams(info);
   const declareActionVar =
     !info.actionIdentifierName && info.actionFnExpression;
-  const body = purgeBody(
-    info.componentFnExpression?.body ?? (defaultBody as any),
-  );
+  const body = getPurgedBody(info);
 
   if (declareActionVar) {
     body.body.unshift({
@@ -293,14 +238,6 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
     },
     specifiers: [],
     source: null,
-  };
-}
-
-function purgeBody(body: ESTree.BlockStatement): ESTree.BlockStatement {
-  const NODE_TO_PURGE = new Set(["IfStatement", "ReturnStatement"]);
-  return {
-    ...body,
-    body: body?.body?.filter((e) => !NODE_TO_PURGE.has(e?.type)),
   };
 }
 
