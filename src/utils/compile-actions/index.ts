@@ -113,7 +113,10 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
       const res = [];
 
       for (const declarator of declaration.declarations) {
-        if (!FN_EXPRESSION_TYPES.has(declarator.init.type)) continue;
+        if (!FN_EXPRESSION_TYPES.has(declarator.init.type)) {
+          res.push(declaration);
+          break;
+        }
 
         let body = declarator.init.body;
 

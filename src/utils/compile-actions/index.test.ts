@@ -1,8 +1,12 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect, afterEach, jest } from "bun:test";
 import { transformToActionCode } from ".";
 import { normalizeQuotes } from "@/helpers";
+import { getConstants } from "@/constants";
 
 describe("utils", () => {
+  afterEach(() => {
+    globalThis.mockConstants = undefined;
+  });
   describe("transformToActionCode", () => {
     it("should transform a simple component with 1 action", () => {
       const code = `
@@ -816,19 +820,221 @@ describe("utils", () => {
 
       expect(output).toEqual(expected);
     });
+    it("should only remove the return statement inside a switch-case statements when are doing more things than returning jsx", () => {
+      const code = `
+        export default function Component({text}) {
+          let {foo} = {};
+          switch (text) {
+            case 'a':
+              foo = 'a';
+              return <div onClick={() => console.log('first action', foo)} data-action-onClick="a1_1" data-action>{text}</div>
+            default:
+              foo = 'b';
+              return <div onClick={() => console.log('second action', foo)} data-action-onClick="a1_2" data-action>{text}</div>
+          }
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          let {foo} = {};
+          switch (text) {
+            case 'a':
+              foo = 'a';
+              return jsxDEV("div", {onClick: () => console.log('first action', foo),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+            default:
+              foo = 'b';
+              return jsxDEV("div", {onClick: () => console.log('second action', foo),"data-action-onClick": "a1_2","data-action": true,children: text}, undefined, false, undefined, this);
+          }
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log('first action', foo);
+            let {foo} = {};
+            switch (text) {
+              case 'a':
+                foo = 'a';
+              default:
+                foo = 'b';
+            }
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({
+              req,
+              error,
+              pagePath: req.store.get('_action_page'),
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }
+
+        export async function a1_2({text}, req) {
+          try {
+            const __action = () => console.log('second action', foo);
+            let {foo} = {};
+            switch (text) {
+              case 'a':
+                foo = 'a';
+              default:
+                foo = 'b';
+            }
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({
+              req,
+              error,
+              pagePath: req.store.get('_action_page'),
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+    it("should generate the jsx code correctly in prod", () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_PRODUCTION: true,
+      };
+      const code = `
+        export default function Component({text}) {
+          return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+      expect(transformToActionCode(code)).toContain(
+        "component: jsx(Component, {text})",
+      );
+    });
+    it("should keep variables used inside the action but defined outside", () => {
+      const code = `
+        const SOME_CONSTANT = 'hello world';
+
+        export default function Component({text}) {
+          return <div onClick={() => console.log(SOME_CONSTANT)} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        const SOME_CONSTANT = 'hello world';
+
+        function Component({text}) {
+          return jsxDEV("div", {onClick: () => console.log(SOME_CONSTANT),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log(SOME_CONSTANT);
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({
+              req,
+              error,
+              pagePath: req.store.get('_action_page'),
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+    it("should keep destructuring variables used inside the action but defined outside", () => {
+      const code = `
+        const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world', FOO: 'foo'};
+
+        export default function Component({text}) {
+          return <div onClick={() => console.log(SOME_CONSTANT, FOO)} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world',FOO: 'foo'};
+
+        function Component({text}) {
+          return jsxDEV("div", {onClick: () => console.log(SOME_CONSTANT, FOO),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log(SOME_CONSTANT, FOO);
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({
+              req,
+              error,
+              pagePath: req.store.get('_action_page'),
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
     it.todo(
-      "should only remove the return statement inside a switch-case statements when are doing more things than returning jsx",
+      "should keep some and purge another destructuring variables used inside the action but defined outside",
+      () => {
+        const code = `
+        const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world', FOO: 'foo'};
+
+        export default function Component({text}) {
+          return <div onClick={() => console.log(SOME_CONSTANT)} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+
+        const output = normalizeQuotes(transformToActionCode(code));
+
+        const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        const {SOME_CONSTANT} = {SOME_CONSTANT: 'hello world'};
+
+        function Component({text}) {
+          return jsxDEV("div", {onClick: () => console.log(SOME_CONSTANT),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log(SOME_CONSTANT);
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({
+              req,
+              error,
+              pagePath: req.store.get('_action_page'),
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+        expect(output).toEqual(expected);
+      },
+    );
+    it.todo(
+      "should purge some and keep and transform using destructuring variables with literal and components",
+    );
+    it.todo("should work an action inside a function inside the component");
+    it.todo(
+      "should work without conflicts if already exists a resolveAction variable",
     );
     it.todo("should work with an element with an action");
     it.todo("should work with an element with multiple actions");
     it.todo("should transform a simple HOC with an action");
     it.todo("should work with a function jsx generator with an action");
     it.todo("should work with a function jsx generator with multiple actions");
-    it.todo("should generate the jsx code correctly in prod");
-    it.todo(
-      "should work without conflicts if already exists a resolveAction variable",
-    );
-    it.todo("should keep variables used inside the action but defined outside");
-    it.todo("should work an action inside a function inside the component");
   });
 });

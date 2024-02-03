@@ -243,5 +243,23 @@ describe("utils", () => {
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
+
+    it("should keep if some variables are with destructuring", () => {
+      const codeToPurge = `
+        function Test() {
+          let {foo} = {foo: 'bar'};
+          const onClick = () => console.log(foo);
+
+          return <div onClick={onClick} data-action-onClick="a1_1">hello</div>;
+        }
+      `;
+      const expectedCode = `
+        let Test = function () {
+          let {foo} = {foo: 'bar'};
+          const onClick = () => console.log(foo);
+        };
+      `;
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    });
   });
 });
