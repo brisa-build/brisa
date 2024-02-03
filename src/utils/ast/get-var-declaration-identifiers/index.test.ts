@@ -35,6 +35,36 @@ describe("utils", () => {
         expect(output).toEqual(new Set(["a", "b"]));
       });
 
+      it("should return identifiers inside an ObjectPattern", () => {
+        const node = {
+          type: "VariableDeclaration",
+          declarations: [
+            {
+              type: "VariableDeclarator",
+              id: {
+                type: "ObjectPattern",
+                properties: [
+                  {
+                    type: "Property",
+                    key: { type: "Identifier", name: "a" },
+                    value: { type: "Identifier", name: "b" },
+                  },
+                  {
+                    type: "Property",
+                    key: { type: "Identifier", name: "c" },
+                    value: { type: "Identifier", name: "d" },
+                  },
+                ],
+              },
+              init: { type: "Literal", value: 1 },
+            },
+          ],
+          kind: "const",
+        };
+        const output = getVarDeclarationIdentifiers(node as ESTree.Node);
+        expect(output).toEqual(new Set(["a", "c"]));
+      });
+
       it("should return all identifiers in the given AST with nested structures", () => {
         const node = {
           type: "VariableDeclaration",
