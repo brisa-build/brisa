@@ -222,7 +222,7 @@ async function compileClientCodePage(
 
   for (const page of pages) {
     const route = page.path.replace(BUILD_DIR, "");
-    const pagePath = join(BUILD_DIR, page.path.replace(BUILD_DIR, ""));
+    const pagePath = page.path;
     const clientPagePath = pagePath.replace("pages", "pages-client");
     const pageCode = await getClientCodeInPage(
       pagePath,
