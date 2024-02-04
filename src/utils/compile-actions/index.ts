@@ -94,7 +94,7 @@ function addResolveActionImport(ast: ESTree.Program): ESTree.Program {
             },
             local: {
               type: "Identifier",
-              name: "resolveAction",
+              name: "__resolveAction",
             },
           },
         ],
@@ -391,7 +391,7 @@ function wrapWithTypeCatch({
                   type: "CallExpression",
                   callee: {
                     type: "Identifier",
-                    name: "resolveAction",
+                    name: "__resolveAction",
                   },
                   arguments: [
                     {

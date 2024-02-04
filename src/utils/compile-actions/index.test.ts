@@ -16,7 +16,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -28,7 +28,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -49,7 +49,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           return jsxDEV("div", {onClick: function foo() {console.log('hello world');},"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -61,7 +61,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -83,7 +83,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}, {store}) {
           const onClick = () => console.log('hello world');
@@ -97,7 +97,7 @@ describe("utils", () => {
             await onClick(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -119,7 +119,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from "brisa/server";
+        import {resolveAction as __resolveAction} from "brisa/server";
 
         function SomeComponent({text}, requestContext) {
           const onClick = () => console.log('hello world');
@@ -132,7 +132,7 @@ describe("utils", () => {
             await onClick(requestContext.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req: requestContext, 
               error, 
               pagePath: requestContext.store.get('_action_page'), 
@@ -153,7 +153,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-      import {resolveAction} from "brisa/server";
+      import {resolveAction as __resolveAction} from "brisa/server";
 
       function Component__0__({foo}) {
         return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: foo}, undefined, false, undefined, this);
@@ -165,7 +165,7 @@ describe("utils", () => {
           await __action(req.store.get('_action_params'));
           return new Response(null);
         } catch (error) {
-          return resolveAction({ 
+          return __resolveAction({ 
             req, 
             error, 
             pagePath: req.store.get('_action_page'), 
@@ -184,7 +184,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-      import {resolveAction} from "brisa/server";
+      import {resolveAction as __resolveAction} from "brisa/server";
 
       function Component__0__({foo}) {
         return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: foo}, undefined, false, undefined, this);
@@ -196,7 +196,7 @@ describe("utils", () => {
           await __action(req.store.get('_action_params'));
           return new Response(null);
         } catch (error) {
-          return resolveAction({ 
+          return __resolveAction({ 
             req, 
             error, 
             pagePath: req.store.get('_action_page'), 
@@ -217,7 +217,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         async function Component({text}) {
           return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -229,7 +229,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -260,7 +260,7 @@ describe("utils", () => {
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction} from "brisa/server";
+        import {resolveAction as __resolveAction} from "brisa/server";
 
         function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
 
@@ -279,7 +279,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -302,7 +302,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -314,7 +314,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -337,7 +337,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -349,7 +349,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -370,7 +370,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -382,7 +382,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -409,7 +409,7 @@ describe("utils", () => {
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function ComponentA({text}) {
           return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -423,7 +423,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -437,7 +437,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -468,7 +468,7 @@ describe("utils", () => {
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component() {
           const onLoad = () => console.log('loaded');
@@ -481,7 +481,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -496,7 +496,7 @@ describe("utils", () => {
             await onLoad(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -539,7 +539,7 @@ describe("utils", () => {
 
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component__0__() {
           return jsxDEV("button", {onClick: () => console.log('First action'),"data-action-onClick": "a1_1","data-action": true,children: "Click me"}, undefined, false, undefined, this);
@@ -555,7 +555,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -570,7 +570,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -585,7 +585,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -612,7 +612,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           if (text === 'a') {
@@ -630,7 +630,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -645,7 +645,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -660,7 +660,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -687,7 +687,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           switch (text) {
@@ -706,7 +706,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -721,7 +721,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -736,7 +736,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({ 
+            return __resolveAction({ 
               req, 
               error, 
               pagePath: req.store.get('_action_page'), 
@@ -763,7 +763,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           let foo;
@@ -788,7 +788,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -809,7 +809,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -836,7 +836,7 @@ describe("utils", () => {
       `;
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           let {foo} = {};
@@ -863,7 +863,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -885,7 +885,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -922,7 +922,7 @@ describe("utils", () => {
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         const SOME_CONSTANT = 'hello world';
 
@@ -936,7 +936,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -959,7 +959,7 @@ describe("utils", () => {
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world',FOO: 'foo'};
 
@@ -973,7 +973,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -998,7 +998,7 @@ describe("utils", () => {
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world',FOO: 'foo'};
 
@@ -1012,7 +1012,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -1034,7 +1034,7 @@ describe("utils", () => {
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction} from 'brisa/server';
+        import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
           const getTextEl = () => jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -1047,7 +1047,7 @@ describe("utils", () => {
             await __action(req.store.get('_action_params'));
             return new Response(null);
           } catch (error) {
-            return resolveAction({
+            return __resolveAction({
               req,
               error,
               pagePath: req.store.get('_action_page'),
@@ -1058,9 +1058,7 @@ describe("utils", () => {
 
       expect(output).toEqual(expected);
     });
-    it.todo(
-      "should work without conflicts if already exists a resolveAction variable",
-    );
+
     it.todo("should work with an element with an action");
     it.todo("should work with an element with multiple actions");
     it.todo("should transform a simple HOC with an action");
