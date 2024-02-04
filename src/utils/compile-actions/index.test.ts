@@ -1176,6 +1176,12 @@ describe("utils", () => {
     });
 
     it.todo(
+      "should purge a call expression that is not recovered with a variable and this call has an action identifier",
+    );
+    it.todo(
+      "should keep a call expression that is recovered with a variable and this call has an action identifier",
+    );
+    it.todo(
       "should work with an element with an action defined outside the Component",
     );
     it.todo(
