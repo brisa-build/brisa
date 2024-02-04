@@ -984,23 +984,23 @@ describe("utils", () => {
 
       expect(output).toEqual(expected);
     });
-    it.todo(
-      "should keep some and purge another destructuring variables used inside the action but defined outside",
-      () => {
-        const code = `
+    it("should transform the component to function and keep the constant", () => {
+      const code = `
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world', FOO: 'foo'};
 
-        export default function Component({text}) {
+        const Component = ({text}) => {
           return <div onClick={() => console.log(SOME_CONSTANT)} data-action-onClick="a1_1" data-action>{text}</div>
         }
+
+        export {SOME_CONSTANT, Component}
       `;
 
-        const output = normalizeQuotes(transformToActionCode(code));
+      const output = normalizeQuotes(transformToActionCode(code));
 
-        const expected = normalizeQuotes(`
+      const expected = normalizeQuotes(`
         import {resolveAction} from 'brisa/server';
 
-        const {SOME_CONSTANT} = {SOME_CONSTANT: 'hello world'};
+        const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world',FOO: 'foo'};
 
         function Component({text}) {
           return jsxDEV("div", {onClick: () => console.log(SOME_CONSTANT),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
@@ -1021,13 +1021,43 @@ describe("utils", () => {
           }
         }`);
 
-        expect(output).toEqual(expected);
-      },
-    );
-    it.todo(
-      "should purge some and keep and transform using destructuring variables with literal and components",
-    );
-    it.todo("should work an action inside a function inside the component");
+      expect(output).toEqual(expected);
+    });
+    it("should work an action inside a function inside the component", () => {
+      const code = `
+        export default function Component({text}) {
+          const getTextEl = () => <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
+          return getTextEl();
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          const getTextEl = () => jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+          return getTextEl();
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return resolveAction({
+              req,
+              error,
+              pagePath: req.store.get('_action_page'),
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
     it.todo(
       "should work without conflicts if already exists a resolveAction variable",
     );
