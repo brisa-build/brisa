@@ -22,7 +22,10 @@ export default function resolveAction({
   component,
 }: ResolveActionParams) {
   if (error.name === "redirect") {
-    return new Response(`{action:"navigate", params:["${error.message}"]}`);
+    return new Response(
+      JSON.stringify({ action: "navigate", params: [error.message] }),
+      { status: 200, headers },
+    );
   }
 
   if (error.name === "rerender" && error.message === "component") {
@@ -41,14 +44,8 @@ export default function resolveAction({
     url.searchParams.set("_not-found", "1");
 
     return new Response(
-      JSON.stringify({
-        action: "navigate",
-        params: [url.toString()],
-      }),
-      {
-        status: 200,
-        headers,
-      },
+      JSON.stringify({ action: "navigate", params: [url.toString()] }),
+      { status: 200, headers },
     );
   }
 
