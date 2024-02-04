@@ -131,6 +131,7 @@ export function responseHeaders(
 ) {
   return {
     "Cache-Control": "public, max-age=3600",
+    "Content-Security-Policy": "script-src 'self' 'unsafe-inline';",
     "X-Example": "This header is added from layout",
   };
 }
@@ -140,6 +141,7 @@ export function responseHeaders(
 export function responseHeaders(request, responseStatus) {
   return {
     "Cache-Control": "public, max-age=3600",
+    "Content-Security-Policy": "script-src 'self' 'unsafe-inline';",
     "X-Example": "This header is added from layout",
   };
 }

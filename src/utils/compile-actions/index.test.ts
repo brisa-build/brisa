@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach, jest } from "bun:test";
+import { describe, it, expect, afterEach } from "bun:test";
 import { transformToActionCode } from ".";
 import { normalizeQuotes } from "@/helpers";
 import { getConstants } from "@/constants";
@@ -31,7 +31,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -64,7 +63,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -100,7 +98,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -135,7 +132,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req: requestContext, 
               error, 
-              pagePath: requestContext.store.get('_action_page'), 
               component: jsxDEV(SomeComponent, {text}, undefined, false, undefined, this)
             });
           }
@@ -168,7 +164,6 @@ describe("utils", () => {
           return __resolveAction({ 
             req, 
             error, 
-            pagePath: req.store.get('_action_page'), 
             component: jsxDEV(Component__0__, {foo}, undefined, false, undefined, this)
           });
         }
@@ -178,7 +173,7 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple async arrow function component with 1 action', () => {
+    it("should transform a simple async arrow function component with 1 action", () => {
       const code = `
         export default async ({foo}) => {
           return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{foo}</div>
@@ -201,7 +196,6 @@ describe("utils", () => {
           return __resolveAction({ 
             req, 
             error, 
-            pagePath: req.store.get('_action_page'), 
             component: jsxDEV(Component__0__, {foo}, undefined, false, undefined, this)
           });
         }
@@ -209,7 +203,7 @@ describe("utils", () => {
       `);
 
       expect(output).toEqual(expected);
-    })
+    });
 
     it("should transform a simple arrow function without block statement component with 1 action", () => {
       const code = `
@@ -232,7 +226,6 @@ describe("utils", () => {
           return __resolveAction({ 
             req, 
             error, 
-            pagePath: req.store.get('_action_page'), 
             component: jsxDEV(Component__0__, {foo}, undefined, false, undefined, this)
           });
         }
@@ -242,7 +235,7 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple async arrow function without block statement component with 1 action', () => {
+    it("should transform a simple async arrow function without block statement component with 1 action", () => {
       const code = `
         export default async ({foo}) => <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{foo}</div>
       `;
@@ -263,7 +256,6 @@ describe("utils", () => {
           return __resolveAction({ 
             req, 
             error, 
-            pagePath: req.store.get('_action_page'), 
             component: jsxDEV(Component__0__, {foo}, undefined, false, undefined, this)
           });
         }
@@ -296,7 +288,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -346,7 +337,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(SlowComponent, {}, undefined, false, undefined, this)
             });
           }
@@ -381,7 +371,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -416,7 +405,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -449,7 +437,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -490,7 +477,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(ComponentA, {text}, undefined, false, undefined, this)
             });
           }
@@ -504,7 +490,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(ComponentB, {text}, undefined, false, undefined, this)
             });
           }
@@ -548,7 +533,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {}, undefined, false, undefined, this)
             });
           }
@@ -563,7 +547,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {}, undefined, false, undefined, this)
             });
           }
@@ -622,7 +605,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component__0__, {}, undefined, false, undefined, this)
             });
           }
@@ -637,7 +619,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Foo, {}, undefined, false, undefined, this)
             });
           }
@@ -652,7 +633,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Foo, {}, undefined, false, undefined, this)
             });
           }
@@ -697,7 +677,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -712,7 +691,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -727,7 +705,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -773,7 +750,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -788,7 +764,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -803,7 +778,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -855,7 +829,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -876,7 +849,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -930,7 +902,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -952,7 +923,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -1003,7 +973,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -1040,7 +1009,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -1079,7 +1047,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -1114,7 +1081,6 @@ describe("utils", () => {
             return __resolveAction({
               req,
               error,
-              pagePath: req.store.get('_action_page'),
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -1148,7 +1114,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -1188,7 +1153,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -1203,7 +1167,6 @@ describe("utils", () => {
             return __resolveAction({ 
               req, 
               error, 
-              pagePath: req.store.get('_action_page'), 
               component: jsxDEV(Component, {text}, undefined, false, undefined, this)
             });
           }
@@ -1212,8 +1175,12 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo("should work with an element with an action defined outside the Component");
-    it.todo("should work with an element with multiple actions defined outside the Component");
+    it.todo(
+      "should work with an element with an action defined outside the Component",
+    );
+    it.todo(
+      "should work with an element with multiple actions defined outside the Component",
+    );
     it.todo("should transform a simple HOC with an action");
     it.todo("should work with a function jsx generator with an action");
     it.todo("should work with a function jsx generator with multiple actions");

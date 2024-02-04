@@ -1,11 +1,16 @@
+import type { RequestContext } from "@/types";
+
 type ResolveActionParams = {
-  req: Request;
+  req: RequestContext;
   error: Error;
-  pagePath: string;
   component: JSX.Element;
 };
 
-// TODO: #47 - Implement rerender component and page
+const headers = {
+  "Content-Type": "application/x-ndjson",
+  "Transfer-Encoding": "chunked",
+  vary: "Accept-Encoding",
+};
 
 /**
  *
@@ -14,7 +19,6 @@ type ResolveActionParams = {
 export default function resolveAction({
   req,
   error,
-  pagePath,
   component,
 }: ResolveActionParams) {
   if (error.name === "redirect") {
@@ -32,7 +36,20 @@ export default function resolveAction({
   }
 
   if (error.name === "NotFoundError") {
-    return new Response(null, { status: 404 });
+    const url = new URL(req.headers.get("referer") ?? "", req.url);
+
+    url.searchParams.set("_not-found", "1");
+
+    return new Response(
+      JSON.stringify({
+        action: "navigate",
+        params: [url.toString()],
+      }),
+      {
+        status: 200,
+        headers,
+      },
+    );
   }
 
   return new Response(error.message, { status: 500 });
