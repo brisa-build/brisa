@@ -431,46 +431,6 @@ function wrapWithTypeCatch({
                           type: "Property",
                           key: {
                             type: "Identifier",
-                            name: "pagePath",
-                          },
-                          value: {
-                            type: "CallExpression",
-                            callee: {
-                              type: "MemberExpression",
-                              object: {
-                                type: "MemberExpression",
-                                object: {
-                                  type: "Identifier",
-                                  name: requestParamName,
-                                },
-                                computed: false,
-                                property: {
-                                  type: "Identifier",
-                                  name: "store",
-                                },
-                              },
-                              computed: false,
-                              property: {
-                                type: "Identifier",
-                                name: "get",
-                              },
-                            },
-                            arguments: [
-                              {
-                                type: "Literal",
-                                value: "_action_page",
-                              },
-                            ],
-                          },
-                          kind: "init",
-                          computed: false,
-                          method: false,
-                          shorthand: false,
-                        },
-                        {
-                          type: "Property",
-                          key: {
-                            type: "Identifier",
                             name: "component",
                           },
                           value: {

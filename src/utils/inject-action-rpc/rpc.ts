@@ -1,23 +1,63 @@
 /// <reference lib="dom.iterable" />
 
-// RPC (Remote Procedure Call)
+const ACTION_ATTRIBUTE = "data-action";
+
+/**
+ * RPC (Remote Procedure Call)
+ *
+ * This function is used to call an action on the server.
+ */
 async function rpc(actionId: string, ...args: unknown[]) {
-  // TODO: #47 Implement RPC communication correctly, now is a POC (proof of concept)
   const lang = document.documentElement.lang;
   const langPrefix = lang ? `/${lang}` : "";
-  await fetch(`${langPrefix}/_action/${actionId}`, {
+  const res = await fetch(`${langPrefix}/_action/${actionId}`, {
     method: "POST",
     body: JSON.stringify(args),
   });
+  const reader = res.body!.getReader();
+
+  /**
+   * The chunk is using Newline-delimited JSON (NDJSON) format.
+   * This format is used to parse JSON objects from a stream.
+   *
+   * Content-Type: application/x-ndjson
+   *
+   * https://en.wikipedia.org/wiki/JSON_streaming#Newline-delimited_JSON
+   *
+   * Example:
+   *
+   * {"action": "foo"} \n {"action": "bar"} \n {"action": "baz"}
+   *
+   * The difference between this format and JSON is that this format
+   * is not a valid JSON, but it is a valid JSON stream.
+   *
+   */
+  while (true) {
+    const { done, value } = await reader.read();
+
+    if (done) break;
+
+    const text = new TextDecoder().decode(value);
+
+    for (const json of text.split("\n")) {
+      if (!json) continue;
+      const { action, params, selector } = JSON.parse(json);
+
+      // Redirect to a different page
+      if (action === "navigate") {
+        window.location.href = params[0];
+      }
+    }
+  }
 }
 
 function registerActionsFromElements(elements: NodeListOf<Element>) {
   const actionPrefix = "actionon";
 
   for (let element of elements) {
-    if (!element.hasAttribute("data-action")) continue;
+    if (!element.hasAttribute(ACTION_ATTRIBUTE)) continue;
 
-    element.removeAttribute("data-action");
+    element.removeAttribute(ACTION_ATTRIBUTE);
 
     const dataSet = (element as HTMLElement).dataset;
 
@@ -37,7 +77,9 @@ function registerActionsFromElements(elements: NodeListOf<Element>) {
 let timeout: ReturnType<typeof setTimeout>;
 
 function initActionRegister() {
-  registerActionsFromElements(document.querySelectorAll("[data-action]"));
+  registerActionsFromElements(
+    document.querySelectorAll(`[${ACTION_ATTRIBUTE}]`),
+  );
   if (timeout) clearTimeout(timeout);
   timeout = setTimeout(initActionRegister, 0);
 }
