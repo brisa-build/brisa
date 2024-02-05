@@ -6,11 +6,12 @@ import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
 import type { ComponentType, I18n, RequestContext, Translate } from "@/types";
 import createContext from "@/utils/create-context";
+import navigate from "@/utils/navigate";
 import dangerHTML from "@/utils/danger-html";
 import extendRequestContext from "@/utils/extend-request-context";
 import notFound from "@/utils/not-found";
 import SSRWebComponent from "@/utils/ssr-web-component";
-import handleI18n from "../handle-i18n";
+import handleI18n from "@/utils/handle-i18n";
 
 const emptyI18n = {
   locale: "",
@@ -2313,6 +2314,30 @@ describe("utils", () => {
       eval(script404);
       expect(globalThis.location.replace).toHaveBeenCalledWith(
         "http://localhost/?_not-found=1",
+      );
+      globalThis.location = undefined as any;
+    });
+
+    it('should add the location.replace script when the "navigate" method is called during rendering', async () => {
+      const Component = () => {
+        navigate("http://localhost/foo");
+        return <div>TEST</div>;
+      };
+
+      const stream = renderToReadableStream(<Component />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+      const scriptNavigate = `location.replace("http://localhost/foo")`;
+
+      expect(result).toBe(toInline(`<script>${scriptNavigate}</script>`));
+
+      // Test script navigate behavior
+      globalThis.location = {
+        replace: mock((v) => v),
+      } as any;
+
+      eval(scriptNavigate);
+      expect(globalThis.location.replace).toHaveBeenCalledWith(
+        "http://localhost/foo",
       );
       globalThis.location = undefined as any;
     });

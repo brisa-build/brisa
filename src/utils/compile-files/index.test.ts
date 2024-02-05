@@ -233,7 +233,7 @@ describe("utils", () => {
     ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("0 B")} 
     ${info}λ /pages/index                   | 486 B     | ${greenLog("744 B")}  
     ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
-    ${info}ƒ /middleware                    | 420 B     |
+    ${info}ƒ /middleware                    | 738 B     |
     ${info}λ /api/example                   | 283 B     |
     ${info}Δ /layout                        | 350 B     |
     ${info}Ω /i18n                          | 162 B     |

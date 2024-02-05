@@ -1,5 +1,6 @@
 import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
+import { redirect } from "@/utils/redirect";
 
 export default function redirectTrailingSlash(
   request: RequestContext,
@@ -17,17 +18,4 @@ export default function redirectTrailingSlash(
   if (!trailingSlash && pathname.endsWith("/") && !isHome) {
     return redirect(new URL(pathname.slice(0, -1), url).toString());
   }
-}
-
-function redirect(url: string) {
-  return new Response(null, {
-    status: 301,
-    headers: {
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      expires: "-1",
-      pragma: "no-cache",
-      location: url,
-      vary: "Accept-Language",
-    },
-  });
 }
