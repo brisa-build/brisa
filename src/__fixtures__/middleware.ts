@@ -1,5 +1,6 @@
 import type { RequestContext } from "@/types";
 import notFound from "@/utils/not-found";
+import navigate from "@/utils/navigate";
 
 export default async function middleware(request: RequestContext) {
   const url = new URL(request.finalURL);
@@ -10,6 +11,11 @@ export default async function middleware(request: RequestContext) {
 
   if (url.searchParams.get("throws-not-found")) {
     notFound();
+  }
+
+  if (url.searchParams.has("navigate")) {
+    const navigateTo = url.searchParams.get("navigate") as string;
+    navigate(navigateTo);
   }
 
   if (url.searchParams.get("redirect")) {

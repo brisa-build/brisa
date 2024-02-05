@@ -169,6 +169,70 @@ describe("CLI: serve", () => {
     expect(response.headers.get("Location")).toBe("/es");
   });
 
+  it("should navigate when the middleware throws a navigate error", async () => {
+    const response = await testRequest(
+      // "navigate" parameter is managed by __fixtures__/middleware.tsx
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?navigate=/es/somepage",
+      ),
+    );
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe(
+      "http://localhost:1234/es/somepage",
+    );
+  });
+
+  it("should navigate resolving i18n when the middleware throws a navigate error", async () => {
+    const response = await testRequest(
+      // "navigate" parameter is managed by __fixtures__/middleware.tsx
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?navigate=/somepage",
+      ),
+    );
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe("/es/somepage");
+  });
+
+  it("should navigate removing trailing slash when the middleware throws a navigate error", async () => {
+    const response = await testRequest(
+      // "navigate" parameter is managed by __fixtures__/middleware.tsx
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?navigate=/es/somepage/",
+      ),
+    );
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe(
+      "http://localhost:1234/es/somepage",
+    );
+  });
+
+  it("should navigate removing trailing slash and adding i18n at the same time when the middleware throws a navigate error", async () => {
+    const response = await testRequest(
+      // "navigate" parameter is managed by __fixtures__/middleware.tsx
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?navigate=/somepage/",
+      ),
+    );
+
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe("/es/somepage");
+  });
+
+  it("should navigate to an external url without i18n and trailing slash when the middleware throws a navigate error", async () => {
+    const response = await testRequest(
+      // "navigate" parameter is managed by __fixtures__/middleware.tsx
+      new Request(
+        "http://localhost:1234/es/page-with-web-component?navigate=https://brisa.build/foo/",
+      ),
+    );
+
+    expect(response.status).toBe(307);
+    expect(response.headers.get("Location")).toBe("https://brisa.build/foo/");
+  });
+
   it("should return 404 page when the middleware throws a not found error", async () => {
     const response = await testRequest(
       // "throws-not-found" parameter is managed by __fixtures__/middleware.tsx
