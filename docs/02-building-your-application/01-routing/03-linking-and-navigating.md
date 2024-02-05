@@ -3,7 +3,7 @@ title: Linking and Navigating
 description: Learn how navigation works in Brisa.
 ---
 
-Brisa works with MPA, so we will use the native HTML navigation and you can use the `a` tag directly:
+Brisa works with MPA like SPA thanks to [View Transitions](https://github.com/WICG/view-transitions/blob/main/explainer.md), so we will use the native HTML navigation and you can use the `a` tag directly:
 
 ```jsx
 export default function Home() {
@@ -92,11 +92,11 @@ navigate("/some-page");
 
 The `navigate` function can be used both on the client and on the server. Although there are some differences to be taken into account:
 
-- If the navigation is done **before** sending the **response** (in the middleware or an API endpoint for example), instead of modifying the navigation history it does a [**301 redirect**](https://en.wikipedia.org/wiki/HTTP_301).
+- If the navigation is done **before** sending the **response** (in the [middleware](/docs/building-your-application/routing/middleware), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages) or an [API endpoint](/docs/building-your-application/routing/api-routes) for example), instead of modifying the navigation history it does a [**301 redirect**](https://en.wikipedia.org/wiki/HTTP_301).
 - If it is done **during rendering**, a [**soft redirect**](https://en.wikipedia.org/wiki/Wikipedia:Soft_redirect) is made.
 - If used inside a **client-event** or a **server-event** ([action](/docs/components-details/server-actions)) a new page is always generated in the **navigation history**.
 
-> [!TIP]
+> [!NOTE]
 >
 > All [i18n](#i18n-navigation) and [dynamic paths](#navigation-to-dynamic-paths) rules apply equally in this function.
 
@@ -105,3 +105,5 @@ The `navigate` function can be used both on the client and on the server. Althou
 > `navigate('/some')` does not require you to use `return navigate('/some')` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
 
 TODO: Confirm the TIP after implement this task: https://github.com/aralroca/brisa/issues/55
+
+TODO: Implement View transitions https://github.com/WICG/view-transitions/blob/main/explainer.md
