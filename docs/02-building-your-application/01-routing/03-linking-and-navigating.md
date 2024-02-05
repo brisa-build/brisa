@@ -98,7 +98,7 @@ The `navigate` function can be used both on the client and on the server. Althou
 
 > [!NOTE]
 >
-> All [i18n](#i18n-navigation) and [dynamic paths](#navigation-to-dynamic-paths) rules apply equally in this function.
+> All [i18n](#i18n-navigation) navigaton rules apply equally in this function.
 
 > [!TIP]
 >
