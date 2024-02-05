@@ -22,7 +22,7 @@ export function redirectFromUnnormalizedURL(
   currentRequest: RequestContext,
 ) {
   if (url.origin !== new URL(currentRequest.url).origin) {
-    return redirect(url.toString(), 307);
+    return redirect(url.toString());
   }
 
   const req = extendRequestContext({ originalRequest: new Request(url) });

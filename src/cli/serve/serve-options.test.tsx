@@ -229,7 +229,7 @@ describe("CLI: serve", () => {
       ),
     );
 
-    expect(response.status).toBe(307);
+    expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe("https://brisa.build/foo/");
   });
 
