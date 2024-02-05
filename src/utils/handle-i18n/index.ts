@@ -5,6 +5,7 @@ import translateCore from "@/utils/translate-core";
 import adaptRouterToPageTranslations from "@/utils/adapt-router-to-page-translations";
 import type { RequestContext } from "@/types";
 import { logError } from "../log/log-build";
+import { redirect } from "@/utils/redirect";
 
 export default function handleI18n(req: RequestContext): {
   response?: Response;
@@ -49,18 +50,7 @@ export default function handleI18n(req: RequestContext): {
       ? `${domainConf?.protocol || "https"}://${domain}${finalPathname}`
       : finalPathname;
 
-    return {
-      response: new Response(null, {
-        status: 301,
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          expires: "-1",
-          pragma: "no-cache",
-          location,
-          vary: "Accept-Language",
-        },
-      }),
-    };
+    return { response: redirect(location) };
   }
 
   // Inject messages from overrideMessages callback

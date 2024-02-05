@@ -63,6 +63,10 @@ export default function renderToReadableStream(
           if (isNotFoundError(e)) {
             extendedController.enqueue(NO_INDEX);
             extendedController.enqueue(SCRIPT_404);
+          } else if (e.name === "navigate") {
+            extendedController.enqueue(
+              `<script>location.replace("${e.message}")</script>`,
+            );
           } else {
             controller.error(e);
           }

@@ -15,6 +15,7 @@ import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
 import feedbackError from "@/utils/feedback-error";
 import responseAction from "@/utils/response-action";
+import { redirectFromUnnormalizedURL } from "@/utils/redirect";
 
 export async function getServeOptions() {
   const {
@@ -134,6 +135,14 @@ export async function getServeOptions() {
         (error) => {
           // 404 page
           if (isNotFoundError(error)) return error404(request);
+
+          // "navigate" function call
+          if (error.name === "navigate") {
+            return redirectFromUnnormalizedURL(
+              new URL(error.message, url.origin),
+              request,
+            );
+          }
 
           // Log some feedback in the terminal depending on the error
           // in development and production
