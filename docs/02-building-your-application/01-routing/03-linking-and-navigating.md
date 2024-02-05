@@ -79,6 +79,29 @@ export default function Home() {
 }
 ```
 
-## Imperative navigation
+## `navigate` function
 
-TODO
+The `navigate` function is used for imperative navigation.
+
+```ts
+import { navigate } from "brisa";
+
+// ...
+navigate("/some-page");
+```
+
+The `navigate` function can be used both on the client and on the server. Although there are some differences to be taken into account:
+
+- If the navigation is done **before** sending the **response** (in the middleware or an API endpoint for example), instead of modifying the navigation history it does a [**301 redirect**](https://en.wikipedia.org/wiki/HTTP_301).
+- If it is done **during rendering**, a [**soft redirect**](https://en.wikipedia.org/wiki/Wikipedia:Soft_redirect) is made.
+- If used inside a **client-event** or a **server-event** ([action](/docs/components-details/server-actions)) a new page is always generated in the **navigation history**.
+
+> [!TIP]
+>
+> All [i18n](#i18n-navigation) and [dynamic paths](#navigation-to-dynamic-paths) rules apply equally in this function.
+
+> [!TIP]
+>
+> `navigate('/some')` does not require you to use `return navigate('/some')` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
+
+TODO: Confirm the TIP after implement this task: https://github.com/aralroca/brisa/issues/55

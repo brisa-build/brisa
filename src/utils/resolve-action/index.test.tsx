@@ -19,8 +19,8 @@ describe("utils", () => {
     });
 
     it("should redirect to an specific url", async () => {
-      const redirectError = new Error("/some-url");
-      redirectError.name = "redirect";
+      const navigationTrowable = new Error("/some-url");
+      navigationTrowable.name = "navigate";
 
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost"),
@@ -28,7 +28,7 @@ describe("utils", () => {
 
       const response = resolveAction({
         req,
-        error: redirectError,
+        error: navigationTrowable,
         component: <div />,
       });
 
