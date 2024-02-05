@@ -35,7 +35,7 @@ export default function resolveAction({
 
   if (error.name === "rerender" && error.message === "page") {
     // TODO: should return streaming response
-    return new Response("TODO RERENDER SERVER");
+    return new Response("TODO RERENDER PAGE");
   }
 
   if (error.name === "NotFoundError") {
