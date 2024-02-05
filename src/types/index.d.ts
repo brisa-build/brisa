@@ -877,6 +877,25 @@ export function dangerHTML(html: string): DangerHTMLOutput;
  */
 export function notFound(): never;
 
+/**
+ * Description:
+ *
+ * The `navigate` method throws an error to proceed a 301 redirect.
+ *
+ * If used during streaming or on the client, navigation is done from the client.
+ *
+ * Example:
+ *
+ * ```ts
+ * navigate('/some-page');
+ * ```
+ *
+ * Docs:
+ *
+ * - [How to use `navigate`](https://brisa.build/docs/building-your-application/routing/linking-and-navigating#navigate-function)
+ */
+export function navigate(page: string): never;
+
 type DangerHTMLOutput = {
   type: "HTML";
   props: {

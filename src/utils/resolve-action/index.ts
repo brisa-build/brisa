@@ -21,7 +21,7 @@ export default function resolveAction({
   error,
   component,
 }: ResolveActionParams) {
-  if (error.name === "redirect") {
+  if (error.name === "navigate") {
     return new Response(
       JSON.stringify({ action: "navigate", params: [error.message] }),
       { status: 200, headers },
