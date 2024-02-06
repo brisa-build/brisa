@@ -17,7 +17,7 @@ async function simulateRPC(actions: any[]) {
   eval(actionRPCCode);
 
   // Mock fetch with the actions
-  spyOn(window, "fetch").mockImplementation(
+  const mockFetch = spyOn(window, "fetch").mockImplementation(
     async () =>
       ({
         body: {
@@ -41,6 +41,8 @@ async function simulateRPC(actions: any[]) {
 
   // wait "fetch" promise to resolve
   await Bun.sleep(0);
+
+  return mockFetch;
 }
 
 describe("utils", () => {
@@ -57,6 +59,63 @@ describe("utils", () => {
         { action: "navigate", params: ["http://localhost/?_not-found=1"] },
       ]);
       expect(location.toString()).toBe("http://localhost/?_not-found=1");
+    });
+
+    it('should serialize an event and call "rpc" with the correct parameters', async () => {
+      const mockFetch = await simulateRPC([
+        { action: "navigate", params: ["http://localhost/some-page"] },
+      ]);
+
+      expect(location.toString()).toBe("http://localhost/some-page");
+      expect(mockFetch.mock.calls[0][0]).toBe("/_action/a1_1");
+      expect(mockFetch.mock.calls[0][1]?.method).toBe("POST");
+
+      const [{ timeStamp, ...event }] = JSON.parse(
+        mockFetch.mock.calls[0][1]?.body as any,
+      );
+
+      expect(event).toEqual({
+        defaultPrevented: false,
+        eventPhase: 2,
+        NONE: 0,
+        CAPTURING_PHASE: 1,
+        AT_TARGET: 2,
+        BUBBLING_PHASE: 3,
+        type: "click",
+        bubbles: true,
+        cancelable: false,
+        composed: true,
+        layerX: 0,
+        layerY: 0,
+        pageX: 0,
+        pageY: 0,
+        detail: 0,
+        altKey: false,
+        button: 0,
+        buttons: 0,
+        clientX: 0,
+        clientY: 0,
+        ctrlKey: false,
+        metaKey: false,
+        movementX: 0,
+        movementY: 0,
+        screenX: 0,
+        screenY: 0,
+        shiftKey: false,
+        pointerId: 0,
+        width: 1,
+        height: 1,
+        pressure: 0,
+        tangentialPressure: 0,
+        tiltX: 0,
+        tiltY: 0,
+        twist: 0,
+        altitudeAngle: 0,
+        azimuthAngle: 0,
+        isPrimary: false,
+        coalescedEvents: [],
+        predictedEvents: [],
+      });
     });
   });
 });
