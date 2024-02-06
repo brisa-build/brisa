@@ -12,7 +12,7 @@ async function rpc(actionId: string, ...args: unknown[]) {
   const langPrefix = lang ? `/${lang}` : "";
   const res = await fetch(`${langPrefix}/_action/${actionId}`, {
     method: "POST",
-    body: JSON.stringify(args),
+    body: JSON.stringify(args, serialize),
   });
   const reader = res.body!.getReader();
 
@@ -49,6 +49,23 @@ async function rpc(actionId: string, ...args: unknown[]) {
       }
     }
   }
+}
+
+/**
+ * Serialize function used to convert events to JSON.
+ */
+function serialize(k: string, v: unknown) {
+  if (
+    v instanceof Event ||
+    (v instanceof Node && ["target", "currentTarget"].includes(k))
+  ) {
+    const ev: Record<string, any> = {};
+    for (let field in v) ev[field] = (v as any)[field];
+    return ev;
+  }
+
+  if (v == null || v === "" || v instanceof Node || v instanceof Window) return;
+  return v;
 }
 
 function registerActionsFromElements(elements: NodeListOf<Element>) {
