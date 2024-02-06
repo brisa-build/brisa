@@ -221,7 +221,7 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
     body.body.unshift(requestDestructuring);
   }
 
-  // await __action(req.store.get('_action_params'));
+  // await __action(...req.store.get('_action_params'));
   body.body.push(getActionCall(info, requestParamName));
   // return new Response(null);
   body.body.push(getResponseReturn());
@@ -301,33 +301,36 @@ function getActionCall(
         },
         arguments: [
           {
-            type: "CallExpression",
-            callee: {
-              type: "MemberExpression",
-              object: {
+            type: "SpreadElement",
+            argument: {
+              type: "CallExpression",
+              callee: {
                 type: "MemberExpression",
                 object: {
-                  type: "Identifier",
-                  name: requestParamName,
+                  type: "MemberExpression",
+                  object: {
+                    type: "Identifier",
+                    name: requestParamName,
+                  },
+                  computed: false,
+                  property: {
+                    type: "Identifier",
+                    name: "store",
+                  },
                 },
                 computed: false,
                 property: {
                   type: "Identifier",
-                  name: "store",
+                  name: "get",
                 },
               },
-              computed: false,
-              property: {
-                type: "Identifier",
-                name: "get",
-              },
+              arguments: [
+                {
+                  type: "Literal",
+                  value: "_action_params",
+                },
+              ],
             },
-            arguments: [
-              {
-                type: "Literal",
-                value: "_action_params",
-              },
-            ],
           },
         ],
       },
