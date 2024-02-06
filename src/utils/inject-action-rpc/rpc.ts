@@ -69,7 +69,8 @@ function serialize(k: string, v: unknown) {
 }
 
 function registerActionsFromElements(elements: NodeListOf<Element>) {
-  const actionPrefix = "actionon";
+  const actionPrefix = "action";
+  const onPrefix = "on";
 
   for (let element of elements) {
     if (!element.hasAttribute(ACTION_ATTRIBUTE)) continue;
@@ -80,12 +81,18 @@ function registerActionsFromElements(elements: NodeListOf<Element>) {
 
     for (let [action, actionId] of Object.entries(dataSet)) {
       const actionName = action.toLowerCase();
+      const eventAttrName = actionName.replace(actionPrefix, "");
+      const eventName = eventAttrName.replace(onPrefix, "");
+      const debounceMs = +(
+        element.getAttribute(eventAttrName + "-debounce") ?? 0
+      );
+      let timeout: ReturnType<typeof setTimeout>;
 
       if (actionName.startsWith(actionPrefix)) {
-        element.addEventListener(
-          actionName.replace(actionPrefix, ""),
-          (...args: unknown[]) => rpc(actionId!, ...args),
-        );
+        element.addEventListener(eventName, (...args: unknown[]) => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => rpc(actionId!, ...args), debounceMs);
+        });
       }
     }
   }

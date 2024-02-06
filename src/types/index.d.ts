@@ -1866,222 +1866,3861 @@ declare global {
     export interface DOMAttributes<Target extends EventTarget>
       extends BrisaDOMAttributes {
       // Image Events
+
+      /**
+       * Milliseconds to wait before executing the `onLoad` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <img onLoad-debounce={500} onLoad={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLoad-debounce"?: number | undefined;
       onLoad?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onLoadCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <img onLoadCapture-debounce={500} onLoadCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLoadCapture-debounce"?: number | undefined;
       onLoadCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onError` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <img onError-debounce={500} onError={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onError-debounce"?: number | undefined;
       onError?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onErrorCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <img onErrorCapture-debounce={500} onErrorCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onErrorCapture-debounce"?: number | undefined;
       onErrorCapture?: GenericEventHandler<Target> | undefined;
 
       // Clipboard Events
+
+      /**
+       * Milliseconds to wait before executing the `onCopy` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <p onCopy-debounce={500} onCopy={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCopy-debounce"?: number | undefined;
       onCopy?: ClipboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCopyCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <p onCopyCapture-debounce={500} onCopyCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCopyCapture-debounce"?: number | undefined;
       onCopyCapture?: ClipboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCut` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <p onCut-debounce={500} onCut={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCut-debounce"?: number | undefined;
       onCut?: ClipboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCutCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <p onCutCapture-debounce={500} onCutCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCutCapture-debounce"?: number | undefined;
       onCutCapture?: ClipboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPaste` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <p onPaste-debounce={500} onPaste={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPaste-debounce"?: number | undefined;
       onPaste?: ClipboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPasteCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <p onPasteCapture-debounce={500} onPasteCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPasteCapture-debounce"?: number | undefined;
       onPasteCapture?: ClipboardEventHandler<Target> | undefined;
 
-      // Composition Events
+      // Composition Events:
+
+      /**
+       * Milliseconds to wait before executing the `onCompositionEnd` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onCompositionEnd-debounce={500} onCompositionEnd={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCompositionEnd-debounce"?: number | undefined;
       onCompositionEnd?: CompositionEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCompositionEndCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onCompositionEndCapture-debounce={500} onCompositionEndCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCompositionEndCapture-debounce"?: number | undefined;
       onCompositionEndCapture?: CompositionEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCompositionStart` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onCompositionStart-debounce={500} onCompositionStart={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCompositionStart-debounce"?: number | undefined;
       onCompositionStart?: CompositionEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCompositionStartCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onCompositionStartCapture-debounce={500} onCompositionStartCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCompositionStartCapture-debounce"?: number | undefined;
       onCompositionStartCapture?: CompositionEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCompositionUpdate` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onCompositionUpdate-debounce={500} onCompositionUpdate={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCompositionUpdate-debounce"?: number | undefined;
       onCompositionUpdate?: CompositionEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCompositionUpdateCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onCompositionUpdateCapture-debounce={500} onCompositionUpdateCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCompositionUpdateCapture-debounce"?: number | undefined;
       onCompositionUpdateCapture?: CompositionEventHandler<Target> | undefined;
 
-      // Details Events
+      // Details Events:
+
+      /**
+       * Milliseconds to wait before executing the `onToggle` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onToggle-debounce={500} onToggle={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onToggle-debounce"?: number | undefined;
       onToggle?: GenericEventHandler<Target> | undefined;
 
-      // Dialog Events
+      // Dialog Events:
+
+      /**
+       * Milliseconds to wait before executing the `onClose` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <dialog onClose-debounce={500} onClose={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onClose-debounce"?: number | undefined;
       onClose?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCancel` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <dialog onCancel-debounce={500} onCancel={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCancel-debounce"?: number | undefined;
       onCancel?: GenericEventHandler<Target> | undefined;
 
-      // Focus Events
+      // Focus Events:
+
+      /**
+       * Milliseconds to wait before executing the `onFocus` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onFocus-debounce={500} onFocus={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onFocus-debounce"?: number | undefined;
       onFocus?: FocusEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onFocusCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onFocusCapture-debounce={500} onFocusCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onFocusCapture-debounce"?: number | undefined;
       onFocusCapture?: FocusEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onfocusin` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onfocusin-debounce={500} onfocusin={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onfocusin-debounce"?: number | undefined;
       onfocusin?: FocusEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onfocusinCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onfocusinCapture-debounce={500} onfocusinCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onfocusinCapture-debounce"?: number | undefined;
       onfocusinCapture?: FocusEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onfocusout` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onfocusout-debounce={500} onfocusout={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onfocusout-debounce"?: number | undefined;
       onfocusout?: FocusEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onfocusoutCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onfocusoutCapture-debounce={500} onfocusoutCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onfocusoutCapture-debounce"?: number | undefined;
       onfocusoutCapture?: FocusEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onBlur` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onBlur-debounce={500} onBlur={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onBlur-debounce"?: number | undefined;
       onBlur?: FocusEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onBlurCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onBlurCapture-debounce={500} onBlurCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onBlurCapture-debounce"?: number | undefined;
       onBlurCapture?: FocusEventHandler<Target> | undefined;
 
-      // Form Events
+      // Form Events:
+
+      /**
+       * Milliseconds to wait before executing the `onChange` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onChange-debounce={500} onChange={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onChange-debounce"?: number | undefined;
       onChange?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onChangeCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onChangeCapture-debounce={500} onChangeCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onChangeCapture-debounce"?: number | undefined;
       onChangeCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onInput` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onInput-debounce={500} onInput={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onInput-debounce"?: number | undefined;
       onInput?: InputEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onInputCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onInputCapture-debounce={500} onInputCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onInputCapture-debounce"?: number | undefined;
       onInputCapture?: InputEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onBeforeInput` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onBeforeInput-debounce={500} onBeforeInput={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onBeforeInput-debounce"?: number | undefined;
       onBeforeInput?: InputEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onBeforeInputCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onBeforeInputCapture-debounce={500} onBeforeInputCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onBeforeInputCapture-debounce"?: number | undefined;
       onBeforeInputCapture?: InputEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSearch` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onSearch-debounce={500} onSearch={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSearch-debounce"?: number | undefined;
       onSearch?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSearchCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onSearchCapture-debounce={500} onSearchCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSearchCapture-debounce"?: number | undefined;
       onSearchCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSubmit` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <form onSubmit-debounce={500} onSubmit={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSubmit-debounce"?: number | undefined;
       onSubmit?: SubmitEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSubmitCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <form onSubmitCapture-debounce={500} onSubmitCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSubmitCapture-debounce"?: number | undefined;
       onSubmitCapture?: SubmitEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onInvalid` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onInvalid-debounce={500} onInvalid={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onInvalid-debounce"?: number | undefined;
       onInvalid?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onInvalidCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onInvalidCapture-debounce={500} onInvalidCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onInvalidCapture-debounce"?: number | undefined;
       onInvalidCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onReset` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <form onReset-debounce={500} onReset={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onReset-debounce"?: number | undefined;
       onReset?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onResetCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <form onResetCapture-debounce={500} onResetCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onResetCapture-debounce"?: number | undefined;
       onResetCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onFormData` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <form onFormData-debounce={500} onFormData={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onFormData-debounce"?: number | undefined;
       onFormData?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onFormDataCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <form onFormDataCapture-debounce={500} onFormDataCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onFormDataCapture-debounce"?: number | undefined;
       onFormDataCapture?: GenericEventHandler<Target> | undefined;
 
-      // Keyboard Events
+      // Keyboard Events:
+
+      /**
+       * Milliseconds to wait before executing the `onKeyDown` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onKeyDown-debounce={500} onKeyDown={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onKeyDown-debounce"?: number | undefined;
       onKeyDown?: KeyboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onKeyDownCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onKeyDownCapture-debounce={500} onKeyDownCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onKeyDownCapture-debounce"?: number | undefined;
       onKeyDownCapture?: KeyboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onKeyPress` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onKeyPress-debounce={500} onKeyPress={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onKeyPress-debounce"?: number | undefined;
       onKeyPress?: KeyboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onKeyPressCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onKeyPressCapture-debounce={500} onKeyPressCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onKeyPressCapture-debounce"?: number | undefined;
       onKeyPressCapture?: KeyboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onKeyUp` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onKeyUp-debounce={500} onKeyUp={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onKeyUp-debounce"?: number | undefined;
       onKeyUp?: KeyboardEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onKeyUpCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onKeyUpCapture-debounce={500} onKeyUpCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onKeyUpCapture-debounce"?: number | undefined;
       onKeyUpCapture?: KeyboardEventHandler<Target> | undefined;
 
-      // Media Events
+      // Media Events:
+
+      /**
+       * Milliseconds to wait before executing the `onAbort` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onAbort-debounce={500} onAbort={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onAbort-debounce"?: number | undefined;
       onAbort?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onAbortCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onAbortCapture-debounce={500} onAbortCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onAbortCapture-debounce"?: number | undefined;
       onAbortCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCanPlay` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onCanPlay-debounce={500} onCanPlay={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCanPlay-debounce"?: number | undefined;
       onCanPlay?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCanPlayCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onCanPlayCapture-debounce={500} onCanPlayCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCanPlayCapture-debounce"?: number | undefined;
       onCanPlayCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCanPlayThrough` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onCanPlayThrough-debounce={500} onCanPlayThrough={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCanPlayThrough-debounce"?: number | undefined;
       onCanPlayThrough?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onCanPlayThroughCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onCanPlayThroughCapture-debounce={500} onCanPlayThroughCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onCanPlayThroughCapture-debounce"?: number | undefined;
       onCanPlayThroughCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDurationChange` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onDurationChange-debounce={500} onDurationChange={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDurationChange-debounce"?: number | undefined;
       onDurationChange?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDurationChangeCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onDurationChangeCapture-debounce={500} onDurationChangeCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDurationChangeCapture-debounce"?: number | undefined;
       onDurationChangeCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onEmptied` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onEmptied-debounce={500} onEmptied={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onEmptied-debounce"?: number | undefined;
       onEmptied?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onEmptiedCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onEmptiedCapture-debounce={500} onEmptiedCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onEmptiedCapture-debounce"?: number | undefined;
       onEmptiedCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onEncrypted` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onEncrypted-debounce={500} onEncrypted={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onEncrypted-debounce"?: number | undefined;
       onEncrypted?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onEncryptedCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onEncryptedCapture-debounce={500} onEncryptedCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onEncryptedCapture-debounce"?: number | undefined;
       onEncryptedCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onEnded` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onEnded-debounce={500} onEnded={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onEnded-debounce"?: number | undefined;
       onEnded?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onEndedCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onEndedCapture-debounce={500} onEndedCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onEndedCapture-debounce"?: number | undefined;
       onEndedCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onLoadedData` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onLoadedData-debounce={500} onLoadedData={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLoadedData-debounce"?: number | undefined;
       onLoadedData?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onLoadedDataCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onLoadedDataCapture-debounce={500} onLoadedDataCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLoadedDataCapture-debounce"?: number | undefined;
       onLoadedDataCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onLoadedMetadata` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onLoadedMetadata-debounce={500} onLoadedMetadata={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLoadedMetadata-debounce"?: number | undefined;
       onLoadedMetadata?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onLoadedMetadataCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onLoadedMetadataCapture-debounce={500} onLoadedMetadataCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLoadedMetadataCapture-debounce"?: number | undefined;
       onLoadedMetadataCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onLoadStart` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onLoadStart-debounce={500} onLoadStart={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLoadStart-debounce"?: number | undefined;
       onLoadStart?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onLoadStartCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onLoadStartCapture-debounce={500} onLoadStartCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLoadStartCapture-debounce"?: number | undefined;
       onLoadStartCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPause` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onPause-debounce={500} onPause={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPause-debounce"?: number | undefined;
       onPause?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPauseCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onPauseCapture-debounce={500} onPauseCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPauseCapture-debounce"?: number | undefined;
       onPauseCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPlay` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onPlay-debounce={500} onPlay={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPlay-debounce"?: number | undefined;
       onPlay?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPlayCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onPlayCapture-debounce={500} onPlayCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPlayCapture-debounce"?: number | undefined;
       onPlayCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPlaying` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onPlaying-debounce={500} onPlaying={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPlaying-debounce"?: number | undefined;
       onPlaying?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPlayingCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onPlayingCapture-debounce={500} onPlayingCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPlayingCapture-debounce"?: number | undefined;
       onPlayingCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onProgress` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onProgress-debounce={500} onProgress={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onProgress-debounce"?: number | undefined;
       onProgress?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onProgressCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onProgressCapture-debounce={500} onProgressCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onProgressCapture-debounce"?: number | undefined;
       onProgressCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onRateChange` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onRateChange-debounce={500} onRateChange={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onRateChange-debounce"?: number | undefined;
       onRateChange?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onRateChangeCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onRateChangeCapture-debounce={500} onRateChangeCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onRateChangeCapture-debounce"?: number | undefined;
       onRateChangeCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSeeked` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onSeeked-debounce={500} onSeeked={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSeeked-debounce"?: number | undefined;
       onSeeked?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSeekedCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onSeekedCapture-debounce={500} onSeekedCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSeekedCapture-debounce"?: number | undefined;
       onSeekedCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSeeking` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onSeeking-debounce={500} onSeeking={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSeeking-debounce"?: number | undefined;
       onSeeking?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSeekingCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onSeekingCapture-debounce={500} onSeekingCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSeekingCapture-debounce"?: number | undefined;
       onSeekingCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onStalled` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onStalled-debounce={500} onStalled={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onStalled-debounce"?: number | undefined;
       onStalled?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onStalledCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onStalledCapture-debounce={500} onStalledCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onStalledCapture-debounce"?: number | undefined;
       onStalledCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSuspend` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onSuspend-debounce={500} onSuspend={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSuspend-debounce"?: number | undefined;
       onSuspend?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSuspendCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onSuspendCapture-debounce={500} onSuspendCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSuspendCapture-debounce"?: number | undefined;
       onSuspendCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTimeUpdate` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onTimeUpdate-debounce={500} onTimeUpdate={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTimeUpdate-debounce"?: number | undefined;
       onTimeUpdate?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTimeUpdateCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onTimeUpdateCapture-debounce={500} onTimeUpdateCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTimeUpdateCapture-debounce"?: number | undefined;
       onTimeUpdateCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onVolumeChange` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onVolumeChange-debounce={500} onVolumeChange={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onVolumeChange-debounce"?: number | undefined;
       onVolumeChange?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onVolumeChangeCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onVolumeChangeCapture-debounce={500} onVolumeChangeCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onVolumeChangeCapture-debounce"?: number | undefined;
       onVolumeChangeCapture?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onWaiting` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onWaiting-debounce={500} onWaiting={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onWaiting-debounce"?: number | undefined;
       onWaiting?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onWaitingCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onWaitingCapture-debounce={500} onWaitingCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onWaitingCapture-debounce"?: number | undefined;
       onWaitingCapture?: GenericEventHandler<Target> | undefined;
 
-      // MouseEvents
+      // MouseEvents:
+
+      /**
+       * Milliseconds to wait before executing the `onClick` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onClick-debounce={500} onClick={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onClick-debounce"?: number | undefined;
       onClick?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onClickCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onClickCapture-debounce={500} onClickCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onClickCapture-debounce"?: number | undefined;
       onClickCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onContextMenu` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onContextMenu-debounce={500} onContextMenu={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onContextMenu-debounce"?: number | undefined;
       onContextMenu?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onContextMenuCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onContextMenuCapture-debounce={500} onContextMenuCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onContextMenuCapture-debounce"?: number | undefined;
       onContextMenuCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDblClick` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDblClick-debounce={500} onDblClick={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDblClick-debounce"?: number | undefined;
       onDblClick?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDblClickCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDblClickCapture-debounce={500} onDblClickCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDblClickCapture-debounce"?: number | undefined;
       onDblClickCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDrag` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDrag-debounce={500} onDrag={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDrag-debounce"?: number | undefined;
       onDrag?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragCapture-debounce={500} onDragCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragCapture-debounce"?: number | undefined;
       onDragCapture?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragEnd` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragEnd-debounce={500} onDragEnd={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragEnd-debounce"?: number | undefined;
       onDragEnd?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragEndCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragEndCapture-debounce={500} onDragEndCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragEndCapture-debounce"?: number | undefined;
       onDragEndCapture?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragEndCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragEndCapture-debounce={500} onDragEndCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragEndCapture-debounce"?: number | undefined;
       onDragEnter?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragEnterCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragEnterCapture-debounce={500} onDragEnterCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragEnterCapture-debounce"?: number | undefined;
       onDragEnterCapture?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragExit` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragExit-debounce={500} onDragExit={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragExit-debounce"?: number | undefined;
       onDragExit?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragExitCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragExitCapture-debounce={500} onDragExitCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragExitCapture-debounce"?: number | undefined;
       onDragExitCapture?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragLeave` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragLeave-debounce={500} onDragLeave={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragLeave-debounce"?: number | undefined;
       onDragLeave?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragLeaveCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragLeaveCapture-debounce={500} onDragLeaveCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragLeaveCapture-debounce"?: number | undefined;
       onDragLeaveCapture?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragOver` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragOver-debounce={500} onDragOver={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragOver-debounce"?: number | undefined;
       onDragOver?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragOverCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragOverCapture-debounce={500} onDragOverCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragOverCapture-debounce"?: number | undefined;
       onDragOverCapture?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragStart` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragStart-debounce={500} onDragStart={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragStart-debounce"?: number | undefined;
       onDragStart?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDragStartCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDragStartCapture-debounce={500} onDragStartCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDragStartCapture-debounce"?: number | undefined;
       onDragStartCapture?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDrop` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDrop-debounce={500} onDrop={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDrop-debounce"?: number | undefined;
       onDrop?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onDropCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onDropCapture-debounce={500} onDropCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onDropCapture-debounce"?: number | undefined;
       onDropCapture?: DragEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseDown` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseDown-debounce={500} onMouseDown={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseDown-debounce"?: number | undefined;
       onMouseDown?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseDownCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseDownCapture-debounce={500} onMouseDownCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseDownCapture-debounce"?: number | undefined;
       onMouseDownCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseEnter` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseEnter-debounce={500} onMouseEnter={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseEnter-debounce"?: number | undefined;
       onMouseEnter?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseEnterCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseEnterCapture-debounce={500} onMouseEnterCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseEnterCapture-debounce"?: number | undefined;
       onMouseEnterCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseLeave` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseLeave-debounce={500} onMouseLeave={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseLeave-debounce"?: number | undefined;
       onMouseLeave?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseLeaveCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseLeaveCapture-debounce={500} onMouseLeaveCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseLeaveCapture-debounce"?: number | undefined;
       onMouseLeaveCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseMove` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseMove-debounce={500} onMouseMove={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseMove-debounce"?: number | undefined;
       onMouseMove?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseMoveCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseMoveCapture-debounce={500} onMouseMoveCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseMoveCapture-debounce"?: number | undefined;
       onMouseMoveCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseOut` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseOut-debounce={500} onMouseOut={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseOut-debounce"?: number | undefined;
       onMouseOut?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseOutCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseOutCapture-debounce={500} onMouseOutCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseOutCapture-debounce"?: number | undefined;
       onMouseOutCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseOver` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseOver-debounce={500} onMouseOver={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseOver-debounce"?: number | undefined;
       onMouseOver?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseOverCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseOverCapture-debounce={500} onMouseOverCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseOverCapture-debounce"?: number | undefined;
       onMouseOverCapture?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseUp` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseUp-debounce={500} onMouseUp={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseUp-debounce"?: number | undefined;
       onMouseUp?: MouseEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onMouseUpCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onMouseUpCapture-debounce={500} onMouseUpCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onMouseUpCapture-debounce"?: number | undefined;
       onMouseUpCapture?: MouseEventHandler<Target> | undefined;
 
-      // Selection Events
+      // Selection Events:
+
+      /**
+       * Milliseconds to wait before executing the `onSelect` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onSelect-debounce={500} onSelect={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSelect-debounce"?: number | undefined;
       onSelect?: GenericEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onSelectCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <input onSelectCapture-debounce={500} onSelectCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onSelectCapture-debounce"?: number | undefined;
       onSelectCapture?: GenericEventHandler<Target> | undefined;
 
-      // Touch Events
+      // Touch Events:
+
+      /**
+       * Milliseconds to wait before executing the `onTouchCancel` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTouchCancel-debounce={500} onTouchCancel={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTouchCancel-debounce"?: number | undefined;
       onTouchCancel?: TouchEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTouchCancelCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTouchCancelCapture-debounce={500} onTouchCancelCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTouchCancelCapture-debounce"?: number | undefined;
       onTouchCancelCapture?: TouchEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTouchEnd` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTouchEnd-debounce={500} onTouchEnd={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTouchEnd-debounce"?: number | undefined;
       onTouchEnd?: TouchEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTouchEndCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTouchEndCapture-debounce={500} onTouchEndCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTouchEndCapture-debounce"?: number | undefined;
       onTouchEndCapture?: TouchEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTouchMove` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTouchMove-debounce={500} onTouchMove={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTouchMove-debounce"?: number | undefined;
       onTouchMove?: TouchEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTouchMoveCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTouchMoveCapture-debounce={500} onTouchMoveCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTouchMoveCapture-debounce"?: number | undefined;
       onTouchMoveCapture?: TouchEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTouchStart` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTouchStart-debounce={500} onTouchStart={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTouchStart-debounce"?: number | undefined;
       onTouchStart?: TouchEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onTouchStartCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTouchStartCapture-debounce={500} onTouchStartCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTouchStartCapture-debounce"?: number | undefined;
       onTouchStartCapture?: TouchEventHandler<Target> | undefined;
 
-      // Pointer Events
-      onPointerOver?: PointerEventHandler<Target> | undefined;
-      onPointerOverCapture?: PointerEventHandler<Target> | undefined;
-      onPointerEnter?: PointerEventHandler<Target> | undefined;
-      onPointerEnterCapture?: PointerEventHandler<Target> | undefined;
-      onPointerDown?: PointerEventHandler<Target> | undefined;
-      onPointerDownCapture?: PointerEventHandler<Target> | undefined;
-      onPointerMove?: PointerEventHandler<Target> | undefined;
-      onPointerMoveCapture?: PointerEventHandler<Target> | undefined;
-      onPointerUp?: PointerEventHandler<Target> | undefined;
-      onPointerUpCapture?: PointerEventHandler<Target> | undefined;
-      onPointerCancel?: PointerEventHandler<Target> | undefined;
-      onPointerCancelCapture?: PointerEventHandler<Target> | undefined;
-      onPointerOut?: PointerEventHandler<Target> | undefined;
-      onPointerOutCapture?: PointerEventHandler<Target> | undefined;
-      onPointerLeave?: PointerEventHandler<Target> | undefined;
-      onPointerLeaveCapture?: PointerEventHandler<Target> | undefined;
-      onGotPointerCapture?: PointerEventHandler<Target> | undefined;
-      onGotPointerCaptureCapture?: PointerEventHandler<Target> | undefined;
-      onLostPointerCapture?: PointerEventHandler<Target> | undefined;
-      onLostPointerCaptureCapture?: PointerEventHandler<Target> | undefined;
+      // Pointer Events:
 
-      // UI Events
+      /**
+       * Milliseconds to wait before executing the `onPointerOver` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerOver-debounce={500} onPointerOver={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerOver-debounce"?: number | undefined;
+      onPointerOver?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerOverCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerOverCapture-debounce={500} onPointerOverCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerOverCapture-debounce"?: number | undefined;
+      onPointerOverCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerEnter` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerEnter-debounce={500} onPointerEnter={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerEnter-debounce"?: number | undefined;
+      onPointerEnter?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerEnterCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerEnterCapture-debounce={500} onPointerEnterCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerEnterCapture-debounce"?: number | undefined;
+      onPointerEnterCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerDown` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerDown-debounce={500} onPointerDown={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerDown-debounce"?: number | undefined;
+      onPointerDown?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerDownCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerDownCapture-debounce={500} onPointerDownCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerDownCapture-debounce"?: number | undefined;
+      onPointerDownCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerMove` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerMove-debounce={500} onPointerMove={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerMove-debounce"?: number | undefined;
+      onPointerMove?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerMoveCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerMoveCapture-debounce={500} onPointerMoveCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerMoveCapture-debounce"?: number | undefined;
+      onPointerMoveCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerUp` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerUp-debounce={500} onPointerUp={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerUp-debounce"?: number | undefined;
+      onPointerUp?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerUpCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerUpCapture-debounce={500} onPointerUpCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerUpCapture-debounce"?: number | undefined;
+      onPointerUpCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerCancel` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerCancel-debounce={500} onPointerCancel={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerCancel-debounce"?: number | undefined;
+      onPointerCancel?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerCancelCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerCancelCapture-debounce={500} onPointerCancelCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerCancelCapture-debounce"?: number | undefined;
+      onPointerCancelCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerOut` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerOut-debounce={500} onPointerOut={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerOut-debounce"?: number | undefined;
+      onPointerOut?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerOutCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerOutCapture-debounce={500} onPointerOutCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerOutCapture-debounce"?: number | undefined;
+      onPointerOutCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerLeave` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerLeave-debounce={500} onPointerLeave={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerLeave-debounce"?: number | undefined;
+      onPointerLeave?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onPointerLeaveCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onPointerLeaveCapture-debounce={500} onPointerLeaveCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onPointerLeaveCapture-debounce"?: number | undefined;
+      onPointerLeaveCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onGotPointerCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onGotPointerCapture-debounce={500} onGotPointerCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onGotPointerCapture-debounce"?: number | undefined;
+      onGotPointerCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onGotPointerCaptureCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onGotPointerCaptureCapture-debounce={500} onGotPointerCaptureCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onGotPointerCaptureCapture-debounce"?: number | undefined;
+      onGotPointerCaptureCapture?: PointerEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onLostPointerCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onLostPointerCapture-debounce={500} onLostPointerCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLostPointerCapture-debounce"?: number | undefined;
+      onLostPointerCapture?: PointerEventHandler<Target> | undefined;
+
+      // UI Events:
+
+      /**
+       * Milliseconds to wait before executing the `onScroll` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onScroll-debounce={500} onScroll={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onScroll-debounce"?: number | undefined;
       onScroll?: UIEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onScrollCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onScrollCapture-debounce={500} onScrollCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onScrollCapture-debounce"?: number | undefined;
       onScrollCapture?: UIEventHandler<Target> | undefined;
 
-      // Wheel Events
+      // Wheel Events:
+
+      /**
+       * Milliseconds to wait before executing the `onWheel` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onWheel-debounce={500} onWheel={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onWheel-debounce"?: number | undefined;
       onWheel?: WheelEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onWheelCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onWheelCapture-debounce={500} onWheelCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onWheelCapture-debounce"?: number | undefined;
       onWheelCapture?: WheelEventHandler<Target> | undefined;
 
-      // Animation Events
+      // Animation Events:
+
+      /**
+       * Milliseconds to wait before executing the `onAnimationStart` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onAnimationStart-debounce={500} onAnimationStart={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onAnimationStart-debounce"?: number | undefined;
       onAnimationStart?: AnimationEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onAnimationStartCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onAnimationStartCapture-debounce={500} onAnimationStartCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onAnimationStartCapture-debounce"?: number | undefined;
       onAnimationStartCapture?: AnimationEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onAnimationEnd` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onAnimationEnd-debounce={500} onAnimationEnd={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onAnimationEnd-debounce"?: number | undefined;
       onAnimationEnd?: AnimationEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onAnimationEndCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onAnimationEndCapture-debounce={500} onAnimationEndCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onAnimationEndCapture-debounce"?: number | undefined;
       onAnimationEndCapture?: AnimationEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onAnimationIteration` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onAnimationIteration-debounce={500} onAnimationIteration={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onAnimationIteration-debounce"?: number | undefined;
       onAnimationIteration?: AnimationEventHandler<Target> | undefined;
+
+      /**
+       * Milliseconds to wait before executing the `onAnimationIterationCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onAnimationIterationCapture-debounce={500} onAnimationIterationCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onAnimationIterationCapture-debounce"?: number | undefined;
       onAnimationIterationCapture?: AnimationEventHandler<Target> | undefined;
 
-      // Transition Events
+      // Transition Events:
+
+      /**
+       * Milliseconds to wait before executing the `onTransitionCancel` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTransitionCancel-debounce={500} onTransitionCancel={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTransitionCancel-debounce"?: number | undefined;
       onTransitionCancel?: TransitionEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onTransitionCancelCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTransitionCancelCapture-debounce={500} onTransitionCancelCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTransitionCancelCapture-debounce"?: number | undefined;
       onTransitionCancelCapture?: TransitionEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onTransitionEnd` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTransitionEnd-debounce={500} onTransitionEnd={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTransitionEnd-debounce"?: number | undefined;
       onTransitionEnd?: TransitionEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onTransitionEndCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTransitionEndCapture-debounce={500} onTransitionEndCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTransitionEndCapture-debounce"?: number | undefined;
       onTransitionEndCapture?: TransitionEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onTransitionRun` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTransitionRun-debounce={500} onTransitionRun={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTransitionRun-debounce"?: number | undefined;
       onTransitionRun?: TransitionEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onTransitionRunCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTransitionRunCapture-debounce={500} onTransitionRunCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTransitionRunCapture-debounce"?: number | undefined;
       onTransitionRunCapture?: TransitionEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onTransitionStart` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTransitionStart-debounce={500} onTransitionStart={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTransitionStart-debounce"?: number | undefined;
       onTransitionStart?: TransitionEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onTransitionStartCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <div onTransitionStartCapture-debounce={500} onTransitionStartCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onTransitionStartCapture-debounce"?: number | undefined;
       onTransitionStartCapture?: TransitionEventHandler<Target>;
 
-      // PictureInPicture Events
+      // PictureInPicture Events:
+
+      /**
+       * Milliseconds to wait before executing the `onEnterPictureInPicture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onEnterPictureInPicture-debounce={500} onEnterPictureInPicture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onEnterPictureInPicture-debounce"?: number | undefined;
       onEnterPictureInPicture?: PictureInPictureEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onEnterPictureInPictureCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onEnterPictureInPictureCapture-debounce={500} onEnterPictureInPictureCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onEnterPictureInPictureCapture-debounce"?: number | undefined;
       onEnterPictureInPictureCapture?: PictureInPictureEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onLeavePictureInPicture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onLeavePictureInPicture-debounce={500} onLeavePictureInPicture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLeavePictureInPicture-debounce"?: number | undefined;
       onLeavePictureInPicture?: PictureInPictureEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onLeavePictureInPictureCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onLeavePictureInPictureCapture-debounce={500} onLeavePictureInPictureCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onLeavePictureInPictureCapture-debounce"?: number | undefined;
       onLeavePictureInPictureCapture?: PictureInPictureEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onResize` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onResize-debounce={500} onResize={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onResize-debounce"?: number | undefined;
       onResize?: PictureInPictureEventHandler<Target>;
+
+      /**
+       * Milliseconds to wait before executing the `onResizeCapture` server action.
+       *
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       *
+       * Default: 0
+       *
+       * Example:
+       *
+       * ```tsx
+       * <video onResizeCapture-debounce={500} onResizeCapture={() => {}} />
+       * ```
+       *
+       * Docs:
+       *
+       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       */
+      "onResizeCapture-debounce"?: number | undefined;
       onResizeCapture?: PictureInPictureEventHandler<Target>;
     }
 

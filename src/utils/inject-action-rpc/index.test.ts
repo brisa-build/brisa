@@ -1,16 +1,29 @@
-import { describe, it, expect, beforeEach, afterEach, spyOn } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  spyOn,
+  jest,
+} from "bun:test";
 import { injectActionRPCCode } from "." with { type: "macro" };
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const actionRPCCode = await injectActionRPCCode();
 
-async function simulateRPC(actions: any[]) {
+async function simulateRPC(actions: any[], debounceMs = 0) {
   const button = document.createElement("button");
   let times = 0;
 
   // Simulate a button with a data-action-onClick attribute
   button.setAttribute("data-action-onClick", "a1_1");
   button.setAttribute("data-action", "true");
+
+  if (debounceMs) {
+    button.setAttribute("onClick-debounce", debounceMs.toString());
+  }
+
   document.body.appendChild(button);
 
   // Inject RPC code
@@ -51,6 +64,7 @@ describe("utils", () => {
       GlobalRegistrator.register();
     });
     afterEach(() => {
+      jest.restoreAllMocks();
       GlobalRegistrator.unregister();
     });
 
@@ -70,13 +84,12 @@ describe("utils", () => {
       expect(mockFetch.mock.calls[0][0]).toBe("/_action/a1_1");
       expect(mockFetch.mock.calls[0][1]?.method).toBe("POST");
 
-      const [{ timeStamp, ...event }] = JSON.parse(
+      const [{ timeStamp, eventPhase, ...event }] = JSON.parse(
         mockFetch.mock.calls[0][1]?.body as any,
       );
 
       expect(event).toEqual({
         defaultPrevented: false,
-        eventPhase: 2,
         NONE: 0,
         CAPTURING_PHASE: 1,
         AT_TARGET: 2,
@@ -116,6 +129,19 @@ describe("utils", () => {
         coalescedEvents: [],
         predictedEvents: [],
       });
+    });
+
+    it('should debounce the "rpc" function with onClick-debounce attribute', async () => {
+      const mockTimeout = spyOn(window, "setTimeout");
+      const mockFetch = await simulateRPC(
+        [{ action: "navigate", params: ["http://localhost/some-page"] }],
+        100,
+      );
+
+      expect(mockTimeout).toHaveBeenCalled();
+      expect(mockFetch).not.toHaveBeenCalled();
+      // The first timeout is to register the event during streaming
+      expect(mockTimeout.mock.calls[1][1]).toBe(100);
     });
   });
 });
