@@ -8,6 +8,7 @@ export default async function responseAction(req: RequestContext) {
   const actionFile = action.split("_").at(0);
   const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
 
-  // TODO: send the params to the action
+  req.store.set("_action_params", await req.json());
+
   return actionModule[action]({}, req);
 }
