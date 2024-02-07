@@ -19,7 +19,40 @@ In fact, we recommend that if you use uncontrolled forms, use a server component
 - You can handle directly the form on the server.
 
 ```tsx
-export default function UncontrolledFormExample() {
+export default function UncontrolledFormServer() {
+  return (
+    <form
+      onSubmit={(e) => {
+        console.log("Username:", e.formData.get("username"));
+      }}
+    >
+      <label>
+        Username:
+        <input type="text" name="username" />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+> [!IMPORTANT]
+>
+> The `onSubmit` on the server works like the [submit](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event) event _(triggered by the client)_ merged with the [formdata](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event) event _(is fired after the `FormData` invocation)_.
+
+The difference with the client `onSubmit` are:
+
+- The `e.preventDefault()` is always done automatically in the server actions.
+- The [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) is built to send and process it from the server, modifying the event from [`onSubmitEvent`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event) to [`FormDataEvent`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event).
+- Since the event is [`FormDataEvent`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event), you can access the form data directly through `e.formData`.
+
+In fact, it is now even **easier to deal** with **form server interactions** from the **server** than with the client.
+
+The client code would be as follows:
+
+```tsx
+export default function UncontrolledFormClient() {
   return (
     <form
       onSubmit={(e) => {
@@ -124,5 +157,3 @@ export default function Page() {
 > [!CAUTION]
 >
 > Controlled forms introduce additional complexity and more client-side JavaScript code. Developers should carefully weigh these factors when choosing between controlled and uncontrolled forms. The Brisa team recommends using controlled forms primarily when providing instant feedback to users for each modification during form interactions. Otherwise, it is advisable to opt for uncontrolled forms with a server component.
-
-TODO: implement server events and verify that all in these docs is correct

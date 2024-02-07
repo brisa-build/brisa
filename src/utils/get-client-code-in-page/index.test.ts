@@ -78,7 +78,7 @@ describe("utils", () => {
       const input = path.join(pages, "index.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
       const unsuspenseSize = 217;
-      const actionRPCSize = 1202;
+      const actionRPCSize = 1319;
 
       expect(output?.unsuspense.length).toBe(unsuspenseSize);
       expect(output?.actionRPC.length).toBe(actionRPCSize);
