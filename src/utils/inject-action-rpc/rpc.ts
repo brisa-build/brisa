@@ -7,12 +7,15 @@ const ACTION_ATTRIBUTE = "data-action";
  *
  * This function is used to call an action on the server.
  */
-async function rpc(actionId: string, ...args: unknown[]) {
+async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
   const lang = document.documentElement.lang;
   const langPrefix = lang ? `/${lang}` : "";
+
   const res = await fetch(`${langPrefix}/_action/${actionId}`, {
     method: "POST",
-    body: JSON.stringify(args, serialize),
+    body: isFormData
+      ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
+      : JSON.stringify(args, serialize),
   });
   const reader = res.body!.getReader();
 
@@ -83,6 +86,7 @@ function registerActionsFromElements(elements: NodeListOf<Element>) {
       const actionName = action.toLowerCase();
       const eventAttrName = actionName.replace(actionPrefix, "");
       const eventName = eventAttrName.replace(onPrefix, "");
+      const isFormData = element.nodeName === "FORM" && eventName === "submit";
       const debounceMs = +(
         element.getAttribute(eventAttrName + "-debounce") ?? 0
       );
@@ -90,8 +94,12 @@ function registerActionsFromElements(elements: NodeListOf<Element>) {
 
       if (actionName.startsWith(actionPrefix)) {
         element.addEventListener(eventName, (...args: unknown[]) => {
+          if (args[0] instanceof Event) args[0].preventDefault();
           clearTimeout(timeout);
-          timeout = setTimeout(() => rpc(actionId!, ...args), debounceMs);
+          timeout = setTimeout(
+            () => rpc(actionId!, isFormData, ...args),
+            debounceMs,
+          );
         });
       }
     }
