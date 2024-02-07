@@ -37,6 +37,13 @@ export default async function responseAction(req: RequestContext) {
       ]
     : await req.json();
 
+  const isWebComponentEvent =
+    typeof params[0] === "object" &&
+    "isTrusted" in params[0] &&
+    "detail" in params[0];
+
+  if (isWebComponentEvent) params[0] = params[0].detail;
+
   req.store.set("_action_params", params);
 
   return actionModule[action]({}, req);
