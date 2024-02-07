@@ -1847,7 +1847,7 @@ declare global {
       TargetedPointerEvent<Target>
     >;
     export type SubmitEventHandler<Target extends EventTarget> = EventHandler<
-      TargetedSubmitEvent<Target>
+      TargetedSubmitEvent<Target> & { formData?: FormData | undefined }
     >;
     export type TouchEventHandler<Target extends EventTarget> = EventHandler<
       TargetedTouchEvent<Target>

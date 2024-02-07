@@ -12,19 +12,22 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const actionRPCCode = await injectActionRPCCode();
 
-async function simulateRPC(actions: any[], debounceMs = 0) {
-  const button = document.createElement("button");
+async function simulateRPC(
+  actions: any[],
+  { elementName = "button", eventName = "click", debounceMs = 0 } = {},
+) {
+  const el = document.createElement(elementName);
   let times = 0;
 
   // Simulate a button with a data-action-onClick attribute
-  button.setAttribute("data-action-onClick", "a1_1");
-  button.setAttribute("data-action", "true");
+  el.setAttribute(`data-action-on${eventName}`, "a1_1");
+  el.setAttribute("data-action", "true");
 
   if (debounceMs) {
-    button.setAttribute("onClick-debounce", debounceMs.toString());
+    el.setAttribute(`on${eventName}-debounce`, debounceMs.toString());
   }
 
-  document.body.appendChild(button);
+  document.body.appendChild(el);
 
   // Inject RPC code
   eval(actionRPCCode);
@@ -50,9 +53,10 @@ async function simulateRPC(actions: any[], debounceMs = 0) {
       }) as any,
   );
 
-  button.click();
+  // Simulate the event
+  el.dispatchEvent(new Event(eventName));
 
-  // wait "fetch" promise to resolve
+  // Wait the fetch to be processed
   await Bun.sleep(0);
 
   return mockFetch;
@@ -89,45 +93,15 @@ describe("utils", () => {
       );
 
       expect(event).toEqual({
-        defaultPrevented: false,
+        defaultPrevented: true,
         NONE: 0,
         CAPTURING_PHASE: 1,
         AT_TARGET: 2,
         BUBBLING_PHASE: 3,
         type: "click",
-        bubbles: true,
+        bubbles: false,
         cancelable: false,
-        composed: true,
-        layerX: 0,
-        layerY: 0,
-        pageX: 0,
-        pageY: 0,
-        detail: 0,
-        altKey: false,
-        button: 0,
-        buttons: 0,
-        clientX: 0,
-        clientY: 0,
-        ctrlKey: false,
-        metaKey: false,
-        movementX: 0,
-        movementY: 0,
-        screenX: 0,
-        screenY: 0,
-        shiftKey: false,
-        pointerId: 0,
-        width: 1,
-        height: 1,
-        pressure: 0,
-        tangentialPressure: 0,
-        tiltX: 0,
-        tiltY: 0,
-        twist: 0,
-        altitudeAngle: 0,
-        azimuthAngle: 0,
-        isPrimary: false,
-        coalescedEvents: [],
-        predictedEvents: [],
+        composed: false,
       });
     });
 
@@ -135,13 +109,22 @@ describe("utils", () => {
       const mockTimeout = spyOn(window, "setTimeout");
       const mockFetch = await simulateRPC(
         [{ action: "navigate", params: ["http://localhost/some-page"] }],
-        100,
+        { debounceMs: 100 },
       );
 
       expect(mockTimeout).toHaveBeenCalled();
       expect(mockFetch).not.toHaveBeenCalled();
       // The first timeout is to register the event during streaming
       expect(mockTimeout.mock.calls[1][1]).toBe(100);
+    });
+
+    it("should send FormData when the event is onSubmit in a form", async () => {
+      const mockFetch = await simulateRPC(
+        [{ action: "navigate", params: ["http://localhost/some-page"] }],
+        { elementName: "form", eventName: "submit" },
+      );
+
+      expect(mockFetch.mock.calls[0][1]?.body).toBeInstanceOf(FormData);
     });
   });
 });
