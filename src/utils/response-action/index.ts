@@ -9,6 +9,15 @@ export default async function responseAction(req: RequestContext) {
   const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
   const contentType = req.headers.get("content-type");
   const isFormData = contentType?.includes("multipart/form-data");
+  const target = {
+    action: req.url,
+    autocomplete: "on",
+    enctype: "multipart/form-data",
+    encoding: "multipart/form-data",
+    method: "post",
+    elements: {},
+  };
+
   const params = isFormData
     ? [
         {
@@ -17,20 +26,13 @@ export default async function responseAction(req: RequestContext) {
           cancelBubble: false,
           cancelable: false,
           composed: false,
-          currentTarget: null,
+          currentTarget: target,
           defaultPrevented: true,
           eventPhase: 0,
           formData: await req.formData(),
           returnValue: true,
           srcElement: null,
-          target: {
-            action: req.url,
-            autocomplete: "on",
-            enctype: "multipart/form-data",
-            encoding: "multipart/form-data",
-            method: "post",
-            elements: {},
-          },
+          target,
           timeStamp: 0,
           type: "formdata",
         },

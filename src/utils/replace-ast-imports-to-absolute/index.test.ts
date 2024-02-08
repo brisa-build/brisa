@@ -2,10 +2,10 @@ import { describe, it, expect, spyOn } from "bun:test";
 import AST from "@/utils/ast";
 import replaceAstImportsToAbsolute from ".";
 import { normalizeQuotes } from "@/helpers";
-import constants from "@/constants";
+import { getConstants } from "@/constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const { SRC_DIR } = constants;
+const { SRC_DIR } = getConstants();
 
 describe("utils", () => {
   describe("replace-ast-imports-to-absolute", () => {
