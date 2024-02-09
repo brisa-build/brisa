@@ -1,4 +1,5 @@
 import path from "node:path";
+import { version } from "../package.json";
 import type { Configuration, I18nConfig } from "./types";
 import importFileIfExists from "./utils/import-file-if-exists";
 import {
@@ -76,6 +77,8 @@ const SCRIPT_404 = `<script>(()=>{let u=new URL(location.href);u.searchParams.se
 const constants = {
   PAGE_404,
   PAGE_500,
+  VERSION: version,
+  VERSION_HASH: Bun.hash(version),
   WEB_CONTEXT_PLUGINS: integrations?.webContextPlugins ?? [],
   RESERVED_PAGES: [PAGE_404, PAGE_500],
   IS_PRODUCTION:

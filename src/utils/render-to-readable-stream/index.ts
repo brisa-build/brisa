@@ -94,6 +94,7 @@ async function enqueueDuringRendering(
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
+  const { BUILD_DIR, VERSION_HASH } = getConstants();
 
   for (const elementContent of elements) {
     if (elementContent === false || elementContent == null) continue;
@@ -274,13 +275,13 @@ async function enqueueDuringRendering(
       // Script to unsuspense all suspense components
       if (controller.hasUnsuspense) {
         controller.enqueue(
-          '<script src="/_brisa/pages/_unsuspense.js"></script>',
+          `<script src="/_brisa/pages/_unsuspense-${VERSION_HASH}.js"></script>`,
           suspenseId,
         );
       }
       if (controller.hasActionRPC) {
         controller.enqueue(
-          '<script src="/_brisa/pages/_action.js"></script>',
+          `<script src="/_brisa/pages/_action-${VERSION_HASH}.js"></script>`,
           suspenseId,
         );
       }
@@ -310,7 +311,6 @@ async function enqueueDuringRendering(
 
         // Script to load the i18n page content (messages and translated pages to navigate)
         if (locale) {
-          const { BUILD_DIR } = getConstants();
           const filenameI18n = filename.replace(".js", `-${locale}.js`);
           const pathPageI18n = path.join(
             BUILD_DIR,

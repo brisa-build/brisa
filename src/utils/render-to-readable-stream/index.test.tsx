@@ -480,6 +480,7 @@ describe("utils", () => {
           <body></body>
         </html>
       );
+      const constants = getConstants();
       const request = extendRequestContext({
         originalRequest: new Request(testRequest),
         route: {
@@ -488,21 +489,22 @@ describe("utils", () => {
       });
 
       globalThis.mockConstants = {
-        ...getConstants(),
+        ...constants,
         BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
       };
 
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        '<script src="/_brisa/pages/_action.js"></script>',
+        `<script src="/_brisa/pages/_action-${constants.VERSION_HASH}.js"></script>`,
       );
       expect(result).toContain(
-        '<script src="/_brisa/pages/_unsuspense.js"></script>',
+        `<script src="/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
       );
     });
 
     it("should inject the action rpc script", async () => {
+      const constants = getConstants();
       const element = (
         <html>
           <head></head>
@@ -517,17 +519,17 @@ describe("utils", () => {
       });
 
       globalThis.mockConstants = {
-        ...getConstants(),
+        ...constants,
         BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
       };
 
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        '<script src="/_brisa/pages/_unsuspense.js"></script>',
+        `<script src="/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
       );
       expect(result).toContain(
-        '<script src="/_brisa/pages/_action.js"></script>',
+        `<script src="/_brisa/pages/_action-${constants.VERSION_HASH}.js"></script>`,
       );
     });
 
