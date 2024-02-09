@@ -250,7 +250,7 @@ async function compileClientCodePage(
       pagePath,
     });
 
-    // create _action.js and _action.txt (list of pages with actions)
+    // create _action-[versionhash].js and _action.txt (list of pages with actions)
     clientSizesPerPage[route] += addExtraChunk(actionRPC, "_action", {
       pagesClientPath,
       pagePath,
@@ -299,11 +299,12 @@ function addExtraChunk(
   filename: string,
   { pagesClientPath, pagePath }: { pagesClientPath: string; pagePath: string },
 ) {
-  const { BUILD_DIR } = getConstants();
+  const { BUILD_DIR, VERSION_HASH } = getConstants();
+  const jsFilename = `${filename}-${VERSION_HASH}.js`;
 
   if (!code) return 0;
 
-  if (fs.existsSync(join(pagesClientPath, `${filename}.js`))) {
+  if (fs.existsSync(join(pagesClientPath, jsFilename))) {
     const listPath = join(pagesClientPath, `${filename}.txt`);
 
     Bun.write(
@@ -319,8 +320,8 @@ function addExtraChunk(
 
   const gzipUnsuspense = gzipSync(new TextEncoder().encode(code));
 
-  Bun.write(join(pagesClientPath, `${filename}.js`), code);
-  Bun.write(join(pagesClientPath, `${filename}.js.gz`), gzipUnsuspense);
+  Bun.write(join(pagesClientPath, jsFilename), code);
+  Bun.write(join(pagesClientPath, `${jsFilename}.gz`), gzipUnsuspense);
   Bun.write(
     join(pagesClientPath, `${filename}.txt`),
     pagePath.replace(BUILD_DIR, ""),
