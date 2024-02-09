@@ -1175,12 +1175,134 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo(
-      "should purge a call expression that is not recovered with a variable and this call has an action identifier",
-    );
-    it.todo(
-      "should keep a call expression that is recovered with a variable and this call has an action identifier",
-    );
+    it("should purge a call expression that is not recovered with a variable and this call has an action identifier", () => {
+      const code = `
+        export default function Component({text}) {
+          const hello = 'hello world';
+          console.log(hello); // Should purge
+
+          const onClick = async () => {
+            await foo(hello); // Should keep
+            console.log(hello); // Should keep
+          };
+
+          return <div onClick={onClick} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          const hello = 'hello world';
+          console.log(hello);
+
+          const onClick = async () => {
+            await foo(hello);
+            console.log(hello);
+          };
+          return jsxDEV("div", {onClick,"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const hello = 'hello world';
+            const onClick = async () => {
+              await foo(hello);
+              console.log(hello);
+            };
+            await onClick(...req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should purge an async call expression that is not recovered with a variable and this call has an action identifier", () => {
+      const code = `
+        export default async function Component({text}) {
+          const hello = 'hello world';
+          await someMagicFunction(hello);
+          return <div onClick={() => console.log(hello)} data-action-onClick="a1_1" data-action>{text}</div>
+        }  
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        async function Component({text}) {
+          const hello = 'hello world';
+          await someMagicFunction(hello);
+          return jsxDEV("div", {onClick: () => console.log(hello),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log(hello);
+            const hello = 'hello world';
+            await __action(...req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should keep a call expression that is recovered with a variable and this call has an action identifier", () => {
+      const code = `
+        export default function Component({text}) {
+          const hello = 'hello world';
+          const foo = someMagicFunction(hello);
+          return <div onClick={() => console.log(foo)} data-action-onClick="a1_1" data-action>{text}</div>
+        }  
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          const hello = 'hello world';
+          const foo = someMagicFunction(hello);
+          return jsxDEV("div", {onClick: () => console.log(foo),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log(foo);
+            const hello = 'hello world';
+            const foo = someMagicFunction(hello);
+            await __action(...req.store.get('_action_params'));
+            return new Response(null);
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
     it.todo(
       "should work with an element with an action defined outside the Component",
     );

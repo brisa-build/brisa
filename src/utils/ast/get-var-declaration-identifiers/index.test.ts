@@ -11,7 +11,7 @@ describe("utils", () => {
           callee: { type: "Identifier", name: "a" },
         };
         const output = getVarDeclarationIdentifiers(node as ESTree.Node);
-        expect(output).toEqual(new Set());
+        expect(output).toEqual(new Map<string, Set<string>>());
       });
 
       it("should return all identifiers in the given AST", () => {
@@ -32,7 +32,11 @@ describe("utils", () => {
           kind: "const",
         };
         const output = getVarDeclarationIdentifiers(node as ESTree.Node);
-        expect(output).toEqual(new Set(["a", "b"]));
+        const expectedMap = new Map<string, Set<string>>([
+          ["a", new Set()],
+          ["b", new Set()],
+        ]);
+        expect(output).toEqual(expectedMap);
       });
 
       it("should return identifiers inside an ObjectPattern", () => {
@@ -62,7 +66,11 @@ describe("utils", () => {
           kind: "const",
         };
         const output = getVarDeclarationIdentifiers(node as ESTree.Node);
-        expect(output).toEqual(new Set(["a", "c"]));
+        const expectedMap = new Map<string, Set<string>>([
+          ["a", new Set(["b"])],
+          ["c", new Set(["d"])],
+        ]);
+        expect(output).toEqual(expectedMap);
       });
 
       it("should return all identifiers in the given AST with nested structures", () => {
@@ -132,7 +140,16 @@ describe("utils", () => {
           kind: "const",
         };
         const output = getVarDeclarationIdentifiers(node as ESTree.Node);
-        expect(output).toEqual(new Set(["a", "b", "c", "d", "e", "f", "g"]));
+        const expectedMap = new Map<string, Set<string>>([
+          ["a", new Set()],
+          ["b", new Set()],
+          ["c", new Set(["a", "b"])],
+          ["d", new Set(["e", "f", "g"])],
+          ["e", new Set()],
+          ["f", new Set()],
+          ["g", new Set(["e", "f"])],
+        ]);
+        expect(output).toEqual(expectedMap);
       });
     });
   });
