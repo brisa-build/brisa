@@ -11,7 +11,13 @@ function expectCodeToPurge(code: string, actionId = "a1_1") {
   const actionInfo = getActionsInfo(ast).find(
     (info) => info.actionId === actionId,
   );
-  ast.body[0].declarations[0].init.body = getPurgedBody(actionInfo!);
+
+  if (ast.body[0].async) {
+    ast.body[0].body = getPurgedBody(actionInfo!);
+  } else {
+    ast.body[0].declarations[0].init.body = getPurgedBody(actionInfo!);
+  }
+
   return {
     toBe: (expectedCode: string) =>
       expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
@@ -180,6 +186,138 @@ describe("utils", () => {
               console.log(foo);
           }
         };
+      `;
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    });
+
+    it("should purge the call expression with used variable when these call expression is not setting any variable", () => {
+      const codeToPurge = `
+        function Test({ someProp }) {
+          let foo = 'bar';
+
+          someMagicFunction(foo);
+
+          function onClick() {
+             console.log(foo);
+          }
+        
+          return <div onClick={onClick} data-action-onClick="a1_1">hello</div>;
+        }
+      `;
+      const expectedCode = `
+        let Test = function ({someProp}) {
+          let foo = 'bar';
+        
+          function onClick() {
+            console.log(foo);
+          }
+        };
+      `;
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    });
+
+    it("should purge the call expression with used variable when these call expression is not setting any variable", () => {
+      const codeToPurge = `
+        function Test({ someProp }) {
+          let foo = 'bar';
+
+          console.log(foo);
+
+          function onClick() {
+             console.log(foo);
+          }
+        
+          return <div onClick={onClick} data-action-onClick="a1_1">hello</div>;
+        }
+      `;
+      const expectedCode = `
+        let Test = function ({someProp}) {
+          let foo = 'bar';
+        
+          function onClick() {
+            console.log(foo);
+          }
+        };
+      `;
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    });
+
+    it("should purge the ASYNC call expression with used variable when these call expression is not setting any variable", () => {
+      const codeToPurge = `
+        async function Test({ someProp }) {
+          let foo = 'bar';
+
+          await someMagicFunction(foo);
+
+          function onClick() {
+             console.log(foo);
+          }
+        
+          return <div onClick={onClick} data-action-onClick="a1_1">hello</div>;
+        }
+      `;
+      const expectedCode = `
+        async function Test({someProp}) {
+          let foo = 'bar';
+        
+          function onClick() {
+            console.log(foo);
+          }
+        }
+      `;
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    });
+
+    it("should purge the ASYNC call expression with used variable when these call expression is setted by an unused variable", () => {
+      const codeToPurge = `
+        async function Test({ someProp }) {
+          let foo = 'bar';
+
+          const res = await someMagicFunction(foo);
+
+          function onClick() {
+             console.log(foo);
+          }
+        
+          return <div onClick={onClick} data-action-onClick="a1_1">hello</div>;
+        }
+      `;
+      const expectedCode = `
+        async function Test({someProp}) {
+          let foo = 'bar';
+        
+          function onClick() {
+            console.log(foo);
+          }
+        }
+      `;
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    });
+
+    it("should keep the ASYNC call expression with used variable when these call expression is setted by used variable by the action", () => {
+      const codeToPurge = `
+        async function Test({ someProp }) {
+          let foo = 'bar';
+
+          const res = await someMagicFunction(foo);
+
+          function onClick() {
+             console.log(res);
+          }
+        
+          return <div onClick={onClick} data-action-onClick="a1_1">hello</div>;
+        }
+      `;
+      const expectedCode = `
+        async function Test({someProp}) {
+          let foo = 'bar';
+
+          const res = await someMagicFunction(foo);
+        
+          function onClick() {
+            console.log(res);
+          }
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
