@@ -183,6 +183,8 @@ describe("utils", () => {
         `_500.txt`,
         `_rpc-${constants.VERSION_HASH}.js`,
         `_rpc-${constants.VERSION_HASH}.js.gz`,
+        `_rpc-lazy-${constants.VERSION_HASH}.js`,
+        `_rpc-lazy-${constants.VERSION_HASH}.js.gz`,
         `_rpc.txt`,
         `_unsuspense-${constants.VERSION_HASH}.js`,
         `_unsuspense-${constants.VERSION_HASH}.js.gz`,
