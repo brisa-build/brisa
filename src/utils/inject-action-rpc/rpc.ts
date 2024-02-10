@@ -1,6 +1,12 @@
 /// <reference lib="dom.iterable" />
 
-const ACTION_ATTRIBUTE = "data-action";
+const ACTION = "action";
+const ACTION_ATTRIBUTE = "data-"+ACTION;
+const $document = document;
+const $Promise = Promise;
+const $setTimeout = setTimeout;
+const $clearTimeout = clearTimeout;
+let resolveRPC: ((res: Response) => Promise<void>) | undefined;
 
 /**
  * RPC (Remote Procedure Call)
@@ -8,8 +14,20 @@ const ACTION_ATTRIBUTE = "data-action";
  * This function is used to call an action on the server.
  */
 async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
-  const lang = document.documentElement.lang;
+  const lang = $document.documentElement.lang;
   const langPrefix = lang ? `/${lang}` : "";
+  let promise = resolveRPC
+    ? $Promise.resolve()
+    : new $Promise((res) => {
+        let scriptElement = $document.createElement("script");
+        scriptElement.type = "text/javascript";
+        scriptElement.onload = res;
+        scriptElement.onerror = res;
+        // @ts-ignore
+        scriptElement.fetchPriority = "high";
+        scriptElement.src = __RPC_LAZY_FILE__;
+        $document.head.appendChild(scriptElement);
+      });
 
   const res = await fetch(`${langPrefix}/_action/${actionId}`, {
     method: "POST",
@@ -17,41 +35,15 @@ async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
       ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
       : JSON.stringify(args, serialize),
   });
-  const reader = res.body!.getReader();
 
-  /**
-   * The chunk is using Newline-delimited JSON (NDJSON) format.
-   * This format is used to parse JSON objects from a stream.
-   *
-   * Content-Type: application/x-ndjson
-   *
-   * https://en.wikipedia.org/wiki/JSON_streaming#Newline-delimited_JSON
-   *
-   * Example:
-   *
-   * {"action": "foo"} \n {"action": "bar"} \n {"action": "baz"}
-   *
-   * The difference between this format and JSON is that this format
-   * is not a valid JSON, but it is a valid JSON stream.
-   *
-   */
-  while (true) {
-    const { done, value } = await reader.read();
+  await promise;
 
-    if (done) break;
-
-    const text = new TextDecoder().decode(value);
-
-    for (const json of text.split("\n")) {
-      if (!json) continue;
-      const { action, params, selector } = JSON.parse(json);
-
-      // Redirect to a different page
-      if (action === "navigate") {
-        window.location.href = params[0];
-      }
-    }
+  if (!resolveRPC) {
+    resolveRPC = window._rpc;
+    delete window._rpc;
   }
+
+  resolveRPC!(res);
 }
 
 /**
@@ -72,7 +64,6 @@ function serialize(k: string, v: unknown) {
 }
 
 function registerActionsFromElements(elements: NodeListOf<Element>) {
-  const actionPrefix = "action";
   const onPrefix = "on";
 
   for (let element of elements) {
@@ -84,7 +75,7 @@ function registerActionsFromElements(elements: NodeListOf<Element>) {
 
     for (let [action, actionId] of Object.entries(dataSet)) {
       const actionName = action.toLowerCase();
-      const eventAttrName = actionName.replace(actionPrefix, "");
+      const eventAttrName = actionName.replace(ACTION, "");
       const eventName = eventAttrName.replace(onPrefix, "");
       const isFormData = element.nodeName === "FORM" && eventName === "submit";
       const debounceMs = +(
@@ -92,11 +83,11 @@ function registerActionsFromElements(elements: NodeListOf<Element>) {
       );
       let timeout: ReturnType<typeof setTimeout>;
 
-      if (actionName.startsWith(actionPrefix)) {
+      if (actionName.startsWith(ACTION)) {
         element.addEventListener(eventName, (...args: unknown[]) => {
           if (args[0] instanceof Event) args[0].preventDefault();
-          clearTimeout(timeout);
-          timeout = setTimeout(
+          $clearTimeout(timeout);
+          timeout = $setTimeout(
             () => rpc(actionId!, isFormData, ...args),
             debounceMs,
           );
@@ -110,15 +101,15 @@ let timeout: ReturnType<typeof setTimeout>;
 
 function initActionRegister() {
   registerActionsFromElements(
-    document.querySelectorAll(`[${ACTION_ATTRIBUTE}]`),
+    $document.querySelectorAll(`[${ACTION_ATTRIBUTE}]`),
   );
-  if (timeout) clearTimeout(timeout);
-  timeout = setTimeout(initActionRegister, 0);
+  if (timeout) $clearTimeout(timeout);
+  timeout = $setTimeout(initActionRegister, 0);
 }
 
 initActionRegister();
 
-document.addEventListener("DOMContentLoaded", () => {
+$document.addEventListener("DOMContentLoaded", () => {
   initActionRegister();
-  clearTimeout(timeout);
+  $clearTimeout(timeout);
 });

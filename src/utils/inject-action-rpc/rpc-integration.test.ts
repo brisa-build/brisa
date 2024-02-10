@@ -7,10 +7,14 @@ import {
   spyOn,
   jest,
 } from "bun:test";
-import { injectActionRPCCode } from "." with { type: "macro" };
+import {
+  injectActionRPCCode,
+  injectActionRPCLazyCode,
+} from "." with { type: "macro" };
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const actionRPCCode = await injectActionRPCCode();
+const actionRPCLazyCode = await injectActionRPCLazyCode();
 
 async function simulateRPC(
   actions: any[],
@@ -30,6 +34,7 @@ async function simulateRPC(
   document.body.appendChild(el);
 
   // Inject RPC code
+  eval(actionRPCLazyCode);
   eval(actionRPCCode);
 
   // Mock fetch with the actions
@@ -63,7 +68,7 @@ async function simulateRPC(
 }
 
 describe("utils", () => {
-  describe("inject-action-rpc", () => {
+  describe("rpc", () => {
     beforeEach(() => {
       GlobalRegistrator.register();
     });
