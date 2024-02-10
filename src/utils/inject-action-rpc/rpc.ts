@@ -1,7 +1,7 @@
 /// <reference lib="dom.iterable" />
 
 const ACTION = "action";
-const ACTION_ATTRIBUTE = "data-"+ACTION;
+const ACTION_ATTRIBUTE = "data-" + ACTION;
 const $document = document;
 const $Promise = Promise;
 const $setTimeout = setTimeout;
@@ -50,16 +50,20 @@ async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
  * Serialize function used to convert events to JSON.
  */
 function serialize(k: string, v: unknown) {
+  const isInstanceOf = (Instance: any) => v instanceof Instance;
+  const isNode = isInstanceOf(Node);
+
   if (
-    v instanceof Event ||
-    (v instanceof Node && ["target", "currentTarget"].includes(k))
+    isInstanceOf(Event) ||
+    (isNode && ["target", "currentTarget"].includes(k))
   ) {
     const ev: Record<string, any> = {};
-    for (let field in v) ev[field] = (v as any)[field];
+    for (let field in v as any) ev[field] = (v as any)[field];
+    if (isInstanceOf(CustomEvent)) ev._custom = true;
     return ev;
   }
 
-  if (v == null || v === "" || v instanceof Node || v instanceof Window) return;
+  if (v == null || v === "" || isNode || isInstanceOf(Window)) return;
   return v;
 }
 

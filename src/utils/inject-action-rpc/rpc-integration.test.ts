@@ -59,7 +59,9 @@ async function simulateRPC(
   );
 
   // Simulate the event
-  el.dispatchEvent(new Event(eventName));
+  el.dispatchEvent(
+    eventName === "custom" ? new CustomEvent(eventName) : new Event(eventName),
+  );
 
   // Wait the fetch to be processed
   await Bun.sleep(0);
@@ -130,6 +132,16 @@ describe("utils", () => {
       );
 
       expect(mockFetch.mock.calls[0][1]?.body).toBeInstanceOf(FormData);
+    });
+
+    it("should send custom event serialized with _custom property", async () => {
+      const mockFetch = await simulateRPC(
+        [{ action: "navigate", params: ["http://localhost/some-page"] }],
+        { eventName: "custom" },
+      );
+
+      const [event] = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
+      expect(event._custom).toBeTrue();
     });
   });
 });
