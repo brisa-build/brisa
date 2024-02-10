@@ -233,7 +233,15 @@ async function compileClientCodePage(
 
     if (!pageCode) return null;
 
-    const { size, code, unsuspense, actionRPC, useI18n, i18nKeys } = pageCode;
+    const {
+      size,
+      code,
+      unsuspense,
+      actionRPC,
+      actionRPCLazy,
+      useI18n,
+      i18nKeys,
+    } = pageCode;
 
     clientSizesPerPage[route] = size;
 
@@ -254,6 +262,13 @@ async function compileClientCodePage(
     clientSizesPerPage[route] += addExtraChunk(actionRPC, "_rpc", {
       pagesClientPath,
       pagePath,
+    });
+
+    // create _rpc-lazy-[versionhash].js
+    clientSizesPerPage[route] += addExtraChunk(actionRPCLazy, "_rpc-lazy", {
+      pagesClientPath,
+      pagePath,
+      skipList: true,
     });
 
     if (!code) continue;
@@ -297,14 +312,18 @@ async function compileClientCodePage(
 function addExtraChunk(
   code: string,
   filename: string,
-  { pagesClientPath, pagePath }: { pagesClientPath: string; pagePath: string },
+  {
+    pagesClientPath,
+    pagePath,
+    skipList = false,
+  }: { pagesClientPath: string; pagePath: string; skipList?: boolean },
 ) {
   const { BUILD_DIR, VERSION_HASH } = getConstants();
   const jsFilename = `${filename}-${VERSION_HASH}.js`;
 
   if (!code) return 0;
 
-  if (fs.existsSync(join(pagesClientPath, jsFilename))) {
+  if (!skipList && fs.existsSync(join(pagesClientPath, jsFilename))) {
     const listPath = join(pagesClientPath, `${filename}.txt`);
 
     Bun.write(
@@ -322,10 +341,13 @@ function addExtraChunk(
 
   Bun.write(join(pagesClientPath, jsFilename), code);
   Bun.write(join(pagesClientPath, `${jsFilename}.gz`), gzipUnsuspense);
-  Bun.write(
-    join(pagesClientPath, `${filename}.txt`),
-    pagePath.replace(BUILD_DIR, ""),
-  );
+
+  if (!skipList) {
+    Bun.write(
+      join(pagesClientPath, `${filename}.txt`),
+      pagePath.replace(BUILD_DIR, ""),
+    );
+  }
 
   return gzipUnsuspense.length;
 }

@@ -129,6 +129,7 @@ declare global {
   var BrisaRegistry: Map<string, number>;
   var lastContextProviderId: number;
   var __WEB_CONTEXT_PLUGINS__: boolean;
+  var __RPC_LAZY_FILE__: string;
 }
 
 export default constants;

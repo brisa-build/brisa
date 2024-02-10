@@ -43,6 +43,7 @@ describe("utils", () => {
       const expected = {
         code: "",
         actionRPC: "",
+        actionRPCLazy: "",
         unsuspense: "",
         size: 0,
         useI18n: false,
@@ -78,11 +79,17 @@ describe("utils", () => {
       const input = path.join(pages, "index.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
       const unsuspenseSize = 217;
-      const actionRPCSize = 1319;
+      const actionRPCSize =  1301;
+      const actionRPCLazySize = 307;
+
+      // actionRPCLazy is loaded after user interaction (action),
+      // so it's not included in the initial size
+      const initialSize = unsuspenseSize + actionRPCSize;
 
       expect(output?.unsuspense.length).toBe(unsuspenseSize);
       expect(output?.actionRPC.length).toBe(actionRPCSize);
-      expect(output?.size).toBe(unsuspenseSize + actionRPCSize);
+      expect(output?.actionRPCLazy.length).toBe(actionRPCLazySize);
+      expect(output?.size).toBe(initialSize);
       expect(output?.code).toBeEmpty();
       expect(output?.useI18n).toBeFalse();
       expect(output?.i18nKeys).toBeEmpty();
