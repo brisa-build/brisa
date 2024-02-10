@@ -496,7 +496,7 @@ describe("utils", () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/_brisa/pages/_action-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
       );
       expect(result).toContain(
         `<script src="/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
@@ -529,7 +529,7 @@ describe("utils", () => {
         `<script src="/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/_brisa/pages/_action-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
       );
     });
 

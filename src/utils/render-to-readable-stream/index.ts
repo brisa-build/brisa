@@ -35,7 +35,7 @@ export default function renderToReadableStream(
   const { IS_PRODUCTION, BUILD_DIR, SCRIPT_404 } = getConstants();
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
   const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.txt");
-  const actionRPCListPath = path.join(pagesClientPath, "_action.txt");
+  const actionRPCListPath = path.join(pagesClientPath, "_rpc.txt");
 
   return new ReadableStream({
     async start(controller) {
@@ -281,7 +281,7 @@ async function enqueueDuringRendering(
       }
       if (controller.hasActionRPC) {
         controller.enqueue(
-          `<script src="/_brisa/pages/_action-${VERSION_HASH}.js"></script>`,
+          `<script src="/_brisa/pages/_rpc-${VERSION_HASH}.js"></script>`,
           suspenseId,
         );
       }

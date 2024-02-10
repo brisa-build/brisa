@@ -250,8 +250,8 @@ async function compileClientCodePage(
       pagePath,
     });
 
-    // create _action-[versionhash].js and _action.txt (list of pages with actions)
-    clientSizesPerPage[route] += addExtraChunk(actionRPC, "_action", {
+    // create _rpc-[versionhash].js and _rpc.txt (list of pages with actions)
+    clientSizesPerPage[route] += addExtraChunk(actionRPC, "_rpc", {
       pagesClientPath,
       pagePath,
     });
