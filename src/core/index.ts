@@ -4,6 +4,7 @@ import createContext from "@/utils/create-context";
 import notFound from "@/utils/not-found";
 import navigate from "@/utils/navigate";
 import translateCore from "@/utils/translate-core";
+import rerenderInAction from "@/utils/rerender-in-action";
 
 export {
   createPortal,
@@ -12,4 +13,5 @@ export {
   notFound,
   navigate,
   translateCore,
+  rerenderInAction,
 };
