@@ -10,12 +10,11 @@ import getRouteMatcher from "@/utils/get-route-matcher";
 import handleI18n from "@/utils/handle-i18n";
 import importFileIfExists from "@/utils/import-file-if-exists";
 import { isNotFoundError } from "@/utils/not-found";
-import processPageRoute from "@/utils/process-page-route";
 import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
-import renderToReadableStream from "@/utils/render-to-readable-stream";
 import feedbackError from "@/utils/feedback-error";
 import responseAction from "@/utils/response-action";
 import { redirectFromUnnormalizedURL } from "@/utils/redirect";
+import responseRenderedPage from "@/utils/response-rendered-page";
 
 export async function getServeOptions() {
   const {
@@ -29,11 +28,8 @@ export async function getServeOptions() {
     ASSETS_DIR,
     CONFIG,
     LOG_PREFIX,
+    HEADERS: { CACHE_CONTROL },
   } = getConstants();
-
-  const CACHE_CONTROL = IS_PRODUCTION
-    ? "public, max-age=31536000, immutable"
-    : "no-store, must-revalidate";
 
   if (IS_PRODUCTION && !fs.existsSync(BUILD_DIR)) {
     console.log(
@@ -261,50 +257,6 @@ export async function getServeOptions() {
       isGzip ? Bun.file(`${path}.gz`) : file,
       responseOptions,
     );
-  }
-
-  async function responseRenderedPage({
-    req,
-    route,
-    status = 200,
-    error,
-  }: {
-    req: RequestContext;
-    route: MatchedRoute;
-    status?: number;
-    error?: Error;
-  }) {
-    const { pageElement, module, layoutModule } = await processPageRoute(
-      route,
-      error,
-    );
-
-    const middlewareResponseHeaders =
-      middlewareModule?.responseHeaders?.(req, status) ?? {};
-
-    const layoutResponseHeaders =
-      layoutModule?.responseHeaders?.(req, status) ?? {};
-
-    const pageResponseHeaders = module.responseHeaders?.(req, status) ?? {};
-    const htmlStream = renderToReadableStream(pageElement, {
-      request: req,
-      head: module.Head,
-    });
-
-    const responseOptions = {
-      headers: {
-        "cache-control": CACHE_CONTROL,
-        ...middlewareResponseHeaders,
-        ...layoutResponseHeaders,
-        ...pageResponseHeaders,
-        "transfer-encoding": "chunked",
-        vary: "Accept-Encoding",
-        "content-type": "text/html; charset=utf-8",
-      },
-      status,
-    };
-
-    return new Response(htmlStream, responseOptions);
   }
 
   function error404(req: RequestContext) {
