@@ -966,6 +966,25 @@ describe("CLI: serve", () => {
     expect(mockLog).toHaveBeenCalledWith("message", "hello test");
   });
 
+  it("should NOT call responseAction method with GET and return 404", async () => {
+    const mockResponseAction = mock((req: RequestContext) => {});
+
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+    mock.module("@/utils/response-action", () => ({
+      default: (req: RequestContext) => mockResponseAction(req),
+    }));
+
+    const res = await testRequest(
+      new Request("http://localhost:1234/_action/a1_1"),
+    );
+
+    expect(mockResponseAction).not.toHaveBeenCalled();
+    expect(res.status).toBe(404);
+  });
+
   it("should call responseAction method when is an action", async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
@@ -977,7 +996,9 @@ describe("CLI: serve", () => {
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
-    await testRequest(new Request("http://localhost:1234/_action/a1_1"));
+    await testRequest(
+      new Request("http://localhost:1234/_action/a1_1", { method: "POST" }),
+    );
 
     expect(mockResponseAction).toHaveBeenCalled();
     expect(mockResponseAction.mock.calls[0][0].i18n.locale).toBeEmpty();
@@ -990,7 +1011,9 @@ describe("CLI: serve", () => {
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
-    await testRequest(new Request("http://localhost:1234/es/_action/a1_1"));
+    await testRequest(
+      new Request("http://localhost:1234/es/_action/a1_1", { method: "POST" }),
+    );
 
     expect(mockResponseAction).toHaveBeenCalled();
     expect(mockResponseAction.mock.calls[0][0].i18n.locale).toBe("es");
