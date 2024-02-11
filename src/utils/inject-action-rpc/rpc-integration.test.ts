@@ -16,10 +16,13 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 const actionRPCCode = await injectActionRPCCode();
 const actionRPCLazyCode = await injectActionRPCLazyCode();
 
-async function simulateRPC(
-  actions: any[],
-  { elementName = "button", eventName = "click", debounceMs = 0 } = {},
-) {
+async function simulateRPC({
+  elementName = "button",
+  eventName = "click",
+  debounceMs = 0,
+  navigateTo = "",
+  htmlChunks = [],
+} = {}) {
   const el = document.createElement(elementName);
   let times = 0;
 
@@ -37,18 +40,25 @@ async function simulateRPC(
   eval(actionRPCLazyCode);
   eval(actionRPCCode);
 
+  let headers = new Headers();
+
+  if (navigateTo) {
+    headers.set("X-Navigate", navigateTo);
+  }
+
   // Mock fetch with the actions
   const mockFetch = spyOn(window, "fetch").mockImplementation(
     async () =>
       ({
+        headers,
         body: {
           getReader: () => ({
             read: async () => {
               times += 1;
 
-              return times <= actions.length
+              return times <= htmlChunks.length
                 ? {
-                    value: Buffer.from(JSON.stringify(actions[times - 1])),
+                    value: Buffer.from(JSON.stringify(htmlChunks[times - 1])),
                     done: false,
                   }
                 : { done: true };
@@ -80,16 +90,14 @@ describe("utils", () => {
     });
 
     it("should redirect to 404", async () => {
-      await simulateRPC([
-        { action: "navigate", params: ["http://localhost/?_not-found=1"] },
-      ]);
+      await simulateRPC({ navigateTo: "http://localhost/?_not-found=1" });
       expect(location.toString()).toBe("http://localhost/?_not-found=1");
     });
 
     it('should serialize an event and call "rpc" with the correct parameters', async () => {
-      const mockFetch = await simulateRPC([
-        { action: "navigate", params: ["http://localhost/some-page"] },
-      ]);
+      const mockFetch = await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+      });
 
       expect(location.toString()).toBe("http://localhost/some-page");
       expect(mockFetch.mock.calls[0][0]).toBe("/_action/a1_1");
@@ -114,10 +122,10 @@ describe("utils", () => {
 
     it('should debounce the "rpc" function with onClick-debounce attribute', async () => {
       const mockTimeout = spyOn(window, "setTimeout");
-      const mockFetch = await simulateRPC(
-        [{ action: "navigate", params: ["http://localhost/some-page"] }],
-        { debounceMs: 100 },
-      );
+      const mockFetch = await simulateRPC({
+        debounceMs: 100,
+        navigateTo: "http://localhost/some-page",
+      });
 
       expect(mockTimeout).toHaveBeenCalled();
       expect(mockFetch).not.toHaveBeenCalled();
@@ -126,19 +134,20 @@ describe("utils", () => {
     });
 
     it("should send FormData when the event is onSubmit in a form", async () => {
-      const mockFetch = await simulateRPC(
-        [{ action: "navigate", params: ["http://localhost/some-page"] }],
-        { elementName: "form", eventName: "submit" },
-      );
+      const mockFetch = await simulateRPC({
+        elementName: "form",
+        eventName: "submit",
+        navigateTo: "http://localhost/some-page",
+      });
 
       expect(mockFetch.mock.calls[0][1]?.body).toBeInstanceOf(FormData);
     });
 
     it("should send custom event serialized with _custom property", async () => {
-      const mockFetch = await simulateRPC(
-        [{ action: "navigate", params: ["http://localhost/some-page"] }],
-        { eventName: "custom" },
-      );
+      const mockFetch = await simulateRPC({
+        eventName: "custom",
+        navigateTo: "http://localhost/some-page",
+      });
 
       const [event] = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
       expect(event._custom).toBeTrue();

@@ -13,8 +13,8 @@ describe("utils", () => {
       });
       const response = resolveAction({ req, error, component: <div /> });
 
-      expect(await response.text()).toBe(
-        '{"action":"navigate","params":["http://localhost/?_not-found=1"]}',
+      expect(await response.headers.get("X-Navigate")).toBe(
+        "http://localhost/?_not-found=1",
       );
     });
 
@@ -32,9 +32,7 @@ describe("utils", () => {
         component: <div />,
       });
 
-      expect(await response.text()).toBe(
-        '{"action":"navigate","params":["/some-url"]}',
-      );
+      expect(await response.headers.get("X-Navigate")).toBe("/some-url");
     });
   });
 });

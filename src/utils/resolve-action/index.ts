@@ -7,7 +7,7 @@ type ResolveActionParams = {
 };
 
 const headers = {
-  "Content-Type": "application/x-ndjson",
+  "Content-Type": "text/html; charset=utf-8",
   "Transfer-Encoding": "chunked",
   vary: "Accept-Encoding",
 };
@@ -22,10 +22,13 @@ export default function resolveAction({
   component,
 }: ResolveActionParams) {
   if (error.name === "navigate") {
-    return new Response(
-      JSON.stringify({ action: "navigate", params: [error.message] }),
-      { status: 200, headers },
-    );
+    return new Response(null, {
+      status: 200,
+      headers: {
+        ...headers,
+        "X-Navigate": error.message,
+      },
+    });
   }
 
   if (error.name === "rerender" && error.message === "component") {
@@ -43,10 +46,13 @@ export default function resolveAction({
 
     url.searchParams.set("_not-found", "1");
 
-    return new Response(
-      JSON.stringify({ action: "navigate", params: [url.toString()] }),
-      { status: 200, headers },
-    );
+    return new Response(null, {
+      status: 200,
+      headers: {
+        ...headers,
+        "X-Navigate": url.toString(),
+      },
+    });
   }
 
   return new Response(error.message, { status: 500 });
