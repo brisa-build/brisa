@@ -72,7 +72,12 @@ const BOOLEANS_IN_HTML = new Set([
 
 const { NODE_ENV } = process.env;
 
+const IS_PRODUCTION =
+  process.argv.some((t) => t === "PROD") || NODE_ENV === "production";
 const SCRIPT_404 = `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>`;
+const CACHE_CONTROL = IS_PRODUCTION
+  ? "public, max-age=31536000, immutable"
+  : "no-store, must-revalidate";
 
 const constants = {
   PAGE_404,
@@ -81,8 +86,7 @@ const constants = {
   VERSION_HASH: Bun.hash(version),
   WEB_CONTEXT_PLUGINS: integrations?.webContextPlugins ?? [],
   RESERVED_PAGES: [PAGE_404, PAGE_500],
-  IS_PRODUCTION:
-    process.argv.some((t) => t === "PROD") || NODE_ENV === "production",
+  IS_PRODUCTION,
   IS_DEVELOPMENT:
     process.argv.some((t) => t === "DEV") || NODE_ENV === "development",
   PORT: parseInt(process.argv[2]) || 0,
@@ -110,6 +114,9 @@ const constants = {
   },
   SCRIPT_404,
   BOOLEANS_IN_HTML,
+  HEADERS: {
+    CACHE_CONTROL,
+  },
 };
 
 /**
