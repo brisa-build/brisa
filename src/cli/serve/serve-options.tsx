@@ -86,9 +86,13 @@ export async function getServeOptions() {
       const isClientPage = url.pathname.startsWith(PUBLIC_CLIENT_PAGE_SUFFIX);
       const isAnAsset = !isHome && fs.existsSync(assetPath);
       const i18nRes = isAnAsset ? {} : handleI18n(request);
-      const isAnAction = url.pathname.startsWith(
-        request.i18n?.locale ? `/${request.i18n.locale}/_action/` : "/_action/",
-      );
+      const isAnAction =
+        req.method === "POST" &&
+        url.pathname.startsWith(
+          request.i18n?.locale
+            ? `/${request.i18n.locale}/_action/`
+            : "/_action/",
+        );
 
       if (isClientPage) {
         const clientPagePath = path.join(
