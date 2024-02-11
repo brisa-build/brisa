@@ -1,5 +1,10 @@
 import type { RequestContext } from "@/types";
 import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from "../rerender-in-action";
+import responseRenderedPage from "../response-rendered-page";
+import getRouteMatcher from "../get-route-matcher";
+import { getConstants } from "@/constants";
+import extendRequestContext from "../extend-request-context";
+import { logError } from "@/utils/log/log-build";
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -17,11 +22,15 @@ const headers = {
  *
  * This method is called inside the catch block of the action function.
  */
-export default function resolveAction({
+export default async function resolveAction({
   req,
   error,
   component,
 }: ResolveActionParams) {
+  const { PAGES_DIR, RESERVED_PAGES } = getConstants();
+  const url = new URL(req.headers.get("referer") ?? "", req.url);
+
+  // Navigate to another page
   if (error.name === "navigate") {
     return new Response(null, {
       status: 200,
@@ -32,23 +41,8 @@ export default function resolveAction({
     });
   }
 
-  if (error.name === "rerender") {
-    const options = JSON.parse(
-      error.message.replace(PREFIX_MESSAGE, "").replace(SUFFIX_MESSAGE, ""),
-    );
-
-    return new Response(`TODO RERENDER ${options.type}`, {
-      status: 200,
-      headers: {
-        ...headers,
-        "X-Mode": options.mode,
-      },
-    });
-  }
-
+  // Redirect to 404 page
   if (error.name === "NotFoundError") {
-    const url = new URL(req.headers.get("referer") ?? "", req.url);
-
     url.searchParams.set("_not-found", "1");
 
     return new Response(null, {
@@ -60,5 +54,49 @@ export default function resolveAction({
     });
   }
 
-  return new Response(error.message, { status: 500 });
+  // Error not caught
+  if (error.name !== "rerender") {
+    return new Response(error.message, { status: 500 });
+  }
+
+  const options = JSON.parse(
+    error.message.replace(PREFIX_MESSAGE, "").replace(SUFFIX_MESSAGE, ""),
+  );
+
+  // Rerender page
+  if (options.type === "page") {
+    const pagesRouter = getRouteMatcher(
+      PAGES_DIR,
+      RESERVED_PAGES,
+      req.i18n?.locale,
+    );
+    const pageRequest = extendRequestContext({
+      id: req.id,
+      originalRequest: new Request(url, req),
+    });
+    const { route, isReservedPathname } = pagesRouter.match(pageRequest);
+
+    if (!route || isReservedPathname) {
+      const errorMessage = `Error rerendering page ${url}. Page route not found`;
+      logError([errorMessage]);
+      return new Response(errorMessage, { status: 404 });
+    }
+
+    pageRequest.route = route;
+
+    const res = await responseRenderedPage({ req: pageRequest, route });
+
+    res.headers.set("X-Mode", options.mode);
+
+    return res;
+  }
+
+  // Rerender component: TODO: Implement this
+  return new Response(`TODO RERENDER component`, {
+    status: 200,
+    headers: {
+      ...headers,
+      "X-Mode": options.mode,
+    },
+  });
 }
