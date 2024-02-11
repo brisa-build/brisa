@@ -1,5 +1,3 @@
-/// <reference lib="dom.iterable" />
-
 const ACTION = "action";
 const ACTION_ATTRIBUTE = "data-" + ACTION;
 const $document = document;
