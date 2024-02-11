@@ -1,4 +1,5 @@
 import type { RequestContext } from "@/types";
+import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from "../rerender-in-action";
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -31,14 +32,18 @@ export default function resolveAction({
     });
   }
 
-  if (error.name === "rerender" && error.message === "component") {
-    // TODO: should return streaming response
-    return new Response("TODO RERENDER COMPONENT");
-  }
+  if (error.name === "rerender") {
+    const options = JSON.parse(
+      error.message.replace(PREFIX_MESSAGE, "").replace(SUFFIX_MESSAGE, ""),
+    );
 
-  if (error.name === "rerender" && error.message === "page") {
-    // TODO: should return streaming response
-    return new Response("TODO RERENDER PAGE");
+    return new Response(`TODO RERENDER ${options.type}`, {
+      status: 200,
+      headers: {
+        ...headers,
+        "X-Mode": options.mode,
+      },
+    });
   }
 
   if (error.name === "NotFoundError") {
