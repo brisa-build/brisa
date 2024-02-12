@@ -123,6 +123,10 @@ In both cases the data lives within the lifetime of the request, it is not globa
 
 The `RequestContext` is an extension of the [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from the [Request API](https://developer.mozilla.org/en-US/docs/Web/API/Request) you have some [extra things](/docs/building-your-application/data-fetching/request-context), such as the store.
 
+> [!TIP]
+>
+> If your data is utilized in multiple locations, and you wish to display the suspense at the lowest-level component while making only one request, we recommend passing down the [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) and resolving it in all child components that utilize this data.
+
 ### Share web-web data between components
 
 To share data across all web components there are also the same two ways:
