@@ -16,10 +16,10 @@ async function resolveRPC(res: Response) {
 
   return urlToNavigate
     ? (window.location.href = urlToNavigate)
-    : diffStream(res.body!.getReader());
+    : diffDOMStream(res.body!.getReader());
 }
 
-async function diffStream(
+async function diffDOMStream(
   streamReader: ReadableStreamDefaultReader<Uint8Array>,
   wrapper = document.createElement("html"),
   text = "",
@@ -28,14 +28,20 @@ async function diffStream(
 
   if (done) return;
 
-  // Append the new chunk to the text with a marker
+  // Append the new chunk to the text with a marker.
+  // This marker is necessary because without it, we
+  // can't know where the new chunk starts and ends.
   text = `${text.replace(
     START_CHUNK_SELECTOR,
     "",
   )}<${START_CHUNK_SELECTOR} />${decoder.decode(value)}`;
 
+  // Replace the wrapper with the text of all the chunks that have arrived
+  // to don't lose the previous nodes because some chunks are only end tags,
+  // opening tags, or text and we need to keep the full context
   wrapper.innerHTML = text;
 
+  // Iterate over the chunk nodes to diff
   for (
     let node = nextNode(wrapper.querySelector(START_CHUNK_SELECTOR) as Node);
     node;
@@ -45,7 +51,8 @@ async function diffStream(
     // TODO: Implement diffing algorithm
   }
 
-  return await diffStream(streamReader, wrapper, text);
+  // Continue reading the stream, doing the diff of the next chunk
+  return await diffDOMStream(streamReader, wrapper, text);
 }
 
 /**
