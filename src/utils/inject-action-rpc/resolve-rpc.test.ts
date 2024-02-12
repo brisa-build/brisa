@@ -15,26 +15,46 @@ describe("utils", () => {
   });
 
   describe("resolve-rpc", () => {
-    it("should redirect to a different page", async () => {
-      // const stream = new ReadableStream({
-      //   start(controller) {
-      //     controller.enqueue(new TextEncoder().encode(
-      //       '{"action": "navigate", "params": ["http://localhost/some-page"]}'
-      //     ));
-      //     controller.close();
-      //   },
-      // });
+    describe("when navigate", () => {
+      it("should redirect to a different page", async () => {
+        const res = new Response(null, {
+          headers: {
+            "X-Navigate": "http://localhost/some-page",
+          },
+        });
 
-      const res = new Response(null, {
-        headers: {
-          "X-Navigate": "http://localhost/some-page",
-        },
+        await initBrowser();
+        await resolveRPC(res);
+
+        expect(location.toString()).toBe("http://localhost/some-page");
       });
+    });
 
-      await initBrowser();
-      await resolveRPC(res);
+    describe("when receive streamed HTML", () => {
+      it("should updates only the text", async () => {
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(encoder.encode("<html>"));
+            controller.enqueue(encoder.encode("<head />"));
+            controller.enqueue(encoder.encode("<body>"));
 
-      expect(location.toString()).toBe("http://localhost/some-page");
+            controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
+
+            controller.enqueue(encoder.encode("</body>"));
+            controller.enqueue(encoder.encode("</html>"));
+            controller.close();
+          },
+        });
+        const res = new Response(stream);
+
+        await initBrowser();
+        document.body.innerHTML = '<div class="foo">Foo</div>';
+
+        await resolveRPC(res);
+
+        expect(document.body.innerHTML).toBe('<div class="foo">Bar</div>');
+      });
     });
   });
 });
