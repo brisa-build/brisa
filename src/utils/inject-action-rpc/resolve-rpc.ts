@@ -14,12 +14,15 @@ const decoder = new TextDecoder();
 async function resolveRPC(res: Response) {
   const urlToNavigate = res.headers.get("X-Navigate");
 
-  return urlToNavigate
-    ? (window.location.href = urlToNavigate)
-    : diffDOMStream(res.body!.getReader());
+  if (urlToNavigate) {
+    window.location.href = urlToNavigate;
+    return;
+  }
+
+  updateDOMReactively(res.body!.getReader());
 }
 
-async function diffDOMStream(
+async function updateDOMReactively(
   streamReader: ReadableStreamDefaultReader<Uint8Array>,
   wrapper = document.createElement("html"),
   text = "",
@@ -36,32 +39,35 @@ async function diffDOMStream(
     "",
   )}<${START_CHUNK_SELECTOR} />${decoder.decode(value)}`;
 
-  // Replace the wrapper with the text of all the chunks that have arrived
-  // to don't lose the previous nodes because some chunks are only end tags,
-  // opening tags, or text and we need to keep the full context
+  // Replace the wrapper with the text of all the chunks that have
+  // arrived to don't lose the previous element because some chunks
+  // are only end tags, opening tags, or text and we need to keep
+  // the full context
   wrapper.innerHTML = text;
 
-  // Iterate over the chunk nodes to diff
+  // Iterate over the chunk elements to diff
   for (
-    let node = nextNode(wrapper.querySelector(START_CHUNK_SELECTOR) as Node);
-    node;
-    node = nextNode(node)
+    let element = nextElement(wrapper.querySelector(START_CHUNK_SELECTOR));
+    element;
+    element = nextElement(element)
   ) {
-    console.log(node.nodeName);
+    console.log(element.nodeName);
     // TODO: Implement diffing algorithm
   }
 
   // Continue reading the stream, doing the diff of the next chunk
-  return await diffDOMStream(streamReader, wrapper, text);
+  return await updateDOMReactively(streamReader, wrapper, text);
 }
 
 /**
- * Get the next node in the tree (depth-first search)
+ * Get the next element in the tree. A difference here between the normal
+ * Virtual DOM diffing algorith is that we need to change the breadth-first
+ * to depth-first search in order to work with the streamed HTML.
  */
-function nextNode(node: Node, deeperDone = 0): Node | undefined {
-  if (!node) return;
-  if (node.childNodes.length && !deeperDone) return node.firstChild;
-  return node.nextSibling ?? nextNode(node.parentNode, 1);
+function nextElement(element: Element | null, deeperDone = 0): Element | null {
+  if (!element) return null;
+  if (element.children.length && !deeperDone) return element.firstElementChild;
+  return element.nextElementSibling ?? nextElement(element.parentElement, 1);
 }
 
 window._rpc = resolveRPC;
