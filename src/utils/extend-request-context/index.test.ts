@@ -4,6 +4,7 @@ import type { ServerWebSocket } from "bun";
 import extendRequestContext from ".";
 import createContext from "@/utils/create-context";
 import { contextProvider } from "@/utils/context-provider/server";
+import type { RequestContext } from "@/types";
 
 describe("brisa core", () => {
   afterEach(() => {
@@ -35,6 +36,36 @@ describe("brisa core", () => {
       });
       requestContext.store.set("foo", "bar");
       expect(requestContext.store.get("foo")).toBe("bar");
+    });
+
+    it("should work store params", () => {
+      const request = new Request("https://example.com?foo=bar");
+      const store = new Map() as RequestContext["store"];
+      const route = { path: "/" } as any;
+
+      store.set("foo", "baz");
+
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+        store,
+      });
+      expect(requestContext.store.get("foo")).toBe("baz");
+    });
+
+    it("should work webStore params (internal used by store.transferToClient function)", () => {
+      const request = new Request("https://example.com?foo=bar");
+      const webStore = new Map() as RequestContext["store"];
+      const route = { path: "/" } as any;
+
+      webStore.set("foo", "baz");
+
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+        webStore,
+      } as any);
+      expect((requestContext as any).webStore.get("foo")).toBe("baz");
     });
 
     it("should work i18n", () => {

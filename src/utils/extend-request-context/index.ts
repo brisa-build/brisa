@@ -10,6 +10,7 @@ type ExtendRequestContext = {
   originalRequest: Request;
   currentRequestContext?: RequestContext;
   route?: MatchedRoute;
+  store?: RequestContext["store"];
   i18n?: I18n;
   finalURL?: string;
   id?: string;
@@ -19,6 +20,8 @@ export default function extendRequestContext({
   originalRequest,
   currentRequestContext,
   route,
+  store,
+  webStore,
   i18n,
   finalURL,
   id,
@@ -37,10 +40,16 @@ export default function extendRequestContext({
   // store
   originalRequest.store =
     currentRequestContext?.store ??
+    store ??
     originalRequest.store ??
-    new Map<string, any>();
+    new Map<string | symbol, any>();
 
-  originalRequest.webStore = new Map<string, any>();
+  // webStore (used for store.transferToClient)
+  originalRequest.webStore =
+    currentRequestContext?.webStore ??
+    webStore ??
+    originalRequest.webStore ??
+    new Map<string | symbol, any>();
 
   // store.transferToClient
   originalRequest.store.transferToClient = (keys: string[]) => {

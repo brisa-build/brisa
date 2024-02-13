@@ -1,10 +1,11 @@
 import { describe, expect, it, afterEach } from "bun:test";
-import SSRWebComponent from ".";
+import SSRWebComponent, { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from ".";
 import { type WebContext, type WebContextPlugin } from "@/types";
 import extendRequestContext from "@/utils/extend-request-context";
 import createContext from "@/utils/create-context";
 import translateCore from "../translate-core";
 import { getConstants } from "@/constants";
+import { Fragment } from "@/jsx-runtime";
 
 const requestContext = extendRequestContext({
   originalRequest: new Request("http://localhost"),
@@ -243,6 +244,27 @@ describe("utils", () => {
       expect(output.props.children[0].props.children[0].props.children).toBe(
         "hello world",
       );
+    });
+
+    it('should render a web component with a "store" property', async () => {
+      const Component = ({}, { store }: WebContext) => {
+        store.set("name", "world");
+        return <div>hello {store.get("name")}</div>;
+      };
+
+      const selector = "my-component";
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("div");
+      expect(
+        output.props.children[0].props.children[0].props.children.join(""),
+      ).toBe("hello world");
     });
 
     it("should render a web component with a children slot", async () => {
@@ -542,6 +564,47 @@ describe("utils", () => {
         props: {
           children: "hello world",
         },
+      });
+    });
+
+    it("should not render the declarative shadow DOM when AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL is defined in the store", async () => {
+      const Component = ({ children }: any) => (
+        <div>hello world {children}</div>
+      );
+      const selector = "my-component";
+      const req = extendRequestContext({
+        originalRequest: {
+          ...requestContext,
+          // @ts-ignore
+          store: undefined, // Re-generate an store
+        },
+      });
+
+      req.store.set(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL, true);
+
+      const output = (await SSRWebComponent(
+        { Component, selector, children: <h1>CHILD</h1> },
+        req,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props).toEqual({
+        __isWebComponent: true,
+        children: [
+          false,
+          {
+            type: Fragment,
+            props: {
+              slot: "",
+              children: {
+                type: "h1",
+                props: {
+                  children: "CHILD",
+                },
+              },
+            },
+          },
+        ],
       });
     });
   });
