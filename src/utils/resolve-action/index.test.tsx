@@ -5,6 +5,7 @@ import extendRequestContext from "@/utils/extend-request-context";
 import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from "@/utils/rerender-in-action";
 import { getConstants } from "@/constants";
 import resolveAction from ".";
+import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -95,6 +96,7 @@ describe("utils", () => {
       const response = await resolveAction({ req, error, component: <div /> });
 
       expect(response.status).toBe(200);
+      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get("X-Mode")).toBe("reactivity");
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
@@ -115,6 +117,7 @@ describe("utils", () => {
       const response = await resolveAction({ req, error, component: <div /> });
 
       expect(response.status).toBe(200);
+      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get("X-Mode")).toBe("transition");
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',

@@ -5,6 +5,7 @@ import getRouteMatcher from "../get-route-matcher";
 import { getConstants } from "@/constants";
 import extendRequestContext from "../extend-request-context";
 import { logError } from "@/utils/log/log-build";
+import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "../ssr-web-component";
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -29,6 +30,9 @@ export default async function resolveAction({
 }: ResolveActionParams) {
   const { PAGES_DIR, RESERVED_PAGES } = getConstants();
   const url = new URL(req.headers.get("referer") ?? "", req.url);
+
+  // Avoid declarative shadow dom
+  req.store.set(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL, true);
 
   // Navigate to another page
   if (error.name === "navigate") {
@@ -70,10 +74,14 @@ export default async function resolveAction({
       RESERVED_PAGES,
       req.i18n?.locale,
     );
+
     const pageRequest = extendRequestContext({
       id: req.id,
       originalRequest: new Request(url, req),
+      store: req.store,
+      i18n: req.i18n,
     });
+
     const { route, isReservedPathname } = pagesRouter.match(pageRequest);
 
     if (!route || isReservedPathname) {
