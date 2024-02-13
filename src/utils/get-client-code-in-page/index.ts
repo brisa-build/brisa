@@ -6,7 +6,7 @@ import AST from "@/utils/ast";
 import {
   injectActionRPCCode,
   injectActionRPCLazyCode,
-} from "@/utils/inject-action-rpc" with { type: "macro" };
+} from "@/utils/rpc" with { type: "macro" };
 import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
 import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
 import clientBuildPlugin from "@/utils/client-build-plugin";
