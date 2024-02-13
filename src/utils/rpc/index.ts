@@ -8,7 +8,7 @@ export async function injectActionRPCCode() {
 
 // Should be used via macro
 export async function injectActionRPCLazyCode() {
-  return await buildRPC("resolve-rpc.ts");
+  return await buildRPC(path.join("resolve-rpc", "index.ts"));
 }
 
 async function buildRPC(file: string) {

@@ -5,7 +5,7 @@ let resolveRPC: (res: Response) => Promise<void>;
 
 async function initBrowser() {
   GlobalRegistrator.register();
-  await import("./resolve-rpc");
+  await import(".");
   resolveRPC = window._rpc;
 }
 
