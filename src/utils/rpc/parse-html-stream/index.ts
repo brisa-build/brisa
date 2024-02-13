@@ -9,7 +9,7 @@ const parser = new DOMParser();
  * transform the HTML into a stream of nodes to use in the
  * diffing algorithm.
  */
-export default async function* extractNodesFromHtmlStream(
+export default async function* parseHTMLStream(
   streamReader: ReadableStreamDefaultReader<Uint8Array>,
   text = "",
 ): AsyncGenerator<Node> {
@@ -40,7 +40,7 @@ export default async function* extractNodesFromHtmlStream(
     yield node;
 
   // Continue reading the stream
-  yield* await extractNodesFromHtmlStream(streamReader, text);
+  yield* await parseHTMLStream(streamReader, text);
 }
 
 /**
