@@ -8,7 +8,7 @@ type NodeWithChildNodes = {
 
 type Node = NodeWithChildNodes | null;
 
-const START_CHUNK_SELECTOR = "start-next-chunk";
+const START_CHUNK_SELECTOR = "S-C";
 const decoder = new TextDecoder();
 const parser = new DOMParser();
 
@@ -35,7 +35,7 @@ async function updateDOMReactively(
   // This marker is necessary because without it, we
   // can't know where the new chunk starts and ends.
   text = `${text.replace(
-    START_CHUNK_SELECTOR,
+    `<${START_CHUNK_SELECTOR} />`,
     "",
   )}<${START_CHUNK_SELECTOR} />${decoder.decode(value)}`;
 
@@ -53,9 +53,9 @@ async function updateDOMReactively(
 
   // Iterate over the chunk nodes to diff
   for (
-    let node = nextNode(doc.querySelector(START_CHUNK_SELECTOR) as Node);
+    let node = getNextNode(doc.querySelector(START_CHUNK_SELECTOR) as Node);
     node;
-    node = nextNode(node)
+    node = getNextNode(node)
   ) {
     console.log(node.nodeName);
     // TODO: Implement diffing algorithm
@@ -70,10 +70,10 @@ async function updateDOMReactively(
  * Virtual DOM diffing algorith is that we need to change the breadth-first
  * to depth-first search in order to work with the streamed HTML.
  */
-function nextNode(node: Node | null, deeperDone?: Boolean): Node | null {
+function getNextNode(node: Node | null, deeperDone?: Boolean): Node | null {
   if (!node) return null;
   if (node.childNodes.length && !deeperDone) return node.firstChild;
-  return node.nextSibling ?? nextNode(node.parentNode, true);
+  return node.nextSibling ?? getNextNode(node.parentNode, true);
 }
 
 window._rpc = resolveRPC;

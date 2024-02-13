@@ -3,6 +3,10 @@ import { Fragment } from "@/jsx-runtime";
 import { type RequestContext } from "@/types";
 import { getConstants } from "@/constants";
 
+export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
+  "AVOID_DECLARATIVE_SHADOW_DOM",
+);
+
 type Props = {
   Component: any;
   selector: string;
@@ -16,6 +20,7 @@ export default async function SSRWebComponent(
   { store, useContext, i18n }: RequestContext,
 ) {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
+  const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
   let style = "";
   let Selector = selector;
 
@@ -44,24 +49,31 @@ export default async function SSRWebComponent(
   const componentProps = { ...props, children: <slot /> };
   let content: any;
 
-  try {
-    content = await (typeof Component.suspense === "function"
-      ? Component.suspense(componentProps, webContext)
-      : Component(componentProps, webContext));
-  } catch (error) {
-    if (Component.error) {
-      content = await Component.error({ ...componentProps, error }, webContext);
-    } else {
-      throw error;
+  if (showContent) {
+    try {
+      content = await (typeof Component.suspense === "function"
+        ? Component.suspense(componentProps, webContext)
+        : Component(componentProps, webContext));
+    } catch (error) {
+      if (Component.error) {
+        content = await Component.error(
+          { ...componentProps, error },
+          webContext,
+        );
+      } else {
+        throw error;
+      }
     }
   }
 
   return (
     <Selector {...props} __isWebComponent>
-      <template shadowrootmode="open">
-        {content}
-        {style.length > 0 && <style>{toInline(style)}</style>}
-      </template>
+      {showContent && (
+        <template shadowrootmode="open">
+          {content}
+          {style.length > 0 && <style>{toInline(style)}</style>}
+        </template>
+      )}
       <Fragment slot="">{props.children}</Fragment>
     </Selector>
   );
