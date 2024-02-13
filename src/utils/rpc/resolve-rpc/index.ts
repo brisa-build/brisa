@@ -1,4 +1,4 @@
-import extractNodesFromHtmlStream from "../extract-nodes-from-html-stream";
+import parseHTMLStream from "../parse-html-stream";
 
 async function resolveRPC(res: Response) {
   const urlToNavigate = res.headers.get("X-Navigate");
@@ -9,7 +9,7 @@ async function resolveRPC(res: Response) {
   }
 
   console.log("rerender started");
-  for await (const node of extractNodesFromHtmlStream(res.body!.getReader())) {
+  for await (const node of parseHTMLStream(res.body!.getReader())) {
     console.log({ node });
     // TODO: Implement diffing algorithm
   }

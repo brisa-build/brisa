@@ -3,7 +3,7 @@ import { describe, it, expect, afterEach } from "bun:test";
 
 describe("utils", () => {
   describe("rpc", () => {
-    describe("extract-nodes-from-html-stream", () => {
+    describe("parse-html-stream", () => {
       afterEach(() => {
         GlobalRegistrator.unregister();
       });
