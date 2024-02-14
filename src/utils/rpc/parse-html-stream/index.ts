@@ -48,7 +48,10 @@ export default async function* parseHTMLStream(
  * Virtual DOM diffing algorith is that we need to change the breadth-first
  * to depth-first search in order to work with the streamed HTML.
  */
-function getNextNode(node: Node | null, deeperDone?: Boolean): Node | null {
+export function getNextNode(
+  node: Node | null,
+  deeperDone?: Boolean,
+): Node | null {
   if (!node) return null;
   if (node.childNodes.length && !deeperDone) return node.firstChild;
   return node.nextSibling ?? getNextNode(node.parentNode, true);
