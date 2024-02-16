@@ -1038,42 +1038,42 @@ declare global {
 
     // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
     export interface AriaAttributes {
-      /** 
-       * Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. 
-       * 
+      /**
+       * Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-activedescendant)
        */
       "aria-activedescendant"?: string | undefined;
-      /** 
+      /**
        * Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute.
-       * 
+       *
        *  - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-atomic)
        */
       "aria-atomic"?: boolean | undefined;
       /**
        * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
        * presented if they are made.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-autocomplete)
        */
       "aria-autocomplete"?: "none" | "inline" | "list" | "both" | undefined;
       /**
        * Defines a string value that labels the current element, which is intended to be converted into Braille.
        * @see aria-label.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-braillelabel)
        */
       "aria-braillelabel"?: string | undefined;
       /**
        * Defines a human-readable, author-localized abbreviated description for the role of an element, which is intended to be converted into Braille.
        * @see aria-roledescription.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-brailleroledescription)
        */
       "aria-brailleroledescription"?: string | undefined;
       /**
-       *  Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. 
-       * 
+       *  Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-busy)
        */
       "aria-busy"?: boolean | undefined;
@@ -1081,14 +1081,14 @@ declare global {
        * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
        * @see aria-pressed
        * @see aria-selected.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-checked)
        */
       "aria-checked"?: boolean | "mixed" | undefined;
       /**
        * Defines the total number of columns in a table, grid, or treegrid.
        * @see aria-colindex.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colcount)
        */
       "aria-colcount"?: number | undefined;
@@ -1096,14 +1096,14 @@ declare global {
        * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
        * @see aria-colcount
        * @see aria-colspan.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colindex)
        */
       "aria-colindex"?: number | undefined;
       /**
        * Defines a human readable text alternative of aria-colindex.
        * @see aria-rowindextext.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colindextext)
        */
       "aria-colindextext"?: string | undefined;
@@ -1111,20 +1111,20 @@ declare global {
        * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
        * @see aria-colindex
        * @see aria-rowspan.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colspan)
        */
       "aria-colspan"?: number | undefined;
       /**
        * Identifies the element (or elements) whose contents or presence are controlled by the current element.
        * @see aria-owns.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-controls)
        */
       "aria-controls"?: string | undefined;
-      /** 
-       * Indicates the element that represents the current item within a container or set of related elements. 
-       * 
+      /**
+       * Indicates the element that represents the current item within a container or set of related elements.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-current)
        */
       "aria-current"?:
@@ -1138,21 +1138,21 @@ declare global {
       /**
        * Identifies the element (or elements) that describes the object.
        * @see aria-labelledby
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-describedby)
        */
       "aria-describedby"?: string | undefined;
       /**
        * Defines a string value that describes or annotates the current element.
        * @see related aria-describedby.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-description)
        */
       "aria-description"?: string | undefined;
       /**
        * Identifies the element that provides a detailed, extended description for the object.
        * @see aria-describedby.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-details)
        */
       "aria-details"?: string | undefined;
@@ -1160,7 +1160,7 @@ declare global {
        * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
        * @see aria-hidden
        * @see aria-readonly.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled)
        */
       "aria-disabled"?: boolean | undefined;
@@ -1168,26 +1168,26 @@ declare global {
        * Identifies the element that provides an error message for the object.
        * @see aria-invalid
        * @see aria-describedby.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-errormessage)
        */
       "aria-errormessage"?: string | undefined;
-      /** 
+      /**
        * Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-expanded)
        */
       "aria-expanded"?: boolean | undefined;
       /**
        * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
        * allows assistive technology to override the general default of reading in document source order.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-flowto)
        */
       "aria-flowto"?: string | undefined;
-      /** 
-       * Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. 
-       * 
+      /**
+       * Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup)
        */
       "aria-haspopup"?:
@@ -1201,70 +1201,70 @@ declare global {
       /**
        * Indicates whether the element is exposed to an accessibility API.
        * @see aria-disabled.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-hidden)
        */
       "aria-hidden"?: boolean | undefined;
       /**
        * Indicates the entered value does not conform to the format expected by the application.
        * @see aria-errormessage.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-invalid)
        */
       "aria-invalid"?: boolean | "grammar" | "spelling" | undefined;
       /**
        *  Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-keyshortcuts)
        */
       "aria-keyshortcuts"?: string | undefined;
       /**
        * Defines a string value that labels the current element.
        * @see aria-labelledby.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-label)
        */
       "aria-label"?: string | undefined;
       /**
        * Identifies the element (or elements) that labels the current element.
        * @see aria-describedby.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-labelledby)
        */
       "aria-labelledby"?: string | undefined;
-      /** 
+      /**
        * Defines the hierarchical level of an element within a structure.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-level)
        */
       "aria-level"?: number | undefined;
-      /** 
-       * Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. 
-       * 
+      /**
+       * Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live)
        */
       "aria-live"?: "off" | "assertive" | "polite" | undefined;
-      /** 
-       * Indicates whether an element is modal when displayed. 
-       * 
+      /**
+       * Indicates whether an element is modal when displayed.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-modal)
        */
       "aria-modal"?: boolean | undefined;
-      /** 
-       * Indicates whether a text box accepts multiple lines of input or only a single line. 
-       * 
+      /**
+       * Indicates whether a text box accepts multiple lines of input or only a single line.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-multiline)
        */
       "aria-multiline"?: boolean | undefined;
-      /** 
+      /**
        * Indicates that the user may select more than one item from the current selectable descendants.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-multiselectable)
        */
       "aria-multiselectable"?: boolean | undefined;
-      /** 
-       * Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. 
-       * 
+      /**
+       * Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-orientation)
        */
       "aria-orientation"?: "horizontal" | "vertical" | undefined;
@@ -1272,21 +1272,21 @@ declare global {
        * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
        * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
        * @see aria-controls.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-owns)
        */
       "aria-owns"?: string | undefined;
       /**
        * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
        * A hint could be a sample value or a brief description of the expected format.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-placeholder)
        */
       "aria-placeholder"?: string | undefined;
       /**
        * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
        * @see aria-setsize.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-posinset)
        */
       "aria-posinset"?: number | undefined;
@@ -1294,21 +1294,21 @@ declare global {
        * Indicates the current "pressed" state of toggle buttons.
        * @see aria-checked
        * @see aria-selected.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-pressed)
        */
       "aria-pressed"?: boolean | "mixed" | undefined;
       /**
        * Indicates that the element is not editable, but is otherwise operable.
        * @see aria-disabled.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-readonly)
        */
       "aria-readonly"?: boolean | undefined;
       /**
        * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
        * @see aria-atomic.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-relevant)
        */
       "aria-relevant"?:
@@ -1323,22 +1323,22 @@ declare global {
         | "text additions"
         | "text removals"
         | undefined;
-      /** 
+      /**
        * Indicates that user input is required on the element before a form may be submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-required)
        */
       "aria-required"?: boolean | undefined;
-      /** 
-       * Defines a human-readable, author-localized description for the role of an element. 
-       * 
+      /**
+       * Defines a human-readable, author-localized description for the role of an element.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-roledescription)
        */
       "aria-roledescription"?: string | undefined;
       /**
        * Defines the total number of rows in a table, grid, or treegrid.
        * @see aria-rowindex.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowcount)
        */
       "aria-rowcount"?: number | undefined;
@@ -1346,14 +1346,14 @@ declare global {
        * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
        * @see aria-rowcount
        * @see aria-rowspan.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowindex)
        */
       "aria-rowindex"?: number | undefined;
       /**
        * Defines a human readable text alternative of aria-rowindex.
        * @see aria-colindextext.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowindextext)
        */
       "aria-rowindextext"?: string | undefined;
@@ -1361,7 +1361,7 @@ declare global {
        * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
        * @see aria-rowindex
        * @see aria-colspan.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowspan)
        */
       "aria-rowspan"?: number | undefined;
@@ -1369,45 +1369,45 @@ declare global {
        * Indicates the current "selected" state of various widgets.
        * @see aria-checked
        * @see aria-pressed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-selected)
        */
       "aria-selected"?: boolean | undefined;
       /**
        * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
        * @see aria-posinset.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-setsize)
        */
       "aria-setsize"?: number | undefined;
-      /** 
+      /**
        * Indicates if items in a table or grid are sorted in ascending or descending order.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-sort)
        */
       "aria-sort"?: "none" | "ascending" | "descending" | "other" | undefined;
-      /** 
-       * Defines the maximum allowed value for a range widget. 
-       * 
+      /**
+       * Defines the maximum allowed value for a range widget.
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuemax)
        */
       "aria-valuemax"?: number | undefined;
-      /** 
+      /**
        * Defines the minimum allowed value for a range widget.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuemin)
        */
       "aria-valuemin"?: number | undefined;
       /**
        * Defines the current value for a range widget.
        * @see aria-valuetext.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuenow)
        */
       "aria-valuenow"?: number | undefined;
-      /** 
+      /**
        * Defines the human readable text alternative of aria-valuenow for a range widget.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuetext)
        */
       "aria-valuetext"?: string | undefined;
@@ -1515,19 +1515,19 @@ declare global {
       extends HTMLAttributes<Target> {
       /**
        * The accumulate attribute is used to create a simple slide show of elements, where each new element replaces the previous one.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/accumulate)
        */
       accumulate?: "none" | "sum" | undefined;
       /**
        * The additive attribute controls whether or not an animation is additive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/additive)
        */
       additive?: "replace" | "sum" | undefined;
       /**
        * The alignment-baseline attribute specifies how an object is aligned with respect to its parent.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/alignment-baseline)
        */
       alignmentBaseline?:
@@ -1562,101 +1562,101 @@ declare global {
         | undefined;
       /**
        * The attributeName attribute defines the name of the attribute to be changed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/attributeName)
        */
       attributeName?: string | undefined;
       /**
        * The attributeName attribute defines the namespace of the attribute to be changed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/attributeType)
        */
       attributeType?: string | undefined;
       /**
        * The baseFrequency attribute represents the base frequency parameter for the noise function of the <feTurbulence> filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/baseFrequency)
        */
       baseFrequency?: number | string | undefined;
       /**
        * The begin attribute defines the begin time for the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/begin)
        */
       begin?: number | string | undefined;
       /**
        * The bias attribute shifts the range of the filter.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/bias)
        */
       bias?: number | string | undefined;
       /**
        * The by attribute specifies a relative offset value for an attribute that will be modified during an animation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/by)
        */
       by?: number | string | undefined;
       /**
        * The calcMode attribute defines the interpolation mode for the animation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/calcMode)
        */
       calcMode?: number | string | undefined;
       /**
        * The clip attribute is a presentation attribute defining the visible region of an element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip)
        */
       clip?: number | string | undefined;
       /**
        * The clip-path presentation attribute defines or associates a clipping path with the element it is related to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-path)
        */
       clipPath?: string | undefined;
       /**
        * The clip-path presentation attribute defines or associates a clipping path with the element it is related to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-path)
        */
       "clip-path"?: string | undefined;
       /**
        * The clipPathUnits attribute defines the coordinate system for the contents of the <clipPath> element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clipPathUnits)
        */
       clipPathUnits?: number | string | undefined;
       /**
-       * The clip-rule attribute only applies to graphics elements that are contained within a <clipPath> element. 
-       * 
+       * The clip-rule attribute only applies to graphics elements that are contained within a <clipPath> element.
+       *
        * The clip-rule attribute basically works as the fill-rule attribute, except that it applies to <clipPath> definitions.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-rule)
        */
       clipRule?: number | string | undefined;
       /**
-       * The clip-rule attribute only applies to graphics elements that are contained within a <clipPath> element. 
-       * 
+       * The clip-rule attribute only applies to graphics elements that are contained within a <clipPath> element.
+       *
        * The clip-rule attribute basically works as the fill-rule attribute, except that it applies to <clipPath> definitions.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-rule)
        */
       "clip-rule"?: number | string | undefined;
       /**
        * The color attribute is used to provide a potential indirect value (currentColor) for the fill, stroke, stop-color, flood-color and lighting-color attributes.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color)
        */
       colorInterpolation?: number | string | undefined;
       /**
        * The color attribute is used to provide a potential indirect value (currentColor) for the fill, stroke, stop-color, flood-color and lighting-color attributes.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color)
        */
       "color-interpolation"?: number | string | undefined;
       /**
        * The color-interpolation-filters attribute specifies the color space for imaging operations performed via filter effects.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
        */
       colorInterpolationFilters?:
@@ -1667,7 +1667,7 @@ declare global {
         | undefined;
       /**
        * The color-interpolation-filters attribute specifies the color space for imaging operations performed via filter effects.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
        */
       "color-interpolation-filters"?:
@@ -1678,1009 +1678,1009 @@ declare global {
         | undefined;
       /**
        * The cursor attribute specifies the mouse cursor displayed when the mouse pointer is over an element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/cursor)
        */
       cursor?: number | string | undefined;
       /**
        * The cx attribute defines the x-coordinate of the center of the circle.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/cx)
        */
       cx?: number | string | undefined;
       /**
        * The cy attribute defines the y-coordinate of the center of the circle.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/cy)
        */
       cy?: number | string | undefined;
       /**
        * The d attribute defines a path to be drawn.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d)
        */
       d?: string | undefined;
       /**
        * The diffuseConstant attribute defines the constant kd in the Phong lighting model.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/diffuseConstant)
        */
       diffuseConstant?: number | string | undefined;
       /**
        * The direction attribute defines the filter function that is used to stretch an image.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/direction)
        */
       direction?: number | string | undefined;
       /**
        * The display attribute is used to define the visibility of an element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/display)
        */
       display?: number | string | undefined;
       /**
        * The divisor attribute defines the number to divide the input value by.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/divisor)
        */
       divisor?: number | string | undefined;
       /**
        * The dominant-baseline attribute is used to determine or re-determine a scaled-baseline-table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dominant-baseline)
        */
       dominantBaseline?: number | string | undefined;
       /**
        * The dominant-baseline attribute is used to determine or re-determine a scaled-baseline-table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dominant-baseline)
        */
       "dominant-baseline"?: number | string | undefined;
       /**
        * The dur attribute defines the duration of the animation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dur)
        */
       dur?: number | string | undefined;
       /**
        * The dx attribute defines a list of numbers that indicate horizontal displacement.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dx)
        */
       dx?: number | string | undefined;
       /**
        * The dy attribute defines a list of numbers that indicate vertical displacement.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dy)
        */
       dy?: number | string | undefined;
       /**
        * The edgeMode attribute defines the edge mode for the filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/edgeMode)
        */
       edgeMode?: number | string | undefined;
       /**
        * The elevation attribute defines the light source's position.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/elevation)
        */
       elevation?: number | string | undefined;
       /**
        * The end attribute defines the end value of the animation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/end)
        */
       end?: number | string | undefined;
       /**
        * The exponent attribute defines the exponent to use in the gamma function.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/exponent)
        */
       exponent?: number | string | undefined;
       /**
        * The fill attribute is a presentation attribute that defines the color of the interior of the given graphical element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill)
        */
       fill?: string | undefined;
       /**
        * The fill-opacity attribute is a presentation attribute defining the opacity of the paint server used to paint the interior of the given graphical element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity)
        */
       fillOpacity?: number | string | undefined;
       /**
        * The fill-opacity attribute is a presentation attribute defining the opacity of the paint server used to paint the interior of the given graphical element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity)
        */
       "fill-opacity"?: number | string | undefined;
       /**
        * The fill-rule attribute indicates the algorithm which is to be used to determine what side of a path is inside the shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule)
        */
       fillRule?: "nonzero" | "evenodd" | "inherit" | undefined;
       /**
        * The fill-rule attribute indicates the algorithm which is to be used to determine what side of a path is inside the shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule)
        */
       "fill-rule"?: "nonzero" | "evenodd" | "inherit" | undefined;
       /**
        * The filter attribute references a filter to be applied to the given element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/filter)
        */
       filter?: string | undefined;
       /**
        * The filterUnits attribute defines the coordinate system for attributes x, y, width and height.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/filterUnits)
        */
       filterUnits?: number | string | undefined;
       /**
        * The flood-color attribute defines the color to use to flood the current filter primitive subregion.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-color)
        */
       floodColor?: number | string | undefined;
       /**
        * The flood-color attribute defines the color to use to flood the current filter primitive subregion.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-color)
        */
       "flood-color"?: number | string | undefined;
       /**
        * The flood-opacity attribute defines the opacity value to use across the current filter primitive subregion.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-opacity)
        */
       floodOpacity?: number | string | undefined;
       /**
        * The flood-opacity attribute defines the opacity value to use across the current filter primitive subregion.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-opacity)
        */
       "flood-opacity"?: number | string | undefined;
       /**
        * The font-family attribute allows for multiple comma-separated values as a fallback system.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-family)
        */
       fontFamily?: string | undefined;
       /**
        * The font-family attribute allows for multiple comma-separated values as a fallback system.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-family)
        */
       "font-family"?: string | undefined;
       /**
        * The font-size attribute refers to the size of the font from baseline to baseline when multiple lines of text are set solid in a multiline layout environment.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size)
        */
       fontSize?: number | string | undefined;
       /**
        * The font-size attribute refers to the size of the font from baseline to baseline when multiple lines of text are set solid in a multiline layout environment.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size)
        */
       "font-size"?: number | string | undefined;
       /**
        * The font-size-adjust attribute allows authors to specify an aspect value for an element that will preserve the x-height of the first choice font.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size-adjust)
        */
       fontSizeAdjust?: number | string | undefined;
       /**
        * The font-size-adjust attribute allows authors to specify an aspect value for an element that will preserve the x-height of the first choice font.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size-adjust)
        */
       "font-size-adjust"?: number | string | undefined;
       /**
        * The font-stretch attribute refers to the normal, condensed, and expanded faces.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-stretch)
        */
       fontStretch?: number | string | undefined;
       /**
        * The font-stretch attribute refers to the normal, condensed, and expanded faces.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-stretch)
        */
       "font-stretch"?: number | string | undefined;
       /**
        * The font-style attribute refers to the slant of the glyphs in the font.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-style)
        */
       fontStyle?: number | string | undefined;
       /**
        * The font-style attribute refers to the slant of the glyphs in the font.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-style)
        */
       "font-style"?: number | string | undefined;
       /**
        * The font-variant attribute refers to the normal, small-caps and inherit faces.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-variant)
        */
       fontVariant?: number | string | undefined;
       /**
        * The font-variant attribute refers to the normal, small-caps and inherit faces.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-variant)
        */
       "font-variant"?: number | string | undefined;
       /**
        * The font-weight attribute refers to the boldness of the glyphs in the font.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-weight)
        */
       fontWeight?: number | string | undefined;
       /**
        * The font-weight attribute refers to the boldness of the glyphs in the font.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-weight)
        */
       "font-weight"?: number | string | undefined;
       /**
        * The from attribute defines the start interval value of the animation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/from)
        */
       from?: number | string | undefined;
       /**
        * The fx attribute defines the x-coordinate of the focal point of the lighting effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fx)
        */
       fx?: number | string | undefined;
       /**
        * The fy attribute defines the y-coordinate of the focal point of the lighting effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fy)
        */
       fy?: number | string | undefined;
       /**
        * The gradientTransform attribute specifies a transformation that is applied to the gradient.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientTransform)
        */
       gradientTransform?: string | undefined;
       /**
        * The gradientUnits attribute specifies the coordinate system for attributes x1, y1, x2, y2.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientUnits)
        */
       gradientUnits?: string | undefined;
       /**
        * The image-rendering attribute provides a hint to the renderer about what tradeoffs to make as it renders the graphic.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/image-rendering)
        */
       imageRendering?: number | string | undefined;
       /**
        * The image-rendering attribute provides a hint to the renderer about what tradeoffs to make as it renders the graphic.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/image-rendering)
        */
       "image-rendering"?: number | string | undefined;
       /**
        * The in2 attribute identifies the second input for the given filter primitive. It works exactly like the in attribute.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/in2)
        */
       in2?: number | string | undefined;
       /**
        * The in attribute identifies input for the given filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/in)
        */
       in?: string | undefined;
       /**
        * The intercept attribute defines the intercept of the linear function.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/intercept)
        */
       intercept?: number | string | undefined;
       /**
        * The k1 attribute defines the first coefficient of the linear function.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/k1)
        */
       k1?: number | string | undefined;
       /**
        * The k2 attribute defines the second coefficient of the linear function.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/k2)
        */
       k2?: number | string | undefined;
       /**
        * The k3 attribute defines the third coefficient of the linear function.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/k3)
        */
       k3?: number | string | undefined;
       /**
        * The k4 attribute defines the fourth coefficient of the linear function.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/k4)
        */
       k4?: number | string | undefined;
       /**
        * The kernelMatrix attribute defines a convolution matrix that is used to modify an image using a matrix of values.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/kernelMatrix)
        */
       kernelMatrix?: number | string | undefined;
       /**
        * The keyPoints attribute defines the key points for the gradient.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/keyPoints)
        */
       keyPoints?: number | string | undefined;
       /**
        * The keySplines attribute defines the control points for a cubic Bézier function that controls the rate of change of the animation value.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/keySplines)
        */
       keySplines?: number | string | undefined;
       /**
        * The keyTimes attribute defines the time of the key points.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/keyTimes)
        */
       keyTimes?: number | string | undefined;
       /**
        * The lengthAdjust attribute indicates the type of adjustment which will be made for the given text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/lengthAdjust)
        */
       lengthAdjust?: number | string | undefined;
       /**
        * The lengthSpacing attribute defines the spacing behavior between text characters.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing)
        */
       letterSpacing?: number | string | undefined;
       /**
        * The lengthSpacing attribute defines the spacing behavior between text characters.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing)
        */
       "letter-spacing"?: number | string | undefined;
       /**
        * The lighting-color attribute defines the color of the light source for filter primitives feDiffuseLighting and feSpecularLighting.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/lighting-color)
        */
       lightingColor?: number | string | undefined;
       /**
        * The lighting-color attribute defines the color of the light source for filter primitives feDiffuseLighting and feSpecularLighting.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/lighting-color)
        */
       "lighting-color"?: number | string | undefined;
       /**
        * The limitingConeAngle attribute represents the angle of the cone.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/limitingConeAngle)
        */
       limitingConeAngle?: number | string | undefined;
       /**
        * The marker-end attribute defines the arrowhead or polymarker that will be drawn at the final vertex of the given <path> element or basic shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end)
        */
       markerEnd?: string | undefined;
       /**
        * The marker-end attribute defines the arrowhead or polymarker that will be drawn at the final vertex of the given <path> element or basic shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end)
        */
       "marker-end"?: string | undefined;
       /**
        * The markerHeight attribute defines the height of the viewport into which the marker is to be fitted when it is rendered.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerHeight)
        */
       markerHeight?: number | string | undefined;
       /**
        * The marker-height attribute defines the height of the viewport into which the marker is to be fitted when it is rendered.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerHeight)
        */
-      'marker-height'?: number | string | undefined;
+      "marker-height"?: number | string | undefined;
       /**
        * The markerMid attribute defines the arrowhead or polymarker that will be drawn at every vertex other than the first and last vertex of the given <path> element or basic shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)
        */
       markerMid?: string | undefined;
       /**
        * The markerMid attribute defines the arrowhead or polymarker that will be drawn at every vertex other than the first and last vertex of the given <path> element or basic shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)
        */
       "marker-mid"?: string | undefined;
       /**
        * The markerStart attribute defines the arrowhead or polymarker that will be drawn at the first vertex of the given <path> element or basic shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start)
        */
       markerStart?: string | undefined;
       /**
        * The markerStart attribute defines the arrowhead or polymarker that will be drawn at the first vertex of the given <path> element or basic shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start)
        */
       "marker-start"?: string | undefined;
       /**
        * The markerUnits attribute defines the coordinate system for the attributes markerWidth, markerHeight and the contents of the marker.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerUnits)
        */
       markerUnits?: number | string | undefined;
       /**
        * The markerWidth attribute defines the width of the viewport into which the marker is to be fitted when it is rendered.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerWidth)
        */
       markerWidth?: number | string | undefined;
       /**
        * The marker-width attribute defines the width of the viewport into which the marker is to be fitted when it is rendered.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerWidth)
        */
       mask?: string | undefined;
       /**
        * The mask attribute references a <mask> element that defines the mask to use.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/mask)
        */
       maskContentUnits?: number | string | undefined;
       /**
        * The maskUnits attribute defines the coordinate system for attributes x, y, width and height.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/maskUnits)
        */
       maskUnits?: number | string | undefined;
       /**
        * The mode attribute defines the blending mode used in the feBlend filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/mode)
        */
       mode?: number | string | undefined;
       /**
        * The numOctaves attribute defines the number of octaves for the noise.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/numOctaves)
        */
       numOctaves?: number | string | undefined;
       /**
        * The offset attribute shifts the filter primitive as if it were rendered at a different location.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/offset)
        */
       offset?: number | string | undefined;
       /**
        * The opacity attribute specifies the transparency of an object or of a group of objects, that is, the degree to which the background behind the element is overlaid.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/opacity)
        */
       opacity?: number | string | undefined;
       /**
        * The operator attribute defines the compositing operation that is to be performed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/operator)
        */
       operator?: number | string | undefined;
       /**
        * The order attribute specifies the order for the filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/order)
        */
       order?: number | string | undefined;
       /**
        * The orient attribute indicates how the gradient is oriented.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/orient)
        */
       orient?: number | string | undefined;
       /**
        * The origin attribute defines the origin of the gradient.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/origin)
        */
       origin?: number | string | undefined;
       /**
        * The overflow attribute specifies what to do with elements that render outside the viewport area.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overflow)
        */
       overflow?: number | string | undefined;
       /**
        * The overlinePosition attribute defines the position of the overline text decoration on text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-position)
        */
       overlinePosition?: number | string | undefined;
       /**
        * The overlinePosition attribute defines the position of the overline text decoration on text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-position)
        */
       "overline-position"?: number | string | undefined;
       /**
        * The overlineThickness attribute defines the thickness of the overline text decoration on text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-thickness)
        */
       overlineThickness?: number | string | undefined;
       /**
        * The overlineThickness attribute defines the thickness of the overline text decoration on text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-thickness)
        */
       "overline-thickness"?: number | string | undefined;
       /**
        * The paint-order attribute defines the order for painting objects.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/paint-order)
        */
       paintOrder?: number | string | undefined;
       /**
        * The paint-order attribute defines the order for painting objects.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/paint-order)
        */
       "paint-order"?: number | string | undefined;
       /**
        * The pathLength attribute lets authors specify the total length for the path, in user units.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pathLength)
        */
       pathLength?: number | string | undefined;
       /**
        * The patternContentUnits attribute defines the coordinate system for attributes x, y, width and height.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternContentUnits)
        */
       patternContentUnits?: string | undefined;
       /**
        * The patternTransform attribute modifies the pattern by transforming it in the pattern coordinate system.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternTransform)
        */
       patternTransform?: number | string | undefined;
       /**
        * The patternUnits attribute defines the coordinate system for attributes x, y, width and height.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternUnits)
        */
       patternUnits?: string | undefined;
       /**
        * The pointerEvents attribute determines under what circumstances a particular graphic element can be the target element for a pointer event.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointer-events)
        */
       "pointer-events"?: number | string | undefined;
       /**
        * The points attribute defines the list of points for the given shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/points)
        */
       points?: string | undefined;
       /**
        * The pointsAtX attribute defines the x coordinate of the focal point for the light source.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointsAtX)
        */
       pointsAtX?: number | string | undefined;
       /**
        * The pointsAtY attribute defines the y coordinate of the focal point for the light source.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointsAtY)
        */
       pointsAtY?: number | string | undefined;
       /**
        * The pointsAtZ attribute defines the z coordinate of the focal point for the light source.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointsAtZ)
        */
       pointsAtZ?: number | string | undefined;
       /**
        * The preserveAlpha attribute is a presentation attribute defining if the alpha channel should be preserved.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/preserveAlpha)
        */
       preserveAlpha?: number | string | undefined;
       /**
        * The preserveAspectRatio attribute indicates how an element handles the aspect ratio of the viewBox specified by the viewBox attribute.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/preserveAspectRatio)
        */
       preserveAspectRatio?: string | undefined;
       /**
        * The primitiveUnits attribute defines the coordinate system for the various attributes.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/primitiveUnits)
        */
       primitiveUnits?: number | string | undefined;
       /**
        * The r attribute defines the radius of the circle.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/r)
        */
       r?: number | string | undefined;
       /**
        * The radius attribute defines the radius of the feMorphology operator.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/radius)
        */
       radius?: number | string | undefined;
       /**
        * The refX attribute defines the x-coordinate of the reference point of the filter effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/refX)
        */
       refX?: number | string | undefined;
       /**
        * The refY attribute defines the y-coordinate of the reference point of the filter effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/refY)
        */
       refY?: number | string | undefined;
       /**
        * The repeatCount attribute defines the number of repetitions of the animation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/repeatCount)
        */
       repeatCount?: number | string | undefined;
       /**
        * The repeatDur attribute defines the total duration for the animation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/repeatDur)
        */
       repeatDur?: number | string | undefined;
       /**
        * The restart attribute defines the conditions for restarting the animation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/restart)
        */
       restart?: number | string | undefined;
       /**
        * The result attribute defines the name for the result of the filter effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/result)
        */
       result?: string | undefined;
       /**
        * The rotate attribute defines a transformation that rotates the element around a fixed point.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/rotate)
        */
       rotate?: number | string | undefined;
       /**
        * The rx attribute defines the x-axis radius of the ellipse.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/rx)
        */
       rx?: number | string | undefined;
       /**
        * The ry attribute defines the y-axis radius of the ellipse.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/ry)
        */
       ry?: number | string | undefined;
       /**
        * The scale attribute defines a scale transformation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/scale)
        */
       scale?: number | string | undefined;
       /**
        * The seed attribute defines the random number generator initial value.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/seed)
        */
       seed?: number | string | undefined;
       /**
        * The shape-rendering attribute provides hints to the renderer about what tradeoffs to make when rendering shapes.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/shape-rendering)
-       */      
+       */
       "shape-rendering"?: number | string | undefined;
       /**
        * The spacing attribute defines a distance between the copies of the filter effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/spacing)
        */
       spacing?: number | string | undefined;
       /**
        * The specularConstant attribute defines the ks in the Phong lighting model.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/specularConstant)
        */
       specularConstant?: number | string | undefined;
       /**
        * The specularExponent attribute defines the ns in the Phong lighting model.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/specularExponent)
        */
       specularExponent?: number | string | undefined;
       /**
        * The spreadMethod attribute provides a hint for gradient interpolation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/spreadMethod)
        */
       spreadMethod?: string | undefined;
       /**
        * The startOffset attribute defines where the gradient starts.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/startOffset)
        */
       startOffset?: number | string | undefined;
       /**
        * The stdDeviation attribute defines the standard deviation for the blur operation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stdDeviation)
        */
       stdDeviation?: number | string | undefined;
       /**
        * The stitchTiles attribute provides a hint for how to provide tiles for the feTurbulence filter.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stitchTiles)
        */
       stitchTiles?: number | string | undefined;
       /**
        * The stop-color attribute defines the color of the gradient stop.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stop-color)
        */
       "stop-color"?: string | undefined;
       /**
        * The stop-opacity attribute defines the opacity of the gradient stop.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stop-opacity)
        */
       "stop-opacity"?: number | string | undefined;
       /**
        * The strikethrough-position attribute defines the position of the strikethrough text decoration on text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/strikethrough-position)
        */
       "strikethrough-position"?: number | string | undefined;
       /**
        * The strikethrough-thickness attribute defines the thickness of the strikethrough text decoration on text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/strikethrough-thickness)
        */
       "strikethrough-thickness"?: number | string | undefined;
       /**
        * The stoke attribute is a presentation attribute defining the color of the outline of the given graphical element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke)
        */
       stroke?: string | undefined;
       /**
        * The stroke-dasharray attribute is a presentation attribute defining the pattern of dashes and gaps used to paint the outline of the shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray)
        */
       "stroke-dasharray"?: string | number | undefined;
       /**
        * The stroke-dashoffset attribute is a presentation attribute defining the distance into the dash pattern to start the dash.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset)
        */
       "stroke-dashoffset"?: string | number | undefined;
       /**
        * The stroke-linecap attribute is a presentation attribute defining the shape to be used at the end of open subpaths when they are stroked.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap)
        */
       "stroke-linecap"?: "butt" | "round" | "square" | "inherit" | undefined;
       /**
        * The stroke-linejoin attribute is a presentation attribute defining the shape to be used at the corners of paths or basic shapes when they are stroked.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin)
        */
       "stroke-linejoin"?: "miter" | "round" | "bevel" | "inherit" | undefined;
       /**
        * The stroke-miterlimit attribute is a presentation attribute defining the limit for the ratio of the miter length to the stroke-width.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-miterlimit)
        */
       "stroke-miterlimit"?: string | number | undefined;
       /**
        * The stroke-opacity attribute is a presentation attribute defining the opacity of the paint server used to paint the outline of the shape.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-opacity)
        */
       "stroke-opacity"?: number | string | undefined;
       /**
        * The stroke-width attribute is a presentation attribute defining the width of the outline on the current object.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-width)
        */
       "stroke-width"?: number | string | undefined;
       /**
        * The surfaceScale attribute defines the height of the surface for the light filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/surfaceScale)
        */
       surfaceScale?: number | string | undefined;
       /**
        * The systemLanguage attribute defines the allowable language of the content in the given element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/systemLanguage)
        */
       systemLanguage?: number | string | undefined;
       /**
        * The tableValues attribute specifies the remapping of the input color value.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/tableValues)
        */
       tableValues?: number | string | undefined;
       /**
        * The targetX attribute defines the x-axis coordinate of the shadow.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/targetX)
        */
       targetX?: number | string | undefined;
       /**
        * The targetY attribute defines the y-axis coordinate of the shadow.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/targetY)
        */
       targetY?: number | string | undefined;
       /**
        * The text-anchor attribute is a presentation attribute defining the alignment of the anchored text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor)
        */
       "text-anchor"?: string | undefined;
       /**
        * The text-decoration attribute is a presentation attribute defining the text decoration line to be used.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-decoration)
        */
       "text-decoration"?: number | string | undefined;
       /**
        * The textLength attribute indicates the width of the space into which the text should be rendered.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/textLength)
        */
       textLength?: number | string | undefined;
       /**
        * The text-rendering attribute provides a hint to the renderer about what tradeoffs to make as it renders text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-rendering)
        */
-      'text-rendering'?: number | string | undefined;
+      "text-rendering"?: number | string | undefined;
       /**
        * The to attribute defines the final transformation of the given element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/to)
        */
       to?: number | string | undefined;
       /**
        * The transform attribute defines a list of transform definitions that are applied to an element and the element's children.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform)
        */
       transform?: string | undefined;
       /**
        * The underline-position attribute defines the position of the underline text decoration on text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/underline-position)
        */
       "underline-position"?: number | string | undefined;
       /**
        * The underline-thickness attribute defines the thickness of the underline text decoration on text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/underline-thickness)
        */
       "underline-thickness"?: number | string | undefined;
       /**
        * The unicode-bidi attribute is a presentation attribute that is used to specify whether a text should be laid out for right-to-left or left-to-right text direction, and whether the text should be laid out for weak bidirectionality, including the direction of embeddings.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/unicode-bidi)
        */
       "unicode-bidi"?: number | string | undefined;
       /**
        * The values attribute has different meanings, depending upon the context where it's used, either it defines a sequence of values used over the course of an animation, or it's a list of numbers for a color matrix, which is interpreted differently depending on the type of color change to be performed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/values)
        */
       values?: string | undefined;
       /**
        * The vector-effect property specifies the vector effect to use when drawing an object. Vector effects are applied before any of the other compositing operations, i.e. filters, masks and clips.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/vector-effect)
        */
       "vector-effect"?: number | string | undefined;
       /**
        * The viewBox attribute defines the position and dimension, in user space, of an SVG viewport.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox)
        */
       viewBox?: string | undefined;
       /**
        * The visibility attribute specifies whether an element is visible or not.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/visibility)
        */
       visibility?: number | string | undefined;
       /**
        * The word-spacing attribute is a presentation attribute defining the space after the end of each word.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/word-spacing)
        */
       "word-spacing"?: number | string | undefined;
       /**
        * The writing-mode attribute defines the orientation of the dominant baseline and the direction of the dominant baseline.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/writing-mode)
        */
       "writing-mode"?: number | string | undefined;
       /**
        * The x1 attribute defines the x-coordinate of the start of the line.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1)
        */
       x1?: number | string | undefined;
       /**
        * The x2 attribute defines the x-coordinate of the end of the line.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2)
        */
       x2?: number | string | undefined;
       /**
        * The x attribute defines the x-coordinate of the given element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x)
        */
       x?: number | string | undefined;
       /**
        * The xChannelSelector attribute indicates which channel the input will affect for the feDisplacementMap filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xChannelSelector)
        */
       xChannelSelector?: string | undefined;
       /**
        * The y1 attribute defines the y-coordinate of the start of the line.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1)
        */
       y1?: number | string | undefined;
       /**
        * The y2 attribute defines the y-coordinate of the end of the line.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y2)
        */
       y2?: number | string | undefined;
       /**
        * The y attribute defines the y-coordinate of the given element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y)
        */
       y?: number | string | undefined;
       /**
        * The yChannelSelector attribute indicates which channel the input will affect for the feDisplacementMap filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/yChannelSelector)
        */
       yChannelSelector?: string | undefined;
       /**
        * The z attribute defines the z-coordinate of the given element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/z)
        */
       z?: number | string | undefined;
@@ -2811,28 +2811,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onLoad-debounce"?: number | undefined;
-      onLoad?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onLoadCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <img onLoadCapture-debounce={500} onLoadCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onLoad event is fired when an object has been loaded.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event)
        */
-      "onLoadCapture-debounce"?: number | undefined;
-      onLoadCapture?: GenericEventHandler<Target> | undefined;
+      onLoad?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onError` server action.
@@ -2853,28 +2837,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onError-debounce"?: number | undefined;
-      onError?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onErrorCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <img onErrorCapture-debounce={500} onErrorCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onError event is fired when an object has been loaded.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event)
        */
-      "onErrorCapture-debounce"?: number | undefined;
-      onErrorCapture?: GenericEventHandler<Target> | undefined;
+      onError?: GenericEventHandler<Target> | undefined;
 
       // Clipboard Events
 
@@ -2897,28 +2865,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onCopy-debounce"?: number | undefined;
-      onCopy?: ClipboardEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onCopyCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <p onCopyCapture-debounce={500} onCopyCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onCopy event is fired when the user copies the content of an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/copy_event)
        */
-      "onCopyCapture-debounce"?: number | undefined;
-      onCopyCapture?: ClipboardEventHandler<Target> | undefined;
+      onCopy?: ClipboardEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onCut` server action.
@@ -2939,28 +2891,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onCut-debounce"?: number | undefined;
-      onCut?: ClipboardEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onCutCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <p onCutCapture-debounce={500} onCutCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onCut event is fired when the user cuts the content of an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/cut_event)
        */
-      "onCutCapture-debounce"?: number | undefined;
-      onCutCapture?: ClipboardEventHandler<Target> | undefined;
+      onCut?: ClipboardEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPaste` server action.
@@ -2981,28 +2917,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPaste-debounce"?: number | undefined;
-      onPaste?: ClipboardEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPasteCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <p onPasteCapture-debounce={500} onPasteCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPaste event is fired when the user pastes some content in an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event)
        */
-      "onPasteCapture-debounce"?: number | undefined;
-      onPasteCapture?: ClipboardEventHandler<Target> | undefined;
+      onPaste?: ClipboardEventHandler<Target> | undefined;
 
       // Composition Events:
 
@@ -3025,28 +2945,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onCompositionEnd-debounce"?: number | undefined;
-      onCompositionEnd?: CompositionEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onCompositionEndCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onCompositionEndCapture-debounce={500} onCompositionEndCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onCompositionEnd event is fired when the composition of a passage of text has been completed or canceled.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionend_event)
        */
-      "onCompositionEndCapture-debounce"?: number | undefined;
-      onCompositionEndCapture?: CompositionEventHandler<Target> | undefined;
+      onCompositionEnd?: CompositionEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onCompositionStart` server action.
@@ -3067,28 +2971,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onCompositionStart-debounce"?: number | undefined;
-      onCompositionStart?: CompositionEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onCompositionStartCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onCompositionStartCapture-debounce={500} onCompositionStartCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onCompositionStart event is fired when the user starts to enter the composition of a passage of text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionstart_event)
        */
-      "onCompositionStartCapture-debounce"?: number | undefined;
-      onCompositionStartCapture?: CompositionEventHandler<Target> | undefined;
+      onCompositionStart?: CompositionEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onCompositionUpdate` server action.
@@ -3109,28 +2997,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onCompositionUpdate-debounce"?: number | undefined;
-      onCompositionUpdate?: CompositionEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onCompositionUpdateCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onCompositionUpdateCapture-debounce={500} onCompositionUpdateCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onCompositionUpdate event is fired when the user is entering text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionupdate_event)
        */
-      "onCompositionUpdateCapture-debounce"?: number | undefined;
-      onCompositionUpdateCapture?: CompositionEventHandler<Target> | undefined;
+      onCompositionUpdate?: CompositionEventHandler<Target> | undefined;
 
       // Details Events:
 
@@ -3153,6 +3025,11 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onToggle-debounce"?: number | undefined;
+      /**
+       * The onToggle event is fired when the user opens or closes the details element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/toggle_event)
+       */
       onToggle?: GenericEventHandler<Target> | undefined;
 
       // Dialog Events:
@@ -3176,6 +3053,11 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onClose-debounce"?: number | undefined;
+      /**
+       * The onClose event is fired when the user closes the dialog element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close_event)
+       */
       onClose?: GenericEventHandler<Target> | undefined;
 
       /**
@@ -3197,6 +3079,11 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onCancel-debounce"?: number | undefined;
+      /**
+       * The onCancel event is fired when the user cancels the dialog element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/cancel_event)
+       */
       onCancel?: GenericEventHandler<Target> | undefined;
 
       // Focus Events:
@@ -3220,28 +3107,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onFocus-debounce"?: number | undefined;
-      onFocus?: FocusEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onFocusCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onFocusCapture-debounce={500} onFocusCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onFocus event is fired when an element gets focus.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focus_event)
        */
-      "onFocusCapture-debounce"?: number | undefined;
-      onFocusCapture?: FocusEventHandler<Target> | undefined;
+      onFocus?: FocusEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onfocusin` server action.
@@ -3262,28 +3133,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onfocusin-debounce"?: number | undefined;
-      onfocusin?: FocusEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onfocusinCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onfocusinCapture-debounce={500} onfocusinCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onfocusin event is fired when an element is about to get focus.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focusin_event)
        */
-      "onfocusinCapture-debounce"?: number | undefined;
-      onfocusinCapture?: FocusEventHandler<Target> | undefined;
+      onfocusin?: FocusEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onfocusout` server action.
@@ -3304,28 +3159,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onfocusout-debounce"?: number | undefined;
-      onfocusout?: FocusEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onfocusoutCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onfocusoutCapture-debounce={500} onfocusoutCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onfocusout event is fired when an element is about to lose focus.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focusout_event)
        */
-      "onfocusoutCapture-debounce"?: number | undefined;
-      onfocusoutCapture?: FocusEventHandler<Target> | undefined;
+      onfocusout?: FocusEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onBlur` server action.
@@ -3346,28 +3185,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onBlur-debounce"?: number | undefined;
-      onBlur?: FocusEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onBlurCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onBlurCapture-debounce={500} onBlurCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onBlur event is fired when an element loses focus.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/blur_event)
        */
-      "onBlurCapture-debounce"?: number | undefined;
-      onBlurCapture?: FocusEventHandler<Target> | undefined;
+      onBlur?: FocusEventHandler<Target> | undefined;
 
       // Form Events:
 
@@ -3390,28 +3213,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onChange-debounce"?: number | undefined;
-      onChange?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onChangeCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onChangeCapture-debounce={500} onChangeCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onChange event is fired when the value of an element has been changed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event)
        */
-      "onChangeCapture-debounce"?: number | undefined;
-      onChangeCapture?: GenericEventHandler<Target> | undefined;
+      onChange?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onInput` server action.
@@ -3432,28 +3239,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onInput-debounce"?: number | undefined;
-      onInput?: InputEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onInputCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onInputCapture-debounce={500} onInputCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onInput event is fired when the value of an element has been changed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)
        */
-      "onInputCapture-debounce"?: number | undefined;
-      onInputCapture?: InputEventHandler<Target> | undefined;
+      onInput?: InputEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onBeforeInput` server action.
@@ -3474,28 +3265,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onBeforeInput-debounce"?: number | undefined;
-      onBeforeInput?: InputEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onBeforeInputCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onBeforeInputCapture-debounce={500} onBeforeInputCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onBeforeInput event is fired when the value of an element has been changed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/beforeinput_event)
        */
-      "onBeforeInputCapture-debounce"?: number | undefined;
-      onBeforeInputCapture?: InputEventHandler<Target> | undefined;
+      onBeforeInput?: InputEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onSearch` server action.
@@ -3516,28 +3291,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onSearch-debounce"?: number | undefined;
-      onSearch?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onSearchCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onSearchCapture-debounce={500} onSearchCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onSearch event is fired when the user writes something in a search input (text input with `search` type).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/search_event)
        */
-      "onSearchCapture-debounce"?: number | undefined;
-      onSearchCapture?: GenericEventHandler<Target> | undefined;
+      onSearch?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onSubmit` server action.
@@ -3558,28 +3317,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onSubmit-debounce"?: number | undefined;
-      onSubmit?: SubmitEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onSubmitCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <form onSubmitCapture-debounce={500} onSubmitCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onSubmit event is fired when a form is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)
        */
-      "onSubmitCapture-debounce"?: number | undefined;
-      onSubmitCapture?: SubmitEventHandler<Target> | undefined;
+      onSubmit?: SubmitEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onInvalid` server action.
@@ -3600,28 +3343,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onInvalid-debounce"?: number | undefined;
-      onInvalid?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onInvalidCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onInvalidCapture-debounce={500} onInvalidCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onInvalid event is fired when a form is submitted and has validation errors.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/invalid_event)
        */
-      "onInvalidCapture-debounce"?: number | undefined;
-      onInvalidCapture?: GenericEventHandler<Target> | undefined;
+      onInvalid?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onReset` server action.
@@ -3642,28 +3369,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onReset-debounce"?: number | undefined;
-      onReset?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onResetCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <form onResetCapture-debounce={500} onResetCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onReset event is fired when a form is reset.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/reset_event)
        */
-      "onResetCapture-debounce"?: number | undefined;
-      onResetCapture?: GenericEventHandler<Target> | undefined;
+      onReset?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onFormData` server action.
@@ -3684,28 +3395,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onFormData-debounce"?: number | undefined;
-      onFormData?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onFormDataCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <form onFormDataCapture-debounce={500} onFormDataCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onFormData event is fired when a form is submitted and has validation errors.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event)
        */
-      "onFormDataCapture-debounce"?: number | undefined;
-      onFormDataCapture?: GenericEventHandler<Target> | undefined;
+      onFormData?: GenericEventHandler<Target> | undefined;
 
       // Keyboard Events:
 
@@ -3728,70 +3423,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onKeyDown-debounce"?: number | undefined;
-      onKeyDown?: KeyboardEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onKeyDownCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onKeyDownCapture-debounce={500} onKeyDownCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onKeyDown event is fired when a key is pressed down.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event)
        */
-      "onKeyDownCapture-debounce"?: number | undefined;
-      onKeyDownCapture?: KeyboardEventHandler<Target> | undefined;
-
-      /**
-       * Milliseconds to wait before executing the `onKeyPress` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onKeyPress-debounce={500} onKeyPress={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
-       */
-      "onKeyPress-debounce"?: number | undefined;
-      onKeyPress?: KeyboardEventHandler<Target> | undefined;
-
-      /**
-       * Milliseconds to wait before executing the `onKeyPressCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onKeyPressCapture-debounce={500} onKeyPressCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
-       */
-      "onKeyPressCapture-debounce"?: number | undefined;
-      onKeyPressCapture?: KeyboardEventHandler<Target> | undefined;
+      onKeyDown?: KeyboardEventHandler<Target> | undefined;;
 
       /**
        * Milliseconds to wait before executing the `onKeyUp` server action.
@@ -3812,28 +3449,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onKeyUp-debounce"?: number | undefined;
-      onKeyUp?: KeyboardEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onKeyUpCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onKeyUpCapture-debounce={500} onKeyUpCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onKeyUp event is fired when a key is released.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Document/keyup_event)
        */
-      "onKeyUpCapture-debounce"?: number | undefined;
-      onKeyUpCapture?: KeyboardEventHandler<Target> | undefined;
+      onKeyUp?: KeyboardEventHandler<Target> | undefined;
 
       // Media Events:
 
@@ -3856,28 +3477,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onAbort-debounce"?: number | undefined;
-      onAbort?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onAbortCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onAbortCapture-debounce={500} onAbortCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onAbort event is fired when the loading of a media is aborted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/abort_event)
        */
-      "onAbortCapture-debounce"?: number | undefined;
-      onAbortCapture?: GenericEventHandler<Target> | undefined;
+      onAbort?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onCanPlay` server action.
@@ -3898,28 +3503,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onCanPlay-debounce"?: number | undefined;
-      onCanPlay?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onCanPlayCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onCanPlayCapture-debounce={500} onCanPlayCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onCanPlay event is fired when the browser can start playing the media (when it has buffered enough to begin).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canplay_event)
        */
-      "onCanPlayCapture-debounce"?: number | undefined;
-      onCanPlayCapture?: GenericEventHandler<Target> | undefined;
+      onCanPlay?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onCanPlayThrough` server action.
@@ -3940,28 +3529,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onCanPlayThrough-debounce"?: number | undefined;
-      onCanPlayThrough?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onCanPlayThroughCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onCanPlayThroughCapture-debounce={500} onCanPlayThroughCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onCanPlayThrough event is fired when the browser can play through the media without stopping for buffering.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canplaythrough_event)
        */
-      "onCanPlayThroughCapture-debounce"?: number | undefined;
-      onCanPlayThroughCapture?: GenericEventHandler<Target> | undefined;
+      onCanPlayThrough?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onDurationChange` server action.
@@ -3982,28 +3555,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onDurationChange-debounce"?: number | undefined;
-      onDurationChange?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onDurationChangeCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onDurationChangeCapture-debounce={500} onDurationChangeCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onDurationChange event is fired when the duration of the media has changed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/durationchange_event)
        */
-      "onDurationChangeCapture-debounce"?: number | undefined;
-      onDurationChangeCapture?: GenericEventHandler<Target> | undefined;
+      onDurationChange?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onEmptied` server action.
@@ -4024,28 +3581,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onEmptied-debounce"?: number | undefined;
-      onEmptied?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onEmptiedCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onEmptiedCapture-debounce={500} onEmptiedCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onEmptied event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/emptied_event)
        */
-      "onEmptiedCapture-debounce"?: number | undefined;
-      onEmptiedCapture?: GenericEventHandler<Target> | undefined;
+      onEmptied?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onEncrypted` server action.
@@ -4066,28 +3607,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onEncrypted-debounce"?: number | undefined;
-      onEncrypted?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onEncryptedCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onEncryptedCapture-debounce={500} onEncryptedCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onEncrypted event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/encrypted_event)
        */
-      "onEncryptedCapture-debounce"?: number | undefined;
-      onEncryptedCapture?: GenericEventHandler<Target> | undefined;
+      onEncrypted?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onEnded` server action.
@@ -4108,28 +3633,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onEnded-debounce"?: number | undefined;
-      onEnded?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onEndedCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onEndedCapture-debounce={500} onEndedCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onEnded event is fired when the media has reached the end.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ended_event)
        */
-      "onEndedCapture-debounce"?: number | undefined;
-      onEndedCapture?: GenericEventHandler<Target> | undefined;
+      onEnded?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onLoadedData` server action.
@@ -4150,28 +3659,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onLoadedData-debounce"?: number | undefined;
-      onLoadedData?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onLoadedDataCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onLoadedDataCapture-debounce={500} onLoadedDataCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onLoadedData event is fired when the media's data is loaded.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadeddata_event)
        */
-      "onLoadedDataCapture-debounce"?: number | undefined;
-      onLoadedDataCapture?: GenericEventHandler<Target> | undefined;
+      onLoadedData?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onLoadedMetadata` server action.
@@ -4192,28 +3685,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onLoadedMetadata-debounce"?: number | undefined;
-      onLoadedMetadata?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onLoadedMetadataCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onLoadedMetadataCapture-debounce={500} onLoadedMetadataCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onLoadedMetadata event is fired when the metadata has been loaded.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadedmetadata_event)
        */
-      "onLoadedMetadataCapture-debounce"?: number | undefined;
-      onLoadedMetadataCapture?: GenericEventHandler<Target> | undefined;
+      onLoadedMetadata?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onLoadStart` server action.
@@ -4234,28 +3711,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onLoadStart-debounce"?: number | undefined;
-      onLoadStart?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onLoadStartCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onLoadStartCapture-debounce={500} onLoadStartCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onLoadStart event is fired when the browser starts looking for the specified media.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadstart_event)
        */
-      "onLoadStartCapture-debounce"?: number | undefined;
-      onLoadStartCapture?: GenericEventHandler<Target> | undefined;
+      onLoadStart?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPause` server action.
@@ -4276,28 +3737,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPause-debounce"?: number | undefined;
-      onPause?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPauseCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onPauseCapture-debounce={500} onPauseCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPause event is fired when the media has been paused.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/pause_event)
        */
-      "onPauseCapture-debounce"?: number | undefined;
-      onPauseCapture?: GenericEventHandler<Target> | undefined;
+      onPause?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPlay` server action.
@@ -4318,28 +3763,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPlay-debounce"?: number | undefined;
-      onPlay?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPlayCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onPlayCapture-debounce={500} onPlayCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPlay event is fired when the media has been started or is no longer paused.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play_event)
        */
-      "onPlayCapture-debounce"?: number | undefined;
-      onPlayCapture?: GenericEventHandler<Target> | undefined;
+      onPlay?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPlaying` server action.
@@ -4360,28 +3789,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPlaying-debounce"?: number | undefined;
-      onPlaying?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPlayingCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onPlayingCapture-debounce={500} onPlayingCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPlaying event is fired when the media has started playing.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/playing_event)
        */
-      "onPlayingCapture-debounce"?: number | undefined;
-      onPlayingCapture?: GenericEventHandler<Target> | undefined;
+      onPlaying?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onProgress` server action.
@@ -4402,28 +3815,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onProgress-debounce"?: number | undefined;
-      onProgress?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onProgressCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onProgressCapture-debounce={500} onProgressCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onProgress event is fired when the browser is in the process of getting the media data (downloading the media).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/progress_event)
        */
-      "onProgressCapture-debounce"?: number | undefined;
-      onProgressCapture?: GenericEventHandler<Target> | undefined;
+      onProgress?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onRateChange` server action.
@@ -4444,28 +3841,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onRateChange-debounce"?: number | undefined;
-      onRateChange?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onRateChangeCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onRateChangeCapture-debounce={500} onRateChangeCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onRateChange event is fired when the playback rate has changed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ratechange_event)
        */
-      "onRateChangeCapture-debounce"?: number | undefined;
-      onRateChangeCapture?: GenericEventHandler<Target> | undefined;
+      onRateChange?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onSeeked` server action.
@@ -4486,28 +3867,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onSeeked-debounce"?: number | undefined;
-      onSeeked?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onSeekedCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onSeekedCapture-debounce={500} onSeekedCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onSeeked event is fired when the seeking property is false, meaning that the seeking has ended.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeked_event)
        */
-      "onSeekedCapture-debounce"?: number | undefined;
-      onSeekedCapture?: GenericEventHandler<Target> | undefined;
+      onSeeked?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onSeeking` server action.
@@ -4528,28 +3893,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onSeeking-debounce"?: number | undefined;
-      onSeeking?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onSeekingCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onSeekingCapture-debounce={500} onSeekingCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onSeeking event is fired when the seeking property is true, meaning that the media is seeking a position.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeking_event)
        */
-      "onSeekingCapture-debounce"?: number | undefined;
-      onSeekingCapture?: GenericEventHandler<Target> | undefined;
+      onSeeking?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onStalled` server action.
@@ -4570,28 +3919,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onStalled-debounce"?: number | undefined;
-      onStalled?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onStalledCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onStalledCapture-debounce={500} onStalledCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onStalled event is fired when the browser is trying to get media data, but data is not available.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/stalled_event)
        */
-      "onStalledCapture-debounce"?: number | undefined;
-      onStalledCapture?: GenericEventHandler<Target> | undefined;
+      onStalled?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onSuspend` server action.
@@ -4612,28 +3945,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onSuspend-debounce"?: number | undefined;
-      onSuspend?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onSuspendCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onSuspendCapture-debounce={500} onSuspendCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onSuspend event is fired when the loading of a media is suspended.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/suspend_event)
        */
-      "onSuspendCapture-debounce"?: number | undefined;
-      onSuspendCapture?: GenericEventHandler<Target> | undefined;
+      onSuspend?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onTimeUpdate` server action.
@@ -4654,28 +3971,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTimeUpdate-debounce"?: number | undefined;
-      onTimeUpdate?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onTimeUpdateCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onTimeUpdateCapture-debounce={500} onTimeUpdateCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTimeUpdate event is fired when the time indicated by the currentTime attribute has been updated.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event)
        */
-      "onTimeUpdateCapture-debounce"?: number | undefined;
-      onTimeUpdateCapture?: GenericEventHandler<Target> | undefined;
+      onTimeUpdate?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onVolumeChange` server action.
@@ -4696,28 +3997,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onVolumeChange-debounce"?: number | undefined;
-      onVolumeChange?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onVolumeChangeCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onVolumeChangeCapture-debounce={500} onVolumeChangeCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onVolumeChange event is fired when the volume has changed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volumechange_event)
        */
-      "onVolumeChangeCapture-debounce"?: number | undefined;
-      onVolumeChangeCapture?: GenericEventHandler<Target> | undefined;
+      onVolumeChange?: GenericEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onWaiting` server action.
@@ -4738,28 +4023,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onWaiting-debounce"?: number | undefined;
-      onWaiting?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onWaitingCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onWaitingCapture-debounce={500} onWaitingCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onWaiting event is fired when the media has paused but is expected to resume (like when the media is buffering).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/waiting_event)
        */
-      "onWaitingCapture-debounce"?: number | undefined;
-      onWaitingCapture?: GenericEventHandler<Target> | undefined;
+      onWaiting?: GenericEventHandler<Target> | undefined;
 
       // MouseEvents:
 
@@ -4782,28 +4051,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onClick-debounce"?: number | undefined;
-      onClick?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onClickCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onClickCapture-debounce={500} onClickCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onClick event is fired when a pointing device button (usually a mouse) is pressed and released on a single element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event)
        */
-      "onClickCapture-debounce"?: number | undefined;
-      onClickCapture?: MouseEventHandler<Target> | undefined;
+      onClick?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onContextMenu` server action.
@@ -4824,28 +4077,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onContextMenu-debounce"?: number | undefined;
-      onContextMenu?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onContextMenuCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onContextMenuCapture-debounce={500} onContextMenuCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onContextMenu event is fired when the right button of the mouse is clicked on an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/contextmenu_event)
        */
-      "onContextMenuCapture-debounce"?: number | undefined;
-      onContextMenuCapture?: MouseEventHandler<Target> | undefined;
+      onContextMenu?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onDblClick` server action.
@@ -4866,28 +4103,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onDblClick-debounce"?: number | undefined;
-      onDblClick?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onDblClickCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDblClickCapture-debounce={500} onDblClickCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onDblClick event is fired when a pointing device button (usually a mouse) is clicked twice on a single element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event)
        */
-      "onDblClickCapture-debounce"?: number | undefined;
-      onDblClickCapture?: MouseEventHandler<Target> | undefined;
+      onDblClick?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onDrag` server action.
@@ -4908,28 +4129,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onDrag-debounce"?: number | undefined;
-      onDrag?: DragEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onDragCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDragCapture-debounce={500} onDragCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onDrag event is fired when an element or text selection is being dragged.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drag_event)
        */
-      "onDragCapture-debounce"?: number | undefined;
-      onDragCapture?: DragEventHandler<Target> | undefined;
+      onDrag?: DragEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onDragEnd` server action.
@@ -4950,10 +4155,15 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onDragEnd-debounce"?: number | undefined;
+      /**
+       * The onDragEnd event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragend_event)
+       */
       onDragEnd?: DragEventHandler<Target> | undefined;
 
       /**
-       * Milliseconds to wait before executing the `onDragEndCapture` server action.
+       * Milliseconds to wait before executing the `onDragEnter` server action.
        *
        * This is NOT a standard HTML attribute, and is not possible to use
        * in web components. It is a Brisa-specific attribute for server components.
@@ -4963,99 +4173,20 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDragEndCapture-debounce={500} onDragEndCapture={() => {}} />
+       * <div onDragEnter-debounce={500} onDragEnter={() => {}} />
        * ```
        *
        * Docs:
        *
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
-      "onDragEndCapture-debounce"?: number | undefined;
-      onDragEndCapture?: DragEventHandler<Target> | undefined;
-
+      "onDragEnter-debounce"?: number | undefined;
       /**
-       * Milliseconds to wait before executing the `onDragEndCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDragEndCapture-debounce={500} onDragEndCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onDragEnter event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragenter_event)
        */
-      "onDragEndCapture-debounce"?: number | undefined;
       onDragEnter?: DragEventHandler<Target> | undefined;
-
-      /**
-       * Milliseconds to wait before executing the `onDragEnterCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDragEnterCapture-debounce={500} onDragEnterCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
-       */
-      "onDragEnterCapture-debounce"?: number | undefined;
-      onDragEnterCapture?: DragEventHandler<Target> | undefined;
-
-      /**
-       * Milliseconds to wait before executing the `onDragExit` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDragExit-debounce={500} onDragExit={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
-       */
-      "onDragExit-debounce"?: number | undefined;
-      onDragExit?: DragEventHandler<Target> | undefined;
-
-      /**
-       * Milliseconds to wait before executing the `onDragExitCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDragExitCapture-debounce={500} onDragExitCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
-       */
-      "onDragExitCapture-debounce"?: number | undefined;
-      onDragExitCapture?: DragEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onDragLeave` server action.
@@ -5076,28 +4207,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onDragLeave-debounce"?: number | undefined;
-      onDragLeave?: DragEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onDragLeaveCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDragLeaveCapture-debounce={500} onDragLeaveCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onDragLeave event is fired when a dragged element or text selection leaves a valid drop target.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragleave_event)
        */
-      "onDragLeaveCapture-debounce"?: number | undefined;
-      onDragLeaveCapture?: DragEventHandler<Target> | undefined;
+      onDragLeave?: DragEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onDragOver` server action.
@@ -5118,28 +4233,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onDragOver-debounce"?: number | undefined;
-      onDragOver?: DragEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onDragOverCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDragOverCapture-debounce={500} onDragOverCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onDragOver event is fired when an element or text selection is being dragged over a valid drop target (every few hundred milliseconds).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragover_event)
        */
-      "onDragOverCapture-debounce"?: number | undefined;
-      onDragOverCapture?: DragEventHandler<Target> | undefined;
+      onDragOver?: DragEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onDragStart` server action.
@@ -5160,28 +4259,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onDragStart-debounce"?: number | undefined;
-      onDragStart?: DragEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onDragStartCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDragStartCapture-debounce={500} onDragStartCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onDragStart event is fired when the user starts dragging an element or text selection.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragstart_event)
        */
-      "onDragStartCapture-debounce"?: number | undefined;
-      onDragStartCapture?: DragEventHandler<Target> | undefined;
+      onDragStart?: DragEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onDrop` server action.
@@ -5202,28 +4285,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onDrop-debounce"?: number | undefined;
-      onDrop?: DragEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onDropCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onDropCapture-debounce={500} onDropCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onDrop event is fired when an element or text selection is dropped on a valid drop target.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drop_event)
        */
-      "onDropCapture-debounce"?: number | undefined;
-      onDropCapture?: DragEventHandler<Target> | undefined;
+      onDrop?: DragEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onMouseDown` server action.
@@ -5244,28 +4311,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseDown-debounce"?: number | undefined;
-      onMouseDown?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onMouseDownCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onMouseDownCapture-debounce={500} onMouseDownCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onMouseDown event is fired when a pointing device button is pressed on an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousedown_event)
        */
-      "onMouseDownCapture-debounce"?: number | undefined;
-      onMouseDownCapture?: MouseEventHandler<Target> | undefined;
+      onMouseDown?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onMouseEnter` server action.
@@ -5286,28 +4337,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseEnter-debounce"?: number | undefined;
-      onMouseEnter?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onMouseEnterCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onMouseEnterCapture-debounce={500} onMouseEnterCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onMouseEnter event is fired when a pointing device is moved onto the element that has the listener attached.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseenter_event)
        */
-      "onMouseEnterCapture-debounce"?: number | undefined;
-      onMouseEnterCapture?: MouseEventHandler<Target> | undefined;
+      onMouseEnter?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onMouseLeave` server action.
@@ -5328,28 +4363,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseLeave-debounce"?: number | undefined;
-      onMouseLeave?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onMouseLeaveCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onMouseLeaveCapture-debounce={500} onMouseLeaveCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onMouseLeave event is fired when a pointing device is moved off the element that has the listener attached.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseleave_event)
        */
-      "onMouseLeaveCapture-debounce"?: number | undefined;
-      onMouseLeaveCapture?: MouseEventHandler<Target> | undefined;
+      onMouseLeave?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onMouseMove` server action.
@@ -5370,28 +4389,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseMove-debounce"?: number | undefined;
-      onMouseMove?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onMouseMoveCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onMouseMoveCapture-debounce={500} onMouseMoveCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onMouseMove event is fired when a pointing device is moved over an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousemove_event)
        */
-      "onMouseMoveCapture-debounce"?: number | undefined;
-      onMouseMoveCapture?: MouseEventHandler<Target> | undefined;
+      onMouseMove?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onMouseOut` server action.
@@ -5412,28 +4415,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseOut-debounce"?: number | undefined;
-      onMouseOut?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onMouseOutCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onMouseOutCapture-debounce={500} onMouseOutCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onMouseOut event is fired when a pointing device is moved off the element that has the listener attached or off one of its children.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseout_event)
        */
-      "onMouseOutCapture-debounce"?: number | undefined;
-      onMouseOutCapture?: MouseEventHandler<Target> | undefined;
+      onMouseOut?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onMouseOver` server action.
@@ -5454,28 +4441,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseOver-debounce"?: number | undefined;
-      onMouseOver?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onMouseOverCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onMouseOverCapture-debounce={500} onMouseOverCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onMouseOver event is fired when a pointing device is moved onto the element that has the listener attached.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseover_event)
        */
-      "onMouseOverCapture-debounce"?: number | undefined;
-      onMouseOverCapture?: MouseEventHandler<Target> | undefined;
+      onMouseOver?: MouseEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onMouseUp` server action.
@@ -5496,28 +4467,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseUp-debounce"?: number | undefined;
-      onMouseUp?: MouseEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onMouseUpCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onMouseUpCapture-debounce={500} onMouseUpCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onMouseUp event is fired when a pointing device button is released over an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseup_event)
        */
-      "onMouseUpCapture-debounce"?: number | undefined;
-      onMouseUpCapture?: MouseEventHandler<Target> | undefined;
+      onMouseUp?: MouseEventHandler<Target> | undefined;
 
       // Selection Events:
 
@@ -5540,28 +4495,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onSelect-debounce"?: number | undefined;
-      onSelect?: GenericEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onSelectCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <input onSelectCapture-debounce={500} onSelectCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onSelect event is fired when the user selects some text in a text field.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/select_event)
        */
-      "onSelectCapture-debounce"?: number | undefined;
-      onSelectCapture?: GenericEventHandler<Target> | undefined;
+      onSelect?: GenericEventHandler<Target> | undefined;
 
       // Touch Events:
 
@@ -5584,28 +4523,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTouchCancel-debounce"?: number | undefined;
-      onTouchCancel?: TouchEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onTouchCancelCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onTouchCancelCapture-debounce={500} onTouchCancelCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTouchCancel event is fired when a touch point has been disrupted in an implementation-specific manner (for example, too many touch points are created).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchcancel)
        */
-      "onTouchCancelCapture-debounce"?: number | undefined;
-      onTouchCancelCapture?: TouchEventHandler<Target> | undefined;
+      onTouchCancel?: TouchEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onTouchEnd` server action.
@@ -5626,28 +4549,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTouchEnd-debounce"?: number | undefined;
-      onTouchEnd?: TouchEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onTouchEndCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onTouchEndCapture-debounce={500} onTouchEndCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTouchEnd event is fired when a touch point is removed from the touch surface.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchend)
        */
-      "onTouchEndCapture-debounce"?: number | undefined;
-      onTouchEndCapture?: TouchEventHandler<Target> | undefined;
+      onTouchEnd?: TouchEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onTouchMove` server action.
@@ -5668,28 +4575,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTouchMove-debounce"?: number | undefined;
-      onTouchMove?: TouchEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onTouchMoveCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onTouchMoveCapture-debounce={500} onTouchMoveCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTouchMove event is fired when a touch point is moved along the touch surface.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchmove)
        */
-      "onTouchMoveCapture-debounce"?: number | undefined;
-      onTouchMoveCapture?: TouchEventHandler<Target> | undefined;
+      onTouchMove?: TouchEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onTouchStart` server action.
@@ -5710,28 +4601,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTouchStart-debounce"?: number | undefined;
-      onTouchStart?: TouchEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onTouchStartCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onTouchStartCapture-debounce={500} onTouchStartCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTouchStart event is fired when a touch point is placed on the touch surface.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchstart)
        */
-      "onTouchStartCapture-debounce"?: number | undefined;
-      onTouchStartCapture?: TouchEventHandler<Target> | undefined;
+      onTouchStart?: TouchEventHandler<Target> | undefined;
 
       // Pointer Events:
 
@@ -5754,28 +4629,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerOver-debounce"?: number | undefined;
-      onPointerOver?: PointerEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPointerOverCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onPointerOverCapture-debounce={500} onPointerOverCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPointerOver event is fired when a pointing device is moved onto the element that has the listener attached.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerover_event)
        */
-      "onPointerOverCapture-debounce"?: number | undefined;
-      onPointerOverCapture?: PointerEventHandler<Target> | undefined;
+      onPointerOver?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPointerEnter` server action.
@@ -5796,28 +4655,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerEnter-debounce"?: number | undefined;
-      onPointerEnter?: PointerEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPointerEnterCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onPointerEnterCapture-debounce={500} onPointerEnterCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPointerEnter event is fired when a pointing device is moved onto the element that has the listener attached.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerenter_event)
        */
-      "onPointerEnterCapture-debounce"?: number | undefined;
-      onPointerEnterCapture?: PointerEventHandler<Target> | undefined;
+      onPointerEnter?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPointerDown` server action.
@@ -5838,28 +4681,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerDown-debounce"?: number | undefined;
-      onPointerDown?: PointerEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPointerDownCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onPointerDownCapture-debounce={500} onPointerDownCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPointerDown event is fired when a pointer becomes active.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerdown_event)
        */
-      "onPointerDownCapture-debounce"?: number | undefined;
-      onPointerDownCapture?: PointerEventHandler<Target> | undefined;
+      onPointerDown?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPointerMove` server action.
@@ -5880,28 +4707,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerMove-debounce"?: number | undefined;
-      onPointerMove?: PointerEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPointerMoveCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onPointerMoveCapture-debounce={500} onPointerMoveCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPointerMove event is fired when a pointer changes coordinates.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointermove_event)
        */
-      "onPointerMoveCapture-debounce"?: number | undefined;
-      onPointerMoveCapture?: PointerEventHandler<Target> | undefined;
+      onPointerMove?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPointerUp` server action.
@@ -5922,28 +4733,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerUp-debounce"?: number | undefined;
-      onPointerUp?: PointerEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPointerUpCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onPointerUpCapture-debounce={500} onPointerUpCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPointerUp event is fired when a pointer is no longer active.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerup_event)
        */
-      "onPointerUpCapture-debounce"?: number | undefined;
-      onPointerUpCapture?: PointerEventHandler<Target> | undefined;
+      onPointerUp?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPointerCancel` server action.
@@ -5964,28 +4759,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerCancel-debounce"?: number | undefined;
-      onPointerCancel?: PointerEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPointerCancelCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onPointerCancelCapture-debounce={500} onPointerCancelCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPointerCancel event is fired when a pointer has been disrupted in an implementation-specific manner (for example, a device stops sending data).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointercancel_event)
        */
-      "onPointerCancelCapture-debounce"?: number | undefined;
-      onPointerCancelCapture?: PointerEventHandler<Target> | undefined;
+      onPointerCancel?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPointerOut` server action.
@@ -6006,28 +4785,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerOut-debounce"?: number | undefined;
-      onPointerOut?: PointerEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onPointerOutCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onPointerOutCapture-debounce={500} onPointerOutCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onPointerOut event is fired when a pointing device is moved off the element that has the listener attached.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerout_event)
        */
-      "onPointerOutCapture-debounce"?: number | undefined;
-      onPointerOutCapture?: PointerEventHandler<Target> | undefined;
+      onPointerOut?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onPointerLeave` server action.
@@ -6048,28 +4811,13 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerLeave-debounce"?: number | undefined;
+      /**
+       * The onPointerLeave event is fired when a pointing device is moved off the element that has the listener attached.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerleave_event)
+       */
       onPointerLeave?: PointerEventHandler<Target> | undefined;
 
-      /**
-       * Milliseconds to wait before executing the `onPointerLeaveCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onPointerLeaveCapture-debounce={500} onPointerLeaveCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
-       */
-      "onPointerLeaveCapture-debounce"?: number | undefined;
-      onPointerLeaveCapture?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onGotPointerCapture` server action.
@@ -6090,28 +4838,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onGotPointerCapture-debounce"?: number | undefined;
-      onGotPointerCapture?: PointerEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onGotPointerCaptureCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onGotPointerCaptureCapture-debounce={500} onGotPointerCaptureCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onGotPointerCapture event is fired when an element captures a pointer.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/gotpointercapture_event)
        */
-      "onGotPointerCaptureCapture-debounce"?: number | undefined;
-      onGotPointerCaptureCapture?: PointerEventHandler<Target> | undefined;
+      onGotPointerCapture?: PointerEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onLostPointerCapture` server action.
@@ -6132,6 +4864,11 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onLostPointerCapture-debounce"?: number | undefined;
+      /**
+       * The onLostPointerCapture event is fired after a pointer has been captured by an element and then is released.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/lostpointercapture_event)
+       */
       onLostPointerCapture?: PointerEventHandler<Target> | undefined;
 
       // UI Events:
@@ -6155,28 +4892,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onScroll-debounce"?: number | undefined;
-      onScroll?: UIEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onScrollCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onScrollCapture-debounce={500} onScrollCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onScroll event is fired when an element's scrollbar is being scrolled.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event)
        */
-      "onScrollCapture-debounce"?: number | undefined;
-      onScrollCapture?: UIEventHandler<Target> | undefined;
+      onScroll?: UIEventHandler<Target> | undefined;
 
       // Wheel Events:
 
@@ -6199,28 +4920,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onWheel-debounce"?: number | undefined;
-      onWheel?: WheelEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onWheelCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onWheelCapture-debounce={500} onWheelCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onWheel event is fired when a wheel button of a pointing device is rotated in any direction.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)
        */
-      "onWheelCapture-debounce"?: number | undefined;
-      onWheelCapture?: WheelEventHandler<Target> | undefined;
+      onWheel?: WheelEventHandler<Target> | undefined;
 
       // Animation Events:
 
@@ -6243,28 +4948,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onAnimationStart-debounce"?: number | undefined;
-      onAnimationStart?: AnimationEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onAnimationStartCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onAnimationStartCapture-debounce={500} onAnimationStartCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onAnimationStart event is fired when a CSS animation has started.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationstart_event)
        */
-      "onAnimationStartCapture-debounce"?: number | undefined;
-      onAnimationStartCapture?: AnimationEventHandler<Target> | undefined;
+      onAnimationStart?: AnimationEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onAnimationEnd` server action.
@@ -6285,28 +4974,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onAnimationEnd-debounce"?: number | undefined;
-      onAnimationEnd?: AnimationEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onAnimationEndCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onAnimationEndCapture-debounce={500} onAnimationEndCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onAnimationEnd event is fired when a CSS animation has completed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationend_event)
        */
-      "onAnimationEndCapture-debounce"?: number | undefined;
-      onAnimationEndCapture?: AnimationEventHandler<Target> | undefined;
+      onAnimationEnd?: AnimationEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onAnimationIteration` server action.
@@ -6327,28 +5000,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onAnimationIteration-debounce"?: number | undefined;
-      onAnimationIteration?: AnimationEventHandler<Target> | undefined;
-
       /**
-       * Milliseconds to wait before executing the `onAnimationIterationCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onAnimationIterationCapture-debounce={500} onAnimationIterationCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onAnimationIteration event is fired when a CSS animation has completed one iteration.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationiteration_event)
        */
-      "onAnimationIterationCapture-debounce"?: number | undefined;
-      onAnimationIterationCapture?: AnimationEventHandler<Target> | undefined;
+      onAnimationIteration?: AnimationEventHandler<Target> | undefined;
 
       // Transition Events:
 
@@ -6371,28 +5028,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTransitionCancel-debounce"?: number | undefined;
-      onTransitionCancel?: TransitionEventHandler<Target>;
-
       /**
-       * Milliseconds to wait before executing the `onTransitionCancelCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onTransitionCancelCapture-debounce={500} onTransitionCancelCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTransitionCancel event is fired when a CSS transition has been interrupted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitioncancel_event)
        */
-      "onTransitionCancelCapture-debounce"?: number | undefined;
-      onTransitionCancelCapture?: TransitionEventHandler<Target>;
+      onTransitionCancel?: TransitionEventHandler<Target>;
 
       /**
        * Milliseconds to wait before executing the `onTransitionEnd` server action.
@@ -6413,28 +5054,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTransitionEnd-debounce"?: number | undefined;
-      onTransitionEnd?: TransitionEventHandler<Target>;
-
       /**
-       * Milliseconds to wait before executing the `onTransitionEndCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onTransitionEndCapture-debounce={500} onTransitionEndCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTransitionEnd event is fired when a CSS transition has completed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionend_event)
        */
-      "onTransitionEndCapture-debounce"?: number | undefined;
-      onTransitionEndCapture?: TransitionEventHandler<Target>;
+      onTransitionEnd?: TransitionEventHandler<Target>;
 
       /**
        * Milliseconds to wait before executing the `onTransitionRun` server action.
@@ -6455,28 +5080,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTransitionRun-debounce"?: number | undefined;
-      onTransitionRun?: TransitionEventHandler<Target>;
-
       /**
-       * Milliseconds to wait before executing the `onTransitionRunCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onTransitionRunCapture-debounce={500} onTransitionRunCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTransitionRun event is fired when a CSS transition has started.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionrun_event)
        */
-      "onTransitionRunCapture-debounce"?: number | undefined;
-      onTransitionRunCapture?: TransitionEventHandler<Target>;
+      onTransitionRun?: TransitionEventHandler<Target>;
 
       /**
        * Milliseconds to wait before executing the `onTransitionStart` server action.
@@ -6497,28 +5106,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onTransitionStart-debounce"?: number | undefined;
-      onTransitionStart?: TransitionEventHandler<Target>;
-
       /**
-       * Milliseconds to wait before executing the `onTransitionStartCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <div onTransitionStartCapture-debounce={500} onTransitionStartCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onTransitionStart event is fired when a CSS transition has started.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionstart_event)
        */
-      "onTransitionStartCapture-debounce"?: number | undefined;
-      onTransitionStartCapture?: TransitionEventHandler<Target>;
+      onTransitionStart?: TransitionEventHandler<Target>;
 
       // PictureInPicture Events:
 
@@ -6541,28 +5134,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onEnterPictureInPicture-debounce"?: number | undefined;
-      onEnterPictureInPicture?: PictureInPictureEventHandler<Target>;
-
       /**
-       * Milliseconds to wait before executing the `onEnterPictureInPictureCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onEnterPictureInPictureCapture-debounce={500} onEnterPictureInPictureCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onEnterPictureInPicture event is fired when a video enters picture-in-picture mode.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/enterpictureinpicture_event)
        */
-      "onEnterPictureInPictureCapture-debounce"?: number | undefined;
-      onEnterPictureInPictureCapture?: PictureInPictureEventHandler<Target>;
+      onEnterPictureInPicture?: PictureInPictureEventHandler<Target>;
 
       /**
        * Milliseconds to wait before executing the `onLeavePictureInPicture` server action.
@@ -6583,28 +5160,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onLeavePictureInPicture-debounce"?: number | undefined;
-      onLeavePictureInPicture?: PictureInPictureEventHandler<Target>;
-
       /**
-       * Milliseconds to wait before executing the `onLeavePictureInPictureCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onLeavePictureInPictureCapture-debounce={500} onLeavePictureInPictureCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onLeavePictureInPicture event is fired when a video leaves picture-in-picture mode.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/leavepictureinpicture_event)
        */
-      "onLeavePictureInPictureCapture-debounce"?: number | undefined;
-      onLeavePictureInPictureCapture?: PictureInPictureEventHandler<Target>;
+      onLeavePictureInPicture?: PictureInPictureEventHandler<Target>;
 
       /**
        * Milliseconds to wait before executing the `onResize` server action.
@@ -6625,28 +5186,12 @@ declare global {
        * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
        */
       "onResize-debounce"?: number | undefined;
-      onResize?: PictureInPictureEventHandler<Target>;
-
       /**
-       * Milliseconds to wait before executing the `onResizeCapture` server action.
-       *
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       *
-       * Default: 0
-       *
-       * Example:
-       *
-       * ```tsx
-       * <video onResizeCapture-debounce={500} onResizeCapture={() => {}} />
-       * ```
-       *
-       * Docs:
-       *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * The onResize event is fired when a picture-in-picture window is resized.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event)
        */
-      "onResizeCapture-debounce"?: number | undefined;
-      onResizeCapture?: PictureInPictureEventHandler<Target>;
+      onResize?: PictureInPictureEventHandler<Target>;
     }
 
     export interface HTMLAttributes<RefType extends EventTarget = EventTarget>
