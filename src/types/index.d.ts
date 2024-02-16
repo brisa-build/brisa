@@ -1038,61 +1038,95 @@ declare global {
 
     // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
     export interface AriaAttributes {
-      /** Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. */
+      /** 
+       * Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-activedescendant)
+       */
       "aria-activedescendant"?: string | undefined;
-      /** Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute. */
+      /** 
+       * Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute.
+       * 
+       *  - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-atomic)
+       */
       "aria-atomic"?: boolean | undefined;
       /**
        * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
        * presented if they are made.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-autocomplete)
        */
       "aria-autocomplete"?: "none" | "inline" | "list" | "both" | undefined;
       /**
        * Defines a string value that labels the current element, which is intended to be converted into Braille.
        * @see aria-label.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-braillelabel)
        */
       "aria-braillelabel"?: string | undefined;
       /**
        * Defines a human-readable, author-localized abbreviated description for the role of an element, which is intended to be converted into Braille.
        * @see aria-roledescription.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-brailleroledescription)
        */
       "aria-brailleroledescription"?: string | undefined;
-      /** Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. */
+      /**
+       *  Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-busy)
+       */
       "aria-busy"?: boolean | undefined;
       /**
        * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
        * @see aria-pressed
        * @see aria-selected.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-checked)
        */
       "aria-checked"?: boolean | "mixed" | undefined;
       /**
        * Defines the total number of columns in a table, grid, or treegrid.
        * @see aria-colindex.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colcount)
        */
       "aria-colcount"?: number | undefined;
       /**
        * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
        * @see aria-colcount
        * @see aria-colspan.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colindex)
        */
       "aria-colindex"?: number | undefined;
       /**
        * Defines a human readable text alternative of aria-colindex.
        * @see aria-rowindextext.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colindextext)
        */
       "aria-colindextext"?: string | undefined;
       /**
        * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
        * @see aria-colindex
        * @see aria-rowspan.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colspan)
        */
       "aria-colspan"?: number | undefined;
       /**
        * Identifies the element (or elements) whose contents or presence are controlled by the current element.
        * @see aria-owns.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-controls)
        */
       "aria-controls"?: string | undefined;
-      /** Indicates the element that represents the current item within a container or set of related elements. */
+      /** 
+       * Indicates the element that represents the current item within a container or set of related elements. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-current)
+       */
       "aria-current"?:
         | boolean
         | "page"
@@ -1104,55 +1138,58 @@ declare global {
       /**
        * Identifies the element (or elements) that describes the object.
        * @see aria-labelledby
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-describedby)
        */
       "aria-describedby"?: string | undefined;
       /**
        * Defines a string value that describes or annotates the current element.
        * @see related aria-describedby.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-description)
        */
       "aria-description"?: string | undefined;
       /**
        * Identifies the element that provides a detailed, extended description for the object.
        * @see aria-describedby.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-details)
        */
       "aria-details"?: string | undefined;
       /**
        * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
        * @see aria-hidden
        * @see aria-readonly.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled)
        */
       "aria-disabled"?: boolean | undefined;
-      /**
-       * Indicates what functions can be performed when a dragged object is released on the drop target.
-       * @deprecated in ARIA 1.1
-       */
-      "aria-dropeffect"?:
-        | "none"
-        | "copy"
-        | "execute"
-        | "link"
-        | "move"
-        | "popup"
-        | undefined;
       /**
        * Identifies the element that provides an error message for the object.
        * @see aria-invalid
        * @see aria-describedby.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-errormessage)
        */
       "aria-errormessage"?: string | undefined;
-      /** Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed. */
+      /** 
+       * Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-expanded)
+       */
       "aria-expanded"?: boolean | undefined;
       /**
        * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
        * allows assistive technology to override the general default of reading in document source order.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-flowto)
        */
       "aria-flowto"?: string | undefined;
-      /**
-       * Indicates an element's "grabbed" state in a drag-and-drop operation.
-       * @deprecated in ARIA 1.1
+      /** 
+       * Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup)
        */
-      "aria-grabbed"?: boolean | undefined;
-      /** Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element. */
       "aria-haspopup"?:
         | boolean
         | "menu"
@@ -1164,67 +1201,115 @@ declare global {
       /**
        * Indicates whether the element is exposed to an accessibility API.
        * @see aria-disabled.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-hidden)
        */
       "aria-hidden"?: boolean | undefined;
       /**
        * Indicates the entered value does not conform to the format expected by the application.
        * @see aria-errormessage.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-invalid)
        */
       "aria-invalid"?: boolean | "grammar" | "spelling" | undefined;
-      /** Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element. */
+      /**
+       *  Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-keyshortcuts)
+       */
       "aria-keyshortcuts"?: string | undefined;
       /**
        * Defines a string value that labels the current element.
        * @see aria-labelledby.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-label)
        */
       "aria-label"?: string | undefined;
       /**
        * Identifies the element (or elements) that labels the current element.
        * @see aria-describedby.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-labelledby)
        */
       "aria-labelledby"?: string | undefined;
-      /** Defines the hierarchical level of an element within a structure. */
+      /** 
+       * Defines the hierarchical level of an element within a structure.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-level)
+       */
       "aria-level"?: number | undefined;
-      /** Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. */
+      /** 
+       * Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live)
+       */
       "aria-live"?: "off" | "assertive" | "polite" | undefined;
-      /** Indicates whether an element is modal when displayed. */
+      /** 
+       * Indicates whether an element is modal when displayed. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-modal)
+       */
       "aria-modal"?: boolean | undefined;
-      /** Indicates whether a text box accepts multiple lines of input or only a single line. */
+      /** 
+       * Indicates whether a text box accepts multiple lines of input or only a single line. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-multiline)
+       */
       "aria-multiline"?: boolean | undefined;
-      /** Indicates that the user may select more than one item from the current selectable descendants. */
+      /** 
+       * Indicates that the user may select more than one item from the current selectable descendants.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-multiselectable)
+       */
       "aria-multiselectable"?: boolean | undefined;
-      /** Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. */
+      /** 
+       * Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-orientation)
+       */
       "aria-orientation"?: "horizontal" | "vertical" | undefined;
       /**
        * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
        * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
        * @see aria-controls.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-owns)
        */
       "aria-owns"?: string | undefined;
       /**
        * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
        * A hint could be a sample value or a brief description of the expected format.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-placeholder)
        */
       "aria-placeholder"?: string | undefined;
       /**
        * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
        * @see aria-setsize.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-posinset)
        */
       "aria-posinset"?: number | undefined;
       /**
        * Indicates the current "pressed" state of toggle buttons.
        * @see aria-checked
        * @see aria-selected.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-pressed)
        */
       "aria-pressed"?: boolean | "mixed" | undefined;
       /**
        * Indicates that the element is not editable, but is otherwise operable.
        * @see aria-disabled.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-readonly)
        */
       "aria-readonly"?: boolean | undefined;
       /**
        * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
        * @see aria-atomic.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-relevant)
        */
       "aria-relevant"?:
         | "additions"
@@ -1238,55 +1323,93 @@ declare global {
         | "text additions"
         | "text removals"
         | undefined;
-      /** Indicates that user input is required on the element before a form may be submitted. */
+      /** 
+       * Indicates that user input is required on the element before a form may be submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-required)
+       */
       "aria-required"?: boolean | undefined;
-      /** Defines a human-readable, author-localized description for the role of an element. */
+      /** 
+       * Defines a human-readable, author-localized description for the role of an element. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-roledescription)
+       */
       "aria-roledescription"?: string | undefined;
       /**
        * Defines the total number of rows in a table, grid, or treegrid.
        * @see aria-rowindex.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowcount)
        */
       "aria-rowcount"?: number | undefined;
       /**
        * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
        * @see aria-rowcount
        * @see aria-rowspan.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowindex)
        */
       "aria-rowindex"?: number | undefined;
       /**
        * Defines a human readable text alternative of aria-rowindex.
        * @see aria-colindextext.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowindextext)
        */
       "aria-rowindextext"?: string | undefined;
       /**
        * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
        * @see aria-rowindex
        * @see aria-colspan.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowspan)
        */
       "aria-rowspan"?: number | undefined;
       /**
        * Indicates the current "selected" state of various widgets.
        * @see aria-checked
        * @see aria-pressed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-selected)
        */
       "aria-selected"?: boolean | undefined;
       /**
        * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
        * @see aria-posinset.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-setsize)
        */
       "aria-setsize"?: number | undefined;
-      /** Indicates if items in a table or grid are sorted in ascending or descending order. */
+      /** 
+       * Indicates if items in a table or grid are sorted in ascending or descending order.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-sort)
+       */
       "aria-sort"?: "none" | "ascending" | "descending" | "other" | undefined;
-      /** Defines the maximum allowed value for a range widget. */
+      /** 
+       * Defines the maximum allowed value for a range widget. 
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuemax)
+       */
       "aria-valuemax"?: number | undefined;
-      /** Defines the minimum allowed value for a range widget. */
+      /** 
+       * Defines the minimum allowed value for a range widget.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuemin)
+       */
       "aria-valuemin"?: number | undefined;
       /**
        * Defines the current value for a range widget.
        * @see aria-valuetext.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuenow)
        */
       "aria-valuenow"?: number | undefined;
-      /** Defines the human readable text alternative of aria-valuenow for a range widget. */
+      /** 
+       * Defines the human readable text alternative of aria-valuenow for a range widget.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuetext)
+       */
       "aria-valuetext"?: string | undefined;
     }
 
@@ -1390,9 +1513,23 @@ declare global {
 
     export interface SVGAttributes<Target extends EventTarget = SVGElement>
       extends HTMLAttributes<Target> {
-      accentHeight?: number | string | undefined;
+      /**
+       * The accumulate attribute is used to create a simple slide show of elements, where each new element replaces the previous one.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/accumulate)
+       */
       accumulate?: "none" | "sum" | undefined;
+      /**
+       * The additive attribute controls whether or not an animation is additive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/additive)
+       */
       additive?: "replace" | "sum" | undefined;
+      /**
+       * The alignment-baseline attribute specifies how an object is aligned with respect to its parent.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/alignment-baseline)
+       */
       alignmentBaseline?:
         | "auto"
         | "baseline"
@@ -1423,342 +1560,1130 @@ declare global {
         | "mathematical"
         | "inherit"
         | undefined;
-      allowReorder?: "no" | "yes" | undefined;
-      "allow-reorder"?: "no" | "yes" | undefined;
-      alphabetic?: number | string | undefined;
-      amplitude?: number | string | undefined;
-      /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/arabic-form */
-      arabicForm?: "initial" | "medial" | "terminal" | "isolated" | undefined;
-      /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/arabic-form */
-      "arabic-form"?:
-        | "initial"
-        | "medial"
-        | "terminal"
-        | "isolated"
-        | undefined;
-      ascent?: number | string | undefined;
+      /**
+       * The attributeName attribute defines the name of the attribute to be changed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/attributeName)
+       */
       attributeName?: string | undefined;
+      /**
+       * The attributeName attribute defines the namespace of the attribute to be changed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/attributeType)
+       */
       attributeType?: string | undefined;
-      autoReverse?: number | string | undefined;
-      azimuth?: number | string | undefined;
+      /**
+       * The baseFrequency attribute represents the base frequency parameter for the noise function of the <feTurbulence> filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/baseFrequency)
+       */
       baseFrequency?: number | string | undefined;
-      baselineShift?: number | string | undefined;
-      "baseline-shift"?: number | string | undefined;
-      baseProfile?: number | string | undefined;
-      bbox?: number | string | undefined;
+      /**
+       * The begin attribute defines the begin time for the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/begin)
+       */
       begin?: number | string | undefined;
+      /**
+       * The bias attribute shifts the range of the filter.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/bias)
+       */
       bias?: number | string | undefined;
+      /**
+       * The by attribute specifies a relative offset value for an attribute that will be modified during an animation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/by)
+       */
       by?: number | string | undefined;
+      /**
+       * The calcMode attribute defines the interpolation mode for the animation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/calcMode)
+       */
       calcMode?: number | string | undefined;
-      capHeight?: number | string | undefined;
-      "cap-height"?: number | string | undefined;
+      /**
+       * The clip attribute is a presentation attribute defining the visible region of an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip)
+       */
       clip?: number | string | undefined;
+      /**
+       * The clip-path presentation attribute defines or associates a clipping path with the element it is related to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-path)
+       */
       clipPath?: string | undefined;
+      /**
+       * The clip-path presentation attribute defines or associates a clipping path with the element it is related to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-path)
+       */
       "clip-path"?: string | undefined;
+      /**
+       * The clipPathUnits attribute defines the coordinate system for the contents of the <clipPath> element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clipPathUnits)
+       */
       clipPathUnits?: number | string | undefined;
+      /**
+       * The clip-rule attribute only applies to graphics elements that are contained within a <clipPath> element. 
+       * 
+       * The clip-rule attribute basically works as the fill-rule attribute, except that it applies to <clipPath> definitions.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-rule)
+       */
       clipRule?: number | string | undefined;
+      /**
+       * The clip-rule attribute only applies to graphics elements that are contained within a <clipPath> element. 
+       * 
+       * The clip-rule attribute basically works as the fill-rule attribute, except that it applies to <clipPath> definitions.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-rule)
+       */
       "clip-rule"?: number | string | undefined;
+      /**
+       * The color attribute is used to provide a potential indirect value (currentColor) for the fill, stroke, stop-color, flood-color and lighting-color attributes.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color)
+       */
       colorInterpolation?: number | string | undefined;
+      /**
+       * The color attribute is used to provide a potential indirect value (currentColor) for the fill, stroke, stop-color, flood-color and lighting-color attributes.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color)
+       */
       "color-interpolation"?: number | string | undefined;
+      /**
+       * The color-interpolation-filters attribute specifies the color space for imaging operations performed via filter effects.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
+       */
       colorInterpolationFilters?:
         | "auto"
         | "sRGB"
         | "linearRGB"
         | "inherit"
         | undefined;
+      /**
+       * The color-interpolation-filters attribute specifies the color space for imaging operations performed via filter effects.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
+       */
       "color-interpolation-filters"?:
         | "auto"
         | "sRGB"
         | "linearRGB"
         | "inherit"
         | undefined;
-      colorProfile?: number | string | undefined;
-      "color-profile"?: number | string | undefined;
-      colorRendering?: number | string | undefined;
-      "color-rendering"?: number | string | undefined;
-      contentScriptType?: number | string | undefined;
-      "content-script-type"?: number | string | undefined;
-      contentStyleType?: number | string | undefined;
-      "content-style-type"?: number | string | undefined;
+      /**
+       * The cursor attribute specifies the mouse cursor displayed when the mouse pointer is over an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/cursor)
+       */
       cursor?: number | string | undefined;
+      /**
+       * The cx attribute defines the x-coordinate of the center of the circle.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/cx)
+       */
       cx?: number | string | undefined;
+      /**
+       * The cy attribute defines the y-coordinate of the center of the circle.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/cy)
+       */
       cy?: number | string | undefined;
+      /**
+       * The d attribute defines a path to be drawn.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d)
+       */
       d?: string | undefined;
-      decelerate?: number | string | undefined;
-      descent?: number | string | undefined;
+      /**
+       * The diffuseConstant attribute defines the constant kd in the Phong lighting model.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/diffuseConstant)
+       */
       diffuseConstant?: number | string | undefined;
+      /**
+       * The direction attribute defines the filter function that is used to stretch an image.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/direction)
+       */
       direction?: number | string | undefined;
+      /**
+       * The display attribute is used to define the visibility of an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/display)
+       */
       display?: number | string | undefined;
+      /**
+       * The divisor attribute defines the number to divide the input value by.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/divisor)
+       */
       divisor?: number | string | undefined;
+      /**
+       * The dominant-baseline attribute is used to determine or re-determine a scaled-baseline-table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dominant-baseline)
+       */
       dominantBaseline?: number | string | undefined;
+      /**
+       * The dominant-baseline attribute is used to determine or re-determine a scaled-baseline-table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dominant-baseline)
+       */
       "dominant-baseline"?: number | string | undefined;
+      /**
+       * The dur attribute defines the duration of the animation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dur)
+       */
       dur?: number | string | undefined;
+      /**
+       * The dx attribute defines a list of numbers that indicate horizontal displacement.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dx)
+       */
       dx?: number | string | undefined;
+      /**
+       * The dy attribute defines a list of numbers that indicate vertical displacement.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dy)
+       */
       dy?: number | string | undefined;
+      /**
+       * The edgeMode attribute defines the edge mode for the filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/edgeMode)
+       */
       edgeMode?: number | string | undefined;
+      /**
+       * The elevation attribute defines the light source's position.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/elevation)
+       */
       elevation?: number | string | undefined;
-      enableBackground?: number | string | undefined;
-      "enable-background"?: number | string | undefined;
+      /**
+       * The end attribute defines the end value of the animation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/end)
+       */
       end?: number | string | undefined;
+      /**
+       * The exponent attribute defines the exponent to use in the gamma function.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/exponent)
+       */
       exponent?: number | string | undefined;
-      externalResourcesRequired?: number | string | undefined;
+      /**
+       * The fill attribute is a presentation attribute that defines the color of the interior of the given graphical element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill)
+       */
       fill?: string | undefined;
+      /**
+       * The fill-opacity attribute is a presentation attribute defining the opacity of the paint server used to paint the interior of the given graphical element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity)
+       */
       fillOpacity?: number | string | undefined;
+      /**
+       * The fill-opacity attribute is a presentation attribute defining the opacity of the paint server used to paint the interior of the given graphical element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity)
+       */
       "fill-opacity"?: number | string | undefined;
+      /**
+       * The fill-rule attribute indicates the algorithm which is to be used to determine what side of a path is inside the shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule)
+       */
       fillRule?: "nonzero" | "evenodd" | "inherit" | undefined;
+      /**
+       * The fill-rule attribute indicates the algorithm which is to be used to determine what side of a path is inside the shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule)
+       */
       "fill-rule"?: "nonzero" | "evenodd" | "inherit" | undefined;
+      /**
+       * The filter attribute references a filter to be applied to the given element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/filter)
+       */
       filter?: string | undefined;
-      filterRes?: number | string | undefined;
+      /**
+       * The filterUnits attribute defines the coordinate system for attributes x, y, width and height.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/filterUnits)
+       */
       filterUnits?: number | string | undefined;
+      /**
+       * The flood-color attribute defines the color to use to flood the current filter primitive subregion.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-color)
+       */
       floodColor?: number | string | undefined;
+      /**
+       * The flood-color attribute defines the color to use to flood the current filter primitive subregion.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-color)
+       */
       "flood-color"?: number | string | undefined;
+      /**
+       * The flood-opacity attribute defines the opacity value to use across the current filter primitive subregion.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-opacity)
+       */
       floodOpacity?: number | string | undefined;
+      /**
+       * The flood-opacity attribute defines the opacity value to use across the current filter primitive subregion.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-opacity)
+       */
       "flood-opacity"?: number | string | undefined;
-      focusable?: number | string | undefined;
+      /**
+       * The font-family attribute allows for multiple comma-separated values as a fallback system.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-family)
+       */
       fontFamily?: string | undefined;
+      /**
+       * The font-family attribute allows for multiple comma-separated values as a fallback system.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-family)
+       */
       "font-family"?: string | undefined;
+      /**
+       * The font-size attribute refers to the size of the font from baseline to baseline when multiple lines of text are set solid in a multiline layout environment.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size)
+       */
       fontSize?: number | string | undefined;
+      /**
+       * The font-size attribute refers to the size of the font from baseline to baseline when multiple lines of text are set solid in a multiline layout environment.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size)
+       */
       "font-size"?: number | string | undefined;
+      /**
+       * The font-size-adjust attribute allows authors to specify an aspect value for an element that will preserve the x-height of the first choice font.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size-adjust)
+       */
       fontSizeAdjust?: number | string | undefined;
+      /**
+       * The font-size-adjust attribute allows authors to specify an aspect value for an element that will preserve the x-height of the first choice font.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size-adjust)
+       */
       "font-size-adjust"?: number | string | undefined;
+      /**
+       * The font-stretch attribute refers to the normal, condensed, and expanded faces.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-stretch)
+       */
       fontStretch?: number | string | undefined;
+      /**
+       * The font-stretch attribute refers to the normal, condensed, and expanded faces.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-stretch)
+       */
       "font-stretch"?: number | string | undefined;
+      /**
+       * The font-style attribute refers to the slant of the glyphs in the font.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-style)
+       */
       fontStyle?: number | string | undefined;
+      /**
+       * The font-style attribute refers to the slant of the glyphs in the font.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-style)
+       */
       "font-style"?: number | string | undefined;
+      /**
+       * The font-variant attribute refers to the normal, small-caps and inherit faces.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-variant)
+       */
       fontVariant?: number | string | undefined;
+      /**
+       * The font-variant attribute refers to the normal, small-caps and inherit faces.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-variant)
+       */
       "font-variant"?: number | string | undefined;
+      /**
+       * The font-weight attribute refers to the boldness of the glyphs in the font.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-weight)
+       */
       fontWeight?: number | string | undefined;
+      /**
+       * The font-weight attribute refers to the boldness of the glyphs in the font.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-weight)
+       */
       "font-weight"?: number | string | undefined;
-      format?: number | string | undefined;
+      /**
+       * The from attribute defines the start interval value of the animation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/from)
+       */
       from?: number | string | undefined;
+      /**
+       * The fx attribute defines the x-coordinate of the focal point of the lighting effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fx)
+       */
       fx?: number | string | undefined;
+      /**
+       * The fy attribute defines the y-coordinate of the focal point of the lighting effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fy)
+       */
       fy?: number | string | undefined;
-      g1?: number | string | undefined;
-      g2?: number | string | undefined;
-      glyphName?: number | string | undefined;
-      "glyph-name"?: number | string | undefined;
-      glyphOrientationHorizontal?: number | string | undefined;
-      "glyph-orientation-horizontal"?: number | string | undefined;
-      glyphOrientationVertical?: number | string | undefined;
-      "glyph-orientation-vertical"?: number | string | undefined;
-      glyphRef?: number | string | undefined;
+      /**
+       * The gradientTransform attribute specifies a transformation that is applied to the gradient.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientTransform)
+       */
       gradientTransform?: string | undefined;
+      /**
+       * The gradientUnits attribute specifies the coordinate system for attributes x1, y1, x2, y2.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/gradientUnits)
+       */
       gradientUnits?: string | undefined;
-      hanging?: number | string | undefined;
-      horizAdvX?: number | string | undefined;
-      "horiz-adv-x"?: number | string | undefined;
-      horizOriginX?: number | string | undefined;
-      "horiz-origin-x"?: number | string | undefined;
-      ideographic?: number | string | undefined;
+      /**
+       * The image-rendering attribute provides a hint to the renderer about what tradeoffs to make as it renders the graphic.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/image-rendering)
+       */
       imageRendering?: number | string | undefined;
+      /**
+       * The image-rendering attribute provides a hint to the renderer about what tradeoffs to make as it renders the graphic.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/image-rendering)
+       */
       "image-rendering"?: number | string | undefined;
+      /**
+       * The in2 attribute identifies the second input for the given filter primitive. It works exactly like the in attribute.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/in2)
+       */
       in2?: number | string | undefined;
+      /**
+       * The in attribute identifies input for the given filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/in)
+       */
       in?: string | undefined;
+      /**
+       * The intercept attribute defines the intercept of the linear function.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/intercept)
+       */
       intercept?: number | string | undefined;
+      /**
+       * The k1 attribute defines the first coefficient of the linear function.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/k1)
+       */
       k1?: number | string | undefined;
+      /**
+       * The k2 attribute defines the second coefficient of the linear function.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/k2)
+       */
       k2?: number | string | undefined;
+      /**
+       * The k3 attribute defines the third coefficient of the linear function.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/k3)
+       */
       k3?: number | string | undefined;
+      /**
+       * The k4 attribute defines the fourth coefficient of the linear function.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/k4)
+       */
       k4?: number | string | undefined;
-      k?: number | string | undefined;
+      /**
+       * The kernelMatrix attribute defines a convolution matrix that is used to modify an image using a matrix of values.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/kernelMatrix)
+       */
       kernelMatrix?: number | string | undefined;
-      kernelUnitLength?: number | string | undefined;
-      kerning?: number | string | undefined;
+      /**
+       * The keyPoints attribute defines the key points for the gradient.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/keyPoints)
+       */
       keyPoints?: number | string | undefined;
+      /**
+       * The keySplines attribute defines the control points for a cubic Bézier function that controls the rate of change of the animation value.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/keySplines)
+       */
       keySplines?: number | string | undefined;
+      /**
+       * The keyTimes attribute defines the time of the key points.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/keyTimes)
+       */
       keyTimes?: number | string | undefined;
+      /**
+       * The lengthAdjust attribute indicates the type of adjustment which will be made for the given text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/lengthAdjust)
+       */
       lengthAdjust?: number | string | undefined;
+      /**
+       * The lengthSpacing attribute defines the spacing behavior between text characters.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing)
+       */
       letterSpacing?: number | string | undefined;
+      /**
+       * The lengthSpacing attribute defines the spacing behavior between text characters.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing)
+       */
       "letter-spacing"?: number | string | undefined;
+      /**
+       * The lighting-color attribute defines the color of the light source for filter primitives feDiffuseLighting and feSpecularLighting.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/lighting-color)
+       */
       lightingColor?: number | string | undefined;
+      /**
+       * The lighting-color attribute defines the color of the light source for filter primitives feDiffuseLighting and feSpecularLighting.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/lighting-color)
+       */
       "lighting-color"?: number | string | undefined;
+      /**
+       * The limitingConeAngle attribute represents the angle of the cone.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/limitingConeAngle)
+       */
       limitingConeAngle?: number | string | undefined;
-      local?: number | string | undefined;
+      /**
+       * The marker-end attribute defines the arrowhead or polymarker that will be drawn at the final vertex of the given <path> element or basic shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end)
+       */
       markerEnd?: string | undefined;
+      /**
+       * The marker-end attribute defines the arrowhead or polymarker that will be drawn at the final vertex of the given <path> element or basic shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end)
+       */
       "marker-end"?: string | undefined;
+      /**
+       * The markerHeight attribute defines the height of the viewport into which the marker is to be fitted when it is rendered.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerHeight)
+       */
       markerHeight?: number | string | undefined;
+      /**
+       * The marker-height attribute defines the height of the viewport into which the marker is to be fitted when it is rendered.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerHeight)
+       */
+      'marker-height'?: number | string | undefined;
+      /**
+       * The markerMid attribute defines the arrowhead or polymarker that will be drawn at every vertex other than the first and last vertex of the given <path> element or basic shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)
+       */
       markerMid?: string | undefined;
+      /**
+       * The markerMid attribute defines the arrowhead or polymarker that will be drawn at every vertex other than the first and last vertex of the given <path> element or basic shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)
+       */
       "marker-mid"?: string | undefined;
+      /**
+       * The markerStart attribute defines the arrowhead or polymarker that will be drawn at the first vertex of the given <path> element or basic shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start)
+       */
       markerStart?: string | undefined;
+      /**
+       * The markerStart attribute defines the arrowhead or polymarker that will be drawn at the first vertex of the given <path> element or basic shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start)
+       */
       "marker-start"?: string | undefined;
+      /**
+       * The markerUnits attribute defines the coordinate system for the attributes markerWidth, markerHeight and the contents of the marker.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerUnits)
+       */
       markerUnits?: number | string | undefined;
+      /**
+       * The markerWidth attribute defines the width of the viewport into which the marker is to be fitted when it is rendered.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerWidth)
+       */
       markerWidth?: number | string | undefined;
+      /**
+       * The marker-width attribute defines the width of the viewport into which the marker is to be fitted when it is rendered.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerWidth)
+       */
       mask?: string | undefined;
+      /**
+       * The mask attribute references a <mask> element that defines the mask to use.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/mask)
+       */
       maskContentUnits?: number | string | undefined;
+      /**
+       * The maskUnits attribute defines the coordinate system for attributes x, y, width and height.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/maskUnits)
+       */
       maskUnits?: number | string | undefined;
-      mathematical?: number | string | undefined;
+      /**
+       * The mode attribute defines the blending mode used in the feBlend filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/mode)
+       */
       mode?: number | string | undefined;
+      /**
+       * The numOctaves attribute defines the number of octaves for the noise.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/numOctaves)
+       */
       numOctaves?: number | string | undefined;
+      /**
+       * The offset attribute shifts the filter primitive as if it were rendered at a different location.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/offset)
+       */
       offset?: number | string | undefined;
+      /**
+       * The opacity attribute specifies the transparency of an object or of a group of objects, that is, the degree to which the background behind the element is overlaid.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/opacity)
+       */
       opacity?: number | string | undefined;
+      /**
+       * The operator attribute defines the compositing operation that is to be performed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/operator)
+       */
       operator?: number | string | undefined;
+      /**
+       * The order attribute specifies the order for the filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/order)
+       */
       order?: number | string | undefined;
+      /**
+       * The orient attribute indicates how the gradient is oriented.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/orient)
+       */
       orient?: number | string | undefined;
-      orientation?: number | string | undefined;
+      /**
+       * The origin attribute defines the origin of the gradient.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/origin)
+       */
       origin?: number | string | undefined;
+      /**
+       * The overflow attribute specifies what to do with elements that render outside the viewport area.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overflow)
+       */
       overflow?: number | string | undefined;
+      /**
+       * The overlinePosition attribute defines the position of the overline text decoration on text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-position)
+       */
       overlinePosition?: number | string | undefined;
+      /**
+       * The overlinePosition attribute defines the position of the overline text decoration on text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-position)
+       */
       "overline-position"?: number | string | undefined;
+      /**
+       * The overlineThickness attribute defines the thickness of the overline text decoration on text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-thickness)
+       */
       overlineThickness?: number | string | undefined;
+      /**
+       * The overlineThickness attribute defines the thickness of the overline text decoration on text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-thickness)
+       */
       "overline-thickness"?: number | string | undefined;
+      /**
+       * The paint-order attribute defines the order for painting objects.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/paint-order)
+       */
       paintOrder?: number | string | undefined;
+      /**
+       * The paint-order attribute defines the order for painting objects.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/paint-order)
+       */
       "paint-order"?: number | string | undefined;
-      panose1?: number | string | undefined;
-      "panose-1"?: number | string | undefined;
+      /**
+       * The pathLength attribute lets authors specify the total length for the path, in user units.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pathLength)
+       */
       pathLength?: number | string | undefined;
+      /**
+       * The patternContentUnits attribute defines the coordinate system for attributes x, y, width and height.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternContentUnits)
+       */
       patternContentUnits?: string | undefined;
+      /**
+       * The patternTransform attribute modifies the pattern by transforming it in the pattern coordinate system.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternTransform)
+       */
       patternTransform?: number | string | undefined;
+      /**
+       * The patternUnits attribute defines the coordinate system for attributes x, y, width and height.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/patternUnits)
+       */
       patternUnits?: string | undefined;
-      pointerEvents?: number | string | undefined;
+      /**
+       * The pointerEvents attribute determines under what circumstances a particular graphic element can be the target element for a pointer event.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointer-events)
+       */
       "pointer-events"?: number | string | undefined;
+      /**
+       * The points attribute defines the list of points for the given shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/points)
+       */
       points?: string | undefined;
+      /**
+       * The pointsAtX attribute defines the x coordinate of the focal point for the light source.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointsAtX)
+       */
       pointsAtX?: number | string | undefined;
+      /**
+       * The pointsAtY attribute defines the y coordinate of the focal point for the light source.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointsAtY)
+       */
       pointsAtY?: number | string | undefined;
+      /**
+       * The pointsAtZ attribute defines the z coordinate of the focal point for the light source.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointsAtZ)
+       */
       pointsAtZ?: number | string | undefined;
+      /**
+       * The preserveAlpha attribute is a presentation attribute defining if the alpha channel should be preserved.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/preserveAlpha)
+       */
       preserveAlpha?: number | string | undefined;
+      /**
+       * The preserveAspectRatio attribute indicates how an element handles the aspect ratio of the viewBox specified by the viewBox attribute.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/preserveAspectRatio)
+       */
       preserveAspectRatio?: string | undefined;
+      /**
+       * The primitiveUnits attribute defines the coordinate system for the various attributes.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/primitiveUnits)
+       */
       primitiveUnits?: number | string | undefined;
+      /**
+       * The r attribute defines the radius of the circle.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/r)
+       */
       r?: number | string | undefined;
+      /**
+       * The radius attribute defines the radius of the feMorphology operator.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/radius)
+       */
       radius?: number | string | undefined;
+      /**
+       * The refX attribute defines the x-coordinate of the reference point of the filter effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/refX)
+       */
       refX?: number | string | undefined;
+      /**
+       * The refY attribute defines the y-coordinate of the reference point of the filter effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/refY)
+       */
       refY?: number | string | undefined;
-      renderingIntent?: number | string | undefined;
-      "rendering-intent"?: number | string | undefined;
+      /**
+       * The repeatCount attribute defines the number of repetitions of the animation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/repeatCount)
+       */
       repeatCount?: number | string | undefined;
-      "repeat-count"?: number | string | undefined;
+      /**
+       * The repeatDur attribute defines the total duration for the animation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/repeatDur)
+       */
       repeatDur?: number | string | undefined;
-      "repeat-dur"?: number | string | undefined;
-      requiredExtensions?: number | string | undefined;
-      requiredFeatures?: number | string | undefined;
+      /**
+       * The restart attribute defines the conditions for restarting the animation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/restart)
+       */
       restart?: number | string | undefined;
+      /**
+       * The result attribute defines the name for the result of the filter effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/result)
+       */
       result?: string | undefined;
+      /**
+       * The rotate attribute defines a transformation that rotates the element around a fixed point.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/rotate)
+       */
       rotate?: number | string | undefined;
+      /**
+       * The rx attribute defines the x-axis radius of the ellipse.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/rx)
+       */
       rx?: number | string | undefined;
+      /**
+       * The ry attribute defines the y-axis radius of the ellipse.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/ry)
+       */
       ry?: number | string | undefined;
+      /**
+       * The scale attribute defines a scale transformation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/scale)
+       */
       scale?: number | string | undefined;
+      /**
+       * The seed attribute defines the random number generator initial value.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/seed)
+       */
       seed?: number | string | undefined;
-      shapeRendering?: number | string | undefined;
+      /**
+       * The shape-rendering attribute provides hints to the renderer about what tradeoffs to make when rendering shapes.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/shape-rendering)
+       */      
       "shape-rendering"?: number | string | undefined;
-      slope?: number | string | undefined;
+      /**
+       * The spacing attribute defines a distance between the copies of the filter effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/spacing)
+       */
       spacing?: number | string | undefined;
+      /**
+       * The specularConstant attribute defines the ks in the Phong lighting model.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/specularConstant)
+       */
       specularConstant?: number | string | undefined;
+      /**
+       * The specularExponent attribute defines the ns in the Phong lighting model.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/specularExponent)
+       */
       specularExponent?: number | string | undefined;
-      speed?: number | string | undefined;
+      /**
+       * The spreadMethod attribute provides a hint for gradient interpolation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/spreadMethod)
+       */
       spreadMethod?: string | undefined;
+      /**
+       * The startOffset attribute defines where the gradient starts.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/startOffset)
+       */
       startOffset?: number | string | undefined;
+      /**
+       * The stdDeviation attribute defines the standard deviation for the blur operation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stdDeviation)
+       */
       stdDeviation?: number | string | undefined;
-      stemh?: number | string | undefined;
-      stemv?: number | string | undefined;
+      /**
+       * The stitchTiles attribute provides a hint for how to provide tiles for the feTurbulence filter.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stitchTiles)
+       */
       stitchTiles?: number | string | undefined;
-      stopColor?: string | undefined;
+      /**
+       * The stop-color attribute defines the color of the gradient stop.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stop-color)
+       */
       "stop-color"?: string | undefined;
-      stopOpacity?: number | string | undefined;
+      /**
+       * The stop-opacity attribute defines the opacity of the gradient stop.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stop-opacity)
+       */
       "stop-opacity"?: number | string | undefined;
-      strikethroughPosition?: number | string | undefined;
+      /**
+       * The strikethrough-position attribute defines the position of the strikethrough text decoration on text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/strikethrough-position)
+       */
       "strikethrough-position"?: number | string | undefined;
-      strikethroughThickness?: number | string | undefined;
+      /**
+       * The strikethrough-thickness attribute defines the thickness of the strikethrough text decoration on text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/strikethrough-thickness)
+       */
       "strikethrough-thickness"?: number | string | undefined;
-      string?: number | string | undefined;
+      /**
+       * The stoke attribute is a presentation attribute defining the color of the outline of the given graphical element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke)
+       */
       stroke?: string | undefined;
-      strokeDasharray?: string | number | undefined;
+      /**
+       * The stroke-dasharray attribute is a presentation attribute defining the pattern of dashes and gaps used to paint the outline of the shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray)
+       */
       "stroke-dasharray"?: string | number | undefined;
-      strokeDashoffset?: string | number | undefined;
+      /**
+       * The stroke-dashoffset attribute is a presentation attribute defining the distance into the dash pattern to start the dash.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset)
+       */
       "stroke-dashoffset"?: string | number | undefined;
-      strokeLinecap?: "butt" | "round" | "square" | "inherit" | undefined;
+      /**
+       * The stroke-linecap attribute is a presentation attribute defining the shape to be used at the end of open subpaths when they are stroked.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap)
+       */
       "stroke-linecap"?: "butt" | "round" | "square" | "inherit" | undefined;
-      strokeLinejoin?: "miter" | "round" | "bevel" | "inherit" | undefined;
+      /**
+       * The stroke-linejoin attribute is a presentation attribute defining the shape to be used at the corners of paths or basic shapes when they are stroked.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin)
+       */
       "stroke-linejoin"?: "miter" | "round" | "bevel" | "inherit" | undefined;
-      strokeMiterlimit?: string | number | undefined;
+      /**
+       * The stroke-miterlimit attribute is a presentation attribute defining the limit for the ratio of the miter length to the stroke-width.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-miterlimit)
+       */
       "stroke-miterlimit"?: string | number | undefined;
-      strokeOpacity?: number | string | undefined;
+      /**
+       * The stroke-opacity attribute is a presentation attribute defining the opacity of the paint server used to paint the outline of the shape.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-opacity)
+       */
       "stroke-opacity"?: number | string | undefined;
-      strokeWidth?: number | string | undefined;
+      /**
+       * The stroke-width attribute is a presentation attribute defining the width of the outline on the current object.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-width)
+       */
       "stroke-width"?: number | string | undefined;
+      /**
+       * The surfaceScale attribute defines the height of the surface for the light filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/surfaceScale)
+       */
       surfaceScale?: number | string | undefined;
+      /**
+       * The systemLanguage attribute defines the allowable language of the content in the given element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/systemLanguage)
+       */
       systemLanguage?: number | string | undefined;
+      /**
+       * The tableValues attribute specifies the remapping of the input color value.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/tableValues)
+       */
       tableValues?: number | string | undefined;
+      /**
+       * The targetX attribute defines the x-axis coordinate of the shadow.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/targetX)
+       */
       targetX?: number | string | undefined;
+      /**
+       * The targetY attribute defines the y-axis coordinate of the shadow.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/targetY)
+       */
       targetY?: number | string | undefined;
-      textAnchor?: string | undefined;
+      /**
+       * The text-anchor attribute is a presentation attribute defining the alignment of the anchored text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor)
+       */
       "text-anchor"?: string | undefined;
-      textDecoration?: number | string | undefined;
+      /**
+       * The text-decoration attribute is a presentation attribute defining the text decoration line to be used.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-decoration)
+       */
       "text-decoration"?: number | string | undefined;
+      /**
+       * The textLength attribute indicates the width of the space into which the text should be rendered.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/textLength)
+       */
       textLength?: number | string | undefined;
-      textRendering?: number | string | undefined;
+      /**
+       * The text-rendering attribute provides a hint to the renderer about what tradeoffs to make as it renders text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-rendering)
+       */
+      'text-rendering'?: number | string | undefined;
+      /**
+       * The to attribute defines the final transformation of the given element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/to)
+       */
       to?: number | string | undefined;
+      /**
+       * The transform attribute defines a list of transform definitions that are applied to an element and the element's children.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform)
+       */
       transform?: string | undefined;
-      u1?: number | string | undefined;
-      u2?: number | string | undefined;
-      underlinePosition?: number | string | undefined;
+      /**
+       * The underline-position attribute defines the position of the underline text decoration on text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/underline-position)
+       */
       "underline-position"?: number | string | undefined;
-      underlineThickness?: number | string | undefined;
+      /**
+       * The underline-thickness attribute defines the thickness of the underline text decoration on text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/underline-thickness)
+       */
       "underline-thickness"?: number | string | undefined;
-      unicode?: number | string | undefined;
-      unicodeBidi?: number | string | undefined;
+      /**
+       * The unicode-bidi attribute is a presentation attribute that is used to specify whether a text should be laid out for right-to-left or left-to-right text direction, and whether the text should be laid out for weak bidirectionality, including the direction of embeddings.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/unicode-bidi)
+       */
       "unicode-bidi"?: number | string | undefined;
-      unicodeRange?: number | string | undefined;
-      "unicode-range"?: number | string | undefined;
-      unitsPerEm?: number | string | undefined;
-      "units-per-em"?: number | string | undefined;
-      vAlphabetic?: number | string | undefined;
-      "v-alphabetic"?: number | string | undefined;
+      /**
+       * The values attribute has different meanings, depending upon the context where it's used, either it defines a sequence of values used over the course of an animation, or it's a list of numbers for a color matrix, which is interpreted differently depending on the type of color change to be performed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/values)
+       */
       values?: string | undefined;
-      vectorEffect?: number | string | undefined;
+      /**
+       * The vector-effect property specifies the vector effect to use when drawing an object. Vector effects are applied before any of the other compositing operations, i.e. filters, masks and clips.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/vector-effect)
+       */
       "vector-effect"?: number | string | undefined;
-      version?: string | undefined;
-      vertAdvY?: number | string | undefined;
-      "vert-adv-y"?: number | string | undefined;
-      vertOriginX?: number | string | undefined;
-      "vert-origin-x"?: number | string | undefined;
-      vertOriginY?: number | string | undefined;
-      "vert-origin-y"?: number | string | undefined;
-      vHanging?: number | string | undefined;
-      "v-hanging"?: number | string | undefined;
-      vIdeographic?: number | string | undefined;
-      "v-ideographic"?: number | string | undefined;
+      /**
+       * The viewBox attribute defines the position and dimension, in user space, of an SVG viewport.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox)
+       */
       viewBox?: string | undefined;
-      viewTarget?: number | string | undefined;
+      /**
+       * The visibility attribute specifies whether an element is visible or not.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/visibility)
+       */
       visibility?: number | string | undefined;
-      vMathematical?: number | string | undefined;
-      "v-mathematical"?: number | string | undefined;
-      widths?: number | string | undefined;
-      wordSpacing?: number | string | undefined;
+      /**
+       * The word-spacing attribute is a presentation attribute defining the space after the end of each word.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/word-spacing)
+       */
       "word-spacing"?: number | string | undefined;
-      writingMode?: number | string | undefined;
+      /**
+       * The writing-mode attribute defines the orientation of the dominant baseline and the direction of the dominant baseline.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/writing-mode)
+       */
       "writing-mode"?: number | string | undefined;
+      /**
+       * The x1 attribute defines the x-coordinate of the start of the line.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x1)
+       */
       x1?: number | string | undefined;
+      /**
+       * The x2 attribute defines the x-coordinate of the end of the line.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x2)
+       */
       x2?: number | string | undefined;
+      /**
+       * The x attribute defines the x-coordinate of the given element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/x)
+       */
       x?: number | string | undefined;
+      /**
+       * The xChannelSelector attribute indicates which channel the input will affect for the feDisplacementMap filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xChannelSelector)
+       */
       xChannelSelector?: string | undefined;
-      xHeight?: number | string | undefined;
-      "x-height"?: number | string | undefined;
-      xlinkActuate?: string | undefined;
-      "xlink:actuate"?: SVGAttributes["xlinkActuate"];
-      xlinkArcrole?: string | undefined;
-      "xlink:arcrole"?: string | undefined;
-      xlinkHref?: string | undefined;
-      "xlink:href"?: string | undefined;
-      xlinkRole?: string | undefined;
-      "xlink:role"?: string | undefined;
-      xlinkShow?: string | undefined;
-      "xlink:show"?: string | undefined;
-      xlinkTitle?: string | undefined;
-      "xlink:title"?: string | undefined;
-      xlinkType?: string | undefined;
-      "xlink:type"?: string | undefined;
-      xmlBase?: string | undefined;
-      "xml:base"?: string | undefined;
-      xmlLang?: string | undefined;
-      "xml:lang"?: string | undefined;
-      xmlns?: string | undefined;
-      xmlnsXlink?: string | undefined;
-      xmlSpace?: string | undefined;
-      "xml:space"?: string | undefined;
+      /**
+       * The y1 attribute defines the y-coordinate of the start of the line.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1)
+       */
       y1?: number | string | undefined;
+      /**
+       * The y2 attribute defines the y-coordinate of the end of the line.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y2)
+       */
       y2?: number | string | undefined;
+      /**
+       * The y attribute defines the y-coordinate of the given element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y)
+       */
       y?: number | string | undefined;
+      /**
+       * The yChannelSelector attribute indicates which channel the input will affect for the feDisplacementMap filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/yChannelSelector)
+       */
       yChannelSelector?: string | undefined;
+      /**
+       * The z attribute defines the z-coordinate of the given element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/z)
+       */
       z?: number | string | undefined;
-      zoomAndPan?: string | undefined;
     }
 
     export type TargetedEvent<
@@ -5764,10 +6689,6 @@ declare global {
       content?: string | undefined;
       contentEditable?: boolean | "" | "plaintext-only" | "inherit" | undefined;
       contenteditable?: HTMLAttributes["contentEditable"];
-      /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contextmenu */
-      contextMenu?: string | undefined;
-      /** @deprecated See https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contextmenu */
-      contextmenu?: string | undefined;
       controls?: boolean | undefined;
       controlsList?: string | undefined;
       coords?: string | undefined;
