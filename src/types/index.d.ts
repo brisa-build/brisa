@@ -6492,183 +6492,1053 @@ declare global {
 
     interface IntrinsicElements extends IntrinsicCustomElements {
       // HTML
+
+      /**
+       * The `a` element is used to create hyperlinks to other web pages, files, locations within the same page, email addresses, or any other URL.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a)
+       */
       a: HTMLAttributes<HTMLAnchorElement>;
+      /**
+       * The `abbr` element is used to mark up the name of an abbreviation or acronym, like "M.D." or "NATO".
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr)
+       */
       abbr: HTMLAttributes<HTMLElement>;
+      /**
+       * The `address` element is used to provide contact information for a document or a section of a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/address)
+       */
       address: HTMLAttributes<HTMLElement>;
+      /**
+       * The `area` element is used to define a hot-spot region on an image map.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area)
+       */
       area: HTMLAttributes<HTMLAreaElement>;
+      /**
+       * The `article` element is used to represent a self-contained composition in a document, page, application, or site, which is intended to be independently distributable or reusable.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/article)
+       */
       article: HTMLAttributes<HTMLElement>;
+      /**
+       * The `aside` element is used to mark additional content that is related to the primary content of the document, but does not constitute the main content of the document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/aside)
+       */
       aside: HTMLAttributes<HTMLElement>;
+      /**
+       * The `audio` element is used to embed sound content in documents.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio)
+       */
       audio: HTMLAttributes<HTMLAudioElement>;
+      /**
+       * The `b` element is used to draw the reader's attention to the element's contents, which are not otherwise granted special importance.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/b)
+       */
       b: HTMLAttributes<HTMLElement>;
+      /**
+       * The `base` element is used to specify the base URL to use for all relative URLs in a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base)
+       */
       base: HTMLAttributes<HTMLBaseElement>;
+      /**
+       * The `bdi` element is used to indicate text that is isolated from its surrounding for the purposes of bidirectional text formatting.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdi)
+       */
       bdi: HTMLAttributes<HTMLElement>;
+      /**
+       * The `bdo` element is used to override the current text direction.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdo)
+       */
       bdo: HTMLAttributes<HTMLElement>;
-      big: HTMLAttributes<HTMLElement>;
+      /**
+       * The `blockquote` element is used to indicate that the enclosed text is an extended quotation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote)
+       */
       blockquote: HTMLAttributes<HTMLQuoteElement>;
+      /**
+       * The `body` element represents the content of an HTML document. There can be only one `<body>` element in a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/body)
+       */
       body: HTMLAttributes<HTMLBodyElement>;
+      /**
+       * The `br` element is used to create a line break in a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br)
+       */
       br: HTMLAttributes<HTMLBRElement>;
+      /**
+       * The `button` element is used to create a clickable button.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button)
+       */
       button: HTMLAttributes<HTMLButtonElement>;
+      /**
+       * The `canvas` element is used to draw graphics, on the fly, via scripting (usually JavaScript).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas)
+       */
       canvas: HTMLAttributes<HTMLCanvasElement>;
+      /**
+       * The `caption` element is used to define a table caption.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption)
+       */
       caption: HTMLAttributes<HTMLTableCaptionElement>;
+      /**
+       * The `cite` element is used to describe a reference to a cited creative work, and must include the title of that work.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/cite)
+       */
       cite: HTMLAttributes<HTMLElement>;
+      /**
+       * The `code` element is used to define a piece of computer code.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code)
+       */
       code: HTMLAttributes<HTMLElement>;
+      /**
+       * The `col` element is used to define a column within a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col)
+       */
       col: HTMLAttributes<HTMLTableColElement>;
+      /**
+       * The `colgroup` element is used to define a group of columns within a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup)
+       */
       colgroup: HTMLAttributes<HTMLTableColElement>;
+      /**
+       * The `data` element is used to represent the result of a calculation (like one performed by a script).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/data)
+       */
       data: HTMLAttributes<HTMLDataElement>;
+      /**
+       * The `datalist` element is used to provide a list of pre-defined options for an `<input>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist)
+       */
       datalist: HTMLAttributes<HTMLDataListElement>;
+      /**
+       * The `dd` element is used to define a description of a term in a description list.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd)
+       */
       dd: HTMLAttributes<HTMLElement>;
+      /**
+       * The `del` element is used to represent a range of text that has been deleted from a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del)
+       */
       del: HTMLAttributes<HTMLModElement>;
+      /**
+       * The `details` element is used to create a disclosure widget in which information is visible only when the widget is toggled into an "open" state.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details)
+       */
       details: HTMLAttributes<HTMLDetailsElement>;
+      /**
+       * The `dfn` element is used to indicate the term being defined within the context of a definition phrase or sentence.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dfn)
+       */
       dfn: HTMLAttributes<HTMLElement>;
+      /**
+       * The `dialog` element is used to define a dialog box or subwindow.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog)
+       */
       dialog: HTMLAttributes<HTMLDialogElement>;
+      /**
+       * The `div` element is used as a container for other HTML elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div)
+       */
       div: HTMLAttributes<HTMLDivElement>;
+      /**
+       * The `dl` element is used to define a description list.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl)
+       */
       dl: HTMLAttributes<HTMLDListElement>;
+      /**
+       * The `dt` element is used to define a term in a description list.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dt)
+       */
       dt: HTMLAttributes<HTMLElement>;
+      /**
+       * The `em` element is used to indicate emphasis on the enclosed text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/em)
+       */
       em: HTMLAttributes<HTMLElement>;
+      /**
+       * The `embed` element is used to embed multimedia content, such as a plugin or an applet.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/embed)
+       */
       embed: HTMLAttributes<HTMLEmbedElement>;
+      /**
+       * The `fieldset` element is used to group several controls as well as labels (`<label>`) within a web form.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset)
+       */
       fieldset: HTMLAttributes<HTMLFieldSetElement>;
+      /**
+       * The `figcaption` element is used to add a caption to an `<figure>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption)
+       */
       figcaption: HTMLAttributes<HTMLElement>;
+      /**
+       * The `figure` element is used to mark up a photo, diagram, code listing, or other figure, and may contain a `<figcaption>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure)
+       */
       figure: HTMLAttributes<HTMLElement>;
+      /**
+       * The `footer` element is used to define a footer for a document or section.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer)
+       */
       footer: HTMLAttributes<HTMLElement>;
+      /**
+       * The `form` element is used to create an HTML form for user input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form)
+       */
       form: HTMLAttributes<HTMLFormElement>;
+      /**
+       * The `h1` element is used to define the most important heading.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h1)
+       */
       h1: HTMLAttributes<HTMLHeadingElement>;
+      /**
+       * The `h2` element is used to define the second most important heading.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h2)
+       */
       h2: HTMLAttributes<HTMLHeadingElement>;
+      /**
+       * The `h3` element is used to define the third most important heading.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h3)
+       */
       h3: HTMLAttributes<HTMLHeadingElement>;
+      /**
+       * The `h4` element is used to define the fourth most important heading.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h4)
+       */
       h4: HTMLAttributes<HTMLHeadingElement>;
+      /**
+       * The `h5` element is used to define the fifth most important heading.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h5)
+       */
       h5: HTMLAttributes<HTMLHeadingElement>;
+      /**
+       * The `h6` element is used to define the least important heading.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h6)
+       */
       h6: HTMLAttributes<HTMLHeadingElement>;
+      /**
+       * The `head` element is used to contain metadata for the HTML document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head)
+       */
       head: HTMLAttributes<HTMLHeadElement>;
+      /**
+       * The `header` element is used to define a header for a document or section.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header)
+       */
       header: HTMLAttributes<HTMLElement>;
+      /**
+       * The `hgroup` element is used to group a set of `<h1>` to `<h6>` elements when a heading has multiple levels.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hgroup)
+       */
       hgroup: HTMLAttributes<HTMLElement>;
+      /**
+       * The `hr` element is used to create a thematic break in an HTML page.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hr)
+       */
       hr: HTMLAttributes<HTMLHRElement>;
+      /**
+       * The `html` element is the root element of an HTML document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html)
+       */
       html: HTMLAttributes<HTMLHtmlElement>;
+      /**
+       * The `i` element is used to represent a span of text in an alternate voice or mood, or otherwise offset from the normal prose in a manner indicating a different quality of text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/i)
+       */
       i: HTMLAttributes<HTMLElement>;
+      /**
+       * The `iframe` element is used to embed another document within the current HTML document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe)
+       */
       iframe: HTMLAttributes<HTMLIFrameElement>;
+      /**
+       * The `img` element is used to embed an image in an HTML page.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img)
+       */
       img: HTMLAttributes<HTMLImageElement>;
+      /**
+       * The `input` element is used to create interactive controls for web-based forms in order to accept data from the user.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input)
+       */
       input: HTMLAttributes<HTMLInputElement>;
+      /**
+       * The `ins` element is used to represent a range of text that has been added to a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins)
+       */
       ins: HTMLAttributes<HTMLModElement>;
+      /**
+       * The `kbd` element is used to define keyboard input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd)
+       */
       kbd: HTMLAttributes<HTMLElement>;
-      keygen: HTMLAttributes<HTMLUnknownElement>;
+      /**
+       * The `label` element is used to define a label for several elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label)
+       */
       label: HTMLAttributes<HTMLLabelElement>;
+      /**
+       * The `legend` element is used to define a caption for the `<fieldset>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend)
+       */
       legend: HTMLAttributes<HTMLLegendElement>;
+      /**
+       * The `li` element is used to define a list item.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li)
+       */
       li: HTMLAttributes<HTMLLIElement>;
+      /**
+       * The `link` element is used to link to external style sheets.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link)
+       */
       link: HTMLAttributes<HTMLLinkElement>;
+      /**
+       * The `main` element is used to mark the main content of a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main)
+       */
       main: HTMLAttributes<HTMLElement>;
+      /**
+       * The `map` element is used to define a client-side image map.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/map)
+       */
       map: HTMLAttributes<HTMLMapElement>;
+      /**
+       * The `mark` element is used to represent a run of text in one document marked or highlighted for reference purposes, due to its relevance in another context.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark)
+       */
       mark: HTMLAttributes<HTMLElement>;
+      /**
+       * The `template` element is used to declare fragments of HTML that can be cloned and inserted in the document by script.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
+       */
       template: HTMLAttributes<HTMLTemplateElement>;
+      /**
+       * The `marquee` element is used to create a scrolling area of text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/marquee)
+       */
       marquee: HTMLAttributes<HTMLMarqueeElement>;
+      /**
+       * The `menu` element is used to define a list of commands that a user can perform or activate.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menu)
+       */
       menu: HTMLAttributes<HTMLMenuElement>;
+      /**
+       * The `menuitem` element is used to define a command that a user can invoke from a popup menu.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menuitem)
+       */
       menuitem: HTMLAttributes<HTMLUnknownElement>;
+      /**
+       * The `meta` element is used to specify metadata that can't be represented by other HTML meta-related elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta)
+       */
       meta: HTMLAttributes<HTMLMetaElement>;
+      /**
+       * The `meter` element is used to represent a scalar measurement within a known range or a fractional value.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter)
+       */
       meter: HTMLAttributes<HTMLMeterElement>;
+      /**
+       * The `nav` element is used to define a section of navigation links.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav)
+       */
       nav: HTMLAttributes<HTMLElement>;
+      /**
+       * The `noscript` element is used to provide a script that displays only if scripting is not supported.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript)
+       */
       noscript: HTMLAttributes<HTMLElement>;
+      /**
+       * The `object` element is used to embed an object in an HTML document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/object)
+       */
       object: HTMLAttributes<HTMLObjectElement>;
+      /**
+       * The `ol` element is used to define an ordered list of items.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol)
+       */
       ol: HTMLAttributes<HTMLOListElement>;
+      /**
+       * The `optgroup` element is used to group several options within a `<select>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup)
+       */
       optgroup: HTMLAttributes<HTMLOptGroupElement>;
+      /**
+       * The `option` element is used to define an item contained in a `<select>`, an `<optgroup>`, or a `<datalist>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option)
+       */
       option: HTMLAttributes<HTMLOptionElement>;
+      /**
+       * The `output` element is used to represent the result of a calculation or user action.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/output)
+       */
       output: HTMLAttributes<HTMLOutputElement>;
+      /**
+       * The `p` element represents a paragraph.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p)
+       */
       p: HTMLAttributes<HTMLParagraphElement>;
+      /**
+       * The `param` element is used to define parameters for plugins invoked by object elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/param)
+       */
       param: HTMLAttributes<HTMLParamElement>;
+      /**
+       * The `picture` element is used to define a container for multiple image sources.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture)
+       */
       picture: HTMLAttributes<HTMLPictureElement>;
+      /**
+       * The `pre` element is used to define preformatted text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre)
+       */
       pre: HTMLAttributes<HTMLPreElement>;
+      /**
+       * The `progress` element is used to represent the completion progress of a task.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/progress)
+       */
       progress: HTMLAttributes<HTMLProgressElement>;
+      /**
+       * The `q` element is used to define a short inline quotation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q)
+       */
       q: HTMLAttributes<HTMLQuoteElement>;
+      /**
+       * The `rp` element is used to provide fallback text to be displayed by user agents that don't support ruby annotations.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rp)
+       */
       rp: HTMLAttributes<HTMLElement>;
+      /**
+       * The `rt` element is used to provide the pronunciation of the characters, characters, or words in a ruby annotation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rt)
+       */
       rt: HTMLAttributes<HTMLElement>;
+      /**
+       * The `ruby` element is used to provide ruby annotations for East Asian typography.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby)
+       */
       ruby: HTMLAttributes<HTMLElement>;
+      /**
+       * The `s` element is used to represent contents that are no longer accurate or no longer relevant.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/s)
+       */
       s: HTMLAttributes<HTMLElement>;
+      /**
+       * The `samp` element is used to enclose inline text which represents sample (or quoted) output from a computer program.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp)
+       */
       samp: HTMLAttributes<HTMLElement>;
+      /**
+       * The `script` element is used to embed or reference an executable script within an HTML or XHTML document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)
+       */
       script: HTMLAttributes<HTMLScriptElement>;
+      /**
+       * The `search` element is used to create a search field.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/search)
+       */
       search: HTMLAttributes<HTMLElement>;
+      /**
+       * The `section` element is used to define sections in a document, such as chapters, headers, footers, or any other sections of the document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section)
+       */
       section: HTMLAttributes<HTMLElement>;
+      /**
+       * The `select` element is used to create a drop-down list.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select)
+       */
       select: HTMLAttributes<HTMLSelectElement>;
+      /**
+       * The `slot` element is used to define a slot for the insertion of content from a parent component.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot)
+       */
       slot: HTMLAttributes<HTMLSlotElement>;
+      /**
+       * The `small` element is used to represent side comments such as small print.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/small)
+       */
       small: HTMLAttributes<HTMLElement>;
+      /**
+       * The `source` element is used to specify multiple media resources for media elements, such as `<video>` and `<audio>`.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source)
+       */
       source: HTMLAttributes<HTMLSourceElement>;
+      /**
+       * The `span` element is used to group inline-elements in a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span)
+       */
       span: HTMLAttributes<HTMLSpanElement>;
+      /**
+       * The `strong` element is used to indicate strong importance for its contents.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong)
+       */
       strong: HTMLAttributes<HTMLElement>;
+      /**
+       * The `style` element is used to define style information for a document, or part of a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style)
+       */
       style: HTMLAttributes<HTMLStyleElement>;
+      /**
+       * The `sub` element is used to specify the subscript text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sub)
+       */
       sub: HTMLAttributes<HTMLElement>;
+      /**
+       * The `summary` element is used to define a visible heading for the `<details>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary)
+       */
       summary: HTMLAttributes<HTMLElement>;
+      /**
+       * The `sup` element is used to specify the superscript text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup)
+       */
       sup: HTMLAttributes<HTMLElement>;
+      /**
+       * The `table` element is used to create a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table)
+       */
       table: HTMLAttributes<HTMLTableElement>;
+      /**
+       * The `tbody` element is used to group the body content in a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody)
+       */
       tbody: HTMLAttributes<HTMLTableSectionElement>;
+      /**
+       * The `td` element is used to define a cell in a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td)
+       */
       td: HTMLAttributes<HTMLTableCellElement>;
+      /**
+       * The `textarea` element is used to create a multiline text input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea)
+       */
       textarea: HTMLAttributes<HTMLTextAreaElement>;
+      /**
+       * The `tfoot` element is used to group the footer content in a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot)
+       */
       tfoot: HTMLAttributes<HTMLTableSectionElement>;
+      /**
+       * The `th` element is used to define a header cell in a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th)
+       */
       th: HTMLAttributes<HTMLTableCellElement>;
+      /**
+       * The `thead` element is used to group the header content in a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead)
+       */
       thead: HTMLAttributes<HTMLTableSectionElement>;
+      /**
+       * The `time` element is used to represent a specific period in time.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time)
+       */
       time: HTMLAttributes<HTMLTimeElement>;
+      /**
+       * The `title` element is used to define a title for the document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)
+       */
       title: HTMLAttributes<HTMLTitleElement>;
+      /**
+       * The `tr` element is used to define a row in a table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr)
+       */
       tr: HTMLAttributes<HTMLTableRowElement>;
+      /**
+       * The `track` element is used to specify text tracks for video elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track)
+       */
       track: HTMLAttributes<HTMLTrackElement>;
+      /**
+       * The `u` element is used to represent text with an unarticulated, though explicitly rendered, non-textual annotation.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/u)
+       */
       u: HTMLAttributes<HTMLElement>;
+      /**
+       * The `ul` element is used to define an unordered list of items.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ul)
+       */
       ul: HTMLAttributes<HTMLUListElement>;
+      /**
+       * The `var` element is used to define a variable in programming or in a mathematical expression.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/var)
+       */
       var: HTMLAttributes<HTMLElement>;
+      /**
+       * The `video` element is used to embed video content in a document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video)
+       */
       video: HTMLAttributes<HTMLVideoElement>;
+      /**
+       * The `wbr` element is used to define a word break opportunity within text content.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/wbr)
+       */
       wbr: HTMLAttributes<HTMLElement>;
 
       //SVG
+
+      /**
+       * The `svg` element is used to define a container for SVG graphics.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/svg)
+       */
       svg: SVGAttributes<SVGSVGElement>;
+      /**
+       * The `animate` element is used to animate an attribute of an element over time.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate)
+       */
       animate: SVGAttributes<SVGAnimateElement>;
+      /**
+       * The `circle` element is used to create a circle.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/circle)
+       */
       circle: SVGAttributes<SVGCircleElement>;
+      /**
+       * The `animateMotion` element is used to animate an element along a motion path.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateMotion)
+       */
       animateMotion: SVGAttributes<SVGAnimateMotionElement>;
+      /**
+       * The `animateTransform` element is used to animate a transformation on an element, such as a translate, scale, rotate, or skew.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateTransform)
+       */
       animateTransform: SVGAttributes<SVGAnimateTransformElement>;
+      /**
+       * The `clipPath` element is used to define a clipping path.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath)
+       */
       clipPath: SVGAttributes<SVGClipPathElement>;
+      /**
+       * The `defs` element is used to define a set of reusable elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/defs)
+       */
       defs: SVGAttributes<SVGDefsElement>;
+      /**
+       * The `desc` element is used to provide a description for an SVG document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc)
+       */
       desc: SVGAttributes<SVGDescElement>;
+      /**
+       * The `ellipse` element is used to create an ellipse.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/ellipse)
+       */
       ellipse: SVGAttributes<SVGEllipseElement>;
+      /**
+       * The `feBlend` element is used to blend two objects together.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feBlend)
+       */
       feBlend: SVGAttributes<SVGFEBlendElement>;
+      /**
+       * The `feColorMatrix` element is used to apply a matrix transformation on the RGBA color and alpha values of each pixel.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feColorMatrix)
+       */
       feColorMatrix: SVGAttributes<SVGFEColorMatrixElement>;
+      /**
+       * The `feComponentTransfer` element is used to apply a linear transformation on the input color values.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComponentTransfer)
+       */
       feComponentTransfer: SVGAttributes<SVGFEComponentTransferElement>;
+      /**
+       * The `feComposite` element is used to combine two objects together.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComposite)
+       */
       feComposite: SVGAttributes<SVGFECompositeElement>;
+      /**
+       * The `feConvolveMatrix` element is used to apply a matrix convolution filter effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feConvolveMatrix)
+       */
       feConvolveMatrix: SVGAttributes<SVGFEConvolveMatrixElement>;
+      /**
+       * The `feDiffuseLighting` element is used to create a lighting effect using the alpha channel as a bump map.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDiffuseLighting)
+       */
       feDiffuseLighting: SVGAttributes<SVGFEDiffuseLightingElement>;
+      /**
+       * The `feDisplacementMap` element is used to create a displacement effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap)
+       */
       feDisplacementMap: SVGAttributes<SVGFEDisplacementMapElement>;
+      /**
+       * The `feDistantLight` element is used to create a distant light source.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDistantLight)
+       */
       feDistantLight: SVGAttributes<SVGFEDistantLightElement>;
+      /**
+       * The `feDropShadow` element is used to create a drop shadow effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow)
+       */
       feDropShadow: SVGAttributes<SVGFEDropShadowElement>;
+      /**
+       * The `feFlood` element is used to create a solid color fill.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFlood)
+       */
       feFlood: SVGAttributes<SVGFEFloodElement>;
+      /**
+       * The `feFuncA` element is used to define the alpha component of the color.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncA)
+       */
       feFuncA: SVGAttributes<SVGFEFuncAElement>;
+      /**
+       * The `feFuncB` element is used to define the blue component of the color.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncB)
+       */
       feFuncB: SVGAttributes<SVGFEFuncBElement>;
+      /**
+       * The `feFuncG` element is used to define the green component of the color.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncG)
+       */
       feFuncG: SVGAttributes<SVGFEFuncGElement>;
+      /**
+       * The `feFuncR` element is used to define the red component of the color.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncR)
+       */
       feFuncR: SVGAttributes<SVGFEFuncRElement>;
+      /**
+       * The `feGaussianBlur` element is used to create a Gaussian blur effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feGaussianBlur)
+       */
       feGaussianBlur: SVGAttributes<SVGFEGaussianBlurElement>;
+      /**
+       * The `feImage` element is used to include an externally defined graphics file.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feImage)
+       */
       feImage: SVGAttributes<SVGFEImageElement>;
+      /**
+       * The `feMerge` element is used to combine two objects together.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMerge)
+       */
       feMerge: SVGAttributes<SVGFEMergeElement>;
+      /**
+       * The `feMergeNode` element is used to specify the input for the feMerge filter primitive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMergeNode)
+       */
       feMergeNode: SVGAttributes<SVGFEMergeNodeElement>;
+      /**
+       * The `feMorphology` element is used to create a morphology effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMorphology)
+       */
       feMorphology: SVGAttributes<SVGFEMorphologyElement>;
+      /**
+       * The `feOffset` element is used to create a drop shadow effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feOffset)
+       */
       feOffset: SVGAttributes<SVGFEOffsetElement>;
+      /**
+       * The `fePointLight` element is used to create a point light effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/fePointLight)
+       */
       fePointLight: SVGAttributes<SVGFEPointLightElement>;
+      /**
+       * The `feSpecularLighting` element is used to create a specular lighting effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpecularLighting)
+       */
       feSpecularLighting: SVGAttributes<SVGFESpecularLightingElement>;
+      /**
+       * The `feSpotLight` element is used to create a spotlight effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpotLight)
+       */
       feSpotLight: SVGAttributes<SVGFESpotLightElement>;
+      /**
+       * The `feTile` element is used to create a tile effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTile)
+       */
       feTile: SVGAttributes<SVGFETileElement>;
+      /**
+       * The `feTurbulence` element is used to create a turbulence effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence)
+       */
       feTurbulence: SVGAttributes<SVGFETurbulenceElement>;
+      /**
+       * The `filter` element is used to define a filter effect.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/filter)
+       */
       filter: SVGAttributes<SVGFilterElement>;
+      /**
+       * The `foreignObject` element is used to include a DOM subtree within an SVG.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
+       */
       foreignObject: SVGAttributes<SVGForeignObjectElement>;
+      /**
+       * The `g` element is used to group SVG shapes together.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/g)
+       */
       g: SVGAttributes<SVGGElement>;
+      /**
+       * The `image` element is used to embed images into an SVG.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image)
+       */
       image: SVGAttributes<SVGImageElement>;
+      /**
+       * The `line` element is used to create a line.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line)
+       */
       line: SVGAttributes<SVGLineElement>;
+      /**
+       * The `linearGradient` element is used to define a linear gradient.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient)
+       */
       linearGradient: SVGAttributes<SVGLinearGradientElement>;
+      /**
+       * The `marker` element is used to define a marker.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker)
+       */
       marker: SVGAttributes<SVGMarkerElement>;
+      /**
+       * The `mask` element is used to define a mask.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mask)
+       */
       mask: SVGAttributes<SVGMaskElement>;
+      /**
+       * The `metadata` element is used to provide metadata for the SVG document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/metadata)
+       */
       metadata: SVGAttributes<SVGMetadataElement>;
+      /**
+       * The `mpath` element is used to animate an object along a motion path.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mpath)
+       */
       mpath: SVGAttributes<SVGMPathElement>;
+      /**
+       * The `path` element is used to define a path.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path)
+       */
       path: SVGAttributes<SVGPathElement>;
+      /**
+       * The `pattern` element is used to define a pattern.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern)
+       */
       pattern: SVGAttributes<SVGPatternElement>;
+      /**
+       * The `polygon` element is used to create a polygon.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polygon)
+       */
       polygon: SVGAttributes<SVGPolygonElement>;
+      /**
+       * The `polyline` element is used to create a polyline.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polyline)
+       */
       polyline: SVGAttributes<SVGPolylineElement>;
+      /**
+       * The `radialGradient` element is used to define a radial gradient.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/radialGradient)
+       */
       radialGradient: SVGAttributes<SVGRadialGradientElement>;
+      /**
+       * The `rect` element is used to create a rectangle.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/rect)
+       */
       rect: SVGAttributes<SVGRectElement>;
+      /**
+       * The `set` element is used to define the value of an attribute for a specified duration.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/set)
+       */
       set: SVGAttributes<SVGSetElement>;
+      /**
+       * The `stop` element is used to define the color and opacity of a gradient stop.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/stop)
+       */
       stop: SVGAttributes<SVGStopElement>;
+      /**
+       * The `switch` element is used to group a set of alternatives.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/switch)
+       */
       switch: SVGAttributes<SVGSwitchElement>;
+      /**
+       * The `symbol` element is used to define a symbol.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/symbol)
+       */
       symbol: SVGAttributes<SVGSymbolElement>;
+      /**
+       * The `text` element is used to define text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/text)
+       */
       text: SVGAttributes<SVGTextElement>;
+      /**
+       * The `textPath` element is used to define a path along which text is to be rendered.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath)
+       */
       textPath: SVGAttributes<SVGTextPathElement>;
+      /**
+       * The `tspan` element is used to define a sub-text within a text element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/tspan)
+       */
       tspan: SVGAttributes<SVGTSpanElement>;
+      /**
+       * The `use` element is used to reference a symbol defined elsewhere.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use)
+       */
       use: SVGAttributes<SVGUseElement>;
+      /**
+       * The `view` element is used to define a view.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/view)
+       */
       view: SVGAttributes<SVGViewElement>;
 
       /**
