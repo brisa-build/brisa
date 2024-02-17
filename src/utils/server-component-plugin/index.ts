@@ -183,7 +183,7 @@ export default function serverComponentPlugin(
       "",
       "Feel free to reach out if you have any further questions or encounter challenges during this process.",
       "",
-      "Documentation: https://brisa.dev/docs/components-details/server-actions",
+      "Documentation: https://brisa.build/docs/components-details/server-actions",
     ]);
     hasActions = false;
   } else if (hasActions) {
