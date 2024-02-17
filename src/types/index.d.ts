@@ -2808,11 +2808,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onLoad-debounce"?: number | undefined;
       /**
        * The onLoad event is fired when an object has been loaded.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event)
        */
@@ -2834,11 +2836,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onError-debounce"?: number | undefined;
       /**
        * The onError event is fired when an object has been loaded.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event)
        */
@@ -2862,11 +2866,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onCopy-debounce"?: number | undefined;
       /**
        * The onCopy event is fired when the user copies the content of an element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/copy_event)
        */
@@ -2888,11 +2894,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onCut-debounce"?: number | undefined;
       /**
        * The onCut event is fired when the user cuts the content of an element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/cut_event)
        */
@@ -2914,11 +2922,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPaste-debounce"?: number | undefined;
       /**
        * The onPaste event is fired when the user pastes some content in an element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event)
        */
@@ -2942,11 +2952,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onCompositionEnd-debounce"?: number | undefined;
       /**
        * The onCompositionEnd event is fired when the composition of a passage of text has been completed or canceled.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionend_event)
        */
@@ -2968,11 +2980,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onCompositionStart-debounce"?: number | undefined;
       /**
        * The onCompositionStart event is fired when the user starts to enter the composition of a passage of text.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionstart_event)
        */
@@ -2994,11 +3008,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onCompositionUpdate-debounce"?: number | undefined;
       /**
        * The onCompositionUpdate event is fired when the user is entering text.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionupdate_event)
        */
@@ -3022,11 +3038,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onToggle-debounce"?: number | undefined;
       /**
        * The onToggle event is fired when the user opens or closes the details element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/toggle_event)
        */
@@ -3050,11 +3068,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onClose-debounce"?: number | undefined;
       /**
        * The onClose event is fired when the user closes the dialog element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close_event)
        */
@@ -3076,11 +3096,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onCancel-debounce"?: number | undefined;
       /**
        * The onCancel event is fired when the user cancels the dialog element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/cancel_event)
        */
@@ -3104,11 +3126,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onFocus-debounce"?: number | undefined;
       /**
        * The onFocus event is fired when an element gets focus.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focus_event)
        */
@@ -3130,11 +3154,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onfocusin-debounce"?: number | undefined;
       /**
        * The onfocusin event is fired when an element is about to get focus.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focusin_event)
        */
@@ -3156,11 +3182,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onfocusout-debounce"?: number | undefined;
       /**
        * The onfocusout event is fired when an element is about to lose focus.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focusout_event)
        */
@@ -3182,11 +3210,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onBlur-debounce"?: number | undefined;
       /**
        * The onBlur event is fired when an element loses focus.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/blur_event)
        */
@@ -3210,11 +3240,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onChange-debounce"?: number | undefined;
       /**
        * The onChange event is fired when the value of an element has been changed.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event)
        */
@@ -3236,11 +3268,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onInput-debounce"?: number | undefined;
       /**
        * The onInput event is fired when the value of an element has been changed.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)
        */
@@ -3262,11 +3296,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onBeforeInput-debounce"?: number | undefined;
       /**
        * The onBeforeInput event is fired when the value of an element has been changed.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/beforeinput_event)
        */
@@ -3288,11 +3324,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onSearch-debounce"?: number | undefined;
       /**
        * The onSearch event is fired when the user writes something in a search input (text input with `search` type).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/search_event)
        */
@@ -3314,12 +3352,22 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onSubmit-debounce"?: number | undefined;
       /**
-       * The onSubmit event is fired when a form is submitted.
+       * The `onSubmit` event is fired when a form is submitted.
        * 
+       * In Brisa, there is a difference between the `onSubmit` of web components and server components:
+       * 
+       * - Web components: it is the normal `onSubmit` of the browser.
+       * - Server components: the event already contains the formData field. The event is transformed to [FormDataEvent](https://developer.mozilla.org/en-US/docs/Web/API/FormDataEvent).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*- [Brisa docs](https://brisa.build/docs/components-details/forms)
+       * 
+       * **Docs**:
+       * 
+       * - [Brisa docs](https://brisa.build/docs/components-details/forms)
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)
        */
       onSubmit?: SubmitEventHandler<Target> | undefined;
@@ -3340,11 +3388,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onInvalid-debounce"?: number | undefined;
       /**
        * The onInvalid event is fired when a form is submitted and has validation errors.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/invalid_event)
        */
@@ -3366,11 +3416,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onReset-debounce"?: number | undefined;
       /**
        * The onReset event is fired when a form is reset.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/reset_event)
        */
@@ -3392,11 +3444,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onFormData-debounce"?: number | undefined;
       /**
        * The onFormData event is fired when a form is submitted and has validation errors.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event)
        */
@@ -3420,11 +3474,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onKeyDown-debounce"?: number | undefined;
       /**
        * The onKeyDown event is fired when a key is pressed down.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event)
        */
@@ -3446,11 +3502,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onKeyUp-debounce"?: number | undefined;
       /**
        * The onKeyUp event is fired when a key is released.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Document/keyup_event)
        */
@@ -3474,11 +3532,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onAbort-debounce"?: number | undefined;
       /**
        * The onAbort event is fired when the loading of a media is aborted.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/abort_event)
        */
@@ -3500,11 +3560,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onCanPlay-debounce"?: number | undefined;
       /**
        * The onCanPlay event is fired when the browser can start playing the media (when it has buffered enough to begin).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canplay_event)
        */
@@ -3526,11 +3588,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onCanPlayThrough-debounce"?: number | undefined;
       /**
        * The onCanPlayThrough event is fired when the browser can play through the media without stopping for buffering.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canplaythrough_event)
        */
@@ -3552,11 +3616,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDurationChange-debounce"?: number | undefined;
       /**
        * The onDurationChange event is fired when the duration of the media has changed.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/durationchange_event)
        */
@@ -3578,11 +3644,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onEmptied-debounce"?: number | undefined;
       /**
        * The onEmptied event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/emptied_event)
        */
@@ -3604,11 +3672,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onEncrypted-debounce"?: number | undefined;
       /**
        * The onEncrypted event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/encrypted_event)
        */
@@ -3630,11 +3700,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onEnded-debounce"?: number | undefined;
       /**
        * The onEnded event is fired when the media has reached the end.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ended_event)
        */
@@ -3656,11 +3728,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onLoadedData-debounce"?: number | undefined;
       /**
        * The onLoadedData event is fired when the media's data is loaded.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadeddata_event)
        */
@@ -3682,11 +3756,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onLoadedMetadata-debounce"?: number | undefined;
       /**
        * The onLoadedMetadata event is fired when the metadata has been loaded.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadedmetadata_event)
        */
@@ -3708,11 +3784,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onLoadStart-debounce"?: number | undefined;
       /**
        * The onLoadStart event is fired when the browser starts looking for the specified media.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadstart_event)
        */
@@ -3734,11 +3812,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPause-debounce"?: number | undefined;
       /**
        * The onPause event is fired when the media has been paused.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/pause_event)
        */
@@ -3760,11 +3840,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPlay-debounce"?: number | undefined;
       /**
        * The onPlay event is fired when the media has been started or is no longer paused.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play_event)
        */
@@ -3786,11 +3868,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPlaying-debounce"?: number | undefined;
       /**
        * The onPlaying event is fired when the media has started playing.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/playing_event)
        */
@@ -3812,11 +3896,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onProgress-debounce"?: number | undefined;
       /**
        * The onProgress event is fired when the browser is in the process of getting the media data (downloading the media).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/progress_event)
        */
@@ -3838,11 +3924,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onRateChange-debounce"?: number | undefined;
       /**
        * The onRateChange event is fired when the playback rate has changed.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ratechange_event)
        */
@@ -3864,11 +3952,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onSeeked-debounce"?: number | undefined;
       /**
        * The onSeeked event is fired when the seeking property is false, meaning that the seeking has ended.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeked_event)
        */
@@ -3890,11 +3980,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onSeeking-debounce"?: number | undefined;
       /**
        * The onSeeking event is fired when the seeking property is true, meaning that the media is seeking a position.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeking_event)
        */
@@ -3916,11 +4008,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onStalled-debounce"?: number | undefined;
       /**
        * The onStalled event is fired when the browser is trying to get media data, but data is not available.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/stalled_event)
        */
@@ -3942,11 +4036,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onSuspend-debounce"?: number | undefined;
       /**
        * The onSuspend event is fired when the loading of a media is suspended.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/suspend_event)
        */
@@ -3968,11 +4064,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTimeUpdate-debounce"?: number | undefined;
       /**
        * The onTimeUpdate event is fired when the time indicated by the currentTime attribute has been updated.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event)
        */
@@ -3994,11 +4092,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onVolumeChange-debounce"?: number | undefined;
       /**
        * The onVolumeChange event is fired when the volume has changed.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volumechange_event)
        */
@@ -4020,11 +4120,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onWaiting-debounce"?: number | undefined;
       /**
        * The onWaiting event is fired when the media has paused but is expected to resume (like when the media is buffering).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/waiting_event)
        */
@@ -4048,11 +4150,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onClick-debounce"?: number | undefined;
       /**
        * The onClick event is fired when a pointing device button (usually a mouse) is pressed and released on a single element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event)
        */
@@ -4074,11 +4178,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onContextMenu-debounce"?: number | undefined;
       /**
        * The onContextMenu event is fired when the right button of the mouse is clicked on an element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/contextmenu_event)
        */
@@ -4100,11 +4206,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDblClick-debounce"?: number | undefined;
       /**
        * The onDblClick event is fired when a pointing device button (usually a mouse) is clicked twice on a single element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event)
        */
@@ -4126,11 +4234,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDrag-debounce"?: number | undefined;
       /**
        * The onDrag event is fired when an element or text selection is being dragged.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drag_event)
        */
@@ -4152,11 +4262,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDragEnd-debounce"?: number | undefined;
       /**
        * The onDragEnd event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragend_event)
        */
@@ -4178,11 +4290,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDragEnter-debounce"?: number | undefined;
       /**
        * The onDragEnter event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragenter_event)
        */
@@ -4204,11 +4318,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDragLeave-debounce"?: number | undefined;
       /**
        * The onDragLeave event is fired when a dragged element or text selection leaves a valid drop target.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragleave_event)
        */
@@ -4230,11 +4346,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDragOver-debounce"?: number | undefined;
       /**
        * The onDragOver event is fired when an element or text selection is being dragged over a valid drop target (every few hundred milliseconds).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragover_event)
        */
@@ -4256,11 +4374,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDragStart-debounce"?: number | undefined;
       /**
        * The onDragStart event is fired when the user starts dragging an element or text selection.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragstart_event)
        */
@@ -4282,11 +4402,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onDrop-debounce"?: number | undefined;
       /**
        * The onDrop event is fired when an element or text selection is dropped on a valid drop target.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drop_event)
        */
@@ -4308,11 +4430,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseDown-debounce"?: number | undefined;
       /**
        * The onMouseDown event is fired when a pointing device button is pressed on an element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousedown_event)
        */
@@ -4334,11 +4458,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseEnter-debounce"?: number | undefined;
       /**
        * The onMouseEnter event is fired when a pointing device is moved onto the element that has the listener attached.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseenter_event)
        */
@@ -4360,11 +4486,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseLeave-debounce"?: number | undefined;
       /**
        * The onMouseLeave event is fired when a pointing device is moved off the element that has the listener attached.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseleave_event)
        */
@@ -4386,11 +4514,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseMove-debounce"?: number | undefined;
       /**
        * The onMouseMove event is fired when a pointing device is moved over an element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousemove_event)
        */
@@ -4412,11 +4542,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseOut-debounce"?: number | undefined;
       /**
        * The onMouseOut event is fired when a pointing device is moved off the element that has the listener attached or off one of its children.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseout_event)
        */
@@ -4438,11 +4570,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseOver-debounce"?: number | undefined;
       /**
        * The onMouseOver event is fired when a pointing device is moved onto the element that has the listener attached.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseover_event)
        */
@@ -4464,11 +4598,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onMouseUp-debounce"?: number | undefined;
       /**
        * The onMouseUp event is fired when a pointing device button is released over an element.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseup_event)
        */
@@ -4492,11 +4628,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onSelect-debounce"?: number | undefined;
       /**
        * The onSelect event is fired when the user selects some text in a text field.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/select_event)
        */
@@ -4520,11 +4658,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTouchCancel-debounce"?: number | undefined;
       /**
        * The onTouchCancel event is fired when a touch point has been disrupted in an implementation-specific manner (for example, too many touch points are created).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchcancel)
        */
@@ -4546,11 +4686,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTouchEnd-debounce"?: number | undefined;
       /**
        * The onTouchEnd event is fired when a touch point is removed from the touch surface.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchend)
        */
@@ -4572,11 +4714,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTouchMove-debounce"?: number | undefined;
       /**
        * The onTouchMove event is fired when a touch point is moved along the touch surface.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchmove)
        */
@@ -4598,11 +4742,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTouchStart-debounce"?: number | undefined;
       /**
        * The onTouchStart event is fired when a touch point is placed on the touch surface.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchstart)
        */
@@ -4626,11 +4772,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerOver-debounce"?: number | undefined;
       /**
        * The onPointerOver event is fired when a pointing device is moved onto the element that has the listener attached.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerover_event)
        */
@@ -4652,11 +4800,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerEnter-debounce"?: number | undefined;
       /**
        * The onPointerEnter event is fired when a pointing device is moved onto the element that has the listener attached.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerenter_event)
        */
@@ -4678,11 +4828,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerDown-debounce"?: number | undefined;
       /**
        * The onPointerDown event is fired when a pointer becomes active.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerdown_event)
        */
@@ -4704,11 +4856,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerMove-debounce"?: number | undefined;
       /**
        * The onPointerMove event is fired when a pointer changes coordinates.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointermove_event)
        */
@@ -4730,11 +4884,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerUp-debounce"?: number | undefined;
       /**
        * The onPointerUp event is fired when a pointer is no longer active.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerup_event)
        */
@@ -4756,11 +4912,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerCancel-debounce"?: number | undefined;
       /**
        * The onPointerCancel event is fired when a pointer has been disrupted in an implementation-specific manner (for example, a device stops sending data).
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointercancel_event)
        */
@@ -4782,11 +4940,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerOut-debounce"?: number | undefined;
       /**
        * The onPointerOut event is fired when a pointing device is moved off the element that has the listener attached.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerout_event)
        */
@@ -4808,11 +4968,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onPointerLeave-debounce"?: number | undefined;
       /**
        * The onPointerLeave event is fired when a pointing device is moved off the element that has the listener attached.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerleave_event)
        */
@@ -4835,11 +4997,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onGotPointerCapture-debounce"?: number | undefined;
       /**
        * The onGotPointerCapture event is fired when an element captures a pointer.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/gotpointercapture_event)
        */
@@ -4861,11 +5025,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onLostPointerCapture-debounce"?: number | undefined;
       /**
        * The onLostPointerCapture event is fired after a pointer has been captured by an element and then is released.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/lostpointercapture_event)
        */
@@ -4889,11 +5055,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onScroll-debounce"?: number | undefined;
       /**
        * The onScroll event is fired when an element's scrollbar is being scrolled.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event)
        */
@@ -4917,11 +5085,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onWheel-debounce"?: number | undefined;
       /**
        * The onWheel event is fired when a wheel button of a pointing device is rotated in any direction.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)
        */
@@ -4945,11 +5115,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onAnimationStart-debounce"?: number | undefined;
       /**
        * The onAnimationStart event is fired when a CSS animation has started.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationstart_event)
        */
@@ -4971,11 +5143,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onAnimationEnd-debounce"?: number | undefined;
       /**
        * The onAnimationEnd event is fired when a CSS animation has completed.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationend_event)
        */
@@ -4997,11 +5171,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onAnimationIteration-debounce"?: number | undefined;
       /**
        * The onAnimationIteration event is fired when a CSS animation has completed one iteration.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationiteration_event)
        */
@@ -5025,11 +5201,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTransitionCancel-debounce"?: number | undefined;
       /**
        * The onTransitionCancel event is fired when a CSS transition has been interrupted.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitioncancel_event)
        */
@@ -5051,11 +5229,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTransitionEnd-debounce"?: number | undefined;
       /**
        * The onTransitionEnd event is fired when a CSS transition has completed.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionend_event)
        */
@@ -5077,11 +5257,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTransitionRun-debounce"?: number | undefined;
       /**
        * The onTransitionRun event is fired when a CSS transition has started.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionrun_event)
        */
@@ -5103,11 +5285,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onTransitionStart-debounce"?: number | undefined;
       /**
        * The onTransitionStart event is fired when a CSS transition has started.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionstart_event)
        */
@@ -5131,11 +5315,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onEnterPictureInPicture-debounce"?: number | undefined;
       /**
        * The onEnterPictureInPicture event is fired when a video enters picture-in-picture mode.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/enterpictureinpicture_event)
        */
@@ -5157,11 +5343,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onLeavePictureInPicture-debounce"?: number | undefined;
       /**
        * The onLeavePictureInPicture event is fired when a video leaves picture-in-picture mode.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/leavepictureinpicture_event)
        */
@@ -5183,11 +5371,13 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.dev/docs/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
        */
       "onResize-debounce"?: number | undefined;
       /**
        * The onResize event is fired when a picture-in-picture window is resized.
+       * 
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event)
        */
