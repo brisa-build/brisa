@@ -5388,62 +5388,296 @@ declare global {
       extends DOMAttributes<RefType>,
         AriaAttributes {
       // Standard HTML Attributes
+
+      /**
+       * The `accept` attribute specifies a filter for what file types the user can pick from the file input dialog box.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept)
+       */
       accept?: string | undefined;
-      acceptCharset?: string | undefined;
+      /**
+       * The `accept-charset` attribute specifies the character encodings that are to be used for the form submission.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#accept-charset)
+       */      
       "accept-charset"?: HTMLAttributes["acceptCharset"];
-      accessKey?: string | undefined;
+      /**
+       * The `accesskey` attribute specifies a shortcut key to activate/focus an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey)
+       */      
       accesskey?: HTMLAttributes["accessKey"];
+      /**
+       * The `action` attribute specifies where to send the form-data when a form is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action)
+       */
       action?: string | undefined;
+      /**
+       * The `allow` attribute is a space-separated list of the features the iframe's document is allowed to use.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#allow)
+       */
       allow?: string | undefined;
+      /**
+       * The `allowFullScreen` attribute is a boolean attribute that is present on the `<iframe>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#allowfullscreen)
+       */
       allowFullScreen?: boolean | undefined;
-      allowTransparency?: boolean | undefined;
+      /**
+       * The `alt` attribute specifies an alternate text for an image, if the image cannot be displayed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/alt#usage_notes)
+       */
       alt?: string | undefined;
+      /**
+       * The `as` attribute is a hint to the browser to load the specified resource in a specific way.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#as)
+       */
       as?: string | undefined;
+      /**
+       * The `async` attribute is a boolean attribute that is present on the `<script>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#async)
+       */
       async?: boolean | undefined;
+      /**
+       * The `autoComplete` attribute is a string attribute that is present on the `<form>` and `<input>` elements.
+       * 
+       * - [MDN reference](hhttps://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete)
+       */
       autocomplete?: string | undefined;
+      /**
+       * The `autoComplete` attribute is a string attribute that is present on the `<form>` and `<input>` elements.
+       * 
+       * - [MDN reference](hhttps://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete)
+       */
       autoComplete?: string | undefined;
+      /**
+       * The `autocorrect` non-standard attribute is a string indicating whether autocorrect is on or off. **Safari only**.
+       * 
+       * - [MDN reference](hhttps://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#non-standard_attributes)
+       */
       autocorrect?: string | undefined;
+      /**
+       * The `autoCorrect` non-standard attribute is a string indicating whether autocorrect is on or off. **Safari only**.
+       * 
+       * - [MDN reference](hhttps://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#non-standard_attributes)
+       */
       autoCorrect?: string | undefined;
+      /**
+       * The `autoFocus` attribute is a boolean attribute that is present on the `<button>`, `<input>`, `<keygen>`, `<select>`, and `<textarea>` elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#autofocus)
+       */
       autofocus?: boolean | undefined;
+      /**
+       * The `autoFocus` attribute is a boolean attribute that is present on the `<button>`, `<input>`, `<keygen>`, `<select>`, and `<textarea>` elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#autofocus)
+       */
       autoFocus?: boolean | undefined;
+      /**
+       * The `autoPlay` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#autoplay)
+       */
       autoPlay?: boolean | undefined;
+      /**
+       * The `autoPlay` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#autoplay)
+       */
       autoplay?: boolean | undefined;
+      /**
+       * The `capture` attribute is a boolean attribute that is present on the `<input>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/capture)
+       */
       capture?: boolean | string | undefined;
+      /**
+       * The `cellPadding` attribute is a string attribute that is present on the `<table>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table#cellpadding)
+       */
       cellPadding?: number | string | undefined;
+      /**
+       * The `cellSpacing` attribute is a string attribute that is present on the `<table>` element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table#cellspacing)
+       */
       cellSpacing?: number | string | undefined;
-      charSet?: string | undefined;
-      charset?: string | undefined;
-      challenge?: string | undefined;
+      /**
+       * The `checked` attribute is used to indicate whether the element should be checked or not. 
+       * 
+       * Example: `<input type="checkbox" checked>`.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#checked)
+       */
       checked?: boolean | undefined;
+      /**
+       * The `cite` attribute is a string attribute that is present on the `<blockquote>`, `<del>`, `<ins>`, `<q>`, and `<video>` elements.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote#cite)
+       */
       cite?: string | undefined;
+      /**
+       * The `class` attribute is a string attribute to specify one or more class names for an element. A class name is a reference to a class in a style sheet.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class)
+       */
       class?: string | undefined;
-      className?: string | undefined;
+      /**
+       * The `cols` attribute is a string attribute that is present on the `<textarea>` element to specify the visible width of the text area.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#cols)
+       */
       cols?: number | undefined;
+      /**
+       * The `colSpan` attribute is a string attribute that is present on the `<td>` and `<th>` elements to specify the number of columns a cell should span.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#colspan)
+       */
       colSpan?: number | undefined;
+      /**
+       * The `colSpan` attribute is a string attribute that is present on the `<td>` and `<th>` elements to specify the number of columns a cell should span.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#colspan)
+       */
       colspan?: number | undefined;
+      /**
+       * The `content` attribute is a string attribute that is present on the `<meta>` element to specify the value associated with the http-equiv or name attribute.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#content)
+       */
       content?: string | undefined;
+      /**
+       * The `contentEditable` attribute is a string attribute that is present on the `<element>` element to specify whether the content of an element is editable or not.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)
+       */
       contentEditable?: boolean | "" | "plaintext-only" | "inherit" | undefined;
+      /**
+       * The `contentEditable` attribute is a string attribute that is present on the `<element>` element to specify whether the content of an element is editable or not.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)
+       */
       contenteditable?: HTMLAttributes["contentEditable"];
+      /**
+       * The `controls` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements to show browser's default controls.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#controls)
+       */
       controls?: boolean | undefined;
+      /**
+       * The `controlsList` attribute is a string attribute that is present on the `<audio>` and `<video>` elements to specify the controls that should be displayed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#controlslist)
+       */
       controlsList?: string | undefined;
+      /**
+       * The `coords` attribute is a string attribute that is present on the `<area>` element to specify the coordinates of the area.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area#coords)
+       */
       coords?: string | undefined;
+      /**
+       * The `crossOrigin` attribute is a string attribute that is present on the `<img>`, `<link>`, and `<script>` elements to specify how the element handles cross-origin requests.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes)
+       */
       crossOrigin?: string | undefined;
+      /**
+       * The `crossOrigin` attribute is a string attribute that is present on the `<img>`, `<link>`, and `<script>` elements to specify how the element handles cross-origin requests.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes)
+       */
       crossorigin?: string | undefined;
+      /**
+       * The `data` attribute is a string attribute that is present on the `<object>` element to specify the URL of the resource.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/object#data)
+       */
       data?: string | undefined;
+      /**
+       * The `dateTime` attribute is a string attribute that is present on the `<del>` and `<ins>` elements to specify the date and time of the change.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time#datetime)
+       */
       dateTime?: string | undefined;
+      /**
+       * The `dateTime` attribute is a string attribute that is present on the `<del>` and `<ins>` elements to specify the date and time of the change.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time#datetime)
+       */
       datetime?: string | undefined;
+      /**
+       * The `default` attribute is a boolean attribute that is present on the `<track>` element to specify that the track should be enabled unless the user's preferences indicate something different.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track#default)
+       */
       default?: boolean | undefined;
-      defaultChecked?: boolean | undefined;
-      defaultValue?: string | undefined;
+      /**
+       * The `defer` attribute is a boolean attribute that is present on the `<script>` element to specify that the script should be executed after the page has finished parsing.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#defer)
+       */
       defer?: boolean | undefined;
+      /**
+       * The `dir` attribute is a string attribute that is present on the `<element>` element to specify the direction of the text.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir)
+       */
       dir?: "auto" | "rtl" | "ltr" | undefined;
+      /**
+       * The `disabled` attribute is a boolean attribute that is present on the `<button>`, `<fieldset>`, `<input>`, `<optgroup>`, `<option>`, `<select>`, and `<textarea>` elements to specify that the element should be disabled.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled)
+       */
       disabled?: boolean | undefined;
+      /**
+       * The `disableRemorePlayback` attribute is a boolean attribute that is present on the `<video>` and `<audio>` elements to specify that the remote playback is disabled.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#disableremoteplayback)
+       */
       disableRemotePlayback?: boolean | undefined;
+      /**
+       * The `download` attribute is a string attribute that is present on the `<a>` and `<area>` elements to specify that the target will be downloaded when a user clicks on the hyperlink.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#download)
+       */
       download?: any | undefined;
+      /**
+       * The `decoding` attribute is a string attribute that is present on the `<img>` element to specify the decoding process to use.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#decoding)
+       */
       decoding?: "sync" | "async" | "auto" | undefined;
+      /**
+       * The `draggable` attribute is a boolean attribute that is present on the `<element>` element to specify whether the element is draggable or not.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/draggable)
+       */
       draggable?: boolean | undefined;
+      /**
+       * The `encType` attribute is a string attribute that is present on the `<form>` element to specify the content type of the form data when the method is POST.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype)
+       */
       encType?: string | undefined;
+      /**
+       * The `encType` attribute is a string attribute that is present on the `<form>` element to specify the content type of the form data when the method is POST.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype)
+       */
       enctype?: string | undefined;
+      /**
+       * The `enterkeyhint` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the action for the enter key.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/enterkeyhint)
+       */
       enterkeyhint?:
         | "enter"
         | "done"
@@ -5453,82 +5687,419 @@ declare global {
         | "search"
         | "send"
         | undefined;
+      /**
+       * The `elementTiming` attribute is used to indicate that an element is flagged for tracking by PerformanceObserver objects using the "element" type.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/elementtiming)
+       */
       elementTiming?: string | undefined;
+      /**
+       * The `elementTiming` attribute is used to indicate that an element is flagged for tracking by PerformanceObserver objects using the "element" type.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/elementtiming)
+       */
       elementtiming?: HTMLAttributes["elementTiming"];
+      /**
+       * The `exportparts` attribute allows you to select and style elements existing in nested shadow trees, by exporting their part names.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/exportparts)
+       */
       exportparts?: string | undefined;
+      /**
+       * The `for` attribute is a string attribute that is present on the `<label>` element to specify which form element a label is bound to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label#for)
+       */
       for?: string | undefined;
+      /**
+       * The `form` attribute is a string attribute that is present on the `<button>`, `<fieldset>`, `<input>`, `<label>`, `<meter>`, `<object>`, `<output>`, `<select>`, and `<textarea>` elements to specify the form the element belongs to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#form)
+       */
       form?: string | undefined;
+      /**
+       * The `formAction` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the URL of the file that will process the input control when the form is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#formaction)
+       */
       formAction?: string | undefined;
+      /**
+       * The `formAction` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the URL of the file that will process the input control when the form is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#formaction)
+       */
       formaction?: string | undefined;
+      /**
+       * The `formEncType` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the content type of the form data when the method is POST.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype)
+       */
       formEncType?: string | undefined;
+      /**
+       * The `formEncType` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the content type of the form data when the method is POST.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype)
+       */
       formenctype?: string | undefined;
+      /**
+       * The `formMethod` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the HTTP method to use when the form is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formmethod)
+       */
       formMethod?: string | undefined;
+      /**
+       * The `formMethod` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the HTTP method to use when the form is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formmethod)
+       */
       formmethod?: string | undefined;
+      /**
+       * The `formNoValidate` attribute is a boolean attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify that the form should not be validated when it is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formnovalidate)
+       */
       formNoValidate?: boolean | undefined;
+      /**
+       * The `formNoValidate` attribute is a boolean attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify that the form should not be validated when it is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formnovalidate)
+       */
       formnovalidate?: boolean | undefined;
+      /**
+       * The `formTarget` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify where to display the response after submitting the form.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formtarget)
+       */
       formTarget?: string | undefined;
+      /**
+       * The `formTarget` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify where to display the response after submitting the form.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formtarget)
+       */
       formtarget?: string | undefined;
-      frameBorder?: number | string | undefined;
-      frameborder?: number | string | undefined;
+      /**
+       * The `headers` attribute is a string attribute that is present on the `<td>` and `<th>` elements to specify one or more headers cells a cell is related to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#headers)
+       */
       headers?: string | undefined;
+      /**
+       * The `height` attribute is a string attribute that is present on the `<canvas>`, `<embed>`, `<iframe>`, `<img>`, `<input>`, `<object>`, and `<video>` elements to specify the height of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#height)
+       */
       height?: number | string | undefined;
+      /**
+       * The `hidden` attribute is a boolean attribute that is present on the `<element>` element to specify that the element is not yet, or is no longer, relevant.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/hidden)
+       */
       hidden?: boolean | "hidden" | "until-found" | undefined;
+      /**
+       * The `high` attribute is a string attribute that is present on the `<meter>` element to specify the range that is considered to be a high value.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter#high)
+       */
       high?: number | undefined;
+      /**
+       * The `href` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<base>` elements to specify the URL of the page the link goes to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href)
+       */
       href?: string | undefined;
+      /**
+       * The `hrefLang` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<link>` elements to specify the language of the linked resource.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#hreflang)
+       */
       hrefLang?: string | undefined;
+      /**
+       * The `hrefLang` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<link>` elements to specify the language of the linked resource.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#hreflang)
+       */
       hreflang?: string | undefined;
+      /**
+       * The `htmlFor` attribute is a string attribute that is present on the `<label>` element to specify the id of the form element the label is bound to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor)
+       */
       htmlFor?: string | undefined;
-      httpEquiv?: string | undefined;
+      /**
+       * The `http-equiv` attribute is a string attribute that is present on the `<meta>` element to specify the HTTP header that will be set when the page is requested.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#http-equiv)
+       */
       "http-equiv"?: string | undefined;
-      icon?: string | undefined;
+      /**
+       * The `id` attribute is a string attribute that is present on the `<element>` element to specify a unique id for an element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id)
+       */
       id?: string | undefined;
+      /**
+       * The `indeterminate` attribute is a boolean attribute that is present on the `<input type="checkbox">` and `<input type="radio">` elements to specify that the user has not specified a value for the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#indeterminate_state_checkboxes)
+       */
       indeterminate?: boolean | undefined;
+      /**
+       * The `inert` attribute is a boolean attribute that is present on an element to specify that the element is not interactive.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert)
+       */
       inert?: boolean | undefined;
+      /**
+       * The `inputMode` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the type of data that is expected to be entered by the user.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode)
+       */
       inputMode?: string | undefined;
+      /**
+       * The `inputMode` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the type of data that is expected to be entered by the user.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode)
+       */
       inputmode?: string | undefined;
+      /**
+       * The `integrity` attribute is a string attribute that is present on the `<link>` and `<script>` elements to specify the cryptographic hash of the resource.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#integrity)
+       */
       integrity?: string | undefined;
+      /**
+       * The `is` global attribute allows you to specify that a standard HTML element should behave like a defined custom built-in element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/is
+       */
       is?: string | undefined;
-      keyParams?: string | undefined;
-      keyType?: string | undefined;
+      /**
+       * The `kind` attribute is a string attribute that is present on the `<track>` element to specify the kind of text track.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track#kind)
+       */
       kind?: string | undefined;
+      /**
+       * The `label` attribute is a string attribute that is present on the `<optgroup>`, `<option>`, and `<track>` elements to specify the label for the option group.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup#label)
+       */
       label?: string | undefined;
+      /**
+       * The `lang` attribute is a string attribute that is present on an element to specify the language of the element's content.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang)
+       */
       lang?: string | undefined;
+      /**
+       * The `list` attribute is a string attribute that is present on the `<input>` element to specify the id of a `<datalist>` element that contains pre-defined options for the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#list)
+       */
       list?: string | undefined;
+      /**
+       * The `loading` attribute is a string attribute that is present on the `<img>` and `<iframe>` elements to specify how the element should be loaded.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#loading)
+       */
       loading?: "eager" | "lazy" | undefined;
+      /**
+       * The `loop` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements to specify that the media should play in a loop.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#loop)
+       */
       loop?: boolean | undefined;
+      /**
+       * The `low` attribute is a string attribute that is present on the `<meter>` element to specify the range that is considered to be a low value.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter#low)
+       */
       low?: number | undefined;
+      /**
+       * The `manifest` attribute is a string attribute that is present on the `<html>` element to specify the URL of the document's cache manifest.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html#manifest)
+       */
       manifest?: string | undefined;
+      /**
+       * The `marginHeight` attribute is a number attribute that is present on the `<frame>` and `<iframe>` elements to specify the top and bottom margins of the frame.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#marginheight)
+       */
       marginHeight?: number | undefined;
+      /**
+       * The `marginWidth` attribute is a number attribute that is present on the `<frame>` and `<iframe>` elements to specify the left and right margins of the frame.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#marginwidth)
+       */
       marginWidth?: number | undefined;
+      /**
+       * The `max` attribute is a string attribute that is present on the `<input>`, `<meter>`, and `<progress>` elements to specify the maximum value of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#max)
+       */
       max?: number | string | undefined;
+      /**
+       * The `maxLength` attribute is a number attribute that is present on the `<input>` and `<textarea>` elements to specify the maximum number of characters allowed in the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/maxlength)
+       */
       maxLength?: number | undefined;
+      /**
+       * The `maxLength` attribute is a number attribute that is present on the `<input>` and `<textarea>` elements to specify the maximum number of characters allowed in the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/maxlength)
+       */
       maxlength?: number | undefined;
+      /**
+       * The `media` attribute is a string attribute that is present on the `<a>`, `<area>`, `<link>`, `<source>`, and `<style>` elements to specify the media the linked resource applies to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#media)
+       */
       media?: string | undefined;
-      mediaGroup?: string | undefined;
+      /**
+       * The `method` attribute is a string attribute that is present on the `<form>` element to specify the HTTP method to use when the form is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#method)
+       */
       method?: string | undefined;
+      /**
+       * The `min` attribute is a string attribute that is present on the `<input>`, `<meter>`, and `<progress>` elements to specify the minimum value of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/min)
+       */
       min?: number | string | undefined;
+      /**
+       * The `minLength` attribute is a number attribute that is present on the `<input>` and `<textarea>` elements to specify the minimum number of characters allowed in the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/minlength)
+       */
       minLength?: number | undefined;
+      /**
+       * The `minLength` attribute is a number attribute that is present on the `<input>` and `<textarea>` elements to specify the minimum number of characters allowed in the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/minlength)
+       */
       minlength?: number | undefined;
+      /**
+       * The `multiple` attribute is a boolean attribute that is present on the `<input>` and `<select>` elements to specify that the user is allowed to enter more than one value.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#multiple)
+       */
       multiple?: boolean | undefined;
+      /**
+       * The `muted` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements to specify that the media should be muted by default.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#muted)
+       */
       muted?: boolean | undefined;
+      /**
+       * The `name` attribute is a string attribute that is present on the `<button>`, `<form>`, `<fieldset>`, `<iframe>`, `<input>`, `<map>`, `<meta>`, `<object>`, `<output>`, `<param>`, `<select>`, and `<textarea>` elements to specify the name of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#name)
+       */
       name?: string | undefined;
+      /**
+       * The `nomodule` attribute is a boolean attribute that is present on the `<script>` element to specify that the script should not be executed in user agents that support module scripts.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#nomodule)
+       */
       nomodule?: boolean | undefined;
+      /**
+       * The `nonce` attribute is a string attribute that is present on the `<script>` and `<style>` elements to specify a cryptographic nonce.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/nonce)
+       */
       nonce?: string | undefined;
+      /**
+       * The `noValidate` attribute is a boolean attribute that is present on the `<form>` element to specify that the form should not be validated when it is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#novalidate)
+       */
       noValidate?: boolean | undefined;
+      /**
+       * The `noValidate` attribute is a boolean attribute that is present on the `<form>` element to specify that the form should not be validated when it is submitted.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#novalidate)
+       */
       novalidate?: boolean | undefined;
+      /**
+       * The `open` attribute is a boolean attribute that is present on the `<details>` element to specify that the details should be visible by default.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details#open)
+       */
       open?: boolean | undefined;
+      /**
+       * The `optimum` attribute is a number attribute that is present on the `<meter>` element to specify what the author thinks is the optimal value for the gauge.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter#optimum)
+       */
       optimum?: number | undefined;
+      /**
+       * The `part` attribute is a string attribute that is present on the `<element>` element to specify the part name of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/part)
+       */
       part?: string | undefined;
+      /**
+       * The `pattern` attribute is a string attribute that is present on the `<input>` element to specify a regular expression that the input's value is checked against.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/pattern)
+       */
       pattern?: string | undefined;
+      /**
+       * The `ping` attribute is a string attribute that is present on the `<a>` and `<area>` elements to specify a space-separated list of URLs to which, when the link is followed, post requests with the body PING will be sent by the browser (in the background).
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#ping)
+       */
       ping?: string | undefined;
+      /**
+       * The `placeholder` attribute is a string attribute that is present on the `<input>`, `<textarea>`, and `<select>` elements to specify a short hint that describes the expected value of the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#placeholder)
+       */
       placeholder?: string | undefined;
+      /**
+       * The `playsInline` attribute is a boolean attribute that is present on the `<video>` and `<audio>` elements to specify that the video should play inline, instead of in fullscreen mode.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#playsinline)
+       */
       playsInline?: boolean | undefined;
+      /**
+       * The `playsInline` attribute is a boolean attribute that is present on the `<video>` and `<audio>` elements to specify that the video should play inline, instead of in fullscreen mode.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#playsinline)
+       */
       playsinline?: boolean | undefined;
+      /**
+       * The `poster` attribute is a string attribute that is present on the `<video>` element to specify an image to be shown while the video is downloading, or until the user hits the play button.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#poster)
+       */
       poster?: string | undefined;
+      /**
+       * The `preload` attribute is a string attribute that is present on the `<audio>` and `<video>` elements to specify how the media should be preloaded.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#preload)
+       */
       preload?: string | undefined;
-      radioGroup?: string | undefined;
+      /**
+       * The `readOnly` attribute is a boolean attribute that is present on the `<input>` and `<textarea>` elements to specify that the element is read-only.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly)
+       */
       readonly?: boolean | undefined;
+      /**
+       * The `readOnly` attribute is a boolean attribute that is present on the `<input>` and `<textarea>` elements to specify that the element is read-only.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly)
+       */
       readOnly?: boolean | undefined;
+      /**
+       * The `referrerpolicy` attribute is a string attribute that is present on the `<a>`, `<area>`, `<iframe>`, `<img>`, `<link>`, and `<script>` elements to specify which referrer to send when fetching the resource.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#referrerpolicy)
+       */
       referrerpolicy?:
         | "no-referrer"
         | "no-referrer-when-downgrade"
@@ -5539,54 +6110,272 @@ declare global {
         | "strict-origin-when-cross-origin"
         | "unsafe-url"
         | undefined;
+      /**
+       * The `rel` attribute is a string attribute that is present on various elements, such as `<a>` and `<link>`, to specify the relationship between the current document and the linked resource.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel)
+       */
       rel?: string | undefined;
+      /**
+       * The `required` attribute is a boolean attribute that is present on the `<input>`, `<select>`, and `<textarea>` elements to specify that the input must be filled out before submitting the form.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/required)
+       */
       required?: boolean | undefined;
+      /**
+       * The `reversed` attribute is a boolean attribute that is present on the `<ol>` element to specify that the list should be displayed in reverse order.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol#reversed)
+       */
       reversed?: boolean | undefined;
+      /**
+       * The `role` attribute is present on various elements to define the role of the element in the accessibility tree.
+       * 
+       * - AriaRole is a custom type representing possible values for the `role` attribute.
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)
+       */
       role?: AriaRole | undefined;
+      /**
+       * The `rows` attribute is a number attribute that is present on the `<textarea>` element to specify the number of visible text lines for the control.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#rows)
+       */
       rows?: number | undefined;
+      /**
+       * The `rowSpan` attribute is a number attribute that is present on the `<td>` and `<th>` elements to specify the number of rows a cell should span.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#rowspan)
+       */
       rowSpan?: number | undefined;
+      /**
+       * The `rowSpan` attribute is a number attribute that is present on the `<td>` and `<th>` elements to specify the number of rows a cell should span.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#rowspan)
+       */
       rowspan?: number | undefined;
+      /**
+       * The `sandbox` attribute is a string attribute that is present on the `<iframe>` element to specify extra restrictions for the content in the iframe.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#sandbox)
+       */
       sandbox?: string | undefined;
+      /**
+       * The `scope` attribute is a string attribute that is present on the `<th>` element to specify the cells that the header element relates to.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th#scope)
+       */
       scope?: string | undefined;
-      scoped?: boolean | undefined;
+      /**
+       * The `scrolling` attribute is a string attribute that is present on the `<iframe>` element to specify whether or not to display scrollbars in the frame.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#scrolling)
+       */
       scrolling?: string | undefined;
-      seamless?: boolean | undefined;
+      /**
+       * The `selected` attribute is a boolean attribute that is present on the `<option>` element to specify that the option should be pre-selected when the page loads.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option#selected)
+       */
       selected?: boolean | undefined;
+      /**
+       * The `shape` attribute is a string attribute that is present on the `<area>` element to specify the shape of the area.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area#shape)
+       */
       shape?: string | undefined;
+      /**
+       * The `size` attribute is a number attribute that is present on the `<input>` and `<select>` elements to specify the width of the control.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/size)
+       */
       size?: number | undefined;
+      /**
+       * The `sizes` attribute is a string attribute that is present on the `<link>` and `<img>` elements to specify the sizes of icons for visual media.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#sizes)
+       */
       sizes?: string | undefined;
+      /**
+       * The `slot` attribute is a string attribute that is present on the `<slot>` element to specify the name of the slot.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot#slot)
+       */
       slot?: string | undefined;
+      /**
+       * The `span` attribute is a number attribute that is present on the `<col>` and `<colgroup>` elements to specify the number of columns that a `<colgroup>` element spans.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup#span)
+       */
       span?: number | undefined;
+      /**
+       * The `spellCheck` attribute is a boolean attribute that is present on the `<element>` element to specify whether the element is to have its spelling and grammar checked.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck)
+       */
       spellcheck?: boolean | undefined;
+      /**
+       * The `spellCheck` attribute is a boolean attribute that is present on the `<element>` element to specify whether the element is to have its spelling and grammar checked.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck)
+       */
       spellCheck?: boolean | undefined;
+      /**
+       * The `src` attribute is a string attribute that is present on the `<audio>`, `<embed>`, `<iframe>`, `<img>`, `<input>`, `<script>`, `<source>`, and `<track>` elements to specify the URL of the media to embed.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#src)
+       */
       src?: string | undefined;
+      /**
+       * The `srcSet` attribute is a string attribute that is present on the `<img>` and `<source>` elements to specify the URL of the image to use in different situations.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#srcset)
+       */
       srcSet?: string | undefined;
+      /**
+       * The `srcSet` attribute is a string attribute that is present on the `<img>` and `<source>` elements to specify the URL of the image to use in different situations.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#srcset)
+       */
       srcset?: string | undefined;
+      /**
+       * The `srcDoc` attribute is a string attribute that is present on the `<iframe>` element to specify the HTML content of the page to show in the frame.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#srcdoc)
+       */
       srcDoc?: string | undefined;
+      /**
+       * The `srcDoc` attribute is a string attribute that is present on the `<iframe>` element to specify the HTML content of the page to show in the frame.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#srcdoc)
+       */
       srcdoc?: string | undefined;
+      /**
+       * The `srcLang` attribute is a string attribute that is present on the `<track>` element to specify the language of the track text data.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track#srclang)
+       */
       srcLang?: string | undefined;
+      /**
+       * The `srcLang` attribute is a string attribute that is present on the `<track>` element to specify the language of the track text data.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track#srclang)
+       */
       srclang?: string | undefined;
+      /**
+       * The `start` attribute is a number attribute that is present on the `<ol>` element to specify the starting number of the list.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol#start)
+       */
       start?: number | undefined;
+      /**
+       * The `step` attribute is a number attribute that is present on the `<input>` element to specify the legal number intervals for an input field.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#step)
+       */
       step?: number | string | undefined;
+      /**
+       * The `style` attribute is a string attribute that is present on the `<element>` element to specify the inline style for the element.
+       * 
+       * In Brisa you can also use an object with the CSSProperties.
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * <div style={{ color: 'red' }} />
+       * ```
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/style)
+       */
       style?: string | CSSProperties | undefined;
+      /**
+       * The `summary` attribute is a string attribute that is present on the `<table>` element to specify a summary of the content of the table.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table#summary)
+       */
       summary?: string | undefined;
+      /**
+       * The `tabIndex` attribute is a number attribute that is present on the `<element>` element to specify the position of the element in the tab order.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
+       */
       tabIndex?: number | undefined;
+      /**
+       * The `tabIndex` attribute is a number attribute that is present on the `<element>` element to specify the position of the element in the tab order.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
+       */
       tabindex?: number | undefined;
+      /**
+       * The `target` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<form>` elements to specify where to display the linked resource.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target)
+       */
       target?: string | undefined;
+      /**
+       * The `title` attribute is a string attribute that is present on the `<element>` element to specify advisory information for the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/title)
+       */
       title?: string | undefined;
+      /**
+       * The `type` attribute is a string attribute that is present on the `<button>`, `<input>`, `<command>`, `<embed>`, `<object>`, `<script>`, and `<source>` elements to specify the type of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#type)
+       */
       type?: string | undefined;
+      /**
+       * The `useMap` attribute is a string attribute that is present on the `<img>` and `<object>` elements to specify the URL of the image map to use.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#usemap)
+       */
       useMap?: string | undefined;
+      /**
+       * The `useMap` attribute is a string attribute that is present on the `<img>` and `<object>` elements to specify the URL of the image map to use.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#usemap)
+       */
       usemap?: string | undefined;
+      /**
+       * The `value` attribute is a string attribute that is present on the `<button>`, `<input>`, `<li>`, `<option>`, and `<progress>` elements to specify the value of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#value)
+       */
       value?: string | string[] | number | undefined;
+      /**
+       * The `volume` attribute sets the volume at which the media will be played.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volume)
+       */
       volume?: string | number | undefined;
+      /**
+       * The `width` attribute is a number attribute that is present on the `<canvas>`, `<embed>`, `<iframe>`, `<img>`, `<input>`, `<object>`, and `<video>` elements to specify the width of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#width)
+       */
       width?: number | string | undefined;
-      wmode?: string | undefined;
+      /**
+       * The `wrap` attribute is a string attribute that is present on the `<textarea>` element to specify whether or not the text should be wrapped.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#wrap)
+       */
       wrap?: string | undefined;
 
       // template attributes
+
+      /**
+       * The `shadowrootmode` attribute is a string attribute that is present on the `<template>` element to specify the mode of the shadow root.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template#shadowrootmode)
+       */
       shadowrootmode?: ShadowRootMode | undefined;
 
       // Non-standard attributes
+
+      /**
+       * The `allowCapitalize` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the capitalization behavior of the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
+       */
       autocapitalize?:
         | "off"
         | "none"
@@ -5595,6 +6384,11 @@ declare global {
         | "words"
         | "characters"
         | undefined;
+      /**
+       * The `allowCapitalize` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the capitalization behavior of the input.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
+       */
       autoCapitalize?:
         | "off"
         | "none"
@@ -5603,30 +6397,96 @@ declare global {
         | "words"
         | "characters"
         | undefined;
+      /**
+       * The `disablePictureInPicture` attribute is a boolean attribute that is present on the `<video>` and `<iframe>` elements to specify that the user should not be able to enter picture-in-picture mode.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#disablepictureinpicture)
+       */
       disablePictureInPicture?: boolean | undefined;
+      /**
+       * The `results` attribute is a number attribute that is present on the `<input>` element to specify the number of items that should be displayed in the drop-down list.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#results)
+       */
       results?: number | undefined;
+
+      /**
+       * The `translate` attribute is a string attribute that is present on the `<element>` element to specify whether the content of the element should be translated or not.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/translate)
+       */
       translate?: "yes" | "no" | undefined;
 
       // RDFa Attributes
-      about?: string | undefined;
-      datatype?: string | undefined;
-      inlist?: any;
+
+      /**
+       * The `prefix` attribute is a string attribute that is present on the `<element>` element to specify the prefix of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Attr/prefix)
+       */
       prefix?: string | undefined;
-      property?: string | undefined;
-      resource?: string | undefined;
-      typeof?: string | undefined;
-      vocab?: string | undefined;
 
       // Microdata Attributes
+
+      /**
+       * The `itemProp` attribute is a string attribute that is present on the `<element>` element to specify the item property of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemprop)
+       */
       itemProp?: string | undefined;
+      /**
+       * The `itemProp` attribute is a string attribute that is present on the `<element>` element to specify the item property of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemprop)
+       */
       itemprop?: string | undefined;
+      /**
+       * The `itemScope` attribute is a boolean attribute that is present on the `<element>` element to specify the item scope of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemscope)
+       */
       itemScope?: boolean | undefined;
+      /**
+       * The `itemScope` attribute is a boolean attribute that is present on the `<element>` element to specify the item scope of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemscope)
+       */
       itemscope?: boolean | undefined;
+      /**
+       * The `itemType` attribute is a string attribute that is present on the `<element>` element to specify the item type of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemtype)
+       */
       itemType?: string | undefined;
+      /**
+       * The `itemType` attribute is a string attribute that is present on the `<element>` element to specify the item type of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemtype)
+       */
       itemtype?: string | undefined;
+      /**
+       * The `itemID` attribute is a string attribute that is present on the `<element>` element to specify the item ID of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemid)
+       */
       itemID?: string | undefined;
+      /**
+       * The `itemID` attribute is a string attribute that is present on the `<element>` element to specify the item ID of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemid)
+       */
       itemid?: string | undefined;
+      /**
+       * The `itemRef` attribute is a string attribute that is present on the `<element>` element to specify the item reference of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemref)
+       */
       itemRef?: string | undefined;
+      /**
+       * The `itemRef` attribute is a string attribute that is present on the `<element>` element to specify the item reference of the element.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemref)
+       */
       itemref?: string | undefined;
     }
 
