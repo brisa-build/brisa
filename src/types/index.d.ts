@@ -6338,6 +6338,9 @@ declare global {
       /**
        * The `value` attribute is a string attribute that is present on the `<button>`, `<input>`, `<li>`, `<option>`, and `<progress>` elements to specify the value of the element.
        * 
+       * In Brisa the `value` attribute is also used to define the context content inside `<context-provider>`.
+       * 
+       * - [Brisa docs](https://brisa.build/docs/components-details/context#provider)
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#value)
        */
       value?: string | string[] | number | undefined;
