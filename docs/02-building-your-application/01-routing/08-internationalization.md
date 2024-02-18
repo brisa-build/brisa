@@ -766,7 +766,7 @@ export function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
         if (lang === locale) return null;
 
         return (
-          <li>
+          <li key={lang}>
             <a href={`/${lang}${pathname}`}>{t(`change-to-${lang}`)}</a>
           </li>
         );
@@ -788,7 +788,7 @@ export function ChangeLocale(props: {}, { i18n, route }) {
         if (lang === locale) return null;
 
         return (
-          <li>
+          <li key={lang}>
             <a href={`/${lang}${pathname}`}>{t(`change-to-${lang}`)}</a>
           </li>
         );
