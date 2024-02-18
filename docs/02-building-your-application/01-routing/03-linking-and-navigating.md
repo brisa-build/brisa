@@ -38,7 +38,7 @@ export default function Posts({ posts }) {
   return (
     <ul>
       {posts.map((post) => (
-        <li>
+        <li key={post.id}>
           <a href={`/blog/${encodeURIComponent(post.slug)}`}>{post.title}</a>
         </li>
       ))}
