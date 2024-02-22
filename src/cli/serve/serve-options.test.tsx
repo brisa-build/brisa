@@ -229,7 +229,7 @@ describe("CLI: serve", () => {
       ),
     );
 
-    expect(response.status).toBe(301);
+    expect(response.status).toBe(307);
     expect(response.headers.get("Location")).toBe("https://brisa.build/foo/");
   });
 
@@ -966,7 +966,7 @@ describe("CLI: serve", () => {
     expect(mockLog).toHaveBeenCalledWith("message", "hello test");
   });
 
-  it("should NOT call responseAction method with GET and return 404", async () => {
+  it("should NOT call responseAction method with GET and return 200 with the page", async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
     globalThis.mockConstants = {
@@ -978,11 +978,17 @@ describe("CLI: serve", () => {
     }));
 
     const res = await testRequest(
-      new Request("http://localhost:1234/_action/a1_1"),
+      new Request("http://localhost:1234/somepage", {
+        method: "GET",
+        headers: {
+          "x-action": "a1_1",
+        },
+      }),
     );
 
     expect(mockResponseAction).not.toHaveBeenCalled();
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(200);
+    expect(await res.text()).toContain("<h1>Some page</h1>");
   });
 
   it("should call responseAction method when is an action", async () => {
@@ -997,7 +1003,12 @@ describe("CLI: serve", () => {
     }));
 
     await testRequest(
-      new Request("http://localhost:1234/_action/a1_1", { method: "POST" }),
+      new Request("http://localhost:1234/somepage", {
+        method: "POST",
+        headers: {
+          "x-action": "a1_1",
+        },
+      }),
     );
 
     expect(mockResponseAction).toHaveBeenCalled();
@@ -1012,7 +1023,12 @@ describe("CLI: serve", () => {
     }));
 
     await testRequest(
-      new Request("http://localhost:1234/es/_action/a1_1", { method: "POST" }),
+      new Request("http://localhost:1234/es/somepage", {
+        method: "POST",
+        headers: {
+          "x-action": "a1_1",
+        },
+      }),
     );
 
     expect(mockResponseAction).toHaveBeenCalled();

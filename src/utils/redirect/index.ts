@@ -22,19 +22,20 @@ export function redirectFromUnnormalizedURL(
   currentRequest: RequestContext,
 ) {
   if (url.origin !== new URL(currentRequest.url).origin) {
-    return redirect(url.toString());
+    return redirect(url.toString(), 307);
   }
 
   const req = extendRequestContext({ originalRequest: new Request(url) });
   const isAnAsset = isAssetRequest(req);
   const i18nRes = isAnAsset ? {} : handleI18n(req);
+  const isAnAction =
+    currentRequest.method === "POST" && currentRequest.headers.has("x-action");
 
-  if (i18nRes.response) {
-    return i18nRes.response;
-  }
+  if (i18nRes.response) return i18nRes.response;
 
-  if (!isAnAsset) {
+  if (!isAnAsset && !isAnAction) {
     const res = redirectTrailingSlash(req);
+
     if (res) return res;
   }
 

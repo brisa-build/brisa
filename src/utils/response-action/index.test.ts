@@ -4,6 +4,7 @@ import extendRequestContext from "@/utils/extend-request-context";
 import responseAction from ".";
 
 const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const PAGE = "http://locahost/es/somepage";
 
 describe("utils", () => {
   beforeEach(() => {
@@ -16,13 +17,12 @@ describe("utils", () => {
   });
   describe("response-action", () => {
     it("should add the correct param", async () => {
-      const action = "a1_1";
-
       const req = extendRequestContext({
-        originalRequest: new Request(`http://locahost/_action/${action}`, {
+        originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
+            "x-action": "a1_1",
           },
           body: JSON.stringify([
             {
@@ -44,10 +44,11 @@ describe("utils", () => {
       formData.append("foo", "bar");
 
       const req = extendRequestContext({
-        originalRequest: new Request(`http://locahost/_action/${action}`, {
+        originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "multipart/form-data",
+            "x-action": "a1_1",
           },
           body: formData,
         }),
@@ -65,7 +66,7 @@ describe("utils", () => {
           cancelable: false,
           composed: false,
           currentTarget: {
-            action: "http://locahost/_action/a1_1",
+            action: "http://locahost/es/somepage",
             autocomplete: "on",
             enctype: "multipart/form-data",
             encoding: "multipart/form-data",
@@ -78,7 +79,7 @@ describe("utils", () => {
           returnValue: true,
           srcElement: null,
           target: {
-            action: "http://locahost/_action/a1_1",
+            action: "http://locahost/es/somepage",
             autocomplete: "on",
             enctype: "multipart/form-data",
             encoding: "multipart/form-data",
@@ -95,10 +96,11 @@ describe("utils", () => {
       const action = "a1_1";
 
       const req = extendRequestContext({
-        originalRequest: new Request(`http://locahost/_action/${action}`, {
+        originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
+            "x-action": "a1_1",
           },
           body: JSON.stringify([
             {

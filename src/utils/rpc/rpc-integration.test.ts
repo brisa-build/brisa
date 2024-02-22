@@ -95,12 +95,9 @@ describe("utils", () => {
     });
 
     it('should serialize an event and call "rpc" with the correct parameters', async () => {
-      const mockFetch = await simulateRPC({
-        navigateTo: "http://localhost/some-page",
-      });
+      const mockFetch = await simulateRPC();
 
-      expect(location.toString()).toBe("http://localhost/some-page");
-      expect(mockFetch.mock.calls[0][0]).toBe("/_action/a1_1");
+      expect(mockFetch.mock.calls[0][0]).toBe(location.toString());
       expect(mockFetch.mock.calls[0][1]?.method).toBe("POST");
 
       const [{ timeStamp, eventPhase, ...event }] = JSON.parse(
