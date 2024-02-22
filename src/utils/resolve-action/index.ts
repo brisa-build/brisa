@@ -3,7 +3,6 @@ import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from "@/utils/rerender-in-action";
 import responseRenderedPage from "@/utils/response-rendered-page";
 import getRouteMatcher from "@/utils/get-route-matcher";
 import { getConstants } from "@/constants";
-import extendRequestContext from "@/utils/extend-request-context";
 import { logError } from "@/utils/log/log-build";
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 
@@ -75,14 +74,7 @@ export default async function resolveAction({
       req.i18n?.locale,
     );
 
-    const pageRequest = extendRequestContext({
-      id: req.id,
-      originalRequest: new Request(url, req),
-      store: req.store,
-      i18n: req.i18n,
-    });
-
-    const { route, isReservedPathname } = pagesRouter.match(pageRequest);
+    const { route, isReservedPathname } = pagesRouter.match(req);
 
     if (!route || isReservedPathname) {
       const errorMessage = `Error rerendering page ${url}. Page route not found`;
@@ -90,9 +82,7 @@ export default async function resolveAction({
       return new Response(errorMessage, { status: 404 });
     }
 
-    pageRequest.route = route;
-
-    const res = await responseRenderedPage({ req: pageRequest, route });
+    const res = await responseRenderedPage({ req, route });
 
     res.headers.set("X-Mode", options.mode);
 

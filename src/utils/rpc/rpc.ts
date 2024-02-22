@@ -12,8 +12,6 @@ let resolveRPC: ((res: Response) => Promise<void>) | undefined;
  * This function is used to call an action on the server.
  */
 async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
-  const lang = $document.documentElement.lang;
-  const langPrefix = lang ? `/${lang}` : "";
   let promise = resolveRPC
     ? $Promise.resolve()
     : new $Promise((res) => {
@@ -27,8 +25,11 @@ async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
         $document.head.appendChild(scriptElement);
       });
 
-  const res = await fetch(`${langPrefix}/_action/${actionId}`, {
+  const res = await fetch(location.toString(), {
     method: "POST",
+    headers: {
+      "x-action": actionId,
+    },
     body: isFormData
       ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
       : JSON.stringify(args, serialize),
