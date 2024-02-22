@@ -262,7 +262,7 @@ describe("utils", () => {
       const expectedTitle =
         "Unable to generate a hard redirect to the user browser language.";
       const expectedDocs =
-        "https://brisa.build/docs/deploying/static-exports#hard-redirects";
+        "https://brisa.build/docs/building-your-application/deploying/static-exports#hard-redirects";
       expect(logs).toContain("Ops! Warning:");
       expect(logs).toContain(expectedTitle);
       expect(logs).toContain(expectedDocs);
