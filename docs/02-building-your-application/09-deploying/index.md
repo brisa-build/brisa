@@ -29,13 +29,13 @@ Then, run `bun run build` to build your application. Finally, run `bun run start
 
 Choose your hosting to deploy:
 
-- [Deploy Brisa app to **Fly.io**](/docs/deploying/fly-io)
-- [Deploy Brisa app to **Vercel**](/docs/deploying/vercel)
-- [Deploy Brisa app to **Netlify**](/docs/deploying/netlify)
-- [Deploy Brisa app to **AWS**](/docs/deploying/aws)
-- [Deploy Brisa app to **Render.com**](/docs/deploying/render-com)
+- [Deploy Brisa app to **Fly.io**](/docs/building-your-application/fly-io)
+- [Deploy Brisa app to **Vercel**](/docs/building-your-application/deploying/vercel)
+- [Deploy Brisa app to **Netlify**](/docs/building-your-application/deploying/netlify)
+- [Deploy Brisa app to **AWS**](/docs/building-your-application/deploying/aws)
+- [Deploy Brisa app to **Render.com**](/docs/building-your-application/deploying/render-com)
 
 ## Learn more
 
-- [Docker](/docs/deploying/docker) - Learn how to containerize a Brisa application with Docker.
-- [Tauri](/docs/deploying/tauri) - Build a desktop Brisa application.
+- [Docker](/docs/building-your-application/deploying/docker) - Learn how to containerize a Brisa application with Docker.
+- [Tauri](/docs/building-your-application/deploying/tauri) - Build a desktop Brisa application.
