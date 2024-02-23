@@ -10,6 +10,15 @@ import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
+const headers = new Headers();
+
+headers.set("x-s", JSON.stringify([["foo", null]]));
+
+const getReq = () =>
+  extendRequestContext({
+    originalRequest: new Request("http://localhost", { headers }),
+    store: undefined,
+  });
 
 describe("utils", () => {
   describe("resolve-action", () => {
@@ -36,11 +45,10 @@ describe("utils", () => {
       const error = new Error("Not found");
       error.name = "NotFoundError";
 
-      const req = extendRequestContext({
-        originalRequest: new Request("http://localhost"),
-      });
+      const req = getReq();
       const response = await resolveAction({ req, error, component: <div /> });
 
+      expect(response.headers.get("X-S")).toBe(JSON.stringify([["foo", null]]));
       expect(await response.headers.get("X-Navigate")).toBe(
         "http://localhost/?_not-found=1",
       );
@@ -50,16 +58,14 @@ describe("utils", () => {
       const navigationTrowable = new Error("/some-url");
       navigationTrowable.name = "navigate";
 
-      const req = extendRequestContext({
-        originalRequest: new Request("http://localhost"),
-      });
-
+      const req = getReq();
       const response = await resolveAction({
         req,
         error: navigationTrowable,
         component: <div />,
       });
 
+      expect(response.headers.get("X-S")).toBe(JSON.stringify([["foo", null]]));
       expect(await response.headers.get("X-Navigate")).toBe("/some-url");
     });
 
@@ -90,14 +96,38 @@ describe("utils", () => {
       );
       error.name = "rerender";
 
-      const req = extendRequestContext({
-        originalRequest: new Request("http://localhost"),
-      });
+      const req = getReq();
       const response = await resolveAction({ req, error, component: <div /> });
 
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get("X-Mode")).toBe("reactivity");
+      expect(response.headers.get("X-S")).toBe(JSON.stringify([["foo", null]]));
+      expect(await response.text()).toContain(
+        '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
+      );
+    });
+
+    it('should rerender the page with reactivity and "x-s" store header', async () => {
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({ type: "page", mode: "reactivity" }) +
+          SUFFIX_MESSAGE,
+      );
+      error.name = "rerender";
+
+      const req = getReq();
+
+      req.store.set("foo", "bar");
+
+      const response = await resolveAction({ req, error, component: <div /> });
+
+      expect(response.status).toBe(200);
+      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
+      expect(response.headers.get("X-Mode")).toBe("reactivity");
+      expect(response.headers.get("X-S")).toBe(
+        JSON.stringify([["foo", "bar"]]),
+      );
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
       );
@@ -111,14 +141,13 @@ describe("utils", () => {
       );
       error.name = "rerender";
 
-      const req = extendRequestContext({
-        originalRequest: new Request("http://localhost"),
-      });
+      const req = getReq();
       const response = await resolveAction({ req, error, component: <div /> });
 
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get("X-Mode")).toBe("transition");
+      expect(response.headers.get("X-S")).toBe(JSON.stringify([["foo", null]]));
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
       );

@@ -5,6 +5,7 @@ import type { RequestContext } from "@/types";
 export default async function responseAction(req: RequestContext) {
   const { BUILD_DIR } = getConstants();
   const action = req.headers.get("x-action")!;
+  const storeRaw = req.headers.get("x-s")!;
   const actionFile = action.split("_").at(0);
   const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
   const contentType = req.headers.get("content-type");
@@ -46,6 +47,14 @@ export default async function responseAction(req: RequestContext) {
     params[0]._custom;
 
   if (isWebComponentEvent) params[0] = params[0].detail;
+
+  // Transfer client store to server store
+  if (storeRaw) {
+    const entries = JSON.parse(storeRaw);
+    for (const [key, value] of entries) {
+      req.store.set(key, value);
+    }
+  }
 
   req.store.set("_action_params", params);
 
