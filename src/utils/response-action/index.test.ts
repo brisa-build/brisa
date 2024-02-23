@@ -38,8 +38,6 @@ describe("utils", () => {
     });
 
     it("should add the correct param when using form-data", async () => {
-      const action = "a1_1";
-
       const formData = new FormData();
       formData.append("foo", "bar");
 
@@ -93,8 +91,6 @@ describe("utils", () => {
     });
 
     it("should add the correct param when using web component event", async () => {
-      const action = "a1_1";
-
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
@@ -124,6 +120,28 @@ describe("utils", () => {
       await responseAction(req);
 
       expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+    });
+
+    it('should be possible to access to store variables from "x-s" header', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-s": JSON.stringify([["foo", "bar"]]),
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      await responseAction(req);
+
+      expect(req.store.get("foo")).toBe("bar");
     });
   });
 });
