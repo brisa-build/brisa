@@ -15,8 +15,8 @@ const SUBSCRIBE = "s";
 const UNSUBSCRIBE = "u";
 
 const subscription = createSubscription();
-const storeMap = new Map((window as any)._S);
-const globalStore = ((window as any)._s = {} as Record<string, any>);
+const storeMap = ((window as any)._s = new Map((window as any)._S));
+const globalStore = {} as Record<string, any>;
 
 // Only get/set/delete from store are reactive
 for (let op of ["get", "set", "delete"]) {
