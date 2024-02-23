@@ -12,7 +12,7 @@ The `notFound` function allows you to render the [`404 page`](#404-page) within 
 Invoking the `notFound()` function throws a `NotFoundError` error and terminates rendering of the route segment in which it was thrown.
 
 ```jsx filename="src/pages/user/[id].tsx"
-import { RequestContext } from "brisa";
+import type { RequestContext } from "brisa";
 import { notFound } from "brisa";
 
 async function fetchUser(id) {
