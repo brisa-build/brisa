@@ -1,7 +1,11 @@
 ---
-title: Context provider component
-description: Use `create-context` provider to share data with the tree of child components.
+title: context-provider
+description: Use `context-provider` component to share data with the tree of child components.
 ---
+
+## Reference
+
+### `<context-provider context={Context} value="foo">...</context-provider>`
 
 The `context-provider` component is required to propagate a value from some [context](/docs/building-your-application/components-details/context) to a sub-tree of components.
 
@@ -36,10 +40,18 @@ export default function WebComponent() {
 }
 ```
 
-Parameters:
+#### Parameters:
 
 - `SomeContext`: The context that you’ve previously created with createContext. The context itself does not hold the information, it only represents the kind of information you can provide or read from components.
 
-Returns:
+##### Returns:
 
 - `useContext` returns the context value inside a signal for the calling component. It is determined as the value passed to the closest [`context-provider`](/docs/building-your-application/components-details/context#provider) above the calling component in the tree. If there is no such provider, then the returned value will be the `defaultValue` you have passed to [`createContext`](/docs/building-your-application/components-details/context#create-context-createcontext) for that context. The returned value is up-to-date, reactive under a signal.
+
+### Support
+
+| Component         | Support |
+| ----------------- | ------- |
+| Server Component  | ✅      |
+| Web Component     | ✅      |
+| SSR Web Component | ✅      |
