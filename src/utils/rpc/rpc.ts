@@ -2,9 +2,8 @@ const ACTION = "action";
 const ACTION_ATTRIBUTE = "data-" + ACTION;
 const $document = document;
 const $Promise = Promise;
-const $setTimeout = setTimeout;
-const $clearTimeout = clearTimeout;
 let resolveRPC: ((res: Response) => Promise<void>) | undefined;
+let isReady = false;
 
 /**
  * RPC (Remote Procedure Call)
@@ -66,7 +65,8 @@ function serialize(k: string, v: unknown) {
   return v;
 }
 
-function registerActionsFromElements(elements: NodeListOf<Element>) {
+function registerActions() {
+  const elements = $document.querySelectorAll(`[${ACTION_ATTRIBUTE}]`);
   const onPrefix = "on";
 
   for (let element of elements) {
@@ -89,8 +89,8 @@ function registerActionsFromElements(elements: NodeListOf<Element>) {
       if (actionName.startsWith(ACTION)) {
         element.addEventListener(eventName, (...args: unknown[]) => {
           if (args[0] instanceof Event) args[0].preventDefault();
-          $clearTimeout(timeout);
-          timeout = $setTimeout(
+          clearTimeout(timeout);
+          timeout = setTimeout(
             () => rpc(actionId!, isFormData, ...args),
             debounceMs,
           );
@@ -100,19 +100,14 @@ function registerActionsFromElements(elements: NodeListOf<Element>) {
   }
 }
 
-let timeout: ReturnType<typeof setTimeout>;
-
 function initActionRegister() {
-  registerActionsFromElements(
-    $document.querySelectorAll(`[${ACTION_ATTRIBUTE}]`),
-  );
-  if (timeout) $clearTimeout(timeout);
-  timeout = $setTimeout(initActionRegister, 0);
+  registerActions();
+  if (!isReady) requestAnimationFrame(initActionRegister);
 }
 
 initActionRegister();
 
 $document.addEventListener("DOMContentLoaded", () => {
-  initActionRegister();
-  $clearTimeout(timeout);
+  isReady = true;
+  registerActions();
 });
