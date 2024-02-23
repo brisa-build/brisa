@@ -5,6 +5,7 @@ import getRouteMatcher from "@/utils/get-route-matcher";
 import { getConstants } from "@/constants";
 import { logError } from "@/utils/log/log-build";
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
+import getClientStoreEntries from "../get-client-store-entries";
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -29,6 +30,7 @@ export default async function resolveAction({
 }: ResolveActionParams) {
   const { PAGES_DIR, RESERVED_PAGES } = getConstants();
   const url = new URL(req.headers.get("referer") ?? "", req.url);
+  const store = JSON.stringify(getClientStoreEntries(req));
 
   // Avoid declarative shadow dom
   req.store.set(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL, true);
@@ -40,6 +42,7 @@ export default async function resolveAction({
       headers: {
         ...headers,
         "X-Navigate": error.message,
+        "X-S": store,
       },
     });
   }
@@ -53,6 +56,7 @@ export default async function resolveAction({
       headers: {
         ...headers,
         "X-Navigate": url.toString(),
+        "X-S": store,
       },
     });
   }
@@ -85,6 +89,7 @@ export default async function resolveAction({
     const res = await responseRenderedPage({ req, route });
 
     res.headers.set("X-Mode", options.mode);
+    res.headers.set("X-S", store);
 
     return res;
   }
@@ -95,6 +100,7 @@ export default async function resolveAction({
     headers: {
       ...headers,
       "X-Mode": options.mode,
+      "X-S": store,
     },
   });
 }
