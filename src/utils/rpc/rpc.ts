@@ -1,6 +1,7 @@
 const ACTION = "action";
 const ACTION_ATTRIBUTE = "data-" + ACTION;
 const $document = document;
+const stringify = JSON.stringify;
 const $Promise = Promise;
 let resolveRPC: ((res: Response) => Promise<void>) | undefined;
 let isReady = false;
@@ -28,10 +29,12 @@ async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
     method: "POST",
     headers: {
       "x-action": actionId,
+      // @ts-ignore
+      "x-s": stringify(window._s ? [..._s.entries()] : window._S),
     },
     body: isFormData
       ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
-      : JSON.stringify(args, serialize),
+      : stringify(args, serialize),
   });
 
   await promise;

@@ -150,5 +150,46 @@ describe("utils", () => {
       const [event] = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
       expect(event._custom).toBeTrue();
     });
+
+    it('should send the "x-action" header with the actionId', async () => {
+      const mockFetch = await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+      });
+
+      expect(mockFetch.mock.calls[0][1]?.headers).toEqual({
+        "x-action": "a1_1",
+      });
+    });
+
+    it('should send the "x-s" header with the serialized store', async () => {
+      window._S = [["a", "b"]];
+
+      await import("@/utils/signals");
+
+      window._s.set("c", "d");
+
+      const mockFetch = await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+      });
+
+      expect(mockFetch.mock.calls[0][1]?.headers).toEqual({
+        "x-action": "a1_1",
+        "x-s": `[["a","b"],["c","d"]]`,
+      });
+    });
+
+    it('should send the "x-s" header with the serialized store if only are transferred store', async () => {
+      window._s = undefined;
+      window._S = [["c", "d"]];
+
+      const mockFetch = await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+      });
+
+      expect(mockFetch.mock.calls[0][1]?.headers).toEqual({
+        "x-action": "a1_1",
+        "x-s": `[["c","d"]]`,
+      });
+    });
   });
 });
