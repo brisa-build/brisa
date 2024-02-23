@@ -402,6 +402,12 @@ describe("signals", () => {
     store.Map.clear();
   });
 
+  it('should expose store to window["_s"] to allow RPC to modify it', () => {
+    const { store } = signals();
+    store.set("count", 0);
+    expect((window as any)._s.get("count")).toBe(0);
+  });
+
   it("should work store with derived", () => {
     const { store, derived, effect } = signals();
     const { store: store2 } = signals();
