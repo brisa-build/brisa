@@ -21,7 +21,7 @@ This page will be displayed when the user tries to access a page that does not e
 
 ## `notFound` function
 
-The `notFound` function allows you to render the [`404 page`](#404-page) within a route segment as well as inject a `<meta name="robots" content="noindex" />` tag.
+The [`notFound`](/docs/api-reference/functions/notFound) function allows you to render the [`404 page`](#404-page) within a route segment as well as inject a `<meta name="robots" content="noindex" />` tag.
 
 Invoking the `notFound()` function throws a `NotFoundError` error and terminates rendering of the route segment in which it was thrown.
 

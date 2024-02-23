@@ -856,7 +856,7 @@ export function createContext<T>(defaultValue?: T): BrisaContext<T>;
  *
  * Docs:
  *
- * - [How to use `dangerHTML`](https://brisa.build/docs/components-details/web-components#inject-html-dangerhtml)
+ * - [How to use `dangerHTML`](https://brisa.build/docs/api-reference/functions/dangerHTML)
  */
 export function dangerHTML(html: string): DangerHTMLOutput;
 
@@ -873,7 +873,7 @@ export function dangerHTML(html: string): DangerHTMLOutput;
  *
  * Docs:
  *
- * - [How to use `notFound`](https://brisa.build/docs/building-your-application/routing/custom-error#notfound-function)
+ * - [How to use `notFound`](https://brisa.build/docs/api-reference/functions/notFound)
  */
 export function notFound(): never;
 
@@ -892,7 +892,7 @@ export function notFound(): never;
  *
  * Docs:
  *
- * - [How to use `navigate`](https://brisa.build/docs/building-your-application/routing/linking-and-navigating#navigate-function)
+ * - [How to use `navigate`](https://brisa.build/docs/api-reference/functions/navigate)
  */
 export function navigate(page: string): never;
 
