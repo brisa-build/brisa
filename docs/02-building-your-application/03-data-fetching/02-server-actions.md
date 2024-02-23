@@ -146,15 +146,15 @@ TODO
 
 ### `rerenderInAction`
 
-The `rerenderInAction` method is used to rerender the component or the page
+The [`rerenderInAction`](/docs/api-reference/functions/rerenderInAction) method is used to rerender the component or the page
 inside a server action. Outside of an action, it throws an error.
 
 #### Params:
 
 - `type`: The type of the rerender. It can be `component` or `page`. By default, it is `component`.
-- `mode`: The type of the rerender. It can be `reactivity` or `transition`. By default, it is `reactivity`. `rerenderInAction` needs to be called outside of the `try/catch` block:
+- `mode`: The type of the rerender. It can be `reactivity` or `transition`. By default, it is `reactivity`.
 
-#### Example:
+`rerenderInAction` needs to be called outside of the `try/catch` block:
 
 ```tsx
 import { rerenderInAction } from "brisa";

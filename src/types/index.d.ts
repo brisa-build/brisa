@@ -869,7 +869,7 @@ export function createContext<T>(defaultValue?: T): BrisaContext<T>;
  *
  * Docs:
  *
- * - [How to use `rerenderInAction`](https://brisa.build/docs/components-details/server-actions#rerenderinaction)
+ * - [How to use `rerenderInAction`](https://brisa.build/docs/api-reference/functions/rerenderInAction)
  */
 export function rerenderInAction(props: RerenderInActionProps = {}): never;
 
