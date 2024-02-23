@@ -839,7 +839,7 @@ export type Signal<T> = { value: T };
  *
  * Docs:
  *
- * - [How to use `createContext`](https://brisa.build/docs/components-details/server-components#create-context-createcontext)
+ * - [How to use `createContext`](https://brisa.build/docs/api-reference/functions/createContext)
  */
 export function createContext<T>(defaultValue?: T): BrisaContext<T>;
 
@@ -918,7 +918,7 @@ type DangerHTMLOutput = {
  *
  * Docs:
  *
- * - [How to use `createPortal`](https://brisa.build/docs/components-details/web-components#portals-createportal)
+ * - [How to use `createPortal`](https://brisa.build/Users/aralroca/docs/api-reference/functions/createPortal)
  */
 export function createPortal(
   element: JSX.Element,
