@@ -24,9 +24,9 @@ Parameters:
 
 ### Provider
 
-The Provider is required to propagate a value from this context to a sub-tree of components.
+The `context-provider` component is required to propagate a value from this context to a sub-tree of components.
 
-The Provider does **not need any import**. You can use the custom element `context-provider` by passing the context and value. It is a web component because this way the value is going to be shared with the client components and also you can use the same provider in client components.
+The `context-provider` does **not need any import**. You can use the custom element `context-provider` by passing the `context` and `value`. It is a web component because this way the value is going to be shared with the web components and also you can use the same provider in web components.
 
 **Server component:**
 
