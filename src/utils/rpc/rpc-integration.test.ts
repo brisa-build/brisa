@@ -83,6 +83,7 @@ describe("utils", () => {
   describe("rpc", () => {
     beforeEach(() => {
       GlobalRegistrator.register();
+      window.requestAnimationFrame = (cb) => setTimeout(cb, 0);
     });
     afterEach(() => {
       jest.restoreAllMocks();
