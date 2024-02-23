@@ -743,7 +743,7 @@ export default function ThemeProvider(
 
 ## Portals (`createPortal`)
 
-`createPortal` lets you render some children into a different part of the DOM. `createPortal(children, domNode)`.
+[`createPortal`](/docs/api-reference/functions/createPortal) lets you render some children into a different part of the DOM. `createPortal(children, domNode)`.
 
 To create a portal, call `createPortal`, passing some JSX, and the DOM node where it should be rendered:
 
@@ -767,7 +767,7 @@ A portal only changes the physical placement of the DOM node. In every other way
 
 ## Inject HTML (`dangerHTML`)
 
-Make situations that we want to inject HTML that we have in string to the DOM. For these occasions, you can use the `dangerHTML` function. Since without this function it is escaped by security.
+Make situations that we want to inject HTML that we have in string to the DOM. For these occasions, you can use the [`dangerHTML`](/docs/api-reference/functions/dangerHTML) function. Since without this function it is escaped by security.
 
 ```tsx
 import { dangerHTML } from "brisa";

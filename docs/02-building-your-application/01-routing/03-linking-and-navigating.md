@@ -81,7 +81,7 @@ export default function Home() {
 
 ## `navigate` function
 
-The `navigate` function is used for imperative navigation.
+The [`navigate`](/docs/api-reference/functions/navigate) function is used for imperative navigation.
 
 ```ts
 import { navigate } from "brisa";
