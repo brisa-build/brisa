@@ -398,6 +398,10 @@ describe("signals", () => {
     expect(store.get<number>("count")).toBe(1);
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[2][0]).toBe(1);
+    expect([...store.Map.entries()]).toEqual([
+      ["foo", "bar"],
+      ["count", 1],
+    ]);
 
     store.Map.clear();
   });
