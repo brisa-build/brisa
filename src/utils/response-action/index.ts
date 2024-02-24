@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
+import getClientStoreEntries from "../get-client-store-entries";
 
 export default async function responseAction(req: RequestContext) {
   const { BUILD_DIR } = getConstants();
@@ -58,5 +59,12 @@ export default async function responseAction(req: RequestContext) {
 
   req.store.set("_action_params", params);
 
-  return actionModule[action]({}, req);
+  let response = await actionModule[action]({}, req);
+
+  if (!(response instanceof Response)) response = new Response(null);
+
+  // Transfer server store to client store
+  response.headers.set("X-S", JSON.stringify(getClientStoreEntries(req)));
+
+  return response;
 }
