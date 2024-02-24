@@ -32,9 +32,33 @@ describe("utils", () => {
         }),
       });
 
-      await responseAction(req);
+      const res = await responseAction(req);
 
+      expect(res.headers.get("x-s")).toEqual("[]");
       expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+    });
+
+    it('should be possible to access to store variables from "x-s" header', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-s": JSON.stringify([["foo", "bar"]]),
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(req.store.get("foo")).toBe("bar");
+      expect(res.headers.get("x-s")).toEqual('[["foo","bar"]]');
     });
 
     it("should add the correct param when using form-data", async () => {
@@ -120,28 +144,6 @@ describe("utils", () => {
       await responseAction(req);
 
       expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
-    });
-
-    it('should be possible to access to store variables from "x-s" header', async () => {
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "x-action": "a1_1",
-            "x-s": JSON.stringify([["foo", "bar"]]),
-          },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
-        }),
-      });
-
-      await responseAction(req);
-
-      expect(req.store.get("foo")).toBe("bar");
     });
   });
 });

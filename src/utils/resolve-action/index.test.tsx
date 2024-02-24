@@ -10,13 +10,10 @@ import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
-const headers = new Headers();
-
-headers.set("x-s", JSON.stringify([["foo", null]]));
 
 const getReq = () =>
   extendRequestContext({
-    originalRequest: new Request("http://localhost", { headers }),
+    originalRequest: new Request("http://localhost"),
     store: undefined,
   });
 
@@ -48,7 +45,6 @@ describe("utils", () => {
       const req = getReq();
       const response = await resolveAction({ req, error, component: <div /> });
 
-      expect(response.headers.get("X-S")).toBe(JSON.stringify([["foo", null]]));
       expect(await response.headers.get("X-Navigate")).toBe(
         "http://localhost/?_not-found=1",
       );
@@ -65,7 +61,6 @@ describe("utils", () => {
         component: <div />,
       });
 
-      expect(response.headers.get("X-S")).toBe(JSON.stringify([["foo", null]]));
       expect(await response.headers.get("X-Navigate")).toBe("/some-url");
     });
 
@@ -102,7 +97,6 @@ describe("utils", () => {
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get("X-Mode")).toBe("reactivity");
-      expect(response.headers.get("X-S")).toBe(JSON.stringify([["foo", null]]));
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
       );
@@ -125,9 +119,6 @@ describe("utils", () => {
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get("X-Mode")).toBe("reactivity");
-      expect(response.headers.get("X-S")).toBe(
-        JSON.stringify([["foo", "bar"]]),
-      );
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
       );
@@ -147,7 +138,6 @@ describe("utils", () => {
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get("X-Mode")).toBe("transition");
-      expect(response.headers.get("X-S")).toBe(JSON.stringify([["foo", null]]));
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
       );

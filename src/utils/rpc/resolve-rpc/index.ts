@@ -25,6 +25,8 @@ async function resolveRPC(res: Response) {
   // This is temporal meanwhile the diffing algorithm is not working with streaming
   const html = await res.text();
 
+  if (!html) return;
+
   await diff(document, html);
 }
 
