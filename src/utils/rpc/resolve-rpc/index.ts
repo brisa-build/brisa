@@ -3,6 +3,19 @@ import diff from "../diff";
 
 async function resolveRPC(res: Response) {
   const urlToNavigate = res.headers.get("X-Navigate");
+  const storeRaw = res.headers.get("X-S");
+
+  if (storeRaw) {
+    const entries = JSON.parse(storeRaw);
+
+    // Store WITHOUT web components signals
+    if (!window._s) return (window._S = entries);
+
+    // Store WITH web components signals
+    for (const [key, value] of entries) {
+      window._s.set(key, value);
+    }
+  }
 
   if (urlToNavigate) {
     window.location.href = urlToNavigate;
