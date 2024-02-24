@@ -6,6 +6,7 @@ let resolveRPC: (res: Response) => Promise<void>;
 async function initBrowser() {
   GlobalRegistrator.register();
   await import(".");
+  window._s = window._S = undefined;
   resolveRPC = window._rpc;
 }
 
@@ -28,6 +29,40 @@ describe("utils", () => {
 
         expect(location.toString()).toBe("http://localhost/some-page");
       });
+    });
+
+    it("should update the store", async () => {
+      const res = new Response(null, {
+        headers: {
+          "X-S": JSON.stringify([["foo", "bar"]]),
+        },
+      });
+
+      await initBrowser();
+      // Init store
+      window._s = {
+        Map: new Map(),
+        get: (key: string) => window._s.Map.get(key),
+        set: (key: string, value: any) => window._s.Map.set(key, value),
+      };
+
+      await resolveRPC(res);
+
+      expect(window._s.get("foo")).toBe("bar");
+    });
+
+    it("should update the store without initialize (no signals, only server store with transferToClient)", async () => {
+      const res = new Response(null, {
+        headers: {
+          "X-S": JSON.stringify([["foo", "bar"]]),
+        },
+      });
+
+      await initBrowser();
+      await resolveRPC(res);
+
+      expect(window._s).toBeUndefined();
+      expect(window._S).toEqual([["foo", "bar"]]);
     });
 
     describe("when receive streamed HTML", () => {

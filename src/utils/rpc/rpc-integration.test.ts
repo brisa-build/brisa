@@ -83,6 +83,7 @@ describe("utils", () => {
   describe("rpc", () => {
     beforeEach(() => {
       GlobalRegistrator.register();
+      window._S = window._s = undefined;
       window.requestAnimationFrame = (cb) => setTimeout(cb, 0);
     });
     afterEach(() => {
@@ -164,7 +165,11 @@ describe("utils", () => {
     it('should send the "x-s" header with the serialized store', async () => {
       window._S = [["a", "b"]];
 
-      await import("@/utils/signals");
+      window._s = {
+        Map: new Map(window._S),
+        get: (key: string) => window._s.Map.get(key),
+        set: (key: string, value: any) => window._s.Map.set(key, value),
+      };
 
       window._s.set("c", "d");
 

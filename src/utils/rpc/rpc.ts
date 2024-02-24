@@ -30,7 +30,7 @@ async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
     headers: {
       "x-action": actionId,
       // @ts-ignore
-      "x-s": stringify(window._s ? [..._s.entries()] : window._S),
+      "x-s": stringify(window._s ? [..._s.Map.entries()] : window._S),
     },
     body: isFormData
       ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
