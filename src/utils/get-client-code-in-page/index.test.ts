@@ -60,7 +60,7 @@ describe("utils", () => {
         pageWebComponents,
       );
       const i18nCode = 3072;
-      const brisaSize = 5264;
+      const brisaSize = 5259;
       const webComponents = 660;
 
       expect(output).not.toBeNull();
@@ -79,7 +79,7 @@ describe("utils", () => {
       const input = path.join(pages, "index.tsx");
       const output = await getClientCodeInPage(input, allWebComponents);
       const unsuspenseSize = 217;
-      const actionRPCSize = 1365;
+      const actionRPCSize = 1366;
       const actionRPCLazySize = 1837;
 
       // actionRPCLazy is loaded after user interaction (action),

@@ -241,7 +241,7 @@ describe("utils", () => {
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 103 B     |
-    ${info}Φ /chunk-hash                    | 3 kB      |
+    ${info}Φ /chunk-hash                    | 214 kB    |
     ${info}Φ /chunk-hash                    | 106 B     |
     ${info}
     ${info}λ Server entry-points
