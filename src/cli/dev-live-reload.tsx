@@ -12,8 +12,12 @@ let semaphore = false;
 let waitFilename = "";
 
 if (IS_DEVELOPMENT) {
-  console.log(LOG_PREFIX.INFO, "hot reloading enabled");
-  globalThis.watcher?.close();
+  if (globalThis.watcher) {
+    globalThis.watcher.close();
+  } else {
+    console.log(LOG_PREFIX.INFO, "hot reloading enabled");
+  }
+
   globalThis.watcher = watch(
     SRC_DIR,
     { recursive: true },
