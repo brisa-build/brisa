@@ -13,7 +13,8 @@ let waitFilename = "";
 
 if (IS_DEVELOPMENT) {
   console.log(LOG_PREFIX.INFO, "hot reloading enabled");
-  const watcher = watch(
+  globalThis.watcher?.close();
+  globalThis.watcher = watch(
     SRC_DIR,
     { recursive: true },
     async (event, filename) => {
@@ -28,7 +29,7 @@ if (IS_DEVELOPMENT) {
   );
 
   process.on("SIGINT", () => {
-    watcher.close();
+    globalThis.watcher?.close();
     process.exit(0);
   });
 }

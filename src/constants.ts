@@ -135,6 +135,7 @@ declare global {
   var mockConstants: Partial<typeof constants> | undefined;
   var BrisaRegistry: Map<string, number>;
   var lastContextProviderId: number;
+  var watcher: import("node:fs").FSWatcher;
   var __WEB_CONTEXT_PLUGINS__: boolean;
   var __RPC_LAZY_FILE__: string;
 }
