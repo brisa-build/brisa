@@ -19,7 +19,7 @@ export default function createContextPlugin() {
     name: "context-plugin",
     setup(build) {
       build.onLoad(
-        { filter: /\.(ts|js|jsx|tsx)$/ },
+        { filter: new RegExp(".*/src/.*\\.(tsx|jsx|js|ts)") },
         async ({ path, loader }) => {
           let code = await Bun.file(path).text();
 
