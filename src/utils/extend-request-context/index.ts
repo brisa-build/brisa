@@ -97,5 +97,11 @@ export default function extendRequestContext({
       pages: {},
     };
 
+  // Indicate
+  originalRequest.indicate = (key: string) => ({
+    id: `__ind:${key}`,
+    value: false,
+  });
+
   return originalRequest as RequestContext;
 }
