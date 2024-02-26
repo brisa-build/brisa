@@ -189,5 +189,19 @@ describe("brisa core", () => {
       expect((requestContext as any).webStore.get("foo")).toBe("bar");
       expect((requestContext as any).webStore.get("baz")).toBe(undefined);
     });
+
+    it("should add the indicate function", () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      const indicate = requestContext.indicate("foo");
+      expect(indicate.id).toBe("__ind:foo");
+      expect(indicate.value).toBe(false);
+    });
   });
 });

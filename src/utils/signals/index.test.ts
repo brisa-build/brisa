@@ -472,4 +472,20 @@ describe("signals", () => {
     expect(mockEffect.mock.calls[1][0]).toBeUndefined();
     store.Map.clear();
   });
+
+  it('should work the "indicate" method', () => {
+    const { indicate, store, effect } = signals();
+    const mockEffect = mock<(isPending: boolean) => void>(() => {});
+    const actionPending = indicate("increment");
+
+    effect(() => {
+      mockEffect(actionPending.value);
+    });
+
+    store.set(actionPending.id, true);
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[0][0]).toBeFalse();
+    expect(mockEffect.mock.calls[1][0]).toBeTrue();
+  });
 });
