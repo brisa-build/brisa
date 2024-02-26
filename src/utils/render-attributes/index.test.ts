@@ -445,5 +445,79 @@ describe("utils", () => {
 
       expect(attributes).toBe(' style="color:red;"');
     });
+
+    it('should simplify indicatorSignal to indicatorId inside "ac-disabled" attribute', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          "ac-disabled": request.indicate("increment"),
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(` ac-disabled="['__ind:increment']"`);
+    });
+
+    it('should simplify multi indicatorSignals to indicatorIds inside "ac-disabled" attribute', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          "ac-disabled": [
+            request.indicate("increment"),
+            request.indicate("decrement"),
+          ],
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(
+        ` ac-disabled="['__ind:increment','__ind:decrement']"`,
+      );
+    });
+
+    it('should simplify indicatorSignal to indicatorId inside "ac-visible" attribute', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          "ac-visible": request.indicate("increment"),
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(` ac-visible="['__ind:increment']"`);
+    });
+
+    it('should simplify multi indicatorSignals to indicatorIds inside "ac-visible" attribute', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          "ac-visible": [
+            request.indicate("increment"),
+            request.indicate("decrement"),
+          ],
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(
+        ` ac-visible="['__ind:increment','__ind:decrement']"`,
+      );
+    });
   });
 });
