@@ -1,4 +1,4 @@
-import { type WebContext } from "@/types";
+import { type IndicatorSignal, type WebContext } from "@/types";
 
 type Effect = ((
   addSubEffect: (effect: Effect) => Effect,
@@ -173,7 +173,15 @@ export default function signals() {
     },
   } as WebContext["store"];
 
-  return { state, store, effect, reset, cleanup, derived };
+  // generate a server action indicator signal
+  function indicate(key: string): IndicatorSignal {
+    const id = `__ind:${key}`;
+    const indicator = derived(() => !!store.get(id)) as IndicatorSignal;
+    indicator.id = id;
+    return indicator;
+  }
+
+  return { state, store, effect, reset, cleanup, derived, indicate };
 }
 
 function createSubscription() {

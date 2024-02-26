@@ -607,5 +607,34 @@ describe("utils", () => {
         ],
       });
     });
+
+    it('should work with "indicate" method', async () => {
+      const Component = ({ onSaveAction }: any, { indicate }: WebContext) => {
+        const actionPending = indicate("some-key");
+        return (
+          <button disabled={actionPending.value} onClick={onSaveAction}>
+            Save
+          </button>
+        );
+      };
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("button");
+      expect(output.props.children[0].props.children[0].props.disabled).toBe(
+        false,
+      );
+    });
   });
 });

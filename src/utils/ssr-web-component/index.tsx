@@ -17,7 +17,7 @@ const voidFn = () => {};
 
 export default async function SSRWebComponent(
   { Component, selector, ...props }: Props,
-  { store, useContext, i18n }: RequestContext,
+  { store, useContext, i18n, indicate }: RequestContext,
 ) {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
@@ -32,6 +32,7 @@ export default async function SSRWebComponent(
     reset: voidFn,
     derived: (fn: () => unknown) => ({ value: fn() }),
     cleanup: voidFn,
+    indicate,
     useContext,
     i18n,
     css: (template: TemplateStringsArray, ...values: string[]) => {

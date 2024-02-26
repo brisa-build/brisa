@@ -91,6 +91,38 @@ export interface RequestContext extends Request {
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
   /**
+   * 
+   * Description:
+   * 
+   * The `indicate` method is used to get control of the
+   * "processing state" of the server action. Useful to show a
+   * spinner, disable a button, etc.
+   * 
+   * In server components you can use it with action attributes.
+   * 
+   * Example:
+   * 
+   * ```tsx
+   * const incInd = indicate('increment');
+   * 
+   * return (
+   *   <button
+   *    ac-disabled={[incInd]}
+   *    ac-indicator:onClick={incInd}
+   *    onClick={() => store.set('count', store.get('count') + 1)}
+   *   >
+   *    Increment <span ac-visible={incInd} class="spinner" />
+   *   </button>
+   * );
+   * ```
+   * 
+   * Docs:
+   * 
+   * - [How to use `indicate`](https://brisa.build/docs/api-reference/request-context/indicate)
+   */
+  indicate: (key: string) => IndicatorSignal;
+
+  /**
    * Description:
    *
    * The route is the matched route of the request.
@@ -392,6 +424,52 @@ export interface BaseWebContext {
    * - [How to use `css`](https://brisa.build/docs/components-details/web-components#template-literal-css)
    */
   css(strings: TemplateStringsArray, ...values: string[]): void;
+
+  /**
+   * Description:
+   *
+   * The `indicate` method is used to get control of the 
+   * "processing state" of the server action. Useful to show a 
+   * spinner, disable a button, etc.
+   * 
+   * You can use it with action attributes, similar than `indicate`
+   * in server components, or with signals to get more control.
+   * 
+   * With action attributes:
+   * 
+   * ```tsx
+   * const incInd = indicate('increment');
+   *
+   * return (
+   *    <button
+   *      ac-disabled={[incInd]}
+   *      onClick={() => store.set('count', store.get('count') + 1)}
+   *    >
+   *      Increment <span ac-visible={incInd} class="spinner" />
+   *    </button>
+   * );
+   * ```
+   * 
+   * With signals (only for web components):
+   * 
+   * ```tsx
+   * const incInd = indicate('increment');
+   * 
+   * return (
+   *   <button
+   *    disabled={incInd.value}
+   *    onClick={onIncrementAction}
+   *  >
+   *   Increment {incInd.value && <span class="spinner" />}
+   * </button>
+   * );
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `indicate`](https://brisa.build/docs/api-reference/web-context/indicate)
+   */
+  indicate: (key: string) =>  IndicatorSignal;
 
   /**
    * Description:
@@ -805,6 +883,11 @@ export type BrisaContext<T> = {
 };
 
 export type Signal<T> = { value: T };
+
+export type IndicatorSignal = {
+  id: string;
+  value: boolean;
+};
 
 export type RerenderInActionProps = {
   type?: "component" | "page";
