@@ -95,10 +95,15 @@ export interface RequestContext extends Request {
    * Description:
    * 
    * The `indicate` method is used to get control of the
-   * "processing state" of the server action. Useful to show a
-   * spinner, disable a button, etc.
+   * "processing state" of the server action. 
    * 
-   * In server components you can use it with action attributes.
+   * It's necessary to link the indicator with the server action 
+   * via the `indicate[Event]` attribute.
+   * 
+   * When the attribute "indicator"
+   * is used, the "brisa-request" class is added to the element during
+   * the processing state. Useful to show a spinner, disable a button, etc. All
+   * via CSS.
    * 
    * Example:
    * 
@@ -107,11 +112,11 @@ export interface RequestContext extends Request {
    * 
    * return (
    *   <button
-   *    ac-disabled={[incInd]}
-   *    ac-indicator:onClick={incInd}
+   *    indicator={incInd}
+   *    indicateClick={incInd}
    *    onClick={() => store.set('count', store.get('count') + 1)}
    *   >
-   *    Increment <span ac-visible={incInd} class="spinner" />
+   *    Increment <span indicator={incInd} class="spinner" />
    *   </button>
    * );
    * ```
@@ -428,12 +433,25 @@ export interface BaseWebContext {
   /**
    * Description:
    *
-   * The `indicate` method is used to get control of the 
-   * "processing state" of the server action. Useful to show a 
-   * spinner, disable a button, etc.
+   * The `indicate` method is used to get control of the
+   * "processing state" of the web-component action.
    * 
-   * You can use it with action attributes, similar than `indicate`
-   * in server components, or with signals to get more control.
+   * It's necessary to link the indicator with the server action 
+   * via the `indicate[Event]` attribute.
+   * 
+   * On server component:
+   * 
+   * ```tsx
+   * const incInd = indicate('increment');
+   * // ...
+   * <button indicateClick={incInd} onClick={onIncrementAction}>
+   *  Increment
+   * </button>
+   * ```
+   * 
+   * When the attribute "indicator"  is used, the "brisa-request" class
+   * is added to the element during the processing state. Useful to show a spinner,
+   * disable a button, etc. All via CSS.
    * 
    * With action attributes:
    * 
@@ -442,10 +460,10 @@ export interface BaseWebContext {
    *
    * return (
    *    <button
-   *      ac-disabled={[incInd]}
+   *      indicator={incInd}
    *      onClick={() => store.set('count', store.get('count') + 1)}
    *    >
-   *      Increment <span ac-visible={incInd} class="spinner" />
+   *      Increment <span indicator={incInd} class="spinner" />
    *    </button>
    * );
    * ```
@@ -5497,9 +5515,22 @@ declare global {
       onResize?: PictureInPictureEventHandler<Target>;
     }
 
+    export interface BrisaAttributes{
+      /**
+       * The `indicator` attribute is an extended HTML attribute by Brisa that is present on each element.
+       *  
+       * When some specified indicator is executing a server action then the `brisa-request` class is added to the element. 
+       * 
+       * This allows you to display a loading indicator or disable a button while the server action is executing, all without writing any JavaScript code, via the `brisa-request` class.
+       * 
+       * - [Brisa reference](https://brisa.build/docs/api-reference/extended-html-attributes/indicator)
+       */
+      indicator?: IndicatorSignal | IndicatorSignal[]
+    }
+
     export interface HTMLAttributes<RefType extends EventTarget = EventTarget>
       extends DOMAttributes<RefType>,
-        AriaAttributes {
+        AriaAttributes, BrisaAttributes {
       // Standard HTML Attributes
 
       /**
