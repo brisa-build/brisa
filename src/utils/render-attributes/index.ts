@@ -7,10 +7,6 @@ import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
-const PROPS_TO_SIMPLIFY_INDICATOR_SIGNALS = new Set([
-  "ac-disabled",
-  "ac-visible",
-]);
 
 export default function renderAttributes({
   props,
@@ -42,7 +38,7 @@ export default function renderAttributes({
     }
 
     // Simplify indicator signals
-    if (PROPS_TO_SIMPLIFY_INDICATOR_SIGNALS.has(prop)) {
+    if (key === "indicator") {
       const arr = Array.isArray(value) ? value : [value];
       value = serialize(arr.map((a) => a.id));
     }
