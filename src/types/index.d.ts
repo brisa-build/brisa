@@ -108,24 +108,40 @@ export interface RequestContext extends Request {
    * Example:
    * 
    * ```tsx
-   * const incInd = indicate('increment');
+   * const incrementing = indicate('increment');
    * 
    * return (
    *   <button
-   *    indicator={incInd}
-   *    indicateClick={incInd}
+   *    indicator={incrementing}
+   *    indicateClick={incrementing}
    *    onClick={() => store.set('count', store.get('count') + 1)}
    *   >
-   *    Increment <span indicator={incInd} class="spinner" />
+   *    Increment <span indicator={incrementing} class="spinner" />
    *   </button>
    * );
+   * ```
+   * 
+   * Example of CSS:
+   * 
+   * ```css
+   * button.brisa-request {
+   *   pointer-events: none;
+   *   cursor: not-allowed;
+   *   background-color: rgba(0,0,0,0.1);
+   *  }
+   * .spinner, .btn-text.brisa-request {
+   *   display: none;
+   *  }
+   * .spinner.brisa-request {
+   *   display: inline;
+   * }
    * ```
    * 
    * Docs:
    * 
    * - [How to use `indicate`](https://brisa.build/docs/api-reference/request-context/indicate)
    */
-  indicate: (key: string) => IndicatorSignal;
+  indicate: (actionName: string) => IndicatorSignal;
 
   /**
    * Description:
@@ -442,9 +458,9 @@ export interface BaseWebContext {
    * On server component:
    * 
    * ```tsx
-   * const incInd = indicate('increment');
+   * const incrementing = indicate('increment');
    * // ...
-   * <button indicateClick={incInd} onClick={onIncrementAction}>
+   * <button indicateClick={incrementing} onClick={onIncrementAction}>
    *  Increment
    * </button>
    * ```
@@ -456,14 +472,15 @@ export interface BaseWebContext {
    * With action attributes:
    * 
    * ```tsx
-   * const incInd = indicate('increment');
+   * // Use same string action name
+   * const incrementing = indicate('increment'); 
    *
    * return (
    *    <button
-   *      indicator={incInd}
+   *      indicator={incrementing}
    *      onClick={() => store.set('count', store.get('count') + 1)}
    *    >
-   *      Increment <span indicator={incInd} class="spinner" />
+   *      Increment <span indicator={incrementing} class="spinner" />
    *    </button>
    * );
    * ```
@@ -471,14 +488,14 @@ export interface BaseWebContext {
    * With signals (only for web components):
    * 
    * ```tsx
-   * const incInd = indicate('increment');
+   * const incrementing = indicate('increment');
    * 
    * return (
    *   <button
-   *    disabled={incInd.value}
+   *    disabled={incrementing.value}
    *    onClick={onIncrementAction}
    *  >
-   *   Increment {incInd.value && <span class="spinner" />}
+   *   Increment {incrementing.value && <span class="spinner" />}
    * </button>
    * );
    * ```
@@ -487,7 +504,7 @@ export interface BaseWebContext {
    *
    * - [How to use `indicate`](https://brisa.build/docs/api-reference/web-context/indicate)
    */
-  indicate: (key: string) =>  IndicatorSignal;
+  indicate: (actionName: string) =>  IndicatorSignal;
 
   /**
    * Description:
