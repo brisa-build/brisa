@@ -2943,6 +2943,28 @@ declare global {
        */
       "debounceLoad"?: number | undefined;
       /**
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <img indicateLoad={indicator} onLoad={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateLoad?: IndicatorSignal | undefined;
+      /**
        * The onLoad event is fired when an object has been loaded.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -2970,6 +2992,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceonError"?: number | undefined;
+      /**
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <img indicateError={indicator} onError={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateError?: IndicatorSignal | undefined;
       /**
        * The onError event is fired when an object has been loaded.
        * 
@@ -3000,6 +3044,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCopy"?: number | undefined;
+        /**
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <p indicateCopy={indicator} onCopy={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateCopy?: IndicatorSignal | undefined;
       /**
        * The onCopy event is fired when the user copies the content of an element.
        * 
@@ -3029,6 +3095,28 @@ declare global {
        */
       "debounceCut"?: number | undefined;
       /**
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <p indicateCut={indicator} onCut={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateCut?: IndicatorSignal | undefined;
+      /**
        * The onCut event is fired when the user cuts the content of an element.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3056,6 +3144,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePaste"?: number | undefined;
+      /**
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <p indicatePaste={indicator} onPaste={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePaste?: IndicatorSignal | undefined;
       /**
        * The onPaste event is fired when the user pastes some content in an element.
        * 
@@ -3087,6 +3197,28 @@ declare global {
        */
       "debounceCompositionEnd"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateCompositionEnd={indicator} onCompositionEnd={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateCompositionEnd?: IndicatorSignal | undefined;
+      /**
        * The onCompositionEnd event is fired when the composition of a passage of text has been completed or canceled.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3114,6 +3246,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCompositionStart"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateCompositionStart={indicator} onCompositionStart={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateCompositionStart?: IndicatorSignal | undefined;
       /**
        * The onCompositionStart event is fired when the user starts to enter the composition of a passage of text.
        * 
@@ -3143,6 +3297,28 @@ declare global {
        */
       "debounceCompositionUpdate"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateCompositionUpdate={indicator} onCompositionUpdate={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateCompositionUpdate?: IndicatorSignal | undefined;
+      /**
        * The onCompositionUpdate event is fired when the user is entering text.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3171,7 +3347,29 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onToggle"?: number | undefined;
+      "debounceToggle"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateToggle={indicator} onToggle={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateToggle?: IndicatorSignal | undefined;
       /**
        * The onToggle event is fired when the user opens or closes the details element.
        * 
@@ -3203,6 +3401,28 @@ declare global {
        */
       "debounceClose"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateClose={indicator} onClose={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateClose?: IndicatorSignal | undefined;
+      /**
        * The onClose event is fired when the user closes the dialog element.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3230,6 +3450,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCancel"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateCancel={indicator} onCancel={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateCancel?: IndicatorSignal | undefined;
       /**
        * The onCancel event is fired when the user cancels the dialog element.
        * 
@@ -3261,6 +3503,28 @@ declare global {
        */
       "debounceFocus"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateFocus={indicator} onFocus={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateFocus?: IndicatorSignal | undefined;
+      /**
        * The onFocus event is fired when an element gets focus.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3288,6 +3552,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceFocusin"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateFocusin={indicator} onFocusin={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateFocusin?: IndicatorSignal | undefined;
       /**
        * The onfocusin event is fired when an element is about to get focus.
        * 
@@ -3317,6 +3603,28 @@ declare global {
        */
       "debounceFocusout"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateFocusout={indicator} onFocusout={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateFocusout?: IndicatorSignal | undefined;
+      /**
        * The onfocusout event is fired when an element is about to lose focus.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3344,6 +3652,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceBlur"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateBlur={indicator} onBlur={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateBlur?: IndicatorSignal | undefined;
       /**
        * The onBlur event is fired when an element loses focus.
        * 
@@ -3375,6 +3705,28 @@ declare global {
        */
       "debounceChange"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateChange={indicator} onChange={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateChange?: IndicatorSignal | undefined;
+      /**
        * The onChange event is fired when the value of an element has been changed.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3402,6 +3754,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceInput"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateInput={indicator} onInput={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateInput?: IndicatorSignal | undefined;
       /**
        * The onInput event is fired when the value of an element has been changed.
        * 
@@ -3431,6 +3805,28 @@ declare global {
        */
       "debounceBeforeInput"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateBeforeInput={indicator} onBeforeInput={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateBeforeInput?: IndicatorSignal | undefined;
+      /**
        * The onBeforeInput event is fired when the value of an element has been changed.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3459,6 +3855,28 @@ declare global {
        */
       "debounceSearch"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateSearch={indicator} onSearch={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateSearch?: IndicatorSignal | undefined;
+      /**
        * The onSearch event is fired when the user writes something in a search input (text input with `search` type).
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3486,6 +3904,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceSubmit"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <form indicateSubmit={indicator} onSubmit={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateSubmit?: IndicatorSignal | undefined;
       /**
        * The `onSubmit` event is fired when a form is submitted.
        * 
@@ -3523,6 +3963,28 @@ declare global {
        */
       "debounceInvalid"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateInvalid={indicator} onInvalid={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateInvalid?: IndicatorSignal | undefined;
+      /**
        * The onInvalid event is fired when a form is submitted and has validation errors.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3551,6 +4013,28 @@ declare global {
        */
       "debounceReset"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <form indicateReset={indicator} onReset={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateReset?: IndicatorSignal | undefined;
+      /**
        * The onReset event is fired when a form is reset.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3578,6 +4062,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceFormData"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <form indicateFormData={indicator} onFormData={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateFormData?: IndicatorSignal | undefined;
       /**
        * The onFormData event is fired when a form is submitted and has validation errors.
        * 
@@ -3609,6 +4115,28 @@ declare global {
        */
       "debounceKeyDown"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateKeyDown={indicator} onKeyDown={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateKeyDown?: IndicatorSignal | undefined;
+      /**
        * The onKeyDown event is fired when a key is pressed down.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3636,6 +4164,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceKeyUp"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <input indicateKeyUp={indicator} onKeyUp={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateKeyUp?: IndicatorSignal | undefined;
       /**
        * The onKeyUp event is fired when a key is released.
        * 
@@ -3667,6 +4217,28 @@ declare global {
        */
       "debounceAbort"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateAbort={indicator} onAbort={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateAbort?: IndicatorSignal | undefined;
+      /**
        * The onAbort event is fired when the loading of a media is aborted.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3694,6 +4266,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCanPlay"?: number | undefined;
+        /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateCanPlay={indicator} onCanPlay={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateCanPlay?: IndicatorSignal | undefined;
       /**
        * The onCanPlay event is fired when the browser can start playing the media (when it has buffered enough to begin).
        * 
@@ -3723,6 +4317,28 @@ declare global {
        */
       "debounceCanPlayThrough"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateCanPlayThrough={indicator} onCanPlayThrough={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateCanPlayThrough?: IndicatorSignal | undefined;
+      /**
        * The onCanPlayThrough event is fired when the browser can play through the media without stopping for buffering.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3750,6 +4366,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDurationChange"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateDurationChange={indicator} onDurationChange={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDurationChange?: IndicatorSignal | undefined;
       /**
        * The onDurationChange event is fired when the duration of the media has changed.
        * 
@@ -3779,6 +4417,28 @@ declare global {
        */
       "debounceEmptied"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateEmptied={indicator} onEmptied={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateEmptied?: IndicatorSignal | undefined;
+      /**
        * The onEmptied event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3806,6 +4466,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceEncrypted"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateEncrypted={indicator} onEncrypted={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateEncrypted?: IndicatorSignal | undefined;
       /**
        * The onEncrypted event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
        * 
@@ -3835,6 +4517,28 @@ declare global {
        */
       "debounceEnded"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateEnded={indicator} onEnded={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateEnded?: IndicatorSignal | undefined;
+      /**
        * The onEnded event is fired when the media has reached the end.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3862,6 +4566,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLoadedData"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateLoadedData={indicator} onLoadedData={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateLoadedData?: IndicatorSignal | undefined;
       /**
        * The onLoadedData event is fired when the media's data is loaded.
        * 
@@ -3891,6 +4617,28 @@ declare global {
        */
       "debounceLoadedMetadata"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateLoadedMetadata={indicator} onLoadedMetadata={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateLoadedMetadata?: IndicatorSignal | undefined;
+      /**
        * The onLoadedMetadata event is fired when the metadata has been loaded.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3918,6 +4666,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLoadStart"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateLoadStart={indicator} onLoadStart={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateLoadStart?: IndicatorSignal | undefined;
       /**
        * The onLoadStart event is fired when the browser starts looking for the specified media.
        * 
@@ -3947,6 +4717,28 @@ declare global {
        */
       "debouncePause"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicatePause={indicator} onPause={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+        indicatePause?: IndicatorSignal | undefined;
+      /**
        * The onPause event is fired when the media has been paused.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -3974,6 +4766,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePlay"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicatePlay={indicator} onPlay={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePlay?: IndicatorSignal | undefined;
       /**
        * The onPlay event is fired when the media has been started or is no longer paused.
        * 
@@ -4003,6 +4817,28 @@ declare global {
        */
       "debouncePlaying"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicatePlaying={indicator} onPlaying={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePlaying?: IndicatorSignal | undefined;
+      /**
        * The onPlaying event is fired when the media has started playing.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4030,6 +4866,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceProgress"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateProgress={indicator} onProgress={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateProgress?: IndicatorSignal | undefined;
       /**
        * The onProgress event is fired when the browser is in the process of getting the media data (downloading the media).
        * 
@@ -4059,6 +4917,28 @@ declare global {
        */
       "debounceRateChange"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateRateChange={indicator} onRateChange={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateRateChange?: IndicatorSignal | undefined;
+      /**
        * The onRateChange event is fired when the playback rate has changed.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4086,6 +4966,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceSeeked"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateSeeked={indicator} onSeeked={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateSeeked?: IndicatorSignal | undefined;
       /**
        * The onSeeked event is fired when the seeking property is false, meaning that the seeking has ended.
        * 
@@ -4115,6 +5017,28 @@ declare global {
        */
       "debounceSeeking"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateSeeking={indicator} onSeeking={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateSeeking?: IndicatorSignal | undefined;
+      /**
        * The onSeeking event is fired when the seeking property is true, meaning that the media is seeking a position.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4142,6 +5066,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceStalled"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateStalled={indicator} onStalled={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateStalled?: IndicatorSignal | undefined;
       /**
        * The onStalled event is fired when the browser is trying to get media data, but data is not available.
        * 
@@ -4171,6 +5117,28 @@ declare global {
        */
       "debounceSuspend"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateSuspend={indicator} onSuspend={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateSuspend?: IndicatorSignal | undefined;
+      /**
        * The onSuspend event is fired when the loading of a media is suspended.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4198,6 +5166,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTimeUpdate"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateTimeUpdate={indicator} onTimeUpdate={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTimeUpdate?: IndicatorSignal | undefined;
       /**
        * The onTimeUpdate event is fired when the time indicated by the currentTime attribute has been updated.
        * 
@@ -4227,6 +5217,28 @@ declare global {
        */
       "debounceVolumeChange"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateVolumeChange={indicator} onVolumeChange={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateVolumeChange?: IndicatorSignal | undefined;
+      /**
        * The onVolumeChange event is fired when the volume has changed.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4254,6 +5266,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceWaiting"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <video indicateWaiting={indicator} onWaiting={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateWaiting?: IndicatorSignal | undefined;
       /**
        * The onWaiting event is fired when the media has paused but is expected to resume (like when the media is buffering).
        * 
@@ -4285,6 +5319,28 @@ declare global {
        */
       "debounceClick"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateClick={indicator} onClick={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateClick?: IndicatorSignal | undefined;
+      /**
        * The onClick event is fired when a pointing device button (usually a mouse) is pressed and released on a single element.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4312,6 +5368,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceContextMenu"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateContextMenu={indicator} onContextMenu={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateContextMenu?: IndicatorSignal | undefined;
       /**
        * The onContextMenu event is fired when the right button of the mouse is clicked on an element.
        * 
@@ -4341,6 +5419,28 @@ declare global {
        */
       "debounceDblClick"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateDblClick={indicator} onDblClick={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDblClick?: IndicatorSignal | undefined;
+      /**
        * The onDblClick event is fired when a pointing device button (usually a mouse) is clicked twice on a single element.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4368,6 +5468,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDrag"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateDrag={indicator} onDrag={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDrag?: IndicatorSignal | undefined;
       /**
        * The onDrag event is fired when an element or text selection is being dragged.
        * 
@@ -4397,6 +5519,28 @@ declare global {
        */
       "debounceDragEnd"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateDragEnd={indicator} onDragEnd={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDragEnd?: IndicatorSignal | undefined;
+      /**
        * The onDragEnd event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4424,6 +5568,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDragEnter"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateDragEnter={indicator} onDragEnter={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDragEnter?: IndicatorSignal | undefined;
       /**
        * The onDragEnter event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
        * 
@@ -4453,6 +5619,28 @@ declare global {
        */
       "debounceDragLeave"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateDragLeave={indicator} onDragLeave={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDragLeave?: IndicatorSignal | undefined;
+      /**
        * The onDragLeave event is fired when a dragged element or text selection leaves a valid drop target.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4480,6 +5668,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDragOver"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateDragOver={indicator} onDragOver={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDragOver?: IndicatorSignal | undefined;
       /**
        * The onDragOver event is fired when an element or text selection is being dragged over a valid drop target (every few hundred milliseconds).
        * 
@@ -4509,6 +5719,28 @@ declare global {
        */
       "debounceDragStart"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateDragStart={indicator} onDragStart={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDragStart?: IndicatorSignal | undefined;
+      /**
        * The onDragStart event is fired when the user starts dragging an element or text selection.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4536,6 +5768,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDrop"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateDrop={indicator} onDrop={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateDrop?: IndicatorSignal | undefined;
       /**
        * The onDrop event is fired when an element or text selection is dropped on a valid drop target.
        * 
@@ -4565,6 +5819,28 @@ declare global {
        */
       "debounceMouseDown"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateMouseDown={indicator} onMouseDown={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateMouseDown?: IndicatorSignal | undefined;
+      /**
        * The onMouseDown event is fired when a pointing device button is pressed on an element.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4592,6 +5868,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseEnter"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateMouseEnter={indicator} onMouseEnter={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateMouseEnter?: IndicatorSignal | undefined;
       /**
        * The onMouseEnter event is fired when a pointing device is moved onto the element that has the listener attached.
        * 
@@ -4621,6 +5919,28 @@ declare global {
        */
       "debounceMouseLeave"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateMouseLeave={indicator} onMouseLeave={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateMouseLeave?: IndicatorSignal | undefined;
+      /**
        * The onMouseLeave event is fired when a pointing device is moved off the element that has the listener attached.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4648,6 +5968,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseMove"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateMouseMove={indicator} onMouseMove={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateMouseMove?: IndicatorSignal | undefined;
       /**
        * The onMouseMove event is fired when a pointing device is moved over an element.
        * 
@@ -4677,6 +6019,28 @@ declare global {
        */
       "debounceMouseOut"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateMouseOut={indicator} onMouseOut={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateMouseOut?: IndicatorSignal | undefined;
+      /**
        * The onMouseOut event is fired when a pointing device is moved off the element that has the listener attached or off one of its children.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4705,6 +6069,28 @@ declare global {
        */
       "debounceMouseOver"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateMouseOver={indicator} onMouseOver={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateMouseOver?: IndicatorSignal | undefined;
+      /**
        * The onMouseOver event is fired when a pointing device is moved onto the element that has the listener attached.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4732,6 +6118,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseUp"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateMouseUp={indicator} onMouseUp={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateMouseUp?: IndicatorSignal | undefined;
       /**
        * The onMouseUp event is fired when a pointing device button is released over an element.
        * 
@@ -4763,6 +6171,28 @@ declare global {
        */
       "debounceSelect"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateSelect={indicator} onSelect={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateSelect?: IndicatorSignal | undefined;
+      /**
        * The onSelect event is fired when the user selects some text in a text field.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4793,6 +6223,28 @@ declare global {
        */
       "debounceTouchCancel"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateTouchCancel={indicator} onTouchCancel={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTouchCancel?: IndicatorSignal | undefined;
+      /**
        * The onTouchCancel event is fired when a touch point has been disrupted in an implementation-specific manner (for example, too many touch points are created).
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4820,6 +6272,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTouchEnd"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateTouchEnd={indicator} onTouchEnd={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTouchEnd?: IndicatorSignal | undefined;
       /**
        * The onTouchEnd event is fired when a touch point is removed from the touch surface.
        * 
@@ -4849,6 +6323,28 @@ declare global {
        */
       "debounceTouchMove"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateTouchMove={indicator} onTouchMove={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTouchMove?: IndicatorSignal | undefined;
+      /**
        * The onTouchMove event is fired when a touch point is moved along the touch surface.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4876,6 +6372,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTouchStart"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateTouchStart={indicator} onTouchStart={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTouchStart?: IndicatorSignal | undefined;
       /**
        * The onTouchStart event is fired when a touch point is placed on the touch surface.
        * 
@@ -4907,6 +6425,28 @@ declare global {
        */
       "debouncePointerOver"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerOver={indicator} onPointerOver={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerOver?: IndicatorSignal | undefined;
+      /**
        * The onPointerOver event is fired when a pointing device is moved onto the element that has the listener attached.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4934,6 +6474,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerEnter"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerEnter={indicator} onPointerEnter={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerEnter?: IndicatorSignal | undefined;
       /**
        * The onPointerEnter event is fired when a pointing device is moved onto the element that has the listener attached.
        * 
@@ -4963,6 +6525,28 @@ declare global {
        */
       "debouncePointerDown"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerDown={indicator} onPointerDown={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerDown?: IndicatorSignal | undefined;
+      /**
        * The onPointerDown event is fired when a pointer becomes active.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -4990,6 +6574,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerMove"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerMove={indicator} onPointerMove={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerMove?: IndicatorSignal | undefined;
       /**
        * The onPointerMove event is fired when a pointer changes coordinates.
        * 
@@ -5019,6 +6625,28 @@ declare global {
        */
       "debouncePointerUp"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerUp={indicator} onPointerUp={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerUp?: IndicatorSignal | undefined;
+      /**
        * The onPointerUp event is fired when a pointer is no longer active.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5046,6 +6674,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerCancel"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerCancel={indicator} onPointerCancel={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerCancel?: IndicatorSignal | undefined;
       /**
        * The onPointerCancel event is fired when a pointer has been disrupted in an implementation-specific manner (for example, a device stops sending data).
        * 
@@ -5075,6 +6725,28 @@ declare global {
        */
       "debouncePointerOut"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerOut={indicator} onPointerOut={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerOut?: IndicatorSignal | undefined;
+      /**
        * The onPointerOut event is fired when a pointing device is moved off the element that has the listener attached.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5102,6 +6774,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerLeave"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerLeave={indicator} onPointerLeave={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerLeave?: IndicatorSignal | undefined;
       /**
        * The onPointerLeave event is fired when a pointing device is moved off the element that has the listener attached.
        * 
@@ -5132,6 +6826,28 @@ declare global {
        */
       "debounceGotPointerCapture"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateGotPointerCapture={indicator} onGotPointerCapture={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateGotPointerCapture?: IndicatorSignal | undefined;
+      /**
        * The onGotPointerCapture event is fired when an element captures a pointer.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5159,6 +6875,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLostPointerCapture"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicatePointerCapture={indicator} onPointerCapture={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicatePointerCapture?: IndicatorSignal | undefined;
       /**
        * The onLostPointerCapture event is fired after a pointer has been captured by an element and then is released.
        * 
@@ -5190,6 +6928,28 @@ declare global {
        */
       "debounceScroll"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateScroll={indicator} onScroll={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateScroll?: IndicatorSignal | undefined;
+      /**
        * The onScroll event is fired when an element's scrollbar is being scrolled.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5219,6 +6979,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceWheel"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateWheel={indicator} onWheel={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateWheel?: IndicatorSignal | undefined;
       /**
        * The onWheel event is fired when a wheel button of a pointing device is rotated in any direction.
        * 
@@ -5250,6 +7032,28 @@ declare global {
        */
       "debounceAnimationStart"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateAnimationStart={indicator} onAnimationStart={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateAnimationStart?: IndicatorSignal | undefined;
+      /**
        * The onAnimationStart event is fired when a CSS animation has started.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5278,6 +7082,28 @@ declare global {
        */
       "debounceAnimationEnd"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateAnimationEnd={indicator} onAnimationEnd={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateAnimationEnd?: IndicatorSignal | undefined;
+      /**
        * The onAnimationEnd event is fired when a CSS animation has completed.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5305,6 +7131,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceAnimationIteration"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateAnimationIteration={indicator} onAnimationIteration={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateAnimationIteration?: IndicatorSignal | undefined;
       /**
        * The onAnimationIteration event is fired when a CSS animation has completed one iteration.
        * 
@@ -5336,6 +7184,28 @@ declare global {
        */
       "debounceTransitionCancel"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateTransitionCancel={indicator} onTransitionCancel={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTransitionCancel?: IndicatorSignal | undefined;
+      /**
        * The onTransitionCancel event is fired when a CSS transition has been interrupted.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5363,6 +7233,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTransitionEnd"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateTransitionEnd={indicator} onTransitionEnd={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTransitionEnd?: IndicatorSignal | undefined;
       /**
        * The onTransitionEnd event is fired when a CSS transition has completed.
        * 
@@ -5392,6 +7284,28 @@ declare global {
        */
       "debounceTransitionRun"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateTransitionRun={indicator} onTransitionRun={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTransitionRun?: IndicatorSignal | undefined;
+      /**
        * The onTransitionRun event is fired when a CSS transition has started.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5419,6 +7333,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTransitionStart"?: number | undefined;
+      /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateTransitionStart={indicator} onTransitionStart={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateTransitionStart?: IndicatorSignal | undefined;
       /**
        * The onTransitionStart event is fired when a CSS transition has started.
        * 
@@ -5450,6 +7386,28 @@ declare global {
        */
       "debounceEnterPictureInPicture"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateEnterPictureInPicture={indicator} onEnterPictureInPicture={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+      indicateEnterPictureInPicture?: IndicatorSignal | undefined;
+      /**
        * The onEnterPictureInPicture event is fired when a video enters picture-in-picture mode.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5478,6 +7436,28 @@ declare global {
        */
       "debounceLeavePictureInPicture"?: number | undefined;
       /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateLeavePictureInPicture={indicator} onLeavePictureInPicture={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+        indicateLeavePictureInPicture?: IndicatorSignal | undefined;
+      /**
        * The onLeavePictureInPicture event is fired when a video leaves picture-in-picture mode.
        * 
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
@@ -5505,6 +7485,28 @@ declare global {
        * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceResize"?: number | undefined;
+        /**
+       * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
+       * that fires a server action.
+       * 
+       * This is NOT a standard HTML attribute, and is not possible to use
+       * in web components. It is a Brisa-specific attribute for server components.
+       * 
+       * Default: undefined
+       * 
+       * Example:
+       * 
+       * ```tsx
+       * const indicator = indicate('some-action-id');
+       * // ...
+       * <div indicateResize={indicator} onResize={someAction} />
+       * ```
+       * 
+       * Docs:
+       * 
+       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       */
+        indicateResize?: IndicatorSignal | undefined;
       /**
        * The onResize event is fired when a picture-in-picture window is resized.
        * 
