@@ -2934,14 +2934,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <img onLoad-debounce={500} onLoad={() => {}} />
+       * <img debounceLoad={500} onLoad={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onLoad-debounce"?: number | undefined;
+      "debounceLoad"?: number | undefined;
       /**
        * The onLoad event is fired when an object has been loaded.
        * 
@@ -2962,14 +2962,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <img onError-debounce={500} onError={() => {}} />
+       * <img debounceError={500} onError={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onError-debounce"?: number | undefined;
+      "debounceonError"?: number | undefined;
       /**
        * The onError event is fired when an object has been loaded.
        * 
@@ -2992,14 +2992,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <p onCopy-debounce={500} onCopy={() => {}} />
+       * <p debounceCopy={500} onCopy={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onCopy-debounce"?: number | undefined;
+      "debounceCopy"?: number | undefined;
       /**
        * The onCopy event is fired when the user copies the content of an element.
        * 
@@ -3020,14 +3020,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <p onCut-debounce={500} onCut={() => {}} />
+       * <p debounceCut={500} onCut={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onCut-debounce"?: number | undefined;
+      "debounceCut"?: number | undefined;
       /**
        * The onCut event is fired when the user cuts the content of an element.
        * 
@@ -3048,14 +3048,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <p onPaste-debounce={500} onPaste={() => {}} />
+       * <p debouncePaste={500} onPaste={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPaste-debounce"?: number | undefined;
+      "debouncePaste"?: number | undefined;
       /**
        * The onPaste event is fired when the user pastes some content in an element.
        * 
@@ -3078,14 +3078,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onCompositionEnd-debounce={500} onCompositionEnd={() => {}} />
+       * <input debounceCompositionEnd{500} onCompositionEnd={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onCompositionEnd-debounce"?: number | undefined;
+      "debounceCompositionEnd"?: number | undefined;
       /**
        * The onCompositionEnd event is fired when the composition of a passage of text has been completed or canceled.
        * 
@@ -3106,14 +3106,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onCompositionStart-debounce={500} onCompositionStart={() => {}} />
+       * <input debounceCompositionStart={500} onCompositionStart={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onCompositionStart-debounce"?: number | undefined;
+      "debounceCompositionStart"?: number | undefined;
       /**
        * The onCompositionStart event is fired when the user starts to enter the composition of a passage of text.
        * 
@@ -3134,14 +3134,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onCompositionUpdate-debounce={500} onCompositionUpdate={() => {}} />
+       * <input debounceCompositionUpdate={500} onCompositionUpdate={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onCompositionUpdate-debounce"?: number | undefined;
+      "debounceCompositionUpdate"?: number | undefined;
       /**
        * The onCompositionUpdate event is fired when the user is entering text.
        * 
@@ -3164,14 +3164,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onToggle-debounce={500} onToggle={() => {}} />
+       * <div debounceToggle={500} onToggle={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onToggle-debounce"?: number | undefined;
+      "onToggle"?: number | undefined;
       /**
        * The onToggle event is fired when the user opens or closes the details element.
        * 
@@ -3194,14 +3194,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <dialog onClose-debounce={500} onClose={() => {}} />
+       * <dialog debounceClose={500} onClose={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onClose-debounce"?: number | undefined;
+      "debounceClose"?: number | undefined;
       /**
        * The onClose event is fired when the user closes the dialog element.
        * 
@@ -3222,14 +3222,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <dialog onCancel-debounce={500} onCancel={() => {}} />
+       * <dialog debounceCancel={500} onCancel={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onCancel-debounce"?: number | undefined;
+      "debounceCancel"?: number | undefined;
       /**
        * The onCancel event is fired when the user cancels the dialog element.
        * 
@@ -3252,14 +3252,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onFocus-debounce={500} onFocus={() => {}} />
+       * <input debounceFocus={500} onFocus={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onFocus-debounce"?: number | undefined;
+      "debounceFocus"?: number | undefined;
       /**
        * The onFocus event is fired when an element gets focus.
        * 
@@ -3280,14 +3280,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onfocusin-debounce={500} onfocusin={() => {}} />
+       * <input debounceFocusin={500} onfocusin={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onfocusin-debounce"?: number | undefined;
+      "debounceFocusin"?: number | undefined;
       /**
        * The onfocusin event is fired when an element is about to get focus.
        * 
@@ -3308,14 +3308,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onfocusout-debounce={500} onfocusout={() => {}} />
+       * <input debounceFocusout={500} onfocusout={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onfocusout-debounce"?: number | undefined;
+      "debounceFocusout"?: number | undefined;
       /**
        * The onfocusout event is fired when an element is about to lose focus.
        * 
@@ -3336,14 +3336,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onBlur-debounce={500} onBlur={() => {}} />
+       * <input debounceBlur={500} onBlur={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onBlur-debounce"?: number | undefined;
+      "debounceBlur"?: number | undefined;
       /**
        * The onBlur event is fired when an element loses focus.
        * 
@@ -3366,14 +3366,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onChange-debounce={500} onChange={() => {}} />
+       * <input debounceChange={500} onChange={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onChange-debounce"?: number | undefined;
+      "debounceChange"?: number | undefined;
       /**
        * The onChange event is fired when the value of an element has been changed.
        * 
@@ -3394,14 +3394,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onInput-debounce={500} onInput={() => {}} />
+       * <input debounceInput={500} onInput={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onInput-debounce"?: number | undefined;
+      "debounceInput"?: number | undefined;
       /**
        * The onInput event is fired when the value of an element has been changed.
        * 
@@ -3422,14 +3422,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onBeforeInput-debounce={500} onBeforeInput={() => {}} />
+       * <input debounceBeforeInput={500} onBeforeInput={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onBeforeInput-debounce"?: number | undefined;
+      "debounceBeforeInput"?: number | undefined;
       /**
        * The onBeforeInput event is fired when the value of an element has been changed.
        * 
@@ -3450,14 +3450,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onSearch-debounce={500} onSearch={() => {}} />
+       * <input debounceSearch={500} onSearch={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onSearch-debounce"?: number | undefined;
+      "debounceSearch"?: number | undefined;
       /**
        * The onSearch event is fired when the user writes something in a search input (text input with `search` type).
        * 
@@ -3478,14 +3478,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <form onSubmit-debounce={500} onSubmit={() => {}} />
+       * <form debounceSubmit={500} onSubmit={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onSubmit-debounce"?: number | undefined;
+      "debounceSubmit"?: number | undefined;
       /**
        * The `onSubmit` event is fired when a form is submitted.
        * 
@@ -3514,14 +3514,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onInvalid-debounce={500} onInvalid={() => {}} />
+       * <input debounceInvalid={500} onInvalid={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onInvalid-debounce"?: number | undefined;
+      "debounceInvalid"?: number | undefined;
       /**
        * The onInvalid event is fired when a form is submitted and has validation errors.
        * 
@@ -3542,14 +3542,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <form onReset-debounce={500} onReset={() => {}} />
+       * <form debounceReset={500} onReset={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onReset-debounce"?: number | undefined;
+      "debounceReset"?: number | undefined;
       /**
        * The onReset event is fired when a form is reset.
        * 
@@ -3570,14 +3570,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <form onFormData-debounce={500} onFormData={() => {}} />
+       * <form debounceFormData={500} onFormData={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onFormData-debounce"?: number | undefined;
+      "debounceFormData"?: number | undefined;
       /**
        * The onFormData event is fired when a form is submitted and has validation errors.
        * 
@@ -3600,14 +3600,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onKeyDown-debounce={500} onKeyDown={() => {}} />
+       * <input debounceKeyDown={500} onKeyDown={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onKeyDown-debounce"?: number | undefined;
+      "debounceKeyDown"?: number | undefined;
       /**
        * The onKeyDown event is fired when a key is pressed down.
        * 
@@ -3628,14 +3628,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onKeyUp-debounce={500} onKeyUp={() => {}} />
+       * <input debounceKeyUp={500} onKeyUp={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onKeyUp-debounce"?: number | undefined;
+      "debounceKeyUp"?: number | undefined;
       /**
        * The onKeyUp event is fired when a key is released.
        * 
@@ -3658,14 +3658,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onAbort-debounce={500} onAbort={() => {}} />
+       * <video debounceAbort={500} onAbort={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onAbort-debounce"?: number | undefined;
+      "debounceAbort"?: number | undefined;
       /**
        * The onAbort event is fired when the loading of a media is aborted.
        * 
@@ -3686,14 +3686,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onCanPlay-debounce={500} onCanPlay={() => {}} />
+       * <video debounceCanPlay={500} onCanPlay={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onCanPlay-debounce"?: number | undefined;
+      "debounceCanPlay"?: number | undefined;
       /**
        * The onCanPlay event is fired when the browser can start playing the media (when it has buffered enough to begin).
        * 
@@ -3714,14 +3714,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onCanPlayThrough-debounce={500} onCanPlayThrough={() => {}} />
+       * <video debounceCanPlayThrough={500} onCanPlayThrough={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onCanPlayThrough-debounce"?: number | undefined;
+      "debounceCanPlayThrough"?: number | undefined;
       /**
        * The onCanPlayThrough event is fired when the browser can play through the media without stopping for buffering.
        * 
@@ -3742,14 +3742,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onDurationChange-debounce={500} onDurationChange={() => {}} />
+       * <video debounceDurationChange={500} onDurationChange={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDurationChange-debounce"?: number | undefined;
+      "debounceDurationChange"?: number | undefined;
       /**
        * The onDurationChange event is fired when the duration of the media has changed.
        * 
@@ -3770,14 +3770,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onEmptied-debounce={500} onEmptied={() => {}} />
+       * <video debounceEmptied={500} onEmptied={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onEmptied-debounce"?: number | undefined;
+      "debounceEmptied"?: number | undefined;
       /**
        * The onEmptied event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
        * 
@@ -3798,14 +3798,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onEncrypted-debounce={500} onEncrypted={() => {}} />
+       * <video debounceEncrypted={500} onEncrypted={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onEncrypted-debounce"?: number | undefined;
+      "debounceEncrypted"?: number | undefined;
       /**
        * The onEncrypted event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
        * 
@@ -3826,14 +3826,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onEnded-debounce={500} onEnded={() => {}} />
+       * <video debounceEnded={500} onEnded={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onEnded-debounce"?: number | undefined;
+      "debounceEnded"?: number | undefined;
       /**
        * The onEnded event is fired when the media has reached the end.
        * 
@@ -3854,14 +3854,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onLoadedData-debounce={500} onLoadedData={() => {}} />
+       * <video debounceLoadedData={500} onLoadedData={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onLoadedData-debounce"?: number | undefined;
+      "debounceLoadedData"?: number | undefined;
       /**
        * The onLoadedData event is fired when the media's data is loaded.
        * 
@@ -3882,14 +3882,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onLoadedMetadata-debounce={500} onLoadedMetadata={() => {}} />
+       * <video debounceLoadedMetadata={500} onLoadedMetadata={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onLoadedMetadata-debounce"?: number | undefined;
+      "debounceLoadedMetadata"?: number | undefined;
       /**
        * The onLoadedMetadata event is fired when the metadata has been loaded.
        * 
@@ -3910,14 +3910,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onLoadStart-debounce={500} onLoadStart={() => {}} />
+       * <video debounceLoadStart={500} onLoadStart={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onLoadStart-debounce"?: number | undefined;
+      "debounceLoadStart"?: number | undefined;
       /**
        * The onLoadStart event is fired when the browser starts looking for the specified media.
        * 
@@ -3938,14 +3938,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onPause-debounce={500} onPause={() => {}} />
+       * <video debouncePause={500} onPause={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPause-debounce"?: number | undefined;
+      "debouncePause"?: number | undefined;
       /**
        * The onPause event is fired when the media has been paused.
        * 
@@ -3966,14 +3966,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onPlay-debounce={500} onPlay={() => {}} />
+       * <video debouncePlay={500} onPlay={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPlay-debounce"?: number | undefined;
+      "debouncePlay"?: number | undefined;
       /**
        * The onPlay event is fired when the media has been started or is no longer paused.
        * 
@@ -3994,14 +3994,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onPlaying-debounce={500} onPlaying={() => {}} />
+       * <video debouncePlaying={500} onPlaying={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPlaying-debounce"?: number | undefined;
+      "debouncePlaying"?: number | undefined;
       /**
        * The onPlaying event is fired when the media has started playing.
        * 
@@ -4022,14 +4022,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onProgress-debounce={500} onProgress={() => {}} />
+       * <video debounceProgress={500} onProgress={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onProgress-debounce"?: number | undefined;
+      "debounceProgress"?: number | undefined;
       /**
        * The onProgress event is fired when the browser is in the process of getting the media data (downloading the media).
        * 
@@ -4050,14 +4050,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onRateChange-debounce={500} onRateChange={() => {}} />
+       * <video debounceRateChange={500} onRateChange={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onRateChange-debounce"?: number | undefined;
+      "debounceRateChange"?: number | undefined;
       /**
        * The onRateChange event is fired when the playback rate has changed.
        * 
@@ -4078,14 +4078,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onSeeked-debounce={500} onSeeked={() => {}} />
+       * <video debounceSeeked={500} onSeeked={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onSeeked-debounce"?: number | undefined;
+      "debounceSeeked"?: number | undefined;
       /**
        * The onSeeked event is fired when the seeking property is false, meaning that the seeking has ended.
        * 
@@ -4106,14 +4106,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onSeeking-debounce={500} onSeeking={() => {}} />
+       * <video debounceSeeking={500} onSeeking={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onSeeking-debounce"?: number | undefined;
+      "debounceSeeking"?: number | undefined;
       /**
        * The onSeeking event is fired when the seeking property is true, meaning that the media is seeking a position.
        * 
@@ -4134,14 +4134,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onStalled-debounce={500} onStalled={() => {}} />
+       * <video debounceStalled={500} onStalled={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onStalled-debounce"?: number | undefined;
+      "debounceStalled"?: number | undefined;
       /**
        * The onStalled event is fired when the browser is trying to get media data, but data is not available.
        * 
@@ -4162,14 +4162,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onSuspend-debounce={500} onSuspend={() => {}} />
+       * <video debounceSuspend={500} onSuspend={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onSuspend-debounce"?: number | undefined;
+      "debounceSuspend"?: number | undefined;
       /**
        * The onSuspend event is fired when the loading of a media is suspended.
        * 
@@ -4190,14 +4190,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onTimeUpdate-debounce={500} onTimeUpdate={() => {}} />
+       * <video debounceTimeUpdate={500} onTimeUpdate={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTimeUpdate-debounce"?: number | undefined;
+      "debounceTimeUpdate"?: number | undefined;
       /**
        * The onTimeUpdate event is fired when the time indicated by the currentTime attribute has been updated.
        * 
@@ -4218,14 +4218,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onVolumeChange-debounce={500} onVolumeChange={() => {}} />
+       * <video debounceVolumeChange={500} onVolumeChange={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onVolumeChange-debounce"?: number | undefined;
+      "debounceVolumeChange"?: number | undefined;
       /**
        * The onVolumeChange event is fired when the volume has changed.
        * 
@@ -4246,14 +4246,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onWaiting-debounce={500} onWaiting={() => {}} />
+       * <video debounceWaiting={500} onWaiting={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onWaiting-debounce"?: number | undefined;
+      "debounceWaiting"?: number | undefined;
       /**
        * The onWaiting event is fired when the media has paused but is expected to resume (like when the media is buffering).
        * 
@@ -4276,14 +4276,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onClick-debounce={500} onClick={() => {}} />
+       * <div debounceClick={500} onClick={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onClick-debounce"?: number | undefined;
+      "debounceClick"?: number | undefined;
       /**
        * The onClick event is fired when a pointing device button (usually a mouse) is pressed and released on a single element.
        * 
@@ -4304,14 +4304,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onContextMenu-debounce={500} onContextMenu={() => {}} />
+       * <div debounceContextMenu={500} onContextMenu={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onContextMenu-debounce"?: number | undefined;
+      "debounceContextMenu"?: number | undefined;
       /**
        * The onContextMenu event is fired when the right button of the mouse is clicked on an element.
        * 
@@ -4332,14 +4332,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDblClick-debounce={500} onDblClick={() => {}} />
+       * <div debounceDblClick={500} onDblClick={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDblClick-debounce"?: number | undefined;
+      "debounceDblClick"?: number | undefined;
       /**
        * The onDblClick event is fired when a pointing device button (usually a mouse) is clicked twice on a single element.
        * 
@@ -4360,14 +4360,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDrag-debounce={500} onDrag={() => {}} />
+       * <div debounceDrag={500} onDrag={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDrag-debounce"?: number | undefined;
+      "debounceDrag"?: number | undefined;
       /**
        * The onDrag event is fired when an element or text selection is being dragged.
        * 
@@ -4388,14 +4388,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDragEnd-debounce={500} onDragEnd={() => {}} />
+       * <div debounceDragEnd={500} onDragEnd={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDragEnd-debounce"?: number | undefined;
+      "debounceDragEnd"?: number | undefined;
       /**
        * The onDragEnd event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
        * 
@@ -4416,14 +4416,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDragEnter-debounce={500} onDragEnter={() => {}} />
+       * <div debounceDragEnter={500} onDragEnter={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDragEnter-debounce"?: number | undefined;
+      "debounceDragEnter"?: number | undefined;
       /**
        * The onDragEnter event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
        * 
@@ -4444,14 +4444,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDragLeave-debounce={500} onDragLeave={() => {}} />
+       * <div debounceDragLeave={500} onDragLeave={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDragLeave-debounce"?: number | undefined;
+      "debounceDragLeave"?: number | undefined;
       /**
        * The onDragLeave event is fired when a dragged element or text selection leaves a valid drop target.
        * 
@@ -4472,14 +4472,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDragOver-debounce={500} onDragOver={() => {}} />
+       * <div debounceDragOver={500} onDragOver={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDragOver-debounce"?: number | undefined;
+      "debounceDragOver"?: number | undefined;
       /**
        * The onDragOver event is fired when an element or text selection is being dragged over a valid drop target (every few hundred milliseconds).
        * 
@@ -4500,14 +4500,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDragStart-debounce={500} onDragStart={() => {}} />
+       * <div debounceDragStart={500} onDragStart={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDragStart-debounce"?: number | undefined;
+      "debounceDragStart"?: number | undefined;
       /**
        * The onDragStart event is fired when the user starts dragging an element or text selection.
        * 
@@ -4528,14 +4528,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onDrop-debounce={500} onDrop={() => {}} />
+       * <div debounceDrop={500} onDrop={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onDrop-debounce"?: number | undefined;
+      "debounceDrop"?: number | undefined;
       /**
        * The onDrop event is fired when an element or text selection is dropped on a valid drop target.
        * 
@@ -4556,14 +4556,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onMouseDown-debounce={500} onMouseDown={() => {}} />
+       * <div debounceMouseDown={500} onMouseDown={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onMouseDown-debounce"?: number | undefined;
+      "debounceMouseDown"?: number | undefined;
       /**
        * The onMouseDown event is fired when a pointing device button is pressed on an element.
        * 
@@ -4584,14 +4584,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onMouseEnter-debounce={500} onMouseEnter={() => {}} />
+       * <div debounceMouseEnter={500} onMouseEnter={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onMouseEnter-debounce"?: number | undefined;
+      "debounceMouseEnter"?: number | undefined;
       /**
        * The onMouseEnter event is fired when a pointing device is moved onto the element that has the listener attached.
        * 
@@ -4612,14 +4612,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onMouseLeave-debounce={500} onMouseLeave={() => {}} />
+       * <div debounceMouseLeave={500} onMouseLeave={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onMouseLeave-debounce"?: number | undefined;
+      "debounceMouseLeave"?: number | undefined;
       /**
        * The onMouseLeave event is fired when a pointing device is moved off the element that has the listener attached.
        * 
@@ -4640,14 +4640,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onMouseMove-debounce={500} onMouseMove={() => {}} />
+       * <div debounceMouseMove={500} onMouseMove={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onMouseMove-debounce"?: number | undefined;
+      "debounceMouseMove"?: number | undefined;
       /**
        * The onMouseMove event is fired when a pointing device is moved over an element.
        * 
@@ -4668,14 +4668,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onMouseOut-debounce={500} onMouseOut={() => {}} />
+       * <div debounceMouseOut={500} onMouseOut={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onMouseOut-debounce"?: number | undefined;
+      "debounceMouseOut"?: number | undefined;
       /**
        * The onMouseOut event is fired when a pointing device is moved off the element that has the listener attached or off one of its children.
        * 
@@ -4696,14 +4696,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onMouseOver-debounce={500} onMouseOver={() => {}} />
+       * <div debounceMouseOver={500} onMouseOver={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onMouseOver-debounce"?: number | undefined;
+      "debounceMouseOver"?: number | undefined;
       /**
        * The onMouseOver event is fired when a pointing device is moved onto the element that has the listener attached.
        * 
@@ -4724,14 +4724,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onMouseUp-debounce={500} onMouseUp={() => {}} />
+       * <div debounceMouseUp={500} onMouseUp={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onMouseUp-debounce"?: number | undefined;
+      "debounceMouseUp"?: number | undefined;
       /**
        * The onMouseUp event is fired when a pointing device button is released over an element.
        * 
@@ -4754,14 +4754,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <input onSelect-debounce={500} onSelect={() => {}} />
+       * <input debounceSelect={500} onSelect={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onSelect-debounce"?: number | undefined;
+      "debounceSelect"?: number | undefined;
       /**
        * The onSelect event is fired when the user selects some text in a text field.
        * 
@@ -4784,14 +4784,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onTouchCancel-debounce={500} onTouchCancel={() => {}} />
+       * <div debounceTouchCancel={500} onTouchCancel={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTouchCancel-debounce"?: number | undefined;
+      "debounceTouchCancel"?: number | undefined;
       /**
        * The onTouchCancel event is fired when a touch point has been disrupted in an implementation-specific manner (for example, too many touch points are created).
        * 
@@ -4812,14 +4812,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onTouchEnd-debounce={500} onTouchEnd={() => {}} />
+       * <div debounceTouchEnd={500} onTouchEnd={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTouchEnd-debounce"?: number | undefined;
+      "debounceTouchEnd"?: number | undefined;
       /**
        * The onTouchEnd event is fired when a touch point is removed from the touch surface.
        * 
@@ -4840,14 +4840,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onTouchMove-debounce={500} onTouchMove={() => {}} />
+       * <div debounceTouchMove={500} onTouchMove={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTouchMove-debounce"?: number | undefined;
+      "debounceTouchMove"?: number | undefined;
       /**
        * The onTouchMove event is fired when a touch point is moved along the touch surface.
        * 
@@ -4868,14 +4868,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onTouchStart-debounce={500} onTouchStart={() => {}} />
+       * <div debounceTouchStart={500} onTouchStart={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTouchStart-debounce"?: number | undefined;
+      "debounceTouchStart"?: number | undefined;
       /**
        * The onTouchStart event is fired when a touch point is placed on the touch surface.
        * 
@@ -4898,14 +4898,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onPointerOver-debounce={500} onPointerOver={() => {}} />
+       * <div debouncePointerOver={500} onPointerOver={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPointerOver-debounce"?: number | undefined;
+      "debouncePointerOver"?: number | undefined;
       /**
        * The onPointerOver event is fired when a pointing device is moved onto the element that has the listener attached.
        * 
@@ -4926,14 +4926,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onPointerEnter-debounce={500} onPointerEnter={() => {}} />
+       * <div debouncePointerEnter={500} onPointerEnter={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPointerEnter-debounce"?: number | undefined;
+      "debouncePointerEnter"?: number | undefined;
       /**
        * The onPointerEnter event is fired when a pointing device is moved onto the element that has the listener attached.
        * 
@@ -4954,14 +4954,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onPointerDown-debounce={500} onPointerDown={() => {}} />
+       * <div debouncePointerDown={500} onPointerDown={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPointerDown-debounce"?: number | undefined;
+      "debouncePointerDown"?: number | undefined;
       /**
        * The onPointerDown event is fired when a pointer becomes active.
        * 
@@ -4982,14 +4982,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onPointerMove-debounce={500} onPointerMove={() => {}} />
+       * <div debouncePointerMove={500} onPointerMove={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPointerMove-debounce"?: number | undefined;
+      "debouncePointerMove"?: number | undefined;
       /**
        * The onPointerMove event is fired when a pointer changes coordinates.
        * 
@@ -5010,14 +5010,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onPointerUp-debounce={500} onPointerUp={() => {}} />
+       * <div debouncePointerUp={500} onPointerUp={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPointerUp-debounce"?: number | undefined;
+      "debouncePointerUp"?: number | undefined;
       /**
        * The onPointerUp event is fired when a pointer is no longer active.
        * 
@@ -5038,14 +5038,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onPointerCancel-debounce={500} onPointerCancel={() => {}} />
+       * <div debouncePointerCancel={500} onPointerCancel={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPointerCancel-debounce"?: number | undefined;
+      "debouncePointerCancel"?: number | undefined;
       /**
        * The onPointerCancel event is fired when a pointer has been disrupted in an implementation-specific manner (for example, a device stops sending data).
        * 
@@ -5066,14 +5066,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onPointerOut-debounce={500} onPointerOut={() => {}} />
+       * <div debouncePointerOut={500} onPointerOut={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPointerOut-debounce"?: number | undefined;
+      "debouncePointerOut"?: number | undefined;
       /**
        * The onPointerOut event is fired when a pointing device is moved off the element that has the listener attached.
        * 
@@ -5094,14 +5094,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onPointerLeave-debounce={500} onPointerLeave={() => {}} />
+       * <div debouncePointerLeave={500} onPointerLeave={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onPointerLeave-debounce"?: number | undefined;
+      "debouncePointerLeave"?: number | undefined;
       /**
        * The onPointerLeave event is fired when a pointing device is moved off the element that has the listener attached.
        * 
@@ -5123,14 +5123,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onGotPointerCapture-debounce={500} onGotPointerCapture={() => {}} />
+       * <div debounceGotPointerCapture={500} onGotPointerCapture={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onGotPointerCapture-debounce"?: number | undefined;
+      "debounceGotPointerCapture"?: number | undefined;
       /**
        * The onGotPointerCapture event is fired when an element captures a pointer.
        * 
@@ -5151,14 +5151,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onLostPointerCapture-debounce={500} onLostPointerCapture={() => {}} />
+       * <div debounceLostPointerCapture={500} onLostPointerCapture={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onLostPointerCapture-debounce"?: number | undefined;
+      "debounceLostPointerCapture"?: number | undefined;
       /**
        * The onLostPointerCapture event is fired after a pointer has been captured by an element and then is released.
        * 
@@ -5181,14 +5181,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onScroll-debounce={500} onScroll={() => {}} />
+       * <div debounceScroll={500} onScroll={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onScroll-debounce"?: number | undefined;
+      "debounceScroll"?: number | undefined;
       /**
        * The onScroll event is fired when an element's scrollbar is being scrolled.
        * 
@@ -5211,14 +5211,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onWheel-debounce={500} onWheel={() => {}} />
+       * <div debounceWheel={500} onWheel={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onWheel-debounce"?: number | undefined;
+      "debounceWheel"?: number | undefined;
       /**
        * The onWheel event is fired when a wheel button of a pointing device is rotated in any direction.
        * 
@@ -5241,14 +5241,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onAnimationStart-debounce={500} onAnimationStart={() => {}} />
+       * <div debounceAnimationStart={500} onAnimationStart={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onAnimationStart-debounce"?: number | undefined;
+      "debounceAnimationStart"?: number | undefined;
       /**
        * The onAnimationStart event is fired when a CSS animation has started.
        * 
@@ -5269,14 +5269,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onAnimationEnd-debounce={500} onAnimationEnd={() => {}} />
+       * <div debounceAnimationEnd={500} onAnimationEnd={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onAnimationEnd-debounce"?: number | undefined;
+      "debounceAnimationEnd"?: number | undefined;
       /**
        * The onAnimationEnd event is fired when a CSS animation has completed.
        * 
@@ -5297,14 +5297,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onAnimationIteration-debounce={500} onAnimationIteration={() => {}} />
+       * <div debounceAnimationIteration={500} onAnimationIteration={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onAnimationIteration-debounce"?: number | undefined;
+      "debounceAnimationIteration"?: number | undefined;
       /**
        * The onAnimationIteration event is fired when a CSS animation has completed one iteration.
        * 
@@ -5327,14 +5327,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onTransitionCancel-debounce={500} onTransitionCancel={() => {}} />
+       * <div debounceTransitionCancel={500} onTransitionCancel={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTransitionCancel-debounce"?: number | undefined;
+      "debounceTransitionCancel"?: number | undefined;
       /**
        * The onTransitionCancel event is fired when a CSS transition has been interrupted.
        * 
@@ -5355,14 +5355,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onTransitionEnd-debounce={500} onTransitionEnd={() => {}} />
+       * <div debounceTransitionEnd={500} onTransitionEnd={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTransitionEnd-debounce"?: number | undefined;
+      "debounceTransitionEnd"?: number | undefined;
       /**
        * The onTransitionEnd event is fired when a CSS transition has completed.
        * 
@@ -5383,14 +5383,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onTransitionRun-debounce={500} onTransitionRun={() => {}} />
+       * <div debounceTransitionRun={500} onTransitionRun={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTransitionRun-debounce"?: number | undefined;
+      "debounceTransitionRun"?: number | undefined;
       /**
        * The onTransitionRun event is fired when a CSS transition has started.
        * 
@@ -5411,14 +5411,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <div onTransitionStart-debounce={500} onTransitionStart={() => {}} />
+       * <div debounceTransitionStart={500} onTransitionStart={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onTransitionStart-debounce"?: number | undefined;
+      "debounceTransitionStart"?: number | undefined;
       /**
        * The onTransitionStart event is fired when a CSS transition has started.
        * 
@@ -5441,14 +5441,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onEnterPictureInPicture-debounce={500} onEnterPictureInPicture={() => {}} />
+       * <video debounceEnterPictureInPicture={500} onEnterPictureInPicture={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onEnterPictureInPicture-debounce"?: number | undefined;
+      "debounceEnterPictureInPicture"?: number | undefined;
       /**
        * The onEnterPictureInPicture event is fired when a video enters picture-in-picture mode.
        * 
@@ -5469,14 +5469,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onLeavePictureInPicture-debounce={500} onLeavePictureInPicture={() => {}} />
+       * <video debounceLeavePictureInPicture={500} onLeavePictureInPicture={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onLeavePictureInPicture-debounce"?: number | undefined;
+      "debounceLeavePictureInPicture"?: number | undefined;
       /**
        * The onLeavePictureInPicture event is fired when a video leaves picture-in-picture mode.
        * 
@@ -5497,14 +5497,14 @@ declare global {
        * Example:
        *
        * ```tsx
-       * <video onResize-debounce={500} onResize={() => {}} />
+       * <video debounceResize={500} onResize={() => {}} />
        * ```
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/components-details/server-actions#debounce-actions)
+       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
        */
-      "onResize-debounce"?: number | undefined;
+      "debounceResize"?: number | undefined;
       /**
        * The onResize event is fired when a picture-in-picture window is resized.
        * 

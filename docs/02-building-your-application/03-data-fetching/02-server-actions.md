@@ -120,13 +120,13 @@ TODO: Check that this example works after server-side state implementation
 
 ### Debounce
 
-Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchStart`...) to allow to debounce the action call by adding an extra attribute with the `-debounce` suffix.
+Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchStart`...) to allow to [debounce](/docs/api-reference/extended-html-attributes/debounceEvent) the action call by replacing the `on` prefix to `debounce`.
 
 ```tsx
 <input
   type="text"
   onInput={(e) => console.log(e.target.value)}
-  onInput-debounce={400}
+  debounceInput={400}
 />
 ```
 
