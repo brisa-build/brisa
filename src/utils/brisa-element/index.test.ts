@@ -2630,6 +2630,52 @@ describe("utils", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>Test</div>");
     });
 
+    it('should add the "brisa-request" when the indicator is true', () => {
+      const Component = () => {
+        return [
+          "button",
+          { indicator: { id: "__ind:increment", value: true } },
+          "Test",
+        ];
+      };
+
+      customElements.define(
+        "test-component",
+        brisaElement(Component, ["error"]),
+      );
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      const button = testComponent?.shadowRoot?.firstChild as HTMLButtonElement;
+
+      expect(button.classList.contains("brisa-request")).toBeTrue();
+    });
+
+    it('should not add the "brisa-request" when the indicator is false', () => {
+      const Component = () => {
+        return [
+          "button",
+          { indicator: { id: "__ind:increment", value: false } },
+          "Test",
+        ];
+      };
+
+      customElements.define(
+        "test-component",
+        brisaElement(Component, ["error"]),
+      );
+      document.body.innerHTML = "<test-component />";
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      const button = testComponent?.shadowRoot?.firstChild as HTMLButtonElement;
+
+      expect(button.classList.contains("brisa-request")).toBeFalse();
+    });
+
     it('should unmount/mount again a component when the "key" prop changes', async () => {
       const mockRender = mock((key: number) => {});
       const Component = ({ key }: any) => {

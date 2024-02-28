@@ -1,6 +1,6 @@
 const ACTION = "action";
 const INDICATOR = "indicator";
-const BRISA_REQUEST_CLASS = "brisa-request"
+const BRISA_REQUEST_CLASS = "brisa-request";
 const ACTION_ATTRIBUTE = "data-" + ACTION;
 const $document = document;
 const stringify = JSON.stringify;
@@ -13,7 +13,12 @@ let isReady = false;
  *
  * This function is used to call an action on the server.
  */
-async function rpc(actionId: string, isFormData = false, indicator: string | null, ...args: unknown[]) {
+async function rpc(
+  actionId: string,
+  isFormData = false,
+  indicator: string | null,
+  ...args: unknown[]
+) {
   const elementsWithIndicator = [];
   let promise = resolveRPC
     ? $Promise.resolve()
@@ -29,11 +34,12 @@ async function rpc(actionId: string, isFormData = false, indicator: string | nul
       });
 
   // Add the "brisa-request" class to all indicators
-  if(indicator) {
+  if (indicator) {
     for (let el of querySelectorAll(`[${INDICATOR}]`)) {
-      if(getAttribute(el, INDICATOR)?.includes(indicator)) {
-        el.classList.add(BRISA_REQUEST_CLASS)
-        elementsWithIndicator.push(el)
+      if (getAttribute(el, INDICATOR)?.includes(indicator)) {
+        el.classList.add(BRISA_REQUEST_CLASS);
+        elementsWithIndicator.push(el);
+        window._s?.set(indicator, true);
       }
     }
   }
@@ -60,9 +66,10 @@ async function rpc(actionId: string, isFormData = false, indicator: string | nul
   await resolveRPC!(res);
 
   // Remove the "brisa-request" after resolve the server action
-  for(let el of elementsWithIndicator) {
-    el.classList.remove(BRISA_REQUEST_CLASS)
-  }  
+  for (let el of elementsWithIndicator) {
+    el.classList.remove(BRISA_REQUEST_CLASS);
+    window._s?.set(indicator, false);
+  }
 }
 
 /**
@@ -102,9 +109,7 @@ function registerActions() {
       const eventAttrName = actionName.replace(ACTION, "");
       const eventName = eventAttrName.replace(onPrefix, "");
       const isFormData = element.nodeName === "FORM" && eventName === "submit";
-      const debounceMs = +(
-        getAttribute(element, "debounce"+eventName) ?? 0
-      );
+      const debounceMs = +(getAttribute(element, "debounce" + eventName) ?? 0);
       let timeout: ReturnType<typeof setTimeout>;
 
       if (actionName.startsWith(ACTION)) {
@@ -112,7 +117,13 @@ function registerActions() {
           if (args[0] instanceof Event) args[0].preventDefault();
           clearTimeout(timeout);
           timeout = setTimeout(
-            () => rpc(actionId!, isFormData, getAttribute(element, 'indicate'+eventName), ...args),
+            () =>
+              rpc(
+                actionId!,
+                isFormData,
+                getAttribute(element, "indicate" + eventName),
+                ...args,
+              ),
             debounceMs,
           );
         });
