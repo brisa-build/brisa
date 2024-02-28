@@ -7456,7 +7456,7 @@ declare global {
        * 
        * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
        */
-        indicateLeavePictureInPicture?: IndicatorSignal | undefined;
+      indicateLeavePictureInPicture?: IndicatorSignal | undefined;
       /**
        * The onLeavePictureInPicture event is fired when a video leaves picture-in-picture mode.
        * 
@@ -7506,7 +7506,7 @@ declare global {
        * 
        * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
        */
-        indicateResize?: IndicatorSignal | undefined;
+      indicateResize?: IndicatorSignal | undefined;
       /**
        * The onResize event is fired when a picture-in-picture window is resized.
        * 

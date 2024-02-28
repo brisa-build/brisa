@@ -1,5 +1,11 @@
 import { getConstants } from "@/constants";
-import type { I18nConfig, Props, RequestContext, Translations } from "@/types";
+import type {
+  I18nConfig,
+  IndicatorSignal,
+  Props,
+  RequestContext,
+  Translations,
+} from "@/types";
 import routeMatchPathname from "@/utils/route-match-pathname";
 import { serialize } from "@/utils/serialization";
 import stylePropsToString from "@/utils/style-props-to-string";
@@ -41,6 +47,13 @@ export default function renderAttributes({
     if (key === "indicator") {
       const arr = Array.isArray(value) ? value : [value];
       value = serialize(arr.map((a) => a.id));
+    }
+    // `indicate` attribute
+    if (
+      key.startsWith("indicate") &&
+      (value as IndicatorSignal)?.id?.startsWith("__ind:")
+    ) {
+      value = (value as IndicatorSignal).id;
     }
 
     // Skip types that are not supported in HTML
