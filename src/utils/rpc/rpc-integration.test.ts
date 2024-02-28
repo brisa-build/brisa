@@ -20,8 +20,10 @@ async function simulateRPC({
   elementName = "button",
   eventName = "click",
   debounceMs = 0,
+  slowRequest = false,
   navigateTo = "",
   htmlChunks = [],
+  useIndicator = false,
 } = {}) {
   const el = document.createElement(elementName);
   let times = 0;
@@ -31,7 +33,12 @@ async function simulateRPC({
   el.setAttribute("data-action", "true");
 
   if (debounceMs) {
-    el.setAttribute(`on${eventName}-debounce`, debounceMs.toString());
+    el.setAttribute(`debounce${eventName}`, debounceMs.toString());
+  }
+
+  if (useIndicator) {
+    el.setAttribute('indicator', "['__ind:increment']")
+    el.setAttribute(`indicate${eventName}`, "__ind:increment")
   }
 
   document.body.appendChild(el);
@@ -48,11 +55,13 @@ async function simulateRPC({
 
   // Mock fetch with the actions
   const mockFetch = spyOn(window, "fetch").mockImplementation(
-    async () =>
-      ({
+    async () => {
+      if(slowRequest) await Bun.sleep(0)
+      return {
         headers,
         body: {
-          getReader: () => ({
+          getReader: () => {
+            return {
             read: async () => {
               times += 1;
 
@@ -63,9 +72,11 @@ async function simulateRPC({
                   }
                 : { done: true };
             },
-          }),
+          }
         },
-      }) as any,
+        },
+      } as any 
+    }
   );
 
   // Simulate the event
@@ -119,7 +130,7 @@ describe("utils", () => {
       });
     });
 
-    it('should debounce the "rpc" function with onClick-debounce attribute', async () => {
+    it('should debounce the "rpc" function with debounceClick attribute', async () => {
       const mockTimeout = spyOn(window, "setTimeout");
       const mockFetch = await simulateRPC({
         debounceMs: 100,
@@ -195,6 +206,20 @@ describe("utils", () => {
         "x-action": "a1_1",
         "x-s": `[["c","d"]]`,
       });
+    });
+
+    it('should add and remove the class "brisa-request" meanwhile the request is being processed', async () => {
+      await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+        useIndicator: true,
+        slowRequest: true
+      });
+
+      const element = document.body.firstChild as HTMLElement;
+
+      expect(element.classList.contains('brisa-request')).toBeTrue();
+      await Bun.sleep(0)
+      expect(element.classList.contains('brisa-request')).toBeFalse();
     });
   });
 });
