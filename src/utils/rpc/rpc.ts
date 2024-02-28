@@ -1,4 +1,6 @@
 const ACTION = "action";
+const INDICATOR = "indicator";
+const BRISA_REQUEST_CLASS = "brisa-request"
 const ACTION_ATTRIBUTE = "data-" + ACTION;
 const $document = document;
 const stringify = JSON.stringify;
@@ -11,7 +13,8 @@ let isReady = false;
  *
  * This function is used to call an action on the server.
  */
-async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
+async function rpc(actionId: string, isFormData = false, indicator: string | null, ...args: unknown[]) {
+  const elementsWithIndicator = [];
   let promise = resolveRPC
     ? $Promise.resolve()
     : new $Promise((res) => {
@@ -24,6 +27,16 @@ async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
         scriptElement.src = __RPC_LAZY_FILE__;
         $document.head.appendChild(scriptElement);
       });
+
+  // Add the "brisa-request" class to all indicators
+  if(indicator) {
+    for (let el of querySelectorAll(`[${INDICATOR}]`)) {
+      if(getAttribute(el, INDICATOR)?.includes(indicator)) {
+        el.classList.add(BRISA_REQUEST_CLASS)
+        elementsWithIndicator.push(el)
+      }
+    }
+  }
 
   const res = await fetch(location.toString(), {
     method: "POST",
@@ -44,7 +57,12 @@ async function rpc(actionId: string, isFormData = false, ...args: unknown[]) {
     delete window._rpc;
   }
 
-  resolveRPC!(res);
+  await resolveRPC!(res);
+
+  // Remove the "brisa-request" after resolve the server action
+  for(let el of elementsWithIndicator) {
+    el.classList.remove(BRISA_REQUEST_CLASS)
+  }  
 }
 
 /**
@@ -69,7 +87,7 @@ function serialize(k: string, v: unknown) {
 }
 
 function registerActions() {
-  const elements = $document.querySelectorAll(`[${ACTION_ATTRIBUTE}]`);
+  const elements = querySelectorAll(`[${ACTION_ATTRIBUTE}]`);
   const onPrefix = "on";
 
   for (let element of elements) {
@@ -85,7 +103,7 @@ function registerActions() {
       const eventName = eventAttrName.replace(onPrefix, "");
       const isFormData = element.nodeName === "FORM" && eventName === "submit";
       const debounceMs = +(
-        element.getAttribute(eventAttrName + "-debounce") ?? 0
+        getAttribute(element, "debounce"+eventName) ?? 0
       );
       let timeout: ReturnType<typeof setTimeout>;
 
@@ -94,13 +112,21 @@ function registerActions() {
           if (args[0] instanceof Event) args[0].preventDefault();
           clearTimeout(timeout);
           timeout = setTimeout(
-            () => rpc(actionId!, isFormData, ...args),
+            () => rpc(actionId!, isFormData, getAttribute(element, 'indicate'+eventName), ...args),
             debounceMs,
           );
         });
       }
     }
   }
+}
+
+function getAttribute(el: Element, attr: string) {
+  return el.getAttribute(attr);
+}
+
+function querySelectorAll(query: string) {
+  return $document.querySelectorAll(query);
 }
 
 function initActionRegister() {
