@@ -482,5 +482,21 @@ describe("utils", () => {
         ` indicator="['__ind:increment','__ind:decrement']"`,
       );
     });
+
+    it('should simplify indicatorSignal to indicatorId inside "indicate[Event]" attribute with a string value', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          indicateClick: request.indicate("increment"),
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(` indicateclick="__ind:increment"`);
+    });
   });
 });
