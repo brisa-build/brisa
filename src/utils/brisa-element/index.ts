@@ -1,4 +1,4 @@
-import type { WebContext, BrisaContext } from "@/types";
+import type { WebContext, BrisaContext, IndicatorSignal } from "@/types";
 import getProviderId from "@/utils/get-provider-id";
 import { deserialize, serialize } from "@/utils/serialization";
 import signals from "@/utils/signals";
@@ -31,6 +31,8 @@ const W3 = "http://www.w3.org/";
 const SVG_NAMESPACE = W3 + "2000/svg";
 const XLINK_NAMESPACE = W3 + "1999/xlink";
 const HTML = "HTML";
+const INDICATOR = "indicator";
+const BRISA_REQUEST_CLASS = "brisa-request";
 const PORTAL = "portal";
 const SLOT_TAG = "slot";
 const KEY = "key";
@@ -80,7 +82,10 @@ const setAttribute = (el: HTMLElement, key: string, value: string) => {
     el.namespaceURI === SVG_NAMESPACE &&
     (key.startsWith("xlink:") || key === "href");
 
-  if (key === "ref") {
+  if (key === INDICATOR) {
+    if (value) el.classList.add(BRISA_REQUEST_CLASS);
+    else el.classList.remove(BRISA_REQUEST_CLASS);
+  } else if (key === "ref") {
     (value as unknown as StateSignal).value = el;
   } else if (isWithNamespace) {
     if (off) el.removeAttributeNS(XLINK_NAMESPACE, key);
@@ -181,6 +186,7 @@ export default function brisaElement(
         // Handle attributes
         for (let [attribute, attrValue] of Object.entries(attributes)) {
           const isEvent = isAttributeAnEvent(attribute);
+          const isIndicator = attribute === INDICATOR;
 
           if (isEvent) {
             el.addEventListener(lowercase(attribute.slice(2)), (e) =>
@@ -188,8 +194,18 @@ export default function brisaElement(
                 e instanceof CustomEvent ? e.detail : e,
               ),
             );
-          } else if (!isEvent && isFunction(attrValue)) {
-            effect(r(() => setAttribute(el, attribute, (attrValue as any)())));
+          } else if (isIndicator || (!isEvent && isFunction(attrValue))) {
+            effect(
+              r(() =>
+                setAttribute(
+                  el,
+                  attribute,
+                  isIndicator
+                    ? (attrValue as IndicatorSignal)?.value
+                    : (attrValue as any)(),
+                ),
+              ),
+            );
           } else {
             setAttribute(el, attribute, attrValue as string);
           }

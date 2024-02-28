@@ -15,6 +15,7 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const actionRPCCode = await injectActionRPCCode();
 const actionRPCLazyCode = await injectActionRPCLazyCode();
+const INDICATOR_ID = "__ind:increment";
 
 async function simulateRPC({
   elementName = "button",
@@ -37,8 +38,8 @@ async function simulateRPC({
   }
 
   if (useIndicator) {
-    el.setAttribute('indicator', "['__ind:increment']")
-    el.setAttribute(`indicate${eventName}`, "__ind:increment")
+    el.setAttribute("indicator", `['${INDICATOR_ID}']`);
+    el.setAttribute(`indicate${eventName}`, `${INDICATOR_ID}`);
   }
 
   document.body.appendChild(el);
@@ -54,14 +55,13 @@ async function simulateRPC({
   }
 
   // Mock fetch with the actions
-  const mockFetch = spyOn(window, "fetch").mockImplementation(
-    async () => {
-      if(slowRequest) await Bun.sleep(0)
-      return {
-        headers,
-        body: {
-          getReader: () => {
-            return {
+  const mockFetch = spyOn(window, "fetch").mockImplementation(async () => {
+    if (slowRequest) await Bun.sleep(0);
+    return {
+      headers,
+      body: {
+        getReader: () => {
+          return {
             read: async () => {
               times += 1;
 
@@ -72,12 +72,11 @@ async function simulateRPC({
                   }
                 : { done: true };
             },
-          }
+          };
         },
-        },
-      } as any 
-    }
-  );
+      },
+    } as any;
+  });
 
   // Simulate the event
   el.dispatchEvent(
@@ -212,14 +211,34 @@ describe("utils", () => {
       await simulateRPC({
         navigateTo: "http://localhost/some-page",
         useIndicator: true,
-        slowRequest: true
+        slowRequest: true,
       });
 
       const element = document.body.firstChild as HTMLElement;
 
-      expect(element.classList.contains('brisa-request')).toBeTrue();
-      await Bun.sleep(0)
-      expect(element.classList.contains('brisa-request')).toBeFalse();
+      expect(element.classList.contains("brisa-request")).toBeTrue();
+      await Bun.sleep(0);
+      expect(element.classList.contains("brisa-request")).toBeFalse();
+    });
+
+    it("should communicate with store to the indicator store key", async () => {
+      window._s = {
+        Map: new Map(),
+        get: (key: string) => window._s.Map.get(key),
+        set: (key: string, value: any) => window._s.Map.set(key, value),
+      };
+
+      expect(window._s.get(INDICATOR_ID)).toBeEmpty();
+
+      await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+        useIndicator: true,
+        slowRequest: true,
+      });
+
+      expect(window._s.get(INDICATOR_ID)).toBeTrue();
+      await Bun.sleep(0);
+      expect(window._s.get(INDICATOR_ID)).toBeFalse();
     });
   });
 });
