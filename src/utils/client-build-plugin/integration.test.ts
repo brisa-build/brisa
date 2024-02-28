@@ -4815,8 +4815,10 @@ describe("integration", () => {
 
     it('should add/remove the "brisa-request" class reacting to IndicatorSignal', () => {
       const code = `
-       export default function IndicatorComponent({ onAction }, { indicate }) {
+       export default function IndicatorComponent({ onAction }, { indicate, store }) {
           const indicator = indicate('some-action');
+
+          window._s = store;
 
           return (
             <button indicator={indicator} onClick={onAction}>
