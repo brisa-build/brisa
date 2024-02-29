@@ -168,22 +168,18 @@ export default function signals() {
 
   const store = {
     ...globalStore,
-    optimistic<T>(actionName: string, key: string) {
-      let optimisticValue: T | null;
-      return {
-        set value(v: T) {
-          optimisticValue = v;
-          store.set(INDICATE_PREFIX + key, true);
-        },
-        get value() {
-          const originalValue = store.get(key);
-          if (!indicate(actionName).value) {
-            optimisticValue = null;
-            return originalValue as T;
-          }
-          return (optimisticValue ?? originalValue) as T;
-        },
-      };
+    setOptimistic<T>(actionName: string, key: string, fn: (value: T) => T) {
+      const actionKey = INDICATE_PREFIX + actionName;
+      const originalValue = store.get<T>(key);
+      const optimisticValue = fn(originalValue);
+
+      store.set(actionKey, true);
+      store.set(key, optimisticValue);
+      effect(() => {
+        if (!store.get(actionKey) && store.get(key) === optimisticValue) {
+          store.set(key, originalValue);
+        }
+      });
     },
     get(key: string) {
       manageStoreSubscription();
