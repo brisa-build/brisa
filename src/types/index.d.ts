@@ -624,6 +624,7 @@ type ReactiveMap = {
   get: <T>(key: string) => T;
   set: <T>(key: string, value: T) => void;
   delete: (key: string) => void;
+  optimistic: <T>(actionName: string, storeKey: string) => Signal<T>;
   Map: Map<string, unknown>;
 };
 
