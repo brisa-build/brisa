@@ -489,36 +489,51 @@ describe("signals", () => {
     expect(mockEffect.mock.calls[1][0]).toBeTrue();
   });
 
-  it('should "optimistic" signal reset the value if the store is not updated in the server action', () => {
+  it('should "store.setOptimistic" reset the value if the store is not updated in the server action', () => {
     const { store } = signals();
 
     store.set("count", 0);
+    store.setOptimistic<number>("increment", "count", (v) => v + 1);
 
-    const optimisticCount = store.optimistic<number>("increment", "count");
-
-    optimisticCount.value = 1;
-    expect(optimisticCount.value).toBe(1);
+    expect(store.get<number>("count")).toBe(1);
 
     // Simulate RPC to turn off optimistic update
     window._s.set("__ind:increment", false);
 
-    expect(optimisticCount.value).toBe(0);
+    expect(store.get<number>("count")).toBe(0);
   });
 
-  it('should "optimistic" signal keep the value if the store is updated in the server action', () => {
+  it('should "store.setOptimistic" keep the value if the store is updated in the server action', () => {
     const { store } = signals();
 
     store.set("count", 0);
+    store.setOptimistic<number>("increment", "count", (v) => v + 1);
 
-    const optimisticCount = store.optimistic<number>("increment", "count");
-
-    optimisticCount.value = 1;
-    expect(optimisticCount.value).toBe(0);
+    expect(store.get("count")).toBe(1);
 
     // Simulate RPC to update store + turn off optimistic update
     window._s.set("count", 1234);
     window._s.set("__ind:increment", false);
 
-    expect(optimisticCount.value).toBe(1234);
+    expect(store.get<number>("count")).toBe(1234);
+  });
+
+  it('should "store.setOptimistic" work with objects', () => {
+    const { store } = signals();
+
+    type User = { name: string };
+
+    store.set<User>("user", { name: "Aral" });
+    store.setOptimistic<{ name: string }>("updateName", "user", (v) => ({
+      ...v,
+      name: "Barbara",
+    }));
+
+    expect(store.get<User>("user")).toEqual({ name: "Barbara" });
+
+    // Simulate RPC to turn off optimistic update
+    window._s.set("__ind:updateName", false);
+
+    expect(store.get<User>("user")).toEqual({ name: "Aral" });
   });
 });
