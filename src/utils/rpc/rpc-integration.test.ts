@@ -15,7 +15,7 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const actionRPCCode = await injectActionRPCCode();
 const actionRPCLazyCode = await injectActionRPCLazyCode();
-const INDICATOR_ID = "__ind:increment";
+const INDICATOR_ID = "__ind:action";
 
 async function simulateRPC({
   elementName = "button",
@@ -25,6 +25,8 @@ async function simulateRPC({
   navigateTo = "",
   htmlChunks = [],
   useIndicator = false,
+  fails = false,
+  failsThrowingAnError = false,
 } = {}) {
   const el = document.createElement(elementName);
   let times = 0;
@@ -57,8 +59,10 @@ async function simulateRPC({
   // Mock fetch with the actions
   const mockFetch = spyOn(window, "fetch").mockImplementation(async () => {
     if (slowRequest) await Bun.sleep(0);
+    if (failsThrowingAnError) throw new Error("Some error");
     return {
       headers,
+      ok: fails ? false : true,
       body: {
         getReader: () => {
           return {
@@ -207,7 +211,7 @@ describe("utils", () => {
       });
     });
 
-    it('should add and remove the class "brisa-request" meanwhile the request is being processed', async () => {
+    it('should add and remove the class "brisa-request" meanwhile the request is being processed and then success', async () => {
       await simulateRPC({
         navigateTo: "http://localhost/some-page",
         useIndicator: true,
@@ -219,6 +223,55 @@ describe("utils", () => {
       expect(element.classList.contains("brisa-request")).toBeTrue();
       await Bun.sleep(0);
       expect(element.classList.contains("brisa-request")).toBeFalse();
+    });
+
+    it('should add and remove the class "brisa-request" meanwhile the request is being processed and then fail req.ok === false', async () => {
+      window._s = {
+        Map: new Map(),
+        get: (key: string) => window._s.Map.get(key),
+        set: (key: string, value: any) => window._s.Map.set(key, value),
+      };
+
+      await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+        useIndicator: true,
+        slowRequest: true,
+        fails: true,
+      });
+
+      const element = document.body.firstChild as HTMLElement;
+
+      expect(element.classList.contains("brisa-request")).toBeTrue();
+      await Bun.sleep(0);
+      expect(element.classList.contains("brisa-request")).toBeFalse();
+
+      const [res, error] = window._s.get(INDICATOR_ID + "-e");
+      expect(res.ok).toBeFalse();
+      expect(error).toBeUndefined();
+    });
+
+    it('should add and remove the class "brisa-request" meanwhile the request is being processed and then fail throwing an error', async () => {
+      window._s = {
+        Map: new Map(),
+        get: (key: string) => window._s.Map.get(key),
+        set: (key: string, value: any) => window._s.Map.set(key, value),
+      };
+
+      await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+        useIndicator: true,
+        slowRequest: true,
+        failsThrowingAnError: true,
+      });
+
+      const element = document.body.firstChild as HTMLElement;
+
+      expect(element.classList.contains("brisa-request")).toBeTrue();
+      await Bun.sleep(0);
+      expect(element.classList.contains("brisa-request")).toBeFalse();
+      const [res, error] = window._s.get(INDICATOR_ID + "-e");
+      expect(res).toBeUndefined();
+      expect(error).toEqual(new Error("Some error"));
     });
 
     it("should communicate with store to the indicator store key", async () => {
