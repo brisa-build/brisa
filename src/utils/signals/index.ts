@@ -170,20 +170,21 @@ export default function signals() {
     ...globalStore,
     setOptimistic<T>(actionName: string, key: string, fn: (value: T) => T) {
       const actionKey = INDICATE_PREFIX + actionName;
+      const optimisticKey = "__o:" + key;
       const originalValue = store.get<T>(key);
       const optimisticValue = fn(originalValue);
 
       store.set(actionKey, true);
-      store.set(key, optimisticValue);
+      store.set(optimisticKey, optimisticValue);
       effect(() => {
         if (!store.get(actionKey) && store.get(key) === optimisticValue) {
-          store.set(key, originalValue);
+          store.delete(optimisticKey);
         }
       });
     },
     get(key: string) {
       manageStoreSubscription();
-      return globalStore.get(key);
+      return globalStore.get("__o:" + key) ?? globalStore.get(key);
     },
   } as WebContext["store"];
 
