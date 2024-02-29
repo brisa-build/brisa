@@ -10,6 +10,7 @@ describe("signals", () => {
     signals = await import(".").then((m) => m.default);
   });
   afterAll(() => {
+    window._s = undefined;
     GlobalRegistrator.unregister();
     delete (globalThis as any)["_S"];
   });
