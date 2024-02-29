@@ -13,6 +13,7 @@ type StoreOperation = "get" | "set" | "delete";
 const NOTIFY = "n";
 const SUBSCRIBE = "s";
 const UNSUBSCRIBE = "u";
+const INDICATE_PREFIX = "__ind:";
 
 const subscription = createSubscription();
 const storeMap = new Map((window as any)._S);
@@ -167,6 +168,23 @@ export default function signals() {
 
   const store = {
     ...globalStore,
+    optimistic<T>(actionName: string, key: string) {
+      let optimisticValue: T | null;
+      return {
+        set value(v: T) {
+          optimisticValue = v;
+          store.set(INDICATE_PREFIX + key, true);
+        },
+        get value() {
+          const originalValue = store.get(key);
+          if (!indicate(actionName).value) {
+            optimisticValue = null;
+            return originalValue as T;
+          }
+          return (optimisticValue ?? originalValue) as T;
+        },
+      };
+    },
     get(key: string) {
       manageStoreSubscription();
       return globalStore.get(key);
@@ -175,7 +193,7 @@ export default function signals() {
 
   // generate a server action indicator signal
   function indicate(key: string): IndicatorSignal {
-    const id = `__ind:${key}`;
+    const id = INDICATE_PREFIX + key;
     const indicator = derived(() => !!store.get(id)) as IndicatorSignal;
     indicator.id = id;
     return indicator;
