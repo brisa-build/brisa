@@ -636,5 +636,30 @@ describe("utils", () => {
         false,
       );
     });
+
+    it("should ignore store.setOptimistic in SSR", async () => {
+      const Component = ({}, { store }: WebContext) => {
+        store.setOptimistic("some-action", "name", (value) => value + "!");
+        return <div>hello world</div>;
+      };
+
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.children[0].type).toBe("div");
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        "hello world",
+      );
+    });
   });
 });

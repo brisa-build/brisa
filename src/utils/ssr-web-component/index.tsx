@@ -24,6 +24,9 @@ export default async function SSRWebComponent(
   let style = "";
   let Selector = selector;
 
+  // @ts-ignore
+  store.setOptimistic = voidFn;
+
   const webContext = {
     store,
     state: (value: unknown) => ({ value }),
