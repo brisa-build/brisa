@@ -509,7 +509,7 @@ describe("signals", () => {
     store.set("count", 0);
     store.setOptimistic<number>("increment", "count", (v) => v + 1);
 
-    expect(store.get("count")).toBe(1);
+    expect(store.get<number>("count")).toBe(1);
 
     // Simulate RPC to update store + turn off optimistic update
     window._s.set("count", 1234);

@@ -19,7 +19,10 @@ async function rpc(
   indicator: string | null,
   ...args: unknown[]
 ) {
+  const errorIndicator = indicator + "-e";
   const elementsWithIndicator = [];
+  const store = window._s;
+
   let promise = resolveRPC
     ? $Promise.resolve()
     : new $Promise((res) => {
@@ -39,36 +42,44 @@ async function rpc(
       if (getAttribute(el, INDICATOR)?.includes(indicator)) {
         el.classList.add(BRISA_REQUEST_CLASS);
         elementsWithIndicator.push(el);
-        window._s?.set(indicator, true);
+        store?.set(indicator, true);
       }
     }
   }
 
-  const res = await fetch(location.toString(), {
-    method: "POST",
-    headers: {
-      "x-action": actionId,
-      // @ts-ignore
-      "x-s": stringify(window._s ? [..._s.Map.entries()] : window._S),
-    },
-    body: isFormData
-      ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
-      : stringify(args, serialize),
-  });
+  try {
+    const res = await fetch(location.toString(), {
+      method: "POST",
+      headers: {
+        "x-action": actionId,
+        // @ts-ignore
+        "x-s": stringify(store ? [..._s.Map.entries()] : window._S),
+      },
+      body: isFormData
+        ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
+        : stringify(args, serialize),
+    });
 
-  await promise;
+    if (res.ok) {
+      await promise;
 
-  if (!resolveRPC) {
-    resolveRPC = window._rpc;
-    delete window._rpc;
-  }
+      if (!resolveRPC) {
+        resolveRPC = window._rpc;
+        delete window._rpc;
+      }
 
-  await resolveRPC!(res);
-
-  // Remove the "brisa-request" after resolve the server action
-  for (let el of elementsWithIndicator) {
-    el.classList.remove(BRISA_REQUEST_CLASS);
-    window._s?.set(indicator, false);
+      await resolveRPC!(res);
+    } else {
+      store?.set(errorIndicator, [res]);
+    }
+  } catch (e) {
+    store?.set(errorIndicator, [, e]);
+  } finally {
+    // Remove the "brisa-request" after resolve the server action
+    for (let el of elementsWithIndicator) {
+      el.classList.remove(BRISA_REQUEST_CLASS);
+    }
+    store?.set(indicator, false);
   }
 }
 
