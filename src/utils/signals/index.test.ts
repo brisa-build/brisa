@@ -488,4 +488,37 @@ describe("signals", () => {
     expect(mockEffect.mock.calls[0][0]).toBeFalse();
     expect(mockEffect.mock.calls[1][0]).toBeTrue();
   });
+
+  it('should "optimistic" signal reset the value if the store is not updated in the server action', () => {
+    const { store } = signals();
+
+    store.set("count", 0);
+
+    const optimisticCount = store.optimistic<number>("increment", "count");
+
+    optimisticCount.value = 1;
+    expect(optimisticCount.value).toBe(1);
+
+    // Simulate RPC to turn off optimistic update
+    window._s.set("__ind:increment", false);
+
+    expect(optimisticCount.value).toBe(0);
+  });
+
+  it('should "optimistic" signal keep the value if the store is updated in the server action', () => {
+    const { store } = signals();
+
+    store.set("count", 0);
+
+    const optimisticCount = store.optimistic<number>("increment", "count");
+
+    optimisticCount.value = 1;
+    expect(optimisticCount.value).toBe(0);
+
+    // Simulate RPC to update store + turn off optimistic update
+    window._s.set("count", 1234);
+    window._s.set("__ind:increment", false);
+
+    expect(optimisticCount.value).toBe(1234);
+  });
 });
