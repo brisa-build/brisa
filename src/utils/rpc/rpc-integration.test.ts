@@ -59,10 +59,11 @@ async function simulateRPC({
   // Mock fetch with the actions
   const mockFetch = spyOn(window, "fetch").mockImplementation(async () => {
     if (slowRequest) await Bun.sleep(0);
-    if (failsThrowingAnError) throw new Error("Some error");
+    if (failsThrowingAnError) throw new Error("Some throwable error");
     return {
       headers,
       ok: fails ? false : true,
+      text: async () => "Some error",
       body: {
         getReader: () => {
           return {
@@ -245,9 +246,8 @@ describe("utils", () => {
       await Bun.sleep(0);
       expect(element.classList.contains("brisa-request")).toBeFalse();
 
-      const [res, error] = window._s.get("e" + INDICATOR_ID);
-      expect(res.ok).toBeFalse();
-      expect(error).toBeUndefined();
+      const errorMessage = window._s.get("e" + INDICATOR_ID);
+      expect(errorMessage).toBe("Some error");
     });
 
     it('should add and remove the class "brisa-request" meanwhile the request is being processed and then fail throwing an error', async () => {
@@ -269,9 +269,8 @@ describe("utils", () => {
       expect(element.classList.contains("brisa-request")).toBeTrue();
       await Bun.sleep(0);
       expect(element.classList.contains("brisa-request")).toBeFalse();
-      const [res, error] = window._s.get("e" + INDICATOR_ID);
-      expect(res).toBeUndefined();
-      expect(error).toEqual(new Error("Some error"));
+      const errorMessage = window._s.get("e" + INDICATOR_ID);
+      expect(errorMessage).toEqual("Some throwable error");
     });
 
     it("should communicate with store to the indicator store key", async () => {

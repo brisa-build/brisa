@@ -502,14 +502,11 @@ describe("signals", () => {
       mockEffect(indicator.error.value);
     });
 
-    store.set("e" + indicator.id, [new Response(), new Error("Some error")]);
+    store.set("e" + indicator.id, "Some error");
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[0][0]).toBeUndefined();
-    expect(mockEffect.mock.calls[1][0]).toEqual([
-      new Response(),
-      new Error("Some error"),
-    ]);
+    expect(mockEffect.mock.calls[1][0]).toBe("Some error");
   });
 
   it('should "store.setOptimistic" reset the value if the store is not updated in the server action', () => {

@@ -924,7 +924,7 @@ export type IndicatorSignal = {
   id: string;
   value: boolean;
   error: {
-    value: [Response | undefined, Error | undefined] | undefined;
+    value: message | undefined;
   }
 };
 

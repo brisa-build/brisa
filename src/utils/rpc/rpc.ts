@@ -70,10 +70,10 @@ async function rpc(
 
       await resolveRPC!(res);
     } else {
-      store?.set(errorIndicator, [res]);
+      store?.set(errorIndicator, await res.text());
     }
-  } catch (e) {
-    store?.set(errorIndicator, [, e]);
+  } catch (e: any) {
+    store?.set(errorIndicator, e.message);
   } finally {
     // Remove the "brisa-request" after resolve the server action
     for (let el of elementsWithIndicator) {
