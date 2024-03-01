@@ -192,7 +192,10 @@ export default function signals() {
   function indicate(key: string): IndicatorSignal {
     const id = INDICATE_PREFIX + key;
     const indicator = derived(() => !!store.get(id)) as IndicatorSignal;
+
     indicator.id = id;
+    indicator.error = derived(() => store.get("e" + id));
+
     return indicator;
   }
 

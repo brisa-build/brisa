@@ -1,5 +1,6 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
+import type { IndicatorSignal } from "@/types";
 
 let signals: typeof import(".").default;
 
@@ -488,6 +489,27 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[0][0]).toBeFalse();
     expect(mockEffect.mock.calls[1][0]).toBeTrue();
+  });
+
+  it('should work the error in "indicate" method', () => {
+    const { indicate, store, effect } = signals();
+    const mockEffect = mock<(error: IndicatorSignal["error"]["value"]) => void>(
+      () => {},
+    );
+    const indicator = indicate("increment");
+
+    effect(() => {
+      mockEffect(indicator.error.value);
+    });
+
+    store.set("e" + indicator.id, [new Response(), new Error("Some error")]);
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[0][0]).toBeUndefined();
+    expect(mockEffect.mock.calls[1][0]).toEqual([
+      new Response(),
+      new Error("Some error"),
+    ]);
   });
 
   it('should "store.setOptimistic" reset the value if the store is not updated in the server action', () => {

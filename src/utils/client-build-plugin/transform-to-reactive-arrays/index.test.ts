@@ -57,7 +57,7 @@ describe("utils", () => {
 
             return (
               <div>
-                <button onClick={() => count(count.value + 1)}>Click</button>
+                <button onClick={() => {count.value += 1}}>Click</button>
                 <span>{count.value}</span>
               </div>
             )
@@ -68,7 +68,33 @@ describe("utils", () => {
         const expected = normalizeQuotes(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
-            return ['div', {}, [['button', {onClick: () => count(count.value + 1)}, 'Click'], ['span', {}, () => count.value]]];
+            return ['div', {}, [['button', {onClick: () => {count.value += 1;}}, 'Click'], ['span', {}, () => count.value]]];
+          }
+        `);
+        expect(output).toBe(expected);
+      });
+
+      it("should transform JSX to an reactive array if have some wrapped signal (state)", () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent({}, { state }) {
+            const count = state(0);
+            const wrapper = { count };
+
+            return (
+              <div>
+                <button onClick={() => { wrapper.count.value += 1;}}>Click</button>
+                <span>{wrapper.count.value}</span>
+              </div>
+            )
+          }
+        `);
+
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(`
+          export default function MyComponent({}, {state}) {
+            const count = state(0);
+            const wrapper = {count};
+            return ['div', {}, [['button', {onClick: () => {wrapper.count.value += 1;}}, 'Click'], ['span', {}, () => wrapper.count.value]]];
           }
         `);
         expect(output).toBe(expected);
