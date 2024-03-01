@@ -203,5 +203,18 @@ describe("brisa core", () => {
       expect(indicate.id).toBe("__ind:foo");
       expect(indicate.value).toBe(false);
     });
+
+    it("should work indicate with error", () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      const indicate = requestContext.indicate("foo");
+      expect(indicate.error.value).toBeUndefined();
+    });
   });
 });

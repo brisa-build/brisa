@@ -101,6 +101,7 @@ export default function extendRequestContext({
   originalRequest.indicate = (key: string) => ({
     id: `__ind:${key}`,
     value: false,
+    error: {},
   });
 
   return originalRequest as RequestContext;

@@ -923,6 +923,9 @@ export type Signal<T> = { value: T };
 export type IndicatorSignal = {
   id: string;
   value: boolean;
+  error: {
+    value: [Response | undefined, Error | undefined] | undefined;
+  }
 };
 
 export type RerenderInActionProps = {
