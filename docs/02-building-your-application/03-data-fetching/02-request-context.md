@@ -4,6 +4,14 @@ TODO
 
 TODO
 
+## `store`
+
+TODO
+
+### `transferToClient`
+
+TODO
+
 ## `indicate`
 
 `indicate(actionName: string): IndicatorSignal`

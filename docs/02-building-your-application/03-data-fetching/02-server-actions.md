@@ -142,7 +142,94 @@ TODO
 
 ### Optimistic updates
 
-TODO
+Optimistic updates are a strategy used in client-server architectures to enhance the user experience by locally updating the user interface (UI) optimistically before receiving confirmation from the server about the success of an operation. This approach aims to reduce perceived latency and provide a more responsive application.
+
+In Brisa, we support optimistic updates to manage server actions, and this is achieved through the use of the [**`setOptimistic`**](/docs/building-your-application/data-fetching/web-context#setOptimistic) method within the [`store`](/docs/building-your-application/data-fetching/web-context#store) of [web components](/docs/building-your-application/components-details/web-components).
+
+Example of web component (`like-button`):
+
+```tsx
+import type { WebContext } from "brisa";
+
+type Props = { onLike: () => void };
+
+export default function LikeButton({ onLike }: Props, { store }: WebContext) {
+  return (
+    <button
+      onClick={() => {
+        store.setOptimistic<number>("like-action", "likes", (v) => v + 1);
+        onLike();
+      }}
+    >
+      Like ({store.get("likes")})
+    </button>
+  );
+}
+```
+
+Here, the `like-button` web component employs the `setOptimistic` method to optimistically increment the '`likes`' count on the client side, assuming a successful action. The current '`likes`' count is then displayed in the UI.
+
+Now, let's observe how this `like-button` is utilized in a server component, complete with the associated server action:
+
+```tsx
+import type { RequestContext } from 'brisa';
+import { getUser, updateDB } from '@/helpers'
+
+function Page({}, request: RequestContext)
+  const { store, indicate } = request;
+  const indicator = indicate('like-action')
+
+  store.transferToClient(['likes'])
+
+  async function onLikeAction() {
+    const user = getUser(request)
+    const updatedNum = await updateDB(user)
+    // Update shared store with the client:
+    store.set('likes', updatedNum)
+  }
+
+  return (
+    <like-button
+      // It's necessary to connect the indicator to the action
+      indicateLike={indicator}
+      onLike={onLikeAction}
+    />
+  )
+}
+```
+
+In the server component, we utilize the [`transferToClient`](/docs/building-your-application/data-fetching/request-context) method to relay the '`likes`' data to the client-side store. Upon executing the action, the server component interacts with the database, and if successful, it updates the shared store with the new 'likes' count.
+
+> [!IMPORTANT]
+>
+> It's crucial to note that in the event of a failed request action, the optimistic update is automatically reverted to the previous state, ensuring data consistency.
+
+### Manage errors
+
+If the server action fails, you can access from the web components to the error message through the `error` signal inside the `IndicatorSignal`.
+
+```tsx
+import { type WebContext } from "brisa";
+
+type Props = { actionId: string };
+
+export default async function ActionError(
+  { actionId }: Props,
+  { indicate }: WebContext,
+) {
+  const actionIndicator = indicate(actionId);
+
+  if (typeof actionIndicator.error.value !== "string") return;
+
+  return <div>Error: {actionIndicator.error.value}</div>;
+}
+```
+
+In this example, the `action-error` web component takes an `actionId` prop and utilizes the `indicate` method to obtain the indicator signal associated with that specific action. The code then checks whether the `error` value within the `indicator` is a `string`. If it is, the component renders a UI element displaying the error message. This mechanism allows developers to seamlessly incorporate error handling into their web components, enhancing the user experience by providing meaningful error information when server actions encounter issues.
+
+> [!NOTE]
+>
+> The same `actionId` as the value for the [`indicate[Event]`](/docs/api-reference/extended-html-attributes/indicateEvent) linking the indicator to the corresponding server action. This cohesive association allows developers to seamlessly integrate error handling into their web components, ensuring that meaningful error information is presented to users when server actions encounter issues.
 
 ### `rerenderInAction`
 
