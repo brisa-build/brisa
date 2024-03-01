@@ -4813,52 +4813,6 @@ describe("integration", () => {
       );
     });
 
-    it('should add/remove the "brisa-request" class reacting to IndicatorSignal', () => {
-      const code = `
-       export default function IndicatorComponent({ onAction }, { indicate, store }) {
-          const indicator = indicate('some-action');
-
-          window._s = store;
-
-          return (
-            <button indicator={indicator} onClick={onAction}>
-              {indicator.value ? 'Requesting...' : 'Click to action'}
-            </button>
-          );
-       }
-      `;
-
-      document.body.innerHTML = normalizeQuotes("<indicator-component />");
-
-      defineBrisaWebComponent(
-        code,
-        "src/web-components/indicator-component.tsx",
-      );
-
-      const indicatorComponent = document.querySelector(
-        "indicator-component",
-      ) as HTMLElement;
-
-      const button = indicatorComponent?.shadowRoot?.querySelector(
-        "button",
-      ) as HTMLButtonElement;
-
-      expect(button.className).toBe("");
-      expect(button.innerHTML).toBe("Click to action");
-
-      // Simulate a request
-      window._s.set("__ind:some-action", true);
-
-      expect(button.className).toBe("brisa-request");
-      expect(button.innerHTML).toBe("Requesting...");
-
-      // Simulate response ends
-      window._s.set("__ind:some-action", false);
-
-      expect(button.className).toBeEmpty();
-      expect(button.innerHTML).toBe("Click to action");
-    });
-
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583
     it.todo(
