@@ -59,6 +59,8 @@ Example getting a value:
 
 For more details, refer to the [store](/docs/components-details/web-components#store-store-method) documentation.
 
+### `setOptimistic`
+
 ## `useContext`
 
 `useContext: <T>(context: BrisaContext<T>) => { value: T }`
