@@ -19,7 +19,7 @@ async function rpc(
   indicator: string | null,
   ...args: unknown[]
 ) {
-  const errorIndicator = indicator + "-e";
+  const errorIndicator = "e" + indicator;
   const elementsWithIndicator = [];
   const store = window._s;
 

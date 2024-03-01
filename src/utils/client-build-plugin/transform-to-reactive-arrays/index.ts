@@ -202,17 +202,18 @@ export default function transformToReactiveArrays(
 }
 
 function hasNodeASignal(node: ESTree.Node, allowProperties = false) {
+  const objectType = new Set(["Identifier", "MemberExpression"]);
   let hasSignal = false;
 
   if (NO_REACTIVE_CHILDREN_EXPRESSION.has(node?.type)) return hasSignal;
 
-  JSON.stringify(node, (key, value) => {
+  JSON.stringify(node, function (key, value) {
     if (!allowProperties && value?.type === "Property") return null;
 
     // It's a signal
     hasSignal ||=
       value?.type === "MemberExpression" &&
-      value?.object?.type === "Identifier" &&
+      objectType.has(value?.object?.type) &&
       value?.property?.type === "Identifier" &&
       value?.property?.name === "value";
 

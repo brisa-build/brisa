@@ -245,7 +245,7 @@ describe("utils", () => {
       await Bun.sleep(0);
       expect(element.classList.contains("brisa-request")).toBeFalse();
 
-      const [res, error] = window._s.get(INDICATOR_ID + "-e");
+      const [res, error] = window._s.get("e" + INDICATOR_ID);
       expect(res.ok).toBeFalse();
       expect(error).toBeUndefined();
     });
@@ -269,7 +269,7 @@ describe("utils", () => {
       expect(element.classList.contains("brisa-request")).toBeTrue();
       await Bun.sleep(0);
       expect(element.classList.contains("brisa-request")).toBeFalse();
-      const [res, error] = window._s.get(INDICATOR_ID + "-e");
+      const [res, error] = window._s.get("e" + INDICATOR_ID);
       expect(res).toBeUndefined();
       expect(error).toEqual(new Error("Some error"));
     });

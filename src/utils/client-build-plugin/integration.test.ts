@@ -4813,6 +4813,44 @@ describe("integration", () => {
       );
     });
 
+    it("should work an state signal wrapped an object", () => {
+      const code = `
+        export default function Counter({}, { state }) {
+          const count = state(0);
+          const wrappedSignal = { count };
+
+          return (
+            <div>
+              <button onClick={() => wrappedSignal.count.value++}>+</button>
+              <span>
+                {wrappedSignal.count.value}
+              </span>
+              <button onClick={() => wrappedSignal.count.value--}>-</button>
+            </div>
+          );
+        }
+      `;
+
+      document.body.innerHTML = normalizeQuotes("<web-counter />");
+      defineBrisaWebComponent(code, "src/web-components/web-counter.tsx");
+
+      const webCounter = document.querySelector("web-counter") as HTMLElement;
+
+      const button = webCounter?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      const span = webCounter?.shadowRoot?.querySelector("span");
+
+      button.click();
+
+      expect(span?.innerHTML).toBe("1");
+
+      button.click();
+
+      expect(span?.innerHTML).toBe("2");
+    });
+
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583
     it.todo(
