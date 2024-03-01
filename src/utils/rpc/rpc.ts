@@ -27,11 +27,7 @@ async function rpc(
     ? $Promise.resolve()
     : new $Promise((res) => {
         let scriptElement = $document.createElement("script");
-        scriptElement.type = "text/javascript";
-        scriptElement.onload = res;
-        scriptElement.onerror = res;
-        // @ts-ignore
-        scriptElement.fetchPriority = "high";
+        scriptElement.onload = scriptElement.onerror  = res;
         scriptElement.src = __RPC_LAZY_FILE__;
         $document.head.appendChild(scriptElement);
       });
