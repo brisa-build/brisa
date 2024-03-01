@@ -1170,6 +1170,12 @@ declare global {
     export type WebComponentAttributes<T extends (...args: any[]) => any> = {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
+      // The "indicate" attribute is used to control the processing state of the web-component action.
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}` ? `indicate${Rest}` : never]?: IndicatorSignal | undefined;
+    } &  {
+      // The "debounce" attribute is used to debounce the web-component action.
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}` ? `debounce${Rest}` : never]?: number | undefined;
+    } & {
       children?: JSXElement;
       skipSSR?: boolean;
     } & HTMLAttributes<HTMLElement>;
@@ -2964,9 +2970,6 @@ declare global {
        * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3013,9 +3016,6 @@ declare global {
       /**
        * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -3066,9 +3066,6 @@ declare global {
        * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3116,9 +3113,6 @@ declare global {
        * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3165,9 +3159,6 @@ declare global {
       /**
        * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -3218,9 +3209,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3268,9 +3256,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3317,9 +3302,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -3370,9 +3352,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3422,9 +3401,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3471,9 +3447,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -3524,9 +3497,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3573,9 +3543,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -3624,9 +3591,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3673,9 +3637,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -3726,9 +3687,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3775,9 +3733,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -3826,9 +3781,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3876,9 +3828,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -3925,9 +3874,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -3984,9 +3930,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4034,9 +3977,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4083,9 +4023,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4136,9 +4073,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4185,9 +4119,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4238,9 +4169,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4287,9 +4215,6 @@ declare global {
         /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4338,9 +4263,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4387,9 +4309,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4438,9 +4357,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4487,9 +4403,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4538,9 +4451,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4587,9 +4497,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4638,9 +4545,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4687,9 +4591,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4738,9 +4639,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4787,9 +4685,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4838,9 +4733,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4887,9 +4779,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -4938,9 +4827,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -4987,9 +4873,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5038,9 +4921,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5087,9 +4967,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5138,9 +5015,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5187,9 +5061,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5238,9 +5109,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5287,9 +5155,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5340,9 +5205,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5389,9 +5251,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5440,9 +5299,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5489,9 +5345,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5540,9 +5393,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5589,9 +5439,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5640,9 +5487,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5689,9 +5533,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5740,9 +5581,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5789,9 +5627,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5840,9 +5675,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5889,9 +5721,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -5940,9 +5769,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -5989,9 +5815,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6040,9 +5863,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6090,9 +5910,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6139,9 +5956,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6192,9 +6006,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6244,9 +6055,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6293,9 +6101,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6344,9 +6149,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6393,9 +6195,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6446,9 +6245,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6495,9 +6291,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6546,9 +6339,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6595,9 +6385,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6646,9 +6433,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6695,9 +6479,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6746,9 +6527,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6795,9 +6573,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6847,9 +6622,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -6896,9 +6668,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -6949,9 +6718,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -7000,9 +6766,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -7053,9 +6816,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -7103,9 +6863,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -7152,9 +6909,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -7205,9 +6959,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -7254,9 +7005,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -7305,9 +7053,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -7354,9 +7099,6 @@ declare global {
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
@@ -7407,9 +7149,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -7457,9 +7196,6 @@ declare global {
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
        * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
-       * 
        * Default: undefined
        * 
        * Example:
@@ -7506,9 +7242,6 @@ declare global {
         /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
-       * This is NOT a standard HTML attribute, and is not possible to use
-       * in web components. It is a Brisa-specific attribute for server components.
        * 
        * Default: undefined
        * 
