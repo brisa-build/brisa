@@ -14,6 +14,7 @@ const NOTIFY = "n";
 const SUBSCRIBE = "s";
 const UNSUBSCRIBE = "u";
 const INDICATE_PREFIX = "__ind:";
+const ORIGINAL_PREFIX = "__o:";
 
 const subscription = createSubscription();
 const storeMap = new Map((window as any)._S);
@@ -170,7 +171,7 @@ export default function signals() {
     ...globalStore,
     setOptimistic<T>(actionName: string, key: string, fn: (value: T) => T) {
       const actionKey = INDICATE_PREFIX + actionName;
-      const optimisticKey = "__o:" + key;
+      const optimisticKey = ORIGINAL_PREFIX + key;
       const originalValue = store.get<T>(key);
       const optimisticValue = fn(originalValue);
 
@@ -184,7 +185,7 @@ export default function signals() {
     },
     get(key: string) {
       manageStoreSubscription();
-      return globalStore.get("__o:" + key) ?? globalStore.get(key);
+      return globalStore.get(ORIGINAL_PREFIX + key) ?? globalStore.get(key);
     },
   } as WebContext["store"];
 
