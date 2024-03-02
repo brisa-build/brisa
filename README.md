@@ -8,12 +8,43 @@
   </a>
 </p>
 
+<p align="center">Brisa is an <i>experimental</i> web framework inspired by the others, taking the best of each one.</p>
+
+<div align="center">
+
+[![npm version](https://badge.fury.io/js/brisa.svg)](https://badge.fury.io/js/brisa)
+![npm](https://img.shields.io/npm/dw/brisa)
+[![size](https://img.shields.io/bundlephobia/minzip/brisa)](https://bundlephobia.com/package/brisa)
+[![PRs Welcome][badge-prwelcome]][prwelcome]
+<a href="https://github.com/aralroca/brisa/actions?query=workflow%3ATest" alt="Tests status">
+<img src="https://github.com/aralroca/brisa/workflows/Test/badge.svg" /></a>
+<a href="https://twitter.com/intent/follow?screen_name=aralroca">
+<img src="https://img.shields.io/twitter/follow/aralroca?style=social&logo=x"
+            alt="follow on Twitter"></a>
+
+</div>
+
+[badge-prwelcome]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[prwelcome]: http://makeapullrequest.com
+[spectrum]: https://spectrum.chat/next-translate
+
+**Features** ✨
+
+- ⚛️  ・  **Everything you need**: JSX, TS, server actions, server/web components, SSR, streaming, suspense, signals...
+- 🚀  ・ **Speed**: Brisa is designed to start and run fast.
+- 🌍  ・ **i18n support**: text translation and routing carrying only the translations you consume.
+- 📦  ・ **Tiny**: 0B by default and 3kb when you need web components.
 
 ## Getting Started
 
-## Who we are?
+Simple one command:
 
-Brisa is an _(experimental)_ web framework inspired by the others, taking the best of each one.
+```sh
+bun create brisa@latest
+```
+
+For more info visit the [docs](https://github.com/aralroca/brisa/blob/main/docs/01-getting-started/01-installation.md).
+
 
 ### Documentation
 
