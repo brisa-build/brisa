@@ -1,10 +1,15 @@
-# Brisa _(experimental yet)_
+<p align="center">
+  <a href="https://brisa.build">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="/logo.svg" height="128">
+      <img src="/logo.svg" height="128">
+    </picture>
+    <h1 align="center">Brisa</h1>
+  </a>
+</p>
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
-
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+## Getting Started
 
 ## Who we are?
 
@@ -12,7 +17,7 @@ Brisa is an _(experimental)_ web framework inspired by the others, taking the be
 
 ### Documentation
 
-The documentation will soon be at [https://brisa.build/docs](https://brisa.build/docs). For now it is not yet available and there is still a lot of documentation to be written, but you can access it from the [`/docs`](https://github.com/aralroca/brisa/tree/main/docs) directory of the GitHub repository.
+The documentation will be soon on the [website](https://brisa.build/docs). For now it is not yet available and there is still a lot of documentation to be written, but you can access it from the [`/docs`](https://github.com/aralroca/brisa/tree/main/docs) directory of the GitHub repository.
 
 ### Inspirations
 
@@ -72,25 +77,6 @@ In Brisa we wanted to make a direct integration with Tauri. So that from the Bri
 
 Finally, I want to thank [An Phat](https://twitter.com/notphanan), a co-worker who is in the core team  of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
 
-## Contributors ✨
+## License
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://aralroca.com"><img src="https://avatars.githubusercontent.com/u/13313058?v=4?s=100" width="100px;" alt="Aral Roca Gomez"/><br /><sub><b>Aral Roca Gomez</b></sub></a><br /><a href="https://github.com/aralroca/brisa/commits?author=aralroca" title="Code">💻</a> <a href="https://github.com/aralroca/brisa/commits?author=aralroca" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://amatiasq.com"><img src="https://avatars.githubusercontent.com/u/1533589?v=4?s=100" width="100px;" alt="A. Matías Quezada"/><br /><sub><b>A. Matías Quezada</b></sub></a><br /><a href="https://github.com/aralroca/brisa/commits?author=amatiasq" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+MIT
