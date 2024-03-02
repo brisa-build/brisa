@@ -54,7 +54,7 @@ Brisa was inspired by Lit to use the platform more. Today we have web components
 
 If well abstracted, the code of a web component can be smaller than using a library. Moreover, it also makes it easier to control when a prop changes, when it is unmounted and to have web components mixed with server components without problems.
 
-We liked the idea of consuming web components as web components from JSX. That is, reading the code you know when a component is a server (<Server />) or when it is a web component (<web-component />). We want developers to be able to easily distinguish the use of both.
+We liked the idea of consuming web components as web components from JSX. That is, reading the code you know when a component is a server `<Server />` or when it is a web component `<web-component />`. We want developers to be able to easily distinguish the use of both.
 
 The fact of using web components makes it more comfortable to debug the code as well, accessing directly to the web components from the DevTools elements, without any extension.
 
@@ -70,7 +70,7 @@ In Brisa we wanted to make a direct integration with Tauri. So that from the Bri
 
 #### Vue.js
 
-Finally, I want to thank [An Phat](https://twitter.com/notphanan), a co-worker who is in the core team member of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
+Finally, I want to thank [An Phat](https://twitter.com/notphanan), a co-worker who is in the core team  of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
 
 ## Contributors ✨
 
