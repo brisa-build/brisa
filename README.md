@@ -30,7 +30,7 @@
 
 **Features** ✨
 
-- ⚛️  ・  **Everything you need**: JSX, TS, server/web components, server actions, optimistic updates, SSR, streaming, suspense, signals, websockets...
+- ⚛️  ・  **Everything you need**: JSX, TS, server/web components, server actions, optimistic updates, SSR, streaming, suspense, signals, websockets, middleware, layouts...
 - 🚀  ・ **Speed**: Brisa is designed to start, build, test, deploy and run fast.
 - 🌍  ・ **i18n support**: text translation and routing carrying only the translations you consume.
 - 📦  ・ **Tiny**: 0B by default and 3kb when you need web components.
