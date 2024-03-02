@@ -20,7 +20,7 @@ The documentation will soon be at [https://brisa.build/docs](https://brisa.build
 
 Bun.js makes it easy for many new frameworks to emerge thanks to its API such as the Next.js style page system, TypeScript support and JSX by default. Besides, it is super fast and the DX of working with it is awesome.
 
-In Brisa we don't use Webpack, Turbopack, Vite or esbuild, we use directly [Bun.build](), which is faster than esbuild.
+In Brisa we don't use Webpack, Turbopack, Vite or esbuild, we use directly [Bun.build](https://bun.sh/docs/bundler), which is faster than esbuild.
 
 #### Next.js
 
@@ -34,7 +34,7 @@ Brisa was very inspired by React to work with JSX components, both for server co
 
 #### Preact
 
-The React team's focus on optimizing for small code footprint motivated us to make Brisa 3kb as well. Although Brisa defaults to 0B, it is only 3kb if you use web components.
+The React team's focus on optimizing for small bundle code size motivated us to make Brisa 3kb as well. Although Brisa defaults to 0B, it is only 3kb if you use web components.
 
 #### Solid.js
 
@@ -70,7 +70,7 @@ In Brisa we wanted to make a direct integration with Tauri. So that from the Bri
 
 #### Vue.js
 
-Finally, I want to thank [An Phat](), a co-worker who is in the core team member of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
+Finally, I want to thank [An Phat](https://twitter.com/notphanan), a co-worker who is in the core team member of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
 
 ## Contributors ✨
 
