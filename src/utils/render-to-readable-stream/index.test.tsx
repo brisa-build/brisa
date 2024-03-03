@@ -2390,5 +2390,31 @@ describe("utils", () => {
 
       expect(result).resolves.toBe(toInline(`<button>TEST</button>`));
     });
+
+    it("should keep the parent actionId correctly with nested server actions", () => {
+      // Note: data-action-onclick and data-action are added in compile-time
+      const Child = ({ onClickAction }: any) => (
+        <button onClick={onClickAction} data-action-onclick="a3_1" data-action>
+          TEST
+        </button>
+      );
+      const Parent = ({ onClick }: any) => (
+        <Child onClickAction={onClick} data-action-onclick="a2_1" data-action />
+      );
+      const GrantParent = () => (
+        <Parent onClick={() => {}} data-action-onclick="a1_1" data-action />
+      );
+
+      const element = <GrantParent />;
+
+      const stream = renderToReadableStream(element, testOptions);
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toBe(
+        toInline(
+          `<button data-action-onclick="a1_1" data-action>TEST</button>`,
+        ),
+      );
+    });
   });
 });
