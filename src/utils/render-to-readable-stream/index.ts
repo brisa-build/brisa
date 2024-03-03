@@ -383,6 +383,20 @@ async function enqueueComponent(
     request,
   )) as JSX.Element;
 
+  // Async generator list
+  if (typeof componentValue.next === "function") {
+    for await (let val of componentValue) {
+      await enqueueChildren(
+        val,
+        request,
+        controller,
+        suspenseId,
+        isSlottedPosition,
+      );
+    }
+    return;
+  }
+
   if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
     return controller.enqueue(
       Bun.escapeHTML(componentValue.toString()),
