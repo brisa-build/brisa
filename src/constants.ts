@@ -68,6 +68,7 @@ const BOOLEANS_IN_HTML = new Set([
   "reversed",
   "seamless",
   "selected",
+  "data-action",
 ]);
 
 const { NODE_ENV } = process.env;
