@@ -16,6 +16,7 @@ import {
 } from "@/utils/context-provider/server";
 import { getConstants } from "@/constants";
 import overrideClientTranslations from "../translate-core/override-client-translations";
+import processServerComponentProps from "../process-server-component-props";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -182,7 +183,8 @@ async function enqueueDuringRendering(
     };
 
     if (isComponent(type) && !isTagToIgnore) {
-      const componentContent = { component: type, props };
+      const componentProps = processServerComponentProps(props);
+      const componentContent = { component: type, props: componentProps };
       const isSuspenseComponent = isComponent(type.suspense);
 
       if (isSuspenseComponent) {
@@ -191,7 +193,7 @@ async function enqueueDuringRendering(
         controller.startTag(`<div id="S:${id}">`, suspenseId);
 
         await enqueueComponent(
-          { component: type.suspense, props },
+          { component: type.suspense, props: componentProps },
           request,
           controller,
           suspenseId,
