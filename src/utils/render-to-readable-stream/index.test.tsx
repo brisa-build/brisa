@@ -59,6 +59,32 @@ describe("utils", () => {
       );
     });
 
+    it('should not display the "head" tag warning if the request is aborted', async () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("http://test.com/"),
+      });
+
+      const SlowComponent = async () => {
+        await Bun.sleep(10);
+        return "Hello World";
+      };
+
+      const element = (
+        <div class="test">
+          <SlowComponent />
+        </div>
+      );
+      const stream = renderToReadableStream(element, { request });
+
+      request.signal.dispatchEvent(new Event("abort"));
+
+      const result = await Bun.readableStreamToText(stream);
+      const expected = `<div class="test">`;
+
+      expect(result).toBe(expected);
+      expect(mockConsoleError.mock.calls.length).toBe(0);
+    });
+
     it("should not console.error when it has a <head> tag", async () => {
       const element = (
         <html>
