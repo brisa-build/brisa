@@ -24,11 +24,17 @@ export default function renderAttributes({
   type: string;
 }): string {
   const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
+  const keys = new Set<string>();
   let attributes = "";
 
   for (const prop in props) {
     const key = prop.toLowerCase();
     let value = props[prop];
+
+    if (keys.has(key)) continue;
+
+    // Add the key to the set to avoid duplicates
+    keys.add(key);
 
     if (PROPS_TO_IGNORE.has(prop) || (type === "html" && prop === "lang"))
       continue;
@@ -41,6 +47,30 @@ export default function renderAttributes({
       !URL.canParse(value as string)
     ) {
       value = `${CONFIG.assetPrefix}${value}`;
+    }
+
+    // Nested actions (coming from props)
+    if (typeof value === "function" && "actionId" in value) {
+      const actionKey = `data-action`;
+      const actionToEventKey = `${actionKey}-${key}`;
+      const modifiedAttributes = attributes.replace(
+        new RegExp(`${actionToEventKey}=".*?"`),
+        `${actionToEventKey}="${value.actionId}"`,
+      );
+
+      if (keys.has(actionToEventKey)) {
+        attributes = modifiedAttributes;
+      } else {
+        keys.add(actionToEventKey);
+        attributes += ` ${actionToEventKey}="${value.actionId}"`;
+      }
+
+      if (!keys.has(actionKey)) {
+        keys.add(actionKey);
+        attributes += ` ${actionKey}`;
+      }
+
+      continue;
     }
 
     // Simplify indicator signals
