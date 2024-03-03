@@ -61,7 +61,7 @@ In Brisa we don't use Webpack, Turbopack, Vite or esbuild, we use directly [Bun.
 
 ### Next.js
 
-Brisa's architecture is very much inspired by Next.js pages directory, the way of defining middleware, layout, etc, we have also expanded its model to define websockets and web components.
+Brisa's architecture is very much inspired by Next.js pages directory, the way of defining pages, middleware, layout, etc, we have also expanded its model to define websockets and web components.
 
 Although we like more how pages structures the files, also Next.js inspired us to use server components by default and server actions. 
 
@@ -71,7 +71,7 @@ Brisa was very inspired by React to work with JSX components, both for server co
 
 ### Preact
 
-The React team's focus on optimizing for small bundle code size motivated us to make Brisa 3kb as well. Although Brisa defaults to 0B, it is only 3kb if you use web components.
+The Preact team's focus on optimizing for small bundle code size motivated us to make Brisa 3kb as well. Although Brisa defaults to 0B, it is only 3kb if you use web components.
 
 ### Solid.js
 
