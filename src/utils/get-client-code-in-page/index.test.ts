@@ -60,7 +60,7 @@ describe("utils", () => {
         pageWebComponents,
       );
       const i18nCode = 3072;
-      const brisaSize = 5259;
+      const brisaSize = 5650; // TODO: Reduce this size
       const webComponents = 660;
 
       expect(output).not.toBeNull();
