@@ -36,12 +36,16 @@ export default function renderToReadableStream(
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
   const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.txt");
   const actionRPCListPath = path.join(pagesClientPath, "_rpc.txt");
+  let aborted = false;
 
   return new ReadableStream({
     async start(controller) {
       const extendedController = extendStreamController(controller, head);
       const abortPromise = new Promise((res) =>
-        request.signal.addEventListener("abort", res),
+        request.signal.addEventListener("abort", () => {
+          aborted = true;
+          res(aborted);
+        }),
       );
 
       extendedController.hasUnsuspense = await isInPathList(
@@ -76,7 +80,7 @@ export default function renderToReadableStream(
 
       controller.close();
 
-      if (!IS_PRODUCTION && !extendedController.hasHeadTag) {
+      if (!IS_PRODUCTION && !aborted && !extendedController.hasHeadTag) {
         console.error(
           "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
         );
