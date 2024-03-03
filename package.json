@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "13.6.2",
-    "brisa": "0.0.25-canary.4",
+    "brisa": "0.0.25",
     "@types/bun": "1.0.8"
   },
   "peerDependencies": {

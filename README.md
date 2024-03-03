@@ -30,11 +30,11 @@
 
 **Features** ✨
 
-- ⚛️  ・  **Everything you need**: JSX, TS, server/web components, server actions, optimistic updates, SSR, streaming, suspense, signals, websockets, middleware, layouts...
-- 🚀  ・ **Speed**: Brisa is designed to start, build, test, deploy and run fast.
-- 🌍  ・ **i18n support**: text translation and routing carrying only the translations you consume.
-- 📦  ・ **Tiny**: 0B by default and 3kb when you need web components.
-- 📲 ・  **Change the output**: You can change your web from server to static, to desktop, android or ios app with just one configuration command.
+- ⚛️ ・ **Everything you need**: JSX, TS, server/web components, server actions, optimistic updates, SSR, streaming, suspense, signals, websockets, middleware, layouts...
+- 🚀 ・ **Speed**: Brisa is designed to start, build, test, deploy and run fast.
+- 🌍 ・ **i18n support**: text translation and routing carrying only the translations you consume.
+- 📦 ・ **Tiny**: 0B by default and 3kb when you need web components.
+- 📲 ・ **Change the output**: You can change your web from server to static, to desktop, android or ios app with just one configuration command.
 
 ## Getting Started
 
@@ -45,7 +45,6 @@ bun create brisa@latest
 ```
 
 For more info visit the [docs](https://github.com/aralroca/brisa/blob/main/docs/01-getting-started/01-installation.md).
-
 
 ## Documentation
 
@@ -63,7 +62,7 @@ In Brisa we don't use Webpack, Turbopack, Vite or esbuild, we use directly [Bun.
 
 Brisa's architecture is very much inspired by Next.js pages directory, the way of defining pages, middleware, layout, etc, we have also expanded its model to define websockets and web components.
 
-Although we like more how pages structures the files, also Next.js inspired us to use server components by default and server actions. 
+Although we like more how pages structures the files, also Next.js inspired us to use server components by default and server actions.
 
 ### React
 
@@ -107,7 +106,7 @@ In Brisa we wanted to make a direct integration with Tauri. So that from the Bri
 
 ### Vue.js
 
-Finally, I want to thank [An Phat](https://twitter.com/notphanan), a co-worker who is in the core team  of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
+Finally, I want to thank [An Phat](https://twitter.com/notphanan), a co-worker who is in the core team of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
 
 ## License
 
