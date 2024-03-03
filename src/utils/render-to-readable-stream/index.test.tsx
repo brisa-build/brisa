@@ -2416,5 +2416,22 @@ describe("utils", () => {
         ),
       );
     });
+
+    it("should render a server component with async generator", async () => {
+      async function* List() {
+        yield <h2>Count: 0</h2>;
+        yield <h2>Count: 1</h2>;
+        yield <h2>Count: 2</h2>;
+        yield <h2>Count: 3</h2>;
+      }
+
+      const stream = renderToReadableStream(<List />, testOptions);
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        "<h2>Count: 0</h2><h2>Count: 1</h2><h2>Count: 2</h2><h2>Count: 3</h2>",
+      );
+    });
   });
 });
