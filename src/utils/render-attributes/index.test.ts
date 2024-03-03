@@ -498,5 +498,112 @@ describe("utils", () => {
 
       expect(attributes).toBe(` indicateclick="__ind:increment"`);
     });
+
+    it("should not add functions as attributes", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        props: {
+          onClick: () => {},
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe("");
+    });
+
+    it("should add the data-action-onClick if the onClick function is a function with actionId property", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+
+      const attributes = renderAttributes({
+        props: {
+          onClick,
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(` data-action-onclick="a1_1" data-action`);
+    });
+
+    it("should replace the data-action-onClick if the onClick function is a function with actionId property", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+
+      const attributes = renderAttributes({
+        props: {
+          onClick,
+          foo: "bar",
+          "data-action-onclick": "a1_2",
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(
+        ` data-action-onclick="a1_1" data-action foo="bar"`,
+      );
+    });
+
+    it("should keep data-action if the onClick function is a function with actionId property", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+
+      const attributes = renderAttributes({
+        props: {
+          "data-action-onclick": "a1_2",
+          "data-action": true,
+          foo: "bar",
+          onClick,
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(
+        ` data-action-onclick="a1_1" data-action foo="bar"`,
+      );
+    });
+
+    it("should a nested action work with other actions in the same element", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+
+      const attributes = renderAttributes({
+        props: {
+          foo: "bar",
+          "data-action": true,
+          onClick,
+          onDoubleClick: () => {},
+          "data-action-onDoubleClick": "a1_3",
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3"`,
+      );
+    });
   });
 });
