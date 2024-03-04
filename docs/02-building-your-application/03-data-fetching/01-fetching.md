@@ -46,6 +46,26 @@ SomeComponent.suspense = ({}, { i18n }) => {
 
 Suspense is useful during HTML streaming, while the server loads the data the suspense content is displayed, and once the server loads the data, during streaming the suspense is changed to the real content, all this without the client having to make any request to the server.
 
+### Async generators
+
+async generators are also supported if you want to stream every item in a list for example:
+
+```tsx
+async function* List() {
+ yield <li>{await foo()}</li>;
+ yield <li>{await bar()}</li>;
+ yield <li>{await baz()}</li>;
+}
+```
+
+This can be used as a server component:
+
+```tsx
+return <List />
+```
+
+And the HTML is resolved via streaming.
+
 ### Share server-server data between components
 
 To share data across all parts of the server ([`middleware`](/docs/building-your-application/routing/middleware), [`layout`](/docs/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/docs/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/docs/building-your-application/routing/suspense-and-streaming), etc) there are two ways:

@@ -112,6 +112,27 @@ export default async function Layout(
 
 The `fetch` is directly native and has no wrapper to control the cache. We recommend that you do not do the same `fetch` in several places, but use the [`store`](/docs/building-your-application/data-fetching/request-context) to store the data and consume it from any component.
 
+> [!TIP]
+>
+> async generators are also supported if you want to stream every item in a list for example:
+>
+> ```tsx
+> async function* List() {
+>  yield <li>{await foo()}</li>;
+>  yield <li>{await bar()}</li>;
+>  yield <li>{await baz()}</li>;
+> }
+> ```
+>
+> This can be used as a server component:
+>
+> ```tsx
+> return <List />
+> ```
+>
+> And the HTML is resolved via streaming.
+
+
 ## Response headers in layouts and pages
 
 The `responseHeaders` function can be exported inside the `layout` and inside any `page`. In the same way that is possible to export it also in the [`middleware`](docs/building-your-application/routing/middleware).
