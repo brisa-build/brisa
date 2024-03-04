@@ -118,20 +118,19 @@ The `fetch` is directly native and has no wrapper to control the cache. We recom
 >
 > ```tsx
 > async function* List() {
->  yield <li>{await foo()}</li>;
->  yield <li>{await bar()}</li>;
->  yield <li>{await baz()}</li>;
-> }
+>   yield <li>{await foo()}</li>;
+>   yield <li>{await bar()}</li>;
+>   yield <li>{await baz()}</li>;
+> }
 > ```
 >
 > This can be used as a server component:
 >
 > ```tsx
-> return <List />
+> return <List />;
 > ```
 >
 > And the HTML is resolved via streaming.
-
 
 ## Response headers in layouts and pages
 

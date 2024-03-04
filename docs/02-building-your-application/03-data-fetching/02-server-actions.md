@@ -25,6 +25,10 @@ A Server Action can be defined like a browser event inside the Server Component 
 
 While web-components these actions are browser events and are processed from the client, in server components these actions are executed on the server, having access to the serialized event.
 
+> [!TIP]
+>
+> You can pass server actions as props in the same way of events. At the moment the action is placed in a web component, inside the web component the real event of the browser acts, and outside the web component then it is executed from the server.
+
 ## Behavior
 
 - Server Actions are not limited to `<form>` and can be invoked from any element like `<button>`.
