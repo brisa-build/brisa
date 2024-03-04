@@ -96,6 +96,7 @@ async function enqueueDuringRendering(
   controller: Controller,
   suspenseId?: number,
   isSlottedPosition = false,
+  componentProps?: Props,
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
@@ -229,7 +230,12 @@ async function enqueueDuringRendering(
     if (controller.insideHeadTag && controller.hasId(props.id)) return;
     if (controller.insideHeadTag && props.id) controller.addId(props.id);
 
-    const attributes = renderAttributes({ props, request, type });
+    const attributes = renderAttributes({
+      elementProps: props,
+      request,
+      type,
+      componentProps,
+    });
     const isContextProvider = type === CONTEXT_PROVIDER;
     let ctx: ProviderType | undefined;
 
@@ -270,6 +276,7 @@ async function enqueueDuringRendering(
       controller,
       suspenseId,
       isNextInSlottedPosition,
+      componentProps,
     );
 
     // Close head tag
@@ -392,6 +399,7 @@ async function enqueueComponent(
         controller,
         suspenseId,
         isSlottedPosition,
+        props,
       );
     }
     return;
@@ -411,6 +419,7 @@ async function enqueueComponent(
       controller,
       suspenseId,
       isSlottedPosition,
+      props,
     );
   }
 
@@ -420,6 +429,7 @@ async function enqueueComponent(
     controller,
     suspenseId,
     isSlottedPosition,
+    props,
   );
 }
 
@@ -429,6 +439,7 @@ async function enqueueChildren(
   controller: Controller,
   suspenseId?: number,
   isSlottedPosition = false,
+  componentProps?: Props,
 ): Promise<void> {
   if (Array.isArray(children)) {
     await enqueueArrayChildren(
@@ -437,6 +448,7 @@ async function enqueueChildren(
       controller,
       suspenseId,
       isSlottedPosition,
+      componentProps,
     );
   } else if (typeof children === "object") {
     await enqueueDuringRendering(
@@ -445,6 +457,7 @@ async function enqueueChildren(
       controller,
       suspenseId,
       isSlottedPosition,
+      componentProps,
     );
   } else if (typeof children?.toString === "function") {
     await controller.enqueue(Bun.escapeHTML(children.toString()), suspenseId);
@@ -457,6 +470,7 @@ async function enqueueArrayChildren(
   controller: Controller,
   suspenseId?: number,
   isSlottedPosition = false,
+  componentProps?: Props,
 ): Promise<void> {
   for (const child of children) {
     if (Array.isArray(child)) {
@@ -466,6 +480,7 @@ async function enqueueArrayChildren(
         controller,
         suspenseId,
         isSlottedPosition,
+        componentProps,
       );
     } else {
       await enqueueDuringRendering(
@@ -474,6 +489,7 @@ async function enqueueArrayChildren(
         controller,
         suspenseId,
         isSlottedPosition,
+        componentProps,
       );
     }
   }
