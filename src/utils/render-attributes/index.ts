@@ -15,21 +15,23 @@ const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
 
 export default function renderAttributes({
-  props,
+  elementProps,
   request,
   type,
+  componentProps,
 }: {
-  props: Props;
+  elementProps: Props;
   request: RequestContext;
   type: string;
+  componentProps?: Props;
 }): string {
   const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
   const keys = new Set<string>();
   let attributes = "";
 
-  for (const prop in props) {
+  for (const prop in elementProps) {
     const key = prop.toLowerCase();
-    let value = props[prop];
+    let value = elementProps[prop];
 
     if (keys.has(key)) continue;
 
@@ -115,6 +117,18 @@ export default function renderAttributes({
     }
 
     attributes += ` ${key}="${value}"`;
+  }
+
+  // Add component props into data-action-p attribute to be sent to the action
+  if (keys.has("data-action") && componentProps) {
+    const entries = Object.entries(componentProps).map(([key, value]) => {
+      if (typeof value === "function" && "actionId" in value) {
+        return [key, value.actionId];
+      }
+      return [key, value];
+    });
+
+    attributes += ` data-action-p="${serialize(entries)}"`;
   }
 
   if (type === "html" && request.i18n?.locale) {
