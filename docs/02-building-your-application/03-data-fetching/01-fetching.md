@@ -52,16 +52,16 @@ async generators are also supported if you want to stream every item in a list f
 
 ```tsx
 async function* List() {
- yield <li>{await foo()}</li>;
- yield <li>{await bar()}</li>;
- yield <li>{await baz()}</li>;
+  yield <li>{await foo()}</li>;
+  yield <li>{await bar()}</li>;
+  yield <li>{await baz()}</li>;
 }
 ```
 
 This can be used as a server component:
 
 ```tsx
-return <List />
+return <List />;
 ```
 
 And the HTML is resolved via streaming.
