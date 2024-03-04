@@ -627,11 +627,42 @@ describe("utils", () => {
         componentProps: {
           onClick,
           someProp: "someValue",
+          empty: undefined,
+          nullable: null,
         },
       });
 
       expect(attributes).toBe(
         ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-action-p="[['onClick','a1_1'],['someProp','someValue']]"`,
+      );
+    });
+
+    it('should not add the data-action-p if all the component props are null or undefined', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+
+      const attributes = renderAttributes({
+        elementProps: {
+          foo: "bar",
+          "data-action": true,
+          onClick,
+          onDoubleClick: () => {},
+          "data-action-onDoubleClick": "a1_3",
+        },
+        request,
+        type: "div",
+        componentProps: {
+          empty: undefined,
+          nullable: null,
+        },
+      });
+
+      expect(attributes).toBe(
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3"`,
       );
     });
   });
