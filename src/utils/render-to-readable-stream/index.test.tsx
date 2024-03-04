@@ -2412,7 +2412,7 @@ describe("utils", () => {
 
       expect(result).resolves.toBe(
         toInline(
-          `<button data-action-onclick="a1_1" data-action>TEST</button>`,
+          `<button data-action-onclick="a1_1" data-action data-action-p="[['onClickAction','a1_1']]">TEST</button>`,
         ),
       );
     });
@@ -2431,6 +2431,44 @@ describe("utils", () => {
 
       expect(result).toBe(
         "<h2>Count: 0</h2><h2>Count: 1</h2><h2>Count: 2</h2><h2>Count: 3</h2>",
+      );
+    });
+
+    it("should render a server component with async generator and context", async () => {
+      type TestContext = { name: string };
+      const context = createContext<TestContext>({ name: "bar" });
+
+      async function* List({}, { useContext }: RequestContext) {
+        const contextSignal = useContext<TestContext>(context);
+        yield <h2>{contextSignal.value.name}</h2>;
+      }
+
+      const stream = renderToReadableStream(
+        <context-provider serverOnly context={context} value={{ name: "foo" }}>
+          <List />
+        </context-provider>,
+        testOptions,
+      );
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe("<h2>foo</h2>");
+    });
+
+    it("should render data-action-p with the props", async () => {
+      const Component = ({ foo }: any) => (
+        <p data-action-onclick="a1_1" data-action>
+          {foo}
+        </p>
+      );
+      const stream = renderToReadableStream(
+        <Component foo="bar" />,
+        testOptions,
+      );
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        "<p data-action-onclick=\"a1_1\" data-action data-action-p=\"[['foo','bar']]\">bar</p>",
       );
     });
   });

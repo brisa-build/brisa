@@ -111,7 +111,7 @@ describe("utils", () => {
       expect(res.useContextProvider).toBeTrue();
     });
 
-    it("should detect useActions when is used the attribute data-action", () => {
+    it("should detect actions when is used the attribute data-action", () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <div data-action="action">hello</div>

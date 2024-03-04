@@ -15,7 +15,7 @@ describe("utils", () => {
         originalRequest: new Request("https://example.com"),
       });
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           foo: "bar",
         },
         request,
@@ -39,7 +39,7 @@ describe("utils", () => {
       };
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           href: "/about",
         },
         request,
@@ -73,7 +73,7 @@ describe("utils", () => {
       };
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           href: "/пользователь/[id]",
         },
         request,
@@ -97,7 +97,7 @@ describe("utils", () => {
       };
 
       const attributes = renderAttributes({
-        props: {},
+        elementProps: {},
         request,
         type: "html",
       });
@@ -119,7 +119,7 @@ describe("utils", () => {
       };
 
       const attributes = renderAttributes({
-        props: {},
+        elementProps: {},
         request,
         type: "html",
       });
@@ -132,7 +132,7 @@ describe("utils", () => {
         originalRequest: new Request("https://example.com"),
       });
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           foo: undefined,
         },
         request,
@@ -179,7 +179,7 @@ describe("utils", () => {
 
       const hrefOfATag = (href: string) =>
         renderAttributes({
-          props: {
+          elementProps: {
             href,
           },
           request,
@@ -240,7 +240,7 @@ describe("utils", () => {
 
       const hrefOfATag = (href: string) =>
         renderAttributes({
-          props: {
+          elementProps: {
             href,
           },
           request,
@@ -281,7 +281,7 @@ describe("utils", () => {
 
       const imgSrc = (src: string) =>
         renderAttributes({
-          props: {
+          elementProps: {
             src,
           },
           request,
@@ -289,7 +289,7 @@ describe("utils", () => {
         });
       const scriptSrc = (src: string) =>
         renderAttributes({
-          props: {
+          elementProps: {
             src,
           },
           request,
@@ -328,7 +328,7 @@ describe("utils", () => {
 
       const imgSrc = (src: string) =>
         renderAttributes({
-          props: {
+          elementProps: {
             src,
           },
           request,
@@ -336,7 +336,7 @@ describe("utils", () => {
         });
       const scriptSrc = (src: string) =>
         renderAttributes({
-          props: {
+          elementProps: {
             src,
           },
           request,
@@ -362,7 +362,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           open: true,
         },
         request,
@@ -378,7 +378,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           open: false,
         },
         request,
@@ -394,7 +394,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           foo: {
             bar: "baz",
           },
@@ -412,7 +412,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           style: {
             color: "red",
             backgroundColor: "blue",
@@ -436,7 +436,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           style: "color:red;",
         },
         request,
@@ -452,7 +452,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           indicator: request.indicate("increment"),
         },
         request,
@@ -468,7 +468,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           indicator: [
             request.indicate("increment"),
             request.indicate("decrement"),
@@ -489,7 +489,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           indicateClick: request.indicate("increment"),
         },
         request,
@@ -505,7 +505,7 @@ describe("utils", () => {
       });
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           onClick: () => {},
         },
         request,
@@ -524,7 +524,7 @@ describe("utils", () => {
       onClick.actionId = "a1_1";
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           onClick,
         },
         request,
@@ -543,7 +543,7 @@ describe("utils", () => {
       onClick.actionId = "a1_1";
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           onClick,
           foo: "bar",
           "data-action-onclick": "a1_2",
@@ -566,7 +566,7 @@ describe("utils", () => {
       onClick.actionId = "a1_1";
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           "data-action-onclick": "a1_2",
           "data-action": true,
           foo: "bar",
@@ -590,7 +590,7 @@ describe("utils", () => {
       onClick.actionId = "a1_1";
 
       const attributes = renderAttributes({
-        props: {
+        elementProps: {
           foo: "bar",
           "data-action": true,
           onClick,
@@ -603,6 +603,35 @@ describe("utils", () => {
 
       expect(attributes).toBe(
         ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3"`,
+      );
+    });
+
+    it("should add the properties of the component as data-action-p", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+
+      const attributes = renderAttributes({
+        elementProps: {
+          foo: "bar",
+          "data-action": true,
+          onClick,
+          onDoubleClick: () => {},
+          "data-action-onDoubleClick": "a1_3",
+        },
+        request,
+        type: "div",
+        componentProps: {
+          onClick,
+          someProp: "someValue",
+        },
+      });
+
+      expect(attributes).toBe(
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-action-p="[['onClick','a1_1'],['someProp','someValue']]"`,
       );
     });
   });
