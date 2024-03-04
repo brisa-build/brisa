@@ -121,14 +121,17 @@ export default function renderAttributes({
 
   // Add component props into data-action-p attribute to be sent to the action
   if (keys.has("data-action") && componentProps) {
-    const entries = Object.entries(componentProps).map(([key, value]) => {
-      if (typeof value === "function" && "actionId" in value) {
-        return [key, value.actionId];
-      }
-      return [key, value];
-    });
+    const entries = [];
 
-    attributes += ` data-action-p="${serialize(entries)}"`;
+    for (const [key, value] of Object.entries(componentProps)) {
+      if (value == null) continue;
+
+      const isAnAction = typeof value === "function" && "actionId" in value;
+
+      entries.push([key, isAnAction ? value.actionId : value]);
+    }
+
+    if (entries.length) attributes += ` data-action-p="${serialize(entries)}"`;
   }
 
   if (type === "html" && request.i18n?.locale) {
