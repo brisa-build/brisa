@@ -2412,7 +2412,7 @@ describe("utils", () => {
 
       expect(result).resolves.toBe(
         toInline(
-          `<button data-action-onclick="a1_1" data-action data-action-p="[['onClickAction','a1_1']]">TEST</button>`,
+          `<button data-action-onclick="a1_1" data-action data-actions="[['onClickAction','a1_1']]">TEST</button>`,
         ),
       );
     });
@@ -2455,21 +2455,40 @@ describe("utils", () => {
       expect(result).toBe("<h2>foo</h2>");
     });
 
-    it("should render data-action-p with the props", async () => {
+    it("should render data-actions with only the action props", async () => {
       const Component = ({ foo }: any) => (
         <p data-action-onclick="a1_1" data-action>
           {foo}
         </p>
       );
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
       const stream = renderToReadableStream(
-        <Component foo="bar" />,
+        <Component foo="bar" onClick={onClick} />,
         testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        "<p data-action-onclick=\"a1_1\" data-action data-action-p=\"[['foo','bar']]\">bar</p>",
+        "<p data-action-onclick=\"a1_1\" data-action data-actions=\"[['onClick','a1_1']]\">bar</p>",
       );
+    });
+
+    it("should not render data-actions if any prop is an action", async () => {
+      const Component = ({ foo }: any) => (
+        <p data-action-onclick="a1_1" data-action>
+          {foo}
+        </p>
+      );
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+      const stream = renderToReadableStream(
+        <Component foo="bar" bar="baz" />,
+        testOptions,
+      );
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe('<p data-action-onclick="a1_1" data-action>bar</p>');
     });
   });
 });

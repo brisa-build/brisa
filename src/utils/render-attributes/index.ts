@@ -119,19 +119,31 @@ export default function renderAttributes({
     attributes += ` ${key}="${value}"`;
   }
 
-  // Add component props into data-action-p attribute to be sent to the action
-  if (keys.has("data-action") && componentProps) {
+  // Add external action ids into data-actions attribute.
+  //
+  // This allows an action to call other actions without having to transfer
+  // anything. It is exposed in the client (HTML) the id of the actions that
+  // could call the current action, this way when the action is loaded the
+  // props are passed with the other actions.
+  //
+  // For security, we prefer not to expose other props or server variables
+  // in the HTML. To support this it is necessary for developers to have
+  // control over which variables they want to transfer, and to encrypt/decrypt
+  // the most sensitive ones or find an alternative such as asking for the
+  // values back in the database. Unlike current frameworks that use Server
+  // Actions we don't want to do this kind of magic out of the developer's
+  // control, because encrypting/decrypting props slows down requests and
+  // exposes code without the developer's will.
+  if (componentProps && keys.has("data-action")) {
     const entries = [];
 
     for (const [key, value] of Object.entries(componentProps)) {
-      if (value == null) continue;
-
-      const isAnAction = typeof value === "function" && "actionId" in value;
-
-      entries.push([key, isAnAction ? value.actionId : value]);
+      if (typeof value === "function" && "actionId" in value) {
+        entries.push([key, value.actionId]);
+      }
     }
 
-    if (entries.length) attributes += ` data-action-p="${serialize(entries)}"`;
+    if (entries.length) attributes += ` data-actions="${serialize(entries)}"`;
   }
 
   if (type === "html" && request.i18n?.locale) {

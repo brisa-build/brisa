@@ -606,7 +606,7 @@ describe("utils", () => {
       );
     });
 
-    it("should add the properties of the component as data-action-p", () => {
+    it("should add only the action properties of the component as data-actions", () => {
       const request = extendRequestContext({
         originalRequest: new Request("https://example.com"),
       });
@@ -633,37 +633,30 @@ describe("utils", () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-action-p="[['onClick','a1_1'],['someProp','someValue']]"`,
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[['onClick','a1_1']]"`,
       );
     });
 
-    it('should not add the data-action-p if all the component props are null or undefined', () => {
+    it('should not add the "data-actions" attribute when there are no action properties', () => {
       const request = extendRequestContext({
         originalRequest: new Request("https://example.com"),
       });
-
-      const onClick = () => {};
-      onClick.actionId = "a1_1";
 
       const attributes = renderAttributes({
         elementProps: {
           foo: "bar",
           "data-action": true,
-          onClick,
-          onDoubleClick: () => {},
-          "data-action-onDoubleClick": "a1_3",
         },
         request,
         type: "div",
         componentProps: {
+          someProp: "someValue",
           empty: undefined,
           nullable: null,
         },
       });
 
-      expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3"`,
-      );
+      expect(attributes).toBe(` foo="bar" data-action`);
     });
   });
 });
