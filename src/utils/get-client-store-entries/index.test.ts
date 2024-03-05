@@ -20,6 +20,23 @@ describe("utils", () => {
       expect(result).toBeEmpty();
     });
 
+    it('should not return an array of entries when "x-s" header is an empty string', () => {
+      const headers = new Headers();
+
+      headers.set("x-s", "");
+
+      const req = extendRequestContext({
+        originalRequest: new Request(url, { headers }),
+      });
+
+      req.store.set("foo", "bar");
+      req.store.set("bar", "baz");
+
+      const result = getClientStoreEntries(req);
+
+      expect(result).toBeEmpty();
+    });
+
     it("should return an array of entries that exists on 'x-s' header", () => {
       const headers = new Headers();
 

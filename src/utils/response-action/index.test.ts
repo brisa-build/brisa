@@ -132,7 +132,7 @@ describe("utils", () => {
               currentTarget: null,
               defaultPrevented: true,
               eventPhase: 0,
-              _custom: true,
+              _wc: true,
               detail: {
                 foo: "bar",
               },

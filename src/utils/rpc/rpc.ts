@@ -3,6 +3,7 @@ const INDICATOR = "indicator";
 const BRISA_REQUEST_CLASS = "brisa-request";
 const ACTION_ATTRIBUTE = "data-" + ACTION;
 const $document = document;
+const $window = window;
 const stringify = JSON.stringify;
 const $Promise = Promise;
 let resolveRPC: ((res: Response) => Promise<void>) | undefined;
@@ -17,11 +18,12 @@ async function rpc(
   actionId: string,
   isFormData = false,
   indicator: string | null,
+  actionsDeps: string | undefined,
   ...args: unknown[]
 ) {
   const errorIndicator = "e" + indicator;
   const elementsWithIndicator = [];
-  const store = window._s;
+  const store = $window._s;
 
   let promise = resolveRPC
     ? $Promise.resolve()
@@ -48,8 +50,9 @@ async function rpc(
       method: "POST",
       headers: {
         "x-action": actionId,
+        "x-actions": actionsDeps ?? "",
         // @ts-ignore
-        "x-s": stringify(store ? [..._s.Map.entries()] : window._S),
+        "x-s": stringify(store ? [..._s.Map.entries()] : $window._S) ?? "",
       },
       body: isFormData
         ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
@@ -60,8 +63,8 @@ async function rpc(
       await promise;
 
       if (!resolveRPC) {
-        resolveRPC = window._rpc;
-        delete window._rpc;
+        resolveRPC = $window._rpc;
+        delete $window._rpc;
       }
 
       await resolveRPC!(res);
@@ -86,13 +89,10 @@ function serialize(k: string, v: unknown) {
   const isInstanceOf = (Instance: any) => v instanceof Instance;
   const isNode = isInstanceOf(Node);
 
-  if (
-    isInstanceOf(Event) ||
-    (isNode && ["target", "currentTarget"].includes(k))
-  ) {
+  if (isInstanceOf(Event) || (isNode && k.match(/target/i))) {
     const ev: Record<string, any> = {};
     for (let field in v as any) ev[field] = (v as any)[field];
-    if (isInstanceOf(CustomEvent)) ev._custom = true;
+    if (isInstanceOf(CustomEvent)) ev._wc = true;
     return ev;
   }
 
@@ -113,9 +113,8 @@ function registerActions() {
 
     for (let [action, actionId] of Object.entries(dataSet)) {
       const actionName = action.toLowerCase();
-      const eventAttrName = actionName.replace(ACTION, "");
-      const eventName = eventAttrName.replace(onPrefix, "");
-      const isFormData = element.nodeName === "FORM" && eventName === "submit";
+      const eventName = actionName.replace(ACTION, "").replace(onPrefix, "");
+      const isFormData = element.tagName === "FORM" && eventName === "submit";
       const debounceMs = +(getAttribute(element, "debounce" + eventName) ?? 0);
       let timeout: ReturnType<typeof setTimeout>;
 
@@ -129,6 +128,7 @@ function registerActions() {
                 actionId!,
                 isFormData,
                 getAttribute(element, "indicate" + eventName),
+                dataSet.actions,
                 ...args,
               ),
             debounceMs,
