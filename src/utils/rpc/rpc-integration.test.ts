@@ -12,6 +12,7 @@ import {
   injectActionRPCLazyCode,
 } from "." with { type: "macro" };
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { serialize } from "../serialization";
 
 const actionRPCCode = await injectActionRPCCode();
 const actionRPCLazyCode = await injectActionRPCLazyCode();
@@ -27,6 +28,7 @@ async function simulateRPC({
   useIndicator = false,
   fails = false,
   failsThrowingAnError = false,
+  dataActions = [] as [string, string][],
 } = {}) {
   const el = document.createElement(elementName);
   let times = 0;
@@ -34,6 +36,10 @@ async function simulateRPC({
   // Simulate a button with a data-action-onClick attribute
   el.setAttribute(`data-action-on${eventName}`, "a1_1");
   el.setAttribute("data-action", "true");
+
+  if (dataActions?.length) {
+    el.setAttribute("data-actions", serialize(dataActions));
+  }
 
   if (debounceMs) {
     el.setAttribute(`debounce${eventName}`, debounceMs.toString());
@@ -157,14 +163,14 @@ describe("utils", () => {
       expect(mockFetch.mock.calls[0][1]?.body).toBeInstanceOf(FormData);
     });
 
-    it("should send custom event serialized with _custom property", async () => {
+    it("should send custom event serialized with _wc property", async () => {
       const mockFetch = await simulateRPC({
         eventName: "custom",
         navigateTo: "http://localhost/some-page",
       });
 
       const [event] = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
-      expect(event._custom).toBeTrue();
+      expect(event._wc).toBeTrue();
     });
 
     it('should send the "x-action" header with the actionId', async () => {
@@ -172,9 +178,14 @@ describe("utils", () => {
         navigateTo: "http://localhost/some-page",
       });
 
-      expect(mockFetch.mock.calls[0][1]?.headers).toEqual({
-        "x-action": "a1_1",
-      });
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
+
+      expect(headers["x-action"]).toBe("a1_1");
+      expect(headers["x-s"]).toBeEmpty();
+      expect(headers["x-actions"]).toBeEmpty();
     });
 
     it('should send the "x-s" header with the serialized store', async () => {
@@ -192,10 +203,14 @@ describe("utils", () => {
         navigateTo: "http://localhost/some-page",
       });
 
-      expect(mockFetch.mock.calls[0][1]?.headers).toEqual({
-        "x-action": "a1_1",
-        "x-s": `[["a","b"],["c","d"]]`,
-      });
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
+
+      expect(headers["x-action"]).toBe("a1_1");
+      expect(headers["x-s"]).toBe(`[["a","b"],["c","d"]]`);
+      expect(headers["x-actions"]).toBeEmpty();
     });
 
     it('should send the "x-s" header with the serialized store if only are transferred store', async () => {
@@ -205,11 +220,14 @@ describe("utils", () => {
       const mockFetch = await simulateRPC({
         navigateTo: "http://localhost/some-page",
       });
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
 
-      expect(mockFetch.mock.calls[0][1]?.headers).toEqual({
-        "x-action": "a1_1",
-        "x-s": `[["c","d"]]`,
-      });
+      expect(headers["x-action"]).toBe("a1_1");
+      expect(headers["x-s"]).toBe(`[["c","d"]]`);
+      expect(headers["x-actions"]).toBeEmpty();
     });
 
     it('should add and remove the class "brisa-request" meanwhile the request is being processed and then success', async () => {
@@ -291,6 +309,32 @@ describe("utils", () => {
       expect(window._s.get(INDICATOR_ID)).toBeTrue();
       await Bun.sleep(0);
       expect(window._s.get(INDICATOR_ID)).toBeFalse();
+    });
+
+    it("should add the x-actions header with the serialized actions dependencies ids", async () => {
+      const mockFetch = await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+        dataActions: [["onClick", "a1_2"]],
+      });
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
+      expect(headers["x-action"]).toBe("a1_1");
+      expect(headers["x-actions"]).toBe("[['onClick','a1_2']]");
+    });
+
+    it("should not add the x-actions header when no data-actions", async () => {
+      const mockFetch = await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+        dataActions: [],
+      });
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
+      expect(headers["x-action"]).toBe("a1_1");
+      expect(headers["x-actions"]).toBeEmpty();
     });
   });
 });

@@ -45,7 +45,7 @@ export default async function responseAction(req: RequestContext) {
     typeof params[0] === "object" &&
     "isTrusted" in params[0] &&
     "detail" in params[0] &&
-    params[0]._custom;
+    params[0]._wc;
 
   if (isWebComponentEvent) params[0] = params[0].detail;
 
