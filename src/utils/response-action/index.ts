@@ -2,10 +2,12 @@ import { join } from "node:path";
 import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
 import getClientStoreEntries from "../get-client-store-entries";
+import { deserialize } from "../serialization";
 
 export default async function responseAction(req: RequestContext) {
   const { BUILD_DIR } = getConstants();
   const action = req.headers.get("x-action")!;
+  const actionsHeaderValue = req.headers.get("x-actions")!;
   const storeRaw = req.headers.get("x-s")!;
   const actionFile = action.split("_").at(0);
   const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
@@ -19,6 +21,18 @@ export default async function responseAction(req: RequestContext) {
     method: "post",
     elements: {},
   };
+
+  const props: Record<string, any> = {};
+  const actions = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
+
+  // Add action dependencies to props to be used in the action
+  for (const [eventName, actionId] of actions) {
+    const file = actionId.split("_").at(0);
+    props[eventName] =
+      file === actionFile
+        ? actionModule[actionId]
+        : (await import(join(BUILD_DIR, "actions", file)))[actionId];
+  }
 
   const params = isFormData
     ? [
@@ -59,7 +73,7 @@ export default async function responseAction(req: RequestContext) {
 
   req.store.set("_action_params", params);
 
-  let response = await actionModule[action]({}, req);
+  let response = await actionModule[action](props, req);
 
   if (!(response instanceof Response)) response = new Response(null);
 
