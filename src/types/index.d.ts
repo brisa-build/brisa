@@ -8194,6 +8194,12 @@ declare global {
        */
       summary?: string | undefined;
       /**
+       * The `switch` attribute is a boolean attribute that is present on the `<input type="checkbox" switch>` element to specify that the input should be rendered as a switch.
+       * 
+       * - [Webkit docs][https://webkit.org/blog/15054/an-html-switch-control/]
+       */
+      switch?: boolean | undefined;
+      /**
        * The `tabIndex` attribute is a number attribute that is present on the `<element>` element to specify the position of the element in the tab order.
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
