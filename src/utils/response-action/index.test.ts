@@ -1,18 +1,29 @@
-import { describe, it, expect, beforeEach, afterEach } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  spyOn,
+  jest,
+} from "bun:test";
 import path from "node:path";
 import extendRequestContext from "@/utils/extend-request-context";
 import responseAction from ".";
 
 const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGE = "http://locahost/es/somepage";
+let logMock: ReturnType<typeof spyOn>;
 
 describe("utils", () => {
   beforeEach(() => {
+    logMock = spyOn(console, "log");
     globalThis.mockConstants = {
       BUILD_DIR: FIXTURES,
     };
   });
   afterEach(() => {
+    logMock.mockRestore();
     globalThis.mockConstants = undefined;
   });
   describe("response-action", () => {
@@ -144,6 +155,60 @@ describe("utils", () => {
       await responseAction(req);
 
       expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+    });
+
+    it("should return as props the action dependencies", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-actions": "[['onClick', 'a1_2']]",
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(res.headers.get("x-s")).toEqual("[]");
+      expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+      expect(logMock).toHaveBeenCalledWith("a1_1", {
+        onClick: expect.any(Function),
+      });
+      expect(logMock.mock.calls[0][1].onClick.name).toEqual("a1_2");
+    });
+
+    it("should return as props the action dependencies from another file", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-actions": "[['onClick', 'a2_1']]",
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(res.headers.get("x-s")).toEqual("[]");
+      expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+      expect(logMock).toHaveBeenCalledWith("a1_1", {
+        onClick: expect.any(Function),
+      });
+      expect(logMock.mock.calls[0][1].onClick.name).toEqual("a2_1");
     });
   });
 });
