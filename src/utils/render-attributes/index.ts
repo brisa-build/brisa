@@ -52,7 +52,7 @@ export default function renderAttributes({
     }
 
     // Nested actions (coming from props)
-    if (typeof value === "function" && "actionId" in value) {
+    if (isAnAction(value)) {
       const actionKey = `data-action`;
       const actionToEventKey = `${actionKey}-${key}`;
       const modifiedAttributes = attributes.replace(
@@ -138,9 +138,7 @@ export default function renderAttributes({
     const entries = [];
 
     for (const [key, value] of Object.entries(componentProps)) {
-      if (typeof value === "function" && "actionId" in value) {
-        entries.push([key, value.actionId]);
-      }
+      if (isAnAction(value)) entries.push([key, value.actionId]);
     }
 
     if (entries.length) attributes += ` data-actions="${serialize(entries)}"`;
@@ -205,4 +203,8 @@ function manageTrailingSlash(urlString: string) {
   url.pathname = url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`;
 
   return url.toString().replace(fakeOrigin, "");
+}
+
+function isAnAction(action: unknown): action is { actionId: string } {
+  return typeof action === "function" && "actionId" in action;
 }
