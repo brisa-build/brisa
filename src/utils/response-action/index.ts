@@ -61,22 +61,33 @@ export default async function responseAction(req: RequestContext) {
 
   req.store.set(`__params:${action}`, params);
 
-  const props: Record<string, any> = {};
-  const actions = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
+  function processActions(actions: [string, string], props = {}) {
+    const nextProps: Record<string, any> = {};
 
-  // Add action dependencies to props to be used in the action
-  for (const [eventName, actionId] of actions) {
-    props[eventName] = async (...props: unknown[]) => {
-      const file = actionId.split("_").at(0);
-      const actionDependency =
-        file === actionFile
-          ? actionModule[actionId]
-          : (await import(join(BUILD_DIR, "actions", file)))[actionId];
+    for (const [eventName, actionId] of actions) {
+      nextProps[eventName] = async (...params: unknown[]) => {
+        const file = actionId.split("_").at(0);
+        const actionDependency =
+          file === actionFile
+            ? actionModule[actionId]
+            : (await import(join(BUILD_DIR, "actions", file!)))[actionId];
 
-      req.store.set(`__params:${actionId}`, props);
-      // TODO: fix action dependencies of action dependencies
-      return actionDependency({}, req);
-    };
+        req.store.set(`__params:${actionId}`, params);
+
+        return actionDependency(props, req);
+      };
+    }
+
+    return nextProps;
+  }
+
+  const dependencies = actionsHeaderValue
+    ? deserialize(actionsHeaderValue)
+    : [];
+  let props: Record<string, any> = {};
+
+  for (let i = dependencies.length - 1; i >= 0; i -= 1) {
+    props = processActions(dependencies[i], props);
   }
 
   let response = await actionModule[action](props, req);

@@ -1,9 +1,37 @@
+import isAnAction from "@/utils/is-an-action";
+
 const ACTION_PREFIX = "data-action";
 
 export default function processServerComponentProps(
   props: Record<string, unknown>,
+  parentProps?: Record<string, unknown>,
 ) {
   const processedProps: Record<string, unknown> = {};
+  const parentDependencies = [];
+  let grandparentsDependencies;
+
+  // It is necessary to register the dependencies of the actions that are in the props
+  // of the parent component because many times from an action could be called to another
+  // one and we want the actions to work similar to the browsers events.
+  for (const parentProp in parentProps) {
+    const action = parentProps[parentProp];
+
+    if (isAnAction(action)) {
+      parentDependencies.push([parentProp, action.actionId]);
+
+      if (
+        !grandparentsDependencies &&
+        Array.isArray(action.actions) &&
+        action.actions.length > 0
+      ) {
+        grandparentsDependencies = action.actions;
+      }
+    }
+  }
+
+  const actions = parentDependencies.length
+    ? [parentDependencies, ...(grandparentsDependencies ?? [])]
+    : [];
 
   for (const prop in props) {
     const key = prop.toLowerCase();
@@ -15,8 +43,12 @@ export default function processServerComponentProps(
     // instead of an action it should still work. However, adding the actionId
     // property to the function then makes it much easier from render-attributes
     // to rebuild the data-action attributes again.
-    if (typeof value === "function" && actionIdKey in props) {
-      Object.assign(value, { actionId: props[actionIdKey] });
+    if (
+      typeof value === "function" &&
+      actionIdKey in props &&
+      !("actionId" in value)
+    ) {
+      Object.assign(value, { actionId: props[actionIdKey], actions });
     }
 
     // These props are injected into build-time in order to manage the actions.
