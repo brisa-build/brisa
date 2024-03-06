@@ -61,6 +61,17 @@ export default async function responseAction(req: RequestContext) {
 
   req.store.set(`__params:${action}`, params);
 
+  const deps = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
+  let props: Record<string, any> = {};
+
+  // This part allows actions to be passed as props to enable nested actions
+  // of other components. To make this possible, the HTML stores in the HTML
+  // the actions id that are dependencies ordered in an array by parent
+  // component, grandparent component, grand-grandparent, etc.
+  for (let i = deps.length - 1; i >= 0; i -= 1) {
+    props = processActions(deps[i], props);
+  }
+
   function processActions(actions: [string, string], props = {}) {
     const nextProps: Record<string, any> = {};
 
@@ -79,15 +90,6 @@ export default async function responseAction(req: RequestContext) {
     }
 
     return nextProps;
-  }
-
-  const dependencies = actionsHeaderValue
-    ? deserialize(actionsHeaderValue)
-    : [];
-  let props: Record<string, any> = {};
-
-  for (let i = dependencies.length - 1; i >= 0; i -= 1) {
-    props = processActions(dependencies[i], props);
   }
 
   let response = await actionModule[action](props, req);
