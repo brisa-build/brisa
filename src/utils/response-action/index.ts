@@ -22,18 +22,6 @@ export default async function responseAction(req: RequestContext) {
     elements: {},
   };
 
-  const props: Record<string, any> = {};
-  const actions = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
-
-  // Add action dependencies to props to be used in the action
-  for (const [eventName, actionId] of actions) {
-    const file = actionId.split("_").at(0);
-    props[eventName] =
-      file === actionFile
-        ? actionModule[actionId]
-        : (await import(join(BUILD_DIR, "actions", file)))[actionId];
-  }
-
   const params = isFormData
     ? [
         {
@@ -72,6 +60,24 @@ export default async function responseAction(req: RequestContext) {
   }
 
   req.store.set("_action_params", params);
+
+  const props: Record<string, any> = {};
+  const actions = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
+
+  // Add action dependencies to props to be used in the action
+  for (const [eventName, actionId] of actions) {
+    const file = actionId.split("_").at(0);
+    const actionDependency =
+      file === actionFile
+        ? actionModule[actionId]
+        : (await import(join(BUILD_DIR, "actions", file)))[actionId];
+
+    props[eventName] = async (...props: any) => {
+      req.store.set("_action_params", props ?? {});
+      // TODO: fix action dependencies of action dependencies
+      return await actionDependency({}, req);
+    };
+  }
 
   let response = await actionModule[action](props, req);
 
