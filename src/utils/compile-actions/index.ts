@@ -221,7 +221,7 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
     body.body.unshift(requestDestructuring);
   }
 
-  // await __action(...req.store.get('_action_params'));
+  // await __action(...req.store.get('__params:actionId'));
   body.body.push(getActionCall(info, requestParamName));
   // return new Response(null);
   body.body.push(getResponseReturn());
@@ -327,7 +327,7 @@ function getActionCall(
               arguments: [
                 {
                   type: "Literal",
-                  value: "_action_params",
+                  value: "__params:" + info.actionId,
                 },
               ],
             },
