@@ -46,7 +46,7 @@ describe("utils", () => {
       const res = await responseAction(req);
 
       expect(res.headers.get("x-s")).toEqual("[]");
-      expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+      expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
     });
 
     it('should be possible to access to store variables from "x-s" header', async () => {
@@ -91,7 +91,7 @@ describe("utils", () => {
 
       await responseAction(req);
 
-      expect(req.store.get("_action_params")).toEqual([
+      expect(req.store.get("__params:a1_1")).toEqual([
         {
           isTrusted: true,
           bubbles: false,
@@ -154,7 +154,7 @@ describe("utils", () => {
 
       await responseAction(req);
 
-      expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+      expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
     });
 
     it("should return as props the action dependencies", async () => {
@@ -177,7 +177,7 @@ describe("utils", () => {
       const res = await responseAction(req);
 
       expect(res.headers.get("x-s")).toEqual("[]");
-      expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+      expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
       });
@@ -204,7 +204,7 @@ describe("utils", () => {
       const res = await responseAction(req);
 
       expect(res.headers.get("x-s")).toEqual("[]");
-      expect(req.store.get("_action_params")).toEqual([{ foo: "bar" }]);
+      expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
       });

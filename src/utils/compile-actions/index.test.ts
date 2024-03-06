@@ -25,7 +25,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -57,7 +57,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = function foo() {console.log('hello world');};
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -92,7 +92,7 @@ describe("utils", () => {
           try {
             const {store} = req;
             const onClick = () => console.log('hello world');
-            await onClick(...req.store.get('_action_params'));
+            await onClick(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -126,7 +126,7 @@ describe("utils", () => {
         export async function a1_1({text}, requestContext) {
           try {
             const onClick = () => console.log('hello world');
-            await onClick(...requestContext.store.get('_action_params'));
+            await onClick(...requestContext.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -158,7 +158,7 @@ describe("utils", () => {
       export async function a1_1({foo}, req) {
         try {
           const __action = () => console.log('hello world');
-          await __action(...req.store.get('_action_params'));
+          await __action(...req.store.get('__params:a1_1'));
           return new Response(null);
         } catch (error) {
           return __resolveAction({ 
@@ -190,7 +190,7 @@ describe("utils", () => {
       export async function a1_1({foo}, req) {
         try {
           const __action = () => console.log('hello world');
-          await __action(...req.store.get('_action_params'));
+          await __action(...req.store.get('__params:a1_1'));
           return new Response(null);
         } catch (error) {
           return __resolveAction({ 
@@ -220,7 +220,7 @@ describe("utils", () => {
       export async function a1_1({foo}, req) {
         try {
           const __action = () => console.log('hello world');
-          await __action(...req.store.get('_action_params'));
+          await __action(...req.store.get('__params:a1_1'));
           return new Response(null);
         } catch (error) {
           return __resolveAction({ 
@@ -250,7 +250,7 @@ describe("utils", () => {
       export async function a1_1({foo}, req) {
         try {
           const __action = () => console.log('hello world');
-          await __action(...req.store.get('_action_params'));
+          await __action(...req.store.get('__params:a1_1'));
           return new Response(null);
         } catch (error) {
           return __resolveAction({ 
@@ -282,7 +282,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -331,7 +331,7 @@ describe("utils", () => {
           try {
             const {store} = req;
             const __action = () => console.log('Vale');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a2_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -365,7 +365,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -399,7 +399,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -431,7 +431,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -471,7 +471,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -484,7 +484,7 @@ describe("utils", () => {
         export async function a1_2({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_2'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -527,7 +527,7 @@ describe("utils", () => {
         export async function a1_1({}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -541,7 +541,7 @@ describe("utils", () => {
         export async function a1_2({}, req) {
           try {
             const onLoad = () => console.log('loaded');
-            await onLoad(...req.store.get('_action_params'));
+            await onLoad(...req.store.get('__params:a1_2'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -599,7 +599,7 @@ describe("utils", () => {
         export async function a1_1({}, req) {
           try {
             const __action = () => console.log('First action');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -613,7 +613,7 @@ describe("utils", () => {
         export async function a1_2({}, req) {
           try {
             const __action = () => console.log('Second action');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_2'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -627,7 +627,7 @@ describe("utils", () => {
         export async function a1_3({}, req) {
           try {
             const __action = () => console.log('Third action');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_3'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -671,7 +671,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('a');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -685,7 +685,7 @@ describe("utils", () => {
         export async function a1_2({text}, req) {
           try {
             const __action = () => console.log('b');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_2'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -699,7 +699,7 @@ describe("utils", () => {
         export async function a1_3({text}, req) {
           try {
             const __action = () => console.log('c');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_3'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -744,7 +744,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('a');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -758,7 +758,7 @@ describe("utils", () => {
         export async function a1_2({text}, req) {
           try {
             const __action = () => console.log('b');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_2'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -772,7 +772,7 @@ describe("utils", () => {
         export async function a1_3({text}, req) {
           try {
             const __action = () => console.log('c');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_3'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -823,7 +823,7 @@ describe("utils", () => {
             } else {
               foo = 'b';
             }
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -843,7 +843,7 @@ describe("utils", () => {
             } else {
               foo = 'b';
             }
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_2'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -896,7 +896,7 @@ describe("utils", () => {
               default:
                 foo = 'b';
             }
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -917,7 +917,7 @@ describe("utils", () => {
               default:
                 foo = 'b';
             }
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_2'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -967,7 +967,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log(SOME_CONSTANT);
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -1003,7 +1003,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log(SOME_CONSTANT, FOO);
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -1041,7 +1041,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log(SOME_CONSTANT);
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -1075,7 +1075,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -1108,7 +1108,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -1147,7 +1147,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -1161,7 +1161,7 @@ describe("utils", () => {
         export async function a1_2({text}, req) {
           try {
             const __action = () => console.log('hello world');
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_2'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({ 
@@ -1213,7 +1213,7 @@ describe("utils", () => {
               await foo(hello);
               console.log(hello);
             };
-            await onClick(...req.store.get('_action_params'));
+            await onClick(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -1251,7 +1251,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log(hello);
             const hello = 'hello world';
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
@@ -1290,7 +1290,7 @@ describe("utils", () => {
             const __action = () => console.log(foo);
             const hello = 'hello world';
             const foo = someMagicFunction(hello);
-            await __action(...req.store.get('_action_params'));
+            await __action(...req.store.get('__params:a1_1'));
             return new Response(null);
           } catch (error) {
             return __resolveAction({
