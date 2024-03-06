@@ -164,7 +164,7 @@ describe("utils", () => {
           headers: {
             "content-type": "application/json",
             "x-action": "a1_1",
-            "x-actions": "[['onClick', 'a1_2']]",
+            "x-actions": "[[['onClick', 'a1_2']]]",
           },
           body: JSON.stringify([
             {
@@ -191,7 +191,7 @@ describe("utils", () => {
           headers: {
             "content-type": "application/json",
             "x-action": "a1_1",
-            "x-actions": "[['onClick', 'a2_1']]",
+            "x-actions": "[[['onClick', 'a2_1']]]",
           },
           body: JSON.stringify([
             {
@@ -209,6 +209,34 @@ describe("utils", () => {
         onClick: expect.any(Function),
       });
       expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1");
+    });
+
+    it("should work with nested action dependencies", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-actions": "[[['onClick', 'a2_1']], [['onAction', 'a2_2']]]",
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(res.headers.get("x-s")).toEqual("[]");
+      expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
+      expect(logMock).toHaveBeenCalledWith("a1_1", {
+        onClick: expect.any(Function),
+      });
+      // "foo" is added by a2_2 fixture
+      expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1-a2_2-foo");
     });
   });
 });
