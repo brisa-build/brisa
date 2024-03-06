@@ -59,7 +59,7 @@ export default async function responseAction(req: RequestContext) {
     }
   }
 
-  req.store.set("_action_params", params);
+  req.store.set(`__params:${action}`, params);
 
   const props: Record<string, any> = {};
   const actions = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
@@ -72,10 +72,10 @@ export default async function responseAction(req: RequestContext) {
         ? actionModule[actionId]
         : (await import(join(BUILD_DIR, "actions", file)))[actionId];
 
-    props[eventName] = async (...props: any) => {
-      req.store.set("_action_params", props ?? {});
+    props[eventName] = (...props: unknown[]) => {
+      req.store.set(`__params:${actionId}`, props);
       // TODO: fix action dependencies of action dependencies
-      return await actionDependency({}, req);
+      return actionDependency({}, req);
     };
   }
 
