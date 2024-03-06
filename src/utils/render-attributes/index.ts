@@ -10,6 +10,7 @@ import routeMatchPathname from "@/utils/route-match-pathname";
 import { serialize } from "@/utils/serialization";
 import stylePropsToString from "@/utils/style-props-to-string";
 import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
+import isAnAction from "@/utils/is-an-action";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
@@ -136,12 +137,23 @@ export default function renderAttributes({
   // exposes code without the developer's will.
   if (componentProps && keys.has("data-action")) {
     const entries = [];
+    let dependencies = [];
 
     for (const [key, value] of Object.entries(componentProps)) {
-      if (isAnAction(value)) entries.push([key, value.actionId]);
+      if (isAnAction(value)) {
+        entries.push([key, value.actionId]);
+
+        if (dependencies.length === 0 && value.actions?.length) {
+          dependencies = value.actions as any[];
+        }
+      }
     }
 
-    if (entries.length) attributes += ` data-actions="${serialize(entries)}"`;
+    const hasEntries = entries.length > 0;
+    const hasDeps = hasEntries || dependencies.length > 0;
+
+    if (hasEntries) dependencies.unshift(entries);
+    if (hasDeps) attributes += ` data-actions="${serialize(dependencies)}"`;
   }
 
   if (type === "html" && request.i18n?.locale) {
@@ -203,8 +215,4 @@ function manageTrailingSlash(urlString: string) {
   url.pathname = url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`;
 
   return url.toString().replace(fakeOrigin, "");
-}
-
-function isAnAction(action: unknown): action is { actionId: string } {
-  return typeof action === "function" && "actionId" in action;
 }

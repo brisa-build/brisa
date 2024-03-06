@@ -184,8 +184,8 @@ async function enqueueDuringRendering(
     };
 
     if (isComponent(type) && !isTagToIgnore) {
-      const componentProps = processServerComponentProps(props);
-      const componentContent = { component: type, props: componentProps };
+      const processedProps = processServerComponentProps(props, componentProps);
+      const componentContent = { component: type, props: processedProps };
       const isSuspenseComponent = isComponent(type.suspense);
 
       if (isSuspenseComponent) {
@@ -194,7 +194,7 @@ async function enqueueDuringRendering(
         controller.startTag(`<div id="S:${id}">`, suspenseId);
 
         await enqueueComponent(
-          { component: type.suspense, props: componentProps },
+          { component: type.suspense, props: processedProps },
           request,
           controller,
           suspenseId,
