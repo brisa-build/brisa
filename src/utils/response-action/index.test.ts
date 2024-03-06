@@ -181,7 +181,7 @@ describe("utils", () => {
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
       });
-      expect(logMock.mock.calls[0][1].onClick.name).toEqual("a1_2");
+      expect(await logMock.mock.calls[0][1].onClick()).toBe("a1_2");
     });
 
     it("should return as props the action dependencies from another file", async () => {
@@ -208,7 +208,7 @@ describe("utils", () => {
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
       });
-      expect(logMock.mock.calls[0][1].onClick.name).toEqual("a2_1");
+      expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1");
     });
   });
 });
