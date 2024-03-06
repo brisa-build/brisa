@@ -3,5 +3,5 @@ export function a1_1(props: any) {
 }
 
 export function a1_2(props: any) {
-  console.log("a1_2", props);
+  return "a1_2";
 }
