@@ -66,13 +66,13 @@ export default async function responseAction(req: RequestContext) {
 
   // Add action dependencies to props to be used in the action
   for (const [eventName, actionId] of actions) {
-    const file = actionId.split("_").at(0);
-    const actionDependency =
-      file === actionFile
-        ? actionModule[actionId]
-        : (await import(join(BUILD_DIR, "actions", file)))[actionId];
+    props[eventName] = async (...props: unknown[]) => {
+      const file = actionId.split("_").at(0);
+      const actionDependency =
+        file === actionFile
+          ? actionModule[actionId]
+          : (await import(join(BUILD_DIR, "actions", file)))[actionId];
 
-    props[eventName] = (...props: unknown[]) => {
       req.store.set(`__params:${actionId}`, props);
       // TODO: fix action dependencies of action dependencies
       return actionDependency({}, req);
