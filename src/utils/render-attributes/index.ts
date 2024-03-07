@@ -144,7 +144,7 @@ export default function renderAttributes({
         entries.push([key, value.actionId]);
 
         if (dependencies.length === 0 && value.actions?.length) {
-          dependencies = value.actions as any[];
+          dependencies = value.actions.slice() as any[];
         }
       }
     }
