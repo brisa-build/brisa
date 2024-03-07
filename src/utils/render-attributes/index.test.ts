@@ -690,5 +690,41 @@ describe("utils", () => {
 
       expect(attributes).toBe(` foo="bar" data-action`);
     });
+
+    it('should "data-actions" dependencies not mutate', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+      onClick.actions = [[["onMouseOver", "a1_2"]]];
+
+      const attributesConfig = {
+        elementProps: {
+          foo: "bar",
+          "data-action": true,
+          onClick,
+          onDoubleClick: () => {},
+          "data-action-onDoubleClick": "a1_3",
+        },
+        request,
+        type: "div",
+        componentProps: {
+          onClick,
+          someProp: "someValue",
+          empty: undefined,
+          nullable: null,
+        },
+      };
+
+      const attributes = renderAttributes(attributesConfig);
+      const attributes2 = renderAttributes(attributesConfig);
+
+      expect(attributes).toBe(
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1']],[['onMouseOver','a1_2']]]"`,
+      );
+      expect(attributes2).toBe(attributes);
+    });
   });
 });
