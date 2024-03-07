@@ -2412,7 +2412,7 @@ describe("utils", () => {
 
       expect(result).resolves.toBe(
         toInline(
-          `<button data-action-onclick="a1_1" data-action data-actions="[['onClickAction','a1_1']]">TEST</button>`,
+          `<button data-action-onclick="a1_1" data-action data-actions="[[['onClickAction','a1_1']]]">TEST</button>`,
         ),
       );
     });
@@ -2470,7 +2470,7 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        "<p data-action-onclick=\"a1_1\" data-action data-actions=\"[['onClick','a1_1']]\">bar</p>",
+        "<p data-action-onclick=\"a1_1\" data-action data-actions=\"[[['onClick','a1_1']]]\">bar</p>",
       );
     });
 
