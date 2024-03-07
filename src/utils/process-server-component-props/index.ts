@@ -8,7 +8,7 @@ export default function processServerComponentProps(
 ) {
   const processedProps: Record<string, unknown> = {};
   let actions: unknown[] | undefined;
-  
+
   for (const prop in props) {
     const key = prop.toLowerCase();
     const actionIdKey = `${ACTION_PREFIX}-${key}`;
@@ -24,7 +24,7 @@ export default function processServerComponentProps(
       actionIdKey in props &&
       !("actionId" in value)
     ) {
-      if(!actions) actions = getActionDependencies(parentProps);
+      if (!actions) actions = getActionDependencies(parentProps);
       Object.assign(value, { actionId: props[actionIdKey], actions });
     }
 
