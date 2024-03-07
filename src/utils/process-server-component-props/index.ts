@@ -7,6 +7,43 @@ export default function processServerComponentProps(
   parentProps?: Record<string, unknown>,
 ) {
   const processedProps: Record<string, unknown> = {};
+  let actions: unknown[] | undefined;
+  
+  for (const prop in props) {
+    const key = prop.toLowerCase();
+    const actionIdKey = `${ACTION_PREFIX}-${key}`;
+    const value = props[prop];
+
+    // It is necessary that it continues being a function, if you make console.log
+    // of the props or use the function in the own rendering of the component
+    // instead of an action it should still work. However, adding the actionId
+    // property to the function then makes it much easier from render-attributes
+    // to rebuild the data-action attributes again.
+    if (
+      typeof value === "function" &&
+      actionIdKey in props &&
+      !("actionId" in value)
+    ) {
+      if(!actions) actions = getActionDependencies(parentProps);
+      Object.assign(value, { actionId: props[actionIdKey], actions });
+    }
+
+    // These props are injected into build-time in order to manage the actions.
+    // In the case of the components we don't need them to be passed below, we
+    // only need them here to relate the action with its id and pass it below
+    // together with the action.
+    //
+    // In the render-attributes method then if this case is taken into account
+    // to return the data-action properties at the element level.
+    if (key.startsWith(ACTION_PREFIX)) continue;
+
+    processedProps[prop] = value;
+  }
+
+  return processedProps;
+}
+
+function getActionDependencies(parentProps?: Record<string, unknown>) {
   const parentDependencies = [];
   let grandparentsDependencies;
 
@@ -29,39 +66,7 @@ export default function processServerComponentProps(
     }
   }
 
-  const actions = parentDependencies.length
+  return parentDependencies.length
     ? [parentDependencies, ...(grandparentsDependencies ?? [])]
     : [];
-
-  for (const prop in props) {
-    const key = prop.toLowerCase();
-    const actionIdKey = `${ACTION_PREFIX}-${key}`;
-    const value = props[prop];
-
-    // It is necessary that it continues being a function, if you make console.log
-    // of the props or use the function in the own rendering of the component
-    // instead of an action it should still work. However, adding the actionId
-    // property to the function then makes it much easier from render-attributes
-    // to rebuild the data-action attributes again.
-    if (
-      typeof value === "function" &&
-      actionIdKey in props &&
-      !("actionId" in value)
-    ) {
-      Object.assign(value, { actionId: props[actionIdKey], actions });
-    }
-
-    // These props are injected into build-time in order to manage the actions.
-    // In the case of the components we don't need them to be passed below, we
-    // only need them here to relate the action with its id and pass it below
-    // together with the action.
-    //
-    // In the render-attributes method then if this case is taken into account
-    // to return the data-action properties at the element level.
-    if (key.startsWith(ACTION_PREFIX)) continue;
-
-    processedProps[prop] = value;
-  }
-
-  return processedProps;
 }
