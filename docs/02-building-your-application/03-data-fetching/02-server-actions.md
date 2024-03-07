@@ -69,6 +69,62 @@ export default function Form() {
 >
 > > When working with forms that have many fields, you may want to consider using the [`entries()`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries) method with JavaScript's [`Object.fromEntries()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries). For example: `const rawFormData = Object.fromEntries(formData.entries())`
 
+### Nested actions
+
+In Brisa we allow nested actions to be used. We want the actions in the server components to be as similar as possible to the events in the web components.
+
+```tsx
+export function ParentComponent() {
+  function onAction() {
+    console.log("this works in the server");
+  }
+
+  return <ChildComponent onAction={onAction} />;
+}
+
+function ChildComponent({ onAction }: { onAction: () => void }) {
+  return <button onClick={onAction}>Run the action</button>;
+}
+```
+
+This way you can divide responsibilities between components if you wish and share data between actions:
+
+```tsx
+export function ParentComponent() {
+  function onAction(data: string) {
+    console.log("server data:", data);
+  }
+
+  return <ChildComponent onAction={onAction} />;
+}
+
+function ChildComponent({ onAction }: { onAction: () => void }) {
+  return (
+    <button
+      onClick={() => {
+        const data = "We can transfer data in nested actions";
+        onAction(data);
+      }}
+    >
+      Run the action
+    </button>
+  );
+}
+```
+
+> [!IMPORTANT]
+>
+> Actions and nested actions are always `async`.
+
+The actions, even if you have not written them async, are **always executed async**, if you need to do something after executing a nested action it is necessary to put an `await`:
+
+```tsx
+async function onAction() {
+  await onNestedAction();
+  console.log("Done!");
+}
+```
+
 ### Server-side validation and error handling
 
 We recommend using HTML validation like `required` and `type="email"` for basic client-side form validation.
@@ -138,7 +194,11 @@ The time unit consistently remains in milliseconds. In this example, the call to
 
 > [!CAUTION]
 >
-> This is only implemented for server actions, for web component events it does not apply since we do not modify the original event.
+> Only works in the HTML elements that trigger the action, if you use it in the components as a prop it will only work if you use it inside the component to link it with the HTML element that triggers the action. The only exception is to use it in a web-component from a server component, as the web components are transformed into real HTML elements that trigger actions, then in this case it does work.
+
+> [!CAUTION]
+>
+> This is only implemented for server actions, for browsers events inside web components it does not apply since we do not modify the original event.
 
 ### Server-side state
 
