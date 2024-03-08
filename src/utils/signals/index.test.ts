@@ -2,13 +2,11 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
 import type { IndicatorSignal } from "@/types";
 
-let signals: typeof import(".").default;
+const signals = () => require(".").default() as ReturnType<typeof import("./index").default>;
 
 describe("signals", () => {
   beforeAll(async () => {
     GlobalRegistrator.register();
-    (globalThis as any)["_S"] = [["foo", "bar"]];
-    signals = await import(".").then((m) => m.default);
   });
   afterAll(() => {
     window._s.Map.clear();
