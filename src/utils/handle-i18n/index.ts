@@ -69,8 +69,9 @@ export default function handleI18n(req: RequestContext): {
     t: translateCore(locale, translateCoreConfig),
     pages: pages ?? {},
     overrideMessages: (callback) => {
-      if (typeof callback !== "function")
+      if (typeof callback !== "function") {
         return logError(["overrideMessages requires a callback function"]);
+      }
 
       const messages = callback(I18N_CONFIG?.messages?.[locale]);
       const save = (messages: Record<string, any>) =>
