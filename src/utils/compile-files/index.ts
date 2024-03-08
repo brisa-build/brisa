@@ -1,6 +1,7 @@
 import { gzipSync, type BuildArtifact } from "bun";
 import fs from "node:fs";
 import { join } from "node:path";
+import crypto from "node:crypto";
 
 import { getConstants } from "@/constants";
 import byteSizeToString from "@/utils/byte-size-to-string";
@@ -43,6 +44,11 @@ export default async function compileFiles() {
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
   const actionsEntrypoints: string[] = [];
+  const define = {
+    __DEV__: (!IS_PRODUCTION).toString(),
+    __CRYPTO_KEY__: `'${crypto.randomBytes(32).toString("hex")}'`,
+    __CRYPTO_IV__: `'${crypto.randomBytes(8).toString("hex")}'`,
+  };
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -59,6 +65,7 @@ export default async function compileFiles() {
     target: "bun",
     minify: IS_PRODUCTION,
     splitting: true,
+    define,
     plugins: [
       {
         name: "server-components",
@@ -114,7 +121,7 @@ export default async function compileFiles() {
   if (!success) return { success, logs, pagesSize: {} };
 
   if (actionsEntrypoints.length) {
-    const actionResult = await compileActions({ actionsEntrypoints });
+    const actionResult = await compileActions({ actionsEntrypoints, define });
     if (!actionResult.success) logs.push(...actionResult.logs);
   }
 

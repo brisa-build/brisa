@@ -2,6 +2,7 @@ import type { BunPlugin } from "bun";
 import { ESTree } from "meriyah";
 import fs from "node:fs";
 import { join } from "node:path";
+import crypto from "node:crypto";
 
 import AST from "@/utils/ast";
 import { getConstants } from "@/constants";
@@ -11,6 +12,7 @@ import { getPurgedBody } from "./get-purged-body";
 
 type CompileActionsParams = {
   actionsEntrypoints: string[];
+  define: Record<string, string>;
 };
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
@@ -25,6 +27,7 @@ const FN_EXPRESSION_TYPES = new Set([
 
 export default async function compileActions({
   actionsEntrypoints,
+  define,
 }: CompileActionsParams) {
   const { BUILD_DIR, IS_PRODUCTION } = getConstants();
   const rawActionsDir = join(BUILD_DIR, "actions_raw");
@@ -36,6 +39,7 @@ export default async function compileActions({
     target: "bun",
     minify: IS_PRODUCTION,
     splitting: true,
+    define,
     plugins: [actionPlugin({ actionsEntrypoints })],
   });
 
@@ -44,7 +48,11 @@ export default async function compileActions({
   return res;
 }
 
-function actionPlugin({ actionsEntrypoints }: CompileActionsParams) {
+function actionPlugin({
+  actionsEntrypoints,
+}: {
+  actionsEntrypoints: string[];
+}) {
   const filter = new RegExp(`(${actionsEntrypoints.join("|")})$`);
 
   return {
