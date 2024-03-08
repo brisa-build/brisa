@@ -360,6 +360,7 @@ describe("handleI18n util", () => {
       expect(mockLog.mock.calls.toString()).toContain(
         "overrideMessages requires a callback function",
       );
+      mockLog.mockRestore();
     });
 
     it("should inject correctly the overrideMessages inside transCore", () => {
