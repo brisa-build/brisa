@@ -263,6 +263,10 @@ This setup also enables subsequent [server actions](/docs/building-your-applicat
 
 It is a way to modify in a reactive way from a server action the web components that consume this `store`.
 
+> [!NOTE]
+>
+> You can [encrypt store data](/docs/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
+
 ### Consume data on client (web-components):
 
 In the web-components instead of the [`RequestContext`](/docs/building-your-application/data-fetching/request-context), there is the [`WebContext`](/docs/building-your-application/data-fetching/web-context), where you have a different [`store`](/docs/components-details/web-components#store-store-method), but if you have transferred the data from the `RequestContext` `store`, you will be able to consume it from the `WebContext` `store`.
