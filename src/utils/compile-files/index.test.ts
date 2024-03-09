@@ -163,21 +163,6 @@ describe("utils", () => {
         `"data-action-onclick":"a1_2","data-action"`,
       );
 
-      // Test define crypto key and iv in the page and action
-      const { CRYPTO_KEY, CRYPTO_IV } = await import(
-        path.join(PAGES_DIR, "index.js")
-      );
-      const action = await Bun.file(
-        path.join(PAGES_DIR, "..", "actions", "a1.js"),
-      ).text();
-
-      expect(CRYPTO_KEY).toBeString();
-      expect(CRYPTO_KEY).toHaveLength(32 * 2);
-      expect(CRYPTO_IV).toBeString();
-      expect(CRYPTO_IV).toHaveLength(8 * 2);
-      expect(action).toContain(CRYPTO_KEY);
-      expect(action).toContain(CRYPTO_IV);
-
       const pagesClient = fs
         .readdirSync(pagesClientPath)
         .toSorted((a, b) => a.localeCompare(b));
@@ -249,7 +234,7 @@ describe("utils", () => {
     ${info}λ /pages/page-with-web-component | 368 B     | ${greenLog("4 kB")} 
     ${info}λ /pages/somepage                | 349 B     | ${greenLog("0 B")} 
     ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("0 B")} 
-    ${info}λ /pages/index                   | 683 B     | ${greenLog("2 kB")}  
+    ${info}λ /pages/index                   | 486 B     | ${greenLog("2 kB")}  
     ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
     ${info}ƒ /middleware                    | 738 B     |
     ${info}λ /api/example                   | 283 B     |

@@ -2,21 +2,24 @@
 import cp from "child_process";
 import path from "node:path";
 import fs from "node:fs";
+import crypto from "node:crypto";
 
 const outPath = path.join(import.meta.dir, 'out');
 
 export async function main() {
   const packageJSON = await import(path.join(process.cwd(), "package.json")).then(m => m.default);
+  const __CRYPTO_KEY__ = crypto.randomBytes(32).toString("hex");
+  const __CRYPTO_IV__ = crypto.randomBytes(8).toString("hex");
   const BRISA_BUILD_FOLDER =
     process.env.BRISA_BUILD_FOLDER || path.join(process.cwd(), "build");
 
   const prodOptions = {
     stdio: "inherit",
-    env: { ...process.env, NODE_ENV: "production", BRISA_BUILD_FOLDER },
+    env: { ...process.env, NODE_ENV: "production", BRISA_BUILD_FOLDER, __CRYPTO_KEY__, __CRYPTO_IV__ },
   };
   const devOptions = {
     stdio: "inherit",
-    env: { ...process.env, NODE_ENV: "development", BRISA_BUILD_FOLDER },
+    env: { ...process.env, NODE_ENV: "development", BRISA_BUILD_FOLDER, __CRYPTO_KEY__, __CRYPTO_IV__ },
   };
 
   let BUN_EXEC;

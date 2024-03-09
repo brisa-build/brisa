@@ -10,7 +10,12 @@ import {
 import path from "node:path";
 import extendRequestContext from "@/utils/extend-request-context";
 import responseAction from ".";
-import { ENCRYPT_PREFIX, encrypt } from "@/utils/crypto";
+import { getConstants } from "@/constants";
+import {
+  ENCRYPT_NONTEXT_PREFIX,
+  ENCRYPT_PREFIX,
+  encrypt,
+} from "@/utils/crypto";
 
 const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGE = "http://locahost/es/somepage";
@@ -20,6 +25,7 @@ describe("utils", () => {
   beforeEach(() => {
     logMock = spyOn(console, "log");
     globalThis.mockConstants = {
+      ...getConstants(),
       BUILD_DIR: FIXTURES,
     };
   });
@@ -262,6 +268,76 @@ describe("utils", () => {
 
       expect(req.store.get("sensitive-data")).toBe("foo");
       expect(res.headers.get("x-s")).toEqual(xs);
+    });
+
+    it('should decrypt the store variables from "x-s" header that starts with ENCRYPT_NONTEXT_PREFIX', async () => {
+      const xs = JSON.stringify([["sensitive-data", encrypt({ foo: "bar" })]]);
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-s": xs,
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(req.store.get("sensitive-data")).toEqual({ foo: "bar" });
+      expect(res.headers.get("x-s")).toEqual(xs);
+    });
+
+    it('should log an error if the decryption fails from "x-s" header', async () => {
+      const xs = JSON.stringify([
+        ["sensitive-data", ENCRYPT_NONTEXT_PREFIX + "invalid-encrypted-data"],
+      ]);
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-s": xs,
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      const res = await responseAction(req);
+      const { LOG_PREFIX } = getConstants();
+
+      expect(logMock).toHaveBeenCalledTimes(6);
+      expect(logMock.mock.calls[0]).toEqual([LOG_PREFIX.ERROR, "Ops! Error:"]);
+      expect(logMock.mock.calls[1]).toEqual([
+        LOG_PREFIX.ERROR,
+        "--------------------------",
+      ]);
+      expect(logMock.mock.calls[2]).toEqual([
+        LOG_PREFIX.ERROR,
+        'Error transferring client "sensitive-data" store to server store',
+      ]);
+      expect(logMock.mock.calls[3]).toEqual([
+        LOG_PREFIX.ERROR,
+        "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.",
+      ]);
+      expect(logMock.mock.calls[4]).toEqual([
+        LOG_PREFIX.ERROR,
+        "--------------------------",
+      ]);
+      expect(res.headers.get("x-s")).toBe(
+        JSON.stringify([["sensitive-data", null]]),
+      );
     });
   });
 });

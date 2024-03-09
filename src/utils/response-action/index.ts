@@ -3,7 +3,7 @@ import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
 import getClientStoreEntries from "@/utils/get-client-store-entries";
 import { deserialize } from "@/utils/serialization";
-import { ENCRYPT_PREFIX, decrypt } from "../crypto";
+import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX, decrypt } from "../crypto";
 import { logError } from "@/utils/log/log-build";
 
 export default async function responseAction(req: RequestContext) {
@@ -61,7 +61,11 @@ export default async function responseAction(req: RequestContext) {
       try {
         let storeValue = value;
 
-        if (typeof value === "string" && value.startsWith(ENCRYPT_PREFIX)) {
+        if (
+          typeof value === "string" &&
+          (value.startsWith(ENCRYPT_PREFIX) ||
+            value.startsWith(ENCRYPT_NONTEXT_PREFIX))
+        ) {
           encryptedKeys.add(key);
           storeValue = decrypt(value);
         }
@@ -71,7 +75,6 @@ export default async function responseAction(req: RequestContext) {
         logError([
           `Error transferring client "${key}" store to server store`,
           e.message,
-          e.stack,
         ]);
       }
     }

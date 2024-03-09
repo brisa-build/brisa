@@ -1,7 +1,6 @@
 import { gzipSync, type BuildArtifact } from "bun";
 import fs from "node:fs";
 import { join } from "node:path";
-import crypto from "node:crypto";
 
 import { getConstants } from "@/constants";
 import byteSizeToString from "@/utils/byte-size-to-string";
@@ -44,11 +43,7 @@ export default async function compileFiles() {
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
   const actionsEntrypoints: string[] = [];
-  const define = {
-    __DEV__: (!IS_PRODUCTION).toString(),
-    __CRYPTO_KEY__: `'${crypto.randomBytes(32).toString("hex")}'`,
-    __CRYPTO_IV__: `'${crypto.randomBytes(8).toString("hex")}'`,
-  };
+  const define = { __DEV__: (!IS_PRODUCTION).toString() };
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
