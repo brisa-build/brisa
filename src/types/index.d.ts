@@ -68,7 +68,7 @@ export interface RequestContext extends Request {
      *
      * - [How to use `transferToClient`](https://brisa.build/docs/building-your-application/data-fetching/fetching#share-server-web-data-between-components)
      */
-    transferToClient: (keys: string[]) => void;
+    transferToClient: (keys: string[], options?: TransferOptions) => void;
   };
 
   /**
@@ -254,6 +254,10 @@ export interface RequestContext extends Request {
 
 type Effect = () => void | Promise<void>;
 type Cleanup = Effect;
+
+type TransferOptions = {
+  encrypt?: boolean;
+}
 
 export interface BaseWebContext {
   /**

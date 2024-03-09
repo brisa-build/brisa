@@ -1,10 +1,11 @@
 // @ts-nocheck
 import { MatchedRoute } from "bun";
-import { I18n, RequestContext } from "@/types";
+import { I18n, RequestContext, type TransferOptions } from "@/types";
 import {
   CURRENT_PROVIDER_ID,
   CONTEXT_STORE_ID,
 } from "@/utils/context-provider/server";
+import { encrypt } from "@/utils/crypto";
 
 type ExtendRequestContext = {
   originalRequest: Request;
@@ -52,12 +53,17 @@ export default function extendRequestContext({
     new Map<string | symbol, any>();
 
   // store.transferToClient
-  originalRequest.store.transferToClient = (keys: string[]) => {
+  originalRequest.store.transferToClient = (
+    keys: string[],
+    options?: TransferOptions,
+  ) => {
+    const shouldEncrypt = options?.encrypt ?? false;
     const store = originalRequest.store;
     const webStore = originalRequest.webStore;
 
     for (let key of keys) {
-      webStore.set(key, store.get(key));
+      const value = store.get(key);
+      webStore.set(key, shouldEncrypt ? encrypt(value) : value);
     }
   };
 
