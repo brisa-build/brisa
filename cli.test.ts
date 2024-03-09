@@ -11,6 +11,7 @@ import {
 import { main } from "./cli.cjs";
 import cp from "child_process";
 import path from "node:path";
+import crypto from "node:crypto";
 
 const FIXTURES = path.join(import.meta.dir, "src", "__fixtures__");
 
@@ -19,23 +20,28 @@ let mockSpawnSync: Mock<typeof cp.spawnSync>;
 let mockExit: Mock<typeof process.exit>;
 let mockLog: Mock<typeof console.log>;
 let mockCwd: Mock<typeof process.cwd>;
+let mockRandomBytes: Mock<typeof crypto.randomBytes>;
 
 const BRISA_BUILD_FOLDER = path.join(FIXTURES, "build");
 
-const prodOptions = {
-  stdio: "inherit",
-  env: { ...process.env, NODE_ENV: "production", BRISA_BUILD_FOLDER },
-} as any;
-const devOptions = {
-  stdio: "inherit",
-  env: { ...process.env, NODE_ENV: "development", BRISA_BUILD_FOLDER },
-} as any;
+let prodOptions: any;
+let devOptions: any;
 
 describe("Brisa CLI", () => {
   beforeEach(() => {
     mockCwd = spyOn(process, "cwd").mockImplementation(() => FIXTURES);
     mockLog = spyOn(console, "log").mockImplementation(() => null as any);
     mockExit = spyOn(process, "exit").mockImplementation(() => null as never);
+    mockRandomBytes = spyOn(crypto, "randomBytes").mockImplementation(
+      (bytes) => {
+        if (bytes === 32)
+          return Buffer.from(
+            "5bebff7019fdfa19101753db711317c351eb0a3cc30a1a2665da921d6b8e978c",
+            "hex",
+          );
+        return Buffer.from("cb05305ec1f382be", "hex");
+      },
+    );
     mockSpawnSync = spyOn(cp, "spawnSync").mockImplementation(
       () => ({ status: 0 }) as any,
     );
@@ -45,6 +51,30 @@ describe("Brisa CLI", () => {
         output: "server",
       },
     }));
+
+    const __CRYPTO_KEY__ = crypto.randomBytes(32).toString("hex");
+    const __CRYPTO_IV__ = crypto.randomBytes(8).toString("hex");
+
+    prodOptions = {
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        NODE_ENV: "production",
+        BRISA_BUILD_FOLDER,
+        __CRYPTO_KEY__,
+        __CRYPTO_IV__,
+      },
+    } as any;
+    devOptions = {
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        NODE_ENV: "development",
+        BRISA_BUILD_FOLDER,
+        __CRYPTO_KEY__,
+        __CRYPTO_IV__,
+      },
+    } as any;
   });
   afterEach(() => {
     mockLog.mockRestore();
@@ -504,6 +534,9 @@ describe("Brisa CLI", () => {
       { stdio: "ignore" },
     ]);
 
+    expect(mockSpawnSync.mock.calls[1][0]).toBe(
+      path.join(process.env.HOME!, ".bun", "bin", "bun"),
+    );
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       path.join(process.env.HOME!, ".bun", "bin", "bun"),
       [
