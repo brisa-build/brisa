@@ -5,6 +5,8 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 
 const outPath = path.join(import.meta.dir, 'out');
+const buildFilepath = path.join(outPath, 'cli', 'build.js');
+const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
 
 export async function main() {
   const packageJSON = await import(path.join(process.cwd(), "package.json")).then(m => m.default);
@@ -78,12 +80,8 @@ export async function main() {
         }
       }
 
-      const buildCommand = [path.join(outPath, 'cli', 'build.js'), "DEV"];
-      const serveCommand = [
-        path.join(outPath, "cli", "serve", "index.js"),
-        `${PORT}`,
-        "DEV",
-      ];
+      const buildCommand = [buildFilepath, "DEV"];
+      const serveCommand = [serveFilepath, PORT.toString(), "DEV"];
 
       // DEV mode for desktop app
       if (IS_DESKTOP_APP) {
@@ -121,11 +119,7 @@ export async function main() {
         await initTauri(prodOptions);
         cp.spawnSync(BUNX_EXEC, ["tauri", "build"], prodOptions);
       } else {
-        cp.spawnSync(
-          BUN_EXEC,
-          [path.join(outPath, 'cli', 'build.js'), "PROD"],
-          prodOptions,
-        );
+        cp.spawnSync(BUN_EXEC, [buildFilepath, "PROD"], prodOptions);
       }
     }
 
@@ -151,7 +145,7 @@ export async function main() {
 
       cp.spawnSync(
         BUN_EXEC,
-        [path.join(outPath, 'cli', 'serve', 'index.js'), `${PORT}`, "PROD"],
+        [serveFilepath, PORT.toString(), "PROD"],
         prodOptions,
       );
     }

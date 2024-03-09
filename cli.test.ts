@@ -240,7 +240,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      ["i", "@tauri-apps/cli"],
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
       devOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
@@ -254,7 +254,7 @@ describe("Brisa CLI", () => {
         "test",
         "-D",
         "../out",
-        "--dev-path",
+        "--dev-url",
         "http://localhost:3000",
         "--before-dev-command",
         "bun dev -- -s",
@@ -289,7 +289,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      ["i", "@tauri-apps/cli"],
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
       devOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
@@ -303,7 +303,7 @@ describe("Brisa CLI", () => {
         "test",
         "-D",
         "../out",
-        "--dev-path",
+        "--dev-url",
         "http://localhost:5000",
         "--before-dev-command",
         "bun dev -- -s",
@@ -403,7 +403,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      ["i", "@tauri-apps/cli"],
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
       prodOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
@@ -417,7 +417,7 @@ describe("Brisa CLI", () => {
         "test",
         "-D",
         "../out",
-        "--dev-path",
+        "--dev-url",
         "http://localhost:3000",
         "--before-dev-command",
         "bun dev -- -s",
