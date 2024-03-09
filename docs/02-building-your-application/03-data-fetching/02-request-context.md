@@ -6,7 +6,23 @@ TODO
 
 ## `store`
 
-TODO
+The `store` property is an extended map where values can be stored and shared among all web components. It serves as a global state accessible by all components. Values can be set and retrieved using the `store.set` and `store.get` methods.
+
+Example setting a value:
+
+```ts
+store.set("count", 0);
+```
+
+Example getting a value:
+
+```tsx
+<div>{store.get("count")}</div>
+```
+
+> [!NOTE]
+>
+> The server `store` only lives at request time so that any server component can access the store unless you use [`transferToClient`](#transfertoclient), which extends the life of the store.
 
 ### `transferToClient`
 
