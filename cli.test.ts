@@ -14,6 +14,14 @@ import path from "node:path";
 import crypto from "node:crypto";
 
 const FIXTURES = path.join(import.meta.dir, "src", "__fixtures__");
+const BUILD_PATH = path.join(import.meta.dir, "out", "cli", "build.js");
+const SERVE_PATH = path.join(
+  import.meta.dir,
+  "out",
+  "cli",
+  "serve",
+  "index.js",
+);
 
 let originalArgv: string[];
 let mockSpawnSync: Mock<typeof cp.spawnSync>;
@@ -81,6 +89,7 @@ describe("Brisa CLI", () => {
     mockExit.mockRestore();
     mockSpawnSync.mockRestore();
     mockCwd.mockRestore();
+    mockRandomBytes.mockRestore();
     process.argv = originalArgv.slice();
   });
 
@@ -136,16 +145,12 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      [path.join(import.meta.dir, "out", "cli", "build.js"), "DEV"],
+      [BUILD_PATH, "DEV"],
       devOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
       "bun",
-      [
-        path.join(import.meta.dir, "out", "cli", "serve", "index.js"),
-        "3000",
-        "DEV",
-      ],
+      [SERVE_PATH, "3000", "DEV"],
       devOptions,
     ]);
   });
@@ -162,16 +167,12 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      [path.join(import.meta.dir, "out", "cli", "build.js"), "DEV"],
+      [BUILD_PATH, "DEV"],
       devOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
       "bun",
-      [
-        path.join(import.meta.dir, "out", "cli", "serve", "index.js"),
-        "5000",
-        "DEV",
-      ],
+      [SERVE_PATH, "5000", "DEV"],
       devOptions,
     ]);
   });
@@ -207,17 +208,12 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      [path.join(import.meta.dir, "out", "cli", "build.js"), "DEV"],
+      [BUILD_PATH, "DEV"],
       devOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
       "bun",
-      [
-        "--inspect",
-        path.join(import.meta.dir, "out", "cli", "serve", "index.js"),
-        "3000",
-        "DEV",
-      ],
+      ["--inspect", SERVE_PATH, "3000", "DEV"],
       devOptions,
     ]);
   });
@@ -257,14 +253,20 @@ describe("Brisa CLI", () => {
         "--dev-url",
         "http://localhost:3000",
         "--before-dev-command",
-        "bun dev -- -s",
+        "echo 'Starting desktop app...'",
         "--before-build-command",
-        "bun run build -- -s",
+        "echo 'Building desktop app...'",
       ],
       devOptions,
     ]);
 
     expect(mockSpawnSync.mock.calls[3]).toEqual([
+      "bun",
+      [BUILD_PATH, "DEV"],
+      devOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[4]).toEqual([
       "bunx",
       ["tauri", "dev", "--port", "3000"],
       devOptions,
@@ -306,14 +308,20 @@ describe("Brisa CLI", () => {
         "--dev-url",
         "http://localhost:5000",
         "--before-dev-command",
-        "bun dev -- -s",
+        "echo 'Starting desktop app...'",
         "--before-build-command",
-        "bun run build -- -s",
+        "echo 'Building desktop app...'",
       ],
       devOptions,
     ]);
 
     expect(mockSpawnSync.mock.calls[3]).toEqual([
+      "bun",
+      [BUILD_PATH, "DEV"],
+      devOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[4]).toEqual([
       "bunx",
       ["tauri", "dev", "--port", "5000"],
       devOptions,
@@ -338,16 +346,12 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      [path.join(import.meta.dir, "out", "cli", "build.js"), "DEV"],
+      [BUILD_PATH, "DEV"],
       devOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
       "bun",
-      [
-        path.join(import.meta.dir, "out", "cli", "serve", "index.js"),
-        "3000",
-        "DEV",
-      ],
+      [SERVE_PATH, "3000", "DEV"],
       devOptions,
     ]);
   });
@@ -420,14 +424,20 @@ describe("Brisa CLI", () => {
         "--dev-url",
         "http://localhost:3000",
         "--before-dev-command",
-        "bun dev -- -s",
+        "echo 'Starting desktop app...'",
         "--before-build-command",
-        "bun run build -- -s",
+        "echo 'Building desktop app...'",
       ],
       prodOptions,
     ]);
 
     expect(mockSpawnSync.mock.calls[3]).toEqual([
+      "bun",
+      [BUILD_PATH, "PROD"],
+      prodOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[4]).toEqual([
       "bunx",
       ["tauri", "build"],
       prodOptions,
@@ -470,11 +480,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      [
-        path.join(import.meta.dir, "out", "cli", "serve", "index.js"),
-        "3000",
-        "PROD",
-      ],
+      [SERVE_PATH, "3000", "PROD"],
       prodOptions,
     ]);
   });
@@ -508,11 +514,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      [
-        path.join(import.meta.dir, "out", "cli", "serve", "index.js"),
-        "5000",
-        "PROD",
-      ],
+      [SERVE_PATH, "5000", "PROD"],
       prodOptions,
     ]);
   });
@@ -539,11 +541,7 @@ describe("Brisa CLI", () => {
     );
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       path.join(process.env.HOME!, ".bun", "bin", "bun"),
-      [
-        path.join(import.meta.dir, "out", "cli", "serve", "index.js"),
-        "3000",
-        "PROD",
-      ],
+      [SERVE_PATH, "3000", "PROD"],
       prodOptions,
     ]);
   });
