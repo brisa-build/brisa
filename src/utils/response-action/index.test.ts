@@ -10,6 +10,7 @@ import {
 import path from "node:path";
 import extendRequestContext from "@/utils/extend-request-context";
 import responseAction from ".";
+import { ENCRYPT_PREFIX, encrypt } from "@/utils/crypto";
 
 const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGE = "http://locahost/es/somepage";
@@ -237,6 +238,30 @@ describe("utils", () => {
       });
       // "foo" is added by a2_2 fixture
       expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1-a2_2-foo");
+    });
+
+    it('should decrypt the store variables from "x-s" header that starts with ENCRYPT_PREFIX', async () => {
+      const xs = JSON.stringify([["sensitive-data", encrypt("foo")]]);
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-s": xs,
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(req.store.get("sensitive-data")).toBe("foo");
+      expect(res.headers.get("x-s")).toEqual(xs);
     });
   });
 });

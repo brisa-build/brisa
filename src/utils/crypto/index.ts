@@ -4,12 +4,33 @@ const ALGORITHM = "aes-256-cbc";
 const key = Buffer.from(__CRYPTO_KEY__, "hex");
 const iv = __CRYPTO_IV__;
 
-export function encrypt(text: string) {
+export const ENCRYPT_PREFIX = "__encrypted:";
+export const ENCRYPT_NONTEXT_PREFIX = "__encrypted-notext:";
+
+export function encrypt(textOrObject: unknown) {
+  if (textOrObject == null) return textOrObject;
+
   const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
-  return cipher.update(text, "utf8", "hex") + cipher.final("hex");
+  let text = textOrObject;
+  let prefix = ENCRYPT_PREFIX;
+
+  if (typeof textOrObject !== "string") {
+    text = JSON.stringify(textOrObject);
+    prefix = ENCRYPT_NONTEXT_PREFIX;
+  }
+
+  return (
+    prefix + cipher.update(text as string, "utf8", "hex") + cipher.final("hex")
+  );
 }
 
 export function decrypt(encrypted: string) {
+  const isString = encrypted.startsWith(ENCRYPT_PREFIX);
   const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
-  return decipher.update(encrypted, "hex", "utf8") + decipher.final("utf8");
+  const input = encrypted
+    .replace(ENCRYPT_PREFIX, "")
+    .replace(ENCRYPT_NONTEXT_PREFIX, "");
+  const text = decipher.update(input, "hex", "utf8") + decipher.final("utf8");
+
+  return isString ? text : JSON.parse(text);
 }
