@@ -10,7 +10,34 @@ TODO
 
 ### `transferToClient`
 
-TODO
+The `store` data from request context is only available on the server. So you can store sensitive data without worrying. However, you can transfer certain data to the client side (web-components) using `store.transferToClient` method.
+
+```tsx
+import { type RequestContext } from "brisa";
+
+export default async function SomeComponent({}, request: RequestContext) {
+  const data = await getData(request);
+
+  request.store.set("data", data);
+
+  // Transfer "data" from store to client
+  request.store.transferToClient(["data"]);
+
+  // ..
+}
+```
+
+This allows access to these values from the web component store.
+
+This setup also enables subsequent [server actions](/docs/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
+
+`server render` → `client` → `server action` → `client`
+
+It is a way to modify in a reactive way from a server action the web components that consume this `store`.
+
+> [!NOTE]
+>
+> You can [encrypt store data](/docs/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
 
 ## `indicate`
 
