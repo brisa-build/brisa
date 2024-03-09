@@ -181,7 +181,7 @@ export async function main() {
 
     if (!packageJSON?.dependencies?.["@tauri-apps/cli"]) {
       console.log("Installing @tauri-apps/cli...");
-      cp.spawnSync(BUN_EXEC, ["i", "@tauri-apps/cli"], options);
+      cp.spawnSync(BUN_EXEC, ["i", "@tauri-apps/cli@2.0.0-beta.8"], options);
     }
 
     if(fs.existsSync(tauriConfigPath)) return
@@ -196,7 +196,7 @@ export async function main() {
       name,
       "-D",
       "../out",
-      "--dev-path",
+      "--dev-url",
       `http://localhost:${port}`,
       "--before-dev-command",
       "bun dev -- -s",
@@ -211,8 +211,8 @@ export async function main() {
 
     const tauriConf = await import(tauriConfigPath).then((m) => m.default);
 
-    // change the bundle identifier in `tauri.conf.json > tauri > bundle > identifier` to `com.${name}`
-    tauriConf.tauri.bundle.identifier = `com.${name}`;
+    // change the bundle identifier in `tauri.conf.json > identifier` to `com.${name}`
+    tauriConf.identifier = `com.${name}`;
     fs.writeFileSync(
       tauriConfigPath,
       JSON.stringify(tauriConf, null, 2),
