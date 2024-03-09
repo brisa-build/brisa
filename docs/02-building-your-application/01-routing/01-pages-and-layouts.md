@@ -257,6 +257,8 @@ export default async function Layout({}, request: RequestContext) {
 }
 ```
 
+This allows access to these values from the web components store.
+
 This setup also enables subsequent [server actions](/docs/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
 
 `server render` → `client` → `server action` → `client`
