@@ -1,8 +1,10 @@
 import { describe, it, expect } from "bun:test";
 import extendRequestContext from "../extend-request-context";
 import getClientStoreEntries from ".";
+import { ENCRYPT_PREFIX } from "../crypto";
 
 const url = "https://test.com";
+const emptySet = new Set<string>();
 
 describe("utils", () => {
   describe("get-client-store-entries", () => {
@@ -15,7 +17,7 @@ describe("utils", () => {
       req.store.set("foo", "bar");
       req.store.set("bar", "baz");
 
-      const result = getClientStoreEntries(req);
+      const result = getClientStoreEntries(req, emptySet);
 
       expect(result).toBeEmpty();
     });
@@ -32,7 +34,7 @@ describe("utils", () => {
       req.store.set("foo", "bar");
       req.store.set("bar", "baz");
 
-      const result = getClientStoreEntries(req);
+      const result = getClientStoreEntries(req, emptySet);
 
       expect(result).toBeEmpty();
     });
@@ -49,7 +51,7 @@ describe("utils", () => {
       req.store.set("foo", "bar");
       req.store.set("bar", "baz");
 
-      const result = getClientStoreEntries(req);
+      const result = getClientStoreEntries(req, emptySet);
 
       expect(result).toEqual([["foo", "bar"]]);
     });
@@ -66,7 +68,7 @@ describe("utils", () => {
       req.store.set("foo", "baz");
       req.store.set("bar", "baz");
 
-      const result = getClientStoreEntries(req);
+      const result = getClientStoreEntries(req, emptySet);
 
       expect(result).toEqual([["foo", "baz"]]);
     });
@@ -82,7 +84,7 @@ describe("utils", () => {
       req.store.set("bar", "baz");
       req.store.transferToClient(["bar"]);
 
-      const result = getClientStoreEntries(req);
+      const result = getClientStoreEntries(req, emptySet);
 
       expect(result).toEqual([["bar", "baz"]]);
     });
@@ -100,12 +102,32 @@ describe("utils", () => {
       req.store.set("bar", "baz");
       req.store.transferToClient(["bar"]);
 
-      const result = getClientStoreEntries(req);
+      const result = getClientStoreEntries(req, emptySet);
 
       expect(result).toEqual([
         ["foo", "bar"],
         ["bar", "baz"],
       ]);
+    });
+
+    it('should encrypt the value of the entries that exists on "x-s" header', () => {
+      const headers = new Headers();
+
+      headers.set("x-s", JSON.stringify([["foo", "bar"]]));
+
+      const req = extendRequestContext({
+        originalRequest: new Request(url, { headers }),
+      });
+
+      req.store.set("foo", "bar");
+      req.store.set("bar", "baz");
+
+      const result = getClientStoreEntries(req, new Set(["foo"]));
+      const [key, value] = result[0];
+
+      expect(result).toHaveLength(1);
+      expect(key).toBe("foo");
+      expect(value).toStartWith(ENCRYPT_PREFIX);
     });
   });
 });

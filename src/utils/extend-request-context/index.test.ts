@@ -5,6 +5,7 @@ import extendRequestContext from ".";
 import createContext from "@/utils/create-context";
 import { contextProvider } from "@/utils/context-provider/server";
 import type { RequestContext } from "@/types";
+import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX } from "@/utils/crypto";
 
 describe("brisa core", () => {
   afterEach(() => {
@@ -66,6 +67,48 @@ describe("brisa core", () => {
         webStore,
       } as any);
       expect((requestContext as any).webStore.get("foo")).toBe("baz");
+    });
+
+    it('should encrypt transferToClient with options "encrypt"', () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      requestContext.store.set("foo", "bar");
+      requestContext.store.transferToClient(["foo"], { encrypt: true });
+
+      // @ts-ignore
+      const value = requestContext.webStore.get("foo");
+
+      expect(value).not.toBe("bar");
+      expect(value).toBeTypeOf("string");
+      expect(value).toStartWith(ENCRYPT_PREFIX);
+      expect(value).toHaveLength(ENCRYPT_PREFIX.length + 32);
+    });
+
+    it('should encrypt an object with transferToClient with options "encrypt"', () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      requestContext.store.set("foo", { bar: "baz" });
+      requestContext.store.transferToClient(["foo"], { encrypt: true });
+
+      // @ts-ignore
+      const value = requestContext.webStore.get("foo");
+
+      expect(value).not.toBe("bar");
+      expect(value).toBeTypeOf("string");
+      expect(value).toStartWith(ENCRYPT_NONTEXT_PREFIX);
+      expect(value).toHaveLength(ENCRYPT_NONTEXT_PREFIX.length + 32);
     });
 
     it("should work i18n", () => {

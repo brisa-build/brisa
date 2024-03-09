@@ -1,8 +1,10 @@
 import { join } from "node:path";
 import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
-import getClientStoreEntries from "../get-client-store-entries";
-import { deserialize } from "../serialization";
+import getClientStoreEntries from "@/utils/get-client-store-entries";
+import { deserialize } from "@/utils/serialization";
+import { ENCRYPT_PREFIX, decrypt } from "../crypto";
+import { logError } from "@/utils/log/log-build";
 
 export default async function responseAction(req: RequestContext) {
   const { BUILD_DIR } = getConstants();
@@ -13,6 +15,7 @@ export default async function responseAction(req: RequestContext) {
   const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
   const contentType = req.headers.get("content-type");
   const isFormData = contentType?.includes("multipart/form-data");
+  const encryptedKeys = new Set<string>();
   const target = {
     action: req.url,
     autocomplete: "on",
@@ -55,7 +58,22 @@ export default async function responseAction(req: RequestContext) {
   if (storeRaw) {
     const entries = JSON.parse(storeRaw);
     for (const [key, value] of entries) {
-      req.store.set(key, value);
+      try {
+        let storeValue = value;
+
+        if (typeof value === "string" && value.startsWith(ENCRYPT_PREFIX)) {
+          encryptedKeys.add(key);
+          storeValue = decrypt(value);
+        }
+
+        req.store.set(key, storeValue);
+      } catch (e: any) {
+        logError([
+          `Error transferring client "${key}" store to server store`,
+          e.message,
+          e.stack,
+        ]);
+      }
     }
   }
 
@@ -97,7 +115,10 @@ export default async function responseAction(req: RequestContext) {
   if (!(response instanceof Response)) response = new Response(null);
 
   // Transfer server store to client store
-  response.headers.set("X-S", JSON.stringify(getClientStoreEntries(req)));
+  response.headers.set(
+    "X-S",
+    JSON.stringify(getClientStoreEntries(req, encryptedKeys)),
+  );
 
   return response;
 }
