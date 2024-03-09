@@ -86,6 +86,8 @@ export async function main() {
       // DEV mode for desktop app
       if (IS_DESKTOP_APP) {
         await initTauri(devOptions, PORT);
+        cp.spawnSync(BUN_EXEC, buildCommand, devOptions);
+        cp.spawn(BUN_EXEC, serveCommand, devOptions);
         cp.spawnSync(BUNX_EXEC, ["tauri", "dev", "--port", PORT.toString()], devOptions);
       } else if (DEBUG_MODE) {
         cp.spawnSync(BUN_EXEC, buildCommand, devOptions);
@@ -117,6 +119,7 @@ export async function main() {
 
       if (IS_DESKTOP_APP) {
         await initTauri(prodOptions);
+        cp.spawnSync(BUN_EXEC, [buildFilepath, "PROD"], prodOptions);
         cp.spawnSync(BUNX_EXEC, ["tauri", "build"], prodOptions);
       } else {
         cp.spawnSync(BUN_EXEC, [buildFilepath, "PROD"], prodOptions);
@@ -193,9 +196,9 @@ export async function main() {
       "--dev-url",
       `http://localhost:${port}`,
       "--before-dev-command",
-      "bun dev -- -s",
+      "echo 'Starting desktop app...'",
       "--before-build-command",
-      "bun run build -- -s",
+      "echo 'Building desktop app...'",
     ];
 
     console.log("Initializing Tauri...");
