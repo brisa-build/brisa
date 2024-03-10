@@ -1,6 +1,13 @@
 ---
 title: API Routes
 description: Brisa supports API Routes, which allow you to build your API without leaving your Brisa app. Learn how it works here.
+
+prev:
+  text: "Custom error"
+  link: "02-building-your-application/01-routing/04-custom-error.md"
+next:
+  text: "Middleware"
+  link: "02-building-your-application/01-routing/06-middleware.md"
 ---
 
 API routes provide a solution to build a **public API** with Brisa.

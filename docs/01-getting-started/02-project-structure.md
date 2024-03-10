@@ -2,6 +2,13 @@
 title: Brisa Project Structure
 nav_title: Project Structure
 description: A list of folders and files conventions in a Brisa project
+
+prev:
+  text: "Installation"
+  link: "01-getting-started/01-installation.md"
+next:
+  text: "Routing - Pages and Layouts"
+  link: "02-building-your-application/01-routing/01-pages-and-layouts.md"
 ---
 
 This page provides an overview of the file and folder structure of a Brisa project.
