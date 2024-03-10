@@ -751,6 +751,8 @@ export type Configuration = {
    * - `server`: The output is a server that can be deployed to a server.
    * - `static`: The output is a static export that can be deployed to a static hosting.
    * - `desktop`: The output is a desktop app that can be deployed to a desktop.
+   * - `android`: The output is an Android app that can be deployed to an Android device.
+   * - `ios`: The output is an iOS app that can be deployed to an iOS device.
    *
    * Example:
    *
@@ -762,7 +764,7 @@ export type Configuration = {
    *
    * - [How to use `output`](https://brisa.build/docs/building-your-application/configuring/output)
    */
-  output?: "static" | "server" | "desktop";
+  output?: "static" | "server" | "desktop" | "android" | "ios";
 };
 
 export type JSXElement =
