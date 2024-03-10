@@ -27,11 +27,7 @@ In this example, the call to the server and consequently the execution of `conso
 
 > [!CAUTION]
 >
-> Only works in the HTML elements that trigger the action, if you use it in the components as a prop it will only work if you use it inside the component to link it with the HTML element that triggers the action. The only exception is to use it in a web-component from a server component, as the web components are transformed into real HTML elements that trigger actions, then in this case it does work.
-
-> [!CAUTION]
->
-> This is only implemented for server actions, for browsers events inside web components it does not apply since we do not modify the original event.
+> This is only implemented for server actions, for web component events it does not apply since we do not modify the original event.
 
 ### Support
 

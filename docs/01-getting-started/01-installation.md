@@ -6,11 +6,16 @@ related:
   description: Learn about the files and folders in your Brisa project.
   links:
     - getting-started/project-structure
+prev: false
+
+next:
+  text: "Project structure"
+  link: "01-getting-started/02-project-structure.md"
 ---
 
 ### System Requirements
 
-- Bun [1.0.30](https://bun.sh/) or later
+- Bun [<Badge type="tip" text="1.0.29" />](https://bun.sh/) or later
 - macOS, Windows (including WSL), and Linux are supported.
 
 ### Automatic Installation

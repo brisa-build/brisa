@@ -1,6 +1,13 @@
 ---
 title: Custom Errors
 description: Override and extend the built-in Error page to handle custom errors.
+
+prev:
+  text: "Linking and navigating"
+  link: "02-building-your-application/01-routing/03-linking-and-navigating.md"
+next:
+  text: "Api routes"
+  link: "02-building-your-application/01-routing/05-api-routes.md"
 ---
 
 ## 404 Page
@@ -85,7 +92,7 @@ export default function SomeServerComponent() {
 
 SomeServerComponent.error = (
   { error, ...props },
-  requestContext: RequestContext,
+  requestContext: RequestContext
 ) => {
   return <p>Oops! {error.message}</p>;
 };
