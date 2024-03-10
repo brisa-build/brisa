@@ -56,7 +56,7 @@ Once activated you can call `brisa dev` to work locally with hotreloading in the
 
 > [!TIP]
 >
-> You can do `brisa dev --skip-desktop` or `brisa build --skip-desktop` if you want to avoid creating and loading the desktop application.
+> You can do `brisa dev --skip-tauri` or `brisa build --skip-tauri` if you want to avoid creating and loading the desktop application.
 
 > [!CAUTION]
 >
