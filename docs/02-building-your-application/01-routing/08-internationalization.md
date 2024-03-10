@@ -1,6 +1,13 @@
 ---
 title: Internationalization (i18n)
 description: Brisa has built-in support for internationalized routing, language detection and consume translations. Learn more here.
+
+prev:
+  text: "Authenticating"
+  link: "02-building-your-application/01-routing/07-authenticating.md"
+next:
+  text: "Suspense and streaming"
+  link: "02-building-your-application/01-routing/09-suspense-and-streaming.md"
 ---
 
 Brisa has built-in support for internationalized ([i18n](https://en.wikipedia.org/wiki/Internationalization_and_localization#Naming)). You can provide a list of locales, the default locale, and domain-specific locales and Brisa will automatically handle the routing.
@@ -324,7 +331,7 @@ import type { WebContext } from "brisa";
 
 export default async function DynamicDictionary(
   {},
-  { state, i18n }: WebContext,
+  { state, i18n }: WebContext
 ) {
   const open = state<boolean>(false);
   let isDictionaryLoaded = false;
@@ -336,7 +343,7 @@ export default async function DynamicDictionary(
       await i18n.overrideMessages(async (messages) => ({
         ...messages,
         dynamicDictionary: await fetch(/* some url */).then((res) =>
-          res.json(),
+          res.json()
         ),
       }));
     }
@@ -566,7 +573,7 @@ t(
   { count: 1 },
   {
     fallback: "fallback-key",
-  },
+  }
 );
 ```
 
@@ -578,7 +585,7 @@ t(
   { count: 42 },
   {
     fallback: ["fallback-key", "fallback-key-2"],
-  },
+  }
 );
 ```
 
@@ -859,7 +866,7 @@ For example, if the user enters to `/es/sobre-nosotros/` the `finalURL` can be `
 ```tsx
 export default function SomeComponent(
   {},
-  { i18n, finalURL, route }: RequestContext,
+  { i18n, finalURL, route }: RequestContext
 ) {
   console.log(`${finalURL} - ${i18n.locale} - ${route.pathname}`);
   // /about-us - es - /es/sobre-nosotros/

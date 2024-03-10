@@ -1,7 +1,6 @@
 ---
 title: rerenderInAction
-description: rerender the component or the page
-inside a server action
+description: rerender the component or the page inside a server action
 ---
 
 ## Reference

@@ -1,6 +1,13 @@
 ---
 title: Pages and Layouts
 description: Create your first page and shared layout with the Pages Router.
+
+prev:
+  text: "Getting started - Project structure"
+  link: "01-getting-started/02-project-structure.md"
+next:
+  text: "Dynamic Routes"
+  link: "02-building-your-application/01-routing/02-dynamic-routes.md"
 ---
 
 The Pages Router has a file-system based router built on the concept of pages (like Next.js pages folder).
@@ -147,7 +154,7 @@ import { type RequestContext } from "brisa";
 
 export function responseHeaders(
   request: RequestContext,
-  responseStatus: number,
+  responseStatus: number
 ) {
   return {
     "Cache-Control": "public, max-age=3600",
@@ -257,17 +264,11 @@ export default async function Layout({}, request: RequestContext) {
 }
 ```
 
-This allows access to these values from the web components store.
-
 This setup also enables subsequent [server actions](/docs/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
 
 `server render` → `client` → `server action` → `client`
 
 It is a way to modify in a reactive way from a server action the web components that consume this `store`.
-
-> [!NOTE]
->
-> You can [encrypt store data](/docs/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
 
 ### Consume data on client (web-components):
 
