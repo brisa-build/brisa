@@ -7,6 +7,8 @@ import crypto from "node:crypto";
 const outPath = path.join(import.meta.dir, 'out');
 const buildFilepath = path.join(outPath, 'cli', 'build.js');
 const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
+const MOBILE_OUTPUTS = new Set(["android", "ios"]);
+const TAURI_OUTPUTS = new Set(["android", "ios", "desktop"]);
 
 export async function main() {
   const packageJSON = await import(path.join(process.cwd(), "package.json")).then(m => m.default);
@@ -26,14 +28,18 @@ export async function main() {
 
   let BUN_EXEC;
   let BUNX_EXEC;
-  let IS_DESKTOP_APP = false; // default value depends on brisa.config.ts
+  let IS_TAURI_APP = false; // default value depends on brisa.config.ts
+  let OUTPUT = 'server'
 
   // Check if is desktop app
   try {
     const config = await import(path.join(process.cwd(), "brisa.config.ts")).then(m => m.default);
+    const hasOutput = typeof config.output === "string" 
 
-    IS_DESKTOP_APP =
-      typeof config.output === "string" && config.output === "desktop";
+    if (hasOutput) {
+      OUTPUT = config.output;
+      IS_TAURI_APP = TAURI_OUTPUTS.has(OUTPUT);
+    }
   } catch (error) {}
 
   try {
@@ -54,9 +60,9 @@ export async function main() {
 
       for (let i = 3; i < process.argv.length; i++) {
         switch (process.argv[i]) {
-          case "--skip-desktop":
+          case "--skip-tauri":
           case "-s":
-            IS_DESKTOP_APP = false;
+            IS_TAURI_APP = false;
             break;
           case "-p":
           case "--port":
@@ -73,7 +79,7 @@ export async function main() {
             console.log(" -p, --port         Specify port");
             console.log(" -d, --debug        Enable debug mode");
             console.log(
-              " -s, --skip-desktop Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+              " -s, --skip-tauri Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
             );
             console.log(" --help             Show help");
             return process.exit(0);
@@ -84,11 +90,17 @@ export async function main() {
       const serveCommand = [serveFilepath, PORT.toString(), "DEV"];
 
       // DEV mode for desktop app
-      if (IS_DESKTOP_APP) {
+      if (IS_TAURI_APP) {
+        const devTauriCommand = ["tauri", "dev", "--port", PORT.toString()];
+
+        if(MOBILE_OUTPUTS.has(OUTPUT)) {
+          devTauriCommand.splice(1, 0, OUTPUT)
+        }
+
         await initTauri(devOptions, PORT);
         cp.spawnSync(BUN_EXEC, buildCommand, devOptions);
         cp.spawn(BUN_EXEC, serveCommand, devOptions);
-        cp.spawnSync(BUNX_EXEC, ["tauri", "dev", "--port", PORT.toString()], devOptions);
+        cp.spawnSync(BUNX_EXEC, devTauriCommand, devOptions);
       } else if (DEBUG_MODE) {
         cp.spawnSync(BUN_EXEC, buildCommand, devOptions);
         cp.spawnSync(BUN_EXEC, ["--inspect", ...serveCommand], devOptions);
@@ -102,25 +114,31 @@ export async function main() {
     else if (process.argv[2] === "build") {
       for (let i = 3; i < process.argv.length; i++) {
         switch (process.argv[i]) {
-          case "--skip-desktop":
+          case "--skip-tauri":
           case "-s":
-            IS_DESKTOP_APP = false;
+            IS_TAURI_APP = false;
             break;
           case "--help":
             console.log("Usage: brisa build [options]");
             console.log("Options:");
             console.log(
-              " -s, --skip-desktop Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+              " -s, --skip-tauri Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
             );
             console.log(" --help             Show help");
             return process.exit(0);
         }
       }
 
-      if (IS_DESKTOP_APP) {
+      if (IS_TAURI_APP) {
+        const tauriCommand = ["tauri", "build"];
+
+        if(MOBILE_OUTPUTS.has(OUTPUT)) {
+          tauriCommand.splice(1, 0, OUTPUT)
+        }
+
         await initTauri(prodOptions);
         cp.spawnSync(BUN_EXEC, [buildFilepath, "PROD"], prodOptions);
-        cp.spawnSync(BUNX_EXEC, ["tauri", "build"], prodOptions);
+        cp.spawnSync(BUNX_EXEC, tauriCommand, prodOptions);
       } else {
         cp.spawnSync(BUN_EXEC, [buildFilepath, "PROD"], prodOptions);
       }
@@ -175,13 +193,19 @@ export async function main() {
 
   async function initTauri(options = devOptions, port = 3000) {
     const tauriConfigPath = path.join(process.cwd(), "src-tauri", "tauri.conf.json");
+    const existsTauri = fs.existsSync(tauriConfigPath)
+    const isMobile = MOBILE_OUTPUTS.has(OUTPUT);
 
     if (!packageJSON?.dependencies?.["@tauri-apps/cli"]) {
       console.log("Installing @tauri-apps/cli...");
       cp.spawnSync(BUN_EXEC, ["i", "@tauri-apps/cli@2.0.0-beta.8"], options);
     }
 
-    if(fs.existsSync(tauriConfigPath)) return
+    if(existsTauri && isMobile) {
+      cp.spawnSync(BUNX_EXEC, ['tauri', OUTPUT, 'init'], options);
+    }
+
+    if(existsTauri) return
 
     const name = packageJSON?.name ?? "my-app";
     const initTauriCommand = [
@@ -196,9 +220,9 @@ export async function main() {
       "--dev-url",
       `http://localhost:${port}`,
       "--before-dev-command",
-      "echo 'Starting desktop app...'",
+      `echo 'Starting ${OUTPUT} app...'`,
       "--before-build-command",
-      "echo 'Building desktop app...'",
+      `echo 'Building ${OUTPUT} app...'`,
     ];
 
     console.log("Initializing Tauri...");
@@ -214,6 +238,10 @@ export async function main() {
       tauriConfigPath,
       JSON.stringify(tauriConf, null, 2),
     );
+
+    if(isMobile) {
+      cp.spawnSync(BUNX_EXEC, ['tauri', OUTPUT, 'init'], options);
+    }
   }
 }
 

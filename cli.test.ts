@@ -189,7 +189,7 @@ describe("Brisa CLI", () => {
       [" -p, --port         Specify port"],
       [" -d, --debug        Enable debug mode"],
       [
-        " -s, --skip-desktop Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+        " -s, --skip-tauri Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
       ],
       [" --help             Show help"],
     ]);
@@ -329,7 +329,7 @@ describe("Brisa CLI", () => {
   });
 
   it('should skip desktop "brisa dev" command', async () => {
-    process.argv = ["bun", "brisa", "dev", "--skip-desktop"];
+    process.argv = ["bun", "brisa", "dev", "--skip-tauri"];
 
     mock.module(path.join(FIXTURES, "brisa.config.ts"), () => ({
       default: {
@@ -383,7 +383,7 @@ describe("Brisa CLI", () => {
       ["Usage: brisa build [options]"],
       ["Options:"],
       [
-        " -s, --skip-desktop Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+        " -s, --skip-tauri Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
       ],
       [" --help             Show help"],
     ]);
@@ -445,7 +445,7 @@ describe("Brisa CLI", () => {
   });
 
   it('should skip desktop "brisa build" command', async () => {
-    process.argv = ["bun", "brisa", "build", "--skip-desktop"];
+    process.argv = ["bun", "brisa", "build", "--skip-tauri"];
 
     mock.module(path.join(FIXTURES, "brisa.config.ts"), () => ({
       default: {
