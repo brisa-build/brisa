@@ -6,11 +6,54 @@ TODO
 
 ## `store`
 
-TODO
+The `store` property is an extended map where values can be stored and shared among all web components. It serves as a global state accessible by all components. Values can be set and retrieved using the `store.set` and `store.get` methods.
+
+Example setting a value:
+
+```ts
+store.set("count", 0);
+```
+
+Example getting a value:
+
+```tsx
+<div>{store.get("count")}</div>
+```
+
+> [!NOTE]
+>
+> The server `store` only lives at request time so that any server component can access the store unless you use [`transferToClient`](#transfertoclient), which extends the life of the store.
 
 ### `transferToClient`
 
-TODO
+The `store` data from request context is only available on the server. So you can store sensitive data without worrying. However, you can transfer certain data to the client side (web-components) using `store.transferToClient` method.
+
+```tsx
+import { type RequestContext } from "brisa";
+
+export default async function SomeComponent({}, request: RequestContext) {
+  const data = await getData(request);
+
+  request.store.set("data", data);
+
+  // Transfer "data" from store to client
+  request.store.transferToClient(["data"]);
+
+  // ..
+}
+```
+
+This allows access to these values from the web component store.
+
+This setup also enables subsequent [server actions](/docs/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
+
+`server render` → `client` → `server action` → `client`
+
+It is a way to modify in a reactive way from a server action the web components that consume this `store`.
+
+> [!NOTE]
+>
+> You can [encrypt store data](/docs/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
 
 ## `indicate`
 
