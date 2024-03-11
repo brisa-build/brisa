@@ -46,7 +46,6 @@ export default defineConfig({
           {
             text: "Installation",
             link: "01-getting-started/01-installation.md",
-            activeMatch: "*/01-getting-started/01-installation",
           },
           {
             text: "Project structure",
@@ -266,6 +265,96 @@ export default defineConfig({
                 link: "02-building-your-application/09-deploying/08-tauri.md",
               },
             ],
+          },
+        ],
+      },
+      {
+        text: "⚙️ Api reference",
+        collapsed: true,
+        items: [
+          {
+            text: "🧩 Components",
+            collapsed: true,
+            items: [
+              {
+                text: "Server components",
+                link: "03-api-reference/01-components/context-provider.md",
+              },
+            ],
+          },
+          {
+            text: "🗜️ Functions",
+            collapsed: true,
+            items: [
+              {
+                text: "createContext",
+                link: "03-api-reference/02-functions/createContext.md",
+              },
+              {
+                text: "createPortal",
+                link: "03-api-reference/02-functions/createPortal.md",
+              },
+              {
+                text: "dangerHTML",
+                link: "03-api-reference/02-functions/dangerHTML.md",
+              },
+              {
+                text: "navigate",
+                link: "03-api-reference/02-functions/navigate.md",
+              },
+              {
+                text: "notFound",
+                link: "03-api-reference/02-functions/notFound.md",
+              },
+              {
+                text: "rerenderInAction",
+                link: "03-api-reference/02-functions/rerenderInAction.md",
+              },
+            ],
+          },
+          {
+            text: "📚 Extended HTML attributes",
+            collapsed: true,
+            items: [
+              {
+                text: "debounceEvent",
+                link: "03-api-reference/03-extended-html-attributes/debounceEvent.md",
+              },
+              {
+                text: "indicateEvent",
+                link: "03-api-reference/03-extended-html-attributes/indicateEvent.md",
+              },
+              {
+                text: "indicator",
+                link: "03-api-reference/03-extended-html-attributes/indicator.md",
+              },
+              {
+                text: "key",
+                link: "03-api-reference/03-extended-html-attributes/key.md",
+              },
+              {
+                text: "ref",
+                link: "03-api-reference/03-extended-html-attributes/ref.md",
+              },
+              {
+                text: "serverOnly",
+                link: "03-api-reference/03-extended-html-attributes/serverOnly.md",
+              },
+              {
+                text: "skipSSR",
+                link: "03-api-reference/03-extended-html-attributes/skipSSR.md",
+              },
+            ],
+          },
+          {
+            text: "🎛️ WebContext",
+            collapsed: true,
+            link: "03-api-reference/04-web-context/index.md",
+          },
+          {
+            text: "📤 RequestContext",
+            collapsed: true,
+            link: "03-api-reference/05-request-context/index.md",
           },
         ],
       },
