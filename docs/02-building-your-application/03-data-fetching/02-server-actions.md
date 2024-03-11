@@ -115,7 +115,8 @@ function ChildComponent({ onAction }: { onAction: () => void }) {
 > [!IMPORTANT]
 >
 > Actions and nested actions are always `async`.
-> The actions, even if you have not written them async, are **always executed async**, if you need to do something after executing a nested action it is necessary to put an `await`:
+
+The actions, even if you have not written them async, are **always executed async**, if you need to do something after executing a nested action it is necessary to put an `await`:
 
 ```tsx
 async function onAction() {
@@ -566,6 +567,7 @@ store.get("some-key"); // In the server is automatic decrypted
 > [!NOTE]
 >
 > Brisa uses aes-256-cbc for encryption, a combination of cryptographic algorithms used to securely encrypt information recommended by [OpenSSL](https://www.openssl.org/). Encryption keys are generated during the build of your project.
+
 > [!IMPORTANT]
 >
 > It is important to note that encryption is a blocking process and may increase the time it takes for the request. It also exposes public data for the server action to access. Before using encrypt, consider if there is a better way to have this data from the action like querying a DB, without the need to expose it in the client.
