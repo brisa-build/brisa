@@ -16,7 +16,7 @@ cli-start
 cli-dev
 
 # Docs
-.vitepress/cache/*
-.vitepress/dist/*
+docs/.vitepress/cache/
+docs/.vitepress/dist/
 
 tsconfig.tsbuildinfo

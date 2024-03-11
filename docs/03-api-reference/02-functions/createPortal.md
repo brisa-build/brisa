@@ -1,6 +1,6 @@
 ---
 title: createPortal
-description: `createPortal` lets you render some children into a different part of the DOM.
+description: createPortal lets you render some children into a different part of the DOM.
 ---
 
 `createPortal` lets you render some children into a different part of the DOM.
