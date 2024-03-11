@@ -92,7 +92,7 @@ export default function SomeServerComponent() {
 
 SomeServerComponent.error = (
   { error, ...props },
-  requestContext: RequestContext
+  requestContext: RequestContext,
 ) => {
   return <p>Oops! {error.message}</p>;
 };
