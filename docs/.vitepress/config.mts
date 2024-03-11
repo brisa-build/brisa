@@ -46,7 +46,6 @@ export default defineConfig({
           {
             text: "Installation",
             link: "01-getting-started/01-installation.md",
-            activeMatch: "*/01-getting-started/01-installation",
           },
           {
             text: "Project structure",
