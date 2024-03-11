@@ -66,7 +66,7 @@ Only is possible to access to `route` property inside `api routes` and `pages ro
 import { type RequestContext } from "brisa";
 
 export default async function middleware(
-  request: RequestContext
+  request: RequestContext,
 ): Response | undefined {
   const url = new URL(request.url);
 
@@ -79,7 +79,7 @@ export default async function middleware(
     `,
       {
         headers: { "content-type": "image/svg+xml" },
-      }
+      },
     );
   }
 }
@@ -98,7 +98,7 @@ export default async function middleware(request) {
     `,
       {
         headers: { "content-type": "image/svg+xml" },
-      }
+      },
     );
   }
 }
@@ -147,7 +147,7 @@ import { type RequestContext } from "brisa";
 
 export function responseHeaders(
   request: RequestContext,
-  responseStatus: number
+  responseStatus: number,
 ) {
   return {
     "Cache-Control": "public, max-age=3600",

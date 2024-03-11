@@ -1,6 +1,6 @@
 ---
 title: createPortal
-description: createPortal lets you render some children into a different part of the DOM.
+description: `createPortal` lets you render some children into a different part of the DOM.
 ---
 
 `createPortal` lets you render some children into a different part of the DOM.
@@ -20,7 +20,7 @@ import { createPortal } from "brisa";
   <p>This child is placed in the parent div.</p>
   {createPortal(
     <p>This child is placed in the document body.</p>,
-    document.body
+    document.body,
   )}
 </div>;
 ```

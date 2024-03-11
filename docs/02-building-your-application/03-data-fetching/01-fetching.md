@@ -357,3 +357,7 @@ The Context API by default shares server-web data unless we pass the `serverOnly
 > [!CAUTION]
 >
 > All data transferred between server-web must be [serializable](https://developer.mozilla.org/en-US/docs/Glossary/Serialization).
+
+> [!NOTE]
+>
+> You can [encrypt store data](/docs/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.

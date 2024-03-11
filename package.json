@@ -65,24 +65,27 @@
     "release-all": "bun run build && npm publish && bun run clean && bun run release-create-brisa",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",
     "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli client",
-    "format": "bunx prettier@3.1.1 --write ."
+    "format": "bunx prettier@3.1.1 --write .",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "bin": {
     "brisa": "./cli.cjs",
     "create-brisa": "./create-brisa.cjs"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "13.6.2",
+    "@happy-dom/global-registrator": "13.7.3",
     "@types/bun": "1.0.8",
     "brisa": "0.0.25",
-    "vitepress": "^1.0.0-rc.45"
+    "vitepress": "1.0.0-rc.45"
   },
   "peerDependencies": {
-    "typescript": "5.3.3"
+    "typescript": "5.4.2"
   },
   "dependencies": {
     "astring": "1.8.6",
     "csstype": "3.1.3",
-    "meriyah": "4.3.9"
+    "meriyah": "4.4.0"
   }
 }
