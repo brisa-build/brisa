@@ -35,7 +35,14 @@ Choose your hosting to deploy:
 - [Deploy Brisa app to **AWS**](/docs/building-your-application/deploying/aws)
 - [Deploy Brisa app to **Render.com**](/docs/building-your-application/deploying/render-com)
 
+## Applications
+
+Build a Desktop, Android or iOS Brisa application.
+
+- [Build a Desktop App](/docs/building-your-application/deploying/desktop-app)
+- [Build a Android App](/docs/building-your-application/deploying/android-app)
+- [Build a iOS App](/docs/building-your-application/deploying/ios-app)
+
 ## Learn more
 
 - [Docker](/docs/building-your-application/deploying/docker) - Learn how to containerize a Brisa application with Docker.
-- [Tauri](/docs/building-your-application/deploying/tauri) - Build a desktop Brisa application.

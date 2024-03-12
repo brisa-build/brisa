@@ -1,9 +1,9 @@
 ---
-title: Tauri
+title: Desktop app
 description: Learn how build a Brisa application with Tauri
 ---
 
-## Tauri Integration for Brisa Desktop Applications
+## Brisa Desktop Applications (Tauri integration)
 
 This documentation outlines the process of building a Brisa desktop application using [Tauri](https://tauri.app/). Tauri is seamlessly integrated into Brisa by configuring the `brisa.config.ts` file as follows:
 
@@ -27,7 +27,7 @@ Customizing the window size, icons, title, and other attributes can be achieved 
 
 > [!NOTE]
 >
-> Explore Tauri's configuration fields [here](https://tauri.app/v1/api/config).
+> Explore Tauri's configuration fields [here](https://tauri.app/api/config).
 
 ## Building your Brisa Desktop App
 

@@ -11,7 +11,12 @@ import {
 } from "./utils/log/log-color";
 
 const rootDir = process.cwd();
-const staticExportOutputOption = new Set(["static", "desktop"]);
+const staticExportOutputOption = new Set([
+  "static",
+  "desktop",
+  "android",
+  "ios",
+]);
 const srcDir = path.join(rootDir, "src");
 const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, "build");
 const PAGE_404 = "/_404";
