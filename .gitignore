@@ -20,3 +20,7 @@ docs/.vitepress/cache/
 docs/.vitepress/dist/
 
 tsconfig.tsbuildinfo
+
+# Editors
+.vscode
+.idea
