@@ -22,22 +22,10 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/", activeMatch: "^/$|^/guide/" },
       {
-        text: "Getting started",
-        link: "01-getting-started/index.md",
-        activeMatch: "^/guide/",
-      },
-      {
-        text: "Building your application",
-        link: "02-building-your-application/index.md",
-        activeMatch: "^/guide/",
-      },
-      {
-        text: "API",
-        link: "03-api-reference/index.md",
-        activeMatch: "^/api/",
+        text: "Documentation",
+        link: "01-getting-started/01-installation.md",
       },
     ],
-
     sidebar: [
       {
         text: "🚀 Getting started",
@@ -263,6 +251,83 @@ export default defineConfig({
               {
                 text: "Tauri",
                 link: "02-building-your-application/09-deploying/08-tauri.md",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        text: "📚 API Reference",
+        link: "03-api-reference/index.md",
+        collapsed: false,
+        items: [
+          {
+            text: "Components",
+            collapsed: true,
+            items: [
+              {
+                text: "Context provider",
+                link: "03-api-reference/01-components/context-provider.md",
+              },
+            ],
+          },
+          {
+            collapsed: false,
+            text: "Functions",
+            items: [
+              {
+                text: "createContext",
+                link: "03-api-reference/02-functions/createContext.md",
+              },
+              {
+                text: "createPortal",
+                link: "03-api-reference/02-functions/createPortal.md",
+              },
+              {
+                text: "dangerHTML",
+                link: "03-api-reference/02-functions/dangerHTML.md",
+              },
+              {
+                text: "navigate",
+                link: "03-api-reference/02-functions/navigate.md",
+              },
+              {
+                text: "notFound",
+                link: "03-api-reference/02-functions/notFound.md",
+              },
+              {
+                text: "rerenderInAction",
+                link: "03-api-reference/02-functions/rerenderInAction.md",
+              },
+            ],
+          },
+          {
+            collapsed: true,
+            text: "Extended HTML Attributes",
+            items: [
+              {
+                text: "debounceEvent",
+                link: "03-api-reference/03-extended-html-attributes/debounceEvent.md",
+              },
+              {
+                link: "03-api-reference/03-extended-html-attributes/indicateEvent.md",
+                text: "indicateEvent",
+              },
+              {
+                link: "03-api-reference/03-extended-html-attributes/key.md",
+                text: "key",
+              },
+              {
+                link: "03-api-reference/03-extended-html-attributes/ref.md",
+                text: "ref",
+              },
+              {
+                link: "03-api-reference/03-extended-html-attributes/serverOnly.md",
+                text: "serverOnly",
+              },
+              {
+                link: "03-api-reference/03-extended-html-attributes/skipSSR.md",
+                text: "skipSSR",
               },
             ],
           },
