@@ -8,11 +8,11 @@ hero:
   tagline: Brisa is designed to start, build, test, deploy and run fast.
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Getting started
+      link: 01-getting-started/01-installation.md
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: View on Github
+      link: https://github.com/aralroca/brisa
 
 features:
   - title: ⚛️ Everything you need

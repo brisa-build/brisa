@@ -106,7 +106,7 @@ In Brisa we wanted to make a direct integration with Tauri. So that from the Bri
 
 ### Vue.js
 
-Finally, I want to thank [An Phat](https://twitter.com/notphanan), a co-worker who is in the core team of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
+Finally, I want to thank [An Phan](https://twitter.com/notphanan), a co-worker who is in the core team of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
 
 ## License
 

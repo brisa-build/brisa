@@ -22,22 +22,10 @@ export default defineConfig({
     nav: [
       { text: "Home", link: "/", activeMatch: "^/$|^/guide/" },
       {
-        text: "Getting started",
-        link: "01-getting-started/index.md",
-        activeMatch: "^/guide/",
-      },
-      {
-        text: "Building your application",
-        link: "02-building-your-application/index.md",
-        activeMatch: "^/guide/",
-      },
-      {
-        text: "API",
-        link: "03-api-reference/index.md",
-        activeMatch: "^/api/",
+        text: "Documentation",
+        link: "01-getting-started/01-installation.md",
       },
     ],
-
     sidebar: [
       {
         text: "🚀 Getting started",
@@ -269,22 +257,23 @@ export default defineConfig({
         ],
       },
       {
-        text: "⚙️ Api reference",
-        collapsed: true,
+        text: "⚙️ API Reference",
+        link: "03-api-reference/index.md",
+        collapsed: false,
         items: [
           {
             text: "🧩 Components",
             collapsed: true,
             items: [
               {
-                text: "Server components",
+                text: "Context provider",
                 link: "03-api-reference/01-components/context-provider.md",
               },
             ],
           },
           {
+            collapsed: false,
             text: "🗜️ Functions",
-            collapsed: true,
             items: [
               {
                 text: "createContext",
@@ -313,55 +302,42 @@ export default defineConfig({
             ],
           },
           {
-            text: "📚 Extended HTML attributes",
             collapsed: true,
+            text: "📚 Extended HTML Attributes",
             items: [
               {
                 text: "debounceEvent",
                 link: "03-api-reference/03-extended-html-attributes/debounceEvent.md",
               },
               {
-                text: "indicateEvent",
                 link: "03-api-reference/03-extended-html-attributes/indicateEvent.md",
+                text: "indicateEvent",
               },
               {
-                text: "indicator",
-                link: "03-api-reference/03-extended-html-attributes/indicator.md",
-              },
-              {
-                text: "key",
                 link: "03-api-reference/03-extended-html-attributes/key.md",
+                text: "key",
               },
               {
-                text: "ref",
                 link: "03-api-reference/03-extended-html-attributes/ref.md",
+                text: "ref",
               },
               {
-                text: "serverOnly",
                 link: "03-api-reference/03-extended-html-attributes/serverOnly.md",
+                text: "serverOnly",
               },
               {
-                text: "skipSSR",
                 link: "03-api-reference/03-extended-html-attributes/skipSSR.md",
+                text: "skipSSR",
               },
             ],
-          },
-          {
-            text: "🎛️ WebContext",
-            collapsed: true,
-            link: "03-api-reference/04-web-context/index.md",
-          },
-          {
-            text: "📤 RequestContext",
-            collapsed: true,
-            link: "03-api-reference/05-request-context/index.md",
           },
         ],
       },
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/aralroca/brisa" },
-      { icon: "twitter", link: "https://twitter.com/aralroca" },
+      { icon: "twitter", link: "https://twitter.com/brisadotbuild" },
+      { icon: "discord", link: "https://discord.com/invite/89Y9HMYZ" },
     ],
     editLink: {
       text: "Edit this page on GitHub",
