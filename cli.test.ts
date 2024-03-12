@@ -383,7 +383,7 @@ describe("Brisa CLI", () => {
       ["Usage: brisa build [options]"],
       ["Options:"],
       [
-        " -s, --skip-tauri Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+        " -s, --skip-tauri Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
       ],
       [" --help             Show help"],
     ]);
@@ -450,6 +450,162 @@ describe("Brisa CLI", () => {
     mock.module(path.join(FIXTURES, "brisa.config.ts"), () => ({
       default: {
         output: "desktop",
+      },
+    }));
+
+    await main();
+
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      "bun",
+      ["--version"],
+      { stdio: "ignore" },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      "bun",
+      [path.join(import.meta.dir, "out", "cli", "build.js"), "PROD"],
+      prodOptions,
+    ]);
+  });
+
+  it('should build a android app with "brisa build" command and output=android', async () => {
+    process.argv = ["bun", "brisa", "build"];
+
+    mock.module(path.join(FIXTURES, "brisa.config.ts"), () => ({
+      default: {
+        output: "android",
+      },
+    }));
+
+    await main();
+
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      "bun",
+      ["--version"],
+      { stdio: "ignore" },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      "bun",
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
+      prodOptions,
+    ]);
+    expect(mockSpawnSync.mock.calls[2]).toEqual([
+      "bunx",
+      [
+        "tauri",
+        "init",
+        "-A",
+        "test",
+        "-W",
+        "test",
+        "-D",
+        "../out",
+        "--dev-url",
+        "http://localhost:3000",
+        "--before-dev-command",
+        "echo 'Starting android app...'",
+        "--before-build-command",
+        "echo 'Building android app...'",
+      ],
+      prodOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[3]).toEqual([
+      "bun",
+      [BUILD_PATH, "PROD"],
+      prodOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[4]).toEqual([
+      "bunx",
+      ["tauri", "android", "build"],
+      prodOptions,
+    ]);
+  });
+
+  it('should skip android "brisa build" command', async () => {
+    process.argv = ["bun", "brisa", "build", "--skip-tauri"];
+
+    mock.module(path.join(FIXTURES, "brisa.config.ts"), () => ({
+      default: {
+        output: "android",
+      },
+    }));
+
+    await main();
+
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      "bun",
+      ["--version"],
+      { stdio: "ignore" },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      "bun",
+      [path.join(import.meta.dir, "out", "cli", "build.js"), "PROD"],
+      prodOptions,
+    ]);
+  });
+
+  it('should build a ios app with "brisa build" command and output=ios', async () => {
+    process.argv = ["bun", "brisa", "build"];
+
+    mock.module(path.join(FIXTURES, "brisa.config.ts"), () => ({
+      default: {
+        output: "ios",
+      },
+    }));
+
+    await main();
+
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      "bun",
+      ["--version"],
+      { stdio: "ignore" },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      "bun",
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
+      prodOptions,
+    ]);
+    expect(mockSpawnSync.mock.calls[2]).toEqual([
+      "bunx",
+      [
+        "tauri",
+        "init",
+        "-A",
+        "test",
+        "-W",
+        "test",
+        "-D",
+        "../out",
+        "--dev-url",
+        "http://localhost:3000",
+        "--before-dev-command",
+        "echo 'Starting ios app...'",
+        "--before-build-command",
+        "echo 'Building ios app...'",
+      ],
+      prodOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[3]).toEqual([
+      "bun",
+      [BUILD_PATH, "PROD"],
+      prodOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[4]).toEqual([
+      "bunx",
+      ["tauri", "ios", "build"],
+      prodOptions,
+    ]);
+  });
+
+  it('should skip ios "brisa build" command', async () => {
+    process.argv = ["bun", "brisa", "build", "--skip-tauri"];
+
+    mock.module(path.join(FIXTURES, "brisa.config.ts"), () => ({
+      default: {
+        output: "ios",
       },
     }));
 

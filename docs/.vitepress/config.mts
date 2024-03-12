@@ -219,6 +219,7 @@ export default defineConfig({
           {
             text: "🚀 Deploying",
             collapsed: true,
+            link: "02-building-your-application/09-deploying/index.md",
             items: [
               {
                 text: "Fly io",
@@ -249,8 +250,16 @@ export default defineConfig({
                 link: "02-building-your-application/09-deploying/07-static-exports.md",
               },
               {
-                text: "Tauri",
-                link: "02-building-your-application/09-deploying/08-tauri.md",
+                text: "Desktop app",
+                link: "02-building-your-application/09-deploying/08-desktop-app.md",
+              },
+              {
+                text: "Android app",
+                link: "02-building-your-application/09-deploying/09-android-app.md",
+              },
+              {
+                text: "iOS app",
+                link: "02-building-your-application/09-deploying/10-ios-app.md",
               },
             ],
           },
