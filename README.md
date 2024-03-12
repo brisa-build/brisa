@@ -28,6 +28,17 @@
 [prwelcome]: http://makeapullrequest.com
 [spectrum]: https://spectrum.chat/next-translate
 
+<div align="center">
+  <a href="https://brisa.build">Documentation</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://discord.com/invite/89Y9HMYZ">Discord</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://github.com/aralroca/brisa/issues/new">Issues</a>
+  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://github.com/aralroca/brisa/issues/1">Roadmap</a>
+  <br />
+</div>
+
 **Features** ✨
 
 - ⚛️ ・ **Everything you need**: JSX, TS, server/web components, server actions, optimistic updates, SSR, streaming, suspense, signals, websockets, middleware, layouts...
