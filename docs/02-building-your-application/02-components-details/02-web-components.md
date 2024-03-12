@@ -645,7 +645,7 @@ import { WebContext } from "brisa";
 
 export default function WebComponent(
   { color }: { color: string },
-  { css }: WebContext
+  { css }: WebContext,
 ) {
   css`
     p {
@@ -714,7 +714,7 @@ import useRandomColorInterval from "@/web-hooks/use-random-color-interval";
 
 export default function ThemeProvider(
   { color }: Theme,
-  webContext: WebContext
+  webContext: WebContext,
 ) {
   const randomColor = useRandomColorInterval(webContext);
 
@@ -730,7 +730,7 @@ import useRandomColorInterval from "@/web-hooks/use-random-color-interval";
 
 export default function ThemeProvider(
   { color }: Theme,
-  webContext: WebContext
+  webContext: WebContext,
 ) {
   // ❌ BAD
   return <div>{useRandomColorInterval(webContext).value}</div>;
@@ -756,7 +756,7 @@ export default function Component() {
       <p>This child is placed in the parent div.</p>
       {createPortal(
         <p>This child is placed in the document body.</p>,
-        document.body
+        document.body,
       )}
     </div>
   );
@@ -780,7 +780,7 @@ export default function SomeComponent() {
 
       {/* Force to inject an string as HTML: */}
       {dangerHTML(
-        '<script>alert("This is injected and is going to work")</script>'
+        '<script>alert("This is injected and is going to work")</script>',
       )}
     </>
   );
@@ -838,7 +838,7 @@ type Props = { name: string };
 
 export function ServerComponent(
   { name, children }: Props,
-  webContext: WebContext
+  webContext: WebContext,
 ) {
   return (
     <div>
@@ -876,7 +876,7 @@ type Props = { name: string };
 
 export function ServerComponent(
   { name }: Props,
-  requestContext: RequestContext
+  requestContext: RequestContext,
 ) {
   return (
     <div>
