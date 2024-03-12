@@ -18,8 +18,8 @@
 [![PRs Welcome][badge-prwelcome]][prwelcome]
 <a href="https://github.com/aralroca/brisa/actions?query=workflow%3ATest" alt="Tests status">
 <img src="https://github.com/aralroca/brisa/workflows/Test/badge.svg" /></a>
-<a href="https://twitter.com/intent/follow?screen_name=aralroca">
-<img src="https://img.shields.io/twitter/follow/aralroca?style=social&logo=x"
+<a href="https://twitter.com/intent/follow?screen_name=brisadotbuild">
+<img src="https://img.shields.io/twitter/follow/brisadotbuild?style=social&logo=x"
             alt="follow on Twitter"></a>
 
 </div>
