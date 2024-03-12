@@ -336,7 +336,8 @@ export default defineConfig({
     ],
     socialLinks: [
       { icon: "github", link: "https://github.com/aralroca/brisa" },
-      { icon: "twitter", link: "https://twitter.com/aralroca" },
+      { icon: "twitter", link: "https://twitter.com/brisadotbuild" },
+      { icon: "discord", link: "https://discord.com/invite/89Y9HMYZ" },
     ],
     editLink: {
       text: "Edit this page on GitHub",
