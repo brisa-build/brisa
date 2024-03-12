@@ -257,12 +257,12 @@ export default defineConfig({
         ],
       },
       {
-        text: "📚 API Reference",
+        text: "⚙️ API Reference",
         link: "03-api-reference/index.md",
         collapsed: false,
         items: [
           {
-            text: "Components",
+            text: "🧩 Components",
             collapsed: true,
             items: [
               {
@@ -273,7 +273,7 @@ export default defineConfig({
           },
           {
             collapsed: false,
-            text: "Functions",
+            text: "🗜️ Functions",
             items: [
               {
                 text: "createContext",
@@ -303,7 +303,7 @@ export default defineConfig({
           },
           {
             collapsed: true,
-            text: "Extended HTML Attributes",
+            text: "📚 Extended HTML Attributes",
             items: [
               {
                 text: "debounceEvent",
