@@ -32,7 +32,7 @@ export default async function middleware({
   const { locale } = i18n;
   const isUserRoute = route?.name?.startsWith("/user/[username]");
 
-  if (isUserRout && !(await isUserLogged(headers))) {
+  if (isUserRoute && !(await isUserLogged(headers))) {
     return new Response("", {
       status: 302,
       headers: {
