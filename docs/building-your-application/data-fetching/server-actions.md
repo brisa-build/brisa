@@ -550,7 +550,7 @@ export default function WebCounter({}, { store }: WebContext) {
 
 This example shows a counter shared between the server and the client. It can be incremented from the action (server component) or from the browser event (web component), and the store value will always be synchronized between the two.
 
-#### Transfer sensitive data
+### Transfer sensitive data
 
 If you want to transfer sensitive data from the render to use it later on the action you can use:
 
@@ -571,6 +571,10 @@ store.get("some-key"); // In the server is automatic decrypted
 > [!IMPORTANT]
 >
 > It is important to note that encryption is a blocking process and may increase the time it takes for the request. It also exposes public data for the server action to access. Before using encrypt, consider if there is a better way to have this data from the action like querying a DB, without the need to expose it in the client.
+
+## Using Server Component `props` in Server Actions
+
+TODO
 
 ## Using Server Actions in a Reverse Proxy
 

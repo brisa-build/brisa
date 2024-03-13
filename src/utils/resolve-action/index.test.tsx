@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "bun:test";
+import { describe, it, expect, beforeEach, afterEach, spyOn } from "bun:test";
 import path from "node:path";
 
 import extendRequestContext from "@/utils/extend-request-context";
@@ -10,6 +10,7 @@ import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
+let mockLog: ReturnType<typeof spyOn>;
 
 const getReq = () =>
   extendRequestContext({
@@ -20,6 +21,7 @@ const getReq = () =>
 describe("utils", () => {
   describe("resolve-action", () => {
     beforeEach(async () => {
+      mockLog = spyOn(console, "log");
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         PAGES_DIR,
@@ -35,6 +37,7 @@ describe("utils", () => {
     });
 
     afterEach(() => {
+      mockLog.mockRestore();
       globalThis.mockConstants = undefined;
     });
 
@@ -140,6 +143,26 @@ describe("utils", () => {
       expect(response.headers.get("X-Mode")).toBe("transition");
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
+      );
+    });
+
+    it("should log an error accessing to a field that does not exist in the props", async () => {
+      let error = new Error('Field "foo" does not exist in props');
+
+      const req = getReq();
+      const response = await resolveAction({ req, error, component: <div /> });
+
+      expect(await response.status).toBe(500);
+      expect(await response.text()).toBe('Field "foo" does not exist in props');
+
+      const logs = mockLog.mock.calls.toString();
+      expect(logs).toContain("There was an error executing the server action");
+      expect(logs).toContain('Field "foo" does not exist in props');
+      expect(logs).toContain(
+        "Please note that for security reasons Brisa does not automatically",
+      );
+      expect(logs).toContain(
+        "Docs: https://brisa.build/building-your-application/data-fetching/server-actions##using-server-component-props-in-server-actions",
       );
     });
   });
