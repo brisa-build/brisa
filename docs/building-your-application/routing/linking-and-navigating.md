@@ -1,13 +1,6 @@
 ---
 title: Linking and Navigating
 description: Learn how navigation works in Brisa.
-
-prev:
-  text: "Dynamic Routes"
-  link: "02-building-your-application/01-routing/02-dynamic-routes.md"
-next:
-  text: "Custom error"
-  link: "02-building-your-application/01-routing/04-custom-error.md"
 ---
 
 Brisa works with MPA like SPA thanks to [View Transitions](https://github.com/WICG/view-transitions/blob/main/explainer.md), so we will use the native HTML navigation and you can use the `a` tag directly:

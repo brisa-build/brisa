@@ -6,11 +6,6 @@ related:
   description: Learn about the files and folders in your Brisa project.
   links:
     - getting-started/project-structure
-prev: false
-
-next:
-  text: "Project structure"
-  link: "01-getting-started/02-project-structure.md"
 ---
 
 ### System Requirements
