@@ -1,13 +1,6 @@
 ---
 title: Pages and Layouts
 description: Create your first page and shared layout with the Pages Router.
-
-prev:
-  text: "Getting started - Project structure"
-  link: "01-getting-started/02-project-structure.md"
-next:
-  text: "Dynamic Routes"
-  link: "02-building-your-application/01-routing/02-dynamic-routes.md"
 ---
 
 The Pages Router has a file-system based router built on the concept of pages (like Next.js pages folder).

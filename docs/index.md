@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Getting started
-      link: 01-getting-started/01-installation.md
+      link: /getting-started/installation.md
     - theme: alt
       text: View on Github
       link: https://github.com/aralroca/brisa
