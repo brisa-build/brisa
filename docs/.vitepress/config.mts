@@ -39,7 +39,6 @@ export default defineConfig({
             text: "Project structure",
             link: "/getting-started/project-structure",
           },
-          { text: "index", link: "/getting-started/index.md" },
         ],
       },
       {
