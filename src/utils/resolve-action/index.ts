@@ -59,6 +59,27 @@ export default async function resolveAction({
 
   // Error not caught
   if (error.name !== "rerender") {
+    logError(
+      [
+        "There was an error executing the server action",
+        "",
+        ...(error.stack?.toString?.() ?? error.message).split("\n"),
+        "",
+        "Please note that for security reasons Brisa does not automatically",
+        "expose server data on the client. If you need to access props or",
+        "store fields that you had during rendering, you need to transfer",
+        "it with store.transferToClient, and decide whether to use encrypt",
+        "or not.",
+        "",
+        "TIP 💡: You can use props that are other server actions to call server",
+        "actions nested between server components. These are the only props",
+        "available and the only thing that is exposed on the client is an",
+        "auto-generated id.",
+        "",
+      ],
+      "Docs: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions)",
+    );
+
     return new Response(error.message, { status: 500 });
   }
 

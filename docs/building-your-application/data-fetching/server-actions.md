@@ -550,7 +550,7 @@ export default function WebCounter({}, { store }: WebContext) {
 
 This example shows a counter shared between the server and the client. It can be incremented from the action (server component) or from the browser event (web component), and the store value will always be synchronized between the two.
 
-#### Transfer sensitive data
+### Transfer sensitive data
 
 If you want to transfer sensitive data from the render to use it later on the action you can use:
 
@@ -571,6 +571,47 @@ store.get("some-key"); // In the server is automatic decrypted
 > [!IMPORTANT]
 >
 > It is important to note that encryption is a blocking process and may increase the time it takes for the request. It also exposes public data for the server action to access. Before using encrypt, consider if there is a better way to have this data from the action like querying a DB, without the need to expose it in the client.
+
+## Props in Server Actions
+
+By default the only props you can access within a server action are other server actions. This is for **security reasons**. In Brisa we do not want to expose server data in the client by default so that later it can be accessed from the server actions. However, you can transfer any server store property to the client allowing to use this value in the server action.
+
+Instead:
+
+```tsx
+export default function ServerComponent({ onAction, foo }) {
+  function onClickAction(e) {
+    onAction(e); // ✅ Server actions are allowed
+    console.log(foo.bar); // ❌ foo is undefined
+  }
+
+  return <button onClick={onClickAction}>Run action</button>;
+}
+```
+
+Do this:
+
+```tsx
+export default function ServerComponent({ onAction, foo }, { store }) {
+  store.set("foo", foo);
+
+  // Encrypt it or not depending on whether it is sensitive data or not.
+  store.transferToClient(["foo"], { encrypt: true });
+
+  function onClickAction(e) {
+    onAction(e); // ✅ Server actions are allowed
+    console.log(store.get("foo").bar); // ✅
+  }
+
+  return <button onClick={onClickAction}>Run action</button>;
+}
+```
+
+If we do not encrypt it you can use the same field of the store in the web components and all the changes you make in the actions will react in all the web components that have the signal.
+
+> [!NOTE]
+>
+> Learn more in [transfer sensitive data](#transfer-sensitive-data) and in [`store.transferToClient`](/building-your-application/data-fetching/request-context#transfertoclient) documentation.
 
 ## Using Server Actions in a Reverse Proxy
 
