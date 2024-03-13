@@ -75,9 +75,9 @@
     "create-brisa": "./create-brisa.cjs"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "13.7.3",
+    "@happy-dom/global-registrator": "13.8.2",
     "@types/bun": "1.0.8",
-    "brisa": "0.0.25",
+    "brisa": "0.0.27",
     "vitepress": "1.0.0-rc.45"
   },
   "peerDependencies": {
