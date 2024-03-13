@@ -1,13 +1,6 @@
 ---
 title: Middleware
 description: Learn how to use Middleware to run code before a request is completed.
-
-prev:
-  text: "Api routes"
-  link: "02-building-your-application/01-routing/05-api-routes.md"
-next:
-  text: "Authenticating"
-  link: "02-building-your-application/01-routing/07-authenticating.md"
 ---
 
 Middleware allows you to run code before a request is completed. Then, based on the incoming request, you can modify the response by rewriting, redirecting, modifying the request or response headers, or responding directly.
