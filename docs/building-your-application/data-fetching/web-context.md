@@ -57,7 +57,7 @@ Example getting a value:
 <div>{store.get("count")}</div>
 ```
 
-For more details, refer to the [store](/docs/components-details/web-components#store-store-method) documentation.
+For more details, refer to the [store](/components-details/web-components#store-store-method) documentation.
 
 ### `setOptimistic`
 
@@ -74,7 +74,7 @@ const foo = useContext(context);
 return <div>{foo.value}</div>;
 ```
 
-For more details, refer to the [context](/docs/components-details/context) documentation.
+For more details, refer to the [context](/components-details/context) documentation.
 
 > [!IMPORTANT]
 >
@@ -104,7 +104,7 @@ Example mutation:
 count.value += 1;
 ```
 
-For more details, refer to the [state](/docs/components-details/web-components#state-state-method) documentation.
+For more details, refer to the [state](/components-details/web-components#state-state-method) documentation.
 
 ## `derived`
 
@@ -124,7 +124,7 @@ Example of usage:
 <div>{doubleCount.value}</div>
 ```
 
-For more details, refer to the [derived](/docs/components-details/web-components#derived-state-and-props-derived-method) documentation.
+For more details, refer to the [derived](/components-details/web-components#derived-state-and-props-derived-method) documentation.
 
 ## `effect`
 
@@ -141,7 +141,7 @@ effect(() => {
 });
 ```
 
-For more details, refer to the [effect](/docs/components-details/web-components#effects-effect-method) documentation.
+For more details, refer to the [effect](/components-details/web-components#effects-effect-method) documentation.
 
 ## `cleanup`
 
@@ -160,7 +160,7 @@ effect(() => {
 cleanup(() => console.log("Web Component unmounted!"));
 ```
 
-For more details, refer to the [cleanup](/docs/components-details/web-components#clean-effects-cleanup-method) documentation.
+For more details, refer to the [cleanup](/components-details/web-components#clean-effects-cleanup-method) documentation.
 
 ## `onMount`
 
@@ -178,7 +178,7 @@ onMount(() => {
 });
 ```
 
-For more details, refer to the [onMount](/docs/components-details/web-components#effect-on-mount-onmount-method) documentation.
+For more details, refer to the [onMount](/components-details/web-components#effect-on-mount-onmount-method) documentation.
 
 ## `indicate`
 
@@ -211,9 +211,9 @@ const  = indicate('some-server-action-name');
 
 For more details, take a look to:
 
-- [`indicate`](/docs/building-your-application/data-fetching/request-context#indicate) in server components, similar method but from [`RequestContext`](/docs/building-your-application/data-fetching/request-context).
-- [`indicate[Event]`](/docs/api-reference/extended-html-attributes/indicateEvent) HTML extended attribute to use it in server components to register the server action indicator.
-- [`indicator`](/docs/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
+- [`indicate`](/building-your-application/data-fetching/request-context#indicate) in server components, similar method but from [`RequestContext`](/building-your-application/data-fetching/request-context).
+- [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) HTML extended attribute to use it in server components to register the server action indicator.
+- [`indicator`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
 
 ## `reset`
 
@@ -249,7 +249,7 @@ css`
 `;
 ```
 
-For more details, refer to the [Template literal `css`](/docs/components-details/web-components#template-literal-css) documentation.
+For more details, refer to the [Template literal `css`](/components-details/web-components#template-literal-css) documentation.
 
 ## `i18n`
 
@@ -264,7 +264,7 @@ const { t, locale } = i18n;
 return <div>{t("hello-world")}</div>;
 ```
 
-For more details, refer to the [i18n](/docs/building-your-application/routing/internationalization) documentation.
+For more details, refer to the [i18n](/building-your-application/routing/internationalization) documentation.
 
 ## `self`
 

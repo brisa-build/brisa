@@ -26,7 +26,7 @@ const SomeContext = createContext(defaultValue);
 
 `createContext` returns a context object.
 
-Typically, you will use this context in a [`context-provider`](/docs/api-reference/components/context-provider) component, or the [`useContext`](/docs/building-your-application/components-details/context#consume-context-usecontext) hook.
+Typically, you will use this context in a [`context-provider`](/api-reference/components/context-provider) component, or the [`useContext`](/building-your-application/components-details/context#consume-context-usecontext) hook.
 
 ### Support
 

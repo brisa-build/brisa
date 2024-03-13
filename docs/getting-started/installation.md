@@ -73,7 +73,7 @@ export default function Page() {
 }
 ```
 
-Then, add an `src/layout.tsx` file or `src/layout/index.tsx` to define the global layout. To add more layouts depending on the pages, take a look at the [layouts documentation](/docs/app/layouts.md).
+Then, add an `src/layout.tsx` file or `src/layout/index.tsx` to define the global layout. To add more layouts depending on the pages, take a look at the [layouts documentation](/building-your-application/routing/pages-and-layouts).
 
 ### The `public` folder (optional)
 

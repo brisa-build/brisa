@@ -18,7 +18,7 @@ DB_USER=myuser
 DB_PASS=mypassword
 ```
 
-This loads `process.env.DB_HOST`, `process.env.DB_USER`, and `process.env.DB_PASS` into the Bun environment automatically allowing you to use them in [Brisa data fetching methods](/docs/building-your-application/data-fetching), [middleware](/docs/building-your-application/routing/middleware) and [API routes](/docs/building-your-application/routing/api-routes).
+This loads `process.env.DB_HOST`, `process.env.DB_USER`, and `process.env.DB_PASS` into the Bun environment automatically allowing you to use them in [Brisa data fetching methods](/building-your-application/data-fetching), [middleware](/building-your-application/routing/middleware) and [API routes](/building-your-application/routing/api-routes).
 
 For example, using middleware:
 
@@ -36,7 +36,7 @@ export default async function middleware(request: RequestContext) {
 }
 ```
 
-Using [API Routes](/docs/building-your-application/routing/api-routes):
+Using [API Routes](/building-your-application/routing/api-routes):
 
 ```ts filename="src/api/hello.ts"
 import { type RequestContext } from "brisa";
@@ -197,7 +197,7 @@ process.env.BAR; // => "hello$FOO"
 
 ### Brisa environment variables
 
-- `BRISA_BUILD_FOLDER` - You can **define** it to change the **build folder** and/or **use** it in your code to load files compiled for another process, see an example [here](/docs/building-your-application/configuring/zig-rust-c-files).
+- `BRISA_BUILD_FOLDER` - You can **define** it to change the **build folder** and/or **use** it in your code to load files compiled for another process, see an example [here](/building-your-application/configuring/zig-rust-c-files).
 
 ### `dotenv`
 

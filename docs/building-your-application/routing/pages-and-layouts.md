@@ -7,7 +7,7 @@ The Pages Router has a file-system based router built on the concept of pages (l
 
 When a file is added to the `pages` directory, it's automatically available as a route.
 
-In Brisa framework, a **page** is a [Brisa Server Component](/docs/components-details/server-components) exported from a `.js`, `.jsx`, `.ts`, or `.tsx` file in the `pages` directory. Each page is associated with a route based on its file name.
+In Brisa framework, a **page** is a [Brisa Server Component](/components-details/server-components) exported from a `.js`, `.jsx`, `.ts`, or `.tsx` file in the `pages` directory. Each page is associated with a route based on its file name.
 
 **Example**: If you create `pages/about.js` that exports a Brisa component like below, it will be accessible at `/about`.
 
@@ -17,7 +17,7 @@ export default function About() {
 }
 ```
 
-See the difference between Brisa Components and React Components [here](/docs/components-details).
+See the difference between Brisa Components and React Components [here](/components-details).
 
 ## Index routes
 
@@ -39,7 +39,7 @@ Brisa supports pages with dynamic routes. For example, if you create a file call
 
 > [!NOTE]
 >
-> To learn more about dynamic routing, check the [Dynamic Routing documentation](/docs/building-your-application/routing/dynamic-routes).
+> To learn more about dynamic routing, check the [Dynamic Routing documentation](/building-your-application/routing/dynamic-routes).
 
 ## Layout
 
@@ -110,7 +110,7 @@ export default async function Layout(
 }
 ```
 
-The `fetch` is directly native and has no wrapper to control the cache. We recommend that you do not do the same `fetch` in several places, but use the [`store`](/docs/building-your-application/data-fetching/request-context) to store the data and consume it from any component.
+The `fetch` is directly native and has no wrapper to control the cache. We recommend that you do not do the same `fetch` in several places, but use the [`store`](/building-your-application/data-fetching/request-context) to store the data and consume it from any component.
 
 > [!TIP]
 >
@@ -194,7 +194,7 @@ export default function AboutUsPage() {
 
 ## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders` → `Head` → `web-components`
 
-You can share data between different parts of the application using the [`request context`](/docs/building-your-application/data-fetching/request-context).
+You can share data between different parts of the application using the [`request context`](/building-your-application/data-fetching/request-context).
 
 ```tsx filename="layout/index.tsx" switcher
 import { type RequestContext } from "brisa";
@@ -259,7 +259,7 @@ export default async function Layout({}, request: RequestContext) {
 
 This allows access to these values from the web components store.
 
-This setup also enables subsequent [server actions](/docs/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
+This setup also enables subsequent [server actions](/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
 
 `server render` → `client` → `server action` → `client`
 
@@ -267,11 +267,11 @@ It is a way to modify in a reactive way from a server action the web components 
 
 > [!NOTE]
 >
-> You can [encrypt store data](/docs/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
+> You can [encrypt store data](/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
 
 ### Consume data on client (web-components):
 
-In the web-components instead of the [`RequestContext`](/docs/building-your-application/data-fetching/request-context), there is the [`WebContext`](/docs/building-your-application/data-fetching/web-context), where you have a different [`store`](/docs/components-details/web-components#store-store-method), but if you have transferred the data from the `RequestContext` `store`, you will be able to consume it from the `WebContext` `store`.
+In the web-components instead of the [`RequestContext`](/building-your-application/data-fetching/request-context), there is the [`WebContext`](/building-your-application/data-fetching/web-context), where you have a different [`store`](/components-details/web-components#store-store-method), but if you have transferred the data from the `RequestContext` `store`, you will be able to consume it from the `WebContext` `store`.
 
 ```tsx
 import { WebContext } from "brisa";
@@ -281,4 +281,4 @@ export default function WebComponent({}, { store }: WebContext) {
 }
 ```
 
-If you want to know more about `store` [check this out](/docs/components-details/web-components#store-store-method).
+If you want to know more about `store` [check this out](/components-details/web-components#store-store-method).

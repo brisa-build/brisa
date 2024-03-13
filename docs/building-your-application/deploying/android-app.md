@@ -45,7 +45,7 @@ This command generates the corresponding `.apk`.
 
 > [!IMPORTANT]
 >
-> The build behavior is akin to [static export](/docs/building-your-application/deploying/static-exports), as there won't be an active server, and the android app is created with the bundled assets (HTML, CSS, JS).
+> The build behavior is akin to [static export](/building-your-application/deploying/static-exports), as there won't be an active server, and the android app is created with the bundled assets (HTML, CSS, JS).
 
 > [!CAUTION]
 >

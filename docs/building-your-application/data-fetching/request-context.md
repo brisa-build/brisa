@@ -45,7 +45,7 @@ export default async function SomeComponent({}, request: RequestContext) {
 
 This allows access to these values from the web component store.
 
-This setup also enables subsequent [server actions](/docs/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
+This setup also enables subsequent [server actions](/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
 
 `server render` → `client` → `server action` → `client`
 
@@ -53,7 +53,7 @@ It is a way to modify in a reactive way from a server action the web components 
 
 > [!NOTE]
 >
-> You can [encrypt store data](/docs/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
+> You can [encrypt store data](/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
 
 ## `indicate`
 
@@ -83,6 +83,6 @@ css`
 
 For more details, take a look to:
 
-- [`indicate`](/docs/building-your-application/data-fetching/web-context#indicate) in web components, similar method but from [`WebContext`](/docs/building-your-application/data-fetching/web-context).
-- [`indicate[Event]`](/docs/api-reference/extended-html-attributes/indicateEvent) HTML extended attribute to use it in server components to register the server action indicator.
-- [`indicator`](/docs/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
+- [`indicate`](/building-your-application/data-fetching/web-context#indicate) in web components, similar method but from [`WebContext`](/building-your-application/data-fetching/web-context).
+- [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) HTML extended attribute to use it in server components to register the server action indicator.
+- [`indicator`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.

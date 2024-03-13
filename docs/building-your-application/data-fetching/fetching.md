@@ -32,11 +32,11 @@ export default async function WebComponent() {
 }
 ```
 
-In the same way, you can fetch data in the [`middleware`](/docs/building-your-application/routing/middleware), [`layout`](/docs/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/docs/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/docs/building-your-application/routing/suspense-and-streaming), etc, and share the data with the rest of the application.
+In the same way, you can fetch data in the [`middleware`](/building-your-application/routing/middleware), [`layout`](/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/building-your-application/routing/suspense-and-streaming), etc, and share the data with the rest of the application.
 
 ### Suspense phase
 
-Each component (server-component and web-component) allows an extension to add a [`suspense` component](/docs/building-your-application/routing/suspense-and-streaming) to it, which is the fallback that will be displayed while the component loads.
+Each component (server-component and web-component) allows an extension to add a [`suspense` component](/building-your-application/routing/suspense-and-streaming) to it, which is the fallback that will be displayed while the component loads.
 
 ```js
 SomeComponent.suspense = ({}, { i18n }) => {
@@ -68,10 +68,10 @@ And the HTML is resolved via streaming.
 
 ### Share server-server data between components
 
-To share data across all parts of the server ([`middleware`](/docs/building-your-application/routing/middleware), [`layout`](/docs/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/docs/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/docs/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
+To share data across all parts of the server ([`middleware`](/building-your-application/routing/middleware), [`layout`](/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
 
 1. Request [`store`](docs/building-your-application/data-fetching/request-context#store)
-2. [Context API](/docs/components-details/context)
+2. [Context API](/components-details/context)
 
 Example using store:
 
@@ -137,11 +137,11 @@ export function UserInfo({}: Props, request: RequestContext) {
 
 We recommend that whenever possible you add the data to the `store` inside the request. And use the Context API only in specific cases where you only want to share this data with a piece of the component tree.
 
-The reason is that the **Context API is more expensive** and if you don't put the [`serverOnly`](/docs/components-details/context#serveronly-property) attribute it creates a DOM element (`context-provider`) and shares the data with the rest of the web-components that are in the same component tree.
+The reason is that the **Context API is more expensive** and if you don't put the [`serverOnly`](/components-details/context#serveronly-property) attribute it creates a DOM element (`context-provider`) and shares the data with the rest of the web-components that are in the same component tree.
 
-In both cases the data lives within the lifetime of the request, it is not global data, and one of the benefits is that all server-components receive the [`RequestContext`](/docs/building-your-application/data-fetching/request-context) as a second parameter, and you can access easly to that data.
+In both cases the data lives within the lifetime of the request, it is not global data, and one of the benefits is that all server-components receive the [`RequestContext`](/building-your-application/data-fetching/request-context) as a second parameter, and you can access easly to that data.
 
-The `RequestContext` is an extension of the [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from the [Request API](https://developer.mozilla.org/en-US/docs/Web/API/Request) you have some [extra things](/docs/building-your-application/data-fetching/request-context), such as the store.
+The `RequestContext` is an extension of the [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from the [Request API](https://developer.mozilla.org/en-US/docs/Web/API/Request) you have some [extra things](/building-your-application/data-fetching/request-context), such as the store.
 
 > [!TIP]
 >
@@ -152,7 +152,7 @@ The `RequestContext` is an extension of the [Request](https://developer.mozilla.
 To share data across all web components there are also the same two ways:
 
 1. Web Context [`store`](docs/building-your-application/data-fetching/web-context#store)
-2. [Context API](/docs/components-details/context)
+2. [Context API](/components-details/context)
 
 Example using store:
 
@@ -233,7 +233,7 @@ The reason is that the **Context API is more expensive** and it creates a DOM el
 
 #### Re-fetch data in web components
 
-[Web-components](/docs/components-detailsweb-components) are reactive, and although they are only rendered once when the component is mounted, an [`effect`](/docs/components-details/web-components#effects-effect-method) can be used to do a `re-fetch` whenever a signal (prop, state, store, context...) changes.
+[Web-components](/components-detailsweb-components) are reactive, and although they are only rendered once when the component is mounted, an [`effect`](/components-details/web-components#effects-effect-method) can be used to do a `re-fetch` whenever a signal (prop, state, store, context...) changes.
 
 ```tsx
 export default async function WebComponent(
@@ -262,7 +262,7 @@ In this example, every time the `foo` prop signal inside the `effect` changes, t
 To share data across all parts of the server and web there are two ways:
 
 1. Request [`store`](docs/building-your-application/data-fetching/request-context#store) using [`transferToClient`](docs/building-your-application/data-fetching/request-context#transfertoclient) method
-2. [Context API](/docs/components-details/context) (without [`serverOnly`](/docs/components-details/context#serveronly-property) prop)
+2. [Context API](/components-details/context) (without [`serverOnly`](/components-details/context#serveronly-property) prop)
 
 Example using store:
 
@@ -301,7 +301,7 @@ export function UserInfo({}: Props, { store }: WebContext) {
 }
 ```
 
-By default the [RequestContext](/docs/building-your-application/data-fetching/request-context) [`store`](/docs/building-your-application/data-fetching/request-context#store) is for sharing data only during the lifetime of the request and therefore only with **server** components. However, the `store` has the [`transferToClient`](docs/building-your-application/data-fetching/request-context#transfertoclient) method to transmit **keys** from the dictionary to the [WebContext](/docs/building-your-application/data-fetching/web-context) [`store`](/docs/building-your-application/data-fetching/web-context#store).
+By default the [RequestContext](/building-your-application/data-fetching/request-context) [`store`](/building-your-application/data-fetching/request-context#store) is for sharing data only during the lifetime of the request and therefore only with **server** components. However, the `store` has the [`transferToClient`](docs/building-your-application/data-fetching/request-context#transfertoclient) method to transmit **keys** from the dictionary to the [WebContext](/building-your-application/data-fetching/web-context) [`store`](/building-your-application/data-fetching/web-context#store).
 
 Example using Context API:
 
@@ -360,4 +360,4 @@ The Context API by default shares server-web data unless we pass the `serverOnly
 
 > [!NOTE]
 >
-> You can [encrypt store data](/docs/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
+> You can [encrypt store data](/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.

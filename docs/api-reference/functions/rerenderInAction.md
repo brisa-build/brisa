@@ -39,7 +39,7 @@ function handleEvent() {
 
 > [!TIP]
 >
-> Updating [`Action Signals`](/docs/building-your-application/data-fetching/server-actions#action-signals) by default is going to use a `rerenderInAction` with `component` type and `reactivity` mode without you having to specify it. If you specify it, it will fulfill only the `rerenderInAction` you specify.
+> Updating [`Action Signals`](/building-your-application/data-fetching/server-actions#action-signals) by default is going to use a `rerenderInAction` with `component` type and `reactivity` mode without you having to specify it. If you specify it, it will fulfill only the `rerenderInAction` you specify.
 
 ### Support
 

@@ -29,20 +29,20 @@ Then, run `bun run build` to build your application. Finally, run `bun run start
 
 Choose your hosting to deploy:
 
-- [Deploy Brisa app to **Fly.io**](/docs/building-your-application/fly-io)
-- [Deploy Brisa app to **Vercel**](/docs/building-your-application/deploying/vercel)
-- [Deploy Brisa app to **Netlify**](/docs/building-your-application/deploying/netlify)
-- [Deploy Brisa app to **AWS**](/docs/building-your-application/deploying/aws)
-- [Deploy Brisa app to **Render.com**](/docs/building-your-application/deploying/render-com)
+- [Deploy Brisa app to **Fly.io**](/building-your-application/fly-io)
+- [Deploy Brisa app to **Vercel**](/building-your-application/deploying/vercel)
+- [Deploy Brisa app to **Netlify**](/building-your-application/deploying/netlify)
+- [Deploy Brisa app to **AWS**](/building-your-application/deploying/aws)
+- [Deploy Brisa app to **Render.com**](/building-your-application/deploying/render-com)
 
 ## Applications
 
 Build a Desktop, Android or iOS Brisa application.
 
-- [Build a Desktop App](/docs/building-your-application/deploying/desktop-app)
-- [Build a Android App](/docs/building-your-application/deploying/android-app)
-- [Build a iOS App](/docs/building-your-application/deploying/ios-app)
+- [Build a Desktop App](/building-your-application/deploying/desktop-app)
+- [Build a Android App](/building-your-application/deploying/android-app)
+- [Build a iOS App](/building-your-application/deploying/ios-app)
 
 ## Learn more
 
-- [Docker](/docs/building-your-application/deploying/docker) - Learn how to containerize a Brisa application with Docker.
+- [Docker](/building-your-application/deploying/docker) - Learn how to containerize a Brisa application with Docker.
