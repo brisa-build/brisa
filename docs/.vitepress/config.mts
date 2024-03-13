@@ -145,7 +145,7 @@ export default defineConfig({
             items: [
               {
                 text: "Fetching data",
-                link: "TODO",
+                link: "/wip",
               },
             ],
           },
@@ -201,7 +201,7 @@ export default defineConfig({
             items: [
               {
                 text: "Fetching data",
-                link: "TODO",
+                link: "/wip",
               },
             ],
           },
@@ -211,7 +211,7 @@ export default defineConfig({
             items: [
               {
                 text: "Fetching data",
-                link: "TODO",
+                link: "/wip",
               },
             ],
           },
