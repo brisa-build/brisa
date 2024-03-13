@@ -7,7 +7,7 @@ description: Use `context-provider` component to share data with the tree of chi
 
 ### `<context-provider context={Context} value="foo">...</context-provider>`
 
-The `context-provider` component is required to propagate a value from some [context](/docs/building-your-application/components-details/context) to a sub-tree of components.
+The `context-provider` component is required to propagate a value from some [context](/building-your-application/components-details/context) to a sub-tree of components.
 
 The `context-provider` does **not need any import**. You can use the custom element `context-provider` by passing the `context` and `value`. It is a web component because this way the value is going to be shared with the web components and also you can use the same provider in web components.
 
@@ -46,7 +46,7 @@ export default function WebComponent() {
 
 ##### Returns:
 
-- `useContext` returns the context value inside a signal for the calling component. It is determined as the value passed to the closest [`context-provider`](/docs/building-your-application/components-details/context#provider) above the calling component in the tree. If there is no such provider, then the returned value will be the `defaultValue` you have passed to [`createContext`](/docs/building-your-application/components-details/context#create-context-createcontext) for that context. The returned value is up-to-date, reactive under a signal.
+- `useContext` returns the context value inside a signal for the calling component. It is determined as the value passed to the closest [`context-provider`](/building-your-application/components-details/context#provider) above the calling component in the tree. If there is no such provider, then the returned value will be the `defaultValue` you have passed to [`createContext`](/building-your-application/components-details/context#create-context-createcontext) for that context. The returned value is up-to-date, reactive under a signal.
 
 ### Support
 

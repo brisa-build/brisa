@@ -65,7 +65,7 @@ Once activated you can call `brisa dev` to work locally with hotreloading in the
 
 > [!NOTE]
 >
-> Lean how to [deploy a desktop app here](/docs/building-your-application/deploying/tauri).
+> Lean how to [deploy a desktop app here](/building-your-application/deploying/tauri).
 
 ## Additional Considerations
 
@@ -75,7 +75,7 @@ To view the changes in the output, run the `brisa build` command. In the case of
 
 > [!NOTE]
 >
-> Learn more details about static export [here](/docs/building-your-application/deploying/static-exports).
+> Learn more details about static export [here](/building-your-application/deploying/static-exports).
 
 > [!TIP]
 >

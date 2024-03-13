@@ -46,7 +46,7 @@ export function GET({ route: { query, params } }: RequestContext) {
 
 ## Request params
 
-The request that arrives is an extension of the native [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from having everything that the request has, it has extra information of the request, such as the `i18n`, the `route` and more. If you want to know more take a look at [`request context`](/docs/building-your-application/data-fetching/request-context).
+The request that arrives is an extension of the native [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from having everything that the request has, it has extra information of the request, such as the `i18n`, the `route` and more. If you want to know more take a look at [`request context`](/building-your-application/data-fetching/request-context).
 
 ## Request Body
 
@@ -130,7 +130,7 @@ export default {
 
 ## Dynamic routes, catch all and optional catch all routes
 
-API Routes support [dynamic routes](/docs/building-your-application/routing/dynamic-routes), and follow the same file naming rules used for `pages/`.
+API Routes support [dynamic routes](/building-your-application/routing/dynamic-routes), and follow the same file naming rules used for `pages/`.
 
 - `/api/post/a?id=3` → `src/api/user/[slug].ts`
 

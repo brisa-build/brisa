@@ -17,7 +17,7 @@ Even though CSPs are designed to block malicious scripts, there are legitimate s
 
 ### Adding a nonce with Middleware
 
-[Middleware](/docs/building-your-application/routing/middleware) enables you to add headers and generate nonces before the page renders.
+[Middleware](/building-your-application/routing/middleware) enables you to add headers and generate nonces before the page renders.
 
 Every time a page is viewed, a fresh nonce should be generated. This means that you **must use dynamic rendering to add nonces**.
 
@@ -57,7 +57,7 @@ export function responseHeaders(request: RequestContext) {
 }
 ```
 
-By default, Middleware runs on all requests. You can filter Middleware using the `url` or the [`route`](/docs/building-your-application/data-fetching/request-context#route) of the [`Request Context`](/docs/building-your-application/data-fetching/request-context).
+By default, Middleware runs on all requests. You can filter Middleware using the `url` or the [`route`](/building-your-application/data-fetching/request-context#route) of the [`Request Context`](/building-your-application/data-fetching/request-context).
 
 We recommend ignoring these:
 
@@ -76,7 +76,7 @@ export default function middleware(req: RequestContext) {
 
 ### Reading the nonce
 
-You can now read the nonce from a [Server Component](/docs/components-details/server-components) using the [`Request Context`](/docs/building-your-application/data-fetching/request-context):
+You can now read the nonce from a [Server Component](/components-details/server-components) using the [`Request Context`](/building-your-application/data-fetching/request-context):
 
 ```tsx filename="src/page.tsx"
 import type { RequestContext } from "brisa";

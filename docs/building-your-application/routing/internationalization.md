@@ -129,7 +129,7 @@ When using Sub-path Routing, the user would be redirected to `/fr`.
 
 ## Accessing the locale information
 
-You can access the locale information via the [`request context`](/docs/building-your-application/data-fetching/request-context):
+You can access the locale information via the [`request context`](/building-your-application/data-fetching/request-context):
 
 - `locale` contains the currently active locale.
 - `locales` contains all configured locales.
@@ -226,7 +226,7 @@ export default i18nConfig;
 }
 ```
 
-After this, you can consume translations in every part of your app through the [request context](/docs/building-your-application/data-fetching/request-context): `middleware`, `api` routes, `page` routes, all page components, `responseHeaders`, `layout`, `Head` of each page...
+After this, you can consume translations in every part of your app through the [request context](/building-your-application/data-fetching/request-context): `middleware`, `api` routes, `page` routes, all page components, `responseHeaders`, `layout`, `Head` of each page...
 
 > [!IMPORTANT]
 >
@@ -273,7 +273,7 @@ The `t` function:
 
 ### Override Translations
 
-You can employ the `i18n.overrideMessages` method to override messages at the session level. This method is applicable to all server parts using the [RequestContext](/docs/building-your-application/data-fetching/request-context) or in web components utilizing the [WebContext](/docs/building-your-application/data-fetching/web-context).
+You can employ the `i18n.overrideMessages` method to override messages at the session level. This method is applicable to all server parts using the [RequestContext](/building-your-application/data-fetching/request-context) or in web components utilizing the [WebContext](/building-your-application/data-fetching/web-context).
 
 #### Override Translations in Server Parts
 
@@ -848,11 +848,11 @@ The main difference between them is that you can have multiple domains in `domai
 
 `hrefLang` is automatic managed by Brisa, however `rel=canonical` links not.
 
-For these [`domains`](<(#domain-routing)>) that have the same `defaultLocale` we recommend to manage in the [layout](/docs/building-your-application/routing/pages-and-layouts#layout) the [canonical](https://en.wikipedia.org/wiki/Canonical_link_element) links in order to prevent duplicate content issues in search engine optimization.
+For these [`domains`](<(#domain-routing)>) that have the same `defaultLocale` we recommend to manage in the [layout](/building-your-application/routing/pages-and-layouts#layout) the [canonical](https://en.wikipedia.org/wiki/Canonical_link_element) links in order to prevent duplicate content issues in search engine optimization.
 
 ## `finalURL`
 
-The `finalURL` is a field you have access to in the [RequestContext](/docs/building-your-application/data-fetching/request-context) and is the URL of your page, regardless of the fact that for the users it is another one.
+The `finalURL` is a field you have access to in the [RequestContext](/building-your-application/data-fetching/request-context) and is the URL of your page, regardless of the fact that for the users it is another one.
 
 For example, if the user enters to `/es/sobre-nosotros/` the `finalURL` can be `/about-us` because your page is in `src/pages/about-us/index.tsx`.
 

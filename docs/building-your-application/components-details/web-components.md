@@ -602,13 +602,13 @@ export default function DoubleCounter({}, { state, derived }) {
 
 ## Context
 
-To share context between Web Components without prop drilling you can use [context](/docs/components-details/context).
+To share context between Web Components without prop drilling you can use [context](/components-details/context).
 
 To use context take a look to:
 
-- [`createContext`](/docs/components-details/context#create-context-createcontext)
-- [`context-provider`](/docs/components-details/context#provider)
-- [`useContext`](/docs/components-details/context#consume-context-usecontext)
+- [`createContext`](/components-details/context#create-context-createcontext)
+- [`context-provider`](/components-details/context#provider)
+- [`useContext`](/components-details/context#consume-context-usecontext)
 
 Example parent:
 
@@ -634,7 +634,7 @@ export default function SomeChildComponent(props, { useContext }) {
 
 > [!NOTE]
 >
-> Learn more about it [here]([context](/docs/components-details/context).
+> Learn more about it [here]([context](/components-details/context).
 
 ## Template literal `css`
 
@@ -675,7 +675,7 @@ If you use VSCode we recommend [this extension](https://marketplace.visualstudio
 
 To use [`effect`](#effects-effect-method), [`cleanup`](#clean-effects-cleanup-method), [`state`](#state-state-method), [`store`](#store-store-method), [`derived`](#derived-state-and-props-derived-method), [`useContext`](#context) and [`onMount`](#effect-on-mount-onmount-method) functions outside the component it is necessary to create a **custom hook**. This hook should be used before the JSX, not inside.
 
-Unlike other frameworks, in Brisa it is necessary to propagate the [`WebContext`](/docs/building-your-application/data-fetching/web-context), since each web component has a different one and self-manages its own life.
+Unlike other frameworks, in Brisa it is necessary to propagate the [`WebContext`](/building-your-application/data-fetching/web-context), since each web component has a different one and self-manages its own life.
 
 Example defining a custom hook:
 
@@ -743,7 +743,7 @@ export default function ThemeProvider(
 
 ## Portals (`createPortal`)
 
-[`createPortal`](/docs/api-reference/functions/createPortal) lets you render some children into a different part of the DOM. `createPortal(children, domNode)`.
+[`createPortal`](/api-reference/functions/createPortal) lets you render some children into a different part of the DOM. `createPortal(children, domNode)`.
 
 To create a portal, call `createPortal`, passing some JSX, and the DOM node where it should be rendered:
 
@@ -767,7 +767,7 @@ A portal only changes the physical placement of the DOM node. In every other way
 
 ## Inject HTML (`dangerHTML`)
 
-Make situations that we want to inject HTML that we have in string to the DOM. For these occasions, you can use the [`dangerHTML`](/docs/api-reference/functions/dangerHTML) function. Since without this function it is escaped by security.
+Make situations that we want to inject HTML that we have in string to the DOM. For these occasions, you can use the [`dangerHTML`](/api-reference/functions/dangerHTML) function. Since without this function it is escaped by security.
 
 ```tsx
 import { dangerHTML } from "brisa";
@@ -789,7 +789,7 @@ export default function SomeComponent() {
 
 ## Suspense component phase
 
-You can generate a [`suspense`](/docs/building-your-application/routing/suspense-and-streaming#suspense-in-web-components) phase if your web-component is **async** and you want to show something while the promise is pending. It also works during HTML streaming.
+You can generate a [`suspense`](/building-your-application/routing/suspense-and-streaming#suspense-in-web-components) phase if your web-component is **async** and you want to show something while the promise is pending. It also works during HTML streaming.
 
 ```tsx
 export default async function MyWebComponent({}, { state }) {
@@ -803,11 +803,11 @@ MyWebComponent.suspense = (props, webContext) => <div>loading...</div>;
 
 > [!NOTE]
 >
-> See more details [here](/docs/building-your-application/routing/suspense-and-streaming#suspense-in-web-components) to learn more.
+> See more details [here](/building-your-application/routing/suspense-and-streaming#suspense-in-web-components) to learn more.
 
 ## Handle component error
 
-You can generate a [`error`](/docs/building-your-application/routing/custom-error#errors-in-component-level) phase if your web-component **throws an error** and you want to show something without crash the rest of the page.
+You can generate a [`error`](/building-your-application/routing/custom-error#errors-in-component-level) phase if your web-component **throws an error** and you want to show something without crash the rest of the page.
 
 ```tsx
 import { WebContext } from "brisa";
@@ -823,7 +823,7 @@ SomeWebComponent.error = ({ error, ...props }, webContext: WebContext) => {
 
 > [!NOTE]
 >
-> See more details [here](/docs/building-your-application/routing/custom-error#errors-in-component-level) to learn more.
+> See more details [here](/building-your-application/routing/custom-error#errors-in-component-level) to learn more.
 
 ## Using Web Components in Web Components
 
@@ -1061,7 +1061,7 @@ Choosing between a **web component** and a **markup generator** depends on the n
 
 > [!CAUTION]
 >
-> Avoid sending the [`WebContext`](/docs/building-your-application/data-fetching/web-context) or parts of them to the markup generators, you can send signals ([props](#props), [state](#state-state-method), [derived](#derived-state-and-props-derived-method), [`context`](#context) and [store](#store-store-method) signals) and static values without issues.
+> Avoid sending the [`WebContext`](/building-your-application/data-fetching/web-context) or parts of them to the markup generators, you can send signals ([props](#props), [state](#state-state-method), [derived](#derived-state-and-props-derived-method), [`context`](#context) and [store](#store-store-method) signals) and static values without issues.
 
 ## UI-agnostic
 

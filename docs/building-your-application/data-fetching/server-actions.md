@@ -40,7 +40,7 @@ While web-components these actions are browser events and are processed from the
 
 > [!CAUTION]
 >
-> Server actions only work with the `output: "server"` [configuration](/docs/building-your-application/configuring/output) (the default).
+> Server actions only work with the `output: "server"` [configuration](/building-your-application/configuring/output) (the default).
 
 ### Forms
 
@@ -180,7 +180,7 @@ TODO: Check that this example works after server-side state implementation
 
 ### Debounce
 
-Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchStart`...) to allow to [debounce](/docs/api-reference/extended-html-attributes/debounceEvent) the action call by replacing the `on` prefix to `debounce`.
+Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchStart`...) to allow to [debounce](/api-reference/extended-html-attributes/debounceEvent) the action call by replacing the `on` prefix to `debounce`.
 
 ```tsx
 <input
@@ -208,7 +208,7 @@ TODO
 
 Optimistic updates are a strategy used in client-server architectures to enhance the user experience by locally updating the user interface (UI) optimistically before receiving confirmation from the server about the success of an operation. This approach aims to reduce perceived latency and provide a more responsive application.
 
-In Brisa, we support optimistic updates to manage server actions, and this is achieved through the use of the [**`setOptimistic`**](/docs/building-your-application/data-fetching/web-context#setOptimistic) method within the [`store`](/docs/building-your-application/data-fetching/web-context#store) of [web components](/docs/building-your-application/components-details/web-components).
+In Brisa, we support optimistic updates to manage server actions, and this is achieved through the use of the [**`setOptimistic`**](/building-your-application/data-fetching/web-context#setOptimistic) method within the [`store`](/building-your-application/data-fetching/web-context#store) of [web components](/building-your-application/components-details/web-components).
 
 Example of web component (`like-button`):
 
@@ -262,7 +262,7 @@ function Page({}, request: RequestContext)
 }
 ```
 
-In the server component, we utilize the [`transferToClient`](/docs/building-your-application/data-fetching/request-context) method to relay the '`likes`' data to the client-side store. Upon executing the action, the server component interacts with the database, and if successful, it updates the shared store with the new 'likes' count.
+In the server component, we utilize the [`transferToClient`](/building-your-application/data-fetching/request-context) method to relay the '`likes`' data to the client-side store. Upon executing the action, the server component interacts with the database, and if successful, it updates the shared store with the new 'likes' count.
 
 > [!IMPORTANT]
 >
@@ -293,11 +293,11 @@ In this example, the `action-error` web component takes an `actionId` prop and u
 
 > [!NOTE]
 >
-> The same `actionId` as the value for the [`indicate[Event]`](/docs/api-reference/extended-html-attributes/indicateEvent) linking the indicator to the corresponding server action. This cohesive association allows developers to seamlessly integrate error handling into their web components, ensuring that meaningful error information is presented to users when server actions encounter issues.
+> The same `actionId` as the value for the [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) linking the indicator to the corresponding server action. This cohesive association allows developers to seamlessly integrate error handling into their web components, ensuring that meaningful error information is presented to users when server actions encounter issues.
 
 ### `rerenderInAction`
 
-The [`rerenderInAction`](/docs/api-reference/functions/rerenderInAction) method is used to rerender the component or the page
+The [`rerenderInAction`](/api-reference/functions/rerenderInAction) method is used to rerender the component or the page
 inside a server action. Outside of an action, it throws an error.
 
 #### Params:
@@ -327,7 +327,7 @@ TODO
 
 ### `navigate`
 
-If you would like to navigate the user to a different route after the completion of a Server Action, you can use [`navigate`](/docs/app/api-reference/functions/navigate) API. `navigate` needs to be called outside of the `try/catch` block:
+If you would like to navigate the user to a different route after the completion of a Server Action, you can use [`navigate`](/app/api-reference/functions/navigate) API. `navigate` needs to be called outside of the `try/catch` block:
 
 ```tsx
 import { navigate } from "brisa";
@@ -345,7 +345,7 @@ export async function createPost(id: string) {
 
 ### Cookies
 
-You can access to the request inside the server action to read cookies from headers, then you can communicate via request store to the [`responseHeaders`](/docs/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages) of the page:
+You can access to the request inside the server action to read cookies from headers, then you can communicate via request store to the [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages) of the page:
 
 ```tsx
 import type { RequestContext } from "brisa";
@@ -585,6 +585,6 @@ The `POST` request generated by the Server Action consistently yields an HTML st
 
 - `X-Mode`: This header is crucial for determining whether the stream corresponds to `reactivity` or `transition`.
 - `X-Navigate`: This header indicates that instead of observing the stream, the client should navigate to another route.
-- `X-S`: This header shares only the modified store that was already the client's and the one that was transferred with the [`transferToClient`](/docs/building-your-application/routing/pages-and-layouts) method.
+- `X-S`: This header shares only the modified store that was already the client's and the one that was transferred with the [`transferToClient`](/building-your-application/routing/pages-and-layouts) method.
 
 When utilizing a reverse proxy, it is imperative to ensure the upstream propagation of these headers for seamless communication between the client and the backend server.

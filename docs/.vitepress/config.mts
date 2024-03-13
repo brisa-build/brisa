@@ -88,6 +88,10 @@ export default defineConfig({
                 text: "Websockets",
                 link: "/building-your-application/routing/websockets",
               },
+              {
+                text: "Static assets",
+                link: "/building-your-application/routing/static-assets",
+              },
             ],
           },
 
@@ -144,7 +148,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
-                text: "Fetching data",
+                text: "WIP",
                 link: "/wip",
               },
             ],
@@ -200,7 +204,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
-                text: "Fetching data",
+                text: "WIP",
                 link: "/wip",
               },
             ],
@@ -210,7 +214,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
-                text: "Fetching data",
+                text: "WIP",
                 link: "/wip",
               },
             ],
