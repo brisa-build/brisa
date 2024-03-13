@@ -572,9 +572,46 @@ store.get("some-key"); // In the server is automatic decrypted
 >
 > It is important to note that encryption is a blocking process and may increase the time it takes for the request. It also exposes public data for the server action to access. Before using encrypt, consider if there is a better way to have this data from the action like querying a DB, without the need to expose it in the client.
 
-## Using Server Component `props` in Server Actions
+## Props in Server Actions
 
-TODO
+By default the only props you can access within a server action are other server actions. This is for **security reasons**. In Brisa we do not want to expose server data in the client by default so that later it can be accessed from the server actions. However, you can transfer any server store property to the client allowing to use this value in the server action.
+
+Instead:
+
+```tsx
+export default function ServerComponent({ onAction, foo }) {
+  function onClickAction(e) {
+    onAction(e); // ✅ Server actions are allowed
+    console.log(foo.bar); // ❌ foo is undefined
+  }
+
+  return <button onClick={onClickAction}>Run action</button>;
+}
+```
+
+Do this:
+
+```tsx
+export default function ServerComponent({ onAction, foo }, { store }) {
+  store.set("foo", foo);
+
+  // Encrypt it or not depending on whether it is sensitive data or not.
+  store.transferToClient(["foo"], { encrypt: true });
+
+  function onClickAction(e) {
+    onAction(e); // ✅ Server actions are allowed
+    console.log(store.get("foo").bar); // ✅
+  }
+
+  return <button onClick={onClickAction}>Run action</button>;
+}
+```
+
+If we do not encrypt it you can use the same field of the store in the web components and all the changes you make in the actions will react in all the web components that have the signal.
+
+> [!NOTE]
+>
+> Learn more in [transfer sensitive data](#transfer-sensitive-data) and in [`store.transferToClient`](/building-your-application/data-fetching/request-context#transfertoclient) documentation.
 
 ## Using Server Actions in a Reverse Proxy
 

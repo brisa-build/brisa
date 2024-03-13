@@ -77,7 +77,7 @@ export default async function resolveAction({
         "auto-generated id.",
         "",
       ],
-      "Docs: https://brisa.build/building-your-application/data-fetching/server-actions##using-server-component-props-in-server-actions)",
+      "Docs: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions)",
     );
 
     return new Response(error.message, { status: 500 });
