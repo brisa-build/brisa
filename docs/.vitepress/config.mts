@@ -23,7 +23,7 @@ export default defineConfig({
       { text: "Home", link: "/", activeMatch: "^/$|^/guide/" },
       {
         text: "Documentation",
-        link: "01-getting-started/01-installation.md",
+        link: "/getting-started/installation",
       },
     ],
     sidebar: [
@@ -33,13 +33,13 @@ export default defineConfig({
         items: [
           {
             text: "Installation",
-            link: "01-getting-started/01-installation.md",
+            link: "/getting-started/installation",
           },
           {
             text: "Project structure",
-            link: "01-getting-started/02-project-structure.md",
+            link: "/getting-started/project-structure",
           },
-          { text: "index", link: "01-getting-started/index.md" },
+          { text: "index", link: "/getting-started/index.md" },
         ],
       },
       {
@@ -51,43 +51,43 @@ export default defineConfig({
             items: [
               {
                 text: "Pages and Layouts",
-                link: "02-building-your-application/01-routing/01-pages-and-layouts.md",
+                link: "/building-your-application/routing/pages-and-layouts",
               },
               {
                 text: "Dynamic Routes",
-                link: "02-building-your-application/01-routing/02-dynamic-routes.md",
+                link: "/building-your-application/routing/dynamic-routes",
               },
               {
                 text: "Linking and Navigating",
-                link: "02-building-your-application/01-routing/03-linking-and-navigating.md",
+                link: "/building-your-application/routing/linking-and-navigating",
               },
               {
                 text: "Custom error",
-                link: "02-building-your-application/01-routing/04-custom-error.md",
+                link: "/building-your-application/routing/custom-error",
               },
               {
                 text: "Api Routes",
-                link: "02-building-your-application/01-routing/05-api-routes.md",
+                link: "/building-your-application/routing/api-routes",
               },
               {
                 text: "Middleware",
-                link: "02-building-your-application/01-routing/06-middleware.md",
+                link: "/building-your-application/routing/middleware",
               },
               {
                 text: "Authentication",
-                link: "02-building-your-application/01-routing/07-authenticating.md",
+                link: "/building-your-application/routing/authenticating",
               },
               {
                 text: "Internationalization",
-                link: "02-building-your-application/01-routing/08-internationalization.md",
+                link: "/building-your-application/routing/internationalization",
               },
               {
                 text: "Suspense and streaming",
-                link: "02-building-your-application/01-routing/09-suspense-and-streaming.md",
+                link: "/building-your-application/routing/suspense-and-streaming",
               },
               {
                 text: "Websockets",
-                link: "02-building-your-application/01-routing/10-websockets.md",
+                link: "/building-your-application/routing/websockets",
               },
             ],
           },
@@ -98,23 +98,23 @@ export default defineConfig({
             items: [
               {
                 text: "Server components",
-                link: "02-building-your-application/02-components-details/01-server-components.md",
+                link: "/building-your-application/components-details/server-components",
               },
               {
                 text: "Web components",
-                link: "02-building-your-application/02-components-details/02-web-components.md",
+                link: "/building-your-application/components-details/web-components",
               },
               {
                 text: "Context",
-                link: "02-building-your-application/02-components-details/03-context.md",
+                link: "/building-your-application/components-details/context",
               },
               {
                 text: "Forms",
-                link: "02-building-your-application/02-components-details/04-forms.md",
+                link: "/building-your-application/components-details/forms",
               },
               {
                 text: "External libraries",
-                link: "02-building-your-application/02-components-details/05-external-libraries.md",
+                link: "/building-your-application/components-details/external-libraries",
               },
             ],
           },
@@ -124,19 +124,19 @@ export default defineConfig({
             items: [
               {
                 text: "Fetching data",
-                link: "02-building-your-application/03-data-fetching/01-fetching.md",
+                link: "/building-your-application/data-fetching/fetching",
               },
               {
                 text: "Request context",
-                link: "02-building-your-application/03-data-fetching/02-request-context.md",
+                link: "/building-your-application/data-fetching/request-context",
               },
               {
                 text: "Web context",
-                link: "02-building-your-application/03-data-fetching/03-web-context.md",
+                link: "/building-your-application/data-fetching/web-context",
               },
               {
                 text: "Server actions",
-                link: "02-building-your-application/03-data-fetching/04-server-actions.md",
+                link: "/building-your-application/data-fetching/server-actions",
               },
             ],
           },
@@ -156,43 +156,43 @@ export default defineConfig({
             items: [
               {
                 text: "Typescript",
-                link: "02-building-your-application/06-configuring/01-typescript.md",
+                link: "/building-your-application/configuring/typescript",
               },
               {
                 text: "Environment variables",
-                link: "02-building-your-application/06-configuring/02-environment-variables.md",
+                link: "/building-your-application/configuring/environment-variables",
               },
               {
                 text: "TLS",
-                link: "02-building-your-application/06-configuring/03-tls.md",
+                link: "/building-your-application/configuring/tls",
               },
               {
                 text: "Zig Rust C files",
-                link: "02-building-your-application/06-configuring/04-zig-rust-c-files.md",
+                link: "/building-your-application/configuring/zig-rust-c-files",
               },
               {
                 text: "Trailing slash",
-                link: "02-building-your-application/06-configuring/05-trailing-slash.md",
+                link: "/building-your-application/configuring/trailing-slash",
               },
               {
                 text: "Asset prefix",
-                link: "02-building-your-application/06-configuring/06-asset-prefix.md",
+                link: "/building-your-application/configuring/asset-prefix",
               },
               {
                 text: "Plugins",
-                link: "02-building-your-application/06-configuring/07-plugins.md",
+                link: "/building-your-application/configuring/plugins",
               },
               {
                 text: "Output",
-                link: "02-building-your-application/06-configuring/08-output.md",
+                link: "/building-your-application/configuring/output",
               },
               {
                 text: "Content Security Policy",
-                link: "02-building-your-application/06-configuring/09-content-security-policy.md",
+                link: "/building-your-application/configuring/content-security-policy",
               },
               {
                 text: "Debugging",
-                link: "02-building-your-application/06-configuring/13-debugging.md",
+                link: "/building-your-application/configuring/debugging",
               },
             ],
           },
@@ -219,47 +219,47 @@ export default defineConfig({
           {
             text: "🚀 Deploying",
             collapsed: true,
-            link: "02-building-your-application/09-deploying/index.md",
+            link: "/building-your-application/deploying/index",
             items: [
               {
                 text: "Fly io",
-                link: "02-building-your-application/09-deploying/01-fly-io.md",
+                link: "/building-your-application/deploying/fly-io",
               },
               {
                 text: "Vercel",
-                link: "02-building-your-application/09-deploying/02-vercel.md",
+                link: "/building-your-application/deploying/vercel",
               },
               {
                 text: "Netlify",
-                link: "02-building-your-application/09-deploying/03-netlify.md",
+                link: "/building-your-application/deploying/netlify",
               },
               {
                 text: "AWS",
-                link: "02-building-your-application/09-deploying/04-aws.md",
+                link: "/building-your-application/deploying/aws",
               },
               {
                 text: "Render com",
-                link: "02-building-your-application/09-deploying/05-render-com.md",
+                link: "/building-your-application/deploying/render-com",
               },
               {
                 text: "Docker",
-                link: "02-building-your-application/09-deploying/06-docker.md",
+                link: "/building-your-application/deploying/docker",
               },
               {
                 text: "Static exports",
-                link: "02-building-your-application/09-deploying/07-static-exports.md",
+                link: "/building-your-application/deploying/static-exports",
               },
               {
                 text: "Desktop app",
-                link: "02-building-your-application/09-deploying/08-desktop-app.md",
+                link: "/building-your-application/deploying/desktop-app",
               },
               {
                 text: "Android app",
-                link: "02-building-your-application/09-deploying/09-android-app.md",
+                link: "/building-your-application/deploying/android-app",
               },
               {
                 text: "iOS app",
-                link: "02-building-your-application/09-deploying/10-ios-app.md",
+                link: "/building-your-application/deploying/ios-app",
               },
             ],
           },
@@ -267,7 +267,7 @@ export default defineConfig({
       },
       {
         text: "⚙️ API Reference",
-        link: "03-api-reference/index.md",
+        link: "/api-reference/index",
         collapsed: false,
         items: [
           {
@@ -276,7 +276,7 @@ export default defineConfig({
             items: [
               {
                 text: "Context provider",
-                link: "03-api-reference/01-components/context-provider.md",
+                link: "/api-reference/components/context-provider",
               },
             ],
           },
@@ -286,27 +286,27 @@ export default defineConfig({
             items: [
               {
                 text: "createContext",
-                link: "03-api-reference/02-functions/createContext.md",
+                link: "/api-reference/functions/createContext",
               },
               {
                 text: "createPortal",
-                link: "03-api-reference/02-functions/createPortal.md",
+                link: "/api-reference/functions/createPortal",
               },
               {
                 text: "dangerHTML",
-                link: "03-api-reference/02-functions/dangerHTML.md",
+                link: "/api-reference/functions/dangerHTML",
               },
               {
                 text: "navigate",
-                link: "03-api-reference/02-functions/navigate.md",
+                link: "/api-reference/functions/navigate",
               },
               {
                 text: "notFound",
-                link: "03-api-reference/02-functions/notFound.md",
+                link: "/api-reference/functions/notFound",
               },
               {
                 text: "rerenderInAction",
-                link: "03-api-reference/02-functions/rerenderInAction.md",
+                link: "/api-reference/functions/rerenderInAction",
               },
             ],
           },
@@ -316,26 +316,26 @@ export default defineConfig({
             items: [
               {
                 text: "debounceEvent",
-                link: "03-api-reference/03-extended-html-attributes/debounceEvent.md",
+                link: "/api-reference/extended-html-attributes/debounceEvent",
               },
               {
-                link: "03-api-reference/03-extended-html-attributes/indicateEvent.md",
+                link: "/api-reference/extended-html-attributes/indicateEvent",
                 text: "indicateEvent",
               },
               {
-                link: "03-api-reference/03-extended-html-attributes/key.md",
+                link: "/api-reference/extended-html-attributes/key",
                 text: "key",
               },
               {
-                link: "03-api-reference/03-extended-html-attributes/ref.md",
+                link: "/api-reference/extended-html-attributes/ref",
                 text: "ref",
               },
               {
-                link: "03-api-reference/03-extended-html-attributes/serverOnly.md",
+                link: "/api-reference/extended-html-attributes/serverOnly",
                 text: "serverOnly",
               },
               {
-                link: "03-api-reference/03-extended-html-attributes/skipSSR.md",
+                link: "/api-reference/extended-html-attributes/skipSSR",
                 text: "skipSSR",
               },
             ],
