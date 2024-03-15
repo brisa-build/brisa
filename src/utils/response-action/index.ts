@@ -56,7 +56,7 @@ export default async function responseAction(req: RequestContext) {
 
   // Transfer client store to server store
   if (storeRaw) {
-    const entries = JSON.parse(storeRaw);
+    let entries = JSON.parse(decodeURIComponent(storeRaw));
     for (const [key, value] of entries) {
       try {
         let storeValue = value;
@@ -120,7 +120,9 @@ export default async function responseAction(req: RequestContext) {
   // Transfer server store to client store
   response.headers.set(
     "X-S",
-    JSON.stringify(getClientStoreEntries(req, encryptedKeys)),
+    encodeURIComponent(
+      JSON.stringify(getClientStoreEntries(req, encryptedKeys)),
+    ),
   );
 
   return response;

@@ -17,6 +17,7 @@ import { serialize } from "../serialization";
 const actionRPCCode = await injectActionRPCCode();
 const actionRPCLazyCode = await injectActionRPCLazyCode();
 const INDICATOR_ID = "__ind:action";
+const stringify = (obj: any) => encodeURIComponent(JSON.stringify(obj));
 
 async function simulateRPC({
   elementName = "button",
@@ -209,7 +210,12 @@ describe("utils", () => {
       >;
 
       expect(headers["x-action"]).toBe("a1_1");
-      expect(headers["x-s"]).toBe(`[["a","b"],["c","d"]]`);
+      expect(headers["x-s"]).toBe(
+        stringify([
+          ["a", "b"],
+          ["c", "d"],
+        ]),
+      );
       expect(headers["x-actions"]).toBeEmpty();
     });
 
@@ -226,7 +232,7 @@ describe("utils", () => {
       >;
 
       expect(headers["x-action"]).toBe("a1_1");
-      expect(headers["x-s"]).toBe(`[["c","d"]]`);
+      expect(headers["x-s"]).toBe(stringify([["c", "d"]]));
       expect(headers["x-actions"]).toBeEmpty();
     });
 

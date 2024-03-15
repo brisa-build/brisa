@@ -52,7 +52,9 @@ async function rpc(
         "x-action": actionId,
         "x-actions": actionsDeps ?? "",
         // @ts-ignore
-        "x-s": stringify(store ? [..._s.Map.entries()] : $window._S) ?? "",
+        "x-s": encodeURIComponent(
+          stringify(store ? [..._s.Map.entries()] : $window._S) ?? "",
+        ),
       },
       body: isFormData
         ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)

@@ -56,6 +56,23 @@ describe("utils", () => {
       expect(result).toEqual([["foo", "bar"]]);
     });
 
+    it('should emojis work inside the "x-s" header', () => {
+      const headers = new Headers();
+
+      headers.set("x-s", encodeURIComponent(JSON.stringify([["foo", "🚀"]])));
+
+      const req = extendRequestContext({
+        originalRequest: new Request(url, { headers }),
+      });
+
+      req.store.set("foo", "🚀");
+      req.store.set("bar", "baz");
+
+      const result = getClientStoreEntries(req, emptySet);
+
+      expect(result).toEqual([["foo", "🚀"]]);
+    });
+
     it("should return an modified array of entries that exists on 'x-s' header", () => {
       const headers = new Headers();
 

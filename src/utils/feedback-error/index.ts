@@ -15,5 +15,8 @@ export default function feedbackError(error: Error) {
       "https://brisa.build/docs/building-your-application/configuring/zig-rust-c-files",
       "",
     ]);
+    return;
   }
+
+  logError([error.stack?.toString?.() ?? error.message, ""]);
 }

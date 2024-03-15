@@ -7,7 +7,9 @@ export default function getClientStoreEntries(
 ) {
   const map = new Map<string | symbol, any>();
   const headersStoreRaw = req.headers.get("x-s")!;
-  const headersStore = headersStoreRaw ? JSON.parse(headersStoreRaw) : [];
+  const headersStore = headersStoreRaw
+    ? JSON.parse(decodeURIComponent(headersStoreRaw))
+    : [];
 
   for (let [key] of headersStore) {
     let value = req.store.get(key);

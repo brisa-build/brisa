@@ -11,15 +11,15 @@ import path from "node:path";
 import extendRequestContext from "@/utils/extend-request-context";
 import responseAction from ".";
 import { getConstants } from "@/constants";
-import {
-  ENCRYPT_NONTEXT_PREFIX,
-  ENCRYPT_PREFIX,
-  encrypt,
-} from "@/utils/crypto";
+import { ENCRYPT_NONTEXT_PREFIX, encrypt } from "@/utils/crypto";
 
 const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGE = "http://locahost/es/somepage";
 let logMock: ReturnType<typeof spyOn>;
+
+function stringify(value: any) {
+  return encodeURIComponent(JSON.stringify(value));
+}
 
 describe("utils", () => {
   beforeEach(() => {
@@ -52,18 +52,19 @@ describe("utils", () => {
 
       const res = await responseAction(req);
 
-      expect(res.headers.get("x-s")).toEqual("[]");
+      expect(res.headers.get("x-s")).toEqual(stringify([]));
       expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
     });
 
     it('should be possible to access to store variables from "x-s" header', async () => {
+      const xs = stringify([["foo", "bar"]]);
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             "x-action": "a1_1",
-            "x-s": JSON.stringify([["foo", "bar"]]),
+            "x-s": xs,
           },
           body: JSON.stringify([
             {
@@ -76,7 +77,7 @@ describe("utils", () => {
       const res = await responseAction(req);
 
       expect(req.store.get("foo")).toBe("bar");
-      expect(res.headers.get("x-s")).toEqual('[["foo","bar"]]');
+      expect(res.headers.get("x-s")).toEqual(xs);
     });
 
     it("should add the correct param when using form-data", async () => {
@@ -183,7 +184,7 @@ describe("utils", () => {
 
       const res = await responseAction(req);
 
-      expect(res.headers.get("x-s")).toEqual("[]");
+      expect(res.headers.get("x-s")).toEqual(stringify([]));
       expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
@@ -210,7 +211,7 @@ describe("utils", () => {
 
       const res = await responseAction(req);
 
-      expect(res.headers.get("x-s")).toEqual("[]");
+      expect(res.headers.get("x-s")).toEqual(stringify([]));
       expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
@@ -237,7 +238,7 @@ describe("utils", () => {
 
       const res = await responseAction(req);
 
-      expect(res.headers.get("x-s")).toEqual("[]");
+      expect(res.headers.get("x-s")).toEqual(stringify([]));
       expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
@@ -247,7 +248,7 @@ describe("utils", () => {
     });
 
     it('should decrypt the store variables from "x-s" header that starts with ENCRYPT_PREFIX', async () => {
-      const xs = JSON.stringify([["sensitive-data", encrypt("foo")]]);
+      const xs = stringify([["sensitive-data", encrypt("foo")]]);
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
@@ -271,7 +272,7 @@ describe("utils", () => {
     });
 
     it('should decrypt the store variables from "x-s" header that starts with ENCRYPT_NONTEXT_PREFIX', async () => {
-      const xs = JSON.stringify([["sensitive-data", encrypt({ foo: "bar" })]]);
+      const xs = stringify([["sensitive-data", encrypt({ foo: "bar" })]]);
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
@@ -291,6 +292,30 @@ describe("utils", () => {
       const res = await responseAction(req);
 
       expect(req.store.get("sensitive-data")).toEqual({ foo: "bar" });
+      expect(res.headers.get("x-s")).toEqual(xs);
+    });
+
+    it('should emojis work inside "x-s" header', async () => {
+      const xs = stringify([["sensitive-data", "👍"]]);
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-s": xs,
+          },
+          body: JSON.stringify([
+            {
+              foo: "bar",
+            },
+          ]),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(req.store.get("sensitive-data")).toBe("👍");
       expect(res.headers.get("x-s")).toEqual(xs);
     });
 
@@ -336,7 +361,7 @@ describe("utils", () => {
         "--------------------------",
       ]);
       expect(res.headers.get("x-s")).toBe(
-        JSON.stringify([["sensitive-data", null]]),
+        stringify([["sensitive-data", null]]),
       );
     });
   });
