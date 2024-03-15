@@ -129,31 +129,25 @@ async function onAction() {
 
 We recommend using HTML validation like `required` and `type="email"` for basic client-side form validation.
 
-For more advanced server-side validation, you can use a library like [zod](https://zod.dev/) to validate the form fields before mutating the data, together with [state](#server-side-state). Whether `state` can be used in server components for non-sensitive data. Brisa will serialize the `state` of the server components and it will live in the HTML:
+For more advanced server-side validation, you can use a library like [zod](https://zod.dev/) to validate the form fields before mutating the data, together with [store](#server-side-store). Whether `state` can be used in server components for non-sensitive data. Brisa will serialize the `state` of the server components and it will live in the HTML:
 
 ```tsx
-import type { RequestContext } from "brisa";
+import { rerenderInAction, type RequestContext } from "brisa";
 import { z } from "zod";
 
 const schema = z.object({
-  email: z.string({
-    invalid_type_error: "Invalid Email",
-  }),
+  email: z.string().email({ message: "Invalid email" }),
 });
 
-function Errors(props: { errors?: string[] }) {
-  if (!props.errors?.length) return null;
-  return (
-    <div>
-      {props.errors.map((err) => (
-        <p key={err}>{err}</p>
-      ))}
-    </div>
-  );
-}
+// Reactive server component without the need to create a client component:
+export default function Form({}, { store }: RequestContext) {
+  const errors = store.get("errors");
 
-export default function Form({}, { state }: RequestContext) {
-  const errors = state();
+  // You extend the life of the store from request-time:
+  //  render (server) → 💀
+  // to:
+  //  render (server) → client → action (server) → rerender (server) → client → ...
+  store.transferToClient(["errors"]);
 
   return (
     <form
@@ -161,12 +155,18 @@ export default function Form({}, { state }: RequestContext) {
         const email = e.formData.get("email");
         const result = schema.safeParse({ email });
 
-        if (!result.success) {
-          errors.value = result.error.format();
-        }
+        store.set("errors", result.success ? null : result.error.format());
+
+        // rerenderInAction is used to make the server components reactively react
+        // to the store change as well. If rerenderInAction is not used, only the
+        // web components that are listening to the store.get('errors') signal
+        // react to the changes.
+        rerenderInAction({ type: "page" });
       }}
     >
-      <Errors errors={errors?.value?.name?._errors} />
+      <input name="email" type="text" />
+      {errors?.email && <p>{errors.email._errors.toString()}</p>}
+      <button type="submit">Submit</button>
     </form>
   );
 }
@@ -175,8 +175,6 @@ export default function Form({}, { state }: RequestContext) {
 > [!IMPORTANT]
 >
 > Before mutating data, you should always ensure a user is also authorized to perform the action. See [Authentication and Authorization](#authentication-and-authorization).
-
-TODO: Check that this example works after server-side state implementation
 
 ### Debounce
 
@@ -200,7 +198,7 @@ The time unit consistently remains in milliseconds. In this example, the call to
 >
 > This is only implemented for server actions, for browsers events inside web components it does not apply since we do not modify the original event.
 
-### Server-side state
+### Server-side store
 
 TODO
 
@@ -417,6 +415,8 @@ TODO: Verify that is working the example
 
 ### Action Signals
 
+From the server you can consume a [`store`](#store-as-action-signal) that by default has a limited lifetime and only lives on **request-time**. However, **you can expand the lifetime** of some properties of the store with the method: [`transferToClient`](/building-your-application/data-fetching/request-context#transfertoclient). The moment you do this, not only do you expand its life in client-time, but you can then re-use it in action-time.
+
 Defining a Server Action inside a component creates a [closure](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures) where the action has access to the outer function's scope. For example, the `onClick` action has access to the `foo` variable:
 
 ```tsx filename="src/pages/index.tsx"
@@ -435,39 +435,40 @@ export default function Page() {
 
 However, only static variables can be reused. In Brisa for **security** we don't expose server variables in the client directly to then pass them back to the server action. So, if instead of the string `bar` it would be `Math.random()` it would be a different value in rendering-time than action-time.
 
-> render _(server)_ → HTML _(client)_ → action _(server)_ → render _(server)_ → ...
+> render _(server)_ → HTML _(client)_ → action _(server)_ → HTML _(client)_ ...
 
-For these cases, you can use the **action signals** through the [`state`](#server-side-state) method to improve the communication between render and action.
+For these cases, you can use the **action signals** through the [`store`](#server-side-store) method to improve the communication between render and action.
 
 ```tsx filename="src/pages/index.tsx"
 import type { RequestContext } from "brisa";
 
-export default function Page({}, { state }: RequestContext) {
+export default function Page({}, { store }: RequestContext) {
   // set communication render-value
-  const foo = state(Math.random());
+  store.set("foo", Math.random());
+  store.transferToClient(["foo"]);
 
   function onClick() {
     // get communication render-value
-    const renderFooValue = foo.value;
+    const renderFooValue = store.get("foo");
     // ..
-    // set communication action-render:
-    foo.value = Math.random();
+    // set communication action-client:
+    store.set("foo", Math.random());
   }
 
   return (
     <button onClick={onClick}>
       {/* display "render" and "action" value */}
-      {foo.value}
+      {store.get("foo")}
     </button>
   );
 }
 ```
 
-Only in these cases, the `state` will be exposed in the HTML, via comments.
+Only in these cases, these `store` properties will be exposed in the HTML.
 
 > [!TIP]
 >
-> Changing the value of the action signal within the action will also reflect the change in the rendering. The concept is similar to the `state` of web components.
+> Changing the value of the action signal within the action will also reflect the change in the rendering and also, reactively, to all web components that consume the same store property. The concept is similar to the `store` of web components.
 
 > [!IMPORTANT]
 >
