@@ -2,7 +2,7 @@ import type { RerenderInActionProps } from "@/types";
 
 export const PREFIX_MESSAGE = "Error rerendering within action: ";
 export const SUFFIX_MESSAGE =
-  "\nPlease use the 'rerenderInAction' function inside a server action.\nMore details: https://brisa.build/docs/components-details/server-actions#rerenderinaction";
+  "\nPlease use the 'rerenderInAction' function inside a server action.\nMore details: https://brisa.build/components-details/server-actions#rerenderinaction";
 
 export default function rerenderInAction({
   type = "component",

@@ -12,7 +12,7 @@ export default function feedbackError(error: Error) {
       "",
       "Docs:",
       "",
-      "https://brisa.build/docs/building-your-application/configuring/zig-rust-c-files",
+      "https://brisa.build/building-your-application/configuring/zig-rust-c-files",
       "",
     ]);
     return;

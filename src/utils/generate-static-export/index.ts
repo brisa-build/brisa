@@ -156,7 +156,7 @@ async function createSoftRedirectToLocale({
     "To solve this, you can generate a hard redirect in your hosting server.",
     "",
     "To do it, you can follow the instructions in the docs:",
-    "https://brisa.build/docs/building-your-application/deploying/static-exports#hard-redirects",
+    "https://brisa.build/building-your-application/deploying/static-exports#hard-redirects",
   ]);
 
   await Bun.write(htmlPath, html);
