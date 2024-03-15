@@ -69,7 +69,7 @@ export default function processClientAst(ast: ESTree.Program) {
         "If you have any questions or need further assistance,",
         "feel free to contact us. We are happy to help!",
       ],
-      "Docs: https://brisa.build/docs/building-your-application/routing/internationalization#translate-in-your-web-components",
+      "Docs: https://brisa.build/building-your-application/routing/internationalization#translate-in-your-web-components",
     );
   }
 

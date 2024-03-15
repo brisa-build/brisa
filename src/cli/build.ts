@@ -37,7 +37,7 @@ export default async function build() {
   console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `Compiled successfully!`);
 
   // Copy prebuild folder inside build
-  // useful for FFI: https://brisa.build/docs/building-your-application/configuring/zig-rust-c-files
+  // useful for FFI: https://brisa.build/building-your-application/configuring/zig-rust-c-files
   if (fs.existsSync(prebuildPath)) {
     const finalPrebuildPath = path.join(BUILD_DIR, "prebuild");
     fs.cpSync(prebuildPath, finalPrebuildPath, { recursive: true });

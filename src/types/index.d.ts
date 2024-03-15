@@ -18,7 +18,7 @@ declare module "bun" {
      *
      * Docs:
      *
-     * - [How to use `BRISA_BUILD_FOLDER`](https://brisa.build/docs/building-your-application/configuring/zig-rust-c-files#create-a-jsts-bridge)
+     * - [How to use `BRISA_BUILD_FOLDER`](https://brisa.build/building-your-application/configuring/zig-rust-c-files#create-a-jsts-bridge)
      */
     BRISA_BUILD_FOLDER: string;
   }
@@ -50,7 +50,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `store`](https://brisa.build/docs/components-details/server-components#store-store-method)
+   * - [How to use `store`](https://brisa.build/components-details/server-components#store-store-method)
    */
   store: Map<string | symbol, any> & {
     /**
@@ -66,7 +66,7 @@ export interface RequestContext extends Request {
      *
      * Docs:
      *
-     * - [How to use `transferToClient`](https://brisa.build/docs/building-your-application/data-fetching/fetching#share-server-web-data-between-components)
+     * - [How to use `transferToClient`](https://brisa.build/building-your-application/data-fetching/fetching#share-server-web-data-between-components)
      */
     transferToClient: (keys: string[], options?: TransferOptions) => void;
   };
@@ -86,7 +86,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `useContext`](https://brisa.build/docs/components-details/context)
+   * - [How to use `useContext`](https://brisa.build/components-details/context)
    */
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
@@ -139,7 +139,7 @@ export interface RequestContext extends Request {
    * 
    * Docs:
    * 
-   * - [How to use `indicate`](https://brisa.build/docs/api-reference/request-context/indicate)
+   * - [How to use `indicate`](https://brisa.build/api-reference/request-context/indicate)
    */
   indicate: (actionName: string) => IndicatorSignal;
 
@@ -176,7 +176,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `i18n`](https://brisa.build/docs/building-your-application/routing/internationalization)
+   * - [How to use `i18n`](https://brisa.build/building-your-application/routing/internationalization)
    */
   i18n: I18n;
 
@@ -193,7 +193,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `ws`](https://brisa.build/docs/building-your-application/routing/websockets)
+   * - [How to use `ws`](https://brisa.build/building-your-application/routing/websockets)
    */
   ws: ServerWebSocket<unknown>;
 
@@ -229,7 +229,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `finalURL`](https://brisa.build/docs/building-your-application/routing/internationalization#final-url)
+   * - [How to use `finalURL`](https://brisa.build/building-your-application/routing/internationalization#final-url)
    */
   finalURL: string;
 
@@ -247,7 +247,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `id`](https://brisa.build/docs/building-your-application/data-fetching/request-context)
+   * - [How to use `id`](https://brisa.build/building-your-application/data-fetching/request-context)
    */
   id: string;
 }
@@ -281,7 +281,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `store`](https://brisa.build/docs/components-details/web-components#store-store-method)
+   * - [How to use `store`](https://brisa.build/components-details/web-components#store-store-method)
    */
   store: ReactiveMap;
 
@@ -300,7 +300,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `useContext`](https://brisa.build/docs/components-details/context)
+   * - [How to use `useContext`](https://brisa.build/components-details/context)
    */
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
@@ -330,7 +330,7 @@ export interface BaseWebContext {
    * ```
    *
    * Docs:
-   *  - [How to use `state`](https://brisa.build/docs/components-details/web-components#state-state-method)
+   *  - [How to use `state`](https://brisa.build/components-details/web-components#state-state-method)
    */
   state<T>(initialValue?: T): Signal<T>;
 
@@ -356,7 +356,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `effect`](https://brisa.build/docs/components-details/web-components#effect-effect-method)
+   * - [How to use `effect`](https://brisa.build/components-details/web-components#effect-effect-method)
    */
   effect(fn: Effect): void;
 
@@ -381,7 +381,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `cleanup`](https://brisa.build/docs/components-details/web-components#clean-effects-cleanup-method)
+   * - [How to use `cleanup`](https://brisa.build/components-details/web-components#clean-effects-cleanup-method)
    */
   cleanup(fn: Cleanup): void;
 
@@ -404,7 +404,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `derived`](https://brisa.build/docs/components-details/web-components#derived-state-and-props-derived-method)
+   * - [How to use `derived`](https://brisa.build/components-details/web-components#derived-state-and-props-derived-method)
    */
   derived<T>(fn: () => T): Signal<T>;
 
@@ -429,7 +429,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `onMount`](https://brisa.build/docs/components-details/web-components#effect-on-mount-onmount-method)
+   * - [How to use `onMount`](https://brisa.build/components-details/web-components#effect-on-mount-onmount-method)
    */
   onMount(fn: Effect): void;
 
@@ -446,7 +446,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `css`](https://brisa.build/docs/components-details/web-components#template-literal-css)
+   * - [How to use `css`](https://brisa.build/components-details/web-components#template-literal-css)
    */
   css(strings: TemplateStringsArray, ...values: string[]): void;
 
@@ -506,7 +506,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `indicate`](https://brisa.build/docs/api-reference/web-context/indicate)
+   * - [How to use `indicate`](https://brisa.build/api-reference/web-context/indicate)
    */
   indicate: (actionName: string) =>  IndicatorSignal;
 
@@ -526,7 +526,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `i18n`](https://brisa.build/docs/building-your-application/routing/internationalization)
+   * - [How to use `i18n`](https://brisa.build/building-your-application/routing/internationalization)
    */
   i18n: I18n;
 
@@ -547,7 +547,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `reset`](https://brisa.build/docs/building-your-application/data-fetching/web-context#reset)
+   * - [How to use `reset`](https://brisa.build/building-your-application/data-fetching/web-context#reset)
    */
   reset: () => void;
 
@@ -566,7 +566,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `self`](https://brisa.build/docs/building-your-application/data-fetching/web-context#self)
+   * - [How to use `self`](https://brisa.build/building-your-application/data-fetching/web-context#self)
    */
   self?: HTMLElement;
 }
@@ -662,7 +662,7 @@ export type Configuration = {
    *
    * Docs:
    *
-   * - [How to use `trailingSlash`](https://brisa.build/docs/building-your-application/configuring/trailing-slash)
+   * - [How to use `trailingSlash`](https://brisa.build/building-your-application/configuring/trailing-slash)
    */
   trailingSlash?: boolean;
 
@@ -681,7 +681,7 @@ export type Configuration = {
    *
    * Docs:
    *
-   * - [How to use `assetPrefix`](https://brisa.build/docs/building-your-application/configuring/asset-prefix)
+   * - [How to use `assetPrefix`](https://brisa.build/building-your-application/configuring/asset-prefix)
    */
   assetPrefix?: string;
 
@@ -710,7 +710,7 @@ export type Configuration = {
    *
    * Docs:
    *
-   * - [How to use `plugins`](https://brisa.build/docs/building-your-application/configuring/plugins)
+   * - [How to use `plugins`](https://brisa.build/building-your-application/configuring/plugins)
    */
   plugins?: BunPlugin[];
 
@@ -735,7 +735,7 @@ export type Configuration = {
    *
    * Docs:
    *
-   * - [How to use `tls`](https://brisa.build/docs/building-your-application/configuring/tls)
+   * - [How to use `tls`](https://brisa.build/building-your-application/configuring/tls)
    */
   tls?: TLSOptions;
 
@@ -762,7 +762,7 @@ export type Configuration = {
    *
    * Docs:
    *
-   * - [How to use `output`](https://brisa.build/docs/building-your-application/configuring/output)
+   * - [How to use `output`](https://brisa.build/building-your-application/configuring/output)
    */
   output?: "static" | "server" | "desktop" | "android" | "ios";
 };
@@ -898,7 +898,7 @@ export type I18n = {
    *
    * Docs:
    *
-   * - [How to use `overrideMessages`](https://brisa.build/docs/building-your-application/routing/internationalization#override-translations)
+   * - [How to use `overrideMessages`](https://brisa.build/building-your-application/routing/internationalization#override-translations)
    */
   overrideMessages: <T = Record<string, unknown>>(callback: (T) => T) => void;
 };
@@ -972,7 +972,7 @@ export type RerenderInActionProps = {
  *
  * Docs:
  *
- * - [How to use `createContext`](https://brisa.build/docs/api-reference/functions/createContext)
+ * - [How to use `createContext`](https://brisa.build/api-reference/functions/createContext)
  */
 export function createContext<T>(defaultValue?: T): BrisaContext<T>;
 
@@ -997,7 +997,7 @@ export function createContext<T>(defaultValue?: T): BrisaContext<T>;
  *
  * Docs:
  *
- * - [How to use `rerenderInAction`](https://brisa.build/docs/api-reference/functions/rerenderInAction)
+ * - [How to use `rerenderInAction`](https://brisa.build/api-reference/functions/rerenderInAction)
  */
 export function rerenderInAction(props: RerenderInActionProps = {}): never;
 
@@ -1014,7 +1014,7 @@ export function rerenderInAction(props: RerenderInActionProps = {}): never;
  *
  * Docs:
  *
- * - [How to use `dangerHTML`](https://brisa.build/docs/api-reference/functions/dangerHTML)
+ * - [How to use `dangerHTML`](https://brisa.build/api-reference/functions/dangerHTML)
  */
 export function dangerHTML(html: string): DangerHTMLOutput;
 
@@ -1031,7 +1031,7 @@ export function dangerHTML(html: string): DangerHTMLOutput;
  *
  * Docs:
  *
- * - [How to use `notFound`](https://brisa.build/docs/api-reference/functions/notFound)
+ * - [How to use `notFound`](https://brisa.build/api-reference/functions/notFound)
  */
 export function notFound(): never;
 
@@ -1050,7 +1050,7 @@ export function notFound(): never;
  *
  * Docs:
  *
- * - [How to use `navigate`](https://brisa.build/docs/api-reference/functions/navigate)
+ * - [How to use `navigate`](https://brisa.build/api-reference/functions/navigate)
  */
 export function navigate(page: string): never;
 
@@ -1154,7 +1154,7 @@ export interface BrisaDOMAttributes {
    *
    * Docs:
    *
-   * - [How to use `ref`](https://brisa.build/docs/components-details/web-components#events-on-ref)
+   * - [How to use `ref`](https://brisa.build/components-details/web-components#events-on-ref)
    */
   ref?: Signal<unknown>;
 }
@@ -2972,7 +2972,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLoad"?: number | undefined;
       /**
@@ -2991,7 +2991,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLoad?: IndicatorSignal | undefined;
       /**
@@ -3019,7 +3019,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceonError"?: number | undefined;
       /**
@@ -3038,7 +3038,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateError?: IndicatorSignal | undefined;
       /**
@@ -3068,7 +3068,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCopy"?: number | undefined;
         /**
@@ -3087,7 +3087,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCopy?: IndicatorSignal | undefined;
       /**
@@ -3115,7 +3115,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCut"?: number | undefined;
       /**
@@ -3134,7 +3134,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCut?: IndicatorSignal | undefined;
       /**
@@ -3162,7 +3162,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePaste"?: number | undefined;
       /**
@@ -3181,7 +3181,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePaste?: IndicatorSignal | undefined;
       /**
@@ -3211,7 +3211,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCompositionEnd"?: number | undefined;
       /**
@@ -3230,7 +3230,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCompositionEnd?: IndicatorSignal | undefined;
       /**
@@ -3258,7 +3258,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCompositionStart"?: number | undefined;
       /**
@@ -3277,7 +3277,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCompositionStart?: IndicatorSignal | undefined;
       /**
@@ -3305,7 +3305,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCompositionUpdate"?: number | undefined;
       /**
@@ -3324,7 +3324,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCompositionUpdate?: IndicatorSignal | undefined;
       /**
@@ -3354,7 +3354,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceToggle"?: number | undefined;
       /**
@@ -3373,7 +3373,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateToggle?: IndicatorSignal | undefined;
       /**
@@ -3403,7 +3403,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceClose"?: number | undefined;
       /**
@@ -3422,7 +3422,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateClose?: IndicatorSignal | undefined;
       /**
@@ -3450,7 +3450,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCancel"?: number | undefined;
       /**
@@ -3469,7 +3469,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCancel?: IndicatorSignal | undefined;
       /**
@@ -3499,7 +3499,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceFocus"?: number | undefined;
       /**
@@ -3518,7 +3518,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateFocus?: IndicatorSignal | undefined;
       /**
@@ -3546,7 +3546,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceFocusin"?: number | undefined;
       /**
@@ -3565,7 +3565,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateFocusin?: IndicatorSignal | undefined;
       /**
@@ -3593,7 +3593,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceFocusout"?: number | undefined;
       /**
@@ -3612,7 +3612,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateFocusout?: IndicatorSignal | undefined;
       /**
@@ -3640,7 +3640,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceBlur"?: number | undefined;
       /**
@@ -3659,7 +3659,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateBlur?: IndicatorSignal | undefined;
       /**
@@ -3689,7 +3689,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceChange"?: number | undefined;
       /**
@@ -3708,7 +3708,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateChange?: IndicatorSignal | undefined;
       /**
@@ -3736,7 +3736,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceInput"?: number | undefined;
       /**
@@ -3755,7 +3755,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateInput?: IndicatorSignal | undefined;
       /**
@@ -3783,7 +3783,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceBeforeInput"?: number | undefined;
       /**
@@ -3802,7 +3802,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateBeforeInput?: IndicatorSignal | undefined;
       /**
@@ -3830,7 +3830,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceSearch"?: number | undefined;
       /**
@@ -3849,7 +3849,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSearch?: IndicatorSignal | undefined;
       /**
@@ -3877,7 +3877,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceSubmit"?: number | undefined;
       /**
@@ -3896,7 +3896,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSubmit?: IndicatorSignal | undefined;
       /**
@@ -3907,11 +3907,11 @@ declare global {
        * - Web components: it is the normal `onSubmit` of the browser.
        * - Server components: the event already contains the formData field. The event is transformed to [FormDataEvent](https://developer.mozilla.org/en-US/docs/Web/API/FormDataEvent).
        * 
-       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*- [Brisa docs](https://brisa.build/docs/components-details/forms)
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*- [Brisa docs](https://brisa.build/components-details/forms)
        * 
        * **Docs**:
        * 
-       * - [Brisa docs](https://brisa.build/docs/components-details/forms)
+       * - [Brisa docs](https://brisa.build/components-details/forms)
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)
        */
       onSubmit?: SubmitEventHandler<Target> | undefined;
@@ -3932,7 +3932,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceInvalid"?: number | undefined;
       /**
@@ -3951,7 +3951,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateInvalid?: IndicatorSignal | undefined;
       /**
@@ -3979,7 +3979,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceReset"?: number | undefined;
       /**
@@ -3998,7 +3998,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateReset?: IndicatorSignal | undefined;
       /**
@@ -4026,7 +4026,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceFormData"?: number | undefined;
       /**
@@ -4045,7 +4045,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateFormData?: IndicatorSignal | undefined;
       /**
@@ -4075,7 +4075,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceKeyDown"?: number | undefined;
       /**
@@ -4094,7 +4094,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateKeyDown?: IndicatorSignal | undefined;
       /**
@@ -4122,7 +4122,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceKeyUp"?: number | undefined;
       /**
@@ -4141,7 +4141,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateKeyUp?: IndicatorSignal | undefined;
       /**
@@ -4171,7 +4171,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceAbort"?: number | undefined;
       /**
@@ -4190,7 +4190,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateAbort?: IndicatorSignal | undefined;
       /**
@@ -4218,7 +4218,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCanPlay"?: number | undefined;
         /**
@@ -4237,7 +4237,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCanPlay?: IndicatorSignal | undefined;
       /**
@@ -4265,7 +4265,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceCanPlayThrough"?: number | undefined;
       /**
@@ -4284,7 +4284,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCanPlayThrough?: IndicatorSignal | undefined;
       /**
@@ -4312,7 +4312,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDurationChange"?: number | undefined;
       /**
@@ -4331,7 +4331,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDurationChange?: IndicatorSignal | undefined;
       /**
@@ -4359,7 +4359,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceEmptied"?: number | undefined;
       /**
@@ -4378,7 +4378,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateEmptied?: IndicatorSignal | undefined;
       /**
@@ -4406,7 +4406,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceEncrypted"?: number | undefined;
       /**
@@ -4425,7 +4425,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateEncrypted?: IndicatorSignal | undefined;
       /**
@@ -4453,7 +4453,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceEnded"?: number | undefined;
       /**
@@ -4472,7 +4472,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateEnded?: IndicatorSignal | undefined;
       /**
@@ -4500,7 +4500,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLoadedData"?: number | undefined;
       /**
@@ -4519,7 +4519,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLoadedData?: IndicatorSignal | undefined;
       /**
@@ -4547,7 +4547,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLoadedMetadata"?: number | undefined;
       /**
@@ -4566,7 +4566,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLoadedMetadata?: IndicatorSignal | undefined;
       /**
@@ -4594,7 +4594,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLoadStart"?: number | undefined;
       /**
@@ -4613,7 +4613,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLoadStart?: IndicatorSignal | undefined;
       /**
@@ -4641,7 +4641,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePause"?: number | undefined;
       /**
@@ -4660,7 +4660,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
         indicatePause?: IndicatorSignal | undefined;
       /**
@@ -4688,7 +4688,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePlay"?: number | undefined;
       /**
@@ -4707,7 +4707,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePlay?: IndicatorSignal | undefined;
       /**
@@ -4735,7 +4735,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePlaying"?: number | undefined;
       /**
@@ -4754,7 +4754,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePlaying?: IndicatorSignal | undefined;
       /**
@@ -4782,7 +4782,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceProgress"?: number | undefined;
       /**
@@ -4801,7 +4801,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateProgress?: IndicatorSignal | undefined;
       /**
@@ -4829,7 +4829,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceRateChange"?: number | undefined;
       /**
@@ -4848,7 +4848,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateRateChange?: IndicatorSignal | undefined;
       /**
@@ -4876,7 +4876,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceSeeked"?: number | undefined;
       /**
@@ -4895,7 +4895,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSeeked?: IndicatorSignal | undefined;
       /**
@@ -4923,7 +4923,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceSeeking"?: number | undefined;
       /**
@@ -4942,7 +4942,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSeeking?: IndicatorSignal | undefined;
       /**
@@ -4970,7 +4970,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceStalled"?: number | undefined;
       /**
@@ -4989,7 +4989,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateStalled?: IndicatorSignal | undefined;
       /**
@@ -5017,7 +5017,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceSuspend"?: number | undefined;
       /**
@@ -5036,7 +5036,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSuspend?: IndicatorSignal | undefined;
       /**
@@ -5064,7 +5064,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTimeUpdate"?: number | undefined;
       /**
@@ -5083,7 +5083,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTimeUpdate?: IndicatorSignal | undefined;
       /**
@@ -5111,7 +5111,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceVolumeChange"?: number | undefined;
       /**
@@ -5130,7 +5130,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateVolumeChange?: IndicatorSignal | undefined;
       /**
@@ -5158,7 +5158,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceWaiting"?: number | undefined;
       /**
@@ -5177,7 +5177,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateWaiting?: IndicatorSignal | undefined;
       /**
@@ -5207,7 +5207,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceClick"?: number | undefined;
       /**
@@ -5226,7 +5226,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateClick?: IndicatorSignal | undefined;
       /**
@@ -5254,7 +5254,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceContextMenu"?: number | undefined;
       /**
@@ -5273,7 +5273,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateContextMenu?: IndicatorSignal | undefined;
       /**
@@ -5301,7 +5301,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDblClick"?: number | undefined;
       /**
@@ -5320,7 +5320,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDblClick?: IndicatorSignal | undefined;
       /**
@@ -5348,7 +5348,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDrag"?: number | undefined;
       /**
@@ -5367,7 +5367,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDrag?: IndicatorSignal | undefined;
       /**
@@ -5395,7 +5395,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDragEnd"?: number | undefined;
       /**
@@ -5414,7 +5414,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragEnd?: IndicatorSignal | undefined;
       /**
@@ -5442,7 +5442,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDragEnter"?: number | undefined;
       /**
@@ -5461,7 +5461,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragEnter?: IndicatorSignal | undefined;
       /**
@@ -5489,7 +5489,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDragLeave"?: number | undefined;
       /**
@@ -5508,7 +5508,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragLeave?: IndicatorSignal | undefined;
       /**
@@ -5536,7 +5536,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDragOver"?: number | undefined;
       /**
@@ -5555,7 +5555,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragOver?: IndicatorSignal | undefined;
       /**
@@ -5583,7 +5583,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDragStart"?: number | undefined;
       /**
@@ -5602,7 +5602,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragStart?: IndicatorSignal | undefined;
       /**
@@ -5630,7 +5630,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceDrop"?: number | undefined;
       /**
@@ -5649,7 +5649,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDrop?: IndicatorSignal | undefined;
       /**
@@ -5677,7 +5677,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseDown"?: number | undefined;
       /**
@@ -5696,7 +5696,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseDown?: IndicatorSignal | undefined;
       /**
@@ -5724,7 +5724,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseEnter"?: number | undefined;
       /**
@@ -5743,7 +5743,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseEnter?: IndicatorSignal | undefined;
       /**
@@ -5771,7 +5771,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseLeave"?: number | undefined;
       /**
@@ -5790,7 +5790,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseLeave?: IndicatorSignal | undefined;
       /**
@@ -5818,7 +5818,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseMove"?: number | undefined;
       /**
@@ -5837,7 +5837,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseMove?: IndicatorSignal | undefined;
       /**
@@ -5865,7 +5865,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseOut"?: number | undefined;
       /**
@@ -5884,7 +5884,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseOut?: IndicatorSignal | undefined;
       /**
@@ -5912,7 +5912,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseOver"?: number | undefined;
       /**
@@ -5931,7 +5931,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseOver?: IndicatorSignal | undefined;
       /**
@@ -5959,7 +5959,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceMouseUp"?: number | undefined;
       /**
@@ -5978,7 +5978,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseUp?: IndicatorSignal | undefined;
       /**
@@ -6008,7 +6008,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceSelect"?: number | undefined;
       /**
@@ -6027,7 +6027,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSelect?: IndicatorSignal | undefined;
       /**
@@ -6057,7 +6057,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTouchCancel"?: number | undefined;
       /**
@@ -6076,7 +6076,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTouchCancel?: IndicatorSignal | undefined;
       /**
@@ -6104,7 +6104,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTouchEnd"?: number | undefined;
       /**
@@ -6123,7 +6123,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTouchEnd?: IndicatorSignal | undefined;
       /**
@@ -6151,7 +6151,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTouchMove"?: number | undefined;
       /**
@@ -6170,7 +6170,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTouchMove?: IndicatorSignal | undefined;
       /**
@@ -6198,7 +6198,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTouchStart"?: number | undefined;
       /**
@@ -6217,7 +6217,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTouchStart?: IndicatorSignal | undefined;
       /**
@@ -6247,7 +6247,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerOver"?: number | undefined;
       /**
@@ -6266,7 +6266,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerOver?: IndicatorSignal | undefined;
       /**
@@ -6294,7 +6294,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerEnter"?: number | undefined;
       /**
@@ -6313,7 +6313,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerEnter?: IndicatorSignal | undefined;
       /**
@@ -6341,7 +6341,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerDown"?: number | undefined;
       /**
@@ -6360,7 +6360,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerDown?: IndicatorSignal | undefined;
       /**
@@ -6388,7 +6388,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerMove"?: number | undefined;
       /**
@@ -6407,7 +6407,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerMove?: IndicatorSignal | undefined;
       /**
@@ -6435,7 +6435,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerUp"?: number | undefined;
       /**
@@ -6454,7 +6454,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerUp?: IndicatorSignal | undefined;
       /**
@@ -6482,7 +6482,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerCancel"?: number | undefined;
       /**
@@ -6501,7 +6501,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerCancel?: IndicatorSignal | undefined;
       /**
@@ -6529,7 +6529,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerOut"?: number | undefined;
       /**
@@ -6548,7 +6548,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerOut?: IndicatorSignal | undefined;
       /**
@@ -6576,7 +6576,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debouncePointerLeave"?: number | undefined;
       /**
@@ -6595,7 +6595,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerLeave?: IndicatorSignal | undefined;
       /**
@@ -6624,7 +6624,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceGotPointerCapture"?: number | undefined;
       /**
@@ -6643,7 +6643,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateGotPointerCapture?: IndicatorSignal | undefined;
       /**
@@ -6671,7 +6671,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLostPointerCapture"?: number | undefined;
       /**
@@ -6690,7 +6690,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerCapture?: IndicatorSignal | undefined;
       /**
@@ -6720,7 +6720,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceScroll"?: number | undefined;
       /**
@@ -6739,7 +6739,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateScroll?: IndicatorSignal | undefined;
       /**
@@ -6769,7 +6769,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceWheel"?: number | undefined;
       /**
@@ -6788,7 +6788,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateWheel?: IndicatorSignal | undefined;
       /**
@@ -6818,7 +6818,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceAnimationStart"?: number | undefined;
       /**
@@ -6837,7 +6837,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateAnimationStart?: IndicatorSignal | undefined;
       /**
@@ -6865,7 +6865,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceAnimationEnd"?: number | undefined;
       /**
@@ -6884,7 +6884,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateAnimationEnd?: IndicatorSignal | undefined;
       /**
@@ -6912,7 +6912,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceAnimationIteration"?: number | undefined;
       /**
@@ -6931,7 +6931,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateAnimationIteration?: IndicatorSignal | undefined;
       /**
@@ -6961,7 +6961,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTransitionCancel"?: number | undefined;
       /**
@@ -6980,7 +6980,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTransitionCancel?: IndicatorSignal | undefined;
       /**
@@ -7008,7 +7008,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTransitionEnd"?: number | undefined;
       /**
@@ -7027,7 +7027,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTransitionEnd?: IndicatorSignal | undefined;
       /**
@@ -7055,7 +7055,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTransitionRun"?: number | undefined;
       /**
@@ -7074,7 +7074,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTransitionRun?: IndicatorSignal | undefined;
       /**
@@ -7102,7 +7102,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceTransitionStart"?: number | undefined;
       /**
@@ -7121,7 +7121,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTransitionStart?: IndicatorSignal | undefined;
       /**
@@ -7151,7 +7151,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceEnterPictureInPicture"?: number | undefined;
       /**
@@ -7170,7 +7170,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateEnterPictureInPicture?: IndicatorSignal | undefined;
       /**
@@ -7198,7 +7198,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceLeavePictureInPicture"?: number | undefined;
       /**
@@ -7217,7 +7217,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLeavePictureInPicture?: IndicatorSignal | undefined;
       /**
@@ -7245,7 +7245,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How debounce works in server actions](https://brisa.build/docs/api-reference/extended-html-attributes/debounceEvent)
+       * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
       "debounceResize"?: number | undefined;
         /**
@@ -7264,7 +7264,7 @@ declare global {
        * 
        * Docs:
        * 
-       * - [How to use `indicate`](https://brisa.build/docs/api-reference/extended-html-attributes/indicateEvent)
+       * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateResize?: IndicatorSignal | undefined;
       /**
@@ -7285,7 +7285,7 @@ declare global {
        * 
        * This allows you to display a loading indicator or disable a button while the server action is executing, all without writing any JavaScript code, via the `brisa-request` class.
        * 
-       * - [Brisa reference](https://brisa.build/docs/api-reference/extended-html-attributes/indicator)
+       * - [Brisa reference](https://brisa.build/api-reference/extended-html-attributes/indicator)
        */
       indicator?: IndicatorSignal | IndicatorSignal[]
     }
@@ -8252,7 +8252,7 @@ declare global {
        * 
        * In Brisa the `value` attribute is also used to define the context content inside `<context-provider>`.
        * 
-       * - [Brisa docs](https://brisa.build/docs/components-details/context#provider)
+       * - [Brisa docs](https://brisa.build/components-details/context#provider)
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#value)
        */
       value?: string | string[] | number | undefined;
@@ -9473,7 +9473,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How to use `context-provider`](https://brisa.build/docs/components-details/context)
+       * - [How to use `context-provider`](https://brisa.build/components-details/context)
        */
       "context-provider": ContextProviderAttributes<HTMLElement>;
     }
