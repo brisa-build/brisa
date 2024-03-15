@@ -88,5 +88,33 @@ describe("utils", () => {
       expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
       expect(html).toContain("<h1>Some page</h1>");
     });
+
+    it('should return the response headers from SYNC "responseHeaders" method of /somepage', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/es/somepage"),
+      });
+      const response = await responseRenderedPage({
+        req,
+        route: {
+          filePath: path.join(PAGES_DIR, "somepage.tsx"),
+        } as MatchedRoute,
+      });
+
+      expect(response.headers.get("X-Test")).toBe("test");
+    });
+
+    it('should return the response headers from ASYNC "responseHeaders" method of home', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/es"),
+      });
+      const response = await responseRenderedPage({
+        req,
+        route: {
+          filePath: path.join(PAGES_DIR, "index.tsx"),
+        } as MatchedRoute,
+      });
+
+      expect(response.headers.get("X-Test")).toBe("test");
+    });
   });
 });

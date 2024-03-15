@@ -42,7 +42,7 @@ While web-components these actions are browser events and are processed from the
 >
 > Server actions only work with the `output: "server"` [configuration](/building-your-application/configuring/output) (the default).
 
-### Forms
+## Forms
 
 Brisa transforms the [`SubmitEvent`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event) to [`FormDataEvent`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event), so you can access directly to the `e.formData`. This is because Brisa have to build the `formData` before sending it to the server, so on the server it is already built.
 
@@ -69,7 +69,7 @@ export default function Form() {
 >
 > > When working with forms that have many fields, you may want to consider using the [`entries()`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries) method with JavaScript's [`Object.fromEntries()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries). For example: `const rawFormData = Object.fromEntries(formData.entries())`
 
-### Nested actions
+## Nested actions
 
 In Brisa we allow nested actions to be used. We want the actions in the server components to be as similar as possible to the events in the web components.
 
@@ -125,11 +125,11 @@ async function onAction() {
 }
 ```
 
-### Server-side validation and error handling
+## Server-side validation and error handling
 
 We recommend using HTML validation like `required` and `type="email"` for basic client-side form validation.
 
-For more advanced server-side validation, you can use a library like [zod](https://zod.dev/) to validate the form fields before mutating the data, together with [store](#server-side-store). Whether `state` can be used in server components for non-sensitive data. Brisa will serialize the `state` of the server components and it will live in the HTML:
+For more advanced server-side validation, you can use a library like [zod](https://zod.dev/) to validate the form fields before mutating the data, together with [Action Signals (store)](#action-signals).
 
 ```tsx
 import { rerenderInAction, type RequestContext } from "brisa";
@@ -176,7 +176,34 @@ export default function Form({}, { store }: RequestContext) {
 >
 > Before mutating data, you should always ensure a user is also authorized to perform the action. See [Authentication and Authorization](#authentication-and-authorization).
 
-### Debounce
+### Action fail handling
+
+If the server action fails, you can access from the web components to the error message through the `error` signal inside the `IndicatorSignal`.
+
+```tsx
+import { type WebContext } from "brisa";
+
+type Props = { actionId: string };
+
+export default async function ActionError(
+  { actionId }: Props,
+  { indicate }: WebContext,
+) {
+  const actionIndicator = indicate(actionId);
+
+  if (typeof actionIndicator.error.value !== "string") return;
+
+  return <div>Error: {actionIndicator.error.value}</div>;
+}
+```
+
+In this example, the `action-error` web component takes an `actionId` prop and utilizes the [`indicate`](/building-your-application/data-fetching/web-context#indicate) method to obtain the indicator signal associated with that specific action. The code then checks whether the `error` value within the `indicator` is a `string`. If it is, the component renders a UI element displaying the error message. This mechanism allows developers to seamlessly incorporate error handling into their web components, enhancing the user experience by providing meaningful error information when server actions encounter issues.
+
+> [!NOTE]
+>
+> The same `actionId` as the value for the [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) linking the indicator to the corresponding server action. This cohesive association allows developers to seamlessly integrate error handling into their web components, ensuring that meaningful error information is presented to users when server actions encounter issues.
+
+## Debounce
 
 Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchStart`...) to allow to [debounce](/api-reference/extended-html-attributes/debounceEvent) the action call by replacing the `on` prefix to `debounce`.
 
@@ -198,11 +225,7 @@ The time unit consistently remains in milliseconds. In this example, the call to
 >
 > This is only implemented for server actions, for browsers events inside web components it does not apply since we do not modify the original event.
 
-### Server-side store
-
-TODO
-
-### Optimistic updates
+## Optimistic updates
 
 Optimistic updates are a strategy used in client-server architectures to enhance the user experience by locally updating the user interface (UI) optimistically before receiving confirmation from the server about the success of an operation. This approach aims to reduce perceived latency and provide a more responsive application.
 
@@ -266,33 +289,6 @@ In the server component, we utilize the [`transferToClient`](/building-your-appl
 >
 > It's crucial to note that in the event of a failed request action, the optimistic update is automatically reverted to the previous state, ensuring data consistency.
 
-### Manage errors
-
-If the server action fails, you can access from the web components to the error message through the `error` signal inside the `IndicatorSignal`.
-
-```tsx
-import { type WebContext } from "brisa";
-
-type Props = { actionId: string };
-
-export default async function ActionError(
-  { actionId }: Props,
-  { indicate }: WebContext,
-) {
-  const actionIndicator = indicate(actionId);
-
-  if (typeof actionIndicator.error.value !== "string") return;
-
-  return <div>Error: {actionIndicator.error.value}</div>;
-}
-```
-
-In this example, the `action-error` web component takes an `actionId` prop and utilizes the `indicate` method to obtain the indicator signal associated with that specific action. The code then checks whether the `error` value within the `indicator` is a `string`. If it is, the component renders a UI element displaying the error message. This mechanism allows developers to seamlessly incorporate error handling into their web components, enhancing the user experience by providing meaningful error information when server actions encounter issues.
-
-> [!NOTE]
->
-> The same `actionId` as the value for the [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) linking the indicator to the corresponding server action. This cohesive association allows developers to seamlessly integrate error handling into their web components, ensuring that meaningful error information is presented to users when server actions encounter issues.
-
 ### `rerenderInAction`
 
 The [`rerenderInAction`](/api-reference/functions/rerenderInAction) method is used to rerender the component or the page
@@ -320,8 +316,6 @@ function handleEvent() {
   rerenderInAction({ type: "page" });
 }
 ```
-
-TODO
 
 ### `navigate`
 
@@ -364,17 +358,15 @@ export default function Login({}, req: RequestContext) {
   );
 }
 
-export function responseHeaders(request: RequestContext) {
+export function responseHeaders(req: RequestContext) {
   // Read the stored data:
   const newCookies = req.store.get("new-cookies");
 
   return {
-    "Set-Cookie": req.store.get("new-cookies"),
+    "Set-Cookie": newCookies,
   };
 }
 ```
-
-TODO: Check that is working the example
 
 ## Security
 
@@ -384,38 +376,68 @@ You should treat Server Actions as you would public-facing API endpoints, and en
 
 ```tsx
 import { Database } from "bun:sqlite";
-import type { RequestContext } from "brisa";
+import { rerenderInAction, type RequestContext } from "brisa";
 import validateToken from "@/auth/validate-token";
 
 const db = new Database("mydb.sqlite");
-const insertCat = db.prepare("INSERT INTO cats (name) VALUES ($name)");
+const query = db.query("SELECT * FROM cats");
+const insert = db.prepare(`INSERT INTO cats (name) VALUES (?)`);
 
-export default function Login({}, req: RequestContext) {
+export default function CatsComponent({}, req: RequestContext) {
+  const invalidTokenError = req.store.get("invalidTokenError");
+  const cats = query.all();
+
+  async function addCat(e: FormDataEvent) {
+    const cookies = getCookies(req.headers);
+    const token = cookies?.["X-Token"];
+    const isTokenValid = await validateToken(token);
+
+    if (!isTokenValid) {
+      // handle invalid token
+      req.store.set("invalidTokenError", "The token is invalid");
+      rerenderInAction({ type: "page" });
+    }
+
+    insert.run(e.formData.get("cat") as string);
+    rerenderInAction({ type: "page" });
+  }
+
+  req.store.transferToClient(["invalidTokenError"]);
+
   return (
-    <form
-      onSubmit={async (e) => {
-        const auth = req.headers.get("authorization");
-        const [authType, token] = authHeader?.split(" ") ?? [];
-        const isTokenValid = await validateToken(token);
-
-        if (isTokenValid) {
-          insertCat.run(e.formData.get("cat-name"));
-        }
-
-        // handle invalid token
-      }}
-    >
-      {/* ... */}
+    <form onSubmit={addCat}>
+      <input name="cat" type="text" placeholder="Cat Name" />
+      <button>Add random cat</button>
+      <ul>
+        {cats.map((cat) => (
+          <li key={cat.id}>{cat.name}</li>
+        ))}
+      </ul>
+      {invalidTokenError && <div>{invalidTokenError}</div>}
     </form>
   );
 }
-```
 
-TODO: Verify that is working the example
+// Example of getCookies (you can also use any library):
+function getCookies(headers: Headers): Record<string, string> {
+  const cookie = headers.get("Cookie");
+  const out: Record<string, string> = {};
+
+  if (cookie === null) return {};
+
+  for (const kv of cookie.split(";")) {
+    const [cookieKey, ...cookieVal] = kv.split("=");
+    const key = cookieKey.trim();
+    out[key] = cookieVal.join("=");
+  }
+
+  return out;
+}
+```
 
 ### Action Signals
 
-From the server you can consume a [`store`](#store-as-action-signal) that by default has a limited lifetime and only lives on **request-time**. However, **you can expand the lifetime** of some properties of the store with the method: [`transferToClient`](/building-your-application/data-fetching/request-context#transfertoclient). The moment you do this, not only do you expand its life in client-time, but you can then re-use it in action-time.
+From the server you can consume a [`store`](/building-your-application/data-fetching/request-context#store) that by default has a limited lifetime and only lives on **request-time**. However, **you can expand the lifetime** of some properties of the store with the method: [`transferToClient`](/building-your-application/data-fetching/request-context#transfertoclient). The moment you do this, not only do you expand its life in client-time, but you can then re-use it in action-time.
 
 Defining a Server Action inside a component creates a [closure](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures) where the action has access to the outer function's scope. For example, the `onClick` action has access to the `foo` variable:
 
@@ -437,15 +459,20 @@ However, only static variables can be reused. In Brisa for **security** we don't
 
 > render _(server)_ → HTML _(client)_ → action _(server)_ → HTML _(client)_ ...
 
-For these cases, you can use the **action signals** through the [`store`](#server-side-store) method to improve the communication between render and action.
+For these cases, you can use the [**action signals**](#action-signals) through the `store` method to improve the communication between render and action.
 
 ```tsx filename="src/pages/index.tsx"
 import type { RequestContext } from "brisa";
 
-export default function Page({}, { store }: RequestContext) {
+export default function Page({}, { store, method }: RequestContext) {
+  // actions are always POST
+  const isFirstRender = method === "GET";
+
   // set communication render-value
-  store.set("foo", Math.random());
-  store.transferToClient(["foo"]);
+  if (isFirstRender) {
+    store.set("foo", Math.random());
+    store.transferToClient(["foo"]);
+  }
 
   function onClick() {
     // get communication render-value
@@ -472,13 +499,11 @@ Only in these cases, these `store` properties will be exposed in the HTML.
 
 > [!IMPORTANT]
 >
-> The values of the action signals (`state`) must be [serializable](https://developer.mozilla.org/en-US/docs/Glossary/Serialization).
+> The values of the action signals (`store`) must be [serializable](https://developer.mozilla.org/en-US/docs/Glossary/Serialization).
 
 > [!CAUTION]
 >
-> The `state` values are for **NON-SENSITIVE DATA** only. These values are shared through HTML. If you need sensitive data, it is almost better to get it inside the server action. Or transmit in the action signal a key of a key-value DB such as Redis.
-
-TODO: Verify that this section is working fine after implement the state in server.
+> Use unencrypted `transferToClient` only for **NON-SENSITIVE DATA** only. These values are shared through HTML. If you need sensitive data, you must use `transferToClient(['foo'], { encrypt: true });` or use a database.
 
 ### Store as action signal
 

@@ -18,7 +18,7 @@ related:
 We recommend starting a new Brisa app using `bun create brisa`, which sets up everything automatically for you.
 
 ```sh
-bun create brisa
+bun create brisa@latest
 ```
 
 After the prompts, it will create a folder with your project name and install the required dependencies.
