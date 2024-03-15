@@ -6,7 +6,7 @@ async function resolveRPC(res: Response) {
   const storeRaw = res.headers.get("X-S");
 
   if (storeRaw) {
-    const entries = JSON.parse(storeRaw);
+    const entries = JSON.parse(decodeURIComponent(storeRaw));
 
     // Store WITHOUT web components signals
     if (!window._s) window._S = entries;
