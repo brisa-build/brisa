@@ -70,6 +70,25 @@ describe("utils", () => {
       expect(error).toBe(false);
     });
 
+    it("should encode emojis work in X-S header", async () => {
+      const res = new Response(null, {
+        headers: {
+          "X-S": encodeURIComponent(JSON.stringify([["foo", "🚀"]])),
+        },
+      });
+
+      let error = false;
+
+      await initBrowser();
+      await resolveRPC(res).catch(() => {
+        error = true;
+      });
+
+      expect(window._s).toBeUndefined();
+      expect(window._S).toEqual([["foo", "🚀"]]);
+      expect(error).toBe(false);
+    });
+
     describe("when receive streamed HTML", () => {
       it("should updates only the text", async () => {
         const encoder = new TextEncoder();
