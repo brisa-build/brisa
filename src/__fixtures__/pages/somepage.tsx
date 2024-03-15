@@ -9,3 +9,9 @@ export default async function SomePage() {
     </context-provider>
   );
 }
+
+export function responseHeaders() {
+  return {
+    "x-test": "test",
+  };
+}

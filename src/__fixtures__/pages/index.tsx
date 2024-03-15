@@ -13,3 +13,9 @@ Home.suspense = () => {
     <div onClick={() => console.log("Hello from suspense")}>Loading...</div>
   );
 };
+
+export async function responseHeaders() {
+  return {
+    "x-test": "test",
+  };
+}

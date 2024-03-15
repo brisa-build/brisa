@@ -364,5 +364,49 @@ describe("utils", () => {
         stringify([["sensitive-data", null]]),
       );
     });
+
+    it("should transfer headers from page SYNC responseHeaders from /somepage", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+          },
+          body: JSON.stringify([]),
+        }),
+        route: {
+          // Good to know: the pages/somepage.tsx fixture adds
+          // "x-test" header via responseHeaders
+          filePath: path.join(FIXTURES, "pages", "/somepage.tsx"),
+        } as any,
+      });
+
+      const res = await responseAction(req);
+
+      expect(res.headers.get("x-test")).toBe("test");
+    });
+
+    it("should transfer headers from page ASYNC responseHeaders from home", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+          },
+          body: JSON.stringify([]),
+        }),
+        route: {
+          // Good to know: the pages/somepage.tsx fixture adds
+          // "x-test" header via responseHeaders
+          filePath: path.join(FIXTURES, "pages", "/index.tsx"),
+        } as any,
+      });
+
+      const res = await responseAction(req);
+
+      expect(res.headers.get("x-test")).toBe("test");
+    });
   });
 });

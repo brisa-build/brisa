@@ -18,7 +18,7 @@ export default defineConfig({
     search: {
       provider: "local",
     },
-    logo: "brisa.svg",
+    logo: "/brisa.svg",
     nav: [
       { text: "Home", link: "/", activeMatch: "^/$|^/guide/" },
       {

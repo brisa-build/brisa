@@ -31,7 +31,8 @@ export default async function responseRenderedPage({
   const layoutResponseHeaders =
     layoutModule?.responseHeaders?.(req, status) ?? {};
 
-  const pageResponseHeaders = module.responseHeaders?.(req, status) ?? {};
+  const pageResponseHeaders =
+    (await module.responseHeaders?.(req, status)) ?? {};
   const htmlStream = renderToReadableStream(pageElement, {
     request: req,
     head: module.Head,

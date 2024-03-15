@@ -117,6 +117,15 @@ export default async function responseAction(req: RequestContext) {
 
   if (!(response instanceof Response)) response = new Response(null);
 
+  const module = req.route ? await import(req.route.filePath) : {};
+  const pageResponseHeaders =
+    (await module.responseHeaders?.(req, response.status)) ?? {};
+
+  // Transfer page response headers
+  for (const [key, value] of Object.entries(pageResponseHeaders)) {
+    response.headers.set(key, value);
+  }
+
   // Transfer server store to client store
   response.headers.set(
     "X-S",
