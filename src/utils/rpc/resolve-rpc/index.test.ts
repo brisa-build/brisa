@@ -58,11 +58,16 @@ describe("utils", () => {
         },
       });
 
+      let error = false;
+
       await initBrowser();
-      await resolveRPC(res);
+      await resolveRPC(res).catch(() => {
+        error = true;
+      });
 
       expect(window._s).toBeUndefined();
       expect(window._S).toEqual([["foo", "bar"]]);
+      expect(error).toBe(false);
     });
 
     describe("when receive streamed HTML", () => {

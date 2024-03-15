@@ -9,11 +9,12 @@ async function resolveRPC(res: Response) {
     const entries = JSON.parse(storeRaw);
 
     // Store WITHOUT web components signals
-    if (!window._s) return (window._S = entries);
-
+    if (!window._s) window._S = entries;
     // Store WITH web components signals
-    for (const [key, value] of entries) {
-      window._s.set(key, value);
+    else {
+      for (const [key, value] of entries) {
+        window._s.set(key, value);
+      }
     }
   }
 
