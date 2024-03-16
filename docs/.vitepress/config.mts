@@ -347,14 +347,14 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: "github", link: "https://github.com/aralroca/brisa" },
+      { icon: "github", link: "https://github.com/brisa-build/brisa" },
       { icon: "twitter", link: "https://twitter.com/brisadotbuild" },
       { icon: "discord", link: "https://discord.com/invite/89Y9HMYZ" },
     ],
     editLink: {
       text: "Edit this page on GitHub",
       pattern:
-        "https://github.com/aralroca/brisa/documentation/edit/main/:path",
+        "https://github.com/brisa-build/brisa/documentation/edit/main/:path",
     },
   },
 });

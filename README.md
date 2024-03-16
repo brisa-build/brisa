@@ -1,8 +1,8 @@
 <p align="center">
   <a href="https://brisa.build">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/aralroca/brisa/assets/13313058/8c22bfcd-7eaf-42fd-b571-574067fa50ff" height="128">
-      <img src="https://github.com/aralroca/brisa/assets/13313058/8c22bfcd-7eaf-42fd-b571-574067fa50ff" height="128">
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/brisa-build/brisa/assets/13313058/8c22bfcd-7eaf-42fd-b571-574067fa50ff" height="128">
+      <img src="https://github.com/brisa-build/brisa/assets/13313058/8c22bfcd-7eaf-42fd-b571-574067fa50ff" height="128">
     </picture>
     <h1 align="center">Brisa</h1>
   </a>
@@ -16,8 +16,8 @@
 ![npm](https://img.shields.io/npm/dw/brisa)
 [![size](https://img.shields.io/bundlephobia/minzip/brisa)](https://bundlephobia.com/package/brisa)
 [![PRs Welcome][badge-prwelcome]][prwelcome]
-<a href="https://github.com/aralroca/brisa/actions?query=workflow%3ATest" alt="Tests status">
-<img src="https://github.com/aralroca/brisa/workflows/Test/badge.svg" /></a>
+<a href="https://github.com/brisa-build/brisa/actions?query=workflow%3ATest" alt="Tests status">
+<img src="https://github.com/brisa-build/brisa/workflows/Test/badge.svg" /></a>
 <a href="https://twitter.com/intent/follow?screen_name=brisadotbuild">
 <img src="https://img.shields.io/twitter/follow/brisadotbuild?style=social&logo=x"
             alt="follow on Twitter"></a>
@@ -33,9 +33,9 @@
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://discord.com/invite/89Y9HMYZ">Discord</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://github.com/aralroca/brisa/issues/new">Issues</a>
+  <a href="https://github.com/brisa-build/brisa/issues/new">Issues</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://github.com/aralroca/brisa/issues/1">Roadmap</a>
+  <a href="https://github.com/brisa-build/brisa/issues/1">Roadmap</a>
   <br />
 </div>
 
@@ -55,11 +55,11 @@ Simple one command:
 bun create brisa@latest
 ```
 
-For more info visit the [docs](https://github.com/aralroca/brisa/blob/main/docs/01-getting-started/01-installation.md).
+For more info visit the [docs](https://brisa.build/getting-started/installation).
 
 ## Documentation
 
-The documentation will be soon on the [website](https://brisa.build/docs). For now it is not yet available and there is still a lot of documentation to be written, but you can access it from the [`/docs`](https://github.com/aralroca/brisa/tree/main/docs) directory of the GitHub repository.
+The documentation will be soon on the [website](https://brisa.build/docs). For now it is not yet available and there is still a lot of documentation to be written, but you can access it from the [`/docs`](https://github.com/brisa-build/brisa/tree/main/docs) directory of the GitHub repository.
 
 ## Inspirations
 

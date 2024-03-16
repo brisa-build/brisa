@@ -75,7 +75,7 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
 
   const readmeContent = `# ${PROJECT_NAME}
 
-Project created with [Brisa](https://github.com/aralroca/brisa).
+Project created with [Brisa](https://github.com/brisa-build/brisa).
 
 ## Getting Started
 
