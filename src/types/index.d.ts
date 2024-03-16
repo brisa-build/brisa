@@ -1076,7 +1076,7 @@ type DangerHTMLOutput = {
  *
  * Docs:
  *
- * - [How to use `createPortal`](https://brisa.build/Users/aralroca/docs/api-reference/functions/createPortal)
+ * - [How to use `createPortal`](https://brisa.build/api-reference/functions/createPortal)
  */
 export function createPortal(
   element: JSX.Element,

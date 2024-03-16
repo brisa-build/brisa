@@ -104,6 +104,6 @@ The `navigate` function can be used both on the client and on the server. Althou
 >
 > `navigate('/some')` does not require you to use `return navigate('/some')` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
 
-TODO: Confirm the TIP after implement this task: https://github.com/aralroca/brisa/issues/55
+TODO: Confirm the TIP after implement this task: https://github.com/brisa-build/brisa/issues/55
 
 TODO: Implement View transitions https://github.com/WICG/view-transitions/blob/main/explainer.md

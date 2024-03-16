@@ -15,7 +15,7 @@ hero:
       link: /getting-started/installation.md
     - theme: alt
       text: View on Github
-      link: https://github.com/aralroca/brisa
+      link: https://github.com/brisa-build/brisa
 
 features:
   - title: ⚛️ Everything you need
