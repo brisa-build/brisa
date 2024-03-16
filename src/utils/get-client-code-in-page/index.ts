@@ -104,11 +104,17 @@ async function transformToWebComponents({
   useContextProvider,
   integrationsPath,
 }: TransformOptions) {
-  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } =
-    getConstants();
+  const {
+    SRC_DIR,
+    BUILD_DIR,
+    CONFIG,
+    LOG_PREFIX,
+    IS_PRODUCTION,
+    VERSION_HASH,
+  } = getConstants();
 
   const internalDir = join(BUILD_DIR, "_brisa");
-  const webEntrypoint = join(internalDir, `temp-${crypto.randomUUID()}.ts`);
+  const webEntrypoint = join(internalDir, `temp-${VERSION_HASH}.ts`);
   let useI18n = false;
   let i18nKeys = new Set<string>();
   const webComponentsPath = Object.values(webComponentsList);
