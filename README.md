@@ -36,6 +36,8 @@
   <a href="https://github.com/brisa-build/brisa/issues/new">Issues</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://github.com/brisa-build/brisa/issues/1">Roadmap</a>
+    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  <a href="https://github.com/sponsors/aralroca">Sponsors</a>
   <br />
 </div>
 
@@ -118,6 +120,18 @@ In Brisa we wanted to make a direct integration with Tauri. So that from the Bri
 ### Vue.js
 
 Finally, I want to thank [An Phan](https://twitter.com/notphanan), a co-worker who is in the core team of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support.
+
+## Documentation
+
+The documentation is available on [brisa.build](https://brisa.build).
+
+## Contributing
+
+See [Contributing Guide](CONTRIBUTING.md) and please follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Discord
+
+Come join the [Discord community channel~](https://discord.gg/89Y9HMYZ)
 
 ## License
 
