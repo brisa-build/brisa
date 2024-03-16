@@ -973,8 +973,8 @@ describe("CLI: serve", () => {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
     };
-    mock.module("@/utils/response-action", () => ({
-      default: (req: RequestContext) => mockResponseAction(req),
+    mock.module("./test-mocks", () => ({
+      responseAction: (req: RequestContext) => mockResponseAction(req),
     }));
 
     const res = await testRequest(
@@ -998,8 +998,8 @@ describe("CLI: serve", () => {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
     };
-    mock.module("@/utils/response-action", () => ({
-      default: (req: RequestContext) => mockResponseAction(req),
+    mock.module("./test-mocks", () => ({
+      responseAction: (req: RequestContext) => mockResponseAction(req),
     }));
 
     await testRequest(
@@ -1018,8 +1018,8 @@ describe("CLI: serve", () => {
   it("should call responseAction method when is an action and has i18n", async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
-    mock.module("@/utils/response-action", () => ({
-      default: (req: RequestContext) => mockResponseAction(req),
+    mock.module("./test-mocks", () => ({
+      responseAction: (req: RequestContext) => mockResponseAction(req),
     }));
 
     await testRequest(
