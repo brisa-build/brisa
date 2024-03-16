@@ -59,10 +59,6 @@ bun create brisa@latest
 
 For more info visit the [docs](https://brisa.build/getting-started/installation).
 
-## Documentation
-
-The documentation will be soon on the [website](https://brisa.build/docs). For now it is not yet available and there is still a lot of documentation to be written, but you can access it from the [`/docs`](https://github.com/brisa-build/brisa/tree/main/docs) directory of the GitHub repository.
-
 ## Inspirations
 
 ### Bun.js
