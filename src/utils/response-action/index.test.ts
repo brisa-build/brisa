@@ -9,7 +9,7 @@ import {
 } from "bun:test";
 import path from "node:path";
 import extendRequestContext from "@/utils/extend-request-context";
-import { responseAction } from "./test-mock";
+import responseAction from ".";
 import { getConstants } from "@/constants";
 import { ENCRYPT_NONTEXT_PREFIX, encrypt } from "@/utils/crypto";
 
