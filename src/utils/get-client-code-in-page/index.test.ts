@@ -80,7 +80,7 @@ describe("utils", () => {
       const output = await getClientCodeInPage(input, allWebComponents);
       const unsuspenseSize = 217;
       const actionRPCSize = 1705;
-      const actionRPCLazySize = 1835;
+      const actionRPCLazySize = 1855;
 
       // actionRPCLazy is loaded after user interaction (action),
       // so it's not included in the initial size
