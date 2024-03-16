@@ -20,7 +20,7 @@ export default defineConfig({
     },
     logo: "/brisa.svg",
     nav: [
-      { text: "Home", link: "/", activeMatch: "^/$|^/guide/" },
+      { text: "Home", link: "/" },
       {
         text: "Documentation",
         link: "/getting-started/installation",
