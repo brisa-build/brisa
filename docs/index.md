@@ -7,7 +7,7 @@ hero:
   text: "Inspired by the others, the best of each one."
   tagline: Brisa is designed to start, build, test, deploy and run fast.
   image:
-    src: /brisa.svg
+    src: /assets/brisa.svg
     alt: Brisa
   actions:
     - theme: brand
