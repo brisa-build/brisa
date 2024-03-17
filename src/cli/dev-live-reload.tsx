@@ -81,7 +81,12 @@ export function LiveReloadScript({
     <>
       <script>
         {dangerHTML(
-          `(new WebSocket("${wsUrl}")).onmessage = e => e.data === "${LIVE_RELOAD_COMMAND}" && location.reload();`,
+          `function wsc() {
+            let s = new WebSocket("${wsUrl}");
+            s.onclose = wsc;
+            s.onmessage = e => e.data === "${LIVE_RELOAD_COMMAND}" && location.reload();
+          }
+          wsc();`,
         )}
       </script>
       {children}
