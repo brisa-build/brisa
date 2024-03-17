@@ -1,5 +1,5 @@
 ---
-description: Create a new Brisa application with `create-brisa-app`.
+description: Quick start with Brisa
 related:
   title: Next Steps
   description: Learn about the files and folders in your Brisa project.
@@ -7,7 +7,7 @@ related:
     - getting-started/project-structure
 ---
 
-# Installation
+# Quick start
 
 ### System Requirements
 

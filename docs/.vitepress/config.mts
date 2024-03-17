@@ -23,7 +23,7 @@ export default defineConfig({
       { text: "Home", link: "/" },
       {
         text: "Documentation",
-        link: "/getting-started/installation",
+        link: "/getting-started/quick-start",
       },
     ],
     sidebar: [
@@ -32,8 +32,12 @@ export default defineConfig({
         collapsed: true,
         items: [
           {
-            text: "Installation",
-            link: "/getting-started/installation",
+            text: "What is Brisa?",
+            link: "/getting-started/what-is-brisa",
+          },
+          {
+            text: "Quick Start",
+            link: "/getting-started/quick-start",
           },
           {
             text: "Project structure",
