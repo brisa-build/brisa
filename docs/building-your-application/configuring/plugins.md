@@ -1,7 +1,8 @@
 ---
-title: Plugins
 description: Learn how to use Bun/esbuild plugins
 ---
+
+# Plugins
 
 Brisa uses Bun, and Bun provides a [universal plugin API](https://bun.sh/docs/runtime/plugins) that can be used to extend both the _runtime_ and _bundler_.
 

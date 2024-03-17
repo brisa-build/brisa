@@ -1,7 +1,8 @@
 ---
-title: Context
 description: Understand what context is and how to use it
 ---
+
+# Context
 
 Context provides a way to pass data through the component tree without having to pass props down manually at every level. It works for both server and web components.
 

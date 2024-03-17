@@ -1,7 +1,8 @@
 ---
-title: Android app
 description: Learn how build a Brisa application with Tauri
 ---
+
+# Android app
 
 ## Brisa Android Applications (Tauri integration)
 

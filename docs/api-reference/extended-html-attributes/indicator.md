@@ -1,7 +1,8 @@
 ---
-title: indicator
 description: Use `indicator` attribute to add the `brisa-request` class to the element only during the action time
 ---
+
+# indicator
 
 ## Reference
 

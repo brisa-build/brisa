@@ -1,7 +1,8 @@
 ---
-title: dangerHTML
 description: inject HTML string into the DOM
 ---
+
+# dangerHTML
 
 ## Reference
 

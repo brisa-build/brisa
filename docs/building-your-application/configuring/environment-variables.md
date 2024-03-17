@@ -1,7 +1,8 @@
 ---
-title: Environment Variables
 description: Learn to add and access environment variables in your Brisa application.
 ---
+
+# Environment Variables
 
 Brisa comes with built-in support for environment variables thanks to Bun, which allows you to do the following:
 

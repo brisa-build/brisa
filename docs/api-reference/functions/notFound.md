@@ -1,7 +1,8 @@
 ---
-title: notFound
 description: allows you to render the [`404 page`](#404-page)
 ---
+
+# notFound
 
 ## Reference
 

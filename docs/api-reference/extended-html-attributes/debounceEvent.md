@@ -1,7 +1,8 @@
 ---
-title: debounce[Event]
 description: Use `debounce[Event]` attribute to debounce a server action
 ---
+
+# debounce[Event]
 
 ## Reference
 

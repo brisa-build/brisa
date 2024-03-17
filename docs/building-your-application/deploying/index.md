@@ -1,7 +1,8 @@
 ---
-title: Deploying
 description: Learn how to deploy your Brisa app to production
 ---
+
+# Deploying
 
 Congratulations, it's time to ship to production.
 

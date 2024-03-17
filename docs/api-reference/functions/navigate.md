@@ -1,7 +1,8 @@
 ---
-title: navigate
 description: inject HTML string into the DOM
 ---
+
+# navigate
 
 ## Reference
 
