@@ -68,7 +68,11 @@ export default function Form() {
 
 > [!TIP]
 >
-> > When working with forms that have many fields, you may want to consider using the [`entries()`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries) method with JavaScript's [`Object.fromEntries()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries). For example: `const rawFormData = Object.fromEntries(formData.entries())`
+> When working with forms that have many fields, you may want to consider using the [`entries()`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/entries) method with JavaScript's [`Object.fromEntries()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries). For example: `const rawFormData = Object.fromEntries(formData.entries())`
+
+> [!NOTE]
+>
+> When you use the `onSubmit` action of a `form`, it can **work without JavaScript** automatically. However, if you want a different behavior when the user does not have JavaScript you can override the "`action`", "`enctype`" and "`method`" attributes and connect it to a specific endpoint.
 
 ## Nested actions
 
