@@ -79,6 +79,8 @@ The differences to be taken into account when no-JS are:
 - No action signals can be used, the properties of the store at this point die on the client.
 - The page is reloaded always with the new content, instead of doing the `rerenderInAction`.
 
+<!-- {% twitter 1769418996476940630 %} -->
+
 ## Nested actions
 
 In Brisa we allow nested actions to be used. We want the actions in the server components to be as similar as possible to the events in the web components.
