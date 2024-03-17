@@ -74,7 +74,7 @@ export default function Form() {
 
 When you use the `onSubmit` action of a `form`, it can **work without JavaScript** automatically. However, if you want a different behavior when the user does not have JavaScript you can override the "`action`", "`enctype`" and "`method`" attributes and connect it to a specific endpoint. Normally it will not be necessary to overwrite them, but we prefer that it is feasible to do so.
 
-The differences to be taken into account when calling the server action with JavaScript and without JavaScript are:
+The differences to be taken into account when no-JS are:
 
 - No action signals can be used, the properties of the store at this point die on the client.
 - The page is reloaded always with the new content, instead of doing the `rerenderInAction`.
