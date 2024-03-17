@@ -691,6 +691,120 @@ describe("utils", () => {
       expect(attributes).toBe(` foo="bar" data-action`);
     });
 
+    it('should add "action", "enctype" and "method" attributes to the "form" tag when data-action-onsubmit exists', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        elementProps: { "data-action-onsubmit": "a1", "data-action": true },
+        request,
+        type: "form",
+      });
+
+      expect(attributes).toBe(
+        ` data-action-onsubmit="a1" data-action action="/?_aid=a1" enctype="multipart/form-data" method="POST"`,
+      );
+    });
+
+    it('should add "action", "enctype" and "method" attributes to the "form" tag when onSubmit action and these attributes are not defined', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onSubmit = () => {};
+      onSubmit.actionId = "a1";
+
+      const attributes = renderAttributes({
+        elementProps: { onSubmit },
+        request,
+        type: "form",
+      });
+
+      expect(attributes).toBe(
+        ` data-action-onsubmit="a1" data-action action="/?_aid=a1" enctype="multipart/form-data" method="POST"`,
+      );
+    });
+
+    it("should keep search params when adds the action attribute", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com?foo=bar"),
+      });
+
+      const onSubmit = () => {};
+      onSubmit.actionId = "a1";
+
+      const attributes = renderAttributes({
+        elementProps: { onSubmit },
+        request,
+        type: "form",
+      });
+
+      expect(attributes).toBe(
+        ` data-action-onsubmit="a1" data-action action="/?foo=bar&_aid=a1" enctype="multipart/form-data" method="POST"`,
+      );
+    });
+
+    it('should keep method="GET" when adds the action attribute and the "method" attr aleady exist', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com?foo=bar"),
+      });
+
+      const onSubmit = () => {};
+      onSubmit.actionId = "a1";
+
+      const attributes = renderAttributes({
+        elementProps: { onSubmit, method: "GET" },
+        request,
+        type: "form",
+      });
+
+      expect(attributes).toBe(
+        ` data-action-onsubmit="a1" data-action method="GET" action="/?foo=bar&_aid=a1" enctype="multipart/form-data"`,
+      );
+    });
+
+    it('should keep "action" when adds the method attribute and the "action" attr aleady exist', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com?foo=bar"),
+      });
+
+      const onSubmit = () => {};
+      onSubmit.actionId = "a1";
+
+      const attributes = renderAttributes({
+        elementProps: { onSubmit, action: "/some-action" },
+        request,
+        type: "form",
+      });
+
+      expect(attributes).toBe(
+        ` data-action-onsubmit="a1" data-action action="/some-action" enctype="multipart/form-data" method="POST"`,
+      );
+    });
+
+    it('should keep "enctype" when adds the method attribute and the "enctype" attr aleady exist', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com?foo=bar"),
+      });
+
+      const onSubmit = () => {};
+      onSubmit.actionId = "a1";
+
+      const attributes = renderAttributes({
+        elementProps: {
+          onSubmit,
+          enctype: "application/x-www-form-urlencoded",
+        },
+        request,
+        type: "form",
+      });
+
+      expect(attributes).toBe(
+        ` data-action-onsubmit="a1" data-action enctype="application/x-www-form-urlencoded" action="/?foo=bar&_aid=a1" method="POST"`,
+      );
+    });
+
     it('should "data-actions" dependencies not mutate', () => {
       const request = extendRequestContext({
         originalRequest: new Request("https://example.com"),

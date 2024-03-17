@@ -29,6 +29,7 @@ export default function renderAttributes({
   const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
   const keys = new Set<string>();
   let attributes = "";
+  let submitAction = elementProps["data-action-onsubmit"];
 
   for (const prop in elementProps) {
     const key = prop.toLowerCase();
@@ -60,6 +61,10 @@ export default function renderAttributes({
         new RegExp(`${actionToEventKey}=".*?"`),
         `${actionToEventKey}="${value.actionId}"`,
       );
+
+      if (key === "onsubmit") {
+        submitAction = value.actionId;
+      }
 
       if (keys.has(actionToEventKey)) {
         attributes = modifiedAttributes;
@@ -154,6 +159,27 @@ export default function renderAttributes({
 
     if (hasEntries) dependencies.unshift(entries);
     if (hasDeps) attributes += ` data-actions="${serialize(dependencies)}"`;
+  }
+
+  // Form action - Add "action" and "method" if not present
+  if (submitAction && type === "form") {
+    if (!keys.has("action")) {
+      const url = new URL(request.url);
+
+      url.searchParams.set("_aid", submitAction as string);
+      keys.add("action");
+      attributes += ` action="${url.pathname}${url.search}"`;
+    }
+
+    if (!keys.has("enctype")) {
+      keys.add("enctype");
+      attributes += ` enctype="multipart/form-data"`;
+    }
+
+    if (!keys.has("method")) {
+      keys.add("method");
+      attributes += ` method="POST"`;
+    }
   }
 
   if (type === "html" && request.i18n?.locale) {

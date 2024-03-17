@@ -8,9 +8,11 @@ import { logError } from "@/utils/log/log-build";
 
 export default async function responseAction(req: RequestContext) {
   const { BUILD_DIR } = getConstants();
-  const action = req.headers.get("x-action")!;
-  const actionsHeaderValue = req.headers.get("x-actions")!;
-  const storeRaw = req.headers.get("x-s")!;
+  const url = new URL(req.url);
+  const action =
+    req.headers.get("x-action") ?? url.searchParams.get("_aid") ?? "";
+  const actionsHeaderValue = req.headers.get("x-actions") ?? "[]";
+  const storeRaw = req.headers.get("x-s") ?? "[]";
   const actionFile = action.split("_").at(0);
   const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
   const contentType = req.headers.get("content-type");
