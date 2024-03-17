@@ -12,9 +12,13 @@ const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
 let mockLog: ReturnType<typeof spyOn>;
 
-const getReq = () =>
+const getReq = (url = "http://localhost") =>
   extendRequestContext({
-    originalRequest: new Request("http://localhost"),
+    originalRequest: new Request(url, {
+      headers: {
+        "x-action": "some-action",
+      },
+    }),
     store: undefined,
   });
 
@@ -86,7 +90,7 @@ describe("utils", () => {
       );
     });
 
-    it("should rerender the page with reactivity", async () => {
+    it("should rerender the page with reactivity without declarative shadow DOM", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({ type: "page", mode: "reactivity" }) +
@@ -99,6 +103,26 @@ describe("utils", () => {
 
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
+      expect(response.headers.get("X-Mode")).toBe("reactivity");
+      expect(await response.text()).toContain(
+        '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
+      );
+    });
+
+    it("should rerender the page with reactivity with declarative shadow DOM if is called without JS", async () => {
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({ type: "page", mode: "reactivity" }) +
+          SUFFIX_MESSAGE,
+      );
+      error.name = "rerender";
+
+      const req = getReq("http://localhost?_aid=1");
+      req.headers.delete("x-action");
+      const response = await resolveAction({ req, error, component: <div /> });
+
+      expect(response.status).toBe(200);
+      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(false);
       expect(response.headers.get("X-Mode")).toBe("reactivity");
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
