@@ -11,8 +11,8 @@ hero:
     alt: Brisa
   actions:
     - theme: brand
-      text: Getting started
-      link: /getting-started/installation.md
+      text: Quick start
+      link: /getting-started/quick-start.md
     - theme: alt
       text: View on Github
       link: https://github.com/brisa-build/brisa
