@@ -133,6 +133,58 @@ describe("utils", () => {
       ]);
     });
 
+    it("should form-data work with ?_aid instead of x-action to work without JS", async () => {
+      const formData = new FormData();
+      formData.append("foo", "bar");
+
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE + "?_aid=a1_1", {
+          method: "POST",
+          headers: {
+            "content-type": "multipart/form-data",
+          },
+          body: formData,
+        }),
+      });
+
+      req.formData = async () => formData;
+
+      await responseAction(req);
+
+      expect(req.store.get("__params:a1_1")).toEqual([
+        {
+          isTrusted: true,
+          bubbles: false,
+          cancelBubble: false,
+          cancelable: false,
+          composed: false,
+          currentTarget: {
+            action: "http://locahost/es/somepage?_aid=a1_1",
+            autocomplete: "on",
+            enctype: "multipart/form-data",
+            encoding: "multipart/form-data",
+            method: "post",
+            elements: {},
+          },
+          defaultPrevented: true,
+          eventPhase: 0,
+          formData,
+          returnValue: true,
+          srcElement: null,
+          target: {
+            action: "http://locahost/es/somepage?_aid=a1_1",
+            autocomplete: "on",
+            enctype: "multipart/form-data",
+            encoding: "multipart/form-data",
+            method: "post",
+            elements: {},
+          },
+          timeStamp: 0,
+          type: "formdata",
+        },
+      ]);
+    });
+
     it("should add the correct param when using web component event", async () => {
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
