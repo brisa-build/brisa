@@ -1,7 +1,8 @@
 ---
-title: Internationalization (i18n)
 description: Brisa has built-in support for internationalized routing, language detection and consume translations. Learn more here.
 ---
+
+# Internationalization (i18n)
 
 Brisa has built-in support for internationalized ([i18n](https://en.wikipedia.org/wiki/Internationalization_and_localization#Naming)). You can provide a list of locales, the default locale, and domain-specific locales and Brisa will automatically handle the routing.
 

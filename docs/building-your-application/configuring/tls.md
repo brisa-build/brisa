@@ -1,7 +1,8 @@
 ---
-title: TLS
 description: Learn how to configure TLS
 ---
+
+# TLS
 
 Brisa supports TLS out of the box thanks to [Bun](https://bun.sh/docs/api/http#tls), powered by [BoringSSL](https://boringssl.googlesource.com/boringssl). Enable TLS by passing in a value for `key` and `cert`; both are required to enable TLS.
 

@@ -1,7 +1,8 @@
 ---
-title: TypeScript
 description: Brisa provides a TypeScript-first development experience for building your application.
 ---
+
+# TypeScript
 
 Brisa provides a TypeScript-first development experience for building your application.
 

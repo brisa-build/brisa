@@ -1,7 +1,8 @@
 ---
-title: Testing
 description: Learn how to set up Brisa with Bun test runner and Playwright.
 ---
+
+# Testing
 
 In Brisa, there are a few different types of tests you can write, each with its own purpose and use cases. This page provides an overview of types and commonly used tools you can use to test your application.
 

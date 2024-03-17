@@ -1,8 +1,9 @@
 ---
-title: Brisa Project Structure
 nav_title: Project Structure
 description: A list of folders and files conventions in a Brisa project
 ---
+
+# Brisa Project Structure
 
 This page provides an overview of the file and folder structure of a Brisa project.
 

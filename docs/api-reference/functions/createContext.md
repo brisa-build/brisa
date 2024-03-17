@@ -1,7 +1,8 @@
 ---
-title: createContext
 description: Use `createContext` to create a context to share in your components
 ---
+
+# createContext
 
 `createContext` lets you create a context that components can provide or read. It is used to create a context with a default value.
 

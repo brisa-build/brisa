@@ -1,7 +1,8 @@
 ---
-title: Linking and Navigating
 description: Learn how navigation works in Brisa.
 ---
+
+# Linking and Navigating
 
 Brisa works with MPA like SPA thanks to [View Transitions](https://github.com/WICG/view-transitions/blob/main/explainer.md), so we will use the native HTML navigation and you can use the `a` tag directly:
 

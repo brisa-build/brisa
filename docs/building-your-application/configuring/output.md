@@ -1,7 +1,8 @@
 ---
-title: Output
 description: Learn how to build with different types of outputs
 ---
+
+# Output
 
 Brisa, offers versatile output configuration options to tailor your build output according to your deployment needs. The `output` configuration property in `brisa.config.ts` allows you to define the type of output you desire, with options such as `server`, `static`, and `desktop`.
 

@@ -1,7 +1,8 @@
 ---
-title: Custom Errors
 description: Override and extend the built-in Error page to handle custom errors.
 ---
+
+# Custom Errors
 
 ## 404 Page
 

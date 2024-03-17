@@ -1,7 +1,8 @@
 ---
-title: indicate[Event]
 description: Use `indicate[Event]` attribute to control the pending status of the server action via an `indicator`
 ---
+
+# indicate[Event]
 
 ## Reference
 

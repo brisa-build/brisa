@@ -1,7 +1,8 @@
 ---
-title: context-provider
 description: Use `context-provider` component to share data with the tree of child components.
 ---
+
+# context-provider
 
 ## Reference
 

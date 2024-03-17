@@ -1,7 +1,8 @@
 ---
-title: Web Components
 description: Understand how to use web-components in Brisa.
 ---
+
+# Web Components
 
 Remember that everything in Brisa (pages, layout, middleware, api...) runs on the server.
 

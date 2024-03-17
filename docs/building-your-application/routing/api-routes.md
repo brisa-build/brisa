@@ -1,7 +1,8 @@
 ---
-title: API Routes
 description: Brisa supports API Routes, which allow you to build your API without leaving your Brisa app. Learn how it works here.
 ---
+
+# API Routes
 
 API routes provide a solution to build a **public API** with Brisa.
 

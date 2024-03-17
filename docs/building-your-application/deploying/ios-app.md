@@ -1,7 +1,8 @@
 ---
-title: iOS app
 description: Learn how build a Brisa application with Tauri
 ---
+
+# iOS app
 
 ## Brisa iOS Applications (Tauri integration)
 

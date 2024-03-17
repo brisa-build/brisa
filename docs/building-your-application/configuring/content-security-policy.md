@@ -1,7 +1,8 @@
 ---
-title: Content Security Policy
 description: Learn how to set a Content Security Policy (CSP) for your Brisa application.
 ---
+
+# Content Security Policy
 
 [Content Security Policy (CSP)](https://developer.mozilla.org/docs/Web/HTTP/CSP) is important to guard your Brisa application against various security threats such as cross-site scripting (XSS), clickjacking, and other code injection attacks.
 
