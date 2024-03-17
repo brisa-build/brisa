@@ -1,7 +1,8 @@
 ---
-title: Deploying to Fly.io
 description: Learn how to deploy to fly.io
 ---
+
+# Deploying to Fly.io
 
 [Fly.io](https://fly.io/) is the fastest way to deploy straight from your source code. You’ll be up and running in just minutes.
 

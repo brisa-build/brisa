@@ -1,7 +1,8 @@
 ---
-title: Trailing slash
 description: Configure Brisa pages to resolve with or without a trailing slash.
 ---
+
+# Trailing slash
 
 By default Brisa will redirect urls with trailing slashes to their counterpart without a trailing slash. For example `/about/` will redirect to `/about`. You can configure this behavior to act the opposite way, where urls without trailing slashes are redirected to their counterparts with trailing slashes.
 

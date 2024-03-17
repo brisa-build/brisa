@@ -1,7 +1,8 @@
 ---
-title: Styling
 description: Learn the different ways you can style your Brisa application.
 ---
+
+# Styling
 
 Brisa supports different ways of styling your application, including:
 

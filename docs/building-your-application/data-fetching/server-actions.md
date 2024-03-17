@@ -1,8 +1,9 @@
 ---
-title: Server Actions
 nav_title: Server Actions
 description: Learn how to handle events in the server and form submissions with Brisa.
 ---
+
+# Server Actions
 
 Server Actions are functions/arrow functions that are executed on the server once the user interacts with the page. They can be used only in Server Components to handle browser events on the server.
 

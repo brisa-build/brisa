@@ -1,7 +1,8 @@
 ---
-title: Suspense and Streaming
 description: Suspense allows you to create a fallback for any component, and automatically stream content as it becomes ready.
 ---
+
+# Suspense and Streaming
 
 Each component (server-component and web-component) allows an extension to add a `suspense` component to it, which is the fallback that will be displayed while the component loads.
 

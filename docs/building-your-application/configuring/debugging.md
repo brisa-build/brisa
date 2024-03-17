@@ -1,7 +1,8 @@
 ---
-title: Debugging
 description: Learn how to debug your Brisa application
 ---
+
+# Debugging
 
 ## Debugging with the web debugger
 

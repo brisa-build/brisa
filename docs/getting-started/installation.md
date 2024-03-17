@@ -1,5 +1,4 @@
 ---
-title: Installation
 description: Create a new Brisa application with `create-brisa-app`.
 related:
   title: Next Steps
@@ -7,6 +6,8 @@ related:
   links:
     - getting-started/project-structure
 ---
+
+# Installation
 
 ### System Requirements
 

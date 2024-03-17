@@ -1,7 +1,8 @@
 ---
-title: Docker
 description: Learn how to containerize a Brisa application with Docker
 ---
+
+# Docker
 
 ## Containerize a Brisa application with Docker
 

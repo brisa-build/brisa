@@ -1,7 +1,8 @@
 ---
-title: Dynamic Routes
 description: Dynamic Routes are pages that allow you to add custom params to your URLs. Start creating Dynamic Routes and learn more here.
 ---
+
+# Dynamic Routes
 
 When you don't know the exact segment names ahead of time and want to create routes from dynamic data, you can use Dynamic Segments that are filled in at request time.
 

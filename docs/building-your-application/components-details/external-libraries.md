@@ -1,7 +1,8 @@
 ---
-title: External libraries
 description: How to use external libraries in Brisa components
 ---
+
+# External libraries
 
 When working on a Brisa project, you may encounter scenarios where you need to integrate external libraries. This documentation outlines the process of installing and using external libraries in different contexts within your project: standalone libraries, server components, and web components.
 

@@ -1,7 +1,8 @@
 ---
-title: Static exports
 description: Learn how build a static site in Brisa
 ---
+
+# Static exports
 
 Brisa enables starting as a static site.
 

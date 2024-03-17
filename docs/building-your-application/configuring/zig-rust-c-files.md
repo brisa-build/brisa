@@ -1,7 +1,8 @@
 ---
-title: Use C ABI files (zig, rust, c/c++, c#, nim, kotlin...)
 description: Learn how to incorporate files from C ABI languages into your server files.
 ---
+
+# Use C ABI files (zig, rust, c/c++, c#, nim, kotlin...)
 
 If you need to utilize files from different C ABI languages (Zig, Rust, C/C++, C#, Nim, Kotlin, etc.), you can achieve this as follows:
 

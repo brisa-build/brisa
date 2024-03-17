@@ -1,7 +1,8 @@
 ---
-title: Authentication
 description: Learn how to implement authentication in Brisa covering best practices, securing routes, authorization techniques, and session management.
 ---
+
+# Authentication
 
 To incorporate authentication in Brisa, acquaint yourself with three fundamental principles:
 

@@ -1,7 +1,8 @@
 ---
-title: rerenderInAction
 description: rerender the component or the page inside a server action
 ---
+
+# rerenderInAction
 
 ## Reference
 

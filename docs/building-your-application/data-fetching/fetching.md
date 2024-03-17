@@ -1,8 +1,9 @@
 ---
-title: Data Fetching
 nav_title: Fetching
 description: Learn how to fetch data in your Brisa application.
 ---
+
+# Data Fetching
 
 Data fetching is a fundamental aspect of any application, influencing its performance and user experience. This documentation outlines how data fetching can be accomplished in a Brisa application, emphasizing best practices and efficient strategies.
 

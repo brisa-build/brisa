@@ -1,7 +1,8 @@
 ---
-title: Desktop app
 description: Learn how build a Brisa application with Tauri
 ---
+
+# Desktop app
 
 ## Brisa Desktop Applications (Tauri integration)
 

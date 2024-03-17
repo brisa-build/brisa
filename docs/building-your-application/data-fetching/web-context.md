@@ -1,7 +1,8 @@
 ---
-title: Web Context
 description: Understand WebContext to create reactive web components in Brisa applications.
 ---
+
+# Web Context
 
 The `WebContext` is a set of utilities provided by Brisa to facilitate the development of web components. It encompasses various functionalities such as managing state, handling context, performing effects, and more. This context allows developers to create reactive web components in Brisa applications.
 

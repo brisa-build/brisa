@@ -1,7 +1,8 @@
 ---
-title: Real-time Communication with Websockets
 description: Explore the implementation of websockets for real-time communication in your application.
 ---
+
+# Real-time Communication with Websockets
 
 Websockets provide a powerful mechanism for establishing a full-duplex communication channel between a client and a server. This enables real-time updates and interactions in your application.
 

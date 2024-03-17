@@ -1,7 +1,8 @@
 ---
-title: Forms
 description: How to use forms in Brisa
 ---
+
+# Forms
 
 ## Forms
 
