@@ -1,4 +1,4 @@
-import type { RerenderInActionProps } from "@/types";
+import type { RerenderInActionProps } from "@/types/server";
 
 export const PREFIX_MESSAGE = "Error rerendering within action: ";
 export const SUFFIX_MESSAGE =
