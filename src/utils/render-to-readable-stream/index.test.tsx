@@ -59,6 +59,19 @@ describe("utils", () => {
       );
     });
 
+    it('should not display the "head" tag warning if log=false', async () => {
+      const element = <div class="test">Hello World</div>;
+      const stream = renderToReadableStream(element, {
+        ...testOptions,
+        log: false,
+      });
+      const result = await Bun.readableStreamToText(stream);
+
+      const expected = `<div class="test">Hello World</div>`;
+      expect(result).toBe(expected);
+      expect(mockConsoleError.mock.calls.length).toBe(0);
+    });
+
     it('should not display the "head" tag warning if the request is aborted', async () => {
       const request = extendRequestContext({
         originalRequest: new Request("http://test.com/"),

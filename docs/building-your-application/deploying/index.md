@@ -30,7 +30,7 @@ Then, run `bun run build` to build your application. Finally, run `bun run start
 
 Choose your hosting to deploy:
 
-- [Deploy Brisa app to **Fly.io**](/building-your-application/fly-io)
+- [Deploy Brisa app to **Fly.io**](/building-your-application/deploying/fly-io)
 - [Deploy Brisa app to **Vercel**](/building-your-application/deploying/vercel)
 - [Deploy Brisa app to **Netlify**](/building-your-application/deploying/netlify)
 - [Deploy Brisa app to **AWS**](/building-your-application/deploying/aws)
