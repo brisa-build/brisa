@@ -23,6 +23,7 @@ type ProviderType = ReturnType<typeof contextProvider>;
 type Options = {
   request: RequestContext;
   head?: ComponentType;
+  log?: boolean;
 };
 
 const CONTEXT_PROVIDER = "context-provider";
@@ -31,7 +32,7 @@ const NO_INDEX = '<meta name="robots" content="noindex" />';
 
 export default function renderToReadableStream(
   element: JSX.Element,
-  { request, head }: Options,
+  { request, head, log = true }: Options,
 ) {
   const { IS_PRODUCTION, BUILD_DIR, SCRIPT_404 } = getConstants();
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
@@ -81,7 +82,7 @@ export default function renderToReadableStream(
 
       controller.close();
 
-      if (!IS_PRODUCTION && !aborted && !extendedController.hasHeadTag) {
+      if (log && !IS_PRODUCTION && !aborted && !extendedController.hasHeadTag) {
         console.error(
           "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
         );

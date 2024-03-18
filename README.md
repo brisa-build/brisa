@@ -26,7 +26,6 @@
 
 [badge-prwelcome]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [prwelcome]: http://makeapullrequest.com
-[spectrum]: https://spectrum.chat/next-translate
 
 <div align="center">
   <a href="https://brisa.build">Documentation</a>

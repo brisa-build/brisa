@@ -51,6 +51,7 @@ export default defineConfig({
         items: [
           {
             text: "🛣️ Routing",
+            collapsed: false,
             items: [
               {
                 text: "Pages and Layouts",
@@ -311,10 +312,6 @@ export default defineConfig({
                 text: "notFound",
                 link: "/api-reference/functions/notFound",
               },
-              {
-                text: "rerenderInAction",
-                link: "/api-reference/functions/rerenderInAction",
-              },
             ],
           },
           {
@@ -344,6 +341,34 @@ export default defineConfig({
               {
                 link: "/api-reference/extended-html-attributes/skipSSR",
                 text: "skipSSR",
+              },
+            ],
+          },
+          {
+            collapsed: true,
+            text: "🔧 Macros",
+            items: [
+              {
+                text: "prerender",
+                link: "/api-reference/macros/prerender",
+              },
+            ],
+          },
+          {
+            collapsed: true,
+            text: "🌐 Server APIs",
+            items: [
+              {
+                text: "rerenderInAction",
+                link: "/api-reference/server-apis/rerenderInAction",
+              },
+              {
+                text: "renderToReadableStream",
+                link: "/api-reference/server-apis/renderToReadableStream",
+              },
+              {
+                text: "renderToString",
+                link: "/api-reference/server-apis/renderToString",
               },
             ],
           },
