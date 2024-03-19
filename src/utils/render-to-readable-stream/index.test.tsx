@@ -72,6 +72,13 @@ describe("utils", () => {
       expect(mockConsoleError.mock.calls.length).toBe(0);
     });
 
+    it("should render an empty text node", () => {
+      const element = <div class="test">{""}</div>;
+      const stream = renderToReadableStream(element, testOptions);
+      const result = Bun.readableStreamToText(stream);
+      expect(result).resolves.toBe(`<div class="test"></div>`);
+    });
+
     it('should not display the "head" tag warning if the request is aborted', async () => {
       const request = extendRequestContext({
         originalRequest: new Request("http://test.com/"),
