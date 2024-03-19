@@ -1237,6 +1237,21 @@ describe("integration", () => {
       expect(asyncComponent?.shadowRoot?.innerHTML).toBe("<div>42</div>");
     });
 
+    it("should render an empty text node", () => {
+      const code = `export default function EmptyTextNode() {
+        return <div>{''}</div>;
+      }`;
+
+      defineBrisaWebComponent(code, "src/web-components/empty-text-node.tsx");
+      document.body.innerHTML = "<empty-text-node />";
+
+      const emptyTextNode = document.querySelector(
+        "empty-text-node",
+      ) as HTMLElement;
+
+      expect(emptyTextNode?.shadowRoot?.innerHTML).toBe("<div></div>");
+    });
+
     it("should cleanup everytime an effect is re-called", () => {
       window.mockEffect = mock((num: number) => {});
       window.mockCleanup = mock(() => {});
