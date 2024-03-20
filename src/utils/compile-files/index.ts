@@ -44,7 +44,6 @@ export default async function compileFiles() {
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
   const actionsEntrypoints: string[] = [];
   const define = { __DEV__: (!IS_PRODUCTION).toString() };
-  let layoutWebComponents: Record<string, string> | undefined;
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -78,9 +77,7 @@ export default async function compileFiles() {
                 allWebComponents,
                 fileID,
               });
-              const buildPath = path
-                .replace(SRC_DIR, BUILD_DIR)
-                .replace(/\.tsx?$/, ".js");
+              const buildPath = getBuildPath(path);
 
               if (result.hasActions) {
                 const actionEntrypoint = join(
@@ -94,14 +91,9 @@ export default async function compileFiles() {
                 await Bun.write(actionEntrypoint, result.code);
               }
 
-              if (layoutPath === path) {
-                layoutWebComponents = result.detectedWebComponents;
-              } else {
-                webComponentsPerEntrypoint[buildPath] =
-                  result.detectedWebComponents;
-              }
-
               code = result.code;
+              webComponentsPerEntrypoint[buildPath] =
+                result.detectedWebComponents;
             } catch (error) {
               console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
               console.log(LOG_PREFIX.ERROR, (error as Error).message);
@@ -121,18 +113,6 @@ export default async function compileFiles() {
 
   if (!success) return { success, logs, pagesSize: {} };
 
-  // Add layout web components to all pages
-  if (layoutWebComponents) {
-    for (const [entrypoint, content] of Object.entries(
-      webComponentsPerEntrypoint,
-    )) {
-      webComponentsPerEntrypoint[entrypoint] = {
-        ...content,
-        ...layoutWebComponents,
-      };
-    }
-  }
-
   if (actionsEntrypoints.length) {
     const actionResult = await compileActions({ actionsEntrypoints, define });
     if (!actionResult.success) logs.push(...actionResult.logs);
@@ -142,6 +122,7 @@ export default async function compileFiles() {
     allWebComponents,
     webComponentsPerEntrypoint,
     integrationsPath,
+    layoutPath,
   });
 
   if (!pagesSize) {
@@ -214,15 +195,18 @@ async function compileClientCodePage(
     allWebComponents,
     webComponentsPerEntrypoint,
     integrationsPath,
+    layoutPath,
   }: {
     allWebComponents: Record<string, string>;
     webComponentsPerEntrypoint: Record<string, Record<string, string>>;
     integrationsPath?: string | null;
+    layoutPath?: string | null;
   },
 ) {
   const { BUILD_DIR, I18N_CONFIG } = getConstants();
   const pagesClientPath = join(BUILD_DIR, "pages-client");
   const internalPath = join(BUILD_DIR, "_brisa");
+  const layoutBuildPath = layoutPath ? getBuildPath(layoutPath) : "";
 
   // During hotreloading it is important to clean pages-client because
   // new client files are generated with hash, this hash can change
@@ -239,15 +223,27 @@ async function compileClientCodePage(
   if (!fs.existsSync(internalPath)) fs.mkdirSync(internalPath);
 
   const clientSizesPerPage: Record<string, Blob["size"]> = {};
+  const layoutWebComponents = webComponentsPerEntrypoint[layoutBuildPath];
 
   for (const page of pages) {
     const route = page.path.replace(BUILD_DIR, "");
     const pagePath = page.path;
+    const isPage = route.startsWith("/pages/");
+    const isLayout = pagePath === layoutBuildPath;
+    let pageWebComponents = webComponentsPerEntrypoint[pagePath];
     const clientPagePath = pagePath.replace("pages", "pages-client");
+
+    if (isPage && layoutWebComponents) {
+      pageWebComponents = {
+        ...layoutWebComponents,
+        ...(pageWebComponents ?? {}),
+      };
+    }
+
     const pageCode = await getClientCodeInPage(
       pagePath,
       allWebComponents,
-      webComponentsPerEntrypoint[pagePath],
+      pageWebComponents,
       integrationsPath,
     );
 
@@ -291,7 +287,7 @@ async function compileClientCodePage(
       skipList: true,
     });
 
-    if (!code) continue;
+    if (!code || isLayout) continue;
 
     // create i18n page content files
     if (useI18n && i18nKeys.size && I18N_CONFIG?.messages) {
@@ -370,4 +366,9 @@ function addExtraChunk(
   }
 
   return gzipUnsuspense.length;
+}
+
+function getBuildPath(path: string) {
+  const { SRC_DIR, BUILD_DIR } = getConstants();
+  return path.replace(SRC_DIR, BUILD_DIR).replace(/\.tsx?$/, ".js");
 }
