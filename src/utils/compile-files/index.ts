@@ -44,6 +44,7 @@ export default async function compileFiles() {
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
   const actionsEntrypoints: string[] = [];
   const define = { __DEV__: (!IS_PRODUCTION).toString() };
+  let layoutWebComponents: Record<string, string> | undefined;
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -93,9 +94,14 @@ export default async function compileFiles() {
                 await Bun.write(actionEntrypoint, result.code);
               }
 
+              if (layoutPath === path) {
+                layoutWebComponents = result.detectedWebComponents;
+              } else {
+                webComponentsPerEntrypoint[buildPath] =
+                  result.detectedWebComponents;
+              }
+
               code = result.code;
-              webComponentsPerEntrypoint[buildPath] =
-                result.detectedWebComponents;
             } catch (error) {
               console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
               console.log(LOG_PREFIX.ERROR, (error as Error).message);
@@ -114,6 +120,18 @@ export default async function compileFiles() {
   });
 
   if (!success) return { success, logs, pagesSize: {} };
+
+  // Add layout web components to all pages
+  if (layoutWebComponents) {
+    for (const [entrypoint, content] of Object.entries(
+      webComponentsPerEntrypoint,
+    )) {
+      webComponentsPerEntrypoint[entrypoint] = {
+        ...content,
+        ...layoutWebComponents,
+      };
+    }
+  }
 
   if (actionsEntrypoints.length) {
     const actionResult = await compileActions({ actionsEntrypoints, define });
