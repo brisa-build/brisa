@@ -4,7 +4,11 @@ export default function Layout({ children }: { children: JSX.Element }) {
       <head>
         <title id="title">CUSTOM LAYOUT</title>
       </head>
-      <body>{children}</body>
+      <body>
+        {/* @ts-ignore */}
+        <layout-web-component />
+        {children}
+      </body>
     </html>
   );
 }

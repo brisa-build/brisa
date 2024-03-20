@@ -131,25 +131,27 @@ describe("utils", () => {
         minifyText(`
           export interface IntrinsicCustomElements {
             'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/_native/some-example.tsx").default>;
+            'layout-web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/layout-web-component.tsx\").default>;
             'web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx").default>;
             'with-context': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/with-context.tsx").default>;
             'foo-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/lib/foo.tsx").default>;
           }`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(files).toHaveLength(12);
+      expect(files).toHaveLength(13);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("actions");
       expect(files[2]).toBe("api");
       expect(files[3]).toStartWith("chunk-");
       expect(files[4]).toStartWith("chunk-");
-      expect(files[5]).toBe("i18n.js");
-      expect(files[6]).toBe("layout.js");
-      expect(files[7]).toBe("middleware.js");
-      expect(files[8]).toBe("pages");
-      expect(files[9]).toBe("pages-client");
-      expect(files[10]).toBe("web-components");
-      expect(files[11]).toBe("websocket.js");
+      expect(files[5]).toStartWith("chunk-");
+      expect(files[6]).toBe("i18n.js");
+      expect(files[7]).toBe("layout.js");
+      expect(files[8]).toBe("middleware.js");
+      expect(files[9]).toBe("pages");
+      expect(files[10]).toBe("pages-client");
+      expect(files[11]).toBe("web-components");
+      expect(files[12]).toBe("websocket.js");
 
       // Test actions
       const homePageContent = await Bun.file(
@@ -190,6 +192,9 @@ describe("utils", () => {
         `_unsuspense-${constants.VERSION_HASH}.js`,
         `_unsuspense-${constants.VERSION_HASH}.js.gz`,
         `_unsuspense.txt`,
+        `index-${HASH}.js`,
+        `index-${HASH}.js.gz`,
+        "index.txt",
         `page-with-web-component-${HASH}-en.js`,
         `page-with-web-component-${HASH}-en.js.gz`,
         `page-with-web-component-${HASH}-pt.js`,
@@ -197,6 +202,13 @@ describe("utils", () => {
         `page-with-web-component-${HASH}.js`,
         `page-with-web-component-${HASH}.js.gz`,
         `page-with-web-component.txt`,
+        `somepage-${HASH}.js`,
+        `somepage-${HASH}.js.gz`,
+        `somepage-with-context-${HASH}.js`,
+        `somepage-with-context-${HASH}.js.gz`,
+        "somepage-with-context.txt",
+        "somepage.txt",
+        "user",
       ]);
 
       // Check i18n content depending the locale
@@ -225,23 +237,25 @@ describe("utils", () => {
           .replace(/chunk-\S*/g, "chunk-hash"),
       );
 
+      // Note: layout has a web-component, so this is why it's 3kb at least
       const expected = minifyText(`
     ${info}
     ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
-    ${info}λ /pages/_404                    | 429 B     | ${greenLog("4 kB")} 
-    ${info}λ /pages/_500                    | 435 B     | ${greenLog("4 kB")} 
-    ${info}λ /pages/page-with-web-component | 368 B     | ${greenLog("4 kB")} 
-    ${info}λ /pages/somepage                | 407 B     | ${greenLog("0 B")} 
-    ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("0 B")} 
-    ${info}λ /pages/index                   | 550 B     | ${greenLog("2 kB")}  
-    ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
+    ${info}λ /pages/_404                    | 472 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/_500                    | 478 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/page-with-web-component | 411 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/somepage                | 407 B     | ${greenLog("3 kB")} 
+    ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("3 kB")} 
+    ${info}λ /pages/index                   | 550 B     | ${greenLog("5 kB")}  
+    ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("3 kB")}
     ${info}ƒ /middleware                    | 738 B     |
     ${info}λ /api/example                   | 283 B     |
-    ${info}Δ /layout                        | 350 B     |
+    ${info}Δ /layout                        | 642 B     |
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 103 B     |
+    ${info}Φ /chunk-hash                    | 233 B    |
     ${info}Φ /chunk-hash                    | 214 kB    |
     ${info}Φ /chunk-hash                    | 106 B     |
     ${info}
