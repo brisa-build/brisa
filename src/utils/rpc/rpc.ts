@@ -51,8 +51,8 @@ async function rpc(
       headers: {
         "x-action": actionId,
         "x-actions": actionsDeps ?? "",
-        // @ts-ignore
         "x-s": encodeURIComponent(
+          // @ts-ignore
           stringify(store ? [..._s.Map.entries()] : $window._S) ?? "",
         ),
       },
