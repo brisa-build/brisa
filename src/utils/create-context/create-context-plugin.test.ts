@@ -1,8 +1,11 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it, beforeEach } from "bun:test";
 import { generateContextID } from "./create-context-plugin";
 import { toInline } from "@/helpers";
 
 describe("utils", () => {
+  beforeEach(() => {
+    globalThis.BrisaRegistry = new Map();
+  });
   describe("create-context-plugin", () => {
     it("should NOT add the context ID if already is there", () => {
       const inputCode = `
