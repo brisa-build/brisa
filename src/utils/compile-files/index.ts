@@ -284,6 +284,13 @@ async function compileClientCodePage(
       actionRPCLazy = layoutCode.actionRPCLazy;
     }
 
+    // If there is no unsuspense in the page but there is unsuspense
+    // in the layout, then it is as if the page also has unsuspense.
+    if (!unsuspense && layoutCode?.unsuspense) {
+      size += layoutCode.unsuspense.length;
+      unsuspense = layoutCode.unsuspense;
+    }
+
     clientSizesPerPage[route] = size;
 
     if (!size) continue;

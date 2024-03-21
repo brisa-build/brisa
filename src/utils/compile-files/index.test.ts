@@ -425,5 +425,75 @@ describe("utils", () => {
   `);
       expect(logOutput).toContain(expected);
     });
+
+    it("should compile an app with a suspense in the layout and not in the page", async () => {
+      const SRC_DIR = path.join(FIXTURES, "with-suspense-in-layout");
+      const BUILD_DIR = path.join(SRC_DIR, "out");
+      const PAGES_DIR = path.join(BUILD_DIR, "pages");
+      const ASSETS_DIR = path.join(BUILD_DIR, "public");
+      const TYPES = path.join(BUILD_DIR, "_brisa", "types.ts");
+      const pagesClientPath = path.join(BUILD_DIR, "pages-client");
+      const constants = getConstants();
+      globalThis.mockConstants = {
+        ...constants,
+        PAGES_DIR,
+        BUILD_DIR,
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+        SRC_DIR,
+        ASSETS_DIR,
+      };
+
+      mockConsoleLog.mockImplementation(() => {});
+
+      const { success, logs } = await compileFiles();
+
+      expect(logs).toEqual([]);
+      expect(success).toBe(true);
+
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
+
+      expect(fs.existsSync(TYPES)).toBe(true);
+      expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
+        minifyText(`export interface IntrinsicCustomElements { }`),
+      );
+      expect(mockConsoleLog).toHaveBeenCalled();
+      expect(files).toEqual(["_brisa", "layout.js", "pages", "pages-client"]);
+
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
+
+      expect(pagesClient).toEqual([
+        `_unsuspense-${constants.VERSION_HASH}.js`,
+        `_unsuspense-${constants.VERSION_HASH}.js.gz`,
+        `_unsuspense.txt`,
+      ]);
+
+      const info = constants.LOG_PREFIX.INFO;
+
+      const logOutput = minifyText(
+        mockConsoleLog.mock.calls
+          .flat()
+          .join("\n")
+          .replace(/chunk-\S*/g, "chunk-hash"),
+      );
+
+      const expected = minifyText(`
+    ${info}
+    ${info}Route           | JS server | JS client (gz)  
+    ${info}----------------------------------------------
+    ${info}λ /pages/index  | 190 B     | ${greenLog("186 B")}  
+    ${info}Δ /layout       | 536 B     |
+    ${info}
+    ${info}λ Server entry-points
+    ${info}Δ Layout
+    ${info}Φ JS shared by all
+    ${info}
+  `);
+      expect(logOutput).toContain(expected);
+    });
   });
 });
