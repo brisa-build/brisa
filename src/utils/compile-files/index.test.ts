@@ -260,13 +260,13 @@ describe("utils", () => {
       expect(logOutput).toContain(expected);
     });
 
-    it("should compile an app with complex layout with dummy page", async () => {
+    it("should compile an app with a web component in the layout and not in the page", async () => {
       const SRC_DIR = path.join(
         DIR,
         "..",
         "..",
         "__fixtures__",
-        "with-complex-layout",
+        "with-web-component-in-layout",
       );
       const BUILD_DIR = path.join(SRC_DIR, "out");
       const PAGES_DIR = path.join(BUILD_DIR, "pages");
