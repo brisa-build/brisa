@@ -226,12 +226,12 @@ async function compileClientCodePage(
   const clientSizesPerPage: Record<string, Blob["size"]> = {};
   const layoutWebComponents = webComponentsPerEntrypoint[layoutBuildPath];
   const layoutCode = layoutBuildPath
-    ? await getClientCodeInPage(
-        layoutBuildPath,
+    ? await getClientCodeInPage({
+        pagePath: layoutBuildPath,
         allWebComponents,
-        layoutWebComponents,
+        pageWebComponents: layoutWebComponents,
         integrationsPath,
-      )
+      })
     : null;
 
   for (const page of pages) {
@@ -250,12 +250,13 @@ async function compileClientCodePage(
       pageWebComponents = { ...layoutWebComponents, ...pageWebComponents };
     }
 
-    const pageCode = await getClientCodeInPage(
+    const pageCode = await getClientCodeInPage({
       pagePath,
       allWebComponents,
       pageWebComponents,
       integrationsPath,
-    );
+      layoutHasContextProvider: layoutCode?.useContextProvider,
+    });
 
     if (!pageCode) return null;
 
