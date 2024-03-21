@@ -3,11 +3,12 @@ import type { ESTree } from "meriyah";
 export default function analyzeServerAst(
   ast: ESTree.Program,
   allWebComponents: Record<string, string>,
+  layoutHasContextProvider?: boolean,
 ) {
   const webComponents: Record<string, string> = {};
   let useSuspense = false;
   let useActions = false;
-  let useContextProvider = false;
+  let useContextProvider = layoutHasContextProvider ?? false;
 
   JSON.stringify(ast, (key, value) => {
     const webComponentSelector = value?.arguments?.[0]?.value ?? "";
