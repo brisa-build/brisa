@@ -229,7 +229,6 @@ async function compileClientCodePage(
     const route = page.path.replace(BUILD_DIR, "");
     const pagePath = page.path;
     const isPage = route.startsWith("/pages/");
-    const isLayout = pagePath === layoutBuildPath;
     let pageWebComponents = webComponentsPerEntrypoint[pagePath];
     const clientPagePath = pagePath.replace("pages", "pages-client");
 
@@ -239,6 +238,8 @@ async function compileClientCodePage(
         ...(pageWebComponents ?? {}),
       };
     }
+
+    if (!isPage) continue
 
     const pageCode = await getClientCodeInPage(
       pagePath,
@@ -287,7 +288,7 @@ async function compileClientCodePage(
       skipList: true,
     });
 
-    if (!code || isLayout) continue;
+    if (!code) continue;
 
     // create i18n page content files
     if (useI18n && i18nKeys.size && I18N_CONFIG?.messages) {
