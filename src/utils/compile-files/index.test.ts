@@ -16,22 +16,9 @@ import { greenLog } from "@/utils/log/log-color";
 
 const DIR = import.meta.dir;
 const HASH = 123456;
-const FIXTURES = path.join(DIR, "..", "..", "__fixtures__");
+const FIXTURES = path.join(DIR, "__fixtures__");
 let mockHash: Mock<(val: any) => any>;
 let mockConsoleLog: Mock<typeof console.log>;
-
-// Development
-const DEV_SRC_DIR = path.join(FIXTURES, "dev");
-const DEV_BUILD_DIR = path.join(DEV_SRC_DIR, "out");
-const DEV_PAGES_DIR = path.join(DEV_BUILD_DIR, "pages");
-const DEV_ASSETS_DIR = path.join(DEV_BUILD_DIR, "public");
-
-// Production
-const SRC_DIR = path.join(FIXTURES);
-const BUILD_DIR = path.join(SRC_DIR, "out");
-const PAGES_DIR = path.join(BUILD_DIR, "pages");
-const ASSETS_DIR = path.join(BUILD_DIR, "public");
-const TYPES = path.join(BUILD_DIR, "_brisa", "types.ts");
 
 function minifyText(text: string) {
   return text.replace(/\s+/g, " ").trim();
@@ -50,16 +37,12 @@ describe("utils", () => {
   describe("compileFiles DEVELOPMENT", () => {
     afterEach(() => {
       globalThis.mockConstants = undefined;
-
-      if (fs.existsSync(DEV_BUILD_DIR)) {
-        fs.rmSync(DEV_BUILD_DIR, { recursive: true });
-      }
-
-      if (fs.existsSync(BUILD_DIR)) {
-        fs.rmSync(BUILD_DIR, { recursive: true });
-      }
     });
     it("should compile fixtures routes correctly", async () => {
+      const DEV_SRC_DIR = path.join(FIXTURES, "with-dev-environment");
+      const DEV_BUILD_DIR = path.join(DEV_SRC_DIR, "out");
+      const DEV_PAGES_DIR = path.join(DEV_BUILD_DIR, "pages");
+      const DEV_ASSETS_DIR = path.join(DEV_BUILD_DIR, "public");
       const constants = getConstants();
 
       globalThis.mockConstants = {
@@ -90,6 +73,11 @@ describe("utils", () => {
 
   describe("compileFiles PRODUCTION", () => {
     it("should compile fixtures routes correctly", async () => {
+      const SRC_DIR = path.join(FIXTURES, "with-complex-files");
+      const BUILD_DIR = path.join(SRC_DIR, "out");
+      const PAGES_DIR = path.join(BUILD_DIR, "pages");
+      const ASSETS_DIR = path.join(BUILD_DIR, "public");
+      const TYPES = path.join(BUILD_DIR, "_brisa", "types.ts");
       const pagesClientPath = path.join(BUILD_DIR, "pages-client");
       const constants = getConstants();
       globalThis.mockConstants = {
@@ -138,18 +126,19 @@ describe("utils", () => {
           }`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(files).toHaveLength(11);
+      expect(files).toHaveLength(12);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("actions");
       expect(files[2]).toBe("api");
       expect(files[3]).toStartWith("chunk-");
-      expect(files[4]).toBe("i18n.js");
-      expect(files[5]).toBe("layout.js");
-      expect(files[6]).toBe("middleware.js");
-      expect(files[7]).toBe("pages");
-      expect(files[8]).toBe("pages-client");
-      expect(files[9]).toBe("web-components");
-      expect(files[10]).toBe("websocket.js");
+      expect(files[4]).toStartWith("chunk-");
+      expect(files[5]).toBe("i18n.js");
+      expect(files[6]).toBe("layout.js");
+      expect(files[7]).toBe("middleware.js");
+      expect(files[8]).toBe("pages");
+      expect(files[9]).toBe("pages-client");
+      expect(files[10]).toBe("web-components");
+      expect(files[11]).toBe("websocket.js");
 
       // Test actions
       const homePageContent = await Bun.file(
