@@ -20,6 +20,14 @@ type TransformOptions = {
   integrationsPath?: string | null;
 };
 
+type ClientCodeInPageProps = {
+  pagePath: string;
+  allWebComponents?: Record<string, string>;
+  pageWebComponents?: Record<string, string>;
+  integrationsPath?: string | null;
+  layoutHasContextProvider?: boolean;
+};
+
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
 const actionRPCCode = await injectActionRPCCode();
@@ -30,20 +38,22 @@ async function getAstFromPath(path: string) {
   return ASTUtil.parseCodeToAST(await Bun.file(path).text());
 }
 
-export default async function getClientCodeInPage(
-  pagepath: string,
-  allWebComponents: Record<string, string> = {},
-  pageWebComponents: Record<string, string> = {},
-  integrationsPath?: string | null,
-) {
+export default async function getClientCodeInPage({
+  pagePath,
+  allWebComponents = {},
+  pageWebComponents = {},
+  integrationsPath,
+  layoutHasContextProvider,
+}: ClientCodeInPageProps) {
   let size = 0;
   let code = "";
 
-  const ast = await getAstFromPath(pagepath);
+  const ast = await getAstFromPath(pagePath);
 
   let { useSuspense, useContextProvider, useActions } = analyzeServerAst(
     ast,
     allWebComponents,
+    layoutHasContextProvider,
   );
 
   // Web components inside web components
@@ -71,6 +81,7 @@ export default async function getClientCodeInPage(
       code,
       unsuspense,
       actionRPC,
+      useContextProvider,
       actionRPCLazy,
       size,
       useI18n: false,
@@ -92,6 +103,7 @@ export default async function getClientCodeInPage(
     code,
     unsuspense,
     actionRPC,
+    useContextProvider,
     actionRPCLazy,
     size,
     useI18n: transformedCode.useI18n,
