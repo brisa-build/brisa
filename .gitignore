@@ -4,6 +4,7 @@ node_modules
 # Build output
 
 **/out/*
+**/out-*/*
 /jsx-runtime/
 /jsx-dev-runtime/
 /client/
