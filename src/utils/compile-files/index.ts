@@ -60,6 +60,7 @@ export default async function compileFiles() {
     target: "bun",
     minify: IS_PRODUCTION,
     splitting: true,
+    external: ["brisa", "brisa/server"],
     define,
     plugins: [
       {
@@ -224,22 +225,30 @@ async function compileClientCodePage(
 
   const clientSizesPerPage: Record<string, Blob["size"]> = {};
   const layoutWebComponents = webComponentsPerEntrypoint[layoutBuildPath];
+  const layoutCode = layoutBuildPath
+    ? await getClientCodeInPage(
+        layoutBuildPath,
+        allWebComponents,
+        layoutWebComponents,
+        integrationsPath,
+      )
+    : null;
 
   for (const page of pages) {
     const route = page.path.replace(BUILD_DIR, "");
     const pagePath = page.path;
     const isPage = route.startsWith("/pages/");
-    let pageWebComponents = webComponentsPerEntrypoint[pagePath];
     const clientPagePath = pagePath.replace("pages", "pages-client");
-
-    if (isPage && layoutWebComponents) {
-      pageWebComponents = {
-        ...layoutWebComponents,
-        ...(pageWebComponents ?? {}),
-      };
-    }
+    let pageWebComponents = webComponentsPerEntrypoint[pagePath];
 
     if (!isPage) continue;
+
+    // It is necessary to add the web components of the layout before
+    // having the code of the page because it will add the web components
+    // in the following fields: code, size.
+    if (layoutWebComponents) {
+      pageWebComponents = { ...layoutWebComponents, ...pageWebComponents };
+    }
 
     const pageCode = await getClientCodeInPage(
       pagePath,
@@ -250,15 +259,30 @@ async function compileClientCodePage(
 
     if (!pageCode) return null;
 
-    const {
+    let {
       size,
-      code,
-      unsuspense,
       actionRPC,
       actionRPCLazy,
+      code,
+      unsuspense,
       useI18n,
       i18nKeys,
     } = pageCode;
+
+    // If there are no actions in the page but there are actions in
+    // the layout, then it is as if the page also has actions.
+    if (!actionRPC && layoutCode?.actionRPC) {
+      size += layoutCode.actionRPC.length;
+      actionRPC = layoutCode.actionRPC;
+    }
+
+    // It is not necessary to increase the size here because this
+    // code even if it is necessary to generate it if it does not
+    // exist yet, it is not part of the initial size of the page
+    // because it is loaded in a lazy way.
+    if (!actionRPCLazy && layoutCode?.actionRPCLazy) {
+      actionRPCLazy = layoutCode.actionRPCLazy;
+    }
 
     clientSizesPerPage[route] = size;
 
