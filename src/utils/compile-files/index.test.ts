@@ -60,7 +60,7 @@ describe("utils", () => {
         .toSorted((a, b) => a.localeCompare(b));
       const brisaInternals = fs.readdirSync(path.join(DEV_BUILD_DIR, "_brisa"));
 
-      expect(logs).toEqual([]);
+      expect(logs).toBeEmpty();
       expect(success).toBe(true);
       expect(mockConsoleLog).toHaveBeenCalledTimes(0);
       expect(files).toHaveLength(3);
@@ -108,7 +108,7 @@ describe("utils", () => {
 
       const { success, logs } = await compileFiles();
 
-      expect(logs).toEqual([]);
+      expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
       const files = fs
@@ -270,7 +270,7 @@ describe("utils", () => {
 
       const { success, logs } = await compileFiles();
 
-      expect(logs).toEqual([]);
+      expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
       const files = fs
@@ -297,26 +297,7 @@ describe("utils", () => {
         `index.txt`,
       ]);
 
-      // TODO: Fix this i18n test
-      // // Check i18n content depending the locale
-      // expect(
-      //   await Bun.file(path.join(pagesClientPath, `_404-${HASH}-en.js`)).text(),
-      // ).toBe(
-      //   toInline(`
-      //     window.i18nMessages={"hello":"Hello {{name}}"};
-      // `),
-      // );
-
-      // expect(
-      //   await Bun.file(path.join(pagesClientPath, `_404-${HASH}-pt.js`)).text(),
-      // ).toBe(
-      //   toInline(`
-      //     window.i18nMessages={"hello":"Olá {{name}}"};
-      // `),
-      // );
-
       const info = constants.LOG_PREFIX.INFO;
-
       const logOutput = minifyText(
         mockConsoleLog.mock.calls
           .flat()
@@ -361,7 +342,7 @@ describe("utils", () => {
 
       const { success, logs } = await compileFiles();
 
-      expect(logs).toEqual([]);
+      expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
       const files = fs
@@ -448,7 +429,7 @@ describe("utils", () => {
 
       const { success, logs } = await compileFiles();
 
-      expect(logs).toEqual([]);
+      expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
       const files = fs
@@ -490,6 +471,113 @@ describe("utils", () => {
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
+    ${info}Φ JS shared by all
+    ${info}
+  `);
+      expect(logOutput).toContain(expected);
+    });
+
+    it("should compile an app with a i18n client keys in the layout and not in the page", async () => {
+      const SRC_DIR = path.join(FIXTURES, "with-i18nkeys-in-layout");
+      const BUILD_DIR = path.join(SRC_DIR, "out");
+      const PAGES_DIR = path.join(BUILD_DIR, "pages");
+      const ASSETS_DIR = path.join(BUILD_DIR, "public");
+      const TYPES = path.join(BUILD_DIR, "_brisa", "types.ts");
+      const pagesClientPath = path.join(BUILD_DIR, "pages-client");
+      const constants = getConstants();
+      globalThis.mockConstants = {
+        ...constants,
+        PAGES_DIR,
+        BUILD_DIR,
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+        SRC_DIR,
+        ASSETS_DIR,
+        I18N_CONFIG: (await import(path.join(SRC_DIR, "i18n"))).default,
+      };
+
+      mockConsoleLog.mockImplementation(() => {});
+
+      const { success, logs } = await compileFiles();
+      const englishFile = Bun.file(
+        path.join(pagesClientPath, `index-${HASH}-en.js`),
+      );
+      const frenchFile = Bun.file(
+        path.join(pagesClientPath, `index-${HASH}-fr.js`),
+      );
+
+      expect(await englishFile.exists()).toBeTrue();
+      expect(await frenchFile.exists()).toBeTrue();
+
+      // Check i18n content depending the locale
+      expect(await englishFile.text()).toBe(
+        toInline(`
+          window.i18nMessages={"client-key":"Hello client!"};
+      `),
+      );
+
+      expect(await frenchFile.text()).toBe(
+        toInline(`
+          window.i18nMessages={"client-key":"Bonjour client !"};
+      `),
+      );
+
+      expect(logs).toBeEmpty();
+      expect(success).toBe(true);
+
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
+
+      expect(fs.existsSync(TYPES)).toBe(true);
+      expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
+        minifyText(`export interface IntrinsicCustomElements { 
+          'layout-web-component': JSX.WebComponentAttributes<typeof import("/Users/aralroca/Documents/repos/brisa/src/utils/compile-files/__fixtures__/with-i18nkeys-in-layout/web-components/layout-web-component.tsx").default>;
+         }`),
+      );
+      expect(mockConsoleLog).toHaveBeenCalled();
+      expect(files).toEqual([
+        "_brisa",
+        "i18n.js",
+        "layout.js",
+        "pages",
+        "pages-client",
+      ]);
+
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
+
+      expect(pagesClient).toEqual([
+        `index-${HASH}-en.js`,
+        `index-${HASH}-en.js.gz`,
+        `index-${HASH}-fr.js`,
+        `index-${HASH}-fr.js.gz`,
+        `index-${HASH}.js`,
+        `index-${HASH}.js.gz`,
+        `index.txt`,
+      ]);
+
+      const info = constants.LOG_PREFIX.INFO;
+
+      const logOutput = minifyText(
+        mockConsoleLog.mock.calls
+          .flat()
+          .join("\n")
+          .replace(/chunk-\S*/g, "chunk-hash"),
+      );
+
+      const expected = minifyText(`
+    ${info}
+    ${info}Route           | JS server | JS client (gz)  
+    ${info}----------------------------------------------
+    ${info}λ /pages/index  | 190 B     | ${greenLog("4 kB")}  
+    ${info}Δ /layout       | 674 B     |
+    ${info}Ω /i18n         | 257 B     |
+    ${info}
+    ${info}λ Server entry-points
+    ${info}Δ Layout
+    ${info}Ω i18n
     ${info}Φ JS shared by all
     ${info}
   `);

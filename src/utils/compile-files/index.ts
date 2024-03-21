@@ -291,6 +291,15 @@ async function compileClientCodePage(
       unsuspense = layoutCode.unsuspense;
     }
 
+    // fix i18n when it is not defined in the page but it is defined
+    // in the layout
+    if (!useI18n && layoutCode?.useI18n) {
+      useI18n = layoutCode.useI18n;
+    }
+    if (layoutCode?.i18nKeys.size) {
+      i18nKeys = new Set([...i18nKeys, ...layoutCode.i18nKeys]);
+    }
+
     clientSizesPerPage[route] = size;
 
     if (!size) continue;
