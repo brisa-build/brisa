@@ -16,17 +16,18 @@ import { greenLog } from "@/utils/log/log-color";
 
 const DIR = import.meta.dir;
 const HASH = 123456;
+const FIXTURES = path.join(DIR, "..", "..", "__fixtures__");
 let mockHash: Mock<(val: any) => any>;
 let mockConsoleLog: Mock<typeof console.log>;
 
 // Development
-const DEV_SRC_DIR = path.join(DIR, "..", "..", "__fixtures__", "dev");
+const DEV_SRC_DIR = path.join(FIXTURES, "dev");
 const DEV_BUILD_DIR = path.join(DEV_SRC_DIR, "out");
 const DEV_PAGES_DIR = path.join(DEV_BUILD_DIR, "pages");
 const DEV_ASSETS_DIR = path.join(DEV_BUILD_DIR, "public");
 
 // Production
-const SRC_DIR = path.join(DIR, "..", "..", "__fixtures__");
+const SRC_DIR = path.join(FIXTURES);
 const BUILD_DIR = path.join(SRC_DIR, "out");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
@@ -137,19 +138,18 @@ describe("utils", () => {
           }`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(files).toHaveLength(12);
+      expect(files).toHaveLength(11);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("actions");
       expect(files[2]).toBe("api");
       expect(files[3]).toStartWith("chunk-");
-      expect(files[4]).toStartWith("chunk-");
-      expect(files[5]).toBe("i18n.js");
-      expect(files[6]).toBe("layout.js");
-      expect(files[7]).toBe("middleware.js");
-      expect(files[8]).toBe("pages");
-      expect(files[9]).toBe("pages-client");
-      expect(files[10]).toBe("web-components");
-      expect(files[11]).toBe("websocket.js");
+      expect(files[4]).toBe("i18n.js");
+      expect(files[5]).toBe("layout.js");
+      expect(files[6]).toBe("middleware.js");
+      expect(files[7]).toBe("pages");
+      expect(files[8]).toBe("pages-client");
+      expect(files[9]).toBe("web-components");
+      expect(files[10]).toBe("websocket.js");
 
       // Test actions
       const homePageContent = await Bun.file(
@@ -229,11 +229,11 @@ describe("utils", () => {
     ${info}
     ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
-    ${info}λ /pages/_404                    | 429 B     | ${greenLog("4 kB")} 
-    ${info}λ /pages/_500                    | 435 B     | ${greenLog("4 kB")} 
-    ${info}λ /pages/page-with-web-component | 368 B     | ${greenLog("4 kB")} 
-    ${info}λ /pages/somepage                | 407 B     | ${greenLog("0 B")} 
-    ${info}λ /pages/somepage-with-context   | 335 B     | ${greenLog("0 B")} 
+    ${info}λ /pages/_404                    | 470 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/_500                    | 476 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/page-with-web-component | 409 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/somepage                | 396 B     | ${greenLog("0 B")} 
+    ${info}λ /pages/somepage-with-context   | 324 B     | ${greenLog("0 B")} 
     ${info}λ /pages/index                   | 550 B     | ${greenLog("2 kB")}  
     ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
     ${info}ƒ /middleware                    | 738 B     |
@@ -242,8 +242,7 @@ describe("utils", () => {
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 103 B     |
-    ${info}Φ /chunk-hash                    | 214 kB    |
-    ${info}Φ /chunk-hash                    | 106 B     |
+    ${info}Φ /chunk-hash                    | 233 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -261,13 +260,7 @@ describe("utils", () => {
     });
 
     it("should compile an app with a web component in the layout and not in the page", async () => {
-      const SRC_DIR = path.join(
-        DIR,
-        "..",
-        "..",
-        "__fixtures__",
-        "with-web-component-in-layout",
-      );
+      const SRC_DIR = path.join(FIXTURES, "with-web-component-in-layout");
       const BUILD_DIR = path.join(SRC_DIR, "out");
       const PAGES_DIR = path.join(BUILD_DIR, "pages");
       const ASSETS_DIR = path.join(BUILD_DIR, "public");
@@ -304,19 +297,6 @@ describe("utils", () => {
       );
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toEqual(["_brisa", "layout.js", "pages", "pages-client"]);
-
-      // Test actions
-      // TODO: Fix this test
-      // const homePageContent = await Bun.file(
-      //   path.join(PAGES_DIR, "index.js"),
-      // ).text();
-
-      // expect(homePageContent).toContain(
-      //   `"data-action-onclick":"a1_1","data-action"`,
-      // );
-      // expect(homePageContent).toContain(
-      //   `"data-action-onclick":"a1_2","data-action"`,
-      // );
 
       const pagesClient = fs
         .readdirSync(pagesClientPath)
@@ -360,7 +340,94 @@ describe("utils", () => {
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 190 B     | ${greenLog("3 kB")}  
-    ${info}Δ /layout       | 215 kB    |
+    ${info}Δ /layout       | 641 B     |
+    ${info}
+    ${info}λ Server entry-points
+    ${info}Δ Layout
+    ${info}Φ JS shared by all
+    ${info}
+  `);
+      expect(logOutput).toContain(expected);
+    });
+
+    it("should compile an app with a server action in the layout and not in the page", async () => {
+      const SRC_DIR = path.join(FIXTURES, "with-action-in-layout");
+      const BUILD_DIR = path.join(SRC_DIR, "out");
+      const PAGES_DIR = path.join(BUILD_DIR, "pages");
+      const ASSETS_DIR = path.join(BUILD_DIR, "public");
+      const TYPES = path.join(BUILD_DIR, "_brisa", "types.ts");
+      const pagesClientPath = path.join(BUILD_DIR, "pages-client");
+      const constants = getConstants();
+      globalThis.mockConstants = {
+        ...constants,
+        PAGES_DIR,
+        BUILD_DIR,
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+        SRC_DIR,
+        ASSETS_DIR,
+      };
+
+      mockConsoleLog.mockImplementation(() => {});
+
+      const { success, logs } = await compileFiles();
+
+      expect(logs).toEqual([]);
+      expect(success).toBe(true);
+
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
+
+      expect(fs.existsSync(TYPES)).toBe(true);
+      expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
+        minifyText(`export interface IntrinsicCustomElements { }`),
+      );
+      expect(mockConsoleLog).toHaveBeenCalled();
+      expect(files).toEqual([
+        "_brisa",
+        "actions",
+        "layout.js",
+        "pages",
+        "pages-client",
+      ]);
+
+      // Test actions
+      const layoutContent = await Bun.file(
+        path.join(BUILD_DIR, "layout.js"),
+      ).text();
+
+      expect(layoutContent).toContain(
+        `"data-action-onclick":"a1_1","data-action"`,
+      );
+
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
+
+      expect(pagesClient).toEqual([
+        `_rpc-${constants.VERSION_HASH}.js`,
+        `_rpc-${constants.VERSION_HASH}.js.gz`,
+        `_rpc-lazy-${constants.VERSION_HASH}.js`,
+        `_rpc-lazy-${constants.VERSION_HASH}.js.gz`,
+        `_rpc.txt`,
+      ]);
+
+      const info = constants.LOG_PREFIX.INFO;
+
+      const logOutput = minifyText(
+        mockConsoleLog.mock.calls
+          .flat()
+          .join("\n")
+          .replace(/chunk-\S*/g, "chunk-hash"),
+      );
+
+      const expected = minifyText(`
+    ${info}
+    ${info}Route           | JS server | JS client (gz)  
+    ${info}----------------------------------------------
+    ${info}λ /pages/index  | 190 B     | ${greenLog("2 kB")}  
+    ${info}Δ /layout       | 435 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
