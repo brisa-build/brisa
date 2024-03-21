@@ -3,10 +3,7 @@ node_modules
 
 # Build output
 
-/out/
-**/inject-unsuspense-code/out
-**/context-provider/out
-**/__fixtures__/out*
+**/out/*
 /jsx-runtime/
 /jsx-dev-runtime/
 /client/
