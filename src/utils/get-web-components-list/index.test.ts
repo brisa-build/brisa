@@ -29,11 +29,6 @@ describe("utils", () => {
       const result = await getWebComponentsList(fixturesDir);
 
       expect(result).toEqual({
-        "layout-web-component": path.join(
-          fixturesDir,
-          "web-components",
-          "layout-web-component.tsx",
-        ),
         "native-some-example": path.join(
           fixturesDir,
           "web-components",
@@ -64,11 +59,6 @@ describe("utils", () => {
 
       expect(result).toEqual({
         "foo-component": path.join(fixturesDir, "lib", "foo.tsx"),
-        "layout-web-component": path.join(
-          fixturesDir,
-          "web-components",
-          "layout-web-component.tsx",
-        ),
         "native-some-example": path.join(
           fixturesDir,
           "web-components",
@@ -98,11 +88,6 @@ describe("utils", () => {
       const result = await getWebComponentsList(fixturesDir, integrationsPath);
 
       expect(result).toEqual({
-        "layout-web-component": path.join(
-          fixturesDir,
-          "web-components",
-          "layout-web-component.tsx",
-        ),
         "native-some-example": path.join(
           fixturesDir,
           "web-components",
