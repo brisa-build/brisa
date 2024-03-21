@@ -239,7 +239,7 @@ async function compileClientCodePage(
       };
     }
 
-    if (!isPage) continue
+    if (!isPage) continue;
 
     const pageCode = await getClientCodeInPage(
       pagePath,
