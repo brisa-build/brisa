@@ -282,20 +282,6 @@ describe("utils", () => {
         IS_DEVELOPMENT: false,
         SRC_DIR,
         ASSETS_DIR,
-        I18N_CONFIG: {
-          defaultLocale: "en",
-          locales: ["en", "pt"],
-          messages: {
-            en: {
-              hello: "Hello {{name}}",
-              "some-key": "Some value",
-            },
-            pt: {
-              hello: "Olá {{name}}",
-              "some-key": "Algum valor",
-            },
-          },
-        },
       };
 
       mockConsoleLog.mockImplementation(() => {});
