@@ -3,17 +3,20 @@
   "version": "0.0.34",
   "license": "MIT",
   "type": "module",
+  "scripts": {
+    "release": "npm publish",
+    "release:alpha": "npm publish --tag next"
+  },
   "author": {
     "name": "Aral Roca Gòmez",
     "email": "contact@aralroca.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/brisa-build/brisa.git"
+    "url": "https://github.com/brisa-build/brisa.git",
+    "directory": "packages/create-brisa"
   },
-  "files": [
-    "create-brisa.cjs"
-  ],
+  "files": ["create-brisa.cjs"],
   "bin": {
     "create-brisa": "./create-brisa.cjs"
   }
