@@ -11,6 +11,7 @@
     "name": "Aral Roca Gòmez",
     "email": "contact@aralroca.com"
   },
+  "workspaces": ["packages/*"],
   "repository": {
     "type": "git",
     "url": "https://github.com/brisa-build/brisa.git"
