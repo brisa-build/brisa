@@ -7278,6 +7278,12 @@ declare global {
        */      
       "accept-charset"?: HTMLAttributes["acceptCharset"];
       /**
+       * The `charSet` attribute specifies the character encoding of the linked resource.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#charset)
+       */
+      charSet?: HTMLAttributes["charSet"];
+      /**
        * The `accesskey` attribute specifies a shortcut key to activate/focus an element.
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey)
