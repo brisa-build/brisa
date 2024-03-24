@@ -95,6 +95,7 @@ const constants = {
   IS_PRODUCTION,
   IS_DEVELOPMENT:
     process.argv.some((t) => t === "DEV") || NODE_ENV === "development",
+  IS_SERVE_PROCESS: Bun.main.endsWith("/brisa/out/cli/serve/index.js"),
   PORT: parseInt(process.argv[2]) || 0,
   BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,
