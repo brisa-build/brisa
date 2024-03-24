@@ -59,6 +59,25 @@ describe("utils", () => {
       );
     });
 
+    it("should render with a Request without RequextContext extension", async () => {
+      const Component = ({ name }: { name: string }) => <div>Hello {name}</div>;
+      const element = (
+        <html>
+          <head></head>
+          <body>
+            <Component name="Test" />
+          </body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, {
+        request: new Request("http://test.com/"),
+      });
+      const result = await Bun.readableStreamToText(stream);
+
+      const expected = `<html><head></head><body><div>Hello Test</div></body></html>`;
+      expect(result).toBe(expected);
+    });
+
     it('should not display the "head" tag warning if log=false', async () => {
       const element = <div class="test">Hello World</div>;
       const stream = renderToReadableStream(element, {

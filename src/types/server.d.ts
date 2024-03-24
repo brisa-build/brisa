@@ -1,5 +1,5 @@
-type Options = {
-  request: RequestContext;
+export type Options = {
+  request: Request | RequestContext;
   head?: ComponentType;
   log?: boolean;
 };
