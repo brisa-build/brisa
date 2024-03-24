@@ -4,14 +4,18 @@ import constants from "@/constants";
 import dangerHTML from "@/utils/danger-html";
 import compileAll from "@/utils/compile-all";
 
-const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT } = constants;
+const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
 const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
 const LIVE_RELOAD_COMMAND = "reload";
 
 let semaphore = false;
 let waitFilename = "";
 
-if (IS_DEVELOPMENT) {
+// Checking IS_SERVE_PROCESS is totally necessary because this component is
+// put inside the renderToReadableStream, but at the same time this method
+// could be used outside for other reasons without having to run hotreloading,
+// it only makes sense to start hotreloading if it is the serve process.
+if (IS_DEVELOPMENT && IS_SERVE_PROCESS) {
   if (globalThis.watcher) {
     globalThis.watcher.close();
   } else {
