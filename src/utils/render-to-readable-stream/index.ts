@@ -17,14 +17,10 @@ import {
 import { getConstants } from "@/constants";
 import overrideClientTranslations from "../translate-core/override-client-translations";
 import processServerComponentProps from "../process-server-component-props";
+import extendRequestContext from "../extend-request-context";
+import type { Options } from "@/types/server";
 
 type ProviderType = ReturnType<typeof contextProvider>;
-
-type Options = {
-  request: RequestContext;
-  head?: ComponentType;
-  log?: boolean;
-};
 
 const CONTEXT_PROVIDER = "context-provider";
 const ALLOWED_PRIMARIES = new Set(["string", "number"]);
@@ -34,6 +30,7 @@ export default function renderToReadableStream(
   element: JSX.Element,
   { request, head, log = true }: Options,
 ) {
+  const req = extendRequestContext({ originalRequest: request });
   const { IS_PRODUCTION, BUILD_DIR, SCRIPT_404 } = getConstants();
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
   const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.txt");
@@ -44,7 +41,7 @@ export default function renderToReadableStream(
     async start(controller) {
       const extendedController = extendStreamController(controller, head);
       const abortPromise = new Promise((res) =>
-        request.signal.addEventListener("abort", () => {
+        req.signal.addEventListener("abort", () => {
           aborted = true;
           res(aborted);
         }),
@@ -52,16 +49,16 @@ export default function renderToReadableStream(
 
       extendedController.hasUnsuspense = await isInPathList(
         unsuspenseListPath,
-        request,
+        req,
       );
       extendedController.hasActionRPC = await isInPathList(
         actionRPCListPath,
-        request,
+        req,
       );
 
       const renderingPromise = enqueueDuringRendering(
         element,
-        request,
+        req,
         extendedController,
       )
         .then(() => extendedController.waitSuspensedPromises())

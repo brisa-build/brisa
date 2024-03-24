@@ -13,7 +13,7 @@ The `renderToString` function is used to render a JSX element to a string on the
 #### Parameters:
 
 - `element`: The JSX element to render.
-- `request` (optional): An optional parameter of type `Request`.
+- `request` (optional): An optional parameter of type `Request | RequestContext`.
 
 #### Returns:
 

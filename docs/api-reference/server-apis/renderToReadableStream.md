@@ -16,7 +16,7 @@ The `renderToReadableStream` function is used to render a JSX element to a strea
 - `options`: Options is an object with `request`, `head`, `log`, these is `Options` the type:
   ```tsx
   type Options = {
-    request: RequestContext;
+    request: Request | RequestContext;
     head?: ComponentType;
     log?: boolean;
   };
