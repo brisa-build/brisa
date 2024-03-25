@@ -44,6 +44,7 @@ export default async function compileFiles() {
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
   const actionsEntrypoints: string[] = [];
   const define = { __DEV__: (!IS_PRODUCTION).toString() };
+  const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -62,54 +63,59 @@ export default async function compileFiles() {
     splitting: true,
     external: ["brisa", "brisa/server"],
     define,
-    plugins: [
-      {
-        name: "server-components",
-        setup(build) {
-          let actionIdCount = 1;
+    plugins: extendPlugins(
+      [
+        {
+          name: "server-components",
+          setup(build) {
+            let actionIdCount = 1;
 
-          build.onLoad({ filter: /\.(tsx|jsx)$/ }, async ({ path, loader }) => {
-            let code = await Bun.file(path).text();
+            build.onLoad(
+              { filter: /\.(tsx|jsx)$/ },
+              async ({ path, loader }) => {
+                let code = await Bun.file(path).text();
 
-            try {
-              const fileID = `a${actionIdCount}`;
-              const result = serverComponentPlugin(code, {
-                path,
-                allWebComponents,
-                fileID,
-              });
-              const buildPath = getBuildPath(path);
+                try {
+                  const fileID = `a${actionIdCount}`;
+                  const result = serverComponentPlugin(code, {
+                    path,
+                    allWebComponents,
+                    fileID,
+                  });
+                  const buildPath = getBuildPath(path);
 
-              if (result.hasActions) {
-                const actionEntrypoint = join(
-                  BUILD_DIR,
-                  "actions_raw",
-                  `${fileID}.${loader}`,
-                );
+                  if (result.hasActions) {
+                    const actionEntrypoint = join(
+                      BUILD_DIR,
+                      "actions_raw",
+                      `${fileID}.${loader}`,
+                    );
 
-                actionsEntrypoints.push(actionEntrypoint);
-                actionIdCount += 1;
-                await Bun.write(actionEntrypoint, result.code);
-              }
+                    actionsEntrypoints.push(actionEntrypoint);
+                    actionIdCount += 1;
+                    await Bun.write(actionEntrypoint, result.code);
+                  }
 
-              code = result.code;
-              webComponentsPerEntrypoint[buildPath] =
-                result.detectedWebComponents;
-            } catch (error) {
-              console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
-              console.log(LOG_PREFIX.ERROR, (error as Error).message);
-            }
+                  code = result.code;
+                  webComponentsPerEntrypoint[buildPath] =
+                    result.detectedWebComponents;
+                } catch (error) {
+                  console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
+                  console.log(LOG_PREFIX.ERROR, (error as Error).message);
+                }
 
-            return {
-              contents: code,
-              loader,
-            };
-          });
+                return {
+                  contents: code,
+                  loader,
+                };
+              },
+            );
+          },
         },
-      },
-      createContextPlugin(),
-      ...(CONFIG?.plugins ?? []),
-    ],
+        createContextPlugin(),
+      ],
+      { dev: !IS_PRODUCTION, isServer: true },
+    ),
   });
 
   if (!success) return { success, logs, pagesSize: {} };

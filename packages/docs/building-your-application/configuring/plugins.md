@@ -12,14 +12,16 @@ Plugins intercept imports and perform custom loading logic: reading files, trans
 
 ## Usage in bundler
 
-To use a plugin during the build, you must add it to the `plugins` config in the `brisa.config.ts` file. Brisa will take care of running it for both the build of server files and the build of client files (web-components).
+To use a plugin during the build, you must add it to the `extendPlugins` config in the `brisa.config.ts` file. Brisa will take care of running it for both the build of server files and the build of client files (web-components).
 
 ```ts filename="brisa.config.ts"
 import type { Configuration } from "brisa";
 import { MyPlugin } from "my-plugin";
 
 export default {
-  plugins: [MyPlugin],
+  extendPlugins(plugins, { dev, isServer }) {
+    return [...plugins, MyPlugin];
+  },
 } satisfies Configuration;
 ```
 
