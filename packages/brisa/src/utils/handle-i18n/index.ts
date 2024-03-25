@@ -1,11 +1,11 @@
-import getLocaleFromRequest from "../get-locale-from-request";
-import getRouteMatcher from "../get-route-matcher";
-import { getConstants } from "../../constants";
-import translateCore from "../translate-core";
-import adaptRouterToPageTranslations from "../adapt-router-to-page-translations";
-import type { RequestContext } from "../../types";
-import { logError } from "../log/log-build";
-import { redirect } from "../redirect";
+import getLocaleFromRequest from "@/utils/get-locale-from-request";
+import getRouteMatcher from "@/utils/get-route-matcher";
+import { getConstants } from "@/constants";
+import translateCore from "@/utils/translate-core";
+import adaptRouterToPageTranslations from "@/utils/adapt-router-to-page-translations";
+import type { RequestContext } from "@/types";
+import { logError } from "@/utils/log/log-build";
+import { redirect } from "@/utils/redirect";
 
 export default function handleI18n(req: RequestContext): {
   response?: Response;

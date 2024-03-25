@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 import path from "node:path";
-import { getConstants } from "../../constants";
+import { getConstants } from "@/constants";
 import handleI18n from ".";
-import extendRequestContext from "../extend-request-context";
+import extendRequestContext from "@/utils/extend-request-context";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const pagesDir = path.join(BUILD_DIR, "pages");

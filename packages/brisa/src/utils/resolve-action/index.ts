@@ -1,10 +1,10 @@
-import type { RequestContext } from "../../types";
-import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from "../rerender-in-action";
-import responseRenderedPage from "../response-rendered-page";
-import getRouteMatcher from "../get-route-matcher";
-import { getConstants } from "../../constants";
-import { logError } from "../log/log-build";
-import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "../ssr-web-component";
+import type { RequestContext } from "@/types";
+import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from "@/utils/rerender-in-action";
+import responseRenderedPage from "@/utils/response-rendered-page";
+import getRouteMatcher from "@/utils/get-route-matcher";
+import { getConstants } from "@/constants";
+import { logError } from "@/utils/log/log-build";
+import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 
 type ResolveActionParams = {
   req: RequestContext;

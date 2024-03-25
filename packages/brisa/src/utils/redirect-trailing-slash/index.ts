@@ -1,6 +1,6 @@
-import { getConstants } from "../../constants";
-import type { RequestContext } from "../../types";
-import { redirect } from "../redirect";
+import { getConstants } from "@/constants";
+import type { RequestContext } from "@/types";
+import { redirect } from "@/utils/redirect";
 
 export default function redirectTrailingSlash(
   request: RequestContext,

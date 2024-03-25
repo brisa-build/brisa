@@ -1,4 +1,4 @@
-import isAnAction from "../is-an-action";
+import isAnAction from "@/utils/is-an-action";
 
 const ACTION_PREFIX = "data-action";
 

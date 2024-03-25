@@ -1,8 +1,8 @@
-import type { RequestContext } from "../../types";
-import extendRequestContext from "../extend-request-context";
-import isAssetRequest from "../is-asset-request";
-import handleI18n from "../handle-i18n";
-import redirectTrailingSlash from "../redirect-trailing-slash";
+import type { RequestContext } from "@/types";
+import extendRequestContext from "@/utils/extend-request-context";
+import isAssetRequest from "@/utils/is-asset-request";
+import handleI18n from "@/utils/handle-i18n";
+import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
 
 export function redirect(url: string, status = 301) {
   return new Response(null, {

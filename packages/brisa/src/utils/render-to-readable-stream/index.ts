@@ -1,24 +1,24 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import type { ComponentType, Props, RequestContext } from "../../types";
+import type { ComponentType, Props, RequestContext } from "@/types";
 import extendStreamController, {
   type Controller,
-} from "../extend-stream-controller";
-import generateHrefLang from "../generate-href-lang";
-import renderAttributes from "../render-attributes";
-import { isNotFoundError } from "../not-found";
+} from "@/utils/extend-stream-controller";
+import generateHrefLang from "@/utils/generate-href-lang";
+import renderAttributes from "@/utils/render-attributes";
+import { isNotFoundError } from "@/utils/not-found";
 import {
   clearProvidersByWCSymbol,
   contextProvider,
   registerSlotToActiveProviders,
   restoreSlotProviders,
-} from "../context-provider/server";
-import { getConstants } from "../../constants";
-import overrideClientTranslations from "../translate-core/override-client-translations";
-import processServerComponentProps from "../process-server-component-props";
-import extendRequestContext from "../extend-request-context";
-import type { Options } from "../../types/server";
+} from "@/utils/context-provider/server";
+import { getConstants } from "@/constants";
+import overrideClientTranslations from "@/utils/translate-core/override-client-translations";
+import processServerComponentProps from "@/utils/process-server-component-props";
+import extendRequestContext from "@/utils/extend-request-context";
+import type { Options } from "@/types/server";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 

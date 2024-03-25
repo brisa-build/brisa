@@ -1,9 +1,9 @@
 import { describe, expect, it, afterEach, spyOn, jest } from "bun:test";
 
 import serverComponentPlugin, { workaroundText } from ".";
-import { normalizeQuotes } from "../../helpers";
-import AST from "../ast";
-import { getConstants } from "../../constants";
+import { normalizeQuotes } from "@/helpers";
+import AST from "@/utils/ast";
+import { getConstants } from "@/constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 

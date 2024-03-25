@@ -2,13 +2,13 @@ import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import path from "node:path";
 import type { MatchedRoute } from "bun";
 
-import { getConstants } from "../../constants";
-import renderToReadableStream from "../render-to-readable-stream";
-import extendRequestContext from "../extend-request-context";
+import { getConstants } from "@/constants";
+import renderToReadableStream from "@/utils/render-to-readable-stream";
+import extendRequestContext from "@/utils/extend-request-context";
 import processPageRoute from ".";
-import { toInline } from "../../helpers";
-import translateCore from "../translate-core";
-import type { RequestContext } from "../../types";
+import { toInline } from "@/helpers";
+import translateCore from "@/utils/translate-core";
+import type { RequestContext } from "@/types";
 
 const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const HOMEPAGE = path.join(FIXTURES, "pages", "index.tsx");

@@ -1,5 +1,5 @@
 import type { ESTree } from "meriyah";
-import { logError } from "../log/log-build";
+import { logError } from "@/utils/log/log-build";
 
 /**
  * It is necessary when we create entrypoints on the fly during compilation,

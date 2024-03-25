@@ -1,6 +1,6 @@
 import { afterEach, describe, it, expect, mock } from "bun:test";
 import substituteI18nRouteValues from ".";
-import constants from "../../constants";
+import constants from "@/constants";
 
 describe("utils", () => {
   afterEach(() => {

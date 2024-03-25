@@ -1,9 +1,9 @@
 import path from "node:path";
 import fs from "node:fs";
-import { getConstants } from "../../constants";
+import { getConstants } from "@/constants";
 import { getServeOptions } from "./utils";
-import { toInline } from "../../helpers";
-import { logWarning } from "../log/log-build";
+import { toInline } from "@/helpers";
+import { logWarning } from "@/utils/log/log-build";
 
 const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = "http://localhost";

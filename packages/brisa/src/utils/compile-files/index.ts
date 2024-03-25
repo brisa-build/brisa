@@ -2,17 +2,17 @@ import { gzipSync, type BuildArtifact } from "bun";
 import fs from "node:fs";
 import { join } from "node:path";
 
-import { getConstants } from "../../constants";
-import byteSizeToString from "../byte-size-to-string";
-import getClientCodeInPage from "../get-client-code-in-page";
-import getEntrypoints from "../get-entrypoints";
-import getImportableFilepath from "../get-importable-filepath";
-import getWebComponentsList from "../get-web-components-list";
-import { logTable } from "../log/log-build";
-import serverComponentPlugin from "../server-component-plugin";
-import createContextPlugin from "../create-context/create-context-plugin";
-import getI18nClientMessages from "../get-i18n-client-messages";
-import compileActions from "../compile-actions";
+import { getConstants } from "@/constants";
+import byteSizeToString from "@/utils/byte-size-to-string";
+import getClientCodeInPage from "@/utils/get-client-code-in-page";
+import getEntrypoints from "@/utils/get-entrypoints";
+import getImportableFilepath from "@/utils/get-importable-filepath";
+import getWebComponentsList from "@/utils/get-web-components-list";
+import { logTable } from "@/utils/log/log-build";
+import serverComponentPlugin from "@/utils/server-component-plugin";
+import createContextPlugin from "@/utils/create-context/create-context-plugin";
+import getI18nClientMessages from "@/utils/get-i18n-client-messages";
+import compileActions from "@/utils/compile-actions";
 
 export default async function compileFiles() {
   const {

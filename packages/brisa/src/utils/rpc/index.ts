@@ -1,5 +1,5 @@
 import path from "node:path";
-import constants from "../../constants";
+import constants from "@/constants";
 
 // Should be used via macro
 export async function injectActionRPCCode() {
