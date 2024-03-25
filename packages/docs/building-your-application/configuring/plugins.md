@@ -19,11 +19,28 @@ import type { Configuration } from "brisa";
 import { MyPlugin } from "my-plugin";
 
 export default {
-  extendPlugins(plugins, { dev, isServer }) {
+  extendPlugins(plugins, { dev, isServer, entrypoint }) {
     return [...plugins, MyPlugin];
   },
 } satisfies Configuration;
 ```
+
+| Parameter | Type                  | Description                      |
+| --------- | --------------------- | -------------------------------- |
+| plugins   | `BunPlugin[]`         | Array of plugins to extend with. |
+| options   | `ExtendPluginOptions` | Options (see table below)        |
+
+**Options:**
+
+| Field      | Type                  | Description                                          |
+| ---------- | --------------------- | ---------------------------------------------------- |
+| dev        | `boolean`             | Indicates whether it's a development build.          |
+| isServer   | `boolean`             | Indicates whether it's a server build.               |
+| entrypoint | `string \| undefined` | Entry point for client builds, optional for servers. |
+
+> [!NOTE]
+>
+> On the server it is only executed once and the build is with all the entrypoints, while on the client a separate build is made for each page, that's why on the client there is the `entrypoint` field in the options.
 
 A plugin is defined as simple JavaScript object containing a name property and a setup function. Example of one:
 

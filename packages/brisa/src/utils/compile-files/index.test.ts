@@ -5,6 +5,7 @@ import {
   it,
   spyOn,
   beforeEach,
+  mock,
   type Mock,
 } from "bun:test";
 import fs from "node:fs";
@@ -44,12 +45,20 @@ describe("utils", () => {
       const DEV_PAGES_DIR = path.join(DEV_BUILD_DIR, "pages");
       const DEV_ASSETS_DIR = path.join(DEV_BUILD_DIR, "public");
       const constants = getConstants();
+      const mockExtendPlugins = mock();
 
       globalThis.mockConstants = {
         ...constants,
         PAGES_DIR: DEV_PAGES_DIR,
         BUILD_DIR: DEV_BUILD_DIR,
         IS_PRODUCTION: false,
+        CONFIG: {
+          ...constants.CONFIG,
+          extendPlugins: (plugins, options) => {
+            mockExtendPlugins(plugins, options);
+            return plugins;
+          },
+        },
         SRC_DIR: DEV_SRC_DIR,
         ASSETS_DIR: DEV_ASSETS_DIR,
       };
@@ -60,6 +69,11 @@ describe("utils", () => {
         .toSorted((a, b) => a.localeCompare(b));
       const brisaInternals = fs.readdirSync(path.join(DEV_BUILD_DIR, "_brisa"));
 
+      expect(mockExtendPlugins).toHaveBeenCalledTimes(1);
+      expect(mockExtendPlugins.mock.calls[0][1]).toEqual({
+        dev: true,
+        isServer: true,
+      });
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
       expect(mockConsoleLog).toHaveBeenCalledTimes(0);
@@ -79,11 +93,19 @@ describe("utils", () => {
       const ASSETS_DIR = path.join(BUILD_DIR, "public");
       const TYPES = path.join(BUILD_DIR, "_brisa", "types.ts");
       const pagesClientPath = path.join(BUILD_DIR, "pages-client");
+      const mockExtendPlugins = mock();
       const constants = getConstants();
       globalThis.mockConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
+        CONFIG: {
+          ...constants.CONFIG,
+          extendPlugins: (plugins, options) => {
+            mockExtendPlugins(plugins, options);
+            return plugins;
+          },
+        },
         IS_PRODUCTION: true,
         IS_DEVELOPMENT: false,
         SRC_DIR,
@@ -110,6 +132,26 @@ describe("utils", () => {
 
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
+      expect(mockExtendPlugins).toHaveBeenCalledTimes(4);
+      expect(mockExtendPlugins.mock.calls[0][1]).toEqual({
+        dev: false,
+        isServer: true,
+      });
+      expect(mockExtendPlugins.mock.calls[1][1]).toEqual({
+        dev: false,
+        isServer: false,
+        entrypoint: path.join(BUILD_DIR, "pages", "_404.js"),
+      });
+      expect(mockExtendPlugins.mock.calls[2][1]).toEqual({
+        dev: false,
+        isServer: false,
+        entrypoint: path.join(BUILD_DIR, "pages", "_500.js"),
+      });
+      expect(mockExtendPlugins.mock.calls[3][1]).toEqual({
+        dev: false,
+        isServer: false,
+        entrypoint: path.join(BUILD_DIR, "pages", "page-with-web-component.js"),
+      });
 
       const files = fs
         .readdirSync(BUILD_DIR)
@@ -126,19 +168,20 @@ describe("utils", () => {
           }`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(files).toHaveLength(12);
+      expect(files).toHaveLength(13);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("actions");
       expect(files[2]).toBe("api");
       expect(files[3]).toStartWith("chunk-");
       expect(files[4]).toStartWith("chunk-");
-      expect(files[5]).toBe("i18n.js");
-      expect(files[6]).toBe("layout.js");
-      expect(files[7]).toBe("middleware.js");
-      expect(files[8]).toBe("pages");
-      expect(files[9]).toBe("pages-client");
-      expect(files[10]).toBe("web-components");
-      expect(files[11]).toBe("websocket.js");
+      expect(files[5]).toStartWith("chunk-");
+      expect(files[6]).toBe("i18n.js");
+      expect(files[7]).toBe("layout.js");
+      expect(files[8]).toBe("middleware.js");
+      expect(files[9]).toBe("pages");
+      expect(files[10]).toBe("pages-client");
+      expect(files[11]).toBe("web-components");
+      expect(files[12]).toBe("websocket.js");
 
       // Test actions
       const homePageContent = await Bun.file(

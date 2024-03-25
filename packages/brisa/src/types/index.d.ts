@@ -645,10 +645,16 @@ export type JSXNode = string | number | null | JSXElement | JSXNode[];
 
 export type Type = string | number | ComponentType | Promise<ComponentType>;
 
-export type ExtendPlugins = (plugins: BunPlugin[], options: {
+export type ExtendPluginOptions = {
   dev: boolean;
-  isServer: boolean;
-}) => BunPlugin[];
+  isServer: true;
+} | {
+  dev: boolean;
+  isServer: false;
+  entrypoint: string;
+}
+
+export type ExtendPlugins = (plugins: BunPlugin[], options: ) => BunPlugin[];
 
 export type Configuration = {
   /**
