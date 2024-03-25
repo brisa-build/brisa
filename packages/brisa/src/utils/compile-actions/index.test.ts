@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import { transformToActionCode } from ".";
-import { normalizeQuotes } from "../../helpers";
-import { getConstants } from "../../constants";
+import { normalizeQuotes } from "@/helpers";
+import { getConstants } from "@/constants";
 
 describe("utils", () => {
   afterEach(() => {

@@ -1,9 +1,9 @@
 import type { ESTree } from "meriyah";
-import type { ActionInfo } from "../get-actions-info";
-import removeAllReturns from "../../ast/remove-all-returns";
-import containsIdentifiers from "../../ast/contains-identifiers";
-import getAllIdentifiers from "../../ast/get-all-identifiers";
-import getVarDeclarationIdentifiers from "../../ast/get-var-declaration-identifiers";
+import type { ActionInfo } from "@/utils/compile-actions/get-actions-info";
+import removeAllReturns from "@/utils/ast/remove-all-returns";
+import containsIdentifiers from "@/utils/ast/contains-identifiers";
+import getAllIdentifiers from "@/utils/ast/get-all-identifiers";
+import getVarDeclarationIdentifiers from "@/utils/ast/get-var-declaration-identifiers";
 
 /**
  * This process of purging the body is necessary to remove all the code

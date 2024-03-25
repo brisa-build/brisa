@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import { ESTree } from "meriyah";
 import optimizeEffects from ".";
-import { normalizeQuotes } from "../../../helpers";
-import AST from "../../ast";
+import { normalizeQuotes } from "@/helpers";
+import AST from "@/utils/ast";
 import getWebComponentAst from "../get-web-component-ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();

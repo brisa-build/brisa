@@ -1,6 +1,6 @@
 {
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "baseUrl": "./packages/brisa/src",
+    "baseUrl": "./packages/brisa/src"
   }
 }
