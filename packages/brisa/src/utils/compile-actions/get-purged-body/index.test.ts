@@ -3,7 +3,7 @@ import AST from "@/utils/ast";
 import { describe, it, expect } from "bun:test";
 import { getPurgedBody } from ".";
 import getActionsInfo from "@/utils/compile-actions/get-actions-info";
-ed;
+
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 
 function expectCodeToPurge(code: string, actionId = "a1_1") {
