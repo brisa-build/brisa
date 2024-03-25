@@ -1,6 +1,6 @@
 import { ESTree } from "meriyah";
-import getWebComponentAst from "../get-web-component-ast";
-import mapComponentStatics from "../map-component-statics";
+import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-ast";
+import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
 
 const CHILDREN = "children";
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "bun:test";
 import { LiveReloadScript } from "./dev-live-reload";
-import { normalizeQuotes } from "../helpers";
+import { normalizeQuotes } from "@/helpers";
 
 describe("dev-live-reload", () => {
   it("should return live reload script for port 3000", () => {

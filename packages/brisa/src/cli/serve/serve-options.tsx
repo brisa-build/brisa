@@ -2,19 +2,19 @@ import { type MatchedRoute, type ServerWebSocket, type Serve } from "bun";
 import fs from "node:fs";
 import path from "node:path";
 
-import { getConstants } from "../../constants";
-import type { RequestContext } from "../../types";
-import extendRequestContext from "../../utils/extend-request-context";
-import getImportableFilepath from "../../utils/get-importable-filepath";
-import getRouteMatcher from "../../utils/get-route-matcher";
-import handleI18n from "../../utils/handle-i18n";
-import importFileIfExists from "../../utils/import-file-if-exists";
-import { isNotFoundError } from "../../utils/not-found";
-import redirectTrailingSlash from "../../utils/redirect-trailing-slash";
-import feedbackError from "../../utils/feedback-error";
-import responseAction from "../../utils/response-action";
-import { redirectFromUnnormalizedURL } from "../../utils/redirect";
-import responseRenderedPage from "../../utils/response-rendered-page";
+import { getConstants } from "@/constants";
+import type { RequestContext } from "@/types";
+import extendRequestContext from "@/utils/extend-request-context";
+import getImportableFilepath from "@/utils/get-importable-filepath";
+import getRouteMatcher from "@/utils/get-route-matcher";
+import handleI18n from "@/utils/handle-i18n";
+import importFileIfExists from "@/utils/import-file-if-exists";
+import { isNotFoundError } from "@/utils/not-found";
+import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
+import feedbackError from "@/utils/feedback-error";
+import responseAction from "@/utils/response-action";
+import { redirectFromUnnormalizedURL } from "@/utils/redirect";
+import responseRenderedPage from "@/utils/response-rendered-page";
 
 export async function getServeOptions() {
   const {

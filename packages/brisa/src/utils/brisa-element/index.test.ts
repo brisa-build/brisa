@@ -1,10 +1,10 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
-import createPortal from "../create-portal";
-import dangerHTML from "../danger-html";
-import { serialize } from "../serialization";
-import createContext from "../create-context";
-import type { BrisaContext, WebContext, WebContextPlugin } from "../../types";
+import createPortal from "@/utils/create-portal";
+import dangerHTML from "@/utils/danger-html";
+import { serialize } from "@/utils/serialization";
+import createContext from "@/utils/create-context";
+import type { BrisaContext, WebContext, WebContextPlugin } from "@/types";
 
 let brisaElement: typeof import(".").default;
 let _on: typeof import(".")._on;

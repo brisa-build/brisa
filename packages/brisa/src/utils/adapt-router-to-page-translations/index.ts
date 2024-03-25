@@ -1,12 +1,12 @@
-import extendRequestContext from "../extend-request-context";
+import extendRequestContext from "@/utils/extend-request-context";
 import type {
   I18nConfig,
   RequestContext,
   RouterType,
   Translations,
-} from "../../types";
-import routeMatchPathname from "../route-match-pathname";
-import substituteI18nRouteValues from "../substitute-i18n-route-values";
+} from "@/types";
+import routeMatchPathname from "@/utils/route-match-pathname";
+import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 
 const regexTrailingSlash = /\/$/;
 

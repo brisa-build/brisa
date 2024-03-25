@@ -1,4 +1,4 @@
-import type { RequestContext } from "../../types";
+import type { RequestContext } from "@/types";
 
 export async function a2_1({ onAction }: any) {
   return "a2_1" + ((await onAction?.("foo")) ?? "");

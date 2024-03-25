@@ -1,5 +1,5 @@
-import { describe, it, expect, spyOn } from "bun:test";
-import AST from "../ast";
+import { describe, it, expect } from "bun:test";
+import AST from "@/utils/ast";
 import analyzeServerAst from ".";
 
 const { parseCodeToAST } = AST("tsx");

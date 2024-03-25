@@ -10,7 +10,7 @@ import {
 import fs from "node:fs";
 import path from "node:path";
 import build from "./build";
-import { getConstants } from "../constants";
+import { getConstants } from "@/constants";
 
 const defaultResult = {
   success: true,
