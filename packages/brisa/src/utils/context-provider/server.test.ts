@@ -7,8 +7,8 @@ import {
   registerSlotToActiveProviders,
   restoreSlotProviders,
 } from "./server";
-import createContext from "../create-context";
-import extendRequestContext from "../extend-request-context";
+import createContext from "@/utils/create-context";
+import extendRequestContext from "@/utils/extend-request-context";
 
 describe("utils", () => {
   describe("server context provider", () => {

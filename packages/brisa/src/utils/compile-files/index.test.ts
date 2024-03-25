@@ -10,9 +10,9 @@ import {
 import fs from "node:fs";
 import path from "node:path";
 import compileFiles from ".";
-import { getConstants } from "../../constants";
-import { toInline } from "../../helpers";
-import { greenLog } from "../log/log-color";
+import { getConstants } from "@/constants";
+import { toInline } from "@/helpers";
+import { greenLog } from "@/utils/log/log-color";
 
 const DIR = import.meta.dir;
 const HASH = 123456;

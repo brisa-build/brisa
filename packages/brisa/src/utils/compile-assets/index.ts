@@ -1,8 +1,8 @@
 import path from "node:path";
 import fs from "node:fs";
 
-import { getConstants } from "../../constants";
-import precompressAssets from "../precompress-assets";
+import { getConstants } from "@/constants";
+import precompressAssets from "@/utils/precompress-assets";
 
 export default async function compileAssets() {
   const { SRC_DIR, BUILD_DIR } = getConstants();

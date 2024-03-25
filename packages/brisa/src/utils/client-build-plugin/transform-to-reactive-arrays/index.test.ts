@@ -1,9 +1,9 @@
 import { describe, expect, it, spyOn } from "bun:test";
 import { ESTree } from "meriyah";
 import transformToReactiveArrays from ".";
-import { getConstants } from "../../../constants";
-import { normalizeQuotes } from "../../../helpers";
-import AST from "../../ast";
+import { getConstants } from "@/constants";
+import { normalizeQuotes } from "@/helpers";
+import AST from "@/utils/ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutputCode = (ast: ESTree.Program) =>

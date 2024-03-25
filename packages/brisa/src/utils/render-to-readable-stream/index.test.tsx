@@ -4,12 +4,7 @@ import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
-import type {
-  ComponentType,
-  I18n,
-  RequestContext,
-  Translate,
-} from "@/types";
+import type { ComponentType, I18n, RequestContext, Translate } from "@/types";
 import createContext from "@/utils/create-context";
 import navigate from "@/utils/navigate";
 import dangerHTML from "@/utils/danger-html";

@@ -1,4 +1,4 @@
-import type { WebContext } from "../../../../../types";
+import type { WebContext } from "@/types";
 import { Ctx } from "../context";
 
 export default function LayoutWebComponent({}, { useContext }: WebContext) {

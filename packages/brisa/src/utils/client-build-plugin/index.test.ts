@@ -1,6 +1,6 @@
 import { describe, expect, it, spyOn } from "bun:test";
 import clientBuildPlugin from ".";
-import { getConstants } from "../../constants";
+import { getConstants } from "@/constants";
 
 const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 

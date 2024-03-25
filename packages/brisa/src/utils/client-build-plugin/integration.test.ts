@@ -3,12 +3,12 @@ import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
 import { join } from "node:path";
 
 import clientBuildPlugin from ".";
-import { normalizeQuotes, toInline } from "../../helpers";
-import createPortal from "../create-portal";
-import dangerHTML from "../danger-html";
-import { serialize } from "../serialization";
-import createContext from "../create-context";
-import type { WebContextPlugin } from "../../types";
+import { normalizeQuotes, toInline } from "@/helpers";
+import createPortal from "@/utils/create-portal";
+import dangerHTML from "@/utils/danger-html";
+import { serialize } from "@/utils/serialization";
+import createContext from "@/utils/create-context";
+import type { WebContextPlugin } from "@/types";
 
 declare global {
   interface Window {

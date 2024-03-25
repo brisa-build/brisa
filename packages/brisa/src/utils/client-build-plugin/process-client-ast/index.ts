@@ -1,7 +1,7 @@
 import type { ESTree } from "meriyah";
-import { logWarning } from "../../log/log-build";
-import AST from "../../ast";
-import { toInline } from "../../../helpers";
+import { logWarning } from "@/utils/log/log-build";
+import AST from "@/utils/ast";
+import { toInline } from "@/helpers";
 
 const { generateCodeFromAST } = AST("tsx");
 

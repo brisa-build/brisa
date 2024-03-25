@@ -1,6 +1,6 @@
-import type { RequestContext } from "../../../../types";
-import notFound from "../../../not-found";
-import navigate from "../../../navigate";
+import type { RequestContext } from "@/types";
+import notFound from "@/utils/not-found";
+import navigate from "@/utils/navigate";
 
 export default async function middleware(request: RequestContext) {
   const url = new URL(request.finalURL);

@@ -1,7 +1,7 @@
 import { describe, it, expect, spyOn } from "bun:test";
-import AST from "../../ast";
+import AST from "@/utils/ast";
 import processClientAst from ".";
-import { toInline } from "../../../helpers";
+import { toInline } from "@/helpers";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 

@@ -1,4 +1,4 @@
-import type { RequestContext } from "../../../../types";
+import type { RequestContext } from "@/types";
 
 export default function Layout(
   { children }: { children: JSX.Element },

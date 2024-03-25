@@ -1,4 +1,4 @@
-import isAsyncContent from "../../ast/is-async-content";
+import isAsyncContent from "@/utils/ast/is-async-content";
 import { ESTree } from "meriyah";
 
 export default function wrapWithArrowFn(node: ESTree.Node) {
