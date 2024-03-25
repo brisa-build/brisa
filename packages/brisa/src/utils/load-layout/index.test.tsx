@@ -1,9 +1,9 @@
 import { describe, it, expect, afterEach } from "bun:test";
 import LoadLayout from ".";
 import path from "node:path";
-import renderToReadableStream from "../render-to-readable-stream";
-import getImportableFilepath from "../get-importable-filepath";
-import extendRequestContext from "../extend-request-context";
+import renderToReadableStream from "@/utils/render-to-readable-stream";
+import getImportableFilepath from "@/utils/get-importable-filepath";
+import extendRequestContext from "@/utils/extend-request-context";
 
 const buildDir = path.join(process.cwd(), "build");
 const join = path.join;

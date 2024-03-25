@@ -1,5 +1,5 @@
-import translateCore from "../translate-core";
-import { getConstants } from "../../constants";
+import translateCore from "@/utils/translate-core";
+import { getConstants } from "@/constants";
 
 type Messages = Record<string, any>;
 type I18nKeys = Set<string | RegExp>;

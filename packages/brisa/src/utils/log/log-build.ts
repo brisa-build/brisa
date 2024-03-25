@@ -1,4 +1,4 @@
-import { getConstants } from "../../constants";
+import { getConstants } from "@/constants";
 
 export function logTable(data: { [key: string]: string }[]) {
   const { LOG_PREFIX } = getConstants();

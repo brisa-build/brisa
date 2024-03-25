@@ -1,5 +1,5 @@
 import { gzipSync } from "bun";
-import getFilesFromDir from "../get-files-from-dir";
+import getFilesFromDir from "@/utils/get-files-from-dir";
 
 // TODO: Support brotli when it's supported by Bun
 export default async function precompressAssets(assetsPath: string) {

@@ -2,10 +2,10 @@ import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import type { MatchedRoute } from "bun";
 import path from "node:path";
 
-import type { Translate } from "../../types";
-import extendRequestContext from "../extend-request-context";
+import type { Translate } from "@/types";
+import extendRequestContext from "@/utils/extend-request-context";
 import responseRenderedPage from ".";
-import { getConstants } from "../../constants";
+import { getConstants } from "@/constants";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");

@@ -1,4 +1,4 @@
-import { type IndicatorSignal, type WebContext } from "../../types";
+import { type IndicatorSignal, type WebContext } from "@/types";
 
 type Effect = ((
   addSubEffect: (effect: Effect) => Effect,

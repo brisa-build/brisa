@@ -1,8 +1,8 @@
 import { describe, it, expect, spyOn } from "bun:test";
-import AST from "../ast";
+import AST from "@/utils/ast";
 import replaceAstImportsToAbsolute from ".";
-import { normalizeQuotes } from "../../helpers";
-import { getConstants } from "../../constants";
+import { normalizeQuotes } from "@/helpers";
+import { getConstants } from "@/constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const { SRC_DIR } = getConstants();

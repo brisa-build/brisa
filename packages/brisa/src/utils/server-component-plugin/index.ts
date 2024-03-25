@@ -1,7 +1,7 @@
-import { getConstants } from "../../constants";
-import AST from "../ast";
-import replaceAstImportsToAbsolute from "../replace-ast-imports-to-absolute";
-import { logWarning } from "../log/log-build";
+import { getConstants } from "@/constants";
+import AST from "@/utils/ast";
+import replaceAstImportsToAbsolute from "@/utils/replace-ast-imports-to-absolute";
+import { logWarning } from "@/utils/log/log-build";
 
 type ServerComponentPluginOptions = {
   allWebComponents: Record<string, string>;

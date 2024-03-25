@@ -10,8 +10,8 @@ import {
 import path from "node:path";
 import fs from "node:fs";
 import generateStaticExport from "./index";
-import { getConstants } from "../../constants";
-import { toInline } from "../../helpers";
+import { getConstants } from "@/constants";
+import { toInline } from "@/helpers";
 
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const mockFetch = mock((request: Request) => new Response(""));

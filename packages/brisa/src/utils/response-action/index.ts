@@ -1,10 +1,10 @@
 import { join } from "node:path";
-import { getConstants } from "../../constants";
-import type { RequestContext } from "../../types";
-import getClientStoreEntries from "../get-client-store-entries";
-import { deserialize } from "../serialization";
-import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX, decrypt } from "../crypto";
-import { logError } from "../log/log-build";
+import { getConstants } from "@/constants";
+import type { RequestContext } from "@/types";
+import getClientStoreEntries from "@/utils/get-client-store-entries";
+import { deserialize } from "@/utils/serialization";
+import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX, decrypt } from "@/utils/crypto";
+import { logError } from "@/utils/log/log-build";
 
 export default async function responseAction(req: RequestContext) {
   const { BUILD_DIR } = getConstants();

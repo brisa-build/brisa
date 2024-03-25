@@ -1,6 +1,6 @@
-import { getConstants } from "../../constants";
-import type { RequestContext } from "../../types";
-import substituteI18nRouteValues from "../substitute-i18n-route-values";
+import { getConstants } from "@/constants";
+import type { RequestContext } from "@/types";
+import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 
 export default function generateHrefLang(request: RequestContext) {
   const { locale } = request.i18n ?? {};

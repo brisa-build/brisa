@@ -1,9 +1,9 @@
-import type { RequestContext } from "../../types";
+import type { RequestContext } from "@/types";
 import type { MatchedRoute } from "bun";
-import processPageRoute from "../process-page-route";
-import renderToReadableStream from "../render-to-readable-stream";
-import { getConstants } from "../../constants";
-import importFileIfExists from "../import-file-if-exists";
+import processPageRoute from "@/utils/process-page-route";
+import renderToReadableStream from "@/utils/render-to-readable-stream";
+import { getConstants } from "@/constants";
+import importFileIfExists from "@/utils/import-file-if-exists";
 
 export default async function responseRenderedPage({
   req,

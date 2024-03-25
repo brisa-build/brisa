@@ -4,7 +4,7 @@ import type {
   Translate,
   TranslateOptions,
   TranslationQuery,
-} from "../../types";
+} from "@/types";
 import formatElements from "./format-elements";
 
 export default function translateCore(

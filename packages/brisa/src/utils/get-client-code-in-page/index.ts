@@ -1,18 +1,18 @@
 import { rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import { getConstants } from "../../constants";
-import AST from "../ast";
+import { getConstants } from "@/constants";
+import AST from "@/utils/ast";
 import {
   injectActionRPCCode,
   injectActionRPCLazyCode,
-} from "../rpc" with { type: "macro" };
-import { injectUnsuspenseCode } from "../inject-unsuspense-code" with { type: "macro" };
-import { injectClientContextProviderCode } from "../context-provider/inject-client" with { type: "macro" };
-import clientBuildPlugin from "../client-build-plugin";
-import createContextPlugin from "../create-context/create-context-plugin";
-import snakeToCamelCase from "../snake-to-camelcase";
-import analyzeServerAst from "../analyze-server-ast";
+} from "@/utils/rpc" with { type: "macro" };
+import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
+import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
+import clientBuildPlugin from "@/utils/client-build-plugin";
+import createContextPlugin from "@/utils/create-context/create-context-plugin";
+import snakeToCamelCase from "@/utils/snake-to-camelcase";
+import analyzeServerAst from "@/utils/analyze-server-ast";
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;

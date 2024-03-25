@@ -1,11 +1,11 @@
 import type { MatchedRoute } from "bun";
 
-import { getConstants } from "../../constants";
-import dangerHTML from "../danger-html";
-import { LiveReloadScript } from "../../cli/dev-live-reload";
-import LoadLayout from "../load-layout";
-import type { PageModule } from "../../types";
-import getImportableFilepath from "../get-importable-filepath";
+import { getConstants } from "@/constants";
+import dangerHTML from "@/utils/danger-html";
+import { LiveReloadScript } from "@/cli/dev-live-reload";
+import LoadLayout from "@/utils/load-layout";
+import type { PageModule } from "@/types";
+import getImportableFilepath from "@/utils/get-importable-filepath";
 
 export default async function processPageRoute(
   route: MatchedRoute,

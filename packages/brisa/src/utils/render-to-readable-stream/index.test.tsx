@@ -2,21 +2,21 @@ import { type MatchedRoute } from "bun";
 import path from "node:path";
 import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
 import renderToReadableStream from ".";
-import { getConstants } from "../../constants";
-import { toInline } from "../../helpers";
+import { getConstants } from "@/constants";
+import { toInline } from "@/helpers";
 import type {
   ComponentType,
   I18n,
   RequestContext,
   Translate,
-} from "../../types";
-import createContext from "../create-context";
-import navigate from "../navigate";
-import dangerHTML from "../danger-html";
-import extendRequestContext from "../extend-request-context";
-import notFound from "../not-found";
-import SSRWebComponent from "../ssr-web-component";
-import handleI18n from "../handle-i18n";
+} from "@/types";
+import createContext from "@/utils/create-context";
+import navigate from "@/utils/navigate";
+import dangerHTML from "@/utils/danger-html";
+import extendRequestContext from "@/utils/extend-request-context";
+import notFound from "@/utils/not-found";
+import SSRWebComponent from "@/utils/ssr-web-component";
+import handleI18n from "@/utils/handle-i18n";
 
 const emptyI18n = {
   locale: "",

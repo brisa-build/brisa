@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, spyOn } from "bun:test";
 import path from "node:path";
 
-import extendRequestContext from "../extend-request-context";
+import extendRequestContext from "@/utils/extend-request-context";
 import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from "../rerender-in-action";
-import { getConstants } from "../../constants";
+import { getConstants } from "@/constants";
 import resolveAction from ".";
-import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "../ssr-web-component";
+import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
