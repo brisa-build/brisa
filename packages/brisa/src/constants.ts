@@ -1,4 +1,5 @@
 import path from "node:path";
+import type { BunPlugin } from "bun";
 import { version } from "../package.json";
 import type { Configuration, I18nConfig } from "./types";
 import importFileIfExists from "./utils/import-file-if-exists";
@@ -44,7 +45,7 @@ if (I18N_CONFIG?.pages) {
 const defaultConfig = {
   trailingSlash: false,
   assetPrefix: "",
-  plugins: [],
+  extendPlugins: (plugins: BunPlugin[]) => plugins,
   output: "server",
 };
 

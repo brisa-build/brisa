@@ -125,6 +125,7 @@ async function transformToWebComponents({
     VERSION_HASH,
   } = getConstants();
 
+  const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
   const internalDir = join(BUILD_DIR, "_brisa");
   const webEntrypoint = join(internalDir, `temp-${VERSION_HASH}.ts`);
   let useI18n = false;
@@ -205,45 +206,47 @@ async function transformToWebComponents({
     },
     // TODO: format: "iife" when Bun support it
     // https://bun.sh/docs/bundler#format
-    plugins: [
-      {
-        name: "client-build-plugin",
-        setup(build) {
-          build.onLoad(
-            {
-              filter: new RegExp(
-                `(.*/src/web-components/(?!_integrations).*\\.(tsx|jsx|js|ts)|${webComponentsPath.join(
-                  "|",
-                )})$`,
-              ),
-            },
-            async ({ path, loader }) => {
-              let code = await Bun.file(path).text();
+    plugins: extendPlugins(
+      [
+        {
+          name: "client-build-plugin",
+          setup(build) {
+            build.onLoad(
+              {
+                filter: new RegExp(
+                  `(.*/src/web-components/(?!_integrations).*\\.(tsx|jsx|js|ts)|${webComponentsPath.join(
+                    "|",
+                  )})$`,
+                ),
+              },
+              async ({ path, loader }) => {
+                let code = await Bun.file(path).text();
 
-              try {
-                const res = clientBuildPlugin(code, path, {
-                  isI18nAdded: useI18n,
-                  isTranslateCoreAdded: i18nKeys.size > 0,
-                });
-                code = res.code;
-                useI18n ||= res.useI18n;
-                i18nKeys = new Set([...i18nKeys, ...res.i18nKeys]);
-              } catch (error) {
-                console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
-                console.log(LOG_PREFIX.ERROR, (error as Error).message);
-              }
+                try {
+                  const res = clientBuildPlugin(code, path, {
+                    isI18nAdded: useI18n,
+                    isTranslateCoreAdded: i18nKeys.size > 0,
+                  });
+                  code = res.code;
+                  useI18n ||= res.useI18n;
+                  i18nKeys = new Set([...i18nKeys, ...res.i18nKeys]);
+                } catch (error) {
+                  console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
+                  console.log(LOG_PREFIX.ERROR, (error as Error).message);
+                }
 
-              return {
-                contents: code,
-                loader,
-              };
-            },
-          );
+                return {
+                  contents: code,
+                  loader,
+                };
+              },
+            );
+          },
         },
-      },
-      createContextPlugin(),
-      ...(CONFIG?.plugins ?? []),
-    ],
+        createContextPlugin(),
+      ],
+      { dev: !IS_PRODUCTION, isServer: false },
+    ),
   });
 
   await rm(webEntrypoint);
