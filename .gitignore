@@ -5,17 +5,19 @@ node_modules
 
 **/out/*
 **/out-*/*
-/jsx-runtime/
-/jsx-dev-runtime/
-/client/
-/server/
+packages/brisa/out
+packages/brisa/jsx-runtime/
+packages/brisa/jsx-dev-runtime/
+packages/brisa/client/
+packages/brisa/server/
+packages/brisa/build
 cli-build
 cli-start
 cli-dev
 
 # Docs
-docs/.vitepress/cache/
-docs/.vitepress/dist/
+packages/docs/.vitepress/cache/
+packages/docs/.vitepress/dist/
 
 tsconfig.tsbuildinfo
 

@@ -1,35 +1,3 @@
 {
-  "compilerOptions": {
-    "lib": ["ESNext"],
-    "module": "esnext",
-    "baseUrl": "./src",
-    "target": "esnext",
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noFallthroughCasesInSwitch": true,
-    "noEmit": true,
-    "composite": true,
-    "strict": true,
-    "downlevelIteration": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "brisa",
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "paths": {
-      "@/*": ["*"]
-    }
-  },
-  "exclude": [
-    "node_modules",
-    "out",
-    "server",
-    "client",
-    "jsx-runtime",
-    "jsx-dev-runtime",
-    "src/__fixtures__/out*"
-  ]
+  "exclude": ["node_modules"]
 }

@@ -1,0 +1,29 @@
+{
+  "name": "brisa-docs",
+  "version": "0.0.1",
+  "description": "Brisa Docs Site",
+  "author": "Brisa Team",
+  "homepage": "https://brisa.build/",
+  "license": "MIT",
+  "packageManager": "bun@1.0.33",
+  "private": true,
+  "bugs": "https://github.com/brisa-build/brisa.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brisa-build/brisa.git"
+  },
+  "scripts": {
+    "dev": "vitepress dev .",
+    "build": "vitepress build .",
+    "preview": "vitepress preview ."
+  },
+  "devDependencies": {
+    "vitepress": "1.0.0-rc.45"
+  },
+  "engines": {
+    "bun": ">= 1.0.33",
+    "npm": "please-use-bun",
+    "yarn": "please-use-bun",
+    "pnpm": "please-use-bun"
+  }
+}
