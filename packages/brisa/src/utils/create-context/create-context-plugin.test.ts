@@ -1,6 +1,6 @@
 import { describe, expect, it, beforeEach } from "bun:test";
 import { generateContextID } from "./create-context-plugin";
-import { toInline } from "../../helpers";
+import { toInline } from "@/helpers";
 
 describe("utils", () => {
   beforeEach(() => {

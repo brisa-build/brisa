@@ -1,6 +1,6 @@
 import { describe, it, expect } from "bun:test";
 import getActionsInfo, { type ActionInfo } from ".";
-import AST from "../../ast";
+import AST from "@/utils/ast";
 
 const { parseCodeToAST } = AST("tsx");
 

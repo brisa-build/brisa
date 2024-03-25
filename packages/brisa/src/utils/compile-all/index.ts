@@ -1,5 +1,5 @@
-import compileAssets from "../compile-assets";
-import compileFiles from "../compile-files";
+import compileAssets from "@/utils/compile-assets";
+import compileFiles from "@/utils/compile-files";
 
 export default async function compileAll() {
   await compileAssets();

@@ -1,6 +1,6 @@
 import type { BunPlugin } from "bun";
-import { logError } from "../log/log-build";
-import AST from "../ast";
+import { logError } from "@/utils/log/log-build";
+import AST from "@/utils/ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 

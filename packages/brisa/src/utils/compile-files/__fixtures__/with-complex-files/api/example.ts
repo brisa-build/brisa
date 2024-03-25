@@ -1,4 +1,4 @@
-import { type RequestContext } from "../../../../../types";
+import { type RequestContext } from "@/types";
 
 export function GET(request: RequestContext) {
   return new Response(JSON.stringify({ hello: "world" }), {

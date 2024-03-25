@@ -1,5 +1,5 @@
 import path from "node:path";
-import clientBuildPlugin from "../client-build-plugin";
+import clientBuildPlugin from "@/utils/client-build-plugin";
 
 // Should be used via macro
 export async function injectClientContextProviderCode() {

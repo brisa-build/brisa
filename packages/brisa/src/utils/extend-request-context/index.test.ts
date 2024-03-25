@@ -2,10 +2,10 @@ import { describe, it, expect, mock, afterEach } from "bun:test";
 import type { ServerWebSocket } from "bun";
 
 import extendRequestContext from ".";
-import createContext from "../create-context";
-import { contextProvider } from "../context-provider/server";
-import type { RequestContext } from "../../types";
-import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX } from "../crypto";
+import createContext from "@/utils/create-context";
+import { contextProvider } from "@/utils/context-provider/server";
+import type { RequestContext } from "@/types";
+import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX } from "@/utils/crypto";
 
 describe("brisa core", () => {
   afterEach(() => {
