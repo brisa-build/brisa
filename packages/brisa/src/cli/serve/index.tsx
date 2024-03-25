@@ -1,4 +1,4 @@
-import constants from "../../constants";
+import constants from "@/constants";
 import { getServeOptions } from "./serve-options";
 import type { ServeOptions, Server } from "bun";
 

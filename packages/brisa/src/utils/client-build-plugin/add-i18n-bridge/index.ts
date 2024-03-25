@@ -1,6 +1,6 @@
-import constants from "../../../constants";
-import AST from "../../ast";
-import { TRANSLATE_CORE_IMPORT } from "../constants";
+import constants from "@/constants";
+import AST from "@/utils/ast";
+import { TRANSLATE_CORE_IMPORT } from "@/utils/client-build-plugin/constants";
 import type { ESTree } from "meriyah";
 
 const { parseCodeToAST } = AST("tsx");
