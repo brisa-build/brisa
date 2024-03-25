@@ -1,7 +1,7 @@
-import AST from "../../ast";
+import AST from "@/utils/ast";
 import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
 import addI18nBridge from ".";
-import { normalizeQuotes } from "../../../helpers";
+import { normalizeQuotes } from "@/helpers";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
 const I18N_CONFIG = {

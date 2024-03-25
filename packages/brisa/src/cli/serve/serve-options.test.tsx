@@ -10,9 +10,9 @@ import {
   jest,
 } from "bun:test";
 import path from "node:path";
-import { getConstants } from "../../constants";
+import { getConstants } from "@/constants";
 import type { ServerWebSocket } from "bun";
-import type { RequestContext } from "../../types";
+import type { RequestContext } from "@/types";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");

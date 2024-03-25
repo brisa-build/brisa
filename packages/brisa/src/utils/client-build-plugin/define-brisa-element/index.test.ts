@@ -2,11 +2,11 @@ import { describe, expect, it } from "bun:test";
 import { ESTree } from "meriyah";
 
 import defineBrisaElement from ".";
-import * as BRISA_CLIENT from "../../../core/client";
-import { normalizeQuotes } from "../../../helpers";
-import AST from "../../ast";
-import getPropsNames from "../get-props-names";
-import getWebComponentAst from "../get-web-component-ast";
+import * as BRISA_CLIENT from "@/core/client";
+import { normalizeQuotes } from "@/helpers";
+import AST from "@/utils/ast";
+import getPropsNames from "@/utils/client-build-plugin/get-props-names";
+import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const output = (ast: any) =>

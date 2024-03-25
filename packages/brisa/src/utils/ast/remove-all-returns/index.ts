@@ -1,5 +1,5 @@
 import type { ESTree } from "meriyah";
-import getContentReturns from "../get-content-returns";
+import getContentReturns from "@/utils/ast/get-content-returns";
 
 export default function removeAllReturns(
   statements: ESTree.Statement[],
