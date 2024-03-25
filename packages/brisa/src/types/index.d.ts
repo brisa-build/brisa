@@ -645,6 +645,11 @@ export type JSXNode = string | number | null | JSXElement | JSXNode[];
 
 export type Type = string | number | ComponentType | Promise<ComponentType>;
 
+export type ExtendPlugins = (plugins: BunPlugin[], options: {
+  dev: boolean;
+  isServer: boolean;
+}) => BunPlugin[];
+
 export type Configuration = {
   /**
    * Description:
@@ -688,13 +693,14 @@ export type Configuration = {
   /**
    * Description:
    *
-   * The `plugins` config property is used to add Bun/esbuild plugins
+   * The `extendPlugins` config property is used to add Bun/esbuild plugins
    * to the build process.
    *
    * Example:
    *
    * ```ts
-   * plugins: [
+   * extendPlugins(plugins, { dev, isServer }) => [
+   *  ...plugins,
    *  {
    *   name: 'my-plugin',
    *   setup(build) {
@@ -710,9 +716,9 @@ export type Configuration = {
    *
    * Docs:
    *
-   * - [How to use `plugins`](https://brisa.build/building-your-application/configuring/plugins)
+   * - [How to use `extendPlugins`](https://brisa.build/building-your-application/configuring/plugins)
    */
-  plugins?: BunPlugin[];
+  extendPlugins?: ExtendPlugins;
 
   /**
    * @todo TODO: implement it
