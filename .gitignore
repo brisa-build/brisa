@@ -2,7 +2,7 @@
 node_modules
 
 # Build output
-
+**/build/*
 **/out/*
 **/out-*/*
 packages/brisa/out
@@ -11,9 +11,6 @@ packages/brisa/jsx-dev-runtime/
 packages/brisa/client/
 packages/brisa/server/
 packages/brisa/build
-cli-build
-cli-start
-cli-dev
 
 # Docs
 packages/docs/.vitepress/cache/
