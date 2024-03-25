@@ -1,0 +1,87 @@
+{
+  "name": "brisa",
+  "module": "./out/core/index.js",
+  "main": "./out/core/index.js",
+  "types": "./out/core/index.d.ts",
+  "version": "0.0.37",
+  "description": "The next-gen web framework.",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "Aral Roca Gòmez",
+    "email": "contact@aralroca.com"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brisa-build/brisa.git"
+  },
+  "files": [
+    "out",
+    "jsx-runtime",
+    "jsx-dev-runtime",
+    "client",
+    "server",
+    "cli.cjs"
+  ],
+  "exports": {
+    ".": {
+      "import": "./out/core/index.js",
+      "require": "./out/core/index.js"
+    },
+    "./jsx-runtime": {
+      "import": "./jsx-runtime/index.js",
+      "require": "./jsx-runtime/index.js"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./jsx-dev-runtime/index.js",
+      "require": "./jsx-dev-runtime/index.js"
+    },
+    "./client": {
+      "import": "./client/index.js",
+      "require": "./client/index.js"
+    },
+    "./server": {
+      "import": "./server/index.js",
+      "require": "./server/index.js"
+    },
+    "./cli.cjs": {
+      "import": "./cli.cjs",
+      "require": "./cli.cjs"
+    }
+  },
+  "scripts": {
+    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server",
+    "build:core": "bun build --minify --target=bun --outdir=out/core src/core/index.ts && bun run build:cli && cp src/types/index.d.ts out/core/index.d.ts",
+    "build:core-server": "bun build --minify --target=bun --outdir=server src/core/server/index.ts && bun run build:cli && cp src/types/server.d.ts server/index.d.ts",
+    "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:cli",
+    "build:cli": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/serve/index.tsx",
+    "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-runtime/index.d.ts",
+    "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "tsc:check": "tsc --noEmit --skipLibCheck",
+    "release": "bun run build && npm publish && bun run clean",
+    "release:alpha": "bun run build && npm publish --tag next && bun run clean",
+    "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli client"
+  },
+  "bin": {
+    "brisa": "./cli.cjs"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "13.8.2",
+    "@types/bun": "1.0.8",
+    "brisa": "0.0.27",
+    "vitepress": "1.0.0-rc.45"
+  },
+  "peerDependencies": {
+    "typescript": "5.4.2"
+  },
+  "dependencies": {
+    "astring": "1.8.6",
+    "csstype": "3.1.3",
+    "meriyah": "4.4.0"
+  }
+}
