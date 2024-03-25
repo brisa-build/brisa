@@ -1,6 +1,24 @@
 {
-  "exclude": ["node_modules"],
   "compilerOptions": {
-    "baseUrl": "./packages/brisa/src"
-  }
+    "lib": ["ESNext"],
+    "module": "esnext",
+    "baseUrl": ".",
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noFallthroughCasesInSwitch": true,
+    "noEmit": true,
+    "composite": true,
+    "strict": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "brisa",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true
+  },
+  "exclude": ["node_modules"]
 }
