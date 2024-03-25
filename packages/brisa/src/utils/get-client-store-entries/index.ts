@@ -1,5 +1,5 @@
-import type { RequestContext } from "../../types";
-import { encrypt } from "../crypto";
+import type { RequestContext } from "@/types";
+import { encrypt } from "@/utils/crypto";
 
 export default function getClientStoreEntries(
   req: RequestContext,

@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "bun:test";
 
 import redirectTrailingSlash from ".";
-import extendRequestContext from "../extend-request-context";
+import extendRequestContext from "@/utils/extend-request-context";
 
 describe("utils", () => {
   describe("redirectTrailingSlash", () => {

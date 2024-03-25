@@ -1,11 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { plugin } from "bun";
-import { logError } from "../log/log-build";
+import { logError } from "@/utils/log/log-build";
 import {
   ALTERNATIVE_PREFIX,
   NATIVE_FOLDER,
-} from "../client-build-plugin/constants";
+} from "@/utils/client-build-plugin/constants";
 
 const CONTEXT_PROVIDER = "context-provider";
 

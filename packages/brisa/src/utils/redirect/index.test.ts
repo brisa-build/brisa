@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import path from "node:path";
-import extendRequestContext from "../extend-request-context";
+import extendRequestContext from "@/utils/extend-request-context";
 import { redirect, redirectFromUnnormalizedURL } from ".";
 
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");

@@ -1,6 +1,6 @@
 import { describe, it, expect, mock, afterEach, spyOn } from "bun:test";
 import { logTable } from "./log-build";
-import { getConstants } from "../../constants";
+import { getConstants } from "@/constants";
 
 describe("utils", () => {
   describe("logTable", () => {

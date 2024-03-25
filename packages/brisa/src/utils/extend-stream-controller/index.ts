@@ -1,4 +1,4 @@
-import type { ComponentType } from "../../types";
+import type { ComponentType } from "@/types";
 
 export type ChunksOptions = {
   chunk: string;

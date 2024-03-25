@@ -1,4 +1,4 @@
-import renderToReadableStream from "../render-to-readable-stream";
+import renderToReadableStream from "@/utils/render-to-readable-stream";
 
 export default async function renderToString(
   element: JSX.Element,

@@ -1,6 +1,6 @@
 import { describe, expect, it, afterAll } from "bun:test";
 import translateCore from ".";
-import { type I18nConfig, type JSXElement } from "../../types";
+import { type I18nConfig, type JSXElement } from "@/types";
 
 type NestedKeysType = {
   key_1: {
