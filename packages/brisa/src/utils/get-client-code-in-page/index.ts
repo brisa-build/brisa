@@ -18,6 +18,7 @@ type TransformOptions = {
   webComponentsList: Record<string, string>;
   useContextProvider: boolean;
   integrationsPath?: string | null;
+  pagePath: string;
 };
 
 type ClientCodeInPageProps = {
@@ -92,6 +93,7 @@ export default async function getClientCodeInPage({
     webComponentsList: pageWebComponents,
     useContextProvider,
     integrationsPath,
+    pagePath,
   });
 
   if (!transformedCode) return null;
@@ -115,6 +117,7 @@ async function transformToWebComponents({
   webComponentsList,
   useContextProvider,
   integrationsPath,
+  pagePath,
 }: TransformOptions) {
   const {
     SRC_DIR,
@@ -197,6 +200,8 @@ async function transformToWebComponents({
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [webEntrypoint],
     root: SRC_DIR,
+    // TODO: format: "iife" when Bun support it
+    // https://bun.sh/docs/bundler#format
     target: "browser",
     minify: IS_PRODUCTION,
     define: {
@@ -204,8 +209,6 @@ async function transformToWebComponents({
       __WEB_CONTEXT_PLUGINS__: useWebContextPlugins.toString(),
       ...envVar,
     },
-    // TODO: format: "iife" when Bun support it
-    // https://bun.sh/docs/bundler#format
     plugins: extendPlugins(
       [
         {
@@ -245,7 +248,7 @@ async function transformToWebComponents({
         },
         createContextPlugin(),
       ],
-      { dev: !IS_PRODUCTION, isServer: false },
+      { dev: !IS_PRODUCTION, isServer: false, entrypoint: pagePath },
     ),
   });
 
