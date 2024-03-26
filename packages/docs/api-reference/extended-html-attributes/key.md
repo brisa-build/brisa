@@ -1,5 +1,5 @@
 ---
-description: Use `key` attribute to add the `brisa-request` class to the element only during the action time
+description: The `key` is a special `string` attribute you need to include when creating lists of elements.
 ---
 
 # key
@@ -20,7 +20,9 @@ const listItems = numbers.map((number) => (
 The best way to pick a key is to use a string that uniquely identifies a list item among its siblings. Most often you would use IDs from your data as keys:
 
 ```tsx 2
-const todoItems = todos.map((todo) => <li key={todo.id}>{todo.text}</li>);
+const TodoList = ({ todos }) => {
+  return todos.map((todo) => <li key={todo.id}>{todo.text}</li>);
+};
 ```
 
 When you don’t have stable IDs for rendered items, you may use the item index as a key as a last resort.
