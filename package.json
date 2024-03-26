@@ -1,7 +1,7 @@
 {
   "name": "brisa-monorepo",
   "version": "0.0.38",
-  "packageManager": "bun@1.0.33",
+  "packageManager": "bun@1.0.35",
   "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
@@ -29,10 +29,11 @@
     "docs:dev": "bun run --cwd packages/docs dev",
     "docs:build": "bun run --cwd packages/docs build",
     "docs:preview": "bun run --cwd packages/docs preview",
-    "update-version": "bun run scripts/update-brisa-version.ts"
+    "update-version": "bun run scripts/update-brisa-version.ts",
+    "upgrade": "bun run scripts/upgrade-bun.ts"
   },
   "engines": {
-    "bun": ">= 1.0.33",
+    "bun": ">= 1.0.35",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
