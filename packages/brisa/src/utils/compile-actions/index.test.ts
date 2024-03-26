@@ -1303,6 +1303,112 @@ describe("utils", () => {
 
       expect(output).toEqual(expected);
     });
+    it("should work with a function jsx generator with an action", () => {
+      // TODO: element is returned as a component, when you implement component rendering you will have to
+      // figure out how to fix this
+      const code = `
+       const getEl = (text) => <div 
+          onClick={() => console.log('hello world')} 
+          data-action-onClick="a1_1" 
+          data-action
+        >{text}</div>;
+      
+        export default function Component({text}) {
+          return getEl(text);
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+          import {resolveAction as __resolveAction} from "brisa/server";
+          
+          function getEl(text) {return jsxDEV("div", {
+            onClick: () => console.log("hello world"),
+            "data-action-onClick": "a1_1",
+            "data-action": true,
+            children: text}, undefined, false, undefined, this);}
+            
+          function Component({text}) {
+            return getEl(text);
+          }
+
+          export async function a1_1(text, req) {
+            try {
+              const __action = () => console.log("hello world");
+              await __action(...req.store.get("__params:a1_1"));
+              return new Response(null);
+            } catch (error) {
+              return __resolveAction({
+                req,
+                error,
+                component: jsxDEV(getEl, text, undefined, false, undefined, this)});
+              }
+            }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should work with a function jsx generator with multiple actions", () => {
+      // TODO: element is returned as a component, when you implement component rendering you will have to
+      // figure out how to fix this
+      const code = `
+       const getEl = (text) => <div 
+          onClick={() => console.log('hello world')} 
+          data-action-onClick="a1_1" 
+          onInput={() => console.log('hello world')} 
+          data-action-onInput="a1_2" 
+          data-action
+        >{text}</div>;
+      
+        export default function Component({text}) {
+          return getEl(text);
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+          import {resolveAction as __resolveAction} from "brisa/server";
+          
+          function getEl(text) {return jsxDEV("div", {
+            onClick: () => console.log("hello world"),
+            "data-action-onClick": "a1_1",
+            onInput: () => console.log("hello world"),
+            "data-action-onInput": "a1_2",
+            "data-action": true,
+            children: text}, undefined, false, undefined, this);}
+            
+          function Component({text}) {
+            return getEl(text);
+          }
+          
+          export async function a1_1(text, req) {
+            try {
+              const __action = () => console.log("hello world");
+              await __action(...req.store.get("__params:a1_1"));
+              return new Response(null);
+            } catch (error) {
+              return __resolveAction({
+                req,
+                error,
+                component: jsxDEV(getEl, text, undefined, false, undefined, this)});
+              }
+            }
+            
+          export async function a1_2(text, req) {
+            try {const __action = () => console.log("hello world");
+            await __action(...req.store.get("__params:a1_2"));
+            return new Response(null);
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(getEl, text, undefined, false, undefined, this)});
+            }
+          }
+      `);
+
+      expect(output).toEqual(expected);
+    });
     it.todo(
       "should work with an element with an action defined outside the Component",
     );
@@ -1310,7 +1416,5 @@ describe("utils", () => {
       "should work with an element with multiple actions defined outside the Component",
     );
     it.todo("should transform a simple HOC with an action");
-    it.todo("should work with a function jsx generator with an action");
-    it.todo("should work with a function jsx generator with multiple actions");
   });
 });
