@@ -383,7 +383,7 @@ export default defineConfig({
     editLink: {
       text: "Edit this page on GitHub",
       pattern:
-        "https://github.com/brisa-build/brisa/documentation/edit/main/:path",
+        "https://github.com/brisa-build/brisa/tree/main/packages/docs/:path",
     },
   },
 });
