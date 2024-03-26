@@ -86,7 +86,6 @@ const quickStartMd = fs
   .toString()
   .replace(`text="${oldVersion}"`, `text="${version}"`);
 
-console.log({ oldVersion });
 fs.writeFileSync(dockerMdPath, dockerMd);
 fs.writeFileSync(quickStartMdPath, quickStartMd);
 
