@@ -80,7 +80,7 @@ describe("utils", () => {
       const pagePath = path.join(pages, "index.tsx");
       const output = await getClientCodeInPage({ pagePath, allWebComponents });
       const unsuspenseSize = 217;
-      const actionRPCSize = 1705;
+      const actionRPCSize = 1706;
       const actionRPCLazySize = 1855;
 
       // actionRPCLazy is loaded after user interaction (action),

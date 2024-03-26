@@ -83,5 +83,12 @@
     "astring": "1.8.6",
     "csstype": "3.1.3",
     "meriyah": "4.4.0"
+  },
+  "packageManager": "bun@1.0.35",
+  "engines": {
+    "bun": ">= 1.0.35",
+    "npm": "please-use-bun",
+    "yarn": "please-use-bun",
+    "pnpm": "please-use-bun"
   }
 }

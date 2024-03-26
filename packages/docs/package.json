@@ -5,7 +5,7 @@
   "author": "Brisa Team",
   "homepage": "https://brisa.build/",
   "license": "MIT",
-  "packageManager": "bun@1.0.33",
+  "packageManager": "bun@1.0.35",
   "private": true,
   "bugs": "https://github.com/brisa-build/brisa.git",
   "repository": {
@@ -21,7 +21,7 @@
     "vitepress": "1.0.0-rc.45"
   },
   "engines": {
-    "bun": ">= 1.0.33",
+    "bun": ">= 1.0.35",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
