@@ -78,10 +78,6 @@ export default defineConfig({
                 link: "/building-your-application/routing/middleware",
               },
               {
-                text: "Authentication",
-                link: "/building-your-application/routing/authenticating",
-              },
-              {
                 text: "Internationalization",
                 link: "/building-your-application/routing/internationalization",
               },
@@ -217,10 +213,19 @@ export default defineConfig({
           {
             text: "🔐 Authentication",
             collapsed: true,
+            link: "/building-your-application/authentication/index",
             items: [
               {
-                text: "WIP",
-                link: "/wip",
+                text: "Authentication",
+                link: "/building-your-application/authentication/authentication",
+              },
+              {
+                text: "Authorization",
+                link: "/building-your-application/authentication/authorization",
+              },
+              {
+                text: "Session tracking",
+                link: "/building-your-application/authentication/session-tracking",
               },
             ],
           },
@@ -380,6 +385,10 @@ export default defineConfig({
       text: "Edit this page on GitHub",
       pattern:
         "https://github.com/brisa-build/brisa/tree/main/packages/docs/:path",
+    },
+    footer: {
+      message: "Released under the MIT License.",
+      copyright: "Copyright © 2023-present Aral Roca",
     },
   },
 });
