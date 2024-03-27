@@ -15,7 +15,7 @@ The value is the generated `IndicatorSignal` by the `indicate` method:
 - Read more docs about [`indicate`](/building-your-application/data-fetching/request-context#indicate) in Server Components.
 - Read more docs about [`indicate`](/building-your-application/data-fetching/web-context#indicate) in Web Components.
 
-```tsx
+```tsx 6
 const indicator = indicate('some-action-name')
 // ...
 <input

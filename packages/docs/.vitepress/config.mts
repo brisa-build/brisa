@@ -335,10 +335,6 @@ export default defineConfig({
                 text: "ref",
               },
               {
-                link: "/api-reference/extended-html-attributes/serverOnly",
-                text: "serverOnly",
-              },
-              {
                 link: "/api-reference/extended-html-attributes/skipSSR",
                 text: "skipSSR",
               },
