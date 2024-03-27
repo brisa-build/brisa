@@ -66,7 +66,69 @@ Once activated you can call `brisa dev` to work locally with hotreloading in the
 
 > [!NOTE]
 >
-> Lean how to [deploy a desktop app here](/building-your-application/deploying/tauri).
+> Lean how to [deploy a desktop app here](/building-your-application/deploying/desktop-app).
+
+### 4. Android Output (`android`)
+
+The `android` output type is designed for creating deployable android applications, integrated with [Tauri](https://tauri.app/). To set up your Brisa project for desktop output, modify your `brisa.config.ts` as shown below:
+
+```ts
+import type { Configuration } from "brisa";
+
+export default {
+  output: "android",
+} satisfies Configuration;
+```
+
+> [!IMPORTANT]
+>
+> **Prerequisits**: You need to download [Android Studio](https://developer.android.com/studio) and follow these [steps from Tauri documentation](https://beta.tauri.app/guides/prerequisites/#android).
+
+Once activated you can call `brisa dev` to work locally with hotreloading in the android app or `brisa build` to build the android app native executables.
+
+> [!TIP]
+>
+> You can do `brisa dev --skip-tauri` or `brisa build --skip-tauri` if you want to avoid creating and loading the android application.
+
+> [!CAUTION]
+>
+> In production the build is done as static export, since there is no server.
+> Pure server stuff like api endpoints and server interactions will not work in runtime. All the interaction part should be in web-components only.
+
+> [!NOTE]
+>
+> Lean how to [deploy a android app here](/building-your-application/deploying/android-app).
+
+### 5. iOS Output (`ios`)
+
+The `ios` output type is designed for creating deployable iOS applications, integrated with [Tauri](https://tauri.app/). To set up your Brisa project for desktop output, modify your `brisa.config.ts` as shown below:
+
+```ts
+import type { Configuration } from "brisa";
+
+export default {
+  output: "ios",
+} satisfies Configuration;
+```
+
+> [!IMPORTANT]
+>
+> **Prerequisits**: You need to download iOS targets and follow these [steps from Tauri documentation](https://beta.tauri.app/guides/prerequisites/#ios).
+
+Once activated you can call `brisa dev` to work locally with hotreloading in the iOS app or `brisa build` to build the iOS app native executables.
+
+> [!TIP]
+>
+> You can do `brisa dev --skip-tauri` or `brisa build --skip-tauri` if you want to avoid creating and loading the iOS application.
+
+> [!CAUTION]
+>
+> In production the build is done as static export, since there is no server.
+> Pure server stuff like api endpoints and server interactions will not work in runtime. All the interaction part should be in web-components only.
+
+> [!NOTE]
+>
+> Lean how to [deploy a iOS app here](/building-your-application/deploying/ios-app).
 
 ## Additional Considerations
 
