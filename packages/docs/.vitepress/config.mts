@@ -1,5 +1,7 @@
 import { defineConfig } from "vitepress";
 
+const pkg = require('../package.json')
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: "en-US",
@@ -25,6 +27,19 @@ export default defineConfig({
         text: "Documentation",
         link: "/getting-started/quick-start",
       },
+      {
+        text: pkg.version,
+        items: [
+          {
+            text: 'Changelog',
+            link: 'https://github.com/brisa-build/brisa/releases'
+          },
+          {
+            text: 'Contributing',
+            link: 'https://github.com/brisa-build/brisa/blob/main/CONTRIBUTING.md'
+          }
+        ]
+      }
     ],
     sidebar: [
       {
