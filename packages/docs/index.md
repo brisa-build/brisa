@@ -2,6 +2,8 @@
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
+footer: true
+
 hero:
   name: "Brisa"
   text: "Inspired by the others, the best of each one."
