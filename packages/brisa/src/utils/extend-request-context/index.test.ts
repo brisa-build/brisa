@@ -6,6 +6,7 @@ import createContext from "@/utils/create-context";
 import { contextProvider } from "@/utils/context-provider/server";
 import type { RequestContext } from "@/types";
 import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX } from "@/utils/crypto";
+import { toInline } from "@/helpers";
 
 describe("brisa core", () => {
   afterEach(() => {
@@ -280,8 +281,8 @@ describe("brisa core", () => {
           background: blue;
         }
       `;
-      expect((requestContext as any)._style).toBe(
-        "body { color: red; }body { background: blue; }",
+      expect(toInline((requestContext as any)._style)).toBe(
+        toInline("body {color: red;}body {background: blue;}"),
       );
       (requestContext as any)._style = "";
       css`
@@ -289,7 +290,9 @@ describe("brisa core", () => {
           color: yellow;
         }
       `;
-      expect((requestContext as any)._style).toBe("body { color: yellow; }");
+      expect(toInline((requestContext as any)._style)).toBe(
+        toInline("body {color: yellow;}"),
+      );
     });
   });
 });
