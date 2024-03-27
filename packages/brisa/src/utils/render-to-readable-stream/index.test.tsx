@@ -712,6 +712,73 @@ describe("utils", () => {
       );
     });
 
+    it("should render the style tag when the css is used in the component", async () => {
+      const Component = ({}, { css }: RequestContext) => {
+        css`
+          .red {
+            color: red;
+          }
+        `;
+        css`
+          .blue {
+            color: blue;
+          }
+        `;
+
+        return <div class="red">Hello</div>;
+      };
+
+      const stream = renderToReadableStream(<Component />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        toInline(`
+          <style>.red { color: red; }.blue { color: blue; }</style>
+          <div class="red">Hello</div>
+        `),
+      );
+    });
+
+    it("should add different styles in different components", async () => {
+      const Component = ({}, { css }: RequestContext) => {
+        css`
+          .red {
+            color: red;
+          }
+        `;
+
+        return <div class="red">Hello</div>;
+      };
+
+      const Component2 = ({}, { css }: RequestContext) => {
+        css`
+          .blue {
+            color: blue;
+          }
+        `;
+
+        return <div class="blue">Hello</div>;
+      };
+
+      const stream = renderToReadableStream(
+        <>
+          <Component />
+          <Component2 />
+        </>,
+        testOptions,
+      );
+
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toBe(
+        toInline(`
+          <style>.red { color: red; }</style>
+          <div class="red">Hello</div>
+          <style>.blue { color: blue; }</style>
+          <div class="blue">Hello</div>
+        `),
+      );
+    });
+
     it("should render the suspense component before if the async component support it", async () => {
       const Component = async () => {
         await Promise.resolve();
