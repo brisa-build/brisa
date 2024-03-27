@@ -110,5 +110,14 @@ export default function extendRequestContext({
     error: {},
   });
 
+  // css
+  originalRequest._style = "";
+  originalRequest.css = (
+    template: TemplateStringsArray,
+    ...values: string[]
+  ) => {
+    originalRequest._style += String.raw(template, ...values);
+  };
+
   return originalRequest as RequestContext;
 }

@@ -88,3 +88,31 @@ For more details, take a look to:
 - [`indicate`](/building-your-application/data-fetching/web-context#indicate) in web components, similar method but from [`WebContext`](/building-your-application/data-fetching/web-context).
 - [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) HTML extended attribute to use it in server components to register the server action indicator.
 - [`indicator`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
+
+## `css`
+
+`css(strings: TemplateStringsArray, ...values: string[]): void`
+
+The `css` template literal is used to inject CSS into the DOM. It allows developers to define styles directly within server components using a template literal.
+
+Unlike web components, this `css` template literal in server components does not encapsulate. This code would affect all `div`s on the page:
+
+Example:
+
+```ts
+css`
+  div {
+    background-color: ${color};
+  }
+`;
+```
+
+> [!TIP]
+>
+> We recommend using the `css` template literal for specific cases such as generating CSS animations based on dynamic JavaScript variables.
+
+For more details, refer to the [Template literal `css`](/components-details/web-components#template-literal-css) documentation.
+
+## `id`
+
+TODO
