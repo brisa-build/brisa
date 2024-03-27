@@ -733,7 +733,7 @@ describe("utils", () => {
 
       expect(result).toBe(
         toInline(`
-          <style>.red { color: red; }.blue { color: blue; }</style>
+          <style>.red {color: red;}.blue {color: blue;}</style>
           <div class="red">Hello</div>
         `),
       );
@@ -771,9 +771,9 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
         toInline(`
-          <style>.red { color: red; }</style>
+          <style>.red {color: red;}</style>
           <div class="red">Hello</div>
-          <style>.blue { color: blue; }</style>
+          <style>.blue {color: blue;}</style>
           <div class="blue">Hello</div>
         `),
       );
