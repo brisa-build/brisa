@@ -247,9 +247,26 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `id`](https://brisa.build/building-your-application/data-fetching/request-context)
+   * - [How to use `id`](https://brisa.build/building-your-application/data-fetching/request-context#id)
    */
   id: string;
+
+  /**
+   * Description:
+   *
+   * The `css` method is used to inject CSS into server components.
+   *
+   * Example:
+   *
+   * ```ts
+   * css`div { background-color: ${color}; }`
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `css`](https://brisa.build/building-your-application/data-fetching/request-context#css)
+   */
+  css(strings: TemplateStringsArray, ...values: string[]): void;
 }
 
 type Effect = () => void | Promise<void>;

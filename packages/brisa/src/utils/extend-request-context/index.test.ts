@@ -259,5 +259,37 @@ describe("brisa core", () => {
       const indicate = requestContext.indicate("foo");
       expect(indicate.error.value).toBeUndefined();
     });
+
+    it("should work css function", () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      const { css } = requestContext;
+      css`
+        body {
+          color: red;
+        }
+      `;
+      css`
+        body {
+          background: blue;
+        }
+      `;
+      expect((requestContext as any)._style).toBe(
+        "body { color: red; }body { background: blue; }",
+      );
+      (requestContext as any)._style = "";
+      css`
+        body {
+          color: yellow;
+        }
+      `;
+      expect((requestContext as any)._style).toBe("body { color: yellow; }");
+    });
   });
 });

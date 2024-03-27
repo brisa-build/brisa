@@ -19,6 +19,7 @@ import overrideClientTranslations from "@/utils/translate-core/override-client-t
 import processServerComponentProps from "@/utils/process-server-component-props";
 import extendRequestContext from "@/utils/extend-request-context";
 import type { Options } from "@/types/server";
+import { toInline } from "@/helpers";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -387,6 +388,15 @@ async function enqueueComponent(
     props,
     request,
   )) as JSX.Element;
+
+  // Inject CSS
+  if ((request as any)._style) {
+    controller.enqueue(
+      `<style>${toInline((request as any)._style)}</style>`,
+      suspenseId,
+    );
+    (request as any)._style = "";
+  }
 
   // Async generator list
   if (typeof componentValue.next === "function") {
