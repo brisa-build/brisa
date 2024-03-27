@@ -6,11 +6,11 @@ description: Use `debounce[Event]` attribute to debounce a server action
 
 ## Reference
 
-### `debounceClick={400}`
+### `debounce[Event]={400}`
 
 Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchStart`...) to allow to debounce the action call by replacing the `on` prefix to `debounce`.
 
-```tsx
+```tsx 4
 <input
   type="text"
   onInput={(e) => console.log(e.target.value)}
