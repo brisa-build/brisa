@@ -1,10 +1,47 @@
 # Request Context
 
-TODO
+The `RequestContext` is a set of utilities provided by Brisa to facilitate the development of server components. It is a `Request` with some extra functionalities such as managing store, handling context, i18n, and more.
 
-## `route`
+```tsx
+import type { RequestContext } from "brisa";
 
-TODO
+export default function ServerComponent(props, requestContext: RequestContext) {
+  const {
+    // Shared data across server/web components
+    store,
+    useContext,
+
+    // Useful to control pending state in server components
+    indicate,
+
+    // Data of the current route
+    route,
+
+    // Consume translations and control internationalization
+    i18n,
+
+    // Access to websockets
+    ws,
+
+    // Get the user IP
+    getIp,
+
+    // The `finalURL` is the path of your page file
+    finalURL,
+
+    // Request id
+    id,
+
+    // Add styles
+    css,
+  } = requestContext;
+  // ... Server component implementation ...
+}
+```
+
+Being an extension of the [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), you also have access to all fields of the Request.
+
+In contrast to other frameworks that necessitate imports, our methodology incorporates all these properties directly within each server component.
 
 ## `store`
 
@@ -57,6 +94,25 @@ It is a way to modify in a reactive way from a server action the web components 
 >
 > You can [encrypt store data](/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
 
+## `useContext`
+
+`useContext: <T>(context: BrisaContext<T>) => { value: T }`
+
+The `useContext` method is used to consume a context value. It takes a `BrisaContext` as a parameter and returns a signal containing the context value. The context value is often used for passing data between a provider and multiple consumers within a component tree.
+
+Example:
+
+```tsx
+const foo = useContext(context);
+return <div>{foo.value}</div>;
+```
+
+For more details, refer to the [context](/building-your-application/components-details/context) documentation.
+
+> [!IMPORTANT]
+>
+> When referring to `useContext`, it is essential to note that this term should not be confused with the broader concept of `RequestContext` mentioned earlier. The `useContext` is a Brisa Hook for consuming context value, that is piece of data that can be shared across multiple Brisa components. The `RequestContext` denotes the overall environment and configuration specific to each server component, offering a unique and more comprehensive control mechanism. Understanding this distinction is crucial for a clear comprehension of our framework's architecture.
+
 ## `indicate`
 
 `indicate(actionName: string): IndicatorSignal`
@@ -89,6 +145,126 @@ For more details, take a look to:
 - [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) HTML extended attribute to use it in server components to register the server action indicator.
 - [`indicator`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
 
+## `route`
+
+The route is the matched route of the request.
+
+You can access to:
+
+- `params` - for dynamic routes like `/[user]` you can access to `params.user`.
+- `filePath` - path of your page file.
+- `pathname` - path portion of the URL.
+- `query` - A record of query parameters extracted from the URL.
+- `name` - The name associated with the route.
+- `kind`- The type of route: `exact`, `catch-all`, `optional-catch-all`, or `dynamic`.
+- `src`- The source string representing the route.
+
+Example of object:
+
+```js
+{
+  filePath: "/Users/aralroca/Documents/brisa/fun/pages/blog/[slug].tsx",
+  kind: "dynamic",
+  name: "/blog/[slug]",
+  pathname: "/blog/my-cool-post",
+  src: "/blog/[slug].js",
+  params: {
+    slug: "my-cool-post"
+  }
+}
+```
+
+Example consuming:
+
+```tsx
+<div>{route.pathname}</div>
+```
+
+## `i18n`
+
+`i18n: I18n`
+
+The `i18n` object provides utilities for accessing the locale and consuming translations within components.
+
+Example:
+
+```tsx
+const { t, locale } = i18n;
+return <div>{t("hello-world")}</div>;
+```
+
+For more details, refer to the [i18n](/building-your-application/routing/internationalization) documentation.
+
+## `ws`
+
+In case you have [configured WebSockets](/building-your-application/routing/websockets.md), you can access them from any server component, api route, middleware, etc. The `ws` is of type `ServerWebSocket`, where is:
+
+```ts
+interface ServerWebSocket {
+  readonly data: any;
+  readonly readyState: number;
+  readonly remoteAddress: string;
+  send(message: string | ArrayBuffer | Uint8Array, compress?: boolean): number;
+  close(code?: number, reason?: string): void;
+  subscribe(topic: string): void;
+  unsubscribe(topic: string): void;
+  publish(topic: string, message: string | ArrayBuffer | Uint8Array): void;
+  isSubscribed(topic: string): boolean;
+  cork(cb: (ws: ServerWebSocket) => void): void;
+}
+```
+
+Example:
+
+```ts
+import { type RequestContext } from "brisa";
+
+export function GET({ ws, i18n }: RequestContext) {
+  const message = i18n.t("hello-world");
+
+  // Sending a WebSocket message from an API route
+  ws.send(message);
+
+  return new Response(message, {
+    headers: { "content-type": "text/plain" },
+  });
+}
+```
+
+> [!NOTE]
+>
+> For more information see [Bun's WebSockets documentation](https://bun.sh/docs/api/websockets#sending-messages).
+
+## `getIP`
+
+The IP address of a given Request can be retrieved via `getIP`.
+
+Below it calls Bun's [`server.requestIP`](https://bun.sh/blog/bun-v1.0.4#implement-server-requestip).
+
+## `finalURL`
+
+The `finalURL` is the URL of your page, regardless of the fact that for the users it is another one.
+
+Example, an user enter to:
+
+- `/es/sobre-nosotros/`
+
+But the `finalURL` is:
+
+- `/about-us`
+
+Because your page is in `src/pages/about-us/index.tsx`
+
+## `id`
+
+The `id` is the unique identifier of the request. This id is used internally by Brisa, but we expose it to you because it can be useful for tracking.
+
+Example:
+
+```ts
+console.log(id); // 1edfa3c2-e101-40e3-af57-8890795dacd4
+```
+
 ## `css`
 
 `css(strings: TemplateStringsArray, ...values: string[]): void`
@@ -111,8 +287,4 @@ css`
 >
 > We recommend using the `css` template literal for specific cases such as generating CSS animations based on dynamic JavaScript variables.
 
-For more details, refer to the [Template literal `css`](/components-details/web-components#template-literal-css) documentation.
-
-## `id`
-
-TODO
+For more details, refer to the [Template literal `css`](/building-your-application/components-details/web-components#template-literal-css) documentation.

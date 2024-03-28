@@ -86,30 +86,30 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `useContext`](https://brisa.build/components-details/context)
+   * - [How to use `useContext`](https://brisa.build/building-your-application/components-details/context)
    */
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
   /**
-   * 
+   *
    * Description:
-   * 
+   *
    * The `indicate` method is used to get control of the
-   * "processing state" of the server action. 
-   * 
-   * It's necessary to link the indicator with the server action 
+   * "processing state" of the server action.
+   *
+   * It's necessary to link the indicator with the server action
    * via the `indicate[Event]` attribute.
-   * 
+   *
    * When the attribute "indicator"
    * is used, the "brisa-request" class is added to the element during
    * the processing state. Useful to show a spinner, disable a button, etc. All
    * via CSS.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```tsx
    * const incrementing = indicate('increment');
-   * 
+   *
    * return (
    *   <button
    *    indicator={incrementing}
@@ -120,9 +120,9 @@ export interface RequestContext extends Request {
    *   </button>
    * );
    * ```
-   * 
+   *
    * Example of CSS:
-   * 
+   *
    * ```css
    * button.brisa-request {
    *   pointer-events: none;
@@ -136,10 +136,10 @@ export interface RequestContext extends Request {
    *   display: inline;
    * }
    * ```
-   * 
+   *
    * Docs:
-   * 
-   * - [How to use `indicate`](https://brisa.build/api-reference/request-context/indicate)
+   *
+   * - [How to use `indicate`](https://brisa.build/building-your-application/data-fetching/request-context#indicate)
    */
   indicate: (actionName: string) => IndicatorSignal;
 
@@ -154,9 +154,13 @@ export interface RequestContext extends Request {
    *
    * Example:
    *
-   * ```ts
+   * ```tsx
    * <div>{route.pathname}</div>
    * ```
+   *
+   * Docs:
+   *
+   * - [How to use `route`](https://brisa.build/building-your-application/data-fetching/request-context#route)
    */
   route: MatchedRoute;
 
@@ -193,7 +197,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `ws`](https://brisa.build/building-your-application/routing/websockets)
+   * - [How to use `ws`](https://brisa.build/building-your-application/data-fetching/request-context#ws)
    */
   ws: ServerWebSocket<unknown>;
 
@@ -207,6 +211,8 @@ export interface RequestContext extends Request {
    * ```ts
    * const ip = getIP();
    * ```
+   *
+   *  - [How to use `getIP`](https://brisa.build/building-your-application/data-fetching/request-context#getip)
    */
   getIP: () => SocketAddress | null;
 
@@ -229,7 +235,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `finalURL`](https://brisa.build/building-your-application/routing/internationalization#final-url)
+   * - [How to use `finalURL`](https://brisa.build/building-your-application/data-fetching/request-context#final-url)
    */
   finalURL: string;
 
@@ -274,7 +280,7 @@ type Cleanup = Effect;
 
 type TransferOptions = {
   encrypt?: boolean;
-}
+};
 
 export interface BaseWebContext {
   /**
@@ -472,12 +478,12 @@ export interface BaseWebContext {
    *
    * The `indicate` method is used to get control of the
    * "processing state" of the web-component action.
-   * 
-   * It's necessary to link the indicator with the server action 
+   *
+   * It's necessary to link the indicator with the server action
    * via the `indicate[Event]` attribute.
-   * 
+   *
    * On server component:
-   * 
+   *
    * ```tsx
    * const incrementing = indicate('increment');
    * // ...
@@ -485,16 +491,16 @@ export interface BaseWebContext {
    *  Increment
    * </button>
    * ```
-   * 
+   *
    * When the attribute "indicator"  is used, the "brisa-request" class
    * is added to the element during the processing state. Useful to show a spinner,
    * disable a button, etc. All via CSS.
-   * 
+   *
    * With action attributes:
-   * 
+   *
    * ```tsx
    * // Use same string action name
-   * const incrementing = indicate('increment'); 
+   * const incrementing = indicate('increment');
    *
    * return (
    *    <button
@@ -505,12 +511,12 @@ export interface BaseWebContext {
    *    </button>
    * );
    * ```
-   * 
+   *
    * With signals (only for web components):
-   * 
+   *
    * ```tsx
    * const incrementing = indicate('increment');
-   * 
+   *
    * return (
    *   <button
    *    disabled={incrementing.value}
@@ -525,7 +531,7 @@ export interface BaseWebContext {
    *
    * - [How to use `indicate`](https://brisa.build/api-reference/web-context/indicate)
    */
-  indicate: (actionName: string) =>  IndicatorSignal;
+  indicate: (actionName: string) => IndicatorSignal;
 
   /**
    * Description:
@@ -645,7 +651,11 @@ type ReactiveMap = {
   get: <T>(key: string) => T;
   set: <T>(key: string, value: T) => void;
   delete: (key: string) => void;
-  setOptimistic: <T>(actionName: string, storeKey: string, updater: (value: T) => T) => void;
+  setOptimistic: <T>(
+    actionName: string,
+    storeKey: string,
+    updater: (value: T) => T,
+  ) => void;
   Map: Map<string, unknown>;
 };
 
@@ -662,16 +672,21 @@ export type JSXNode = string | number | null | JSXElement | JSXNode[];
 
 export type Type = string | number | ComponentType | Promise<ComponentType>;
 
-export type ExtendPluginOptions = {
-  dev: boolean;
-  isServer: true;
-} | {
-  dev: boolean;
-  isServer: false;
-  entrypoint: string;
-}
+export type ExtendPluginOptions =
+  | {
+      dev: boolean;
+      isServer: true;
+    }
+  | {
+      dev: boolean;
+      isServer: false;
+      entrypoint: string;
+    };
 
-export type ExtendPlugins = (plugins: BunPlugin[], options: ExtendPluginOptions) => BunPlugin[];
+export type ExtendPlugins = (
+  plugins: BunPlugin[],
+  options: ExtendPluginOptions,
+) => BunPlugin[];
 
 export type Configuration = {
   /**
@@ -960,7 +975,7 @@ export type IndicatorSignal = {
   value: boolean;
   error: {
     value: message | undefined;
-  }
+  };
 };
 
 /**
@@ -1179,10 +1194,14 @@ declare global {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
       // The "indicate" attribute is used to control the processing state of the web-component action.
-      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}` ? `indicate${Rest}` : never]?: IndicatorSignal | undefined;
-    } &  {
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}`
+        ? `indicate${Rest}`
+        : never]?: IndicatorSignal | undefined;
+    } & {
       // The "debounce" attribute is used to debounce the web-component action.
-      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}` ? `debounce${Rest}` : never]?: number | undefined;
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}`
+        ? `debounce${Rest}`
+        : never]?: number | undefined;
     } & {
       children?: JSXElement;
       skipSSR?: boolean;
@@ -2973,31 +2992,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceLoad"?: number | undefined;
+      debounceLoad?: number | undefined;
       /**
-       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <img indicateLoad={indicator} onLoad={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLoad?: IndicatorSignal | undefined;
       /**
        * The onLoad event is fired when an object has been loaded.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event)
        */
       onLoad?: GenericEventHandler<Target> | undefined;
@@ -3020,31 +3039,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceonError"?: number | undefined;
+      debounceonError?: number | undefined;
       /**
-       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <img indicateError={indicator} onError={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateError?: IndicatorSignal | undefined;
       /**
        * The onError event is fired when an object has been loaded.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/error_event)
        */
       onError?: GenericEventHandler<Target> | undefined;
@@ -3069,31 +3088,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceCopy"?: number | undefined;
-        /**
-       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+      debounceCopy?: number | undefined;
+      /**
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <p indicateCopy={indicator} onCopy={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCopy?: IndicatorSignal | undefined;
       /**
        * The onCopy event is fired when the user copies the content of an element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/copy_event)
        */
       onCopy?: ClipboardEventHandler<Target> | undefined;
@@ -3116,31 +3135,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceCut"?: number | undefined;
+      debounceCut?: number | undefined;
       /**
-       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <p indicateCut={indicator} onCut={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCut?: IndicatorSignal | undefined;
       /**
        * The onCut event is fired when the user cuts the content of an element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/cut_event)
        */
       onCut?: ClipboardEventHandler<Target> | undefined;
@@ -3163,31 +3182,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePaste"?: number | undefined;
+      debouncePaste?: number | undefined;
       /**
-       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event 
+       * The indicateLoad attribute is an `IndicatorSignal` to connect it to a `load` event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <p indicatePaste={indicator} onPaste={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePaste?: IndicatorSignal | undefined;
       /**
        * The onPaste event is fired when the user pastes some content in an element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event)
        */
       onPaste?: ClipboardEventHandler<Target> | undefined;
@@ -3212,31 +3231,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceCompositionEnd"?: number | undefined;
+      debounceCompositionEnd?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateCompositionEnd={indicator} onCompositionEnd={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCompositionEnd?: IndicatorSignal | undefined;
       /**
        * The onCompositionEnd event is fired when the composition of a passage of text has been completed or canceled.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionend_event)
        */
       onCompositionEnd?: CompositionEventHandler<Target> | undefined;
@@ -3259,31 +3278,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceCompositionStart"?: number | undefined;
+      debounceCompositionStart?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateCompositionStart={indicator} onCompositionStart={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCompositionStart?: IndicatorSignal | undefined;
       /**
        * The onCompositionStart event is fired when the user starts to enter the composition of a passage of text.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionstart_event)
        */
       onCompositionStart?: CompositionEventHandler<Target> | undefined;
@@ -3306,31 +3325,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceCompositionUpdate"?: number | undefined;
+      debounceCompositionUpdate?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateCompositionUpdate={indicator} onCompositionUpdate={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCompositionUpdate?: IndicatorSignal | undefined;
       /**
        * The onCompositionUpdate event is fired when the user is entering text.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionupdate_event)
        */
       onCompositionUpdate?: CompositionEventHandler<Target> | undefined;
@@ -3355,31 +3374,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceToggle"?: number | undefined;
+      debounceToggle?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateToggle={indicator} onToggle={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateToggle?: IndicatorSignal | undefined;
       /**
        * The onToggle event is fired when the user opens or closes the details element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/toggle_event)
        */
       onToggle?: GenericEventHandler<Target> | undefined;
@@ -3404,31 +3423,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceClose"?: number | undefined;
+      debounceClose?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateClose={indicator} onClose={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateClose?: IndicatorSignal | undefined;
       /**
        * The onClose event is fired when the user closes the dialog element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close_event)
        */
       onClose?: GenericEventHandler<Target> | undefined;
@@ -3451,31 +3470,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceCancel"?: number | undefined;
+      debounceCancel?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateCancel={indicator} onCancel={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCancel?: IndicatorSignal | undefined;
       /**
        * The onCancel event is fired when the user cancels the dialog element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/cancel_event)
        */
       onCancel?: GenericEventHandler<Target> | undefined;
@@ -3500,31 +3519,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceFocus"?: number | undefined;
+      debounceFocus?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateFocus={indicator} onFocus={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateFocus?: IndicatorSignal | undefined;
       /**
        * The onFocus event is fired when an element gets focus.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focus_event)
        */
       onFocus?: FocusEventHandler<Target> | undefined;
@@ -3547,31 +3566,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceFocusin"?: number | undefined;
+      debounceFocusin?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateFocusin={indicator} onFocusin={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateFocusin?: IndicatorSignal | undefined;
       /**
        * The onfocusin event is fired when an element is about to get focus.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focusin_event)
        */
       onfocusin?: FocusEventHandler<Target> | undefined;
@@ -3594,31 +3613,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceFocusout"?: number | undefined;
+      debounceFocusout?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateFocusout={indicator} onFocusout={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateFocusout?: IndicatorSignal | undefined;
       /**
        * The onfocusout event is fired when an element is about to lose focus.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/focusout_event)
        */
       onfocusout?: FocusEventHandler<Target> | undefined;
@@ -3641,31 +3660,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceBlur"?: number | undefined;
+      debounceBlur?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateBlur={indicator} onBlur={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateBlur?: IndicatorSignal | undefined;
       /**
        * The onBlur event is fired when an element loses focus.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/blur_event)
        */
       onBlur?: FocusEventHandler<Target> | undefined;
@@ -3690,31 +3709,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceChange"?: number | undefined;
+      debounceChange?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateChange={indicator} onChange={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateChange?: IndicatorSignal | undefined;
       /**
        * The onChange event is fired when the value of an element has been changed.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event)
        */
       onChange?: GenericEventHandler<Target> | undefined;
@@ -3737,31 +3756,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceInput"?: number | undefined;
+      debounceInput?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateInput={indicator} onInput={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateInput?: IndicatorSignal | undefined;
       /**
        * The onInput event is fired when the value of an element has been changed.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)
        */
       onInput?: InputEventHandler<Target> | undefined;
@@ -3784,31 +3803,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceBeforeInput"?: number | undefined;
+      debounceBeforeInput?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateBeforeInput={indicator} onBeforeInput={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateBeforeInput?: IndicatorSignal | undefined;
       /**
        * The onBeforeInput event is fired when the value of an element has been changed.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/beforeinput_event)
        */
       onBeforeInput?: InputEventHandler<Target> | undefined;
@@ -3831,31 +3850,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceSearch"?: number | undefined;
+      debounceSearch?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateSearch={indicator} onSearch={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSearch?: IndicatorSignal | undefined;
       /**
        * The onSearch event is fired when the user writes something in a search input (text input with `search` type).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/search_event)
        */
       onSearch?: GenericEventHandler<Target> | undefined;
@@ -3878,38 +3897,38 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceSubmit"?: number | undefined;
+      debounceSubmit?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <form indicateSubmit={indicator} onSubmit={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSubmit?: IndicatorSignal | undefined;
       /**
        * The `onSubmit` event is fired when a form is submitted.
-       * 
+       *
        * In Brisa, there is a difference between the `onSubmit` of web components and server components:
-       * 
+       *
        * - Web components: it is the normal `onSubmit` of the browser.
        * - Server components: the event already contains the formData field. The event is transformed to [FormDataEvent](https://developer.mozilla.org/en-US/docs/Web/API/FormDataEvent).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*- [Brisa docs](https://brisa.build/components-details/forms)
-       * 
+       *
        * **Docs**:
-       * 
+       *
        * - [Brisa docs](https://brisa.build/components-details/forms)
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)
        */
@@ -3933,31 +3952,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceInvalid"?: number | undefined;
+      debounceInvalid?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateInvalid={indicator} onInvalid={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateInvalid?: IndicatorSignal | undefined;
       /**
        * The onInvalid event is fired when a form is submitted and has validation errors.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/invalid_event)
        */
       onInvalid?: GenericEventHandler<Target> | undefined;
@@ -3980,31 +3999,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceReset"?: number | undefined;
+      debounceReset?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <form indicateReset={indicator} onReset={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateReset?: IndicatorSignal | undefined;
       /**
        * The onReset event is fired when a form is reset.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/reset_event)
        */
       onReset?: GenericEventHandler<Target> | undefined;
@@ -4027,31 +4046,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceFormData"?: number | undefined;
+      debounceFormData?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <form indicateFormData={indicator} onFormData={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateFormData?: IndicatorSignal | undefined;
       /**
        * The onFormData event is fired when a form is submitted and has validation errors.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event)
        */
       onFormData?: GenericEventHandler<Target> | undefined;
@@ -4076,31 +4095,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceKeyDown"?: number | undefined;
+      debounceKeyDown?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateKeyDown={indicator} onKeyDown={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateKeyDown?: IndicatorSignal | undefined;
       /**
        * The onKeyDown event is fired when a key is pressed down.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event)
        */
       onKeyDown?: KeyboardEventHandler<Target> | undefined;
@@ -4123,31 +4142,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceKeyUp"?: number | undefined;
+      debounceKeyUp?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <input indicateKeyUp={indicator} onKeyUp={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateKeyUp?: IndicatorSignal | undefined;
       /**
        * The onKeyUp event is fired when a key is released.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Document/keyup_event)
        */
       onKeyUp?: KeyboardEventHandler<Target> | undefined;
@@ -4172,31 +4191,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceAbort"?: number | undefined;
+      debounceAbort?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateAbort={indicator} onAbort={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateAbort?: IndicatorSignal | undefined;
       /**
        * The onAbort event is fired when the loading of a media is aborted.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/abort_event)
        */
       onAbort?: GenericEventHandler<Target> | undefined;
@@ -4219,31 +4238,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceCanPlay"?: number | undefined;
-        /**
+      debounceCanPlay?: number | undefined;
+      /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateCanPlay={indicator} onCanPlay={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCanPlay?: IndicatorSignal | undefined;
       /**
        * The onCanPlay event is fired when the browser can start playing the media (when it has buffered enough to begin).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canplay_event)
        */
       onCanPlay?: GenericEventHandler<Target> | undefined;
@@ -4266,31 +4285,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceCanPlayThrough"?: number | undefined;
+      debounceCanPlayThrough?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateCanPlayThrough={indicator} onCanPlayThrough={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateCanPlayThrough?: IndicatorSignal | undefined;
       /**
        * The onCanPlayThrough event is fired when the browser can play through the media without stopping for buffering.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canplaythrough_event)
        */
       onCanPlayThrough?: GenericEventHandler<Target> | undefined;
@@ -4313,31 +4332,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDurationChange"?: number | undefined;
+      debounceDurationChange?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateDurationChange={indicator} onDurationChange={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDurationChange?: IndicatorSignal | undefined;
       /**
        * The onDurationChange event is fired when the duration of the media has changed.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/durationchange_event)
        */
       onDurationChange?: GenericEventHandler<Target> | undefined;
@@ -4360,31 +4379,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceEmptied"?: number | undefined;
+      debounceEmptied?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateEmptied={indicator} onEmptied={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateEmptied?: IndicatorSignal | undefined;
       /**
        * The onEmptied event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/emptied_event)
        */
       onEmptied?: GenericEventHandler<Target> | undefined;
@@ -4407,31 +4426,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceEncrypted"?: number | undefined;
+      debounceEncrypted?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateEncrypted={indicator} onEncrypted={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateEncrypted?: IndicatorSignal | undefined;
       /**
        * The onEncrypted event is fired when the media has become empty; for example, when the media has already been loaded (or partially loaded), and the load() method is called to reload it.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/encrypted_event)
        */
       onEncrypted?: GenericEventHandler<Target> | undefined;
@@ -4454,31 +4473,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceEnded"?: number | undefined;
+      debounceEnded?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateEnded={indicator} onEnded={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateEnded?: IndicatorSignal | undefined;
       /**
        * The onEnded event is fired when the media has reached the end.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ended_event)
        */
       onEnded?: GenericEventHandler<Target> | undefined;
@@ -4501,31 +4520,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceLoadedData"?: number | undefined;
+      debounceLoadedData?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateLoadedData={indicator} onLoadedData={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLoadedData?: IndicatorSignal | undefined;
       /**
        * The onLoadedData event is fired when the media's data is loaded.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadeddata_event)
        */
       onLoadedData?: GenericEventHandler<Target> | undefined;
@@ -4548,31 +4567,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceLoadedMetadata"?: number | undefined;
+      debounceLoadedMetadata?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateLoadedMetadata={indicator} onLoadedMetadata={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLoadedMetadata?: IndicatorSignal | undefined;
       /**
        * The onLoadedMetadata event is fired when the metadata has been loaded.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadedmetadata_event)
        */
       onLoadedMetadata?: GenericEventHandler<Target> | undefined;
@@ -4595,31 +4614,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceLoadStart"?: number | undefined;
+      debounceLoadStart?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateLoadStart={indicator} onLoadStart={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLoadStart?: IndicatorSignal | undefined;
       /**
        * The onLoadStart event is fired when the browser starts looking for the specified media.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadstart_event)
        */
       onLoadStart?: GenericEventHandler<Target> | undefined;
@@ -4642,31 +4661,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePause"?: number | undefined;
+      debouncePause?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicatePause={indicator} onPause={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
-        indicatePause?: IndicatorSignal | undefined;
+      indicatePause?: IndicatorSignal | undefined;
       /**
        * The onPause event is fired when the media has been paused.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/pause_event)
        */
       onPause?: GenericEventHandler<Target> | undefined;
@@ -4689,31 +4708,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePlay"?: number | undefined;
+      debouncePlay?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicatePlay={indicator} onPlay={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePlay?: IndicatorSignal | undefined;
       /**
        * The onPlay event is fired when the media has been started or is no longer paused.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play_event)
        */
       onPlay?: GenericEventHandler<Target> | undefined;
@@ -4736,31 +4755,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePlaying"?: number | undefined;
+      debouncePlaying?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicatePlaying={indicator} onPlaying={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePlaying?: IndicatorSignal | undefined;
       /**
        * The onPlaying event is fired when the media has started playing.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/playing_event)
        */
       onPlaying?: GenericEventHandler<Target> | undefined;
@@ -4783,31 +4802,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceProgress"?: number | undefined;
+      debounceProgress?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateProgress={indicator} onProgress={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateProgress?: IndicatorSignal | undefined;
       /**
        * The onProgress event is fired when the browser is in the process of getting the media data (downloading the media).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/progress_event)
        */
       onProgress?: GenericEventHandler<Target> | undefined;
@@ -4830,31 +4849,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceRateChange"?: number | undefined;
+      debounceRateChange?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateRateChange={indicator} onRateChange={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateRateChange?: IndicatorSignal | undefined;
       /**
        * The onRateChange event is fired when the playback rate has changed.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ratechange_event)
        */
       onRateChange?: GenericEventHandler<Target> | undefined;
@@ -4877,31 +4896,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceSeeked"?: number | undefined;
+      debounceSeeked?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateSeeked={indicator} onSeeked={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSeeked?: IndicatorSignal | undefined;
       /**
        * The onSeeked event is fired when the seeking property is false, meaning that the seeking has ended.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeked_event)
        */
       onSeeked?: GenericEventHandler<Target> | undefined;
@@ -4924,31 +4943,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceSeeking"?: number | undefined;
+      debounceSeeking?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateSeeking={indicator} onSeeking={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSeeking?: IndicatorSignal | undefined;
       /**
        * The onSeeking event is fired when the seeking property is true, meaning that the media is seeking a position.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeking_event)
        */
       onSeeking?: GenericEventHandler<Target> | undefined;
@@ -4971,31 +4990,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceStalled"?: number | undefined;
+      debounceStalled?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateStalled={indicator} onStalled={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateStalled?: IndicatorSignal | undefined;
       /**
        * The onStalled event is fired when the browser is trying to get media data, but data is not available.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/stalled_event)
        */
       onStalled?: GenericEventHandler<Target> | undefined;
@@ -5018,31 +5037,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceSuspend"?: number | undefined;
+      debounceSuspend?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateSuspend={indicator} onSuspend={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSuspend?: IndicatorSignal | undefined;
       /**
        * The onSuspend event is fired when the loading of a media is suspended.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/suspend_event)
        */
       onSuspend?: GenericEventHandler<Target> | undefined;
@@ -5065,31 +5084,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTimeUpdate"?: number | undefined;
+      debounceTimeUpdate?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateTimeUpdate={indicator} onTimeUpdate={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTimeUpdate?: IndicatorSignal | undefined;
       /**
        * The onTimeUpdate event is fired when the time indicated by the currentTime attribute has been updated.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event)
        */
       onTimeUpdate?: GenericEventHandler<Target> | undefined;
@@ -5112,31 +5131,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceVolumeChange"?: number | undefined;
+      debounceVolumeChange?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateVolumeChange={indicator} onVolumeChange={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateVolumeChange?: IndicatorSignal | undefined;
       /**
        * The onVolumeChange event is fired when the volume has changed.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volumechange_event)
        */
       onVolumeChange?: GenericEventHandler<Target> | undefined;
@@ -5159,31 +5178,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceWaiting"?: number | undefined;
+      debounceWaiting?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <video indicateWaiting={indicator} onWaiting={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateWaiting?: IndicatorSignal | undefined;
       /**
        * The onWaiting event is fired when the media has paused but is expected to resume (like when the media is buffering).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/waiting_event)
        */
       onWaiting?: GenericEventHandler<Target> | undefined;
@@ -5208,31 +5227,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceClick"?: number | undefined;
+      debounceClick?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateClick={indicator} onClick={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateClick?: IndicatorSignal | undefined;
       /**
        * The onClick event is fired when a pointing device button (usually a mouse) is pressed and released on a single element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event)
        */
       onClick?: MouseEventHandler<Target> | undefined;
@@ -5255,31 +5274,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceContextMenu"?: number | undefined;
+      debounceContextMenu?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateContextMenu={indicator} onContextMenu={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateContextMenu?: IndicatorSignal | undefined;
       /**
        * The onContextMenu event is fired when the right button of the mouse is clicked on an element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/contextmenu_event)
        */
       onContextMenu?: MouseEventHandler<Target> | undefined;
@@ -5302,31 +5321,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDblClick"?: number | undefined;
+      debounceDblClick?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateDblClick={indicator} onDblClick={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDblClick?: IndicatorSignal | undefined;
       /**
        * The onDblClick event is fired when a pointing device button (usually a mouse) is clicked twice on a single element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event)
        */
       onDblClick?: MouseEventHandler<Target> | undefined;
@@ -5349,31 +5368,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDrag"?: number | undefined;
+      debounceDrag?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateDrag={indicator} onDrag={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDrag?: IndicatorSignal | undefined;
       /**
        * The onDrag event is fired when an element or text selection is being dragged.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drag_event)
        */
       onDrag?: DragEventHandler<Target> | undefined;
@@ -5396,31 +5415,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDragEnd"?: number | undefined;
+      debounceDragEnd?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateDragEnd={indicator} onDragEnd={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragEnd?: IndicatorSignal | undefined;
       /**
        * The onDragEnd event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragend_event)
        */
       onDragEnd?: DragEventHandler<Target> | undefined;
@@ -5443,31 +5462,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDragEnter"?: number | undefined;
+      debounceDragEnter?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateDragEnter={indicator} onDragEnter={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragEnter?: IndicatorSignal | undefined;
       /**
        * The onDragEnter event is fired when a drag operation is being ended (by releasing a mouse button or hitting the escape key).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragenter_event)
        */
       onDragEnter?: DragEventHandler<Target> | undefined;
@@ -5490,31 +5509,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDragLeave"?: number | undefined;
+      debounceDragLeave?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateDragLeave={indicator} onDragLeave={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragLeave?: IndicatorSignal | undefined;
       /**
        * The onDragLeave event is fired when a dragged element or text selection leaves a valid drop target.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragleave_event)
        */
       onDragLeave?: DragEventHandler<Target> | undefined;
@@ -5537,31 +5556,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDragOver"?: number | undefined;
+      debounceDragOver?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateDragOver={indicator} onDragOver={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragOver?: IndicatorSignal | undefined;
       /**
        * The onDragOver event is fired when an element or text selection is being dragged over a valid drop target (every few hundred milliseconds).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragover_event)
        */
       onDragOver?: DragEventHandler<Target> | undefined;
@@ -5584,31 +5603,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDragStart"?: number | undefined;
+      debounceDragStart?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateDragStart={indicator} onDragStart={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDragStart?: IndicatorSignal | undefined;
       /**
        * The onDragStart event is fired when the user starts dragging an element or text selection.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragstart_event)
        */
       onDragStart?: DragEventHandler<Target> | undefined;
@@ -5631,31 +5650,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceDrop"?: number | undefined;
+      debounceDrop?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateDrop={indicator} onDrop={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateDrop?: IndicatorSignal | undefined;
       /**
        * The onDrop event is fired when an element or text selection is dropped on a valid drop target.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drop_event)
        */
       onDrop?: DragEventHandler<Target> | undefined;
@@ -5678,31 +5697,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceMouseDown"?: number | undefined;
+      debounceMouseDown?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateMouseDown={indicator} onMouseDown={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseDown?: IndicatorSignal | undefined;
       /**
        * The onMouseDown event is fired when a pointing device button is pressed on an element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousedown_event)
        */
       onMouseDown?: MouseEventHandler<Target> | undefined;
@@ -5725,31 +5744,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceMouseEnter"?: number | undefined;
+      debounceMouseEnter?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateMouseEnter={indicator} onMouseEnter={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseEnter?: IndicatorSignal | undefined;
       /**
        * The onMouseEnter event is fired when a pointing device is moved onto the element that has the listener attached.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseenter_event)
        */
       onMouseEnter?: MouseEventHandler<Target> | undefined;
@@ -5772,31 +5791,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceMouseLeave"?: number | undefined;
+      debounceMouseLeave?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateMouseLeave={indicator} onMouseLeave={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseLeave?: IndicatorSignal | undefined;
       /**
        * The onMouseLeave event is fired when a pointing device is moved off the element that has the listener attached.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseleave_event)
        */
       onMouseLeave?: MouseEventHandler<Target> | undefined;
@@ -5819,31 +5838,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceMouseMove"?: number | undefined;
+      debounceMouseMove?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateMouseMove={indicator} onMouseMove={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseMove?: IndicatorSignal | undefined;
       /**
        * The onMouseMove event is fired when a pointing device is moved over an element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousemove_event)
        */
       onMouseMove?: MouseEventHandler<Target> | undefined;
@@ -5866,31 +5885,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceMouseOut"?: number | undefined;
+      debounceMouseOut?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateMouseOut={indicator} onMouseOut={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseOut?: IndicatorSignal | undefined;
       /**
        * The onMouseOut event is fired when a pointing device is moved off the element that has the listener attached or off one of its children.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseout_event)
        */
       onMouseOut?: MouseEventHandler<Target> | undefined;
@@ -5913,31 +5932,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceMouseOver"?: number | undefined;
+      debounceMouseOver?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateMouseOver={indicator} onMouseOver={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseOver?: IndicatorSignal | undefined;
       /**
        * The onMouseOver event is fired when a pointing device is moved onto the element that has the listener attached.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseover_event)
        */
       onMouseOver?: MouseEventHandler<Target> | undefined;
@@ -5960,31 +5979,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceMouseUp"?: number | undefined;
+      debounceMouseUp?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateMouseUp={indicator} onMouseUp={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateMouseUp?: IndicatorSignal | undefined;
       /**
        * The onMouseUp event is fired when a pointing device button is released over an element.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseup_event)
        */
       onMouseUp?: MouseEventHandler<Target> | undefined;
@@ -6009,31 +6028,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceSelect"?: number | undefined;
+      debounceSelect?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateSelect={indicator} onSelect={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateSelect?: IndicatorSignal | undefined;
       /**
        * The onSelect event is fired when the user selects some text in a text field.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/select_event)
        */
       onSelect?: GenericEventHandler<Target> | undefined;
@@ -6058,31 +6077,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTouchCancel"?: number | undefined;
+      debounceTouchCancel?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateTouchCancel={indicator} onTouchCancel={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTouchCancel?: IndicatorSignal | undefined;
       /**
        * The onTouchCancel event is fired when a touch point has been disrupted in an implementation-specific manner (for example, too many touch points are created).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchcancel)
        */
       onTouchCancel?: TouchEventHandler<Target> | undefined;
@@ -6105,31 +6124,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTouchEnd"?: number | undefined;
+      debounceTouchEnd?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateTouchEnd={indicator} onTouchEnd={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTouchEnd?: IndicatorSignal | undefined;
       /**
        * The onTouchEnd event is fired when a touch point is removed from the touch surface.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchend)
        */
       onTouchEnd?: TouchEventHandler<Target> | undefined;
@@ -6152,31 +6171,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTouchMove"?: number | undefined;
+      debounceTouchMove?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateTouchMove={indicator} onTouchMove={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTouchMove?: IndicatorSignal | undefined;
       /**
        * The onTouchMove event is fired when a touch point is moved along the touch surface.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchmove)
        */
       onTouchMove?: TouchEventHandler<Target> | undefined;
@@ -6199,31 +6218,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTouchStart"?: number | undefined;
+      debounceTouchStart?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateTouchStart={indicator} onTouchStart={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTouchStart?: IndicatorSignal | undefined;
       /**
        * The onTouchStart event is fired when a touch point is placed on the touch surface.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/ontouchstart)
        */
       onTouchStart?: TouchEventHandler<Target> | undefined;
@@ -6248,31 +6267,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePointerOver"?: number | undefined;
+      debouncePointerOver?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerOver={indicator} onPointerOver={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerOver?: IndicatorSignal | undefined;
       /**
        * The onPointerOver event is fired when a pointing device is moved onto the element that has the listener attached.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerover_event)
        */
       onPointerOver?: PointerEventHandler<Target> | undefined;
@@ -6295,31 +6314,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePointerEnter"?: number | undefined;
+      debouncePointerEnter?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerEnter={indicator} onPointerEnter={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerEnter?: IndicatorSignal | undefined;
       /**
        * The onPointerEnter event is fired when a pointing device is moved onto the element that has the listener attached.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerenter_event)
        */
       onPointerEnter?: PointerEventHandler<Target> | undefined;
@@ -6342,31 +6361,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePointerDown"?: number | undefined;
+      debouncePointerDown?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerDown={indicator} onPointerDown={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerDown?: IndicatorSignal | undefined;
       /**
        * The onPointerDown event is fired when a pointer becomes active.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerdown_event)
        */
       onPointerDown?: PointerEventHandler<Target> | undefined;
@@ -6389,31 +6408,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePointerMove"?: number | undefined;
+      debouncePointerMove?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerMove={indicator} onPointerMove={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerMove?: IndicatorSignal | undefined;
       /**
        * The onPointerMove event is fired when a pointer changes coordinates.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointermove_event)
        */
       onPointerMove?: PointerEventHandler<Target> | undefined;
@@ -6436,31 +6455,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePointerUp"?: number | undefined;
+      debouncePointerUp?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerUp={indicator} onPointerUp={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerUp?: IndicatorSignal | undefined;
       /**
        * The onPointerUp event is fired when a pointer is no longer active.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerup_event)
        */
       onPointerUp?: PointerEventHandler<Target> | undefined;
@@ -6483,31 +6502,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePointerCancel"?: number | undefined;
+      debouncePointerCancel?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerCancel={indicator} onPointerCancel={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerCancel?: IndicatorSignal | undefined;
       /**
        * The onPointerCancel event is fired when a pointer has been disrupted in an implementation-specific manner (for example, a device stops sending data).
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointercancel_event)
        */
       onPointerCancel?: PointerEventHandler<Target> | undefined;
@@ -6530,31 +6549,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePointerOut"?: number | undefined;
+      debouncePointerOut?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerOut={indicator} onPointerOut={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerOut?: IndicatorSignal | undefined;
       /**
        * The onPointerOut event is fired when a pointing device is moved off the element that has the listener attached.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerout_event)
        */
       onPointerOut?: PointerEventHandler<Target> | undefined;
@@ -6577,35 +6596,34 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debouncePointerLeave"?: number | undefined;
+      debouncePointerLeave?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerLeave={indicator} onPointerLeave={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerLeave?: IndicatorSignal | undefined;
       /**
        * The onPointerLeave event is fired when a pointing device is moved off the element that has the listener attached.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerleave_event)
        */
       onPointerLeave?: PointerEventHandler<Target> | undefined;
-
 
       /**
        * Milliseconds to wait before executing the `onGotPointerCapture` server action.
@@ -6625,31 +6643,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceGotPointerCapture"?: number | undefined;
+      debounceGotPointerCapture?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateGotPointerCapture={indicator} onGotPointerCapture={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateGotPointerCapture?: IndicatorSignal | undefined;
       /**
        * The onGotPointerCapture event is fired when an element captures a pointer.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/gotpointercapture_event)
        */
       onGotPointerCapture?: PointerEventHandler<Target> | undefined;
@@ -6672,31 +6690,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceLostPointerCapture"?: number | undefined;
+      debounceLostPointerCapture?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicatePointerCapture={indicator} onPointerCapture={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicatePointerCapture?: IndicatorSignal | undefined;
       /**
        * The onLostPointerCapture event is fired after a pointer has been captured by an element and then is released.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/lostpointercapture_event)
        */
       onLostPointerCapture?: PointerEventHandler<Target> | undefined;
@@ -6721,31 +6739,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceScroll"?: number | undefined;
+      debounceScroll?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateScroll={indicator} onScroll={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateScroll?: IndicatorSignal | undefined;
       /**
        * The onScroll event is fired when an element's scrollbar is being scrolled.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event)
        */
       onScroll?: UIEventHandler<Target> | undefined;
@@ -6770,31 +6788,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceWheel"?: number | undefined;
+      debounceWheel?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateWheel={indicator} onWheel={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateWheel?: IndicatorSignal | undefined;
       /**
        * The onWheel event is fired when a wheel button of a pointing device is rotated in any direction.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)
        */
       onWheel?: WheelEventHandler<Target> | undefined;
@@ -6819,31 +6837,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceAnimationStart"?: number | undefined;
+      debounceAnimationStart?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateAnimationStart={indicator} onAnimationStart={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateAnimationStart?: IndicatorSignal | undefined;
       /**
        * The onAnimationStart event is fired when a CSS animation has started.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationstart_event)
        */
       onAnimationStart?: AnimationEventHandler<Target> | undefined;
@@ -6866,31 +6884,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceAnimationEnd"?: number | undefined;
+      debounceAnimationEnd?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateAnimationEnd={indicator} onAnimationEnd={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateAnimationEnd?: IndicatorSignal | undefined;
       /**
        * The onAnimationEnd event is fired when a CSS animation has completed.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationend_event)
        */
       onAnimationEnd?: AnimationEventHandler<Target> | undefined;
@@ -6913,31 +6931,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceAnimationIteration"?: number | undefined;
+      debounceAnimationIteration?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateAnimationIteration={indicator} onAnimationIteration={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateAnimationIteration?: IndicatorSignal | undefined;
       /**
        * The onAnimationIteration event is fired when a CSS animation has completed one iteration.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationiteration_event)
        */
       onAnimationIteration?: AnimationEventHandler<Target> | undefined;
@@ -6962,31 +6980,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTransitionCancel"?: number | undefined;
+      debounceTransitionCancel?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateTransitionCancel={indicator} onTransitionCancel={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTransitionCancel?: IndicatorSignal | undefined;
       /**
        * The onTransitionCancel event is fired when a CSS transition has been interrupted.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitioncancel_event)
        */
       onTransitionCancel?: TransitionEventHandler<Target>;
@@ -7009,31 +7027,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTransitionEnd"?: number | undefined;
+      debounceTransitionEnd?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateTransitionEnd={indicator} onTransitionEnd={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTransitionEnd?: IndicatorSignal | undefined;
       /**
        * The onTransitionEnd event is fired when a CSS transition has completed.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionend_event)
        */
       onTransitionEnd?: TransitionEventHandler<Target>;
@@ -7056,31 +7074,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTransitionRun"?: number | undefined;
+      debounceTransitionRun?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateTransitionRun={indicator} onTransitionRun={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTransitionRun?: IndicatorSignal | undefined;
       /**
        * The onTransitionRun event is fired when a CSS transition has started.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionrun_event)
        */
       onTransitionRun?: TransitionEventHandler<Target>;
@@ -7103,31 +7121,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceTransitionStart"?: number | undefined;
+      debounceTransitionStart?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateTransitionStart={indicator} onTransitionStart={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateTransitionStart?: IndicatorSignal | undefined;
       /**
        * The onTransitionStart event is fired when a CSS transition has started.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionstart_event)
        */
       onTransitionStart?: TransitionEventHandler<Target>;
@@ -7152,31 +7170,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceEnterPictureInPicture"?: number | undefined;
+      debounceEnterPictureInPicture?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateEnterPictureInPicture={indicator} onEnterPictureInPicture={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateEnterPictureInPicture?: IndicatorSignal | undefined;
       /**
        * The onEnterPictureInPicture event is fired when a video enters picture-in-picture mode.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/enterpictureinpicture_event)
        */
       onEnterPictureInPicture?: PictureInPictureEventHandler<Target>;
@@ -7199,31 +7217,31 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceLeavePictureInPicture"?: number | undefined;
+      debounceLeavePictureInPicture?: number | undefined;
       /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateLeavePictureInPicture={indicator} onLeavePictureInPicture={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateLeavePictureInPicture?: IndicatorSignal | undefined;
       /**
        * The onLeavePictureInPicture event is fired when a video leaves picture-in-picture mode.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/leavepictureinpicture_event)
        */
       onLeavePictureInPicture?: PictureInPictureEventHandler<Target>;
@@ -7246,347 +7264,348 @@ declare global {
        *
        * - [How debounce works in server actions](https://brisa.build/api-reference/extended-html-attributes/debounceEvent)
        */
-      "debounceResize"?: number | undefined;
-        /**
+      debounceResize?: number | undefined;
+      /**
        * The `indicate[Event]` attribute is an `IndicatorSignal` to connect it to an event
        * that fires a server action.
-       * 
+       *
        * Default: undefined
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * const indicator = indicate('some-action-id');
        * // ...
        * <div indicateResize={indicator} onResize={someAction} />
        * ```
-       * 
+       *
        * Docs:
-       * 
+       *
        * - [How to use `indicate`](https://brisa.build/api-reference/extended-html-attributes/indicateEvent)
        */
       indicateResize?: IndicatorSignal | undefined;
       /**
        * The onResize event is fired when a picture-in-picture window is resized.
-       * 
+       *
        * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/resize_event)
        */
       onResize?: PictureInPictureEventHandler<Target>;
     }
 
-    export interface BrisaAttributes{
+    export interface BrisaAttributes {
       /**
        * The `indicator` attribute is an extended HTML attribute by Brisa that is present on each element.
-       *  
-       * When some specified indicator is executing a server action then the `brisa-request` class is added to the element. 
-       * 
+       *
+       * When some specified indicator is executing a server action then the `brisa-request` class is added to the element.
+       *
        * This allows you to display a loading indicator or disable a button while the server action is executing, all without writing any JavaScript code, via the `brisa-request` class.
-       * 
+       *
        * - [Brisa reference](https://brisa.build/api-reference/extended-html-attributes/indicator)
        */
-      indicator?: IndicatorSignal | IndicatorSignal[]
+      indicator?: IndicatorSignal | IndicatorSignal[];
     }
 
     export interface HTMLAttributes<RefType extends EventTarget = EventTarget>
       extends DOMAttributes<RefType>,
-        AriaAttributes, BrisaAttributes {
+        AriaAttributes,
+        BrisaAttributes {
       // Standard HTML Attributes
 
       /**
        * The `accept` attribute specifies a filter for what file types the user can pick from the file input dialog box.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept)
        */
       accept?: string | undefined;
       /**
        * The `accept-charset` attribute specifies the character encodings that are to be used for the form submission.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#accept-charset)
-       */      
+       */
       "accept-charset"?: HTMLAttributes["acceptCharset"];
       /**
        * The `charSet` attribute specifies the character encoding of the linked resource.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#charset)
        */
       charSet?: HTMLAttributes["charSet"];
       /**
        * The `accesskey` attribute specifies a shortcut key to activate/focus an element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey)
-       */      
+       */
       accesskey?: HTMLAttributes["accessKey"];
       /**
        * The `action` attribute specifies where to send the form-data when a form is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action)
        */
       action?: string | undefined;
       /**
        * The `allow` attribute is a space-separated list of the features the iframe's document is allowed to use.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#allow)
        */
       allow?: string | undefined;
       /**
        * The `allowFullScreen` attribute is a boolean attribute that is present on the `<iframe>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#allowfullscreen)
        */
       allowFullScreen?: boolean | undefined;
       /**
        * The `alt` attribute specifies an alternate text for an image, if the image cannot be displayed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/alt#usage_notes)
        */
       alt?: string | undefined;
       /**
        * The `as` attribute is a hint to the browser to load the specified resource in a specific way.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#as)
        */
       as?: string | undefined;
       /**
        * The `async` attribute is a boolean attribute that is present on the `<script>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#async)
        */
       async?: boolean | undefined;
       /**
        * The `autoComplete` attribute is a string attribute that is present on the `<form>` and `<input>` elements.
-       * 
+       *
        * - [MDN reference](hhttps://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete)
        */
       autocomplete?: string | undefined;
       /**
        * The `autoComplete` attribute is a string attribute that is present on the `<form>` and `<input>` elements.
-       * 
+       *
        * - [MDN reference](hhttps://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete)
        */
       autoComplete?: string | undefined;
       /**
        * The `autocorrect` non-standard attribute is a string indicating whether autocorrect is on or off. **Safari only**.
-       * 
+       *
        * - [MDN reference](hhttps://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#non-standard_attributes)
        */
       autocorrect?: string | undefined;
       /**
        * The `autoCorrect` non-standard attribute is a string indicating whether autocorrect is on or off. **Safari only**.
-       * 
+       *
        * - [MDN reference](hhttps://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#non-standard_attributes)
        */
       autoCorrect?: string | undefined;
       /**
        * The `autoFocus` attribute is a boolean attribute that is present on the `<button>`, `<input>`, `<keygen>`, `<select>`, and `<textarea>` elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#autofocus)
        */
       autofocus?: boolean | undefined;
       /**
        * The `autoFocus` attribute is a boolean attribute that is present on the `<button>`, `<input>`, `<keygen>`, `<select>`, and `<textarea>` elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#autofocus)
        */
       autoFocus?: boolean | undefined;
       /**
        * The `autoPlay` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#autoplay)
        */
       autoPlay?: boolean | undefined;
       /**
        * The `autoPlay` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#autoplay)
        */
       autoplay?: boolean | undefined;
       /**
        * The `capture` attribute is a boolean attribute that is present on the `<input>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/capture)
        */
       capture?: boolean | string | undefined;
       /**
        * The `cellPadding` attribute is a string attribute that is present on the `<table>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table#cellpadding)
        */
       cellPadding?: number | string | undefined;
       /**
        * The `cellSpacing` attribute is a string attribute that is present on the `<table>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table#cellspacing)
        */
       cellSpacing?: number | string | undefined;
       /**
-       * The `checked` attribute is used to indicate whether the element should be checked or not. 
-       * 
+       * The `checked` attribute is used to indicate whether the element should be checked or not.
+       *
        * Example: `<input type="checkbox" checked>`.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#checked)
        */
       checked?: boolean | undefined;
       /**
        * The `cite` attribute is a string attribute that is present on the `<blockquote>`, `<del>`, `<ins>`, `<q>`, and `<video>` elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote#cite)
        */
       cite?: string | undefined;
       /**
        * The `class` attribute is a string attribute to specify one or more class names for an element. A class name is a reference to a class in a style sheet.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class)
        */
       class?: string | undefined;
       /**
        * The `cols` attribute is a string attribute that is present on the `<textarea>` element to specify the visible width of the text area.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#cols)
        */
       cols?: number | undefined;
       /**
        * The `colSpan` attribute is a string attribute that is present on the `<td>` and `<th>` elements to specify the number of columns a cell should span.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#colspan)
        */
       colSpan?: number | undefined;
       /**
        * The `colSpan` attribute is a string attribute that is present on the `<td>` and `<th>` elements to specify the number of columns a cell should span.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#colspan)
        */
       colspan?: number | undefined;
       /**
        * The `content` attribute is a string attribute that is present on the `<meta>` element to specify the value associated with the http-equiv or name attribute.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#content)
        */
       content?: string | undefined;
       /**
        * The `contentEditable` attribute is a string attribute that is present on the `<element>` element to specify whether the content of an element is editable or not.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)
        */
       contentEditable?: boolean | "" | "plaintext-only" | "inherit" | undefined;
       /**
        * The `contentEditable` attribute is a string attribute that is present on the `<element>` element to specify whether the content of an element is editable or not.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)
        */
       contenteditable?: HTMLAttributes["contentEditable"];
       /**
        * The `controls` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements to show browser's default controls.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#controls)
        */
       controls?: boolean | undefined;
       /**
        * The `controlsList` attribute is a string attribute that is present on the `<audio>` and `<video>` elements to specify the controls that should be displayed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#controlslist)
        */
       controlsList?: string | undefined;
       /**
        * The `coords` attribute is a string attribute that is present on the `<area>` element to specify the coordinates of the area.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area#coords)
        */
       coords?: string | undefined;
       /**
        * The `crossOrigin` attribute is a string attribute that is present on the `<img>`, `<link>`, and `<script>` elements to specify how the element handles cross-origin requests.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes)
        */
       crossOrigin?: string | undefined;
       /**
        * The `crossOrigin` attribute is a string attribute that is present on the `<img>`, `<link>`, and `<script>` elements to specify how the element handles cross-origin requests.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_settings_attributes)
        */
       crossorigin?: string | undefined;
       /**
        * The `data` attribute is a string attribute that is present on the `<object>` element to specify the URL of the resource.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/object#data)
        */
       data?: string | undefined;
       /**
        * The `dateTime` attribute is a string attribute that is present on the `<del>` and `<ins>` elements to specify the date and time of the change.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time#datetime)
        */
       dateTime?: string | undefined;
       /**
        * The `dateTime` attribute is a string attribute that is present on the `<del>` and `<ins>` elements to specify the date and time of the change.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time#datetime)
        */
       datetime?: string | undefined;
       /**
        * The `default` attribute is a boolean attribute that is present on the `<track>` element to specify that the track should be enabled unless the user's preferences indicate something different.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track#default)
        */
       default?: boolean | undefined;
       /**
        * The `defer` attribute is a boolean attribute that is present on the `<script>` element to specify that the script should be executed after the page has finished parsing.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#defer)
        */
       defer?: boolean | undefined;
       /**
        * The `dir` attribute is a string attribute that is present on the `<element>` element to specify the direction of the text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir)
        */
       dir?: "auto" | "rtl" | "ltr" | undefined;
       /**
        * The `disabled` attribute is a boolean attribute that is present on the `<button>`, `<fieldset>`, `<input>`, `<optgroup>`, `<option>`, `<select>`, and `<textarea>` elements to specify that the element should be disabled.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled)
        */
       disabled?: boolean | undefined;
       /**
        * The `disableRemorePlayback` attribute is a boolean attribute that is present on the `<video>` and `<audio>` elements to specify that the remote playback is disabled.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#disableremoteplayback)
        */
       disableRemotePlayback?: boolean | undefined;
       /**
        * The `download` attribute is a string attribute that is present on the `<a>` and `<area>` elements to specify that the target will be downloaded when a user clicks on the hyperlink.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#download)
        */
       download?: any | undefined;
       /**
        * The `decoding` attribute is a string attribute that is present on the `<img>` element to specify the decoding process to use.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#decoding)
        */
       decoding?: "sync" | "async" | "auto" | undefined;
       /**
        * The `draggable` attribute is a boolean attribute that is present on the `<element>` element to specify whether the element is draggable or not.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/draggable)
        */
       draggable?: boolean | undefined;
       /**
        * The `encType` attribute is a string attribute that is present on the `<form>` element to specify the content type of the form data when the method is POST.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype)
        */
       encType?: string | undefined;
       /**
        * The `encType` attribute is a string attribute that is present on the `<form>` element to specify the content type of the form data when the method is POST.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype)
        */
       enctype?: string | undefined;
       /**
        * The `enterkeyhint` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the action for the enter key.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/enterkeyhint)
        */
       enterkeyhint?:
@@ -7600,415 +7619,415 @@ declare global {
         | undefined;
       /**
        * The `elementTiming` attribute is used to indicate that an element is flagged for tracking by PerformanceObserver objects using the "element" type.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/elementtiming)
        */
       elementTiming?: string | undefined;
       /**
        * The `elementTiming` attribute is used to indicate that an element is flagged for tracking by PerformanceObserver objects using the "element" type.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/elementtiming)
        */
       elementtiming?: HTMLAttributes["elementTiming"];
       /**
        * The `exportparts` attribute allows you to select and style elements existing in nested shadow trees, by exporting their part names.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/exportparts)
        */
       exportparts?: string | undefined;
       /**
        * The `for` attribute is a string attribute that is present on the `<label>` element to specify which form element a label is bound to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label#for)
        */
       for?: string | undefined;
       /**
        * The `form` attribute is a string attribute that is present on the `<button>`, `<fieldset>`, `<input>`, `<label>`, `<meter>`, `<object>`, `<output>`, `<select>`, and `<textarea>` elements to specify the form the element belongs to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#form)
        */
       form?: string | undefined;
       /**
        * The `formAction` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the URL of the file that will process the input control when the form is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#formaction)
        */
       formAction?: string | undefined;
       /**
        * The `formAction` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the URL of the file that will process the input control when the form is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#formaction)
        */
       formaction?: string | undefined;
       /**
        * The `formEncType` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the content type of the form data when the method is POST.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype)
        */
       formEncType?: string | undefined;
       /**
        * The `formEncType` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the content type of the form data when the method is POST.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype)
        */
       formenctype?: string | undefined;
       /**
        * The `formMethod` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the HTTP method to use when the form is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formmethod)
        */
       formMethod?: string | undefined;
       /**
        * The `formMethod` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify the HTTP method to use when the form is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formmethod)
        */
       formmethod?: string | undefined;
       /**
        * The `formNoValidate` attribute is a boolean attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify that the form should not be validated when it is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formnovalidate)
        */
       formNoValidate?: boolean | undefined;
       /**
        * The `formNoValidate` attribute is a boolean attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify that the form should not be validated when it is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formnovalidate)
        */
       formnovalidate?: boolean | undefined;
       /**
        * The `formTarget` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify where to display the response after submitting the form.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formtarget)
        */
       formTarget?: string | undefined;
       /**
        * The `formTarget` attribute is a string attribute that is present on the `<button>`, `<input>`, and `<object>` elements to specify where to display the response after submitting the form.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#formtarget)
        */
       formtarget?: string | undefined;
       /**
        * The `headers` attribute is a string attribute that is present on the `<td>` and `<th>` elements to specify one or more headers cells a cell is related to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#headers)
        */
       headers?: string | undefined;
       /**
        * The `height` attribute is a string attribute that is present on the `<canvas>`, `<embed>`, `<iframe>`, `<img>`, `<input>`, `<object>`, and `<video>` elements to specify the height of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#height)
        */
       height?: number | string | undefined;
       /**
        * The `hidden` attribute is a boolean attribute that is present on the `<element>` element to specify that the element is not yet, or is no longer, relevant.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/hidden)
        */
       hidden?: boolean | "hidden" | "until-found" | undefined;
       /**
        * The `high` attribute is a string attribute that is present on the `<meter>` element to specify the range that is considered to be a high value.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter#high)
        */
       high?: number | undefined;
       /**
        * The `href` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<base>` elements to specify the URL of the page the link goes to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href)
        */
       href?: string | undefined;
       /**
        * The `hrefLang` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<link>` elements to specify the language of the linked resource.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#hreflang)
        */
       hrefLang?: string | undefined;
       /**
        * The `hrefLang` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<link>` elements to specify the language of the linked resource.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#hreflang)
        */
       hreflang?: string | undefined;
       /**
        * The `htmlFor` attribute is a string attribute that is present on the `<label>` element to specify the id of the form element the label is bound to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor)
        */
       htmlFor?: string | undefined;
       /**
        * The `http-equiv` attribute is a string attribute that is present on the `<meta>` element to specify the HTTP header that will be set when the page is requested.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#http-equiv)
        */
       "http-equiv"?: string | undefined;
       /**
        * The `id` attribute is a string attribute that is present on the `<element>` element to specify a unique id for an element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id)
        */
       id?: string | undefined;
       /**
        * The `indeterminate` attribute is a boolean attribute that is present on the `<input type="checkbox">` and `<input type="radio">` elements to specify that the user has not specified a value for the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox#indeterminate_state_checkboxes)
        */
       indeterminate?: boolean | undefined;
       /**
        * The `inert` attribute is a boolean attribute that is present on an element to specify that the element is not interactive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert)
        */
       inert?: boolean | undefined;
       /**
        * The `inputMode` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the type of data that is expected to be entered by the user.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode)
        */
       inputMode?: string | undefined;
       /**
        * The `inputMode` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the type of data that is expected to be entered by the user.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode)
        */
       inputmode?: string | undefined;
       /**
        * The `integrity` attribute is a string attribute that is present on the `<link>` and `<script>` elements to specify the cryptographic hash of the resource.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#integrity)
        */
       integrity?: string | undefined;
       /**
        * The `is` global attribute allows you to specify that a standard HTML element should behave like a defined custom built-in element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/is
        */
       is?: string | undefined;
       /**
        * The `kind` attribute is a string attribute that is present on the `<track>` element to specify the kind of text track.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track#kind)
        */
       kind?: string | undefined;
       /**
        * The `label` attribute is a string attribute that is present on the `<optgroup>`, `<option>`, and `<track>` elements to specify the label for the option group.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup#label)
        */
       label?: string | undefined;
       /**
        * The `lang` attribute is a string attribute that is present on an element to specify the language of the element's content.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang)
        */
       lang?: string | undefined;
       /**
        * The `list` attribute is a string attribute that is present on the `<input>` element to specify the id of a `<datalist>` element that contains pre-defined options for the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#list)
        */
       list?: string | undefined;
       /**
        * The `loading` attribute is a string attribute that is present on the `<img>` and `<iframe>` elements to specify how the element should be loaded.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#loading)
        */
       loading?: "eager" | "lazy" | undefined;
       /**
        * The `loop` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements to specify that the media should play in a loop.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#loop)
        */
       loop?: boolean | undefined;
       /**
        * The `low` attribute is a string attribute that is present on the `<meter>` element to specify the range that is considered to be a low value.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter#low)
        */
       low?: number | undefined;
       /**
        * The `manifest` attribute is a string attribute that is present on the `<html>` element to specify the URL of the document's cache manifest.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html#manifest)
        */
       manifest?: string | undefined;
       /**
        * The `marginHeight` attribute is a number attribute that is present on the `<frame>` and `<iframe>` elements to specify the top and bottom margins of the frame.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#marginheight)
        */
       marginHeight?: number | undefined;
       /**
        * The `marginWidth` attribute is a number attribute that is present on the `<frame>` and `<iframe>` elements to specify the left and right margins of the frame.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#marginwidth)
        */
       marginWidth?: number | undefined;
       /**
        * The `max` attribute is a string attribute that is present on the `<input>`, `<meter>`, and `<progress>` elements to specify the maximum value of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#max)
        */
       max?: number | string | undefined;
       /**
        * The `maxLength` attribute is a number attribute that is present on the `<input>` and `<textarea>` elements to specify the maximum number of characters allowed in the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/maxlength)
        */
       maxLength?: number | undefined;
       /**
        * The `maxLength` attribute is a number attribute that is present on the `<input>` and `<textarea>` elements to specify the maximum number of characters allowed in the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/maxlength)
        */
       maxlength?: number | undefined;
       /**
        * The `media` attribute is a string attribute that is present on the `<a>`, `<area>`, `<link>`, `<source>`, and `<style>` elements to specify the media the linked resource applies to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#media)
        */
       media?: string | undefined;
       /**
        * The `method` attribute is a string attribute that is present on the `<form>` element to specify the HTTP method to use when the form is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#method)
        */
       method?: string | undefined;
       /**
        * The `min` attribute is a string attribute that is present on the `<input>`, `<meter>`, and `<progress>` elements to specify the minimum value of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/min)
        */
       min?: number | string | undefined;
       /**
        * The `minLength` attribute is a number attribute that is present on the `<input>` and `<textarea>` elements to specify the minimum number of characters allowed in the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/minlength)
        */
       minLength?: number | undefined;
       /**
        * The `minLength` attribute is a number attribute that is present on the `<input>` and `<textarea>` elements to specify the minimum number of characters allowed in the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/minlength)
        */
       minlength?: number | undefined;
       /**
        * The `multiple` attribute is a boolean attribute that is present on the `<input>` and `<select>` elements to specify that the user is allowed to enter more than one value.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#multiple)
        */
       multiple?: boolean | undefined;
       /**
        * The `muted` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements to specify that the media should be muted by default.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio#muted)
        */
       muted?: boolean | undefined;
       /**
        * The `name` attribute is a string attribute that is present on the `<button>`, `<form>`, `<fieldset>`, `<iframe>`, `<input>`, `<map>`, `<meta>`, `<object>`, `<output>`, `<param>`, `<select>`, and `<textarea>` elements to specify the name of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#name)
        */
       name?: string | undefined;
       /**
        * The `nomodule` attribute is a boolean attribute that is present on the `<script>` element to specify that the script should not be executed in user agents that support module scripts.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#nomodule)
        */
       nomodule?: boolean | undefined;
       /**
        * The `nonce` attribute is a string attribute that is present on the `<script>` and `<style>` elements to specify a cryptographic nonce.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/nonce)
        */
       nonce?: string | undefined;
       /**
        * The `noValidate` attribute is a boolean attribute that is present on the `<form>` element to specify that the form should not be validated when it is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#novalidate)
        */
       noValidate?: boolean | undefined;
       /**
        * The `noValidate` attribute is a boolean attribute that is present on the `<form>` element to specify that the form should not be validated when it is submitted.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#novalidate)
        */
       novalidate?: boolean | undefined;
       /**
        * The `open` attribute is a boolean attribute that is present on the `<details>` element to specify that the details should be visible by default.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details#open)
        */
       open?: boolean | undefined;
       /**
        * The `optimum` attribute is a number attribute that is present on the `<meter>` element to specify what the author thinks is the optimal value for the gauge.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter#optimum)
        */
       optimum?: number | undefined;
       /**
        * The `part` attribute is a string attribute that is present on the `<element>` element to specify the part name of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/part)
        */
       part?: string | undefined;
       /**
        * The `pattern` attribute is a string attribute that is present on the `<input>` element to specify a regular expression that the input's value is checked against.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/pattern)
        */
       pattern?: string | undefined;
       /**
        * The `ping` attribute is a string attribute that is present on the `<a>` and `<area>` elements to specify a space-separated list of URLs to which, when the link is followed, post requests with the body PING will be sent by the browser (in the background).
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#ping)
        */
       ping?: string | undefined;
       /**
        * The `placeholder` attribute is a string attribute that is present on the `<input>`, `<textarea>`, and `<select>` elements to specify a short hint that describes the expected value of the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#placeholder)
        */
       placeholder?: string | undefined;
       /**
        * The `playsInline` attribute is a boolean attribute that is present on the `<video>` and `<audio>` elements to specify that the video should play inline, instead of in fullscreen mode.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#playsinline)
        */
       playsInline?: boolean | undefined;
       /**
        * The `playsInline` attribute is a boolean attribute that is present on the `<video>` and `<audio>` elements to specify that the video should play inline, instead of in fullscreen mode.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#playsinline)
        */
       playsinline?: boolean | undefined;
       /**
        * The `poster` attribute is a string attribute that is present on the `<video>` element to specify an image to be shown while the video is downloading, or until the user hits the play button.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#poster)
        */
       poster?: string | undefined;
       /**
        * The `preload` attribute is a string attribute that is present on the `<audio>` and `<video>` elements to specify how the media should be preloaded.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#preload)
        */
       preload?: string | undefined;
       /**
        * The `readOnly` attribute is a boolean attribute that is present on the `<input>` and `<textarea>` elements to specify that the element is read-only.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly)
        */
       readonly?: boolean | undefined;
       /**
        * The `readOnly` attribute is a boolean attribute that is present on the `<input>` and `<textarea>` elements to specify that the element is read-only.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly)
        */
       readOnly?: boolean | undefined;
       /**
        * The `referrerpolicy` attribute is a string attribute that is present on the `<a>`, `<area>`, `<iframe>`, `<img>`, `<link>`, and `<script>` elements to specify which referrer to send when fetching the resource.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#referrerpolicy)
        */
       referrerpolicy?:
@@ -8023,259 +8042,259 @@ declare global {
         | undefined;
       /**
        * The `rel` attribute is a string attribute that is present on various elements, such as `<a>` and `<link>`, to specify the relationship between the current document and the linked resource.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel)
        */
       rel?: string | undefined;
       /**
        * The `required` attribute is a boolean attribute that is present on the `<input>`, `<select>`, and `<textarea>` elements to specify that the input must be filled out before submitting the form.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/required)
        */
       required?: boolean | undefined;
       /**
        * The `reversed` attribute is a boolean attribute that is present on the `<ol>` element to specify that the list should be displayed in reverse order.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol#reversed)
        */
       reversed?: boolean | undefined;
       /**
        * The `role` attribute is present on various elements to define the role of the element in the accessibility tree.
-       * 
+       *
        * - AriaRole is a custom type representing possible values for the `role` attribute.
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)
        */
       role?: AriaRole | undefined;
       /**
        * The `rows` attribute is a number attribute that is present on the `<textarea>` element to specify the number of visible text lines for the control.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#rows)
        */
       rows?: number | undefined;
       /**
        * The `rowSpan` attribute is a number attribute that is present on the `<td>` and `<th>` elements to specify the number of rows a cell should span.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#rowspan)
        */
       rowSpan?: number | undefined;
       /**
        * The `rowSpan` attribute is a number attribute that is present on the `<td>` and `<th>` elements to specify the number of rows a cell should span.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#rowspan)
        */
       rowspan?: number | undefined;
       /**
        * The `sandbox` attribute is a string attribute that is present on the `<iframe>` element to specify extra restrictions for the content in the iframe.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#sandbox)
        */
       sandbox?: string | undefined;
       /**
        * The `scope` attribute is a string attribute that is present on the `<th>` element to specify the cells that the header element relates to.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th#scope)
        */
       scope?: string | undefined;
       /**
        * The `scrolling` attribute is a string attribute that is present on the `<iframe>` element to specify whether or not to display scrollbars in the frame.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#scrolling)
        */
       scrolling?: string | undefined;
       /**
        * The `selected` attribute is a boolean attribute that is present on the `<option>` element to specify that the option should be pre-selected when the page loads.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option#selected)
        */
       selected?: boolean | undefined;
       /**
        * The `shape` attribute is a string attribute that is present on the `<area>` element to specify the shape of the area.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area#shape)
        */
       shape?: string | undefined;
       /**
        * The `size` attribute is a number attribute that is present on the `<input>` and `<select>` elements to specify the width of the control.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/size)
        */
       size?: number | undefined;
       /**
        * The `sizes` attribute is a string attribute that is present on the `<link>` and `<img>` elements to specify the sizes of icons for visual media.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#sizes)
        */
       sizes?: string | undefined;
       /**
        * The `slot` attribute is a string attribute that is present on the `<slot>` element to specify the name of the slot.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot#slot)
        */
       slot?: string | undefined;
       /**
        * The `span` attribute is a number attribute that is present on the `<col>` and `<colgroup>` elements to specify the number of columns that a `<colgroup>` element spans.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup#span)
        */
       span?: number | undefined;
       /**
        * The `spellCheck` attribute is a boolean attribute that is present on the `<element>` element to specify whether the element is to have its spelling and grammar checked.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck)
        */
       spellcheck?: boolean | undefined;
       /**
        * The `spellCheck` attribute is a boolean attribute that is present on the `<element>` element to specify whether the element is to have its spelling and grammar checked.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck)
        */
       spellCheck?: boolean | undefined;
       /**
        * The `src` attribute is a string attribute that is present on the `<audio>`, `<embed>`, `<iframe>`, `<img>`, `<input>`, `<script>`, `<source>`, and `<track>` elements to specify the URL of the media to embed.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#src)
        */
       src?: string | undefined;
       /**
        * The `srcSet` attribute is a string attribute that is present on the `<img>` and `<source>` elements to specify the URL of the image to use in different situations.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#srcset)
        */
       srcSet?: string | undefined;
       /**
        * The `srcSet` attribute is a string attribute that is present on the `<img>` and `<source>` elements to specify the URL of the image to use in different situations.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#srcset)
        */
       srcset?: string | undefined;
       /**
        * The `srcDoc` attribute is a string attribute that is present on the `<iframe>` element to specify the HTML content of the page to show in the frame.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#srcdoc)
        */
       srcDoc?: string | undefined;
       /**
        * The `srcDoc` attribute is a string attribute that is present on the `<iframe>` element to specify the HTML content of the page to show in the frame.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#srcdoc)
        */
       srcdoc?: string | undefined;
       /**
        * The `srcLang` attribute is a string attribute that is present on the `<track>` element to specify the language of the track text data.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track#srclang)
        */
       srcLang?: string | undefined;
       /**
        * The `srcLang` attribute is a string attribute that is present on the `<track>` element to specify the language of the track text data.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track#srclang)
        */
       srclang?: string | undefined;
       /**
        * The `start` attribute is a number attribute that is present on the `<ol>` element to specify the starting number of the list.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol#start)
        */
       start?: number | undefined;
       /**
        * The `step` attribute is a number attribute that is present on the `<input>` element to specify the legal number intervals for an input field.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#step)
        */
       step?: number | string | undefined;
       /**
        * The `style` attribute is a string attribute that is present on the `<element>` element to specify the inline style for the element.
-       * 
+       *
        * In Brisa you can also use an object with the CSSProperties.
-       * 
+       *
        * Example:
-       * 
+       *
        * ```tsx
        * <div style={{ color: 'red' }} />
        * ```
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/style)
        */
       style?: string | CSSProperties | undefined;
       /**
        * The `summary` attribute is a string attribute that is present on the `<table>` element to specify a summary of the content of the table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table#summary)
        */
       summary?: string | undefined;
       /**
        * The `switch` attribute is a boolean attribute that is present on the `<input type="checkbox" switch>` element to specify that the input should be rendered as a switch.
-       * 
+       *
        * - [Webkit docs][https://webkit.org/blog/15054/an-html-switch-control/]
        */
       switch?: boolean | undefined;
       /**
        * The `tabIndex` attribute is a number attribute that is present on the `<element>` element to specify the position of the element in the tab order.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
        */
       tabIndex?: number | undefined;
       /**
        * The `tabIndex` attribute is a number attribute that is present on the `<element>` element to specify the position of the element in the tab order.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)
        */
       tabindex?: number | undefined;
       /**
        * The `target` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<form>` elements to specify where to display the linked resource.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target)
        */
       target?: string | undefined;
       /**
        * The `title` attribute is a string attribute that is present on the `<element>` element to specify advisory information for the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/title)
        */
       title?: string | undefined;
       /**
        * The `type` attribute is a string attribute that is present on the `<button>`, `<input>`, `<command>`, `<embed>`, `<object>`, `<script>`, and `<source>` elements to specify the type of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#type)
        */
       type?: string | undefined;
       /**
        * The `useMap` attribute is a string attribute that is present on the `<img>` and `<object>` elements to specify the URL of the image map to use.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#usemap)
        */
       useMap?: string | undefined;
       /**
        * The `useMap` attribute is a string attribute that is present on the `<img>` and `<object>` elements to specify the URL of the image map to use.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#usemap)
        */
       usemap?: string | undefined;
       /**
        * The `value` attribute is a string attribute that is present on the `<button>`, `<input>`, `<li>`, `<option>`, and `<progress>` elements to specify the value of the element.
-       * 
+       *
        * In Brisa the `value` attribute is also used to define the context content inside `<context-provider>`.
-       * 
+       *
        * - [Brisa docs](https://brisa.build/components-details/context#provider)
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#value)
        */
       value?: string | string[] | number | undefined;
       /**
        * The `volume` attribute sets the volume at which the media will be played.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volume)
        */
       volume?: string | number | undefined;
       /**
        * The `width` attribute is a number attribute that is present on the `<canvas>`, `<embed>`, `<iframe>`, `<img>`, `<input>`, `<object>`, and `<video>` elements to specify the width of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#width)
        */
       width?: number | string | undefined;
       /**
        * The `wrap` attribute is a string attribute that is present on the `<textarea>` element to specify whether or not the text should be wrapped.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#wrap)
        */
       wrap?: string | undefined;
@@ -8284,7 +8303,7 @@ declare global {
 
       /**
        * The `shadowrootmode` attribute is a string attribute that is present on the `<template>` element to specify the mode of the shadow root.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template#shadowrootmode)
        */
       shadowrootmode?: ShadowRootMode | undefined;
@@ -8293,7 +8312,7 @@ declare global {
 
       /**
        * The `allowCapitalize` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the capitalization behavior of the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
        */
       autocapitalize?:
@@ -8306,7 +8325,7 @@ declare global {
         | undefined;
       /**
        * The `allowCapitalize` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the capitalization behavior of the input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
        */
       autoCapitalize?:
@@ -8319,20 +8338,20 @@ declare global {
         | undefined;
       /**
        * The `disablePictureInPicture` attribute is a boolean attribute that is present on the `<video>` and `<iframe>` elements to specify that the user should not be able to enter picture-in-picture mode.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#disablepictureinpicture)
        */
       disablePictureInPicture?: boolean | undefined;
       /**
        * The `results` attribute is a number attribute that is present on the `<input>` element to specify the number of items that should be displayed in the drop-down list.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#results)
        */
       results?: number | undefined;
 
       /**
        * The `translate` attribute is a string attribute that is present on the `<element>` element to specify whether the content of the element should be translated or not.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/translate)
        */
       translate?: "yes" | "no" | undefined;
@@ -8341,7 +8360,7 @@ declare global {
 
       /**
        * The `prefix` attribute is a string attribute that is present on the `<element>` element to specify the prefix of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Attr/prefix)
        */
       prefix?: string | undefined;
@@ -8350,61 +8369,61 @@ declare global {
 
       /**
        * The `itemProp` attribute is a string attribute that is present on the `<element>` element to specify the item property of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemprop)
        */
       itemProp?: string | undefined;
       /**
        * The `itemProp` attribute is a string attribute that is present on the `<element>` element to specify the item property of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemprop)
        */
       itemprop?: string | undefined;
       /**
        * The `itemScope` attribute is a boolean attribute that is present on the `<element>` element to specify the item scope of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemscope)
        */
       itemScope?: boolean | undefined;
       /**
        * The `itemScope` attribute is a boolean attribute that is present on the `<element>` element to specify the item scope of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemscope)
        */
       itemscope?: boolean | undefined;
       /**
        * The `itemType` attribute is a string attribute that is present on the `<element>` element to specify the item type of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemtype)
        */
       itemType?: string | undefined;
       /**
        * The `itemType` attribute is a string attribute that is present on the `<element>` element to specify the item type of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemtype)
        */
       itemtype?: string | undefined;
       /**
        * The `itemID` attribute is a string attribute that is present on the `<element>` element to specify the item ID of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemid)
        */
       itemID?: string | undefined;
       /**
        * The `itemID` attribute is a string attribute that is present on the `<element>` element to specify the item ID of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemid)
        */
       itemid?: string | undefined;
       /**
        * The `itemRef` attribute is a string attribute that is present on the `<element>` element to specify the item reference of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemref)
        */
       itemRef?: string | undefined;
       /**
        * The `itemRef` attribute is a string attribute that is present on the `<element>` element to specify the item reference of the element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemref)
        */
       itemref?: string | undefined;
@@ -8415,691 +8434,691 @@ declare global {
 
       /**
        * The `a` element is used to create hyperlinks to other web pages, files, locations within the same page, email addresses, or any other URL.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a)
        */
       a: HTMLAttributes<HTMLAnchorElement>;
       /**
        * The `abbr` element is used to mark up the name of an abbreviation or acronym, like "M.D." or "NATO".
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/abbr)
        */
       abbr: HTMLAttributes<HTMLElement>;
       /**
        * The `address` element is used to provide contact information for a document or a section of a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/address)
        */
       address: HTMLAttributes<HTMLElement>;
       /**
        * The `area` element is used to define a hot-spot region on an image map.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/area)
        */
       area: HTMLAttributes<HTMLAreaElement>;
       /**
        * The `article` element is used to represent a self-contained composition in a document, page, application, or site, which is intended to be independently distributable or reusable.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/article)
        */
       article: HTMLAttributes<HTMLElement>;
       /**
        * The `aside` element is used to mark additional content that is related to the primary content of the document, but does not constitute the main content of the document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/aside)
        */
       aside: HTMLAttributes<HTMLElement>;
       /**
        * The `audio` element is used to embed sound content in documents.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio)
        */
       audio: HTMLAttributes<HTMLAudioElement>;
       /**
        * The `b` element is used to draw the reader's attention to the element's contents, which are not otherwise granted special importance.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/b)
        */
       b: HTMLAttributes<HTMLElement>;
       /**
        * The `base` element is used to specify the base URL to use for all relative URLs in a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base)
        */
       base: HTMLAttributes<HTMLBaseElement>;
       /**
        * The `bdi` element is used to indicate text that is isolated from its surrounding for the purposes of bidirectional text formatting.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdi)
        */
       bdi: HTMLAttributes<HTMLElement>;
       /**
        * The `bdo` element is used to override the current text direction.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/bdo)
        */
       bdo: HTMLAttributes<HTMLElement>;
       /**
        * The `blockquote` element is used to indicate that the enclosed text is an extended quotation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote)
        */
       blockquote: HTMLAttributes<HTMLQuoteElement>;
       /**
        * The `body` element represents the content of an HTML document. There can be only one `<body>` element in a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/body)
        */
       body: HTMLAttributes<HTMLBodyElement>;
       /**
        * The `br` element is used to create a line break in a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br)
        */
       br: HTMLAttributes<HTMLBRElement>;
       /**
        * The `button` element is used to create a clickable button.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button)
        */
       button: HTMLAttributes<HTMLButtonElement>;
       /**
        * The `canvas` element is used to draw graphics, on the fly, via scripting (usually JavaScript).
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas)
        */
       canvas: HTMLAttributes<HTMLCanvasElement>;
       /**
        * The `caption` element is used to define a table caption.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption)
        */
       caption: HTMLAttributes<HTMLTableCaptionElement>;
       /**
        * The `cite` element is used to describe a reference to a cited creative work, and must include the title of that work.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/cite)
        */
       cite: HTMLAttributes<HTMLElement>;
       /**
        * The `code` element is used to define a piece of computer code.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/code)
        */
       code: HTMLAttributes<HTMLElement>;
       /**
        * The `col` element is used to define a column within a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/col)
        */
       col: HTMLAttributes<HTMLTableColElement>;
       /**
        * The `colgroup` element is used to define a group of columns within a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/colgroup)
        */
       colgroup: HTMLAttributes<HTMLTableColElement>;
       /**
        * The `data` element is used to represent the result of a calculation (like one performed by a script).
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/data)
        */
       data: HTMLAttributes<HTMLDataElement>;
       /**
        * The `datalist` element is used to provide a list of pre-defined options for an `<input>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist)
        */
       datalist: HTMLAttributes<HTMLDataListElement>;
       /**
        * The `dd` element is used to define a description of a term in a description list.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd)
        */
       dd: HTMLAttributes<HTMLElement>;
       /**
        * The `del` element is used to represent a range of text that has been deleted from a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/del)
        */
       del: HTMLAttributes<HTMLModElement>;
       /**
        * The `details` element is used to create a disclosure widget in which information is visible only when the widget is toggled into an "open" state.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details)
        */
       details: HTMLAttributes<HTMLDetailsElement>;
       /**
        * The `dfn` element is used to indicate the term being defined within the context of a definition phrase or sentence.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dfn)
        */
       dfn: HTMLAttributes<HTMLElement>;
       /**
        * The `dialog` element is used to define a dialog box or subwindow.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog)
        */
       dialog: HTMLAttributes<HTMLDialogElement>;
       /**
        * The `div` element is used as a container for other HTML elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div)
        */
       div: HTMLAttributes<HTMLDivElement>;
       /**
        * The `dl` element is used to define a description list.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl)
        */
       dl: HTMLAttributes<HTMLDListElement>;
       /**
        * The `dt` element is used to define a term in a description list.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dt)
        */
       dt: HTMLAttributes<HTMLElement>;
       /**
        * The `em` element is used to indicate emphasis on the enclosed text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/em)
        */
       em: HTMLAttributes<HTMLElement>;
       /**
        * The `embed` element is used to embed multimedia content, such as a plugin or an applet.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/embed)
        */
       embed: HTMLAttributes<HTMLEmbedElement>;
       /**
        * The `fieldset` element is used to group several controls as well as labels (`<label>`) within a web form.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset)
        */
       fieldset: HTMLAttributes<HTMLFieldSetElement>;
       /**
        * The `figcaption` element is used to add a caption to an `<figure>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption)
        */
       figcaption: HTMLAttributes<HTMLElement>;
       /**
        * The `figure` element is used to mark up a photo, diagram, code listing, or other figure, and may contain a `<figcaption>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure)
        */
       figure: HTMLAttributes<HTMLElement>;
       /**
        * The `footer` element is used to define a footer for a document or section.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer)
        */
       footer: HTMLAttributes<HTMLElement>;
       /**
        * The `form` element is used to create an HTML form for user input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form)
        */
       form: HTMLAttributes<HTMLFormElement>;
       /**
        * The `h1` element is used to define the most important heading.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h1)
        */
       h1: HTMLAttributes<HTMLHeadingElement>;
       /**
        * The `h2` element is used to define the second most important heading.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h2)
        */
       h2: HTMLAttributes<HTMLHeadingElement>;
       /**
        * The `h3` element is used to define the third most important heading.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h3)
        */
       h3: HTMLAttributes<HTMLHeadingElement>;
       /**
        * The `h4` element is used to define the fourth most important heading.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h4)
        */
       h4: HTMLAttributes<HTMLHeadingElement>;
       /**
        * The `h5` element is used to define the fifth most important heading.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h5)
        */
       h5: HTMLAttributes<HTMLHeadingElement>;
       /**
        * The `h6` element is used to define the least important heading.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/h6)
        */
       h6: HTMLAttributes<HTMLHeadingElement>;
       /**
        * The `head` element is used to contain metadata for the HTML document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/head)
        */
       head: HTMLAttributes<HTMLHeadElement>;
       /**
        * The `header` element is used to define a header for a document or section.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header)
        */
       header: HTMLAttributes<HTMLElement>;
       /**
        * The `hgroup` element is used to group a set of `<h1>` to `<h6>` elements when a heading has multiple levels.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hgroup)
        */
       hgroup: HTMLAttributes<HTMLElement>;
       /**
        * The `hr` element is used to create a thematic break in an HTML page.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/hr)
        */
       hr: HTMLAttributes<HTMLHRElement>;
       /**
        * The `html` element is the root element of an HTML document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/html)
        */
       html: HTMLAttributes<HTMLHtmlElement>;
       /**
        * The `i` element is used to represent a span of text in an alternate voice or mood, or otherwise offset from the normal prose in a manner indicating a different quality of text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/i)
        */
       i: HTMLAttributes<HTMLElement>;
       /**
        * The `iframe` element is used to embed another document within the current HTML document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe)
        */
       iframe: HTMLAttributes<HTMLIFrameElement>;
       /**
        * The `img` element is used to embed an image in an HTML page.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img)
        */
       img: HTMLAttributes<HTMLImageElement>;
       /**
        * The `input` element is used to create interactive controls for web-based forms in order to accept data from the user.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input)
        */
       input: HTMLAttributes<HTMLInputElement>;
       /**
        * The `ins` element is used to represent a range of text that has been added to a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ins)
        */
       ins: HTMLAttributes<HTMLModElement>;
       /**
        * The `kbd` element is used to define keyboard input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/kbd)
        */
       kbd: HTMLAttributes<HTMLElement>;
       /**
        * The `label` element is used to define a label for several elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label)
        */
       label: HTMLAttributes<HTMLLabelElement>;
       /**
        * The `legend` element is used to define a caption for the `<fieldset>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend)
        */
       legend: HTMLAttributes<HTMLLegendElement>;
       /**
        * The `li` element is used to define a list item.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/li)
        */
       li: HTMLAttributes<HTMLLIElement>;
       /**
        * The `link` element is used to link to external style sheets.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link)
        */
       link: HTMLAttributes<HTMLLinkElement>;
       /**
        * The `main` element is used to mark the main content of a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main)
        */
       main: HTMLAttributes<HTMLElement>;
       /**
        * The `map` element is used to define a client-side image map.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/map)
        */
       map: HTMLAttributes<HTMLMapElement>;
       /**
        * The `mark` element is used to represent a run of text in one document marked or highlighted for reference purposes, due to its relevance in another context.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/mark)
        */
       mark: HTMLAttributes<HTMLElement>;
       /**
        * The `template` element is used to declare fragments of HTML that can be cloned and inserted in the document by script.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
        */
       template: HTMLAttributes<HTMLTemplateElement>;
       /**
        * The `marquee` element is used to create a scrolling area of text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/marquee)
        */
       marquee: HTMLAttributes<HTMLMarqueeElement>;
       /**
        * The `menu` element is used to define a list of commands that a user can perform or activate.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menu)
        */
       menu: HTMLAttributes<HTMLMenuElement>;
       /**
        * The `menuitem` element is used to define a command that a user can invoke from a popup menu.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/menuitem)
        */
       menuitem: HTMLAttributes<HTMLUnknownElement>;
       /**
        * The `meta` element is used to specify metadata that can't be represented by other HTML meta-related elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta)
        */
       meta: HTMLAttributes<HTMLMetaElement>;
       /**
        * The `meter` element is used to represent a scalar measurement within a known range or a fractional value.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meter)
        */
       meter: HTMLAttributes<HTMLMeterElement>;
       /**
        * The `nav` element is used to define a section of navigation links.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/nav)
        */
       nav: HTMLAttributes<HTMLElement>;
       /**
        * The `noscript` element is used to provide a script that displays only if scripting is not supported.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript)
        */
       noscript: HTMLAttributes<HTMLElement>;
       /**
        * The `object` element is used to embed an object in an HTML document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/object)
        */
       object: HTMLAttributes<HTMLObjectElement>;
       /**
        * The `ol` element is used to define an ordered list of items.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol)
        */
       ol: HTMLAttributes<HTMLOListElement>;
       /**
        * The `optgroup` element is used to group several options within a `<select>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup)
        */
       optgroup: HTMLAttributes<HTMLOptGroupElement>;
       /**
        * The `option` element is used to define an item contained in a `<select>`, an `<optgroup>`, or a `<datalist>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option)
        */
       option: HTMLAttributes<HTMLOptionElement>;
       /**
        * The `output` element is used to represent the result of a calculation or user action.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/output)
        */
       output: HTMLAttributes<HTMLOutputElement>;
       /**
        * The `p` element represents a paragraph.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/p)
        */
       p: HTMLAttributes<HTMLParagraphElement>;
       /**
        * The `param` element is used to define parameters for plugins invoked by object elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/param)
        */
       param: HTMLAttributes<HTMLParamElement>;
       /**
        * The `picture` element is used to define a container for multiple image sources.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture)
        */
       picture: HTMLAttributes<HTMLPictureElement>;
       /**
        * The `pre` element is used to define preformatted text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/pre)
        */
       pre: HTMLAttributes<HTMLPreElement>;
       /**
        * The `progress` element is used to represent the completion progress of a task.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/progress)
        */
       progress: HTMLAttributes<HTMLProgressElement>;
       /**
        * The `q` element is used to define a short inline quotation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/q)
        */
       q: HTMLAttributes<HTMLQuoteElement>;
       /**
        * The `rp` element is used to provide fallback text to be displayed by user agents that don't support ruby annotations.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rp)
        */
       rp: HTMLAttributes<HTMLElement>;
       /**
        * The `rt` element is used to provide the pronunciation of the characters, characters, or words in a ruby annotation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/rt)
        */
       rt: HTMLAttributes<HTMLElement>;
       /**
        * The `ruby` element is used to provide ruby annotations for East Asian typography.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ruby)
        */
       ruby: HTMLAttributes<HTMLElement>;
       /**
        * The `s` element is used to represent contents that are no longer accurate or no longer relevant.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/s)
        */
       s: HTMLAttributes<HTMLElement>;
       /**
        * The `samp` element is used to enclose inline text which represents sample (or quoted) output from a computer program.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/samp)
        */
       samp: HTMLAttributes<HTMLElement>;
       /**
        * The `script` element is used to embed or reference an executable script within an HTML or XHTML document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script)
        */
       script: HTMLAttributes<HTMLScriptElement>;
       /**
        * The `search` element is used to create a search field.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/search)
        */
       search: HTMLAttributes<HTMLElement>;
       /**
        * The `section` element is used to define sections in a document, such as chapters, headers, footers, or any other sections of the document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section)
        */
       section: HTMLAttributes<HTMLElement>;
       /**
        * The `select` element is used to create a drop-down list.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select)
        */
       select: HTMLAttributes<HTMLSelectElement>;
       /**
        * The `slot` element is used to define a slot for the insertion of content from a parent component.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot)
        */
       slot: HTMLAttributes<HTMLSlotElement>;
       /**
        * The `small` element is used to represent side comments such as small print.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/small)
        */
       small: HTMLAttributes<HTMLElement>;
       /**
        * The `source` element is used to specify multiple media resources for media elements, such as `<video>` and `<audio>`.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source)
        */
       source: HTMLAttributes<HTMLSourceElement>;
       /**
        * The `span` element is used to group inline-elements in a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/span)
        */
       span: HTMLAttributes<HTMLSpanElement>;
       /**
        * The `strong` element is used to indicate strong importance for its contents.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/strong)
        */
       strong: HTMLAttributes<HTMLElement>;
       /**
        * The `style` element is used to define style information for a document, or part of a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/style)
        */
       style: HTMLAttributes<HTMLStyleElement>;
       /**
        * The `sub` element is used to specify the subscript text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sub)
        */
       sub: HTMLAttributes<HTMLElement>;
       /**
        * The `summary` element is used to define a visible heading for the `<details>` element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary)
        */
       summary: HTMLAttributes<HTMLElement>;
       /**
        * The `sup` element is used to specify the superscript text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/sup)
        */
       sup: HTMLAttributes<HTMLElement>;
       /**
        * The `table` element is used to create a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table)
        */
       table: HTMLAttributes<HTMLTableElement>;
       /**
        * The `tbody` element is used to group the body content in a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tbody)
        */
       tbody: HTMLAttributes<HTMLTableSectionElement>;
       /**
        * The `td` element is used to define a cell in a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td)
        */
       td: HTMLAttributes<HTMLTableCellElement>;
       /**
        * The `textarea` element is used to create a multiline text input.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea)
        */
       textarea: HTMLAttributes<HTMLTextAreaElement>;
       /**
        * The `tfoot` element is used to group the footer content in a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot)
        */
       tfoot: HTMLAttributes<HTMLTableSectionElement>;
       /**
        * The `th` element is used to define a header cell in a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/th)
        */
       th: HTMLAttributes<HTMLTableCellElement>;
       /**
        * The `thead` element is used to group the header content in a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/thead)
        */
       thead: HTMLAttributes<HTMLTableSectionElement>;
       /**
        * The `time` element is used to represent a specific period in time.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time)
        */
       time: HTMLAttributes<HTMLTimeElement>;
       /**
        * The `title` element is used to define a title for the document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title)
        */
       title: HTMLAttributes<HTMLTitleElement>;
       /**
        * The `tr` element is used to define a row in a table.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tr)
        */
       tr: HTMLAttributes<HTMLTableRowElement>;
       /**
        * The `track` element is used to specify text tracks for video elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/track)
        */
       track: HTMLAttributes<HTMLTrackElement>;
       /**
        * The `u` element is used to represent text with an unarticulated, though explicitly rendered, non-textual annotation.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/u)
        */
       u: HTMLAttributes<HTMLElement>;
       /**
        * The `ul` element is used to define an unordered list of items.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ul)
        */
       ul: HTMLAttributes<HTMLUListElement>;
       /**
        * The `var` element is used to define a variable in programming or in a mathematical expression.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/var)
        */
       var: HTMLAttributes<HTMLElement>;
       /**
        * The `video` element is used to embed video content in a document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video)
        */
       video: HTMLAttributes<HTMLVideoElement>;
       /**
        * The `wbr` element is used to define a word break opportunity within text content.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/wbr)
        */
       wbr: HTMLAttributes<HTMLElement>;
@@ -9108,355 +9127,355 @@ declare global {
 
       /**
        * The `svg` element is used to define a container for SVG graphics.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/svg)
        */
       svg: SVGAttributes<SVGSVGElement>;
       /**
        * The `animate` element is used to animate an attribute of an element over time.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate)
        */
       animate: SVGAttributes<SVGAnimateElement>;
       /**
        * The `circle` element is used to create a circle.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/circle)
        */
       circle: SVGAttributes<SVGCircleElement>;
       /**
        * The `animateMotion` element is used to animate an element along a motion path.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateMotion)
        */
       animateMotion: SVGAttributes<SVGAnimateMotionElement>;
       /**
        * The `animateTransform` element is used to animate a transformation on an element, such as a translate, scale, rotate, or skew.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animateTransform)
        */
       animateTransform: SVGAttributes<SVGAnimateTransformElement>;
       /**
        * The `clipPath` element is used to define a clipping path.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath)
        */
       clipPath: SVGAttributes<SVGClipPathElement>;
       /**
        * The `defs` element is used to define a set of reusable elements.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/defs)
        */
       defs: SVGAttributes<SVGDefsElement>;
       /**
        * The `desc` element is used to provide a description for an SVG document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/desc)
        */
       desc: SVGAttributes<SVGDescElement>;
       /**
        * The `ellipse` element is used to create an ellipse.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/ellipse)
        */
       ellipse: SVGAttributes<SVGEllipseElement>;
       /**
        * The `feBlend` element is used to blend two objects together.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feBlend)
        */
       feBlend: SVGAttributes<SVGFEBlendElement>;
       /**
        * The `feColorMatrix` element is used to apply a matrix transformation on the RGBA color and alpha values of each pixel.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feColorMatrix)
        */
       feColorMatrix: SVGAttributes<SVGFEColorMatrixElement>;
       /**
        * The `feComponentTransfer` element is used to apply a linear transformation on the input color values.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComponentTransfer)
        */
       feComponentTransfer: SVGAttributes<SVGFEComponentTransferElement>;
       /**
        * The `feComposite` element is used to combine two objects together.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feComposite)
        */
       feComposite: SVGAttributes<SVGFECompositeElement>;
       /**
        * The `feConvolveMatrix` element is used to apply a matrix convolution filter effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feConvolveMatrix)
        */
       feConvolveMatrix: SVGAttributes<SVGFEConvolveMatrixElement>;
       /**
        * The `feDiffuseLighting` element is used to create a lighting effect using the alpha channel as a bump map.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDiffuseLighting)
        */
       feDiffuseLighting: SVGAttributes<SVGFEDiffuseLightingElement>;
       /**
        * The `feDisplacementMap` element is used to create a displacement effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDisplacementMap)
        */
       feDisplacementMap: SVGAttributes<SVGFEDisplacementMapElement>;
       /**
        * The `feDistantLight` element is used to create a distant light source.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDistantLight)
        */
       feDistantLight: SVGAttributes<SVGFEDistantLightElement>;
       /**
        * The `feDropShadow` element is used to create a drop shadow effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feDropShadow)
        */
       feDropShadow: SVGAttributes<SVGFEDropShadowElement>;
       /**
        * The `feFlood` element is used to create a solid color fill.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFlood)
        */
       feFlood: SVGAttributes<SVGFEFloodElement>;
       /**
        * The `feFuncA` element is used to define the alpha component of the color.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncA)
        */
       feFuncA: SVGAttributes<SVGFEFuncAElement>;
       /**
        * The `feFuncB` element is used to define the blue component of the color.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncB)
        */
       feFuncB: SVGAttributes<SVGFEFuncBElement>;
       /**
        * The `feFuncG` element is used to define the green component of the color.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncG)
        */
       feFuncG: SVGAttributes<SVGFEFuncGElement>;
       /**
        * The `feFuncR` element is used to define the red component of the color.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feFuncR)
        */
       feFuncR: SVGAttributes<SVGFEFuncRElement>;
       /**
        * The `feGaussianBlur` element is used to create a Gaussian blur effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feGaussianBlur)
        */
       feGaussianBlur: SVGAttributes<SVGFEGaussianBlurElement>;
       /**
        * The `feImage` element is used to include an externally defined graphics file.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feImage)
        */
       feImage: SVGAttributes<SVGFEImageElement>;
       /**
        * The `feMerge` element is used to combine two objects together.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMerge)
        */
       feMerge: SVGAttributes<SVGFEMergeElement>;
       /**
        * The `feMergeNode` element is used to specify the input for the feMerge filter primitive.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMergeNode)
        */
       feMergeNode: SVGAttributes<SVGFEMergeNodeElement>;
       /**
        * The `feMorphology` element is used to create a morphology effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feMorphology)
        */
       feMorphology: SVGAttributes<SVGFEMorphologyElement>;
       /**
        * The `feOffset` element is used to create a drop shadow effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feOffset)
        */
       feOffset: SVGAttributes<SVGFEOffsetElement>;
       /**
        * The `fePointLight` element is used to create a point light effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/fePointLight)
        */
       fePointLight: SVGAttributes<SVGFEPointLightElement>;
       /**
        * The `feSpecularLighting` element is used to create a specular lighting effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpecularLighting)
        */
       feSpecularLighting: SVGAttributes<SVGFESpecularLightingElement>;
       /**
        * The `feSpotLight` element is used to create a spotlight effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feSpotLight)
        */
       feSpotLight: SVGAttributes<SVGFESpotLightElement>;
       /**
        * The `feTile` element is used to create a tile effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTile)
        */
       feTile: SVGAttributes<SVGFETileElement>;
       /**
        * The `feTurbulence` element is used to create a turbulence effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/feTurbulence)
        */
       feTurbulence: SVGAttributes<SVGFETurbulenceElement>;
       /**
        * The `filter` element is used to define a filter effect.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/filter)
        */
       filter: SVGAttributes<SVGFilterElement>;
       /**
        * The `foreignObject` element is used to include a DOM subtree within an SVG.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
        */
       foreignObject: SVGAttributes<SVGForeignObjectElement>;
       /**
        * The `g` element is used to group SVG shapes together.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/g)
        */
       g: SVGAttributes<SVGGElement>;
       /**
        * The `image` element is used to embed images into an SVG.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/image)
        */
       image: SVGAttributes<SVGImageElement>;
       /**
        * The `line` element is used to create a line.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/line)
        */
       line: SVGAttributes<SVGLineElement>;
       /**
        * The `linearGradient` element is used to define a linear gradient.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/linearGradient)
        */
       linearGradient: SVGAttributes<SVGLinearGradientElement>;
       /**
        * The `marker` element is used to define a marker.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker)
        */
       marker: SVGAttributes<SVGMarkerElement>;
       /**
        * The `mask` element is used to define a mask.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mask)
        */
       mask: SVGAttributes<SVGMaskElement>;
       /**
        * The `metadata` element is used to provide metadata for the SVG document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/metadata)
        */
       metadata: SVGAttributes<SVGMetadataElement>;
       /**
        * The `mpath` element is used to animate an object along a motion path.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/mpath)
        */
       mpath: SVGAttributes<SVGMPathElement>;
       /**
        * The `path` element is used to define a path.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path)
        */
       path: SVGAttributes<SVGPathElement>;
       /**
        * The `pattern` element is used to define a pattern.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/pattern)
        */
       pattern: SVGAttributes<SVGPatternElement>;
       /**
        * The `polygon` element is used to create a polygon.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polygon)
        */
       polygon: SVGAttributes<SVGPolygonElement>;
       /**
        * The `polyline` element is used to create a polyline.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/polyline)
        */
       polyline: SVGAttributes<SVGPolylineElement>;
       /**
        * The `radialGradient` element is used to define a radial gradient.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/radialGradient)
        */
       radialGradient: SVGAttributes<SVGRadialGradientElement>;
       /**
        * The `rect` element is used to create a rectangle.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/rect)
        */
       rect: SVGAttributes<SVGRectElement>;
       /**
        * The `set` element is used to define the value of an attribute for a specified duration.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/set)
        */
       set: SVGAttributes<SVGSetElement>;
       /**
        * The `stop` element is used to define the color and opacity of a gradient stop.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/stop)
        */
       stop: SVGAttributes<SVGStopElement>;
       /**
        * The `switch` element is used to group a set of alternatives.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/switch)
        */
       switch: SVGAttributes<SVGSwitchElement>;
       /**
        * The `symbol` element is used to define a symbol.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/symbol)
        */
       symbol: SVGAttributes<SVGSymbolElement>;
       /**
        * The `text` element is used to define text.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/text)
        */
       text: SVGAttributes<SVGTextElement>;
       /**
        * The `textPath` element is used to define a path along which text is to be rendered.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/textPath)
        */
       textPath: SVGAttributes<SVGTextPathElement>;
       /**
        * The `tspan` element is used to define a sub-text within a text element.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/tspan)
        */
       tspan: SVGAttributes<SVGTSpanElement>;
       /**
        * The `use` element is used to reference a symbol defined elsewhere.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use)
        */
       use: SVGAttributes<SVGUseElement>;
       /**
        * The `view` element is used to define a view.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/view)
        */
       view: SVGAttributes<SVGViewElement>;
