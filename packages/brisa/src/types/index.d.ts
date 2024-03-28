@@ -4103,7 +4103,7 @@ declare global {
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event)
        */
-      onKeyDown?: KeyboardEventHandler<Target> | undefined;;
+      onKeyDown?: KeyboardEventHandler<Target> | undefined;
 
       /**
        * Milliseconds to wait before executing the `onKeyUp` server action.
