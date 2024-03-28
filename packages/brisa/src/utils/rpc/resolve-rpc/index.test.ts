@@ -6,12 +6,12 @@ let resolveRPC: (res: Response) => Promise<void>;
 async function initBrowser() {
   GlobalRegistrator.register();
   await import(".");
-  window._s = window._S = undefined;
   resolveRPC = window._rpc;
 }
 
 describe("utils", () => {
   afterEach(() => {
+    window._s = window._S = undefined;
     GlobalRegistrator.unregister();
   });
 

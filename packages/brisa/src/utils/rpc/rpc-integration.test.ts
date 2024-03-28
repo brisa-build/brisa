@@ -5,7 +5,6 @@ import {
   beforeEach,
   afterEach,
   spyOn,
-  jest,
 } from "bun:test";
 import {
   injectActionRPCCode,
@@ -18,6 +17,8 @@ const actionRPCCode = await injectActionRPCCode();
 const actionRPCLazyCode = await injectActionRPCLazyCode();
 const INDICATOR_ID = "__ind:action";
 const stringify = (obj: any) => encodeURIComponent(JSON.stringify(obj));
+const requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 0);
+let mockFetch: ReturnType<typeof spyOn>;
 
 async function simulateRPC({
   elementName = "button",
@@ -64,7 +65,7 @@ async function simulateRPC({
   }
 
   // Mock fetch with the actions
-  const mockFetch = spyOn(window, "fetch").mockImplementation(async () => {
+  mockFetch = spyOn(window, "fetch").mockImplementation(async () => {
     if (slowRequest) await Bun.sleep(0);
     if (failsThrowingAnError) throw new Error("Some throwable error");
     return {
@@ -105,16 +106,20 @@ describe("utils", () => {
   describe("rpc", () => {
     beforeEach(() => {
       GlobalRegistrator.register();
-      window._S = window._s = undefined;
-      window.requestAnimationFrame = (cb) => setTimeout(cb, 0);
+      window.requestAnimationFrame = requestAnimationFrame;
     });
     afterEach(() => {
-      jest.restoreAllMocks();
+      window._S = window._s = undefined;
+      mockFetch?.mockRestore();
       GlobalRegistrator.unregister();
+      globalThis.requestAnimationFrame = requestAnimationFrame;
     });
 
     it("should redirect to 404", async () => {
       await simulateRPC({ navigateTo: "http://localhost/?_not-found=1" });
+      // Simulate the script to be loaded
+      document.head.querySelector("script")?.dispatchEvent(new Event("load"));
+      await Bun.sleep(0);
       expect(location.toString()).toBe("http://localhost/?_not-found=1");
     });
 
@@ -246,6 +251,8 @@ describe("utils", () => {
       const element = document.body.firstChild as HTMLElement;
 
       expect(element.classList.contains("brisa-request")).toBeTrue();
+      // Simulate the script to be loaded
+      document.head.querySelector("script")?.dispatchEvent(new Event("load"));
       await Bun.sleep(0);
       expect(element.classList.contains("brisa-request")).toBeFalse();
     });
@@ -313,6 +320,8 @@ describe("utils", () => {
       });
 
       expect(window._s.get(INDICATOR_ID)).toBeTrue();
+      // Simulate the script to be loaded
+      document.head.querySelector("script")?.dispatchEvent(new Event("load"));
       await Bun.sleep(0);
       expect(window._s.get(INDICATOR_ID)).toBeFalse();
     });

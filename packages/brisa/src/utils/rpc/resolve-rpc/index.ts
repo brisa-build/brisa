@@ -19,7 +19,7 @@ async function resolveRPC(res: Response) {
   }
 
   if (urlToNavigate) {
-    window.location.href = urlToNavigate;
+    location.href = urlToNavigate;
     return;
   }
 
