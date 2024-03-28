@@ -671,7 +671,7 @@ export type ExtendPluginOptions = {
   entrypoint: string;
 }
 
-export type ExtendPlugins = (plugins: BunPlugin[], options: ) => BunPlugin[];
+export type ExtendPlugins = (plugins: BunPlugin[], options: ExtendPluginOptions) => BunPlugin[];
 
 export type Configuration = {
   /**
