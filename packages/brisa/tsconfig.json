@@ -31,6 +31,6 @@
     "client",
     "jsx-runtime",
     "jsx-dev-runtime",
-    "src/__fixtures__/out*"
+    "**/__fixtures__/*"
   ]
 }
