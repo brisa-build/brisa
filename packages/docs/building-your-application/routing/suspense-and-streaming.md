@@ -139,4 +139,125 @@ MyWebComponent.suspense = ({}, { store }: WebContext) => {
 
 Also works during streaming. Although loading data is done at the client-side. That is, the `suspense` is rendered on the server with SSR, and on the client-side the real component is loaded by updating the suspense phase until it has the content. That is, these **`fetch`** inside the component will **never be done from the server** in the case of web-components.
 
-TODO: Implement the same behavior in the server + add docs about it
+### Transitions between suspense-content
+
+There is an important difference between the web and server components when it comes to making transitions between the suspense phase and the real content.
+
+The suspense phase **by default does not support animations** as it is replaced by the real content, so if you need to implement animations during these phases you can do it with two different strategies.
+
+#### First strategy: Using store signals (Web Components)
+
+The first strategy is to continue using the suspense offered by Brisa but use the store to communicate between the two phases.
+
+```tsx
+import type { WebContext } from "brisa";
+
+export default async function WebComponent({}, { store }: WebContext) {
+  // Wait the delay (fetch, whatever)
+  const data = await fetch(/* */).then((r) => r.json());
+
+  // Start the animation to replace the content
+  await transitionOnSuspense(store, 200);
+
+  return <div class="start">{data.content}</div>;
+}
+
+WebComponent.suspense = ({}, { store }: WebContext) => {
+  return (
+    <div class={store.get("content-ready") ? "exit" : ""}>Loading ....</div>
+  );
+};
+
+async function transitionOnSuspense(store: WebContext["store"], duration) {
+  store.set("content-ready", true);
+  // Wait for the suspense transition to finish
+  await new Promise((resolve) => setTimeout(resolve, duration));
+}
+```
+
+Example of css:
+
+```css
+@keyframes start {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes exit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.exit {
+  animation: exit 200ms;
+}
+.start {
+  animation: start 200ms;
+}
+```
+
+> [!WARNING]
+>
+> Only works in **Web Components**.
+
+#### Second strategy: Using async generators (Server Components)
+
+The second strategy is instead of using the suspense that Brisa offers, to use the async generator together with the [`css`](/building-your-application/data-fetching/request-context#css) helper to inject styles after the suspense phase to hide them with an animation.
+
+```tsx
+import type { RequestContext } from "brisa";
+
+async function* ServerComponent({}, { css }: RequestContext) {
+  yield <div class="suspense">Loading ....</div>;
+
+  // Wait the delay (fetch, whatever)
+  const data = await fetch(/* */).then((r) => r.json());
+
+  // Start the animation to replace the content
+  css`
+    @keyframes slideaway {
+      from {
+        display: block;
+      }
+      to {
+        transform: translateY(40px);
+        opacity: 0;
+      }
+    }
+
+    .suspense {
+      animation: slideaway 200ms;
+      display: none;
+    }
+
+    @keyframes slidein {
+      from {
+        transform: translateY(40px);
+        opacity: 1;
+      }
+      to {
+        display: block;
+      }
+    }
+
+    .content {
+      animation: slidein 200ms;
+    }
+  `;
+
+  // Yield the real content
+  yield <div class="content">{data.content}</div>;
+}
+```
+
+> [!WARNING]
+>
+> Only works in **Server Components**.
