@@ -389,18 +389,13 @@ async function enqueueComponent(
     request,
   )) as JSX.Element;
 
-  // Inject CSS
-  if ((request as any)._style) {
-    controller.enqueue(
-      `<style>${toInline((request as any)._style)}</style>`,
-      suspenseId,
-    );
-    (request as any)._style = "";
-  }
+  injectCSS(controller, request, suspenseId);
 
   // Async generator list
   if (typeof componentValue.next === "function") {
     for await (let val of componentValue) {
+      injectCSS(controller, request, suspenseId);
+
       await enqueueChildren(
         val,
         request,
@@ -530,4 +525,18 @@ async function isInPathList(pathname: string, request: RequestContext) {
   const route = (request.route?.filePath ?? "").replace(BUILD_DIR, "");
 
   return new Set(listText.split("\n")).has(route);
+}
+
+function injectCSS(
+  controller: Controller,
+  request: RequestContext,
+  suspenseId?: number,
+) {
+  if ((request as any)._style) {
+    controller.enqueue(
+      `<style>${toInline((request as any)._style)}</style>`,
+      suspenseId,
+    );
+    (request as any)._style = "";
+  }
 }

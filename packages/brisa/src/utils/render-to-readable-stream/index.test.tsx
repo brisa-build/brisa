@@ -779,6 +779,30 @@ describe("utils", () => {
       );
     });
 
+    it("should work an async generator component with css", async () => {
+      const Component = async function* ({}, { css }: RequestContext) {
+        yield <div class="red">Hello</div>;
+
+        css`
+          .red {
+            color: red;
+          }
+        `;
+
+        yield <div class="red">Foo</div>;
+      };
+
+      const stream = renderToReadableStream(<Component />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toBe(
+        toInline(`
+          <div class="red">Hello</div>
+          <style>.red {color: red;}</style>
+          <div class="red">Foo</div>
+        `),
+      );
+    });
+
     it("should render the suspense component before if the async component support it", async () => {
       const Component = async () => {
         await Promise.resolve();
