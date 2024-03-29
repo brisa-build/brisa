@@ -301,7 +301,66 @@ In the server component, we utilize the [`transferToClient`](/building-your-appl
 >
 > It's crucial to note that in the event of a failed request action, the optimistic update is automatically reverted to the previous state, ensuring data consistency.
 
-### `rerenderInAction`
+### Optimistic updates via URL params
+
+If you want to use the optimistic update via URL search params, you can do it in the same way (you need the `store.setOptimistic`), the only difference is that from the server action instead of updating the store value, you can directly use the function navigate and pass it as search param.
+
+Example of web component (`like-button`):
+
+```tsx
+import type { WebContext } from "brisa";
+
+type Props = { onLike: () => void };
+
+export default function LikeButton({ onLike }: Props, { store }: WebContext) {
+  return (
+    <button
+      onClick={() => {
+        store.setOptimistic<number>("like-action", "likes", (v) => v + 1);
+        onLike();
+      }}
+    >
+      Like ({store.get("likes")})
+    </button>
+  );
+}
+```
+
+Example of server component:
+
+```tsx
+import { navigate, type RequestContext } from "brisa";
+import { getUser, updateDB } from "@/helpers";
+
+function Page({}, req: RequestContext) {
+  const { store, indicate, route } = req;
+  const indicator = indicate("like-action");
+  const defaultLikes = route.query.likes ? +route.query.likes : 0;
+
+  // It's needed to communicate with the client
+  store.set("likes", defaultLikes);
+  store.transferToClient(["likes"]);
+
+  async function onLikeAction() {
+    const user = getUser(req);
+    const updatedNum = await updateDB(user);
+    // Update URL param:
+    const url = new URL(req.url);
+    url.searchParams.set("likes", store.get("likes") + 1);
+    navigate(url.toString());
+  }
+
+  return (
+    <like-button
+      // It's necessary to connect the indicator to the action
+      indicateLike={indicator}
+      onLike={onLikeAction}
+    />
+  );
+}
+```
+
+## `rerenderInAction`
 
 The [`rerenderInAction`](/api-reference/functions/rerenderInAction) method is used to rerender the component or the page
 inside a server action. Outside of an action, it throws an error.
@@ -329,7 +388,7 @@ function handleEvent() {
 }
 ```
 
-### `navigate`
+## `navigate`
 
 If you would like to navigate the user to a different route after the completion of a Server Action, you can use [`navigate`](/app/api-reference/functions/navigate) API. `navigate` needs to be called outside of the `try/catch` block:
 
@@ -347,7 +406,7 @@ export async function createPost(id: string) {
 }
 ```
 
-### Cookies
+## Cookies
 
 You can access to the request inside the server action to read cookies from headers, then you can communicate via request store to the [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages) of the page:
 
@@ -447,7 +506,11 @@ function getCookies(headers: Headers): Record<string, string> {
 }
 ```
 
-### Action Signals
+> [!NOTE]
+>
+> For more information see the [Authentication documentation](/building-your-application/authentication/index).
+
+## Action Signals
 
 From the server you can consume a [`store`](/building-your-application/data-fetching/request-context#store) that by default has a limited lifetime and only lives on **request-time**. However, **you can expand the lifetime** of some properties of the store with the method: [`transferToClient`](/building-your-application/data-fetching/request-context#transfertoclient). The moment you do this, not only do you expand its life in client-time, but you can then re-use it in action-time.
 
@@ -588,7 +651,7 @@ export default function WebCounter({}, { store }: WebContext) {
 
 This example shows a counter shared between the server and the client. It can be incremented from the action (server component) or from the browser event (web component), and the store value will always be synchronized between the two.
 
-### Transfer sensitive data
+## Transfer sensitive data
 
 If you want to transfer sensitive data from the render to use it later on the action you can use:
 
