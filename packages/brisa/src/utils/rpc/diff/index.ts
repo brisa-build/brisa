@@ -1,34 +1,36 @@
 /**
  * This file contains a diffing algorithm that is used to update the DOM
- * inspired by the set-dom library https://github.com/DylanPiercey/set-dom.
+ * inspired by the set-dom library https://github.com/DylanPiercey/set-dom
+ * but using the parse-html-stream library to parse the html stream.
  */
-import parseHTML from "./parse-html";
+import htmlStreamWalker from "parse-html-stream/walker";
+
+type Walker = ReturnType<typeof htmlStreamWalker>;
 
 const ELEMENT_TYPE = 1;
 const DOCUMENT_TYPE = 9;
 const DOCUMENT_FRAGMENT_TYPE = 11;
 
-export default function diff(oldNode: Node, newNode: string | Node) {
+export default async function diff(
+  oldNode: Node,
+  newNode: Node,
+  walker: Walker,
+) {
   if (oldNode.nodeType === DOCUMENT_TYPE) {
     oldNode = (oldNode as Document).documentElement;
   }
 
   if ((newNode as Node).nodeType === DOCUMENT_FRAGMENT_TYPE) {
-    setChildNodes(oldNode, newNode as Node);
+    await setChildNodes(oldNode, newNode as Node, walker);
   } else {
-    const newRoot =
-      typeof newNode === "string"
-        ? parseHTML(newNode, oldNode.nodeName)
-        : newNode;
-
-    updateNode(oldNode, newRoot as Node);
+    await updateNode(oldNode, newNode as Node, walker);
   }
 }
 
 /**
  * Updates a specific htmlNode and does whatever it takes to convert it to another one.
  */
-function updateNode(oldNode: Node, newNode: Node) {
+async function updateNode(oldNode: Node, newNode: Node, walker: Walker) {
   if (oldNode.nodeType !== newNode.nodeType) {
     return oldNode.parentNode!.replaceChild(newNode, oldNode);
   }
@@ -36,7 +38,7 @@ function updateNode(oldNode: Node, newNode: Node) {
   if (oldNode.nodeType === ELEMENT_TYPE) {
     if (oldNode.isEqualNode(newNode)) return;
 
-    setChildNodes(oldNode, newNode);
+    await setChildNodes(oldNode, newNode, walker);
 
     if (oldNode.nodeName === newNode.nodeName) {
       setAttributes(
@@ -93,7 +95,7 @@ function setAttributes(
 /**
  * Utility that will nodes childern to match another nodes children.
  */
-function setChildNodes(oldParent: Node, newParent: Node) {
+async function setChildNodes(oldParent: Node, newParent: Node, walker: Walker) {
   let checkOld;
   let oldKey;
   let checkNew;
@@ -101,7 +103,7 @@ function setChildNodes(oldParent: Node, newParent: Node) {
   let foundNode;
   let keyedNodes: Record<string, Node> | null = null;
   let oldNode = oldParent.firstChild;
-  let newNode = newParent.firstChild;
+  let newNode = await walker.firstChild(newParent);
   let extra = 0;
 
   // Extract keyed nodes from previous children and keep track of total count.
@@ -109,7 +111,7 @@ function setChildNodes(oldParent: Node, newParent: Node) {
     extra++;
     checkOld = oldNode;
     oldKey = getKey(checkOld);
-    oldNode = oldNode.nextSibling;
+    oldNode = (await walker.nextSibling(oldNode)) as ChildNode;
 
     if (oldKey) {
       if (!keyedNodes) keyedNodes = {};
@@ -123,7 +125,7 @@ function setChildNodes(oldParent: Node, newParent: Node) {
   while (newNode) {
     extra--;
     checkNew = newNode;
-    newNode = newNode.nextSibling;
+    newNode = (await walker.nextSibling(newNode)) as ChildNode;
 
     // Unsuspense the "suspense" component phase
     if (
@@ -143,17 +145,17 @@ function setChildNodes(oldParent: Node, newParent: Node) {
       if (foundNode !== oldNode) {
         oldParent.insertBefore(foundNode, oldNode);
       } else {
-        oldNode = oldNode!.nextSibling;
+        oldNode = oldNode.nextSibling;
       }
 
-      updateNode(foundNode, checkNew);
+      await updateNode(foundNode, checkNew, walker);
     } else if (oldNode) {
       checkOld = oldNode;
       oldNode = oldNode.nextSibling;
       if (getKey(checkOld)) {
         oldParent.insertBefore(checkNew, checkOld);
       } else {
-        updateNode(checkOld, checkNew);
+        await updateNode(checkOld, checkNew, walker);
       }
     } else {
       oldParent.appendChild(checkNew);

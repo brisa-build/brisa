@@ -1,4 +1,4 @@
-// import parseHTMLStream, { getNextNode } from "../parse-html-stream";
+import htmlStreamWalker from "parse-html-stream/walker";
 import diff from "../diff";
 
 async function resolveRPC(res: Response) {
@@ -23,12 +23,13 @@ async function resolveRPC(res: Response) {
     return;
   }
 
-  // This is temporal meanwhile the diffing algorithm is not working with streaming
-  const html = await res.text();
+  if (!res.body) return;
 
-  if (!html) return;
+  const reader = res.body.getReader();
+  const walker = await htmlStreamWalker(reader);
+  const rootNode = walker.rootNode!;
 
-  await diff(document, html);
+  await diff(document, rootNode, walker);
 }
 
 window._rpc = resolveRPC;
