@@ -21,6 +21,32 @@ Generally a Locale Identifier is made up of a language, region, and script separ
 If user locale is `nl-BE` and it is not listed in your configuration, they will be redirected to `nl` if available, or to the default locale otherwise.
 If you don't plan to support all regions of a country, it is therefore a good practice to include country locales that will act as fallbacks.
 
+:::tabs key:language
+==js
+
+```js filename="src/i18n.js" switcher
+export default {
+  // These are all the locales you want to support in
+  // your application
+  locales: ["en-US", "fr", "nl-NL"],
+  // This is the default locale you want to be used when visiting
+  // a non-locale prefixed path e.g. `/hello`
+  defaultLocale: "en-US",
+  // This is a list of locale domains and the default locale they
+  // should handle (these are only required when setting up domain routing)
+  domains: {
+    "example.com": {
+      defaultLocale: "en-US",
+    },
+    "example.nl": {
+      defaultLocale: "nl-NL",
+    },
+  },
+};
+```
+
+==ts
+
 ```ts filename="src/i18n.ts" switcher
 import { I18nConfig } from "brisa";
 
@@ -46,26 +72,7 @@ const i18nConfig: I18nConfig = {
 export default i18nConfig;
 ```
 
-```js filename="src/i18n.js" switcher
-export default {
-  // These are all the locales you want to support in
-  // your application
-  locales: ["en-US", "fr", "nl-NL"],
-  // This is the default locale you want to be used when visiting
-  // a non-locale prefixed path e.g. `/hello`
-  defaultLocale: "en-US",
-  // This is a list of locale domains and the default locale they
-  // should handle (these are only required when setting up domain routing)
-  domains: {
-    "example.com": {
-      defaultLocale: "en-US",
-    },
-    "example.nl": {
-      defaultLocale: "nl-NL",
-    },
-  },
-};
-```
+:::
 
 ## Locale Strategies
 
@@ -141,6 +148,27 @@ You can access the locale information via the [`request context`](/building-your
 
 Example in a page:
 
+:::tabs key:language
+==js
+
+```jsx filename="src/pages/index.jsx" switcher
+export default function Home({ name }, requestContext) {
+  const { locale, t, defaultLocale } = requestContext.i18n;
+
+  if (locale === defaultLocale) {
+    return (
+      <h1>
+        {i18n.t("strong-hello", { name }, { elements: { strong: <strong /> } })}
+      </h1>
+    );
+  }
+
+  return <h1>{t("hello", { name })}</h1>;
+}
+```
+
+==ts
+
 ```tsx filename="src/pages/index.tsx" switcher
 import { type RequestContext } from "brisa";
 
@@ -163,7 +191,9 @@ export default function Home({ name }: Props, requestContext: RequestContext) {
 }
 ```
 
-```ts filename="src/i18n/index.ts" switcher
+:::
+
+```js filename="src/i18n/index.js" switcher
 import en from "./messages/en.json";
 import es from "./messages/es.json";
 
@@ -196,7 +226,25 @@ Brisa supports to consume translations inspired by libraries such as [i18next](h
 >
 > **Good to know**: It only occupies 400B of client code if you consume translations in the web-components, if you only use it in server-components, pages, layout, api, middleware, it is 0B of client code.
 
-In order to consume translations, you need first to define the `messages` property in `src/i18n.js` file:
+In order to consume translations, you need first to define the `messages` property in `src/i18n.(js|ts)` file:
+
+:::tabs key:language
+==js
+
+```js filename="src/i18n/index.js" switcher
+import en from "./messages/en.json";
+import es from "./messages/es.json";
+
+const i18nConfig = {
+  defaultLocale: "en",
+  locales: ["en", "es"],
+  messages: { en, es },
+};
+
+export default i18nConfig;
+```
+
+==ts
 
 ```ts filename="src/i18n/index.ts" switcher
 import { I18nConfig } from "brisa";
@@ -212,6 +260,8 @@ const i18nConfig: I18nConfig<typeof en> = {
 
 export default i18nConfig;
 ```
+
+:::
 
 ```json filename="src/i18n/messages/en.json" switcher
 {
@@ -237,6 +287,24 @@ The generic `I18nConfig<typeof en>` allows you to activate type-safe consuming t
 
 Example in a component:
 
+:::tabs key:language
+==js
+
+```js filename="src/components/hello.js" switcher
+export default function Hello({ name }, { i18n }) {
+  return (
+    <>
+      <h1>{i18n.t("hello", { name })}</h1>;
+      <h2>
+        {i18n.t("strong-hello", { name }, { elements: { strong: <strong /> } })}
+      </h2>
+    </>
+  );
+}
+```
+
+==ts
+
 ```tsx filename="src/components/hello.tsx" switcher
 import { type RequestContext } from "brisa";
 
@@ -254,11 +322,7 @@ export default function Hello({ name }: Props, { i18n }: RequestContext) {
 }
 ```
 
-```js filename="src/components/hello.js" switcher
-export default function Hello({ name }, { i18n }) {
-  return <h1>{i18n.t("hello", { name })}</h1>;
-}
-```
+:::
 
 The `t` function:
 
@@ -280,6 +344,23 @@ You can employ the `i18n.overrideMessages` method to override messages at the se
 
 In situations where pages are connected to external i18n services and there is a need to fetch the latest translations from the external service on each request, this function proves useful.
 
+:::tabs key:language
+==js
+
+```jsx filename="src/pages/index.jsx" switcher
+export default async function Page({}, { i18n }) {
+  await i18n.overrideMessages(async (originalMessages) => {
+    const newMessages = await fetch(/* */).then((r) => r.json());
+    return { ...originalMessages, ...newMessages };
+  });
+
+  // This translation may have been overwritten
+  return <div>{i18n.t("foo")}</div>;
+}
+```
+
+==ts
+
 ```tsx filename="src/pages/index.tsx" switcher
 import { type RequestContext } from "brisa";
 
@@ -294,7 +375,32 @@ export default async function Page({}, { i18n }: RequestContext) {
 }
 ```
 
+:::
+
 Consider the following middleware example for scenarios where a language is specific to one page and not available on others.
+
+:::tabs key:language
+==js
+
+```js filename="src/middleware.js" switcher
+export default async function middleware(request) {
+  const { locale, overrideMessages } = request.i18n;
+
+  // "ca" locale is only available on the home page
+  if (locale === "ca") {
+    // Throw 404 error for other pages with the same locale
+    if (request.route.pathname !== "/") notFound();
+
+    // Load "ca" messages from an external service
+    const caMessages = await fetch(/* */).then((r) => r.json());
+
+    // Save "ca" messages
+    i18n.overrideMessages(() => caMessages);
+  }
+}
+```
+
+==ts
 
 ```ts filename="src/middleware.ts" switcher
 import { type RequestContext, notFound } from "brisa";
@@ -316,18 +422,18 @@ export default async function middleware(request: RequestContext) {
 }
 ```
 
+:::
+
 #### Override Translations in Web Components
 
 Consider scenarios where you want to use it in web components to load a dynamically dictionary:
 
-```tsx
-import type { WebContext } from "brisa";
+:::tabs key:language
+==js
 
-export default async function DynamicDictionary(
-  {},
-  { state, i18n }: WebContext,
-) {
-  const open = state<boolean>(false);
+```jsx
+export default async function DynamicDictionary({}, { state, i18n }) {
+  const open = state(false);
   let isDictionaryLoaded = false;
 
   async function onToggle() {
@@ -337,7 +443,7 @@ export default async function DynamicDictionary(
       await i18n.overrideMessages(async (messages) => ({
         ...messages,
         dynamicDictionary: await fetch(/* some url */).then((res) =>
-          res.json(),
+          res.json()
         ),
       }));
     }
@@ -355,6 +461,46 @@ export default async function DynamicDictionary(
   );
 }
 ```
+
+==ts
+
+```tsx
+import type { WebContext } from "brisa";
+
+export default async function DynamicDictionary(
+  {},
+  { state, i18n }: WebContext
+) {
+  const open = state<boolean>(false);
+  let isDictionaryLoaded = false;
+
+  async function onToggle() {
+    if (!open.value && !isDictionaryLoaded) {
+      isDictionaryLoaded = true;
+
+      await i18n.overrideMessages(async (messages) => ({
+        ...messages,
+        dynamicDictionary: await fetch(/* some url */).then((res) =>
+          res.json()
+        ),
+      }));
+    }
+
+    open.value = !open.value;
+  }
+
+  return (
+    <>
+      <button onClick={onToggle}>
+        {open.value ? i18n.t("close") : i18n.t("open")}
+      </button>
+      {open.value && i18n.t("dynamicDictionary.someKey")}
+    </>
+  );
+}
+```
+
+:::
 
 In this example, the `DynamicDictionary` web component demonstrates dynamic loading of translations in an event. Upon toggling, it checks whether the dictionary is already loaded; if not, it fetches translations from a specified URL and uses `overrideMessages` to integrate them seamlessly into the current session. The translated key, `dynamicDictionary.someKey`, is then displayed based on the component's state. This approach allows on-the-fly language customization for improved user experience.
 
@@ -429,6 +575,28 @@ For example it helps to transform values with decimals, currencies, etc, dependi
 
 Sample adding the `number` format:
 
+:::tabs key:language
+==js
+
+```js filename="src/i18n.js" switcher
+const formatters = {
+  es: new Intl.NumberFormat("es-ES"),
+  en: new Intl.NumberFormat("en-EN"),
+};
+
+export default {
+  // ...
+  interpolation: {
+    format: (value, format, lang) => {
+      if (format === "number") return formatters[lang].format(value);
+      return value;
+    },
+  },
+};
+```
+
+==ts
+
 ```ts filename="src/i18n.ts" switcher
 import { I18nConfig } from "brisa";
 
@@ -450,22 +618,7 @@ const i18nConfig: I18nConfig = {
 export default i18nConfig;
 ```
 
-```js filename="src/i18n.js" switcher
-const formatters = {
-  es: new Intl.NumberFormat("es-ES"),
-  en: new Intl.NumberFormat("en-EN"),
-};
-
-export default {
-  // ...
-  interpolation: {
-    format: (value, format, lang) => {
-      if (format === "number") return formatters[lang].format(value);
-      return value;
-    },
-  },
-};
-```
+:::
 
 In English:
 
@@ -567,7 +720,7 @@ t(
   { count: 1 },
   {
     fallback: "fallback-key",
-  },
+  }
 );
 ```
 
@@ -579,7 +732,7 @@ t(
   { count: 42 },
   {
     fallback: ["fallback-key", "fallback-key-2"],
-  },
+  }
 );
 ```
 
@@ -687,6 +840,25 @@ If omitted or passed as `true` _(By default is `true`)_, it returns an empty str
 
 If passed as `false`, returns the key name itself.
 
+:::tabs key:language
+==js
+
+```js filename="src/i18n/index.js"
+import en from './messages/en.json';
+import es from './messages/es.json';
+
+const i18nConfig = {
+  defaultLocale: "en",
+  locales: ["en", "es"],
+  messages: { en, es }
+  allowEmptyStrings: false,
+};
+
+export default i18nConfig;
+```
+
+==ts
+
 ```ts filename="src/i18n/index.ts"
 import { I18nConfig } from "brisa";
 
@@ -702,6 +874,8 @@ const i18nConfig: I18nConfig<typeof en> = {
 
 export default i18nConfig;
 ```
+
+:::
 
 Now `t('hello')` returns `"hello"` instead of an empty string `""`.
 
@@ -737,12 +911,24 @@ During navigation you do **not** have to add the locale in the `href` of the `a`
 
 The fact of not adding the locale Brisa takes care of transforming the link:
 
+:::tabs key:language
+==js
+
 ```js
+function MyComponent({}, { i18n }) {
+  return <a href="/about-us">{t("about-us")}</a>;
+}
+```
+
+==ts
+
+```ts
 function MyComponent({}, { i18n: { t } }) {
   return <a href="/about-us">{t("about-us")}</a>;
 }
 ```
 
+:::
 Will be transformed to this HTML in `es`:
 
 ```html
@@ -752,6 +938,33 @@ Will be transformed to this HTML in `es`:
 ## Transition between locales
 
 As long as you do not put the locale in the `href` of `a` tag, then no conversion is done. It is useful to change the language:
+
+:::tabs key:language
+==js
+
+```js filename="src/components/change-locale.js" switcher
+export function ChangeLocale(props: {}, { i18n, route }) {
+  const { locales, locale, pages, t } = i18n;
+
+  return (
+    <ul>
+      {locales.map((lang) => {
+        const pathname = pages[route.name]?.[lang] ?? route.pathname;
+
+        if (lang === locale) return null;
+
+        return (
+          <li key={lang}>
+            <a href={`/${lang}${pathname}`}>{t(`change-to-${lang}`)}</a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+```
+
+==ts
 
 ```tsx filename="src/components/change-locale.tsx" switcher
 import { type RequestContext } from "brisa";
@@ -777,27 +990,7 @@ export function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
 }
 ```
 
-```js filename="src/components/change-locale.js" switcher
-export function ChangeLocale(props: {}, { i18n, route }) {
-  const { locales, locale, pages, t } = i18n;
-
-  return (
-    <ul>
-      {locales.map((lang) => {
-        const pathname = pages[route.name]?.[lang] ?? route.pathname;
-
-        if (lang === locale) return null;
-
-        return (
-          <li key={lang}>
-            <a href={`/${lang}${pathname}`}>{t(`change-to-${lang}`)}</a>
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-```
+:::
 
 ## Leveraging the `BRISA_LOCALE` cookie
 
@@ -857,15 +1050,29 @@ The `finalURL` is a field you have access to in the [RequestContext](/building-y
 
 For example, if the user enters to `/es/sobre-nosotros/` the `finalURL` can be `/about-us` because your page is in `src/pages/about-us/index.tsx`.
 
+:::tabs key:language
+==js
+
+```jsx
+export default function SomeComponent({}, { i18n, finalURL, route }) {
+  console.log(`${finalURL} - ${i18n.locale} - ${route.pathname}`);
+  // /about-us - es - /es/sobre-nosotros/
+}
+```
+
+==ts
+
 ```tsx
 export default function SomeComponent(
   {},
-  { i18n, finalURL, route }: RequestContext,
+  { i18n, finalURL, route }: RequestContext
 ) {
   console.log(`${finalURL} - ${i18n.locale} - ${route.pathname}`);
   // /about-us - es - /es/sobre-nosotros/
 }
 ```
+
+:::
 
 ## Translate in your web components
 
@@ -873,17 +1080,49 @@ Brisa's web components allow direct consumption of translation keys within the c
 
 Brisa intelligently identifies and imports only the necessary translation keys required by a web component. This eliminates unnecessary overhead, ensuring optimal performance by importing only the keys relevant to the component's functionality.
 
+:::tabs key:language
+==js
+
+```jsx
+export default function WebComponent({}, { i18n }) {
+  return <h2>{i18n.t("hello-world")}</h2>;
+}
+```
+
+==ts
+
 ```tsx
 export default function WebComponent({}, { i18n }: WebContext) {
   return <h2>{i18n.t("hello-world")}</h2>;
 }
 ```
 
+:::
+
 ### Dynamic keys
 
 Brisa excels in supporting dynamic translation keys at the web component level using the `i18nKeys` feature. This becomes particularly valuable when managing dynamic content, such as generating translation keys based on runtime variables.
 
 Consider the example below:
+
+:::tabs key:language
+==js
+
+```jsx
+export default function Item({ itemId }, { i18n }) {
+  return (
+    <>
+      <h2>{t(`item.${itemId}.title`)}</h2>
+      <p>{t(`item.${itemId}.description`)}</p>
+      <a href={`/item/${itemId}`}>{t("more")}</a>
+    </>
+  );
+}
+
+Item.i18nKeys = [/item.*(title|description)/];
+```
+
+==ts
 
 ```tsx
 export default function Item({ itemId }, { i18n: { t } }: WebContext) {
@@ -898,6 +1137,8 @@ export default function Item({ itemId }, { i18n: { t } }: WebContext) {
 
 Item.i18nKeys = [/item.*(title|description)/];
 ```
+
+:::
 
 In this scenario, the static key `more` imports seamlessly, while the other dynamic keys require explicit specification in `Item.i18nKeys`. The `i18nKeys` field accepts both [`string`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) and [`RegExp`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) types for flexibility.
 
