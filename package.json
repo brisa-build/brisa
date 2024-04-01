@@ -40,5 +40,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "vitepress-plugin-tabs": "^0.5.0"
+  }
 }
