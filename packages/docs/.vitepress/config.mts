@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import { tabsMarkdownPlugin } from "vitepress-plugin-tabs";
 
 const pkg = require("../package.json");
 
@@ -9,6 +10,9 @@ export default defineConfig({
   ignoreDeadLinks: true,
   lastUpdated: true,
   markdown: {
+    config(md) {
+      md.use(tabsMarkdownPlugin);
+    },
     theme: {
       light: "github-light",
       dark: "github-dark",
