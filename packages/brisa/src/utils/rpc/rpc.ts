@@ -6,7 +6,6 @@ const $document = document;
 const $window = window;
 const stringify = JSON.stringify;
 const $Promise = Promise;
-let resolveRPC: ((res: Response) => Promise<void>) | undefined;
 let isReady = false;
 
 /**
@@ -25,7 +24,7 @@ async function rpc(
   const elementsWithIndicator = [];
   const store = $window._s;
 
-  let promise = resolveRPC
+  let promise = $window._rpc
     ? $Promise.resolve()
     : new $Promise((res) => {
         let scriptElement = $document.createElement("script");
@@ -64,12 +63,7 @@ async function rpc(
     if (res.ok) {
       await promise;
 
-      if (!resolveRPC) {
-        resolveRPC = $window._rpc;
-        delete $window._rpc;
-      }
-
-      await resolveRPC!(res);
+      await $window._rpc(res);
     } else {
       store?.set(errorIndicator, await res.text());
     }

@@ -1,5 +1,5 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { describe, expect, it, afterEach } from "bun:test";
+import { describe, expect, it, afterEach, mock, beforeAll } from "bun:test";
 
 let resolveRPC: (res: Response) => Promise<void>;
 
@@ -90,7 +90,7 @@ describe("utils", () => {
     });
 
     describe("when receive streamed HTML", () => {
-      it("should updates only the text", async () => {
+      it("should call the diff-dom-streaming library", async () => {
         const encoder = new TextEncoder();
         const stream = new ReadableStream({
           start(controller) {
@@ -105,13 +105,14 @@ describe("utils", () => {
             controller.close();
           },
         });
-        const res = new Response(stream);
+        const res = new Response(stream, {
+          headers: { "content-type": "text/html" },
+        });
 
         await initBrowser();
         document.body.innerHTML = '<div class="foo">Foo</div>';
 
         await resolveRPC(res);
-
         expect(document.body.innerHTML).toBe('<div class="foo">Bar</div>');
       });
     });

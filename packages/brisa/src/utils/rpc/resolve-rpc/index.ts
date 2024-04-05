@@ -1,5 +1,4 @@
-import htmlStreamWalker from "parse-html-stream/walker";
-import diff from "../diff";
+import diff from "diff-dom-streaming";
 
 async function resolveRPC(res: Response) {
   const urlToNavigate = res.headers.get("X-Navigate");
@@ -23,13 +22,9 @@ async function resolveRPC(res: Response) {
     return;
   }
 
-  if (!res.body) return;
+  if (!res.body || !res.headers.get("content-type")) return;
 
-  const reader = res.body.getReader();
-  const walker = await htmlStreamWalker(reader);
-  const rootNode = walker.rootNode!;
-
-  await diff(document, rootNode, walker);
+  await diff(document, res.body.getReader());
 }
 
 window._rpc = resolveRPC;
