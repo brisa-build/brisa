@@ -1349,8 +1349,6 @@ describe("integration", () => {
 
       testComponent.remove();
 
-      await Bun.sleep(100);
-
       expect(window.mockEffect).toHaveBeenCalledTimes(1);
       expect(window.mockCleanup).toHaveBeenCalledTimes(1);
     });
