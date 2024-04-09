@@ -443,7 +443,7 @@ export default async function DynamicDictionary({}, { state, i18n }) {
       await i18n.overrideMessages(async (messages) => ({
         ...messages,
         dynamicDictionary: await fetch(/* some url */).then((res) =>
-          res.json()
+          res.json(),
         ),
       }));
     }
@@ -469,7 +469,7 @@ import type { WebContext } from "brisa";
 
 export default async function DynamicDictionary(
   {},
-  { state, i18n }: WebContext
+  { state, i18n }: WebContext,
 ) {
   const open = state<boolean>(false);
   let isDictionaryLoaded = false;
@@ -481,7 +481,7 @@ export default async function DynamicDictionary(
       await i18n.overrideMessages(async (messages) => ({
         ...messages,
         dynamicDictionary: await fetch(/* some url */).then((res) =>
-          res.json()
+          res.json(),
         ),
       }));
     }
@@ -720,7 +720,7 @@ t(
   { count: 1 },
   {
     fallback: "fallback-key",
-  }
+  },
 );
 ```
 
@@ -732,7 +732,7 @@ t(
   { count: 42 },
   {
     fallback: ["fallback-key", "fallback-key-2"],
-  }
+  },
 );
 ```
 
@@ -1065,7 +1065,7 @@ export default function SomeComponent({}, { i18n, finalURL, route }) {
 ```tsx
 export default function SomeComponent(
   {},
-  { i18n, finalURL, route }: RequestContext
+  { i18n, finalURL, route }: RequestContext,
 ) {
   console.log(`${finalURL} - ${i18n.locale} - ${route.pathname}`);
   // /about-us - es - /es/sobre-nosotros/

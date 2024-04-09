@@ -250,6 +250,34 @@ export async function GET() {
 }
 ```
 
+## Webhooks
+
+Webhooks are useful for receiving real-time notifications or events from external services or systems. These notifications are typically triggered by specific events and are sent as HTTP `POST` requests to a predefined URL endpoint in your Brisa application.
+
+```ts filename="/api/webhook.ts" switcher
+import { type RequestContext } from "brisa";
+
+export async function POST(req: RequestContext) {
+  const { event, eventData } = await req.json()
+
+  try {
+    // Perform actions based on the event and data received
+    return new Response("Webhook received and processed successfully", { status: 200 });
+  } catch (err) {
+    return new Response("Error processing webhook", { status: 500 });
+  }
+```
+
+### Security Considerations
+
+When implementing webhook endpoints, it's essential to consider security measures to prevent unauthorized access or tampering with the webhook requests. Some best practices include:
+
+- **Authentication**: Verify the authenticity of incoming webhook requests using authentication mechanisms such as API keys, tokens, or signatures.
+- **Validation**: Validate the incoming webhook payload to ensure that it meets expected format and data integrity requirements.
+- **Rate Limiting**: Implement rate limiting to prevent abuse or excessive usage of webhook endpoints.
+
+By implementing these security measures, you can ensure the reliability and integrity of your webhook-based integrations in Brisa.
+
 ## Edge API Routes
 
 TODO
