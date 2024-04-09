@@ -818,6 +818,30 @@ describe("utils", () => {
       );
     });
 
+    it("should render the unsuspense part inside the html tag (when exists)", async () => {
+      const Component = async () => {
+        await Bun.sleep(0); // Next clock tick
+        return <div>Test</div>;
+      };
+
+      Component.suspense = () => <b>Loading...</b>;
+
+      const Page = () => (
+        <html>
+          <head></head>
+          <body>
+            <Component />
+          </body>
+        </html>
+      );
+
+      const stream = renderToReadableStream(<Page />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toBe(
+        `<html><head></head><body><div id="S:1"><b>Loading...</b></div></body><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script></html>`,
+      );
+    });
+
     it("should render the rest of HTML meanhile the suspense component is loading", async () => {
       const Component = async () => {
         await Bun.sleep(0); // Next clock tick

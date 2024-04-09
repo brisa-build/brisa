@@ -200,7 +200,7 @@ async function enqueueDuringRendering(
           isNextInSlottedPosition,
         );
 
-        controller.endTag(`</div>`, suspenseId);
+        await controller.endTag(`</div>`, suspenseId);
 
         return controller.suspensePromise(
           enqueueComponent(
@@ -372,7 +372,7 @@ async function enqueueDuringRendering(
     manageContextProviderCompletion();
 
     // Node tag end
-    controller.endTag(isTagToIgnore ? null : `</${type}>`, suspenseId);
+    await controller.endTag(isTagToIgnore ? null : `</${type}>`, suspenseId);
   }
 }
 

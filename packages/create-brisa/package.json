@@ -22,9 +22,9 @@
   "bin": {
     "create-brisa": "./create-brisa.cjs"
   },
-  "packageManager": "bun@1.0.35",
+  "packageManager": "bun@1.1.2",
   "engines": {
-    "bun": ">= 1.0.35",
+    "bun": ">= 1.1.2",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"

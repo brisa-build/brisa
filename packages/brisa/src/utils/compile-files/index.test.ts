@@ -268,7 +268,7 @@ describe("utils", () => {
     ${info}λ /pages/page-with-web-component | 409 B     | ${greenLog("4 kB")} 
     ${info}λ /pages/somepage                | 396 B     | ${greenLog("0 B")} 
     ${info}λ /pages/somepage-with-context   | 324 B     | ${greenLog("0 B")} 
-    ${info}λ /pages/index                   | 550 B     | ${greenLog("2 kB")}  
+    ${info}λ /pages/index                   | 550 B     | ${greenLog("3 kB")}  
     ${info}λ /pages/user/[username]         | 183 B     | ${greenLog("0 B")}
     ${info}ƒ /middleware                    | 738 B     |
     ${info}λ /api/example                   | 283 B     |
