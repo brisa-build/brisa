@@ -22,9 +22,9 @@ If user locale is `nl-BE` and it is not listed in your configuration, they will 
 If you don't plan to support all regions of a country, it is therefore a good practice to include country locales that will act as fallbacks.
 
 :::tabs key:language
-==js
+==src/i18n.js
 
-```js filename="src/i18n.js" switcher
+```js
 export default {
   // These are all the locales you want to support in
   // your application
@@ -45,9 +45,9 @@ export default {
 };
 ```
 
-==ts
+==src/i18n.ts
 
-```ts filename="src/i18n.ts" switcher
+```ts
 import { I18nConfig } from "brisa";
 
 const i18nConfig: I18nConfig = {
