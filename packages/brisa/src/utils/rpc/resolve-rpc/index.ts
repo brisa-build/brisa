@@ -1,5 +1,6 @@
-// import parseHTMLStream, { getNextNode } from "../parse-html-stream";
-import diff from "../diff";
+import diff from "diff-dom-streaming";
+
+const unsuspenseRegex = new RegExp("^R:(\\d+)$");
 
 async function resolveRPC(res: Response) {
   const urlToNavigate = res.headers.get("X-Navigate");
@@ -23,12 +24,17 @@ async function resolveRPC(res: Response) {
     return;
   }
 
-  // This is temporal meanwhile the diffing algorithm is not working with streaming
-  const html = await res.text();
+  if (!res.body || !res.headers.get("content-type")) return;
 
-  if (!html) return;
-
-  await diff(document, html);
+  await diff(document, res.body.getReader(), (node) => {
+    // Unsuspense scripts
+    if (node.nodeName === "SCRIPT") {
+      const unsuspenseId = (node as Element).id.match(unsuspenseRegex)?.[1];
+      if (unsuspenseId) {
+        window.u$?.(unsuspenseId);
+      }
+    }
+  });
 }
 
 window._rpc = resolveRPC;

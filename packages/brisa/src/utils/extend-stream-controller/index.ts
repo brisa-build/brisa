@@ -89,9 +89,11 @@ export default function extendStreamController(
 
       return suspensedMap.set(suspenseId, state);
     },
-    endTag(chunk, suspenseId) {
+    async endTag(chunk, suspenseId) {
       if (!suspenseId) {
         noSuspensedCloseTags++;
+        // unsuspense inside the document html
+        if (chunk === "</html>") await this.waitSuspensedPromises();
         // chunk=null when is a fragment
         if (chunk) controller.enqueue(chunk);
         return this.flushAllReady();
