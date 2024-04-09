@@ -1,8 +1,7 @@
 <p align="center">
   <a href="https://brisa.build">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/brisa-build/brisa/assets/13313058/8c22bfcd-7eaf-42fd-b571-574067fa50ff" height="128">
-      <img src="https://github.com/brisa-build/brisa/assets/13313058/8c22bfcd-7eaf-42fd-b571-574067fa50ff" height="128">
+      <img src="https://github.com/brisa-build/brisa/assets/13313058/06a1967f-d6e8-4497-ba6d-51b176abf663" height="128">
     </picture>
     <h1 align="center">Brisa</h1>
   </a>
