@@ -45,6 +45,7 @@ if (I18N_CONFIG?.pages) {
 const defaultConfig = {
   trailingSlash: false,
   assetPrefix: "",
+  basePath: "",
   extendPlugins: (plugins: BunPlugin[]) => plugins,
   output: "server",
 };

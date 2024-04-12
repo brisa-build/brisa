@@ -759,7 +759,21 @@ export type Configuration = {
   extendPlugins?: ExtendPlugins;
 
   /**
-   * @todo TODO: implement it
+   * Description:
+   *
+   * The `basePath` config property is used to set the base path of the application.
+   *
+   * Example:
+   *
+   * ```ts
+   * basePath: '/my-app'
+   * ```
+   *
+   * Then, the URL `/about` will be redirected to `/my-app/about`.
+   *
+   * Docs:
+   *
+   * - [How to use `basePath`](https://brisa.build/building-your-application/configuring/base-path)
    */
   basePath?: string;
 
