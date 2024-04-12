@@ -6,6 +6,7 @@ import { redirect, redirectFromUnnormalizedURL } from ".";
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const ASSETS_DIR = path.join(ROOT_DIR, "public");
 const PAGES_DIR = path.join(ROOT_DIR, "pages");
+const BASE_PATHS = ["", "/foo", "/foo/bar"];
 
 describe("utils", () => {
   describe("redirect", () => {
@@ -16,7 +17,7 @@ describe("utils", () => {
     });
   });
 
-  describe("redirectFromUnnormalizedURL", () => {
+  describe.each(BASE_PATHS)("redirectFromUnnormalizedURL %s", (basePath) => {
     describe("WHEN trailingSlash is true and i18n is defined", () => {
       beforeEach(() => {
         globalThis.mockConstants = {
@@ -31,6 +32,7 @@ describe("utils", () => {
           },
           CONFIG: {
             trailingSlash: true,
+            basePath,
           },
         };
       });
@@ -45,7 +47,9 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(307);
-        expect(response.headers.get("location")).toBe(url.toString());
+        expect(response.headers.get("location")).toBe(
+          `https://example.com${basePath}/`,
+        );
       });
 
       it("should return a 301 response if the origin of the given url is the same as the origin of the current request", () => {
@@ -55,7 +59,7 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get("location")).toBe("/en/");
+        expect(response.headers.get("location")).toBe(`${basePath}/en/`);
       });
 
       it("should return a 301 response if the given url is an asset request", () => {
@@ -66,7 +70,7 @@ describe("utils", () => {
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
         expect(response.headers.get("location")).toBe(
-          "https://example.com/favicon.ico",
+          `https://example.com${basePath}/favicon.ico`,
         );
       });
 
@@ -77,7 +81,7 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get("location")).toBe("/en/foo/");
+        expect(response.headers.get("location")).toBe(`${basePath}/en/foo/`);
       });
 
       it("should return a 301 response if the given url is not an asset request and not an action request and the redirectTrailingSlash function returns a response", () => {
@@ -87,7 +91,7 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get("location")).toBe("/en/foo/");
+        expect(response.headers.get("location")).toBe(`${basePath}/en/foo/`);
       });
     });
     describe("WHEN trailingSlash is false and i18n is defined", () => {
@@ -104,6 +108,7 @@ describe("utils", () => {
           },
           CONFIG: {
             trailingSlash: false,
+            basePath,
           },
         };
       });
@@ -118,7 +123,9 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(307);
-        expect(response.headers.get("location")).toBe(url.toString());
+        expect(response.headers.get("location")).toBe(
+          `https://example.com${basePath}/`,
+        );
       });
 
       it("should return a 301 response if the origin of the given url is the same as the origin of the current request", () => {
@@ -128,7 +135,7 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get("location")).toBe("/en");
+        expect(response.headers.get("location")).toBe(`${basePath}/en`);
       });
 
       it("should return a 301 response if the given url is an asset request", () => {
@@ -139,7 +146,7 @@ describe("utils", () => {
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
         expect(response.headers.get("location")).toBe(
-          "https://example.com/favicon.ico",
+          `https://example.com${basePath}/favicon.ico`,
         );
       });
 
@@ -150,7 +157,7 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get("location")).toBe("/en/foo");
+        expect(response.headers.get("location")).toBe(`${basePath}/en/foo`);
       });
     });
 
@@ -162,6 +169,7 @@ describe("utils", () => {
           BUILD_DIR: PAGES_DIR,
           CONFIG: {
             trailingSlash: true,
+            basePath,
           },
         };
       });
@@ -176,7 +184,9 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(307);
-        expect(response.headers.get("location")).toBe(url.toString());
+        expect(response.headers.get("location")).toBe(
+          `https://example.com${basePath}/`,
+        );
       });
 
       it("should return a 301 response if the origin of the given url is the same as the origin of the current request", () => {
@@ -186,7 +196,9 @@ describe("utils", () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get("location")).toBe(url.toString());
+        expect(response.headers.get("location")).toBe(
+          `https://example.com${basePath}/`,
+        );
       });
 
       it("should return a 301 response if the given url is an asset request", () => {
@@ -197,7 +209,7 @@ describe("utils", () => {
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
         expect(response.headers.get("location")).toBe(
-          "https://example.com/favicon.ico",
+          `https://example.com${basePath}/favicon.ico`,
         );
       });
 
@@ -209,7 +221,7 @@ describe("utils", () => {
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
         expect(response.headers.get("location")).toBe(
-          "https://example.com/foo/",
+          `https://example.com${basePath}/foo/`,
         );
       });
     });
