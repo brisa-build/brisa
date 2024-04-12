@@ -82,14 +82,11 @@ export async function getServeOptions() {
         id: requestId,
       });
       const url = new URL(request.finalURL);
-      const assetPath = path.join(ASSETS_DIR, url.pathname);
-      const isHome = url.pathname === "/";
-      const isClientPage = url.pathname.startsWith(PUBLIC_CLIENT_PAGE_SUFFIX);
-      const isAnAsset = !isHome && fs.existsSync(assetPath);
 
-      // This parameter is added after "notFound" function call, during the stream
       if (
+        // This parameter is added after "notFound" function call, during the stream
         url.searchParams.get("_not-found") ||
+        // Ignore requests that are not from the basePath
         !url.pathname.startsWith(basePath)
       ) {
         return error404(request);
@@ -101,6 +98,10 @@ export async function getServeOptions() {
         url.pathname = url.pathname.replace(basePath, "");
       }
 
+      const isClientPage = url.pathname.startsWith(PUBLIC_CLIENT_PAGE_SUFFIX);
+      const isHome = url.pathname === "/";
+      const assetPath = path.join(ASSETS_DIR, url.pathname);
+      const isAnAsset = !isHome && fs.existsSync(assetPath);
       const i18nRes = isAnAsset ? {} : handleI18n(request);
 
       if (isClientPage) {
