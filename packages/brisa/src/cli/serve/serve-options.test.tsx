@@ -17,6 +17,7 @@ import type { RequestContext } from "@/types";
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
 const ASSETS_DIR = path.join(BUILD_DIR, "public");
+const BASE_PATHS = ["", "/some-dir", "/es", "/some/dir"];
 
 async function testRequest(
   request: Request,
@@ -35,7 +36,7 @@ async function testRequest(
   );
 }
 
-describe("CLI: serve", () => {
+describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
   beforeEach(async () => {
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
@@ -47,6 +48,9 @@ describe("CLI: serve", () => {
       I18N_CONFIG: {
         locales: ["en", "es"],
         defaultLocale: "es",
+      },
+      CONFIG: {
+        basePath,
       },
     };
   });
@@ -128,7 +132,7 @@ describe("CLI: serve", () => {
   it("should no fetch anything when server upgrades to websocket", async () => {
     const upgrade = true;
     const response = await testRequest(
-      new Request(`http:///localhost:1234/somepage`),
+      new Request(`http:///localhost:1234${basePath}/somepage`),
       upgrade,
     );
 
@@ -140,7 +144,7 @@ describe("CLI: serve", () => {
     const response = await testRequest(
       // "throws-error" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        "http://localhost:1234/es/page-with-web-component?throws-error=1",
+        `http://localhost:1234${basePath}/es/page-with-web-component?throws-error=1`,
       ),
     );
     const html = await response.text();
@@ -161,7 +165,7 @@ describe("CLI: serve", () => {
     const response = await testRequest(
       // "redirect" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        "http://localhost:1234/es/page-with-web-component?redirect=1",
+        `http://localhost:1234${basePath}/es/page-with-web-component?redirect=1`,
       ),
     );
 
@@ -173,13 +177,13 @@ describe("CLI: serve", () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        "http://localhost:1234/es/page-with-web-component?navigate=/es/somepage",
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/es/somepage`,
       ),
     );
 
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "http://localhost:1234/es/somepage",
+      `http://localhost:1234${basePath}/es/somepage`,
     );
   });
 
@@ -187,25 +191,25 @@ describe("CLI: serve", () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        "http://localhost:1234/es/page-with-web-component?navigate=/somepage",
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/somepage`,
       ),
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get("Location")).toBe("/es/somepage");
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/somepage`);
   });
 
   it("should navigate removing trailing slash when the middleware throws a navigate error", async () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        "http://localhost:1234/es/page-with-web-component?navigate=/es/somepage/",
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/es/somepage/`,
       ),
     );
 
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "http://localhost:1234/es/somepage",
+      `http://localhost:1234${basePath}/es/somepage`,
     );
   });
 
@@ -213,31 +217,33 @@ describe("CLI: serve", () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        "http://localhost:1234/es/page-with-web-component?navigate=/somepage/",
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/somepage/`,
       ),
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get("Location")).toBe("/es/somepage");
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/somepage`);
   });
 
   it("should navigate to an external url without i18n and trailing slash when the middleware throws a navigate error", async () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        "http://localhost:1234/es/page-with-web-component?navigate=https://brisa.build/foo/",
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=https://brisa.build/foo/`,
       ),
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get("Location")).toBe("https://brisa.build/foo/");
+    expect(response.headers.get("Location")).toBe(
+      `https://brisa.build${basePath}/foo/`,
+    );
   });
 
   it("should return 404 page when the middleware throws a not found error", async () => {
     const response = await testRequest(
       // "throws-not-found" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        "http://localhost:1234/es/page-with-web-component?throws-not-found=1",
+        `http://localhost:1234${basePath}/es/page-with-web-component?throws-not-found=1`,
       ),
     );
     const html = await response.text();
@@ -256,7 +262,7 @@ describe("CLI: serve", () => {
 
   it("should return 404 page without redirect to the locale if the page doesn't exist", async () => {
     const response = await testRequest(
-      new Request("http://localhost:1234/not-found-page"),
+      new Request(`http://localhost:1234${basePath}/not-found-page`),
     );
     const html = await response.text();
 
@@ -278,7 +284,7 @@ describe("CLI: serve", () => {
       PAGE_404: "",
     };
     const response = await testRequest(
-      new Request("http://localhost:1234/not-found-page"),
+      new Request(`http://localhost:1234${basePath}/not-found-page`),
     );
     const text = await response.text();
 
@@ -290,11 +296,12 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
         trailingSlash: true,
       },
     };
     const response = await testRequest(
-      new Request("http://localhost:1234/es/not-found-page"),
+      new Request(`http://localhost:1234${basePath}/es/not-found-page`),
     );
     const html = await response.text();
 
@@ -314,11 +321,12 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
         trailingSlash: true,
       },
     };
     const response = await testRequest(
-      new Request("http://localhost:1234/not-found-page"),
+      new Request(`http://localhost:1234${basePath}/not-found-page`),
     );
     const html = await response.text();
 
@@ -336,7 +344,7 @@ describe("CLI: serve", () => {
 
   it("should return 404 page", async () => {
     const response = await testRequest(
-      new Request("http://localhost:1234/es/not-found-page"),
+      new Request(`http://localhost:1234${basePath}/es/not-found-page`),
     );
     const html = await response.text();
 
@@ -355,7 +363,7 @@ describe("CLI: serve", () => {
   it("should return 404 page with a valid url but with the param _not-found in the query string", async () => {
     const response = await testRequest(
       new Request(
-        "http://localhost:1234/es/page-with-web-component?_not-found=1",
+        `http://localhost:1234${basePath}/es/page-with-web-component?_not-found=1`,
       ),
     );
     const html = await response.text();
@@ -374,7 +382,9 @@ describe("CLI: serve", () => {
 
   it("should return 200 page with client page code", async () => {
     const response = await testRequest(
-      new Request("http://localhost:1234/es/page-with-web-component"),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component`,
+      ),
     );
     const html = await response.text();
 
@@ -390,69 +400,56 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
-        basePath: "/docs",
+        basePath: "/incorrect",
       },
     };
     const response = await testRequest(
-      new Request("http://localhost:1234/es/page-with-web-component"),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component`,
+      ),
     );
     expect(response.status).toBe(404);
   });
 
-  it("should return 200 with basePath if the page exist", async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
-      CONFIG: {
-        basePath: "/docs",
-      },
-    };
-    const response = await testRequest(
-      new Request("http://localhost:1234/docs/es/page-with-web-component"),
-    );
-    const html = await response.text();
-
-    expect(response.status).toBe(200);
-    expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/page-with-web-component.tsx"></script>`,
-    );
-    expect(html).toContain("<web-component></web-component>");
-  });
-
   it("should redirect the home to the correct locale", async () => {
-    const response = await testRequest(new Request("http://localhost:1234"));
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}`),
+    );
     expect(response.status).toBe(301);
-    expect(response.headers.get("Location")).toBe("/es");
+    expect(response.headers.get("Location")).toBe(`${basePath}/es`);
   });
 
   it("should redirect the home to the correct locale and trailingSlash", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
         trailingSlash: true,
       },
     };
-    const response = await testRequest(new Request("http://localhost:1234/"));
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/`),
+    );
     expect(response.status).toBe(301);
-    expect(response.headers.get("Location")).toBe("/es/");
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/`);
   });
 
   it("should redirect to the correct locale", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234/somepage`),
+      new Request(`http://localhost:1234${basePath}/somepage`),
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get("Location")).toBe("/es/somepage");
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/somepage`);
   });
 
   it("should redirect to the correct browser locale", async () => {
-    const req = new Request("http://localhost:1234/somepage");
+    const req = new Request(`http://localhost:1234${basePath}/somepage`);
 
     req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get("Location")).toBe("/en/somepage");
+    expect(response.headers.get("Location")).toBe(`${basePath}/en/somepage`);
   });
 
   it("should redirect to the correct default locale of the subdomain", async () => {
@@ -476,20 +473,20 @@ describe("CLI: serve", () => {
     };
 
     const response = await testRequest(
-      new Request("https://en.test.com/somepage"),
+      new Request(`https://en.test.com${basePath}/somepage`),
     );
 
     const responseEs = await testRequest(
-      new Request("https://es.test.com/somepage"),
+      new Request(`https://es.test.com${basePath}/somepage`),
     );
 
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage",
+      `https://en.test.com${basePath}/en/somepage`,
     );
     expect(responseEs.status).toBe(301);
     expect(responseEs.headers.get("Location")).toBe(
-      "http://es.test.com/es/somepage",
+      `http://es.test.com${basePath}/es/somepage`,
     );
   });
 
@@ -511,14 +508,14 @@ describe("CLI: serve", () => {
       },
     };
 
-    const req = new Request("https://es.test.com/somepage");
+    const req = new Request(`https://es.test.com${basePath}/somepage`);
 
     req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage",
+      `https://en.test.com${basePath}/en/somepage`,
     );
   });
 
@@ -545,14 +542,14 @@ describe("CLI: serve", () => {
       },
     };
 
-    const req = new Request("https://es.test.com/somepage");
+    const req = new Request(`https://es.test.com${basePath}/somepage`);
 
     req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage-en",
+      `https://en.test.com${basePath}/en/somepage-en`,
     );
   });
 
@@ -561,6 +558,7 @@ describe("CLI: serve", () => {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
       CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
         trailingSlash: true,
       },
       I18N_CONFIG: {
@@ -582,14 +580,14 @@ describe("CLI: serve", () => {
       },
     };
 
-    const req = new Request("https://es.test.com/somepage");
+    const req = new Request(`https://es.test.com${basePath}/somepage`);
 
     req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage-en/",
+      `https://en.test.com${basePath}/en/somepage-en/`,
     );
   });
 
@@ -611,13 +609,13 @@ describe("CLI: serve", () => {
       },
     };
 
-    const req = new Request("http://localhost:1234/somepage");
+    const req = new Request(`http://localhost:1234${basePath}/somepage`);
 
     req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get("Location")).toBe("/en/somepage");
+    expect(response.headers.get("Location")).toBe(`${basePath}/en/somepage`);
   });
 
   it("should redirect to the correct browser locale and changing the subdomain in development", async () => {
@@ -640,14 +638,14 @@ describe("CLI: serve", () => {
       },
     };
 
-    const req = new Request("http://localhost:1234/somepage");
+    const req = new Request(`http://localhost:1234${basePath}/somepage`);
 
     req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "https://en.test.com/en/somepage",
+      `https://en.test.com${basePath}/en/somepage`,
     );
   });
 
@@ -656,6 +654,7 @@ describe("CLI: serve", () => {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
       CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
         trailingSlash: true,
       },
       I18N_CONFIG: {
@@ -673,14 +672,14 @@ describe("CLI: serve", () => {
       },
     };
 
-    const req = new Request("http://es.test.com/somepage");
+    const req = new Request(`http://es.test.com${basePath}/somepage`);
 
     req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "http://en.test.com/en/somepage/",
+      `http://en.test.com${basePath}/en/somepage/`,
     );
   });
 
@@ -688,15 +687,16 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
         trailingSlash: true,
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234/es/somepage`),
+      new Request(`http://localhost:1234${basePath}/es/somepage`),
     );
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
-      "http://localhost:1234/es/somepage/",
+      `http://localhost:1234${basePath}/es/somepage/`,
     );
   });
 
@@ -704,19 +704,20 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
         trailingSlash: true,
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234/somepage`),
+      new Request(`http://localhost:1234${basePath}/somepage`),
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get("Location")).toBe("/es/somepage/");
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/somepage/`);
   });
 
   it("should return a page with layout and i18n", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234/es/somepage`),
+      new Request(`http://localhost:1234${basePath}/es/somepage`),
     );
     const html = await response.text();
     expect(response.status).toBe(200);
@@ -728,7 +729,7 @@ describe("CLI: serve", () => {
 
   it("should be possible to fetch an api route GET", async () => {
     const response = await testRequest(
-      new Request(`http:///localhost:1234/es/api/example`),
+      new Request(`http:///localhost:1234${basePath}/es/api/example`),
     );
     const json = await response.json();
 
@@ -740,29 +741,13 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
-        basePath: "/docs",
+        basePath: "/incorrect",
       },
     };
     const response = await testRequest(
-      new Request(`http:///localhost:1234/es/api/example`),
+      new Request(`http:///localhost:1234${basePath}/es/api/example`),
     );
     expect(response.status).toBe(404);
-  });
-
-  it("should be possible to fetch an api route GET with the correct basePath", async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
-      CONFIG: {
-        basePath: "/docs",
-      },
-    };
-    const response = await testRequest(
-      new Request(`http:///localhost:1234/docs/es/api/example`),
-    );
-    const json = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(json).toEqual({ hello: "world" });
   });
 
   it("should be possible to fetch an api route POST with a FormData", async () => {
@@ -772,7 +757,7 @@ describe("CLI: serve", () => {
     body.append("email", "test@brisa.com");
 
     const response = await testRequest(
-      new Request(`http:///localhost:1234/es/api/example`, {
+      new Request(`http:///localhost:1234${basePath}/es/api/example`, {
         method: "POST",
         body,
       }),
@@ -785,7 +770,7 @@ describe("CLI: serve", () => {
 
   it("should return 404 page if the api route does not exist", async () => {
     const response = await testRequest(
-      new Request(`http:///localhost:1234/es/api/not-found`),
+      new Request(`http:///localhost:1234${basePath}/es/api/not-found`),
     );
     const html = await response.text();
 
@@ -802,7 +787,7 @@ describe("CLI: serve", () => {
 
   it("should return 404 page if the api route exist but the method does not", async () => {
     const response = await testRequest(
-      new Request(`http:///localhost:1234/es/api/example`, {
+      new Request(`http:///localhost:1234${basePath}/es/api/example`, {
         method: "PUT",
       }),
     );
@@ -821,52 +806,8 @@ describe("CLI: serve", () => {
 
   it("should return an asset in gzip if the browser accept it", async () => {
     const textDecoder = new TextDecoder("utf-8");
-    const req = new Request(`http:///localhost:1234/some-dir/some-text.txt`, {
-      headers: {
-        "accept-encoding": "gzip",
-      },
-    });
-    const response = await testRequest(req);
-    const textBuffer = Bun.gunzipSync(
-      new Uint8Array(await response.arrayBuffer()),
-    );
-    const text = textDecoder.decode(textBuffer);
-
-    expect(response.status).toBe(200);
-    expect(response.headers.get("content-encoding")).toBe("gzip");
-    expect(response.headers.get("vary")).toBe("Accept-Encoding");
-    expect(response.headers.get("content-type")).toBe(
-      "text/plain;charset=utf-8",
-    );
-    expect(text).toBe("Some text :D");
-  });
-
-  it("should not return an asset with incorrect basePath", async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
-      CONFIG: {
-        basePath: "/docs",
-      },
-    };
-    const req = new Request(`http:///localhost:1234/some-dir/some-text.txt`, {
-      headers: {
-        "accept-encoding": "gzip",
-      },
-    });
-    const response = await testRequest(req);
-    expect(response.status).toBe(404);
-  });
-
-  it("should return an asset in gzip with a correct basePath", async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
-      CONFIG: {
-        basePath: "/some-dir",
-      },
-    };
-    const textDecoder = new TextDecoder("utf-8");
     const req = new Request(
-      "http:///localhost:1234/some-dir/some-dir/some-text.txt",
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
         headers: {
           "accept-encoding": "gzip",
@@ -888,6 +829,25 @@ describe("CLI: serve", () => {
     expect(text).toBe("Some text :D");
   });
 
+  it("should not return an asset with incorrect basePath", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        basePath: "/incorrect",
+      },
+    };
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          "accept-encoding": "gzip",
+        },
+      },
+    );
+    const response = await testRequest(req);
+    expect(response.status).toBe(404);
+  });
+
   it("should cache client page code in production", async () => {
     globalThis.mockConstants = {
       ...getConstants(),
@@ -903,7 +863,7 @@ describe("CLI: serve", () => {
         }) as BunFile,
     );
     const response = await testRequest(
-      new Request(`http:///localhost:1234/_brisa/pages/somepage`),
+      new Request(`http:///localhost:1234${basePath}/_brisa/pages/somepage`),
     );
 
     mockFile.mockRestore();
@@ -921,7 +881,7 @@ describe("CLI: serve", () => {
         }) as BunFile,
     );
     const response = await testRequest(
-      new Request(`http:///localhost:1234/_brisa/pages/somepage`),
+      new Request(`http:///localhost:1234${basePath}/_brisa/pages/somepage`),
     );
 
     mockFile.mockRestore();
@@ -1089,7 +1049,7 @@ describe("CLI: serve", () => {
     }));
 
     const res = await testRequest(
-      new Request("http://localhost:1234/somepage", {
+      new Request(`http://localhost:1234${basePath}/somepage`, {
         method: "GET",
         headers: {
           "x-action": "a1_1",
@@ -1114,7 +1074,7 @@ describe("CLI: serve", () => {
     }));
 
     await testRequest(
-      new Request("http://localhost:1234/somepage", {
+      new Request(`http://localhost:1234${basePath}/somepage`, {
         method: "POST",
         headers: {
           "x-action": "a1_1",
@@ -1134,7 +1094,7 @@ describe("CLI: serve", () => {
     }));
 
     await testRequest(
-      new Request("http://localhost:1234/es/somepage", {
+      new Request(`http://localhost:1234${basePath}/es/somepage`, {
         method: "POST",
         headers: {
           "x-action": "a1_1",
