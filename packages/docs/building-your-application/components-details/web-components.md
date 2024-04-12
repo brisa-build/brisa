@@ -1066,32 +1066,48 @@ Choosing between a **web component** and a **markup generator** depends on the n
 
 ## UI-agnostic
 
-If instead of using the Brisa mode you want to transform React, Vue, Svelte, Solid, Lit components, you can do it easily. Or even if you want to use native Web Components.
+By default the web components are from Brisa, this makes it easy to have access to many features such as signals and optimizations so that they take up very little bundle size.
 
-### Brisa
+However, in the end it translates to web components, if you want you can transform the web components from other frameworks such as React, Vue, Svelte, Lit or use native web components.
 
-TODO
+We know that Brisa is very new, and the community behind it is growing, but it is still small compared to other frameworks. We believe it is important that you can use native web components to reuse many existing libraries, such as [material components](https://github.com/material-components/material-web).
 
-### React
+### Native web components
 
-TODO
+All native web components can be located inside `web-components/_native` and consumed in your components.
 
-### Vue.js
+Example:
 
-TODO
+:::tabs key:language
+==web-components/\_native/some-native.ts
 
-### Svelte
+```tsx
+export default class SomeNative extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this.shadowRoot.innerHTML = "<h2>NATIVE WEB COMPONENT</h2>";
+  }
+}
+```
 
-TODO
+:::
 
-### Solid
+Then you can consume it with `<some-native />` depending the filename.
 
-TODO
+> [!TIP]
+>
+> In build-time is taken into account to import to your pages only the web components that the page is consuming, if it is not consumed, it will not be imported.
 
-### Lit
+### Components from React, Vue, Svelte...
 
-TODO
+We do not directly support a transformation of every component from another library to web components, but there are many alternatives that you can use:
 
-### Native
+- [React to web components](https://github.com/bitovi/react-to-web-component)
+- [Preact to web components](https://github.com/bitovi/react-to-web-component)
+- [Vue to web components](https://vuejs.org/guide/extras/web-components.html#definecustomelement)
+- [Svelte to web components](https://svelte.dev/docs/custom-elements-api)
 
-TODO
+> [!TIP]
+>
+> The transformation of UI components to custom elements should be the responsibility of each framework, Vue and Svelte currently support it in their core.
