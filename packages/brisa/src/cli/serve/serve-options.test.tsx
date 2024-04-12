@@ -861,12 +861,12 @@ describe("CLI: serve", () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
-        basePath: "/docs",
+        basePath: "/some-dir",
       },
     };
     const textDecoder = new TextDecoder("utf-8");
     const req = new Request(
-      "http:///localhost:1234/docs/some-dir/some-text.txt",
+      "http:///localhost:1234/some-dir/some-dir/some-text.txt",
       {
         headers: {
           "accept-encoding": "gzip",
