@@ -386,6 +386,39 @@ describe("CLI: serve", () => {
     expect(html).toContain("<web-component></web-component>");
   });
 
+  it("should return 404 page with client page code without the basePath", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        basePath: "/docs",
+      },
+    };
+    const response = await testRequest(
+      new Request("http://localhost:1234/es/page-with-web-component"),
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("should return 200 with basePath if the page exist", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        basePath: "/docs",
+      },
+    };
+    const response = await testRequest(
+      new Request("http://localhost:1234/docs/es/page-with-web-component"),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain(
+      `<script async fetchpriority="high" src="/_brisa/pages/page-with-web-component.tsx"></script>`,
+    );
+    expect(html).toContain("<web-component></web-component>");
+  });
+
   it("should redirect the home to the correct locale", async () => {
     const response = await testRequest(new Request("http://localhost:1234"));
     expect(response.status).toBe(301);
@@ -696,6 +729,35 @@ describe("CLI: serve", () => {
   it("should be possible to fetch an api route GET", async () => {
     const response = await testRequest(
       new Request(`http:///localhost:1234/es/api/example`),
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json).toEqual({ hello: "world" });
+  });
+
+  it("should not be possible to fetch an api route GET without the correct basePath", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        basePath: "/docs",
+      },
+    };
+    const response = await testRequest(
+      new Request(`http:///localhost:1234/es/api/example`),
+    );
+    expect(response.status).toBe(404);
+  });
+
+  it("should be possible to fetch an api route GET with the correct basePath", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        basePath: "/docs",
+      },
+    };
+    const response = await testRequest(
+      new Request(`http:///localhost:1234/docs/es/api/example`),
     );
     const json = await response.json();
 

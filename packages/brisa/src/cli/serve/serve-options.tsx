@@ -61,6 +61,7 @@ export async function getServeOptions() {
   const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
   const customMiddleware = middlewareModule?.default;
   const tls = CONFIG?.tls;
+  const basePath = CONFIG?.basePath ?? "";
 
   // Options to start server
   return {
@@ -85,6 +86,21 @@ export async function getServeOptions() {
       const isHome = url.pathname === "/";
       const isClientPage = url.pathname.startsWith(PUBLIC_CLIENT_PAGE_SUFFIX);
       const isAnAsset = !isHome && fs.existsSync(assetPath);
+
+      // This parameter is added after "notFound" function call, during the stream
+      if (
+        url.searchParams.get("_not-found") ||
+        !url.pathname.startsWith(basePath)
+      ) {
+        return error404(request);
+      }
+
+      // Remove basePath from URL
+      if (basePath) {
+        request.finalURL = request.finalURL.replace(basePath, "");
+        url.pathname = url.pathname.replace(basePath, "");
+      }
+
       const i18nRes = isAnAsset ? {} : handleI18n(request);
 
       if (isClientPage) {
@@ -101,11 +117,6 @@ export async function getServeOptions() {
           pagesRouter.match(request).route || rootRouter.match(request).route
         );
       };
-
-      // This parameter is added after "notFound" function call, during the stream
-      if (url.searchParams.get("_not-found")) {
-        return error404(request);
-      }
 
       if (i18nRes.response) {
         return isValidRoute() ? i18nRes.response : error404(request);
