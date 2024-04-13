@@ -43,6 +43,7 @@ describe("integration", () => {
       GlobalRegistrator.register();
       const module = await import("../brisa-element");
       window.__WEB_CONTEXT_PLUGINS__ = false;
+      window.__BASE_PATH__ = "";
       window.brisaElement = module.default;
       window._on = module._on;
       window._off = module._off;

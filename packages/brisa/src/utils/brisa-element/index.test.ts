@@ -21,6 +21,7 @@ describe("utils", () => {
     beforeEach(async () => {
       GlobalRegistrator.register();
       window.__WEB_CONTEXT_PLUGINS__ = false;
+      window.__BASE_PATH__ = "";
       const module = await import(".");
       brisaElement = module.default;
       _on = module._on;
@@ -28,6 +29,7 @@ describe("utils", () => {
     });
     afterEach(() => {
       window.__WEB_CONTEXT_PLUGINS__ = false;
+      window.__BASE_PATH__ = "";
       GlobalRegistrator.unregister();
     });
     it("should work props and state with a counter", () => {
@@ -1357,6 +1359,98 @@ describe("utils", () => {
       testComponent.setAttribute("count", "2");
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>2</div>");
+    });
+
+    it("should render the attribute href and src without the basePath when it not come", () => {
+      function Test() {
+        return [
+          "div",
+          {},
+          [
+            ["a", { href: "/test" }, "link"],
+            ["img", { src: "/image.png" }, ""],
+          ],
+        ];
+      }
+
+      customElements.define("test-component", brisaElement(Test));
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        "a",
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        "img",
+      ) as HTMLImageElement;
+
+      expect(a.getAttribute("href")).toBe("/test");
+      expect(img.getAttribute("src")).toBe("/image.png");
+    });
+
+    it("should render the attribute href and src with the basePath when it comes", () => {
+      window.__BASE_PATH__ = "/base-path";
+      function Test() {
+        return [
+          "div",
+          {},
+          [
+            ["a", { href: "/test" }, "link"],
+            ["img", { src: "/image.png" }, ""],
+          ],
+        ];
+      }
+
+      customElements.define("test-component", brisaElement(Test));
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        "a",
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        "img",
+      ) as HTMLImageElement;
+
+      expect(a.getAttribute("href")).toBe("/base-path/test");
+      expect(img.getAttribute("src")).toBe("/base-path/image.png");
+    });
+
+    it("should render the attribute href and src without the basePath when the URL is full", () => {
+      window.__BASE_PATH__ = "/base-path";
+      function Test() {
+        return [
+          "div",
+          {},
+          [
+            ["a", { href: "https://example.com/test" }, "link"],
+            ["img", { src: "https://example.com/image.png" }, ""],
+          ],
+        ];
+      }
+
+      customElements.define("test-component", brisaElement(Test));
+
+      document.body.innerHTML = "<test-component />";
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        "a",
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        "img",
+      ) as HTMLImageElement;
+
+      expect(a.getAttribute("href")).toBe("https://example.com/test");
+      expect(img.getAttribute("src")).toBe("https://example.com/image.png");
     });
 
     it("should work multi conditionals renders", () => {
