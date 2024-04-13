@@ -1,5 +1,6 @@
 import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
+import { addBasePathToStringURL } from "@/utils/base-path";
 import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 
 export default function generateHrefLang(request: RequestContext) {
@@ -21,9 +22,9 @@ export default function generateHrefLang(request: RequestContext) {
 
       const url = getURLInAnotherLang(domain, lang, request);
       const urlWithoutTrailingSlash = url.toString().replace(/\/$/, "");
-      const finalUrl = `${urlWithoutTrailingSlash}${
-        CONFIG.trailingSlash ? "/" : ""
-      }`;
+      const finalUrl = addBasePathToStringURL(
+        `${urlWithoutTrailingSlash}${CONFIG.trailingSlash ? "/" : ""}`,
+      );
 
       return `<link rel="alternate" hreflang="${lang}" href="${finalUrl}" />`;
     })

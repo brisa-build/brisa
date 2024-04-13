@@ -5,13 +5,15 @@ import generateHrefLang from ".";
 import { getConstants } from "@/constants";
 import extendRequestContext from "@/utils/extend-request-context";
 
+const BASE_PATHS = ["", "/base-path", "/base/path"];
 const warn = console.warn.bind(console);
 const emptyI18n = {
   defaultLocale: "",
   locales: [],
   locale: "",
-  t: () => "",
+  t: () => "" as any,
   pages: {},
+  overrideMessages: () => ({}),
 };
 
 describe("utils", () => {
@@ -19,10 +21,11 @@ describe("utils", () => {
     globalThis.mockConstants = undefined;
     console.warn = warn;
   });
-  describe("generateHrefLang", () => {
+  describe.each(BASE_PATHS)("generateHrefLang %s", (basePath) => {
     it("should generate the hreflang with the rest of locales", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -49,13 +52,14 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="en" href="https://www.example.co.uk/en/somepage" />`,
+        `<link rel="alternate" hreflang="en" href="https://www.example.co.uk${basePath}/en/somepage" />`,
       );
     });
 
     it("should warn and return empty string if hrefLangOrigin is not a valid URL", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -92,6 +96,7 @@ describe("utils", () => {
     it("should work with hrefLangOrigin as string", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -115,13 +120,14 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="en" href="https://www.example.com/en/somepage" />`,
+        `<link rel="alternate" hreflang="en" href="https://www.example.com${basePath}/en/somepage" />`,
       );
     });
 
     it("should work with dynamic pages without translations", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -145,13 +151,14 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="en" href="https://www.example.com/en/somepage/1" />`,
+        `<link rel="alternate" hreflang="en" href="https://www.example.com${basePath}/en/somepage/1" />`,
       );
     });
 
     it("should work with dynamic pages with translations", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -176,13 +183,14 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1" />`,
+        `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1" />`,
       );
     });
 
     it("should return empty string if locale is not defined", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -211,6 +219,7 @@ describe("utils", () => {
     it("should work with catchAll routes with translations", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -235,13 +244,14 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/2/3" />`,
+        `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1/2/3" />`,
       );
     });
 
     it("should work with dynamic routes and rest dynamic with translations", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -268,13 +278,14 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
+        `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1/settings/2/3" />`,
       );
     });
 
     it("should work with multi supported locales", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en", "fr"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -302,13 +313,14 @@ describe("utils", () => {
       };
       const output = generateHrefLang(input);
       expect(output).toBe(
-        `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina" /><link rel="alternate" hreflang="fr" href="https://www.example.com/fr/quelquepage" />`,
+        `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina" /><link rel="alternate" hreflang="fr" href="https://www.example.com${basePath}/fr/quelquepage" />`,
       );
     });
 
     it("should work with dynamic routes and multi supported locales", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en", "fr", "it", "de"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -345,10 +357,10 @@ describe("utils", () => {
       const output = generateHrefLang(input);
       expect(output).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
-          `<link rel="alternate" hreflang="it" href="https://www.example.it/it/qualchepagina/1/impostazioni/2/3" />`,
-          `<link rel="alternate" hreflang="de" href="https://www.example.de/de/irgendwelcheseite/1/einstellungen/2/3" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1/settings/2/3" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr/quelquepage/1/parametres/2/3" />`,
+          `<link rel="alternate" hreflang="it" href="https://www.example.it${basePath}/it/qualchepagina/1/impostazioni/2/3" />`,
+          `<link rel="alternate" hreflang="de" href="https://www.example.de${basePath}/de/irgendwelcheseite/1/einstellungen/2/3" />`,
         ].join(""),
       );
     });
@@ -356,6 +368,7 @@ describe("utils", () => {
     it("should skip the hrefLang of some locale without domain in hrefLangOrigin", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en", "fr", "de"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -392,8 +405,8 @@ describe("utils", () => {
       const output = generateHrefLang(input);
       expect(output).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1/settings/2/3" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr/quelquepage/1/parametres/2/3" />`,
         ].join(""),
       );
     });
@@ -401,6 +414,7 @@ describe("utils", () => {
     it("should work with more I18nConfig and with already the language in the pathname", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -447,7 +461,7 @@ describe("utils", () => {
 
       expect(output).toBe(
         [
-          '<link rel="alternate" hreflang="en" href="https://test.com/en/about-us" />',
+          `<link rel="alternate" hreflang="en" href="https://test.com${basePath}/en/about-us" />`,
         ].join(""),
       );
     });
@@ -455,6 +469,7 @@ describe("utils", () => {
     it("should not generate hrefLang on 404 page (reserved pages)", () => {
       globalThis.mockConstants = {
         ...getConstants(),
+        CONFIG: { basePath },
         LOCALES_SET: new Set(["es", "en"]),
         I18N_CONFIG: {
           defaultLocale: "en",
@@ -489,6 +504,7 @@ describe("utils", () => {
         ...getConstants(),
         CONFIG: {
           trailingSlash: true,
+          basePath,
         },
         LOCALES_SET: new Set(["es", "en", "fr", "de"]),
         I18N_CONFIG: {
@@ -546,26 +562,26 @@ describe("utils", () => {
 
       expect(generateHrefLang(home)).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr/" />`,
         ].join(""),
       );
       expect(generateHrefLang(homeWithoutTrailingSlash)).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr/" />`,
         ].join(""),
       );
       expect(generateHrefLang(withTrailingSlash)).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3/" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3/" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1/settings/2/3/" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr/quelquepage/1/parametres/2/3/" />`,
         ].join(""),
       );
       expect(generateHrefLang(withoutTrailingSlash)).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3/" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3/" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1/settings/2/3/" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr/quelquepage/1/parametres/2/3/" />`,
         ].join(""),
       );
     });
@@ -575,6 +591,7 @@ describe("utils", () => {
         ...getConstants(),
         CONFIG: {
           trailingSlash: false,
+          basePath,
         },
         LOCALES_SET: new Set(["es", "en", "fr", "de"]),
         I18N_CONFIG: {
@@ -632,26 +649,26 @@ describe("utils", () => {
 
       expect(generateHrefLang(home)).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr" />`,
         ].join(""),
       );
       expect(generateHrefLang(homeWithoutTrailingSlash)).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr" />`,
         ].join(""),
       );
       expect(generateHrefLang(withTrailingSlash)).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1/settings/2/3" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr/quelquepage/1/parametres/2/3" />`,
         ].join(""),
       );
       expect(generateHrefLang(withoutTrailingSlash)).toBe(
         [
-          `<link rel="alternate" hreflang="es" href="https://www.example.com/es/alguna-pagina/1/settings/2/3" />`,
-          `<link rel="alternate" hreflang="fr" href="https://www.example.fr/fr/quelquepage/1/parametres/2/3" />`,
+          `<link rel="alternate" hreflang="es" href="https://www.example.com${basePath}/es/alguna-pagina/1/settings/2/3" />`,
+          `<link rel="alternate" hreflang="fr" href="https://www.example.fr${basePath}/fr/quelquepage/1/parametres/2/3" />`,
         ].join(""),
       );
     });
