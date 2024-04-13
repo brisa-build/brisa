@@ -73,10 +73,10 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "14.7.1",
     "@types/bun": "1.0.12",
-    "brisa": "0.0.40"
+    "brisa": "0.0.42"
   },
   "peerDependencies": {
-    "typescript": "5.4.4"
+    "typescript": "5.4.5"
   },
   "dependencies": {
     "astring": "1.8.6",

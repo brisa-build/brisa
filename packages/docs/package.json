@@ -18,7 +18,7 @@
     "preview": "vitepress preview ."
   },
   "devDependencies": {
-    "vitepress": "1.0.1",
+    "vitepress": "1.1.0",
     "vitepress-plugin-tabs": "0.5.0"
   },
   "engines": {
