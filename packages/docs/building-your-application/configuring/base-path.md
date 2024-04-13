@@ -32,3 +32,7 @@ When linking to other pages using the anchor HTML element (`a`) the `basePath` w
 For example, using `/about` will automatically become `/docs/about` when `basePath` is set to `/docs`.
 
 This makes sure that you don't have to change all links in your application when changing the `basePath` value.
+
+## Media via `src` attribute
+
+Consuming media with the `src` field (`video`, `img`...), if the path is relative the `basePath` is also added by default.
