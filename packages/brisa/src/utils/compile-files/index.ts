@@ -43,7 +43,10 @@ export default async function compileFiles() {
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
   const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
   const actionsEntrypoints: string[] = [];
-  const define = { __DEV__: (!IS_PRODUCTION).toString() };
+  const define = {
+    __DEV__: (!IS_PRODUCTION).toString(),
+    __BASE_PATH__: JSON.stringify(CONFIG.basePath),
+  };
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
 
   if (middlewarePath) entrypoints.push(middlewarePath);
