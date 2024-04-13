@@ -840,5 +840,26 @@ describe("utils", () => {
       );
       expect(attributes2).toBe(attributes);
     });
+
+    it('should add the basepath attribute to head tag when type is "head" and has basePath', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          basePath: "/base",
+        },
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        elementProps: {},
+        request,
+        type: "head",
+      });
+
+      expect(attributes).toBe(' basepath="/base"');
+    });
   });
 });

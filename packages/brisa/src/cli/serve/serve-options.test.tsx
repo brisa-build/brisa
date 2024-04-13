@@ -157,7 +157,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Some internal error <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_500.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_500.tsx"></script>`,
     );
   });
 
@@ -256,7 +256,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -274,7 +274,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -313,7 +313,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -338,7 +338,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -356,7 +356,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -376,7 +376,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -391,7 +391,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/page-with-web-component.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`,
     );
     expect(html).toContain("<web-component></web-component>");
   });
@@ -781,7 +781,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
@@ -800,7 +800,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "<h1>Page not found 404 <web-component></web-component></h1>",
     );
     expect(html).toContain(
-      `<script async fetchpriority="high" src="/_brisa/pages/_404.tsx"></script>`,
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
