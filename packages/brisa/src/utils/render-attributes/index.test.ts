@@ -35,7 +35,8 @@ describe("utils", () => {
         locales: ["en", "ru"],
         defaultLocale: "en",
         pages: {},
-        t: () => "",
+        t: () => "" as any,
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -47,6 +48,80 @@ describe("utils", () => {
       });
 
       expect(attributes).toBe(' href="/ru/about"');
+    });
+
+    it('should render the "a" href attribute with the basePath', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          basePath: "/base",
+        },
+      };
+
+      const attributes = renderAttributes({
+        elementProps: {
+          href: "/about",
+        },
+        request: extendRequestContext({
+          originalRequest: new Request("https://example.com"),
+        }),
+        type: "a",
+      });
+
+      expect(attributes).toBe(' href="/base/about"');
+    });
+
+    it('should render the "a" href attribute without the basePath when is a full URL', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          basePath: "/base",
+        },
+      };
+
+      const attributes = renderAttributes({
+        elementProps: {
+          href: "https://example.com/about",
+        },
+        request: extendRequestContext({
+          originalRequest: new Request("https://example.com"),
+        }),
+        type: "a",
+      });
+
+      expect(attributes).toBe(' href="https://example.com/about"');
+    });
+
+    it('should render the "a" href attribute with the locale as prefix and the basePath', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          basePath: "/base",
+        },
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/ru"),
+      });
+
+      request.i18n = {
+        locale: "ru",
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        pages: {},
+        t: () => "" as any,
+        overrideMessages: () => {},
+      };
+
+      const attributes = renderAttributes({
+        elementProps: {
+          href: "/about",
+        },
+        request,
+        type: "a",
+      });
+
+      expect(attributes).toBe(' href="/base/ru/about"');
     });
 
     it('should render the "a" href attribute with the same dynamic value', () => {
@@ -69,7 +144,8 @@ describe("utils", () => {
             ru: "/пользователь/[id]",
           },
         },
-        t: () => "",
+        t: () => "" as any,
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -93,7 +169,8 @@ describe("utils", () => {
         locales: ["en", "ru"],
         defaultLocale: "en",
         pages: {},
-        t: () => "",
+        t: () => "" as any,
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -115,7 +192,8 @@ describe("utils", () => {
         locales: ["en", "ar"],
         defaultLocale: "en",
         pages: {},
-        t: () => "",
+        t: () => "" as any,
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -174,7 +252,8 @@ describe("utils", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         pages: {},
-        t: () => "",
+        t: () => "" as any,
+        overrideMessages: () => {},
       };
 
       const hrefOfATag = (href: string) =>
@@ -235,7 +314,8 @@ describe("utils", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
         pages: {},
-        t: () => "",
+        t: () => "" as any,
+        overrideMessages: () => {},
       };
 
       const hrefOfATag = (href: string) =>
