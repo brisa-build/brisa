@@ -28,8 +28,9 @@ async function rpc(
     ? $Promise.resolve()
     : new $Promise((res) => {
         let scriptElement = $document.createElement("script");
+        const basePath = getAttribute($document.head, "basepath") ?? "";
         scriptElement.onload = scriptElement.onerror = res;
-        scriptElement.src = __RPC_LAZY_FILE__;
+        scriptElement.src = basePath + __RPC_LAZY_FILE__;
         $document.head.appendChild(scriptElement);
       });
 

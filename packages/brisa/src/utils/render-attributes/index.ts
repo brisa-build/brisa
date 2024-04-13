@@ -27,6 +27,7 @@ export default function renderAttributes({
   componentProps?: Props;
 }): string {
   const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
+  const { basePath } = CONFIG;
   const keys = new Set<string>();
   let attributes = "";
   let submitAction = elementProps["data-action-onsubmit"];
@@ -188,6 +189,10 @@ export default function renderAttributes({
       new Intl.Locale(request.i18n?.locale) as any
     ).getTextInfo();
     attributes += ` dir="${direction}"`;
+  }
+
+  if (type === "head" && basePath) {
+    attributes += ` basepath="${basePath}"`;
   }
 
   return attributes;

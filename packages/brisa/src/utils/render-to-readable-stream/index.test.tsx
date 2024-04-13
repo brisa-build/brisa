@@ -78,6 +78,31 @@ describe("utils", () => {
       expect(result).toBe(expected);
     });
 
+    it("should render the head with basepath attribute when has basePath", async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          basePath: "/docs",
+        },
+      };
+      const Component = ({ name }: { name: string }) => <div>Hello {name}</div>;
+      const element = (
+        <html>
+          <head></head>
+          <body>
+            <Component name="Test" />
+          </body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, {
+        request: new Request("http://test.com/"),
+      });
+      const result = await Bun.readableStreamToText(stream);
+
+      const expected = `<html><head basepath="/docs"></head><body><div>Hello Test</div></body></html>`;
+      expect(result).toBe(expected);
+    });
+
     it('should not display the "head" tag warning if log=false', async () => {
       const element = <div class="test">Hello World</div>;
       const stream = renderToReadableStream(element, {
@@ -588,7 +613,7 @@ describe("utils", () => {
         BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
         CONFIG: {
           basePath: "/test",
-        }
+        },
       };
 
       const stream = renderToReadableStream(element, { request });
@@ -651,7 +676,7 @@ describe("utils", () => {
         BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
         CONFIG: {
           basePath: "/test",
-        }
+        },
       };
 
       const stream = renderToReadableStream(element, { request });
@@ -734,7 +759,7 @@ describe("utils", () => {
         BUILD_DIR: FIXTURES_PATH,
         CONFIG: {
           basePath: "/test",
-        }
+        },
       };
 
       const request = extendRequestContext({
@@ -765,7 +790,7 @@ describe("utils", () => {
       expect(result).resolves.toBe(
         toInline(`
           <html lang="en" dir="ltr">
-            <head></head>
+            <head basepath="/test"></head>
             <body>
               <script src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
               <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
@@ -852,7 +877,7 @@ describe("utils", () => {
         BUILD_DIR: FIXTURES_PATH,
         CONFIG: {
           basePath: "/test",
-        }
+        },
       };
 
       const request = extendRequestContext({
@@ -888,7 +913,7 @@ describe("utils", () => {
       expect(result).resolves.toBe(
         toInline(`
           <html lang="en" dir="ltr">
-            <head></head>
+            <head basepath="/test"></head>
             <body>
               <script>window.i18nMessages={"clientOne":"foo"}</script>
               <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>

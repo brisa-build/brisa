@@ -101,7 +101,7 @@ async function enqueueDuringRendering(
   const elements = Array.isArray(result) ? result : [result];
   const { BUILD_DIR, VERSION_HASH, CONFIG } = getConstants();
   const basePath = CONFIG.basePath || "";
-  const compiledPagesPath = basePath +'/_brisa/pages'
+  const compiledPagesPath = basePath + "/_brisa/pages";
 
   for (const elementContent of elements) {
     if (elementContent === false || elementContent == null) continue;
