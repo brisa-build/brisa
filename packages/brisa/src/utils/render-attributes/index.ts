@@ -28,7 +28,7 @@ export default function renderAttributes({
   componentProps?: Props;
 }): string {
   const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
-  const { basePath } = CONFIG;
+  const { basePath, assetPrefix } = CONFIG;
   const keys = new Set<string>();
   let attributes = "";
   let submitAction = elementProps["data-action-onsubmit"];
@@ -45,14 +45,13 @@ export default function renderAttributes({
     if (PROPS_TO_IGNORE.has(prop) || (type === "html" && prop === "lang"))
       continue;
 
-    // Add the assetPrefix to internal assets (img, picture, video, audio, script)
+    // Add the basePath or assetPrefix to internal assets (img, picture, video, audio, script)
     if (
-      IS_PRODUCTION &&
       prop === "src" &&
-      CONFIG.assetPrefix &&
+      (basePath || (assetPrefix && IS_PRODUCTION)) &&
       !URL.canParse(value as string)
     ) {
-      value = `${CONFIG.assetPrefix}${value}`;
+      value = assetPrefix ? `${assetPrefix}${value}` : `${basePath}${value}`;
     }
 
     // Nested actions (coming from props)
