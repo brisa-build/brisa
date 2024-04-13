@@ -7,6 +7,13 @@ const BASE_PATHS = ["", "/some", "/some/other"];
 describe("utils", () => {
   describe.each(BASE_PATHS)("navigate %s", (basePath) => {
     describe("server side", () => {
+      beforeEach(() => {
+        globalThis.__BASE_PATH__ = basePath;
+      });
+      afterEach(() => {
+        globalThis.__BASE_PATH__ = "";
+      });
+
       it("should throw a navigation", () => {
         expect(() => navigate("/some")).toThrow(`${basePath}/some`);
       });
@@ -18,8 +25,14 @@ describe("utils", () => {
     });
 
     describe("client side", () => {
-      beforeEach(() => GlobalRegistrator.register());
-      afterEach(() => GlobalRegistrator.unregister());
+      beforeEach(() => {
+        GlobalRegistrator.register();
+        window.__BASE_PATH__ = basePath;
+      });
+      afterEach(() => {
+        window.__BASE_PATH__ = "";
+        GlobalRegistrator.unregister();
+      });
 
       it("should throw a navigation in client-side and change the location.assign", () => {
         const mockEventListener = spyOn(window, "addEventListener");
