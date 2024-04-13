@@ -147,6 +147,7 @@ declare global {
   var watcher: import("node:fs").FSWatcher;
   var __WEB_CONTEXT_PLUGINS__: boolean;
   var __RPC_LAZY_FILE__: string;
+  var __BASE_PATH__: string;
 }
 
 export default constants;
