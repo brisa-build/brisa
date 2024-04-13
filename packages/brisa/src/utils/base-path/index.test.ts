@@ -29,6 +29,14 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should duplicate the base path if it is already in the URL", () => {
+        const input = "/base-path/test";
+        const output = addBasePathToStringURL(input);
+        const expected = "/base-path/base-path/test";
+
+        expect(output).toBe(expected);
+      });
+
       it("should not add base path to the URL if it is not provided", () => {
         globalThis.mockConstants = {
           ...globalThis.mockConstants,
@@ -107,6 +115,14 @@ describe("utils", () => {
         const input = "http://localhost/base-path/test/";
         const output = removeBasePathFromStringURL(input);
         const expected = "http://localhost/test/";
+
+        expect(output).toBe(expected);
+      });
+
+      it("should remove only the first occurrence of the base path", () => {
+        const input = "/base-path/base-path/test";
+        const output = removeBasePathFromStringURL(input);
+        const expected = "/base-path/test";
 
         expect(output).toBe(expected);
       });
