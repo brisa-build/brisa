@@ -51,7 +51,7 @@ export default function renderAttributes({
       (basePath || (assetPrefix && IS_PRODUCTION)) &&
       !URL.canParse(value as string)
     ) {
-      value = assetPrefix ? `${assetPrefix}${value}` : `${basePath}${value}`;
+      value = `${assetPrefix || basePath}${value}`;
     }
 
     // Nested actions (coming from props)
