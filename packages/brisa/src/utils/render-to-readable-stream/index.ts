@@ -99,7 +99,9 @@ async function enqueueDuringRendering(
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
-  const { BUILD_DIR, VERSION_HASH } = getConstants();
+  const { BUILD_DIR, VERSION_HASH, CONFIG } = getConstants();
+  const basePath = CONFIG.basePath || "";
+  const compiledPagesPath = basePath +'/_brisa/pages'
 
   for (const elementContent of elements) {
     if (elementContent === false || elementContent == null) continue;
@@ -287,13 +289,13 @@ async function enqueueDuringRendering(
       // Script to unsuspense all suspense components
       if (controller.hasUnsuspense) {
         controller.enqueue(
-          `<script src="/_brisa/pages/_unsuspense-${VERSION_HASH}.js"></script>`,
+          `<script src="${compiledPagesPath}/_unsuspense-${VERSION_HASH}.js"></script>`,
           suspenseId,
         );
       }
       if (controller.hasActionRPC) {
         controller.enqueue(
-          `<script src="/_brisa/pages/_rpc-${VERSION_HASH}.js"></script>`,
+          `<script src="${compiledPagesPath}/_rpc-${VERSION_HASH}.js"></script>`,
           suspenseId,
         );
       }
@@ -332,7 +334,7 @@ async function enqueueDuringRendering(
           const i18nFile = Bun.file(pathPageI18n);
 
           if (await i18nFile.exists()) {
-            let script = `<script src="/_brisa/pages/${filenameI18n}"></script>`;
+            let script = `<script src="${compiledPagesPath}/${filenameI18n}"></script>`;
 
             // Script to override client translations caused by "overrideMessages" function
             if (request.store.has("_messages")) {
@@ -356,7 +358,7 @@ async function enqueueDuringRendering(
         }
 
         controller.enqueue(
-          `<script async fetchpriority="high" src="/_brisa/pages/${filename}"></script>`,
+          `<script async fetchpriority="high" src="${compiledPagesPath}/${filename}"></script>`,
           suspenseId,
         );
       }
