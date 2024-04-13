@@ -207,6 +207,7 @@ async function transformToWebComponents({
     define: {
       __DEV__: (!IS_PRODUCTION).toString(),
       __WEB_CONTEXT_PLUGINS__: useWebContextPlugins.toString(),
+      __BASE_PATH__: JSON.stringify(CONFIG.basePath),
       ...envVar,
     },
     plugins: extendPlugins(

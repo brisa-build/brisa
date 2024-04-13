@@ -74,13 +74,21 @@ const setAttribute = (el: HTMLElement, key: string, value: string) => {
   const on = (value as unknown as symbol) === _on;
   const off = (value as unknown as symbol) === _off;
   const isStyleObj = key === "style" && isObject(value);
-  const serializedValue = isStyleObj
+  let serializedValue = isStyleObj
     ? stylePropsToString(value as JSX.CSSProperties)
     : serialize(value);
 
   const isWithNamespace =
     el.namespaceURI === SVG_NAMESPACE &&
     (key.startsWith("xlink:") || key === "href");
+
+  // Handle base path
+  // This code is removed by the bundler when basePath is not used
+  if (__BASE_PATH__) {
+    if ((key === "src" || key === "href") && !URL.canParse(value)) {
+      serializedValue = __BASE_PATH__ + serializedValue;
+    }
+  }
 
   if (key === INDICATOR) {
     if (value) el.classList.add(BRISA_REQUEST_CLASS);
