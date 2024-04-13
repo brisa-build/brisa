@@ -71,6 +71,27 @@ describe("utils", () => {
       expect(attributes).toBe(' href="/base/about"');
     });
 
+    it("should render the src attribute with the basePath", () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          basePath: "/base",
+        },
+      };
+
+      const attributes = renderAttributes({
+        elementProps: {
+          src: "/about",
+        },
+        request: extendRequestContext({
+          originalRequest: new Request("https://example.com"),
+        }),
+        type: "img",
+      });
+
+      expect(attributes).toBe(' src="/base/about"');
+    });
+
     it('should render the "a" href attribute without the basePath when is a full URL', () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
@@ -90,6 +111,27 @@ describe("utils", () => {
       });
 
       expect(attributes).toBe(' href="https://example.com/about"');
+    });
+
+    it("should render the src attribute without the basePath when is a full URL", () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          basePath: "/base",
+        },
+      };
+
+      const attributes = renderAttributes({
+        elementProps: {
+          src: "https://example.com/about",
+        },
+        request: extendRequestContext({
+          originalRequest: new Request("https://example.com"),
+        }),
+        type: "img",
+      });
+
+      expect(attributes).toBe(' src="https://example.com/about"');
     });
 
     it('should render the "a" href attribute with the locale as prefix and the basePath', () => {
