@@ -15,6 +15,7 @@ import feedbackError from "@/utils/feedback-error";
 import responseAction from "@/utils/response-action";
 import { redirectFromUnnormalizedURL } from "@/utils/redirect";
 import responseRenderedPage from "@/utils/response-rendered-page";
+import { removeBasePathFromStringURL } from "@/utils/base-path";
 
 export async function getServeOptions() {
   const {
@@ -94,8 +95,8 @@ export async function getServeOptions() {
 
       // Remove basePath from URL
       if (basePath) {
-        request.finalURL = request.finalURL.replace(basePath, "");
-        url.pathname = url.pathname.replace(basePath, "");
+        request.finalURL = removeBasePathFromStringURL(request.finalURL);
+        url.pathname = removeBasePathFromStringURL(url.pathname);
       }
 
       const isClientPage = url.pathname.startsWith(PUBLIC_CLIENT_PAGE_SUFFIX);
