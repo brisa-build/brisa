@@ -568,6 +568,39 @@ describe("utils", () => {
       );
     });
 
+    it("should inject the unsuspense script with basePath", async () => {
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const constants = getConstants();
+      const request = extendRequestContext({
+        originalRequest: new Request(testRequest),
+        route: {
+          filePath: "/index.js",
+        } as MatchedRoute,
+      });
+
+      globalThis.mockConstants = {
+        ...constants,
+        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+        CONFIG: {
+          basePath: "/test",
+        }
+      };
+
+      const stream = renderToReadableStream(element, { request });
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).not.toContain(
+        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
+      );
+      expect(result).toContain(
+        `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
+      );
+    });
+
     it("should inject the action rpc script", async () => {
       const constants = getConstants();
       const element = (
@@ -595,6 +628,39 @@ describe("utils", () => {
       );
       expect(result).toContain(
         `<script src="/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
+      );
+    });
+
+    it("should inject the action rpc script with basePath", async () => {
+      const constants = getConstants();
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const request = extendRequestContext({
+        originalRequest: new Request(testRequest),
+        route: {
+          filePath: "/somepage.js",
+        } as MatchedRoute,
+      });
+
+      globalThis.mockConstants = {
+        ...constants,
+        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+        CONFIG: {
+          basePath: "/test",
+        }
+      };
+
+      const stream = renderToReadableStream(element, { request });
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).not.toContain(
+        `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
+      );
+      expect(result).toContain(
+        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
       );
     });
 
@@ -646,6 +712,63 @@ describe("utils", () => {
             <body>
               <script src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
               <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
+            </body>
+          </html>
+      `),
+      );
+    });
+
+    it("should inject client i18n script if some web component consumes translations with basePath", () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "en",
+          messages: {
+            en: {
+              hello: "test",
+            },
+          },
+        },
+        PAGES_DIR: path.join(FIXTURES_PATH, "pages"),
+        BUILD_DIR: FIXTURES_PATH,
+        CONFIG: {
+          basePath: "/test",
+        }
+      };
+
+      const request = extendRequestContext({
+        originalRequest: extendRequestContext({
+          originalRequest: new Request("http://test.com/en"),
+        }),
+        route: {
+          src: "page-with-web-component.js",
+          filePath: path.join(
+            FIXTURES_PATH,
+            "pages",
+            "page-with-web-component.js",
+          ),
+        } as MatchedRoute,
+      });
+
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+
+      handleI18n(request);
+
+      const stream = renderToReadableStream(element, { request });
+      const result = Bun.readableStreamToText(stream);
+      expect(result).resolves.toBe(
+        toInline(`
+          <html lang="en" dir="ltr">
+            <head></head>
+            <body>
+              <script src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
       `),
@@ -706,6 +829,69 @@ describe("utils", () => {
             <body>
               <script>window.i18nMessages={"clientOne":"foo"}</script>
               <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
+            </body>
+          </html>
+      `),
+      );
+    });
+
+    it("should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used with basePath", () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "en",
+          messages: {
+            en: {
+              clientOne: "test",
+              serverOne: "test2",
+            },
+          },
+        },
+        PAGES_DIR: path.join(FIXTURES_PATH, "pages"),
+        BUILD_DIR: FIXTURES_PATH,
+        CONFIG: {
+          basePath: "/test",
+        }
+      };
+
+      const request = extendRequestContext({
+        originalRequest: extendRequestContext({
+          originalRequest: new Request("http://test.com/en"),
+        }),
+        route: {
+          src: "page-with-web-component.js",
+          filePath: path.join(
+            FIXTURES_PATH,
+            "pages",
+            "page-with-web-component.js",
+          ),
+        } as MatchedRoute,
+      });
+
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+
+      handleI18n(request);
+
+      request.i18n.overrideMessages(() => ({
+        clientOne: "foo",
+        serverOne: "bar",
+      }));
+
+      const stream = renderToReadableStream(element, { request });
+      const result = Bun.readableStreamToText(stream);
+      expect(result).resolves.toBe(
+        toInline(`
+          <html lang="en" dir="ltr">
+            <head></head>
+            <body>
+              <script>window.i18nMessages={"clientOne":"foo"}</script>
+              <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
       `),
