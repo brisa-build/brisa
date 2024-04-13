@@ -11,6 +11,7 @@ import { serialize } from "@/utils/serialization";
 import stylePropsToString from "@/utils/style-props-to-string";
 import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 import isAnAction from "@/utils/is-an-action";
+import { addBasePathToStringURL } from "@/utils/base-path";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
@@ -113,13 +114,8 @@ export default function renderAttributes({
     }
 
     // i18n navigation
-    if (
-      type === "a" &&
-      prop === "href" &&
-      request.i18n?.locale &&
-      typeof value === "string"
-    ) {
-      attributes += ` ${key}="${renderI18nHrefAttribute(value, request)}"`;
+    if (type === "a" && prop === "href" && typeof value === "string") {
+      attributes += ` ${key}="${renderHrefAttribute(value, request)}"`;
       continue;
     }
 
@@ -198,7 +194,7 @@ export default function renderAttributes({
   return attributes;
 }
 
-export function renderI18nHrefAttribute(
+export function renderHrefAttribute(
   hrefValue: string,
   request: RequestContext,
 ) {
@@ -212,7 +208,8 @@ export function renderI18nHrefAttribute(
     formattedHref = formattedHref.replace(`[${key}]`, value);
   }
 
-  if (isExternalUrl || !locale) return hrefValue;
+  if (isExternalUrl) return hrefValue;
+  if (!locale) return addBasePathToStringURL(hrefValue);
 
   const page = findTranslatedPage(pages, formattedHref);
 
@@ -222,11 +219,14 @@ export function renderI18nHrefAttribute(
     formattedHref = substituteI18nRouteValues(translatedPage, formattedHref);
   }
 
-  if (!locales?.some((locale) => formattedHref?.split("/")?.[1] === locale)) {
-    return manageTrailingSlash(`/${locale}${formattedHref}`);
-  }
+  const useI18n = !locales?.some(
+    (locale) => formattedHref?.split("/")?.[1] === locale,
+  );
+  const fixedUrl = manageTrailingSlash(
+    useI18n ? `/${locale}${formattedHref}` : formattedHref,
+  );
 
-  return manageTrailingSlash(formattedHref);
+  return addBasePathToStringURL(fixedUrl);
 }
 
 function findTranslatedPage(pages: I18nConfig["pages"], pathname: string) {
