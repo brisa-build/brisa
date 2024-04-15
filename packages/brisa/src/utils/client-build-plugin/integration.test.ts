@@ -1296,7 +1296,7 @@ describe("integration", () => {
       delete window.mockCleanup;
     });
 
-    it("should cleanup everytime the web-component is unmount", () => {
+    it("should cleanup everytime the web-component is unmount", async () => {
       window.mockEffect = mock(() => {});
       window.mockCleanup = mock(() => {});
 
@@ -1323,6 +1323,7 @@ describe("integration", () => {
 
       expect(window.mockEffect).toHaveBeenCalledTimes(1);
       expect(window.mockCleanup).toHaveBeenCalledTimes(1);
+      await Bun.sleep(0); // workaround to fix flaky test in the next test
     });
 
     it("should cleanup async cleanups when the web-component is unmount", async () => {
@@ -3551,7 +3552,7 @@ describe("integration", () => {
       ).toThrow();
     });
 
-    it("should render the error component if there is an error", () => {
+    it("should render the error component if there is an error", async () => {
       const Component = `
         export default function MyComponent() {
           throw new Error('test')
@@ -3570,6 +3571,7 @@ describe("integration", () => {
       const myComponent = document.querySelector("my-component") as HTMLElement;
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Ops!</div>");
+      await Bun.sleep(0); // workaround to fix flaky test in the next test
     });
 
     it("should be possible to have access to the error inside the error component", async () => {

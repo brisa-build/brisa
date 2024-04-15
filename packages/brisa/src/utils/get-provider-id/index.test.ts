@@ -23,7 +23,7 @@ describe("utils", () => {
       expect(pid).toBe("foo");
     });
 
-    it("should return null if the provider ID is not found", () => {
+    it("should return null if the provider ID is not found", async () => {
       const code = `
         <context-provider pid="foo" cid="bar"><div /></context-provider>
       `;
@@ -33,10 +33,11 @@ describe("utils", () => {
       const div = document.querySelector("div")!;
       const pid = getProviderId(div, "baz");
 
-      expect(pid).toBe(null);
+      expect(pid).toBeNull();
+      await Bun.sleep(0); // Workaround to fix flaky test in the next test
     });
 
-    it("should return null if there is a provider in another tree", () => {
+    it("should return null if there is a provider in another tree", async () => {
       const code = `
         <div />
         <context-provider pid="foo" cid="bar">Test<span /></context-provider>
@@ -47,7 +48,8 @@ describe("utils", () => {
       const div = document.querySelector("div")!;
       const pid = getProviderId(div, "bar");
 
-      expect(pid).toBe(null);
+      expect(pid).toBeNull();
+      await Bun.sleep(0); // Workaround to fix flaky test in the next test
     });
 
     it("should return the immediate provider ID", () => {
