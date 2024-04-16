@@ -4869,10 +4869,8 @@ describe("integration", () => {
       expect(span?.innerHTML).toBe("2");
     });
 
-    it(
-      "should work awaiting an async-await effect changing state and with a conditional render",
-      async () => {
-        const code = `
+    it("should work awaiting an async-await effect changing state and with a conditional render", async () => {
+      const code = `
         export default async ({ foo }: { foo: string }, { state, effect }: WebContext) => {
           const bar = state<any>()
         
@@ -4888,44 +4886,37 @@ describe("integration", () => {
         };
       `;
 
-        document.body.innerHTML = "<test-component foo='bar' />";
+      document.body.innerHTML = "<test-component foo='bar' />";
 
-        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
 
-        const testComponent = document.querySelector(
-          "test-component",
-        ) as HTMLElement;
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
-        await Bun.sleep(0);
+      await Bun.sleep(0);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe(
-          "<div>someValue</div>",
-        );
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>someValue</div>");
 
-        testComponent.setAttribute("foo", "baz");
+      testComponent.setAttribute("foo", "baz");
 
-        await Bun.sleep(0);
+      await Bun.sleep(0);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
-        testComponent.setAttribute("foo", "bar");
+      testComponent.setAttribute("foo", "bar");
 
-        await Bun.sleep(0);
+      await Bun.sleep(0);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe(
-          "<div>someValue</div>",
-        );
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>someValue</div>");
 
-        await Bun.sleep(0);
-      },
-    );
+      await Bun.sleep(0);
+    });
 
-    it(
-      "should work an async-await effect without awaiting changing state and with a conditional render",
-      async () => {
-        const code = `
+    it("should work an async-await effect without awaiting changing state and with a conditional render", async () => {
+      const code = `
         export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
           const bar = state<any>()
         
@@ -4941,39 +4932,146 @@ describe("integration", () => {
         };
       `;
 
-        document.body.innerHTML = "<test-component foo='bar' />";
+      document.body.innerHTML = "<test-component foo='bar' />";
 
-        defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
 
-        const testComponent = document.querySelector(
-          "test-component",
-        ) as HTMLElement;
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
-        await Bun.sleep(0);
+      await Bun.sleep(0);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe(
-          "<div>someValue</div>",
-        );
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>someValue</div>");
 
-        testComponent.setAttribute("foo", "baz");
+      testComponent.setAttribute("foo", "baz");
 
-        await Bun.sleep(0);
+      await Bun.sleep(0);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
-        testComponent.setAttribute("foo", "bar");
+      testComponent.setAttribute("foo", "bar");
 
-        await Bun.sleep(0);
+      await Bun.sleep(0);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe(
-          "<div>someValue</div>",
-        );
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>someValue</div>");
 
-        await Bun.sleep(0);
-      },
-    );
+      await Bun.sleep(0);
+    });
+
+    it("should work an async-await effect with subeffects without awaiting", async () => {
+      window.mockLog = mock((s: string) => {});
+      const code = `
+        export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
+          const bar = state<any>()
+        
+          effect(async () => {
+            if (foo === 'bar') {
+              bar.value = await Promise.resolve({ someField: 'someValue' })
+            } else {
+              bar.value = null
+            }
+        
+            effect(() => {
+              if (bar.value?.someField) {
+                window.mockLog(bar.value.someField)
+              }
+            })
+          })
+        
+          return bar.value && <div>{bar.value.someField}</div>;
+        };
+      `;
+
+      document.body.innerHTML = "<test-component foo='bar' />";
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>someValue</div>");
+      expect(window.mockLog).toHaveBeenCalledTimes(1);
+      expect(window.mockLog).toHaveBeenCalledWith("someValue");
+
+      testComponent.setAttribute("foo", "baz");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+      expect(window.mockLog).toHaveBeenCalledTimes(1);
+
+      testComponent.setAttribute("foo", "bar");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>someValue</div>");
+
+      await Bun.sleep(0);
+
+      expect(window.mockLog).toHaveBeenCalledTimes(2);
+      expect(window.mockLog).toHaveBeenCalledWith("someValue");
+    });
+
+    it("should work an async-await subeffects without awaiting with sync effect", async () => {
+      window.mockLog = mock((s: string) => {});
+      const code = `
+        export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
+          const bar = state<any>()
+        
+          effect(() => {
+            effect(async () => {
+              if (foo === 'bar') {
+                bar.value = await Promise.resolve({ someField: 'someValue' })
+              } else {
+                bar.value = null
+              }
+            })
+            window.mockLog()
+          })
+        
+          return bar.value && <div>{bar.value.someField}</div>;
+        };
+      `;
+      document.body.innerHTML = "<test-component foo='bar' />";
+
+      defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
+
+      const testComponent = document.querySelector(
+        "test-component",
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>someValue</div>");
+      expect(window.mockLog).toHaveBeenCalledTimes(1);
+
+      testComponent.setAttribute("foo", "baz");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+      expect(window.mockLog).toHaveBeenCalledTimes(1);
+
+      testComponent.setAttribute("foo", "bar");
+
+      await Bun.sleep(0);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>someValue</div>");
+
+      await Bun.sleep(0);
+
+      expect(window.mockLog).toHaveBeenCalledTimes(1);
+    });
 
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583

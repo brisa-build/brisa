@@ -28,13 +28,13 @@ const EFFECT_EXECUTION_TYPES = new Set([
  * 1. Register each sub-effect of each effect function with the 'r' function. These way each time
  *    an effect is called, all its sub-effects are cleaned up and re-registered.
  * 2. Pass the effect id to the cleanup function so it can be cleaned up individually.
- * 3. If it detects an async effect it adds the await to make each effect isolated without any 
- *    conflict when registering signals between them or with the render. So: 
- * 
- *    'effect(async () => {})' -> translates to -> 'await effect(async () => {})' 
- * 
- *    In this way, if the "get" of a signal is done just after the effect, the registration of 
- *    signals of the effect will be finished, otherwise it will detect it as if this signal 
+ * 3. If it detects an async effect it adds the await to make each effect isolated without any
+ *    conflict when registering signals between them or with the render. So:
+ *
+ *    'effect(async () => {})' -> translates to -> 'await effect(async () => {})'
+ *
+ *    In this way, if the "get" of a signal is done just after the effect, the registration of
+ *    signals of the effect will be finished, otherwise it will detect it as if this signal
  *    is part of the effect when it is not.
  *
  * @param {ESTree.FunctionDeclaration} componentBranch - The component branch to optimize.
@@ -223,7 +223,7 @@ export default function optimizeEffects(
             {
               ...eff.arguments[0],
               async: true,
-            }
+            },
           ],
         },
       };
@@ -298,7 +298,11 @@ function propagateEffectDeps(node: EffectNode, parent: EffectNode) {
  * @example
  * const wrappedEffect = wrapEffectWithDependencies(effect, parent);
  */
-function wrapEffectWithDependencies(effect: EffectNode, parent: EffectNode, async = false) {
+function wrapEffectWithDependencies(
+  effect: EffectNode,
+  parent: EffectNode,
+  async = false,
+) {
   const deps = parent.effectDeps ?? [];
   let newEffectNode: EffectNode = effect;
 
