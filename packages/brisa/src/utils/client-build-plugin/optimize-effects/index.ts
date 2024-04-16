@@ -23,11 +23,19 @@ const EFFECT_EXECUTION_TYPES = new Set([
 ]);
 
 /**
- * Optimizes effects doing 2 things:
+ * Optimizes effects doing 3 things:
  *
  * 1. Register each sub-effect of each effect function with the 'r' function. These way each time
  *    an effect is called, all its sub-effects are cleaned up and re-registered.
  * 2. Pass the effect id to the cleanup function so it can be cleaned up individually.
+ * 3. If it detects an async effect it adds the await to make each effect isolated without any 
+ *    conflict when registering signals between them or with the render. So: 
+ * 
+ *    'effect(async () => {})' -> translates to -> 'await effect(async () => {})' 
+ * 
+ *    In this way, if the "get" of a signal is done just after the effect, the registration of 
+ *    signals of the effect will be finished, otherwise it will detect it as if this signal 
+ *    is part of the effect when it is not.
  *
  * @param {ESTree.FunctionDeclaration} componentBranch - The component branch to optimize.
  * @param {Set<string>} allVariableNames - Set of all variable names declared in the component's scope.
@@ -41,6 +49,7 @@ export default function optimizeEffects(
   allVariableNames = new Set<string>(),
 ): ESTree.FunctionDeclaration {
   const webContextAst = componentBranch.params[1];
+  let needsToAwait = false;
 
   if (!webContextAst) return componentBranch;
 
@@ -59,23 +68,30 @@ export default function optimizeEffects(
     webContextDetails.identifier = webContextAst.name;
   }
 
-  return {
+  const body = JSON.parse(
+    JSON.stringify(
+      JSON.parse(JSON.stringify(componentBranch.body?.body, traverseA2B)),
+      traverseAgainA2B,
+    ),
+    traverseB2A,
+  );
+
+  const newComponent = {
     ...componentBranch,
     body: {
       ...componentBranch.body,
-      body: JSON.parse(
-        JSON.stringify(
-          JSON.parse(JSON.stringify(componentBranch.body?.body, traverseA2B)),
-          traverseAgainA2B,
-        ),
-        traverseB2A,
-      ),
+      body,
     },
   } as ESTree.FunctionDeclaration;
 
+  if (needsToAwait) newComponent.async = true;
+
+  return newComponent;
+
   // The first traverse is needed to get the effect identifier, the cleanup
   // identifier, and assign 'r' names to effects params and propagate effect
-  // dependencies to inner effects
+  // dependencies to inner effects. Also, it detects if we need to await for
+  // the effect to finish (is a promise).
   function traverseA2B(this: any, key: string, node: any) {
     if (
       node?.type === "VariableDeclaration" &&
@@ -86,6 +102,7 @@ export default function optimizeEffects(
     }
 
     if (node?.callee?.name === webContextDetails.effectName) {
+      needsToAwait ||= Boolean(node.arguments[0]?.async);
       assignRNameToNode(node, { parent: this });
     }
 
@@ -142,7 +159,8 @@ export default function optimizeEffects(
 
   // This function is called to each sub-effect function to wrap it with
   // its dependencies and to add 'r.id' as second parameter to cleanups
-  // used inside effects
+  // used inside effects.
+  // Also, it awaits in case the effect has a promise.
   function transformInnerEffect(effect: EffectNode, parent: EffectNode) {
     const effectIdentifier = (effect as any)?.id?.name;
     const takenName = getRNameFromIdentifier(effectIdentifier);
@@ -193,6 +211,22 @@ export default function optimizeEffects(
       modifiedEffect.init.params = [param];
     } else if (modifiedEffect?.arguments) {
       modifiedEffect.arguments[0].params = [param];
+    }
+
+    if (needsToAwait) {
+      const eff = wrapEffectWithDependencies(modifiedEffect, parent, true);
+      return {
+        type: "AwaitExpression",
+        argument: {
+          ...eff,
+          arguments: [
+            {
+              ...eff.arguments[0],
+              async: true,
+            }
+          ],
+        },
+      };
     }
 
     return wrapEffectWithDependencies(modifiedEffect, parent);
@@ -264,7 +298,7 @@ function propagateEffectDeps(node: EffectNode, parent: EffectNode) {
  * @example
  * const wrappedEffect = wrapEffectWithDependencies(effect, parent);
  */
-function wrapEffectWithDependencies(effect: EffectNode, parent: EffectNode) {
+function wrapEffectWithDependencies(effect: EffectNode, parent: EffectNode, async = false) {
   const deps = parent.effectDeps ?? [];
   let newEffectNode: EffectNode = effect;
 
@@ -280,7 +314,7 @@ function wrapEffectWithDependencies(effect: EffectNode, parent: EffectNode) {
         type: "Identifier",
         name: depName,
       },
-      arguments: [innerFn],
+      arguments: [{ ...innerFn, async } as ESTree.CallExpression],
       effectDeps: deps,
     };
 

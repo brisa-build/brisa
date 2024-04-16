@@ -656,6 +656,100 @@ describe("utils", () => {
 
         expect(output).toEqual(expected);
       });
+
+      it('should await the effect if it returns a promise', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(async () => {
+              if (propName.value) {
+                console.log("Hello world");
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = normalizeQuotes(`
+          export default async function Component({propName}, {effect}) {
+            await effect(async r => {
+              if (propName.value) {
+                console.log("Hello world");
+              }
+            });
+          
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should await the effect if it returns a promise from an arrow function component', () => {
+        const input = `
+          export default ({ propName }, { effect }) => {
+            effect(async () => {
+              if (propName.value) {
+                console.log("Hello world");
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = normalizeQuotes(`
+          export default async ({propName}, {effect}) => {
+            await effect(async r => {
+              if (propName.value) {
+                console.log("Hello world");
+              }
+            });
+          
+            return ['span', {}, 'Hello world'];
+          };
+        `);
+
+        expect(output).toEqual(expected);
+      });
+
+      it('should await all effect and subeffects only when one of them returns a promise', () => {
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(() => {
+              if (propName.value) {
+                effect(async () => {
+                  console.log("Hello world");
+                });
+                effect(() => {
+                  console.log("Hello world");
+                });
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+        const output = toOutput(input);
+        const expected = normalizeQuotes(`
+          export default async function Component({propName}, {effect}) {
+            await effect(async r => {
+              if (propName.value) {
+                await effect(r(async r1 => {
+                  console.log("Hello world");
+                }));
+                await effect(r(async r2 => {
+                  console.log("Hello world");
+                }));
+              }
+            });
+          
+            return ['span', {}, 'Hello world'];
+          }
+        `);
+
+        expect(output).toEqual(expected);
+      });
     });
   });
 });
