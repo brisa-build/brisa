@@ -5126,6 +5126,7 @@ describe("integration", () => {
       },
     );
 
+    // TODO: Related with https://github.com/brisa-build/brisa/issues/8
     it.todo(
       "should be possible to move web-components from a list without unmounting + keeping inner state",
       () => {
