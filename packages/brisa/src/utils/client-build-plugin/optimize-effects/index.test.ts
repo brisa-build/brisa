@@ -657,7 +657,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it('should await the effect if it returns a promise', () => {
+      it("should await the effect if it returns a promise", () => {
         const input = `
           export default function Component({ propName }, { effect }) {
             effect(async () => {
@@ -685,7 +685,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it('should await the effect if it returns a promise from an arrow function component', () => {
+      it("should await the effect if it returns a promise from an arrow function component", () => {
         const input = `
           export default ({ propName }, { effect }) => {
             effect(async () => {
@@ -713,7 +713,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it('should await all effect and subeffects only when one of them returns a promise', () => {
+      it("should await all effect and subeffects only when one of them returns a promise", () => {
         const input = `
           export default function Component({ propName }, { effect }) {
             effect(() => {
