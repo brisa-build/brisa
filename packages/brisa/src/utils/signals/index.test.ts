@@ -1,5 +1,13 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, beforeAll, afterEach, describe, expect, it, mock } from "bun:test";
+import {
+  afterAll,
+  beforeAll,
+  afterEach,
+  describe,
+  expect,
+  it,
+  mock,
+} from "bun:test";
 import type { IndicatorSignal } from "@/types";
 
 const signals = () =>
@@ -579,7 +587,7 @@ describe("signals", () => {
     reset();
   });
 
-  it('should only call the effect when the state value is different', () => {
+  it("should only call the effect when the state value is different", () => {
     const { state, effect, reset } = signals();
     const count = state<number>(0);
     const mockEffect = mock<(count?: number) => void>(() => {});
