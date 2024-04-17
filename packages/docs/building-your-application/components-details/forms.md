@@ -4,11 +4,11 @@ description: How to use forms in Brisa
 
 # Forms
 
-## Forms
-
 Forms play a crucial role in user interaction. When dealing with forms, developers often come across the concepts of controlled and uncontrolled components.
 
-### Uncontrolled Forms
+## Uncontrolled Forms _(recommended 👌)_
+
+### Server Component _(recommended 👌)_
 
 An uncontrolled form is a `form` where the values are not bound to the component's state, allowing for a more straightforward and less verbose approach. Uncontrolled forms are useful in scenarios where the form is relatively simple, and the overhead of managing form state through the component is unnecessary.
 
@@ -24,6 +24,7 @@ export default function UncontrolledFormServer() {
   return (
     <form
       onSubmit={(e) => {
+        // This code runs on the server in server components!
         console.log("Username:", e.formData.get("username"));
       }}
     >
@@ -47,10 +48,38 @@ The difference with the client `onSubmit` are:
 - The `e.preventDefault()` is always done automatically in the server actions.
 - The [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) is built to send and process it from the server, modifying the event from [`onSubmitEvent`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event) to [`FormDataEvent`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event).
 - Since the event is [`FormDataEvent`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/formdata_event), you can access the form data directly through `e.formData`.
+- `e.target.reset()` and `e.currentTarget.reset()` instead of being executed right away, they are executed when the server action ends.
 
 In fact, it is now even **easier to deal** with **form server interactions** from the **server** than with the client.
 
-The client code would be as follows:
+### Reset form
+
+Using the events from the server makes the event serialized. However, `e.target.reset()` still works in the server. The only difference is that it is not executed at the right time, but is marked to reset it when the server action is finished and returns the response to the client.
+
+```tsx
+export default function UncontrolledFormServer() {
+  return (
+    <form
+      onSubmit={(e) => {
+        // This code runs on the server
+        e.target.reset(); // Reset the form
+        console.log("Username:", e.formData.get("username"));
+      }}
+    >
+      <label>
+        Username:
+        <input type="text" name="username" />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+### Web component _(not recomended 👎)_
+
+The client code of a uncontrolled form would be as follows:
 
 ```tsx
 export default function UncontrolledFormClient() {
@@ -73,7 +102,17 @@ export default function UncontrolledFormClient() {
 }
 ```
 
-### Controlled Forms
+If you are making an uncontrolled form in a web component it is a sign that you are writing code on the client that could be written on the server.
+
+> [!IMPORTANT]
+>
+> Use only uncontrolled form in web components only if you don't need to make a request to the server after the submit. Otherwise use a server component.
+
+> [!CAUTION]
+>
+> Using uncontrolled form in web components adds client JS code, not only the event JS, but also the JS of the web component itself.
+
+## Controlled Forms _(not recomended 👎)_
 
 A controlled form in Brisa is a `form` whose state is controlled by the Brisa web component. In other words, the form elements such as `input` fields, `checkbox`, `radio` buttons, etc have their values bound to the component's state. This allows to manage and control the form's behavior and be able to give **instant feedback** to the user about errors.
 
