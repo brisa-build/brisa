@@ -26,9 +26,9 @@
     "release:alpha": "bun run release-brisa:alpha && bun run release-create-brisa:alpha",
     "clean": "bun run --filter 'brisa' clean",
     "format": "bunx prettier@3.1.1 --write .",
-    "docs:dev": "bun run --filter 'docs' dev",
-    "docs:build": "bun run --filter 'docs' build",
-    "docs:preview": "bun run --filter 'docs' preview",
+    "docs:dev": "bun run --filter 'brisa-docs' dev",
+    "docs:build": "bun run --filter 'brisa-docs' build",
+    "docs:preview": "bun run --filter 'brisa-docs' preview",
     "update-version": "bun run scripts/update-brisa-version.ts",
     "upgrade": "bun run scripts/upgrade-bun.ts"
   },
