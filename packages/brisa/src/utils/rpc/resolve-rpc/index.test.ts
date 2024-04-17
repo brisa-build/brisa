@@ -1,7 +1,7 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { describe, expect, it, afterEach, mock, beforeAll } from "bun:test";
+import { describe, expect, it, afterEach, mock } from "bun:test";
 
-let resolveRPC: (res: Response) => Promise<void>;
+let resolveRPC: (res: Response, args?: unknown[]) => Promise<void>;
 
 async function initBrowser() {
   GlobalRegistrator.register();
@@ -115,6 +115,23 @@ describe("utils", () => {
         await resolveRPC(res);
         expect(document.body.innerHTML).toBe('<div class="foo">Bar</div>');
       });
+    });
+
+    it("should call e.target.reset() if receive the X-Reset-Form header", async () => {
+      const formEvent = {
+        target: { reset: mock(() => {}) },
+      };
+
+      const res = new Response(null, {
+        headers: {
+          "X-Reset-Form": "1",
+        },
+      });
+
+      await initBrowser();
+      await resolveRPC(res, [formEvent]);
+
+      expect(formEvent.target.reset).toHaveBeenCalled();
     });
   });
 });
