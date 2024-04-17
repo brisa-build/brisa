@@ -92,7 +92,7 @@ export default function signals() {
     subEffectsPerEffect.delete(fn);
   }
 
-  function state<T>(initialValue?: T): { value: T } {
+  function state<T>(currentValue?: T): { value: T } {
     let calledSameEffectOnce = false;
 
     return {
@@ -100,10 +100,17 @@ export default function signals() {
         if (stack[0]) {
           effects.set(this, getSet<Effect>(effects, this).add(stack[0]));
         }
-        return initialValue!;
+        return currentValue!;
       },
-      set value(v) {
-        initialValue = v;
+      set value(newValue) {
+        // Skip effect if the value is the same. The second condition is to
+        // keep store.delete reactive (FIXME: this is a workaround, it should be
+        // handled in a different way)
+        const skipEffect = newValue === currentValue && newValue != null;
+
+        currentValue = newValue;
+
+        if (skipEffect) return;
 
         const currentEffects = getSet<Effect>(effects, this);
         const clonedEffects = new Set<Effect>([...currentEffects]);

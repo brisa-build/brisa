@@ -1,5 +1,5 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
+import { afterAll, beforeAll, afterEach, describe, expect, it, mock } from "bun:test";
 import type { IndicatorSignal } from "@/types";
 
 const signals = () =>
@@ -17,12 +17,13 @@ describe("signals", () => {
 
   it('should init the store depending window["_S"] (transferred server store)', () => {
     (window as any)["_S"] = [["foo", "bar"]];
-    const { store } = signals();
+    const { store, reset } = signals();
     expect(store.get<string>("foo")).toBe("bar");
+    reset();
   });
 
   it("should register effects", () => {
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const initValue = 0;
     const updatedValue = 435;
     const count = state(initValue);
@@ -37,10 +38,11 @@ describe("signals", () => {
     count.value = updatedValue;
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[1][0]).toBe(updatedValue);
+    reset();
   });
 
   it("should an effect update more than one state", () => {
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const count = state(0);
     const username = state("Anonymous");
     const mockEffect = mock<(count?: number, username?: string) => void>(
@@ -67,10 +69,11 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[2][0]).toBe(updatedCount);
     expect(mockEffect.mock.calls[2][1]).toBe(updatedUsername);
+    reset();
   });
 
   it("should unregister events registered inside an effect using the cleanup method", () => {
-    const { state, effect, cleanup } = signals();
+    const { state, effect, cleanup, reset } = signals();
     const count = state(0);
 
     const mockEffect = mock<(count?: number) => void>(() => {});
@@ -88,11 +91,12 @@ describe("signals", () => {
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockCleanup).toHaveBeenCalledTimes(1);
+    reset();
   });
 
   it('should be possible to initialize an state with "undefined"', () => {
     const mockEffect = mock<(count: number | undefined) => void>(() => {});
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const count = state<number | undefined>(undefined);
     expect(count.value).not.toBeDefined();
 
@@ -107,10 +111,11 @@ describe("signals", () => {
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[1][0]).toBe(1);
+    reset();
   });
 
   it("should work async/await inside an effect", async () => {
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const count = state(42);
     const mockEffect = mock<(count?: number) => void>(() => {});
 
@@ -130,10 +135,11 @@ describe("signals", () => {
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[1][0]).toBe(1);
+    reset();
   });
 
   it("should work an state inside another state", () => {
-    const { state } = signals();
+    const { state, reset } = signals();
     const age = state<number>(33);
     const name = state<string>("Aral");
     const user = state<any>({ age, name });
@@ -146,10 +152,11 @@ describe("signals", () => {
 
     expect(user.value.age.value).toEqual(35);
     expect(user.value.name.value).toEqual("Barbara");
+    reset();
   });
 
   it("should work with nested effects", () => {
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
@@ -176,10 +183,11 @@ describe("signals", () => {
     expect(mockEffect.mock.calls[2]).toEqual(["B", "x"]);
     expect(mockEffect.mock.calls[3]).toEqual(["A", 1]);
     expect(mockEffect.mock.calls[4]).toEqual(["B", "y"]);
+    reset();
   });
 
   it("should unregister nested conditional effects when the condition is false", () => {
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
@@ -206,10 +214,11 @@ describe("signals", () => {
 
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[2]).toEqual(["A", 1]);
+    reset();
   });
 
   it("should register conditional nested conditional effects when the condition is true", () => {
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
@@ -235,10 +244,11 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[1]).toEqual(["B", "x"]);
     expect(mockEffect.mock.calls[2]).toEqual(["A", 1]);
+    reset();
   });
 
   it("should register again nested conditional effects when the condition is true", () => {
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
@@ -273,10 +283,11 @@ describe("signals", () => {
     expect(mockEffect.mock.calls[3]).toEqual(["B", "y"]);
     expect(mockEffect.mock.calls[4]).toEqual(["A", 0]);
     expect(mockEffect.mock.calls[5]).toEqual(["B", "z"]);
+    reset();
   });
 
   it("should work without race conditions between async effects and signals", async () => {
-    const { state, effect } = signals();
+    const { state, effect, reset } = signals();
     const count = state<number>(0);
     const delay = Promise.resolve();
     let lastSeen = -1;
@@ -293,10 +304,11 @@ describe("signals", () => {
     count.value = 1;
     await delay;
     expect(lastSeen).toBe(1);
+    reset();
   });
 
   it('should work with "derived" method', () => {
-    const { state, derived } = signals();
+    const { state, derived, reset } = signals();
     const count = state<number>(0);
     const double = derived<number>(() => count.value * 2);
 
@@ -305,10 +317,11 @@ describe("signals", () => {
     count.value = 1;
 
     expect(double.value).toBe(2);
+    reset();
   });
 
   it("should work a derived state inside another derived state", () => {
-    const { state, derived } = signals();
+    const { state, derived, reset } = signals();
     const count = state<number>(0);
     const double = derived<number>(() => count.value * 2);
     const triple = derived<number>(() => double.value * 3);
@@ -318,6 +331,7 @@ describe("signals", () => {
     count.value = 1;
 
     expect(triple.value).toBe(6);
+    reset();
   });
 
   it('should remove all effects with "reset" method', () => {
@@ -340,6 +354,7 @@ describe("signals", () => {
     count.value = 2;
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
+    reset();
   });
 
   it('should remove all cleanups with "reset" method', () => {
@@ -369,11 +384,12 @@ describe("signals", () => {
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockCleanup).toHaveBeenCalledTimes(2);
+    reset();
   });
 
   it("should work store shared between different signals", () => {
-    const { store, effect } = signals();
-    const { store: store2 } = signals();
+    const { store, effect, reset } = signals();
+    const { store: store2, reset: reset2 } = signals();
 
     const mockEffect = mock<(count?: number) => void>(() => {});
     store.set("count", 0);
@@ -404,17 +420,19 @@ describe("signals", () => {
       ["count", 1],
     ]);
 
-    store.Map.clear();
+    reset();
+    reset2();
   });
 
   it('should expose store to window["_s"] to allow RPC to modify it', () => {
-    const { store } = signals();
+    const { store, reset } = signals();
     store.set("count", 0);
     expect((window as any)._s.get("count")).toBe(0);
+    reset();
   });
 
   it("should work store with derived", () => {
-    const { store, derived, effect } = signals();
+    const { store, derived, effect, reset } = signals();
     const { store: store2 } = signals();
     const mockEffect = mock<(count?: number) => void>(() => {});
 
@@ -448,11 +466,11 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(3);
     expect(mockEffect.mock.calls[2][0]).toBe(2);
 
-    store.Map.clear();
+    reset();
   });
 
   it("should work reactive store delete method", () => {
-    const { store, effect } = signals();
+    const { store, effect, reset } = signals();
     const mockEffect = mock<(count?: number) => void>(() => {});
 
     store.set("count", 0);
@@ -471,11 +489,11 @@ describe("signals", () => {
     expect(store.get("count")).toBeUndefined();
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[1][0]).toBeUndefined();
-    store.Map.clear();
+    reset();
   });
 
   it('should work the "indicate" method', () => {
-    const { indicate, store, effect } = signals();
+    const { indicate, store, effect, reset } = signals();
     const mockEffect = mock<(isPending: boolean) => void>(() => {});
     const actionPending = indicate("increment");
 
@@ -488,10 +506,11 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[0][0]).toBeFalse();
     expect(mockEffect.mock.calls[1][0]).toBeTrue();
+    reset();
   });
 
   it('should work the error in "indicate" method', () => {
-    const { indicate, store, effect } = signals();
+    const { indicate, store, effect, reset } = signals();
     const mockEffect = mock<(error: IndicatorSignal["error"]["value"]) => void>(
       () => {},
     );
@@ -506,10 +525,11 @@ describe("signals", () => {
     expect(mockEffect).toHaveBeenCalledTimes(2);
     expect(mockEffect.mock.calls[0][0]).toBeUndefined();
     expect(mockEffect.mock.calls[1][0]).toBe("Some error");
+    reset();
   });
 
   it('should "store.setOptimistic" reset the value if the store is not updated in the server action', () => {
-    const { store } = signals();
+    const { store, reset } = signals();
 
     store.set("count", 0);
     store.setOptimistic<number>("increment", "count", (v) => v + 1);
@@ -520,10 +540,11 @@ describe("signals", () => {
     window._s.set("__ind:increment", false);
 
     expect(store.get<number>("count")).toBe(0);
+    reset();
   });
 
   it('should "store.setOptimistic" keep the value if the store is updated in the server action', () => {
-    const { store } = signals();
+    const { store, reset } = signals();
 
     store.set("count", 0);
     store.setOptimistic<number>("increment", "count", (v) => v + 1);
@@ -535,10 +556,11 @@ describe("signals", () => {
     window._s.set("__ind:increment", false);
 
     expect(store.get<number>("count")).toBe(1234);
+    reset();
   });
 
   it('should "store.setOptimistic" work with objects', () => {
-    const { store } = signals();
+    const { store, reset } = signals();
 
     type User = { name: string };
 
@@ -554,5 +576,31 @@ describe("signals", () => {
     window._s.set("__ind:updateName", false);
 
     expect(store.get<User>("user")).toEqual({ name: "Aral" });
+    reset();
+  });
+
+  it('should only call the effect when the state value is different', () => {
+    const { state, effect, reset } = signals();
+    const count = state<number>(0);
+    const mockEffect = mock<(count?: number) => void>(() => {});
+
+    effect(() => {
+      mockEffect(count.value);
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+
+    count.value = 0;
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+
+    count.value = 1;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+
+    count.value = 1;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    reset();
   });
 });
