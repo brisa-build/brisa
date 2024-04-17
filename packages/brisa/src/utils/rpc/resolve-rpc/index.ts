@@ -2,9 +2,15 @@ import diff from "diff-dom-streaming";
 
 const unsuspenseRegex = new RegExp("^R:(\\d+)$");
 
-async function resolveRPC(res: Response) {
+async function resolveRPC(res: Response, args: unknown[] = []) {
   const urlToNavigate = res.headers.get("X-Navigate");
   const storeRaw = res.headers.get("X-S");
+  const resetForm = res.headers.has("X-Reset-Form");
+
+  // Reset form from the server action
+  if (resetForm) {
+    (args[0] as any).target.reset();
+  }
 
   if (storeRaw) {
     const entries = JSON.parse(decodeURIComponent(storeRaw));
