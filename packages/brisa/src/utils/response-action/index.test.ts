@@ -97,7 +97,7 @@ describe("utils", () => {
 
       req.formData = async () => formData;
 
-      await responseAction(req);
+      const res = await responseAction(req);
 
       expect(req.store.get("__params:a1_1")).toEqual([
         {
@@ -113,6 +113,7 @@ describe("utils", () => {
             encoding: "multipart/form-data",
             method: "post",
             elements: {},
+            reset: expect.any(Function),
           },
           defaultPrevented: true,
           eventPhase: 0,
@@ -126,11 +127,35 @@ describe("utils", () => {
             encoding: "multipart/form-data",
             method: "post",
             elements: {},
+            reset: expect.any(Function),
           },
           timeStamp: 0,
           type: "formdata",
         },
       ]);
+      expect(res.headers.get("x-reset-form")).toBeEmpty();
+    });
+
+    it('should add the "x-reset-form" header when using e.target.reset() in form-data', async () => {
+      const formData = new FormData();
+      formData.append("foo", "bar");
+
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "multipart/form-data",
+            "x-action": "a1_3", // a1_3 simulates a form reset
+          },
+          body: formData,
+        }),
+      });
+
+      req.formData = async () => formData;
+
+      const res = await responseAction(req);
+
+      expect(res.headers.get("x-reset-form")).toBe("1");
     });
 
     it("should form-data work with ?_aid instead of x-action to work without JS", async () => {
@@ -149,7 +174,7 @@ describe("utils", () => {
 
       req.formData = async () => formData;
 
-      await responseAction(req);
+      const res = await responseAction(req);
 
       expect(req.store.get("__params:a1_1")).toEqual([
         {
@@ -165,6 +190,7 @@ describe("utils", () => {
             encoding: "multipart/form-data",
             method: "post",
             elements: {},
+            reset: expect.any(Function),
           },
           defaultPrevented: true,
           eventPhase: 0,
@@ -178,11 +204,13 @@ describe("utils", () => {
             encoding: "multipart/form-data",
             method: "post",
             elements: {},
+            reset: expect.any(Function),
           },
           timeStamp: 0,
           type: "formdata",
         },
       ]);
+      expect(res.headers.get("x-reset-form")).toBeEmpty();
     });
 
     it("should add the correct param when using web component event", async () => {
