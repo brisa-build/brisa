@@ -54,7 +54,7 @@ In fact, it is now even **easier to deal** with **form server interactions** fro
 
 ### Reset form
 
-Using the events from the server makes the event serialized. However, `e.target.reset()` still works in the server. The only difference is that it is not executed at the right time, but is marked to reset it when the server action is finished and returns the response to the client.
+Using the events from the server makes the event serialized. However, `e.target.reset()` and `e.currentTarget.reset()` still works in the server. The only difference is that it is not executed at the right time, but is marked to reset it when the server action is finished and returns the response to the client.
 
 ```tsx
 export default function UncontrolledFormServer() {
