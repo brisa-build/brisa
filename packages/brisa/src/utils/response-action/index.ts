@@ -22,6 +22,8 @@ export default async function responseAction(req: RequestContext) {
   const contentType = req.headers.get("content-type");
   const isFormData = contentType?.includes("multipart/form-data");
   const encryptedKeys = new Set<string>();
+  let resetForm = false;
+
   const target = {
     action: req.url,
     autocomplete: "on",
@@ -29,6 +31,9 @@ export default async function responseAction(req: RequestContext) {
     encoding: "multipart/form-data",
     method: "post",
     elements: {},
+    reset: () => {
+      resetForm = true;
+    },
   };
 
   const params = isFormData
@@ -130,6 +135,11 @@ export default async function responseAction(req: RequestContext) {
   // Transfer page response headers
   for (const [key, value] of Object.entries(pageResponseHeaders)) {
     response.headers.set(key, value);
+  }
+
+  // Reset form after use e.target.reset() in server action
+  if (resetForm) {
+    response.headers.set("X-Reset-Form", "1");
   }
 
   // Transfer server store to client store
