@@ -30,7 +30,6 @@
     "server",
     "client",
     "jsx-runtime",
-    "jsx-dev-runtime",
-    "**/__fixtures__/*"
+    "jsx-dev-runtime"
   ]
 }
