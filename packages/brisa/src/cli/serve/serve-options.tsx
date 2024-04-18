@@ -1,5 +1,6 @@
 import { type MatchedRoute, type ServerWebSocket, type Serve } from "bun";
 import fs from "node:fs";
+import crypto from "node:crypto";
 import path from "node:path";
 
 import { getConstants } from "@/constants";
@@ -18,6 +19,10 @@ import responseRenderedPage from "@/utils/response-rendered-page";
 import { removeBasePathFromStringURL } from "@/utils/base-path";
 
 export async function getServeOptions() {
+  // This is necessary in case of Custom Server using the getServeOptions outside
+  // the Brisa environment, otherwise this is set from the CLI.
+  if (!import.meta.main) setUpEnvVars();
+
   const {
     IS_PRODUCTION,
     PAGE_404,
@@ -275,6 +280,18 @@ export async function getServeOptions() {
     req.route = route404;
 
     return responseRenderedPage({ req, route: route404, status: 404 });
+  }
+}
+
+function setUpEnvVars() {
+  if (!process.env.__CRYPTO_KEY__) {
+    process.env.__CRYPTO_KEY__ = crypto.randomBytes(32).toString("hex");
+  }
+  if (!process.env.__CRYPTO_IV__) {
+    process.env.__CRYPTO_IV__ = crypto.randomBytes(8).toString("hex");
+  }
+  if (!process.env.BRISA_BUILD_FOLDER) {
+    process.env.BRISA_BUILD_FOLDER = path.join(process.cwd(), "build");
   }
 }
 

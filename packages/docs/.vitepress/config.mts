@@ -214,6 +214,10 @@ export default defineConfig({
                 link: "/building-your-application/configuring/content-security-policy",
               },
               {
+                text: "Custom Server",
+                link: "/building-your-application/configuring/custom-server",
+              },
+              {
                 text: "Debugging",
                 link: "/building-your-application/configuring/debugging",
               },
@@ -389,6 +393,10 @@ export default defineConfig({
               {
                 text: "renderToString",
                 link: "/api-reference/server-apis/renderToString",
+              },
+              {
+                text: "getServeOptions",
+                link: "/api-reference/server-apis/getServeOptions",
               },
             ],
           },

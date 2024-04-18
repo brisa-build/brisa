@@ -60,6 +60,16 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     jest.restoreAllMocks();
   });
 
+  it("should set the env variables when they are not set for a custom server", async () => {
+    await (await import("./serve-options")).getServeOptions();
+
+    expect(process.env.__CRYPTO_KEY__).toBeDefined();
+    expect(process.env.__CRYPTO_IV__).toBeDefined();
+    expect(process.env.BRISA_BUILD_FOLDER).toBe(
+      path.join(process.cwd(), "build"),
+    );
+  });
+
   it('should log an error and exit if there are no "build" directory in production', async () => {
     const constants = getConstants();
     globalThis.mockConstants = {
