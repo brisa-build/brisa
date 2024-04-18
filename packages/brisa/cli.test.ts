@@ -218,6 +218,25 @@ describe("Brisa CLI", () => {
     ]);
   });
 
+  it("should build a web app in development with the flag --dev", async () => {
+    process.argv = ["bun", "brisa", "build", "--dev"];
+
+    await main();
+
+    expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      "bun",
+      ["--version"],
+      { stdio: "ignore" },
+    ]);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      "bun",
+      [BUILD_PATH, "DEV"],
+      devOptions,
+    ]);
+  });
+
   it('should build a desktop app with "brisa dev" command and output=desktop', async () => {
     process.argv = ["bun", "brisa", "dev"];
 
@@ -384,6 +403,7 @@ describe("Brisa CLI", () => {
       ["Options:"],
       [
         " -s, --skip-tauri Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
+        " -d, --dev        Build for development (useful for custom server)",
       ],
       [" --help             Show help"],
     ]);

@@ -112,8 +112,15 @@ export async function main() {
 
     // Command: brisa build
     else if (process.argv[2] === "build") {
+      let env = "PROD"
+
       for (let i = 3; i < process.argv.length; i++) {
         switch (process.argv[i]) {
+          case "--dev":
+          case "-d":
+            prodOptions.env.NODE_ENV = "development";
+            env = "DEV";
+            break;
           case "--skip-tauri":
           case "-s":
             IS_TAURI_APP = false;
@@ -123,6 +130,7 @@ export async function main() {
             console.log("Options:");
             console.log(
               " -s, --skip-tauri Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
+              " -d, --dev        Build for development (useful for custom server)",
             );
             console.log(" --help             Show help");
             return process.exit(0);
@@ -137,10 +145,10 @@ export async function main() {
         }
 
         await initTauri(prodOptions);
-        cp.spawnSync(BUN_EXEC, [buildFilepath, "PROD"], prodOptions);
+        cp.spawnSync(BUN_EXEC, [buildFilepath, env], prodOptions);
         cp.spawnSync(BUNX_EXEC, tauriCommand, prodOptions);
       } else {
-        cp.spawnSync(BUN_EXEC, [buildFilepath, "PROD"], prodOptions);
+        cp.spawnSync(BUN_EXEC, [buildFilepath, env], prodOptions);
       }
     }
 
