@@ -48,3 +48,15 @@ To run the custom server you'll need to update the `scripts` in `package.json` l
 ```
 
 :::
+
+By default (without custom server) is:
+
+```json
+{
+  "scripts": {
+    "dev": "brisa dev",
+    "build": "brisa build",
+    "start": "brisa start"
+  }
+}
+```
