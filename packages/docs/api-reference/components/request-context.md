@@ -141,7 +141,7 @@ css`
 
 For more details, take a look to:
 
-- [`indicate`](/building-your-application/data-fetching/web-context#indicate) in web components, similar method but from [`WebContext`](/building-your-application/data-fetching/web-context).
+- [`indicate`](/api-reference/components/web-context#indicate) in web components, similar method but from [`WebContext`](/api-reference/components/web-context).
 - [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) HTML extended attribute to use it in server components to register the server action indicator.
 - [`indicator`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
 

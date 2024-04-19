@@ -209,7 +209,7 @@ export default async function ActionError(
 }
 ```
 
-In this example, the `action-error` web component takes an `actionId` prop and utilizes the [`indicate`](/building-your-application/data-fetching/web-context#indicate) method to obtain the indicator signal associated with that specific action. The code then checks whether the `error` value within the `indicator` is a `string`. If it is, the component renders a UI element displaying the error message. This mechanism allows developers to seamlessly incorporate error handling into their web components, enhancing the user experience by providing meaningful error information when server actions encounter issues.
+In this example, the `action-error` web component takes an `actionId` prop and utilizes the [`indicate`](/api-reference/components/web-context#indicate) method to obtain the indicator signal associated with that specific action. The code then checks whether the `error` value within the `indicator` is a `string`. If it is, the component renders a UI element displaying the error message. This mechanism allows developers to seamlessly incorporate error handling into their web components, enhancing the user experience by providing meaningful error information when server actions encounter issues.
 
 > [!NOTE]
 >
@@ -241,7 +241,7 @@ The time unit consistently remains in milliseconds. In this example, the call to
 
 Optimistic updates are a strategy used in client-server architectures to enhance the user experience by locally updating the user interface (UI) optimistically before receiving confirmation from the server about the success of an operation. This approach aims to reduce perceived latency and provide a more responsive application.
 
-In Brisa, we support optimistic updates to manage server actions, and this is achieved through the use of the [**`setOptimistic`**](/building-your-application/data-fetching/web-context#setOptimistic) method within the [`store`](/building-your-application/data-fetching/web-context#store) of [web components](/building-your-application/components-details/web-components).
+In Brisa, we support optimistic updates to manage server actions, and this is achieved through the use of the [**`setOptimistic`**](/api-reference/components/web-context#setOptimistic) method within the [`store`](/api-reference/components/web-context#store) of [web components](/building-your-application/components-details/web-components).
 
 Example of web component (`like-button`):
 
@@ -295,7 +295,7 @@ function Page({}, request: RequestContext)
 }
 ```
 
-In the server component, we utilize the [`transferToClient`](/building-your-application/data-fetching/request-context) method to relay the '`likes`' data to the client-side store. Upon executing the action, the server component interacts with the database, and if successful, it updates the shared store with the new 'likes' count.
+In the server component, we utilize the [`transferToClient`](/api-reference/components/request-context) method to relay the '`likes`' data to the client-side store. Upon executing the action, the server component interacts with the database, and if successful, it updates the shared store with the new 'likes' count.
 
 > [!IMPORTANT]
 >
@@ -512,7 +512,7 @@ function getCookies(headers: Headers): Record<string, string> {
 
 ## Action Signals
 
-From the server you can consume a [`store`](/building-your-application/data-fetching/request-context#store) that by default has a limited lifetime and only lives on **request-time**. However, **you can expand the lifetime** of some properties of the store with the method: [`transferToClient`](/building-your-application/data-fetching/request-context#transfertoclient). The moment you do this, not only do you expand its life in client-time, but you can then re-use it in action-time.
+From the server you can consume a [`store`](/api-reference/components/request-context#store) that by default has a limited lifetime and only lives on **request-time**. However, **you can expand the lifetime** of some properties of the store with the method: [`transferToClient`](/api-reference/components/request-context#transfertoclient). The moment you do this, not only do you expand its life in client-time, but you can then re-use it in action-time.
 
 Defining a Server Action inside a component creates a [closure](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures) where the action has access to the outer function's scope. For example, the `onClick` action has access to the `foo` variable:
 
@@ -712,7 +712,7 @@ If we do not encrypt it you can use the same field of the store in the web compo
 
 > [!NOTE]
 >
-> Learn more in [transfer sensitive data](#transfer-sensitive-data) and in [`store.transferToClient`](/building-your-application/data-fetching/request-context#transfertoclient) documentation.
+> Learn more in [transfer sensitive data](#transfer-sensitive-data) and in [`store.transferToClient`](/api-reference/components/request-context#transfertoclient) documentation.
 
 ## Using Server Actions in a Reverse Proxy
 

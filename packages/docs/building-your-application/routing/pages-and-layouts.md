@@ -111,7 +111,7 @@ export default async function Layout(
 }
 ```
 
-The `fetch` is directly native and has no wrapper to control the cache. We recommend that you do not do the same `fetch` in several places, but use the [`store`](/building-your-application/data-fetching/request-context) to store the data and consume it from any component.
+The `fetch` is directly native and has no wrapper to control the cache. We recommend that you do not do the same `fetch` in several places, but use the [`store`](/api-reference/components/request-context) to store the data and consume it from any component.
 
 > [!TIP]
 >
@@ -195,7 +195,7 @@ export default function AboutUsPage() {
 
 ## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders` → `Head` → `web-components`
 
-You can share data between different parts of the application using the [`request context`](/building-your-application/data-fetching/request-context).
+You can share data between different parts of the application using the [`request context`](/api-reference/components/request-context).
 
 ```tsx filename="layout/index.tsx" switcher
 import { type RequestContext } from "brisa";
@@ -272,7 +272,7 @@ It is a way to modify in a reactive way from a server action the web components 
 
 ### Consume data on client (web-components):
 
-In the web-components instead of the [`RequestContext`](/building-your-application/data-fetching/request-context), there is the [`WebContext`](/building-your-application/data-fetching/web-context), where you have a different [`store`](/components-details/web-components#store-store-method), but if you have transferred the data from the `RequestContext` `store`, you will be able to consume it from the `WebContext` `store`.
+In the web-components instead of the [`RequestContext`](/api-reference/components/request-context), there is the [`WebContext`](/api-reference/components/web-context), where you have a different [`store`](/components-details/web-components#store-store-method), but if you have transferred the data from the `RequestContext` `store`, you will be able to consume it from the `WebContext` `store`.
 
 ```tsx
 import { WebContext } from "brisa";

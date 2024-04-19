@@ -106,4 +106,4 @@ SomeWebComponent.error = ({ error, ...props }, webContext: WebContext) => {
 };
 ```
 
-This works for both server and web components. The difference is that web-components have access to the [webContext](/building-your-application/data-fetching/web-context) while server-components have access to the [requestContext](/building-your-application/data-fetching/request-context).
+This works for both server and web components. The difference is that web-components have access to the [webContext](/api-reference/components/web-context) while server-components have access to the [requestContext](/api-reference/components/request-context).

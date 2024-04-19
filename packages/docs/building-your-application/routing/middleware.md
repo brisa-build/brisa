@@ -161,7 +161,7 @@ export function responseHeaders(request, responseStatus) {
 
 ## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders`
 
-You can share data between different parts of the application using the [`store`](/building-your-application/data-fetching/request-context#store).
+You can share data between different parts of the application using the [`store`](/api-reference/components/request-context#store).
 
 ```ts filename="middleware.ts" switcher
 import { type RequestContext } from "brisa";
@@ -187,4 +187,4 @@ export default function SomeComponent(props: Props, request: RequestContext) {
 }
 ```
 
-If you want to know more [check this out](/building-your-application/data-fetching/request-context#store).
+If you want to know more [check this out](/api-reference/components/request-context#store).

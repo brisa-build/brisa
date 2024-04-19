@@ -71,7 +71,7 @@ And the HTML is resolved via streaming.
 
 To share data across all parts of the server ([`middleware`](/building-your-application/routing/middleware), [`layout`](/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
 
-1. Request [`store`](docs/building-your-application/data-fetching/request-context#store)
+1. Request [`store`](docs/api-reference/components/request-context#store)
 2. [Context API](/components-details/context)
 
 Example using store:
@@ -140,9 +140,9 @@ We recommend that whenever possible you add the data to the `store` inside the r
 
 The reason is that the **Context API is more expensive** and if you don't put the [`serverOnly`](/components-details/context#serveronly-property) attribute it creates a DOM element (`context-provider`) and shares the data with the rest of the web-components that are in the same component tree.
 
-In both cases the data lives within the lifetime of the request, it is not global data, and one of the benefits is that all server-components receive the [`RequestContext`](/building-your-application/data-fetching/request-context) as a second parameter, and you can access easly to that data.
+In both cases the data lives within the lifetime of the request, it is not global data, and one of the benefits is that all server-components receive the [`RequestContext`](/api-reference/components/request-context) as a second parameter, and you can access easly to that data.
 
-The `RequestContext` is an extension of the [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from the [Request API](https://developer.mozilla.org/en-US/docs/Web/API/Request) you have some [extra things](/building-your-application/data-fetching/request-context), such as the store.
+The `RequestContext` is an extension of the [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from the [Request API](https://developer.mozilla.org/en-US/docs/Web/API/Request) you have some [extra things](/api-reference/components/request-context), such as the store.
 
 > [!TIP]
 >
@@ -152,7 +152,7 @@ The `RequestContext` is an extension of the [Request](https://developer.mozilla.
 
 To share data across all web components there are also the same two ways:
 
-1. Web Context [`store`](docs/building-your-application/data-fetching/web-context#store)
+1. Web Context [`store`](docs/api-reference/components/web-context#store)
 2. [Context API](/components-details/context)
 
 Example using store:
@@ -262,7 +262,7 @@ In this example, every time the `foo` prop signal inside the `effect` changes, t
 
 To share data across all parts of the server and web there are two ways:
 
-1. Request [`store`](docs/building-your-application/data-fetching/request-context#store) using [`transferToClient`](docs/building-your-application/data-fetching/request-context#transfertoclient) method
+1. Request [`store`](docs/api-reference/components/request-context#store) using [`transferToClient`](docs/api-reference/components/request-context#transfertoclient) method
 2. [Context API](/components-details/context) (without [`serverOnly`](/components-details/context#serveronly-property) prop)
 
 Example using store:
@@ -302,7 +302,7 @@ export function UserInfo({}: Props, { store }: WebContext) {
 }
 ```
 
-By default the [RequestContext](/building-your-application/data-fetching/request-context) [`store`](/building-your-application/data-fetching/request-context#store) is for sharing data only during the lifetime of the request and therefore only with **server** components. However, the `store` has the [`transferToClient`](docs/building-your-application/data-fetching/request-context#transfertoclient) method to transmit **keys** from the dictionary to the [WebContext](/building-your-application/data-fetching/web-context) [`store`](/building-your-application/data-fetching/web-context#store).
+By default the [RequestContext](/api-reference/components/request-context) [`store`](/api-reference/components/request-context#store) is for sharing data only during the lifetime of the request and therefore only with **server** components. However, the `store` has the [`transferToClient`](docs/api-reference/components/request-context#transfertoclient) method to transmit **keys** from the dictionary to the [WebContext](/api-reference/components/web-context) [`store`](/api-reference/components/web-context#store).
 
 Example using Context API:
 
