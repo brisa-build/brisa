@@ -150,14 +150,6 @@ export default defineConfig({
                 link: "/building-your-application/data-fetching/fetching",
               },
               {
-                text: "Request context",
-                link: "/building-your-application/data-fetching/request-context",
-              },
-              {
-                text: "Web context",
-                link: "/building-your-application/data-fetching/web-context",
-              },
-              {
                 text: "Server actions",
                 link: "/building-your-application/data-fetching/server-actions",
               },
@@ -308,8 +300,16 @@ export default defineConfig({
         items: [
           {
             text: "🧩 Components",
-            collapsed: true,
+            collapsed: false,
             items: [
+              {
+                text: "Request context",
+                link: "/api-reference/components/request-context",
+              },
+              {
+                text: "Web context",
+                link: "/api-reference/components/web-context",
+              },
               {
                 text: "Context provider",
                 link: "/api-reference/components/context-provider",
@@ -317,7 +317,7 @@ export default defineConfig({
             ],
           },
           {
-            collapsed: false,
+            collapsed: true,
             text: "🗜️ Functions",
             items: [
               {

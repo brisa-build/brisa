@@ -1304,7 +1304,7 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
     it("should work with a function jsx generator with an action", () => {
-      // TODO: element is returned as a component, when you implement component rendering you will have to
+      // TODO: element is returned as a component, when we implement component rendering we will have to
       // figure out how to fix this
       const code = `
        const getEl = (text) => <div 
@@ -1350,7 +1350,7 @@ describe("utils", () => {
     });
 
     it("should work with a function jsx generator with multiple actions", () => {
-      // TODO: element is returned as a component, when you implement component rendering you will have to
+      // TODO: element is returned as a component, when we implement component rendering we will have to
       // figure out how to fix this
       const code = `
        const getEl = (text) => <div 

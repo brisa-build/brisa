@@ -10,7 +10,7 @@ When you don't know the exact segment names ahead of time and want to create rou
 
 A Dynamic Segment can be created by wrapping a folder's name in square brackets: `[folderName]`. For example, `[id]` or `[slug]`.
 
-Dynamic Segments can be accessed from [`request context`](/building-your-application/data-fetching/request-context).
+Dynamic Segments can be accessed from [`request context`](/api-reference/components/request-context).
 
 ## Example
 

@@ -210,7 +210,7 @@ Example of css:
 
 #### Second strategy: Using async generators (Server Components)
 
-The second strategy is instead of using the suspense that Brisa offers, to use the async generator together with the [`css`](/building-your-application/data-fetching/request-context#css) helper to inject styles after the suspense phase to hide them with an animation.
+The second strategy is instead of using the suspense that Brisa offers, to use the async generator together with the [`css`](/api-reference/components/request-context#css) helper to inject styles after the suspense phase to hide them with an animation.
 
 ```tsx
 import type { RequestContext } from "brisa";

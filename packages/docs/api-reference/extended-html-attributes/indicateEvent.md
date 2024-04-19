@@ -12,8 +12,8 @@ Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchSta
 
 The value is the generated `IndicatorSignal` by the `indicate` method:
 
-- Read more docs about [`indicate`](/building-your-application/data-fetching/request-context#indicate) in Server Components.
-- Read more docs about [`indicate`](/building-your-application/data-fetching/web-context#indicate) in Web Components.
+- Read more docs about [`indicate`](/api-reference/components/request-context#indicate) in Server Components.
+- Read more docs about [`indicate`](/api-reference/components/web-context#indicate) in Web Components.
 
 ```tsx 6
 const indicator = indicate('some-action-name')
@@ -30,7 +30,7 @@ In this example, we are registering the indicator in the `onClick` server action
 
 #### Parameters:
 
-- `IndicatorSignal` - Indicator signal generared by [`indicate`](/building-your-application/data-fetching/request-context#indicate) method.
+- `IndicatorSignal` - Indicator signal generared by [`indicate`](/api-reference/components/request-context#indicate) method.
 
 > [!CAUTION]
 >
@@ -40,8 +40,8 @@ In this example, we are registering the indicator in the `onClick` server action
 
 For more details, take a look to:
 
-- [`indicate`](/building-your-application/data-fetching/request-context#indicate) method in server components.
-- [`indicate`](/building-your-application/data-fetching/web-context#indicate) method in web components.
+- [`indicate`](/api-reference/components/request-context#indicate) method in server components.
+- [`indicate`](/api-reference/components/web-context#indicate) method in web components.
 - [`indicator`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
 
 ### Support

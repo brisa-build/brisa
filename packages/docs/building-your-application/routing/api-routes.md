@@ -47,7 +47,7 @@ export function GET({ route: { query, params } }: RequestContext) {
 
 ## Request params
 
-The request that arrives is an extension of the native [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from having everything that the request has, it has extra information of the request, such as the `i18n`, the `route` and more. If you want to know more take a look at [`request context`](/building-your-application/data-fetching/request-context).
+The request that arrives is an extension of the native [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from having everything that the request has, it has extra information of the request, such as the `i18n`, the `route` and more. If you want to know more take a look at [`request context`](/api-reference/components/request-context).
 
 ## Request Body
 

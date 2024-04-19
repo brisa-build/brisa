@@ -212,7 +212,7 @@ const  = indicate('some-server-action-name');
 
 For more details, take a look to:
 
-- [`indicate`](/building-your-application/data-fetching/request-context#indicate) in server components, similar method but from [`RequestContext`](/building-your-application/data-fetching/request-context).
+- [`indicate`](/api-reference/components/request-context#indicate) in server components, similar method but from [`RequestContext`](/api-reference/components/request-context).
 - [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) HTML extended attribute to use it in server components to register the server action indicator.
 - [`indicator`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
 

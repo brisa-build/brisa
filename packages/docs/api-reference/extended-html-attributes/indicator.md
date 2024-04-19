@@ -12,8 +12,8 @@ The `indicator` attribute allows to pass one or several `IndicatorSignal` genera
 
 More details about the `indicate` function:
 
-- Read more docs about [`indicate`](/building-your-application/data-fetching/request-context#indicate) in Server Components.
-- Read more docs about [`indicate`](/building-your-application/data-fetching/web-context#indicate) in Web Components.
+- Read more docs about [`indicate`](/api-reference/components/request-context#indicate) in Server Components.
+- Read more docs about [`indicate`](/api-reference/components/web-context#indicate) in Web Components.
 
 These indicators placed in the `indicator` attribute allow the `brisa-request` class to be added during the execution of a server action, allowing interactions with CSS from the server components such as disabling buttons, showing spinners, transitions, etc.
 
@@ -56,14 +56,14 @@ button.brisa-request {
 
 #### Parameters:
 
-- `IndicatorSignal | IndicatorSignal[]` - One or several `IndicatorSignal` generared by [`indicate`](/building-your-application/data-fetching/request-context#indicate) method.
+- `IndicatorSignal | IndicatorSignal[]` - One or several `IndicatorSignal` generared by [`indicate`](/api-reference/components/request-context#indicate) method.
 
 ### More docs
 
 For more details, take a look to:
 
-- [`indicate`](/building-your-application/data-fetching/request-context#indicate) method in server components.
-- [`indicate`](/building-your-application/data-fetching/web-context#indicate) method in web components.
+- [`indicate`](/api-reference/components/request-context#indicate) method in server components.
+- [`indicate`](/api-reference/components/web-context#indicate) method in web components.
 - [`indicateEvent`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to connect an indicator to a server action.
 
 ### Support

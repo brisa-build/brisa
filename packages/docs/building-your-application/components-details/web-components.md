@@ -290,20 +290,20 @@ export default ParentComponentUsingSlots;
 
 ### Events via attributes
 
-In Brisa Web Components there is a convention that events must start with `on` prefix. Ex: `onNext`, `onPrev`. This convention is because it is necessary to distinguish between attributes that are events and those that are not. And as the functions cannot serialize, we came to make this convention. After following this convention you can use events in Web Components as if you were in other frameworks such as React.
+In Brisa Components there is a convention that events must start with `on` prefix. Ex: `onNext`, `onPrev`. This convention is because it is necessary to distinguish between attributes that are events and those that are not. And as the functions cannot serialize, we came to make this convention. After following this convention you can use events in Web Components as if you were in other frameworks such as React.
 
 `src/web-components/color-selector.tsx`:
 
 ```tsx
 import { WebContext } from "brisa";
 
-export default function ColorSelector({ color, onChangeColor }: WebContext) {
+export default function ColorSelector({ color, onChangeColor }) {
   return (
     <div>
       <input
         type="color"
         value={color}
-        onInput={(e: any) => onChangeColor(e.target.value)}
+        onInput={(e) => onChangeColor(e.target.value)}
       />
       <span style={{ color }}>{color}</span>
     </div>
@@ -635,7 +635,7 @@ export default function SomeChildComponent(props, { useContext }) {
 
 > [!NOTE]
 >
-> Learn more about it [here]([context](/components-details/context).
+> Learn more about it [here](/building-your-application/components-details/context).
 
 ## Template literal `css`
 
@@ -676,7 +676,7 @@ If you use VSCode we recommend [this extension](https://marketplace.visualstudio
 
 To use [`effect`](#effects-effect-method), [`cleanup`](#clean-effects-cleanup-method), [`state`](#state-state-method), [`store`](#store-store-method), [`derived`](#derived-state-and-props-derived-method), [`useContext`](#context) and [`onMount`](#effect-on-mount-onmount-method) functions outside the component it is necessary to create a **custom hook**. This hook should be used before the JSX, not inside.
 
-Unlike other frameworks, in Brisa it is necessary to propagate the [`WebContext`](/building-your-application/data-fetching/web-context), since each web component has a different one and self-manages its own life.
+Unlike other frameworks, in Brisa it is necessary to propagate the [`WebContext`](/api-reference/components/web-context), since each web component has a different one and self-manages its own life.
 
 Example defining a custom hook:
 
@@ -1062,7 +1062,7 @@ Choosing between a **web component** and a **markup generator** depends on the n
 
 > [!CAUTION]
 >
-> Avoid sending the [`WebContext`](/building-your-application/data-fetching/web-context) or parts of them to the markup generators, you can send signals ([props](#props), [state](#state-state-method), [derived](#derived-state-and-props-derived-method), [`context`](#context) and [store](#store-store-method) signals) and static values without issues.
+> Avoid sending the [`WebContext`](/api-reference/components/web-context) or parts of them to the markup generators, you can send signals ([props](#props), [state](#state-state-method), [derived](#derived-state-and-props-derived-method), [`context`](#context) and [store](#store-store-method) signals) and static values without issues.
 
 ## UI-agnostic
 

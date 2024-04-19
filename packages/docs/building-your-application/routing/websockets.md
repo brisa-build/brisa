@@ -111,7 +111,7 @@ ws.send(new Uint8Array([1, 2, 3])); // TypedArray | DataView
 
 > [!TIP]
 >
-> You have access to the `ServerWebSocket` from any server-component, middleware, API route, etc. Since it is inside the [`RequestContext`](/building-your-application/data-fetching/request-context).
+> You have access to the `ServerWebSocket` from any server-component, middleware, API route, etc. Since it is inside the [`RequestContext`](/api-reference/components/request-context).
 
 This is an example of sending a message from an [API route](docs/building-your-application/routing/api-routes):
 

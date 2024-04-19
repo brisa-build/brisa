@@ -139,7 +139,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `indicate`](https://brisa.build/building-your-application/data-fetching/request-context#indicate)
+   * - [How to use `indicate`](https://brisa.build/api-reference/components/request-context#indicate)
    */
   indicate: (actionName: string) => IndicatorSignal;
 
@@ -160,7 +160,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `route`](https://brisa.build/building-your-application/data-fetching/request-context#route)
+   * - [How to use `route`](https://brisa.build/api-reference/components/request-context#route)
    */
   route: MatchedRoute;
 
@@ -197,7 +197,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `ws`](https://brisa.build/building-your-application/data-fetching/request-context#ws)
+   * - [How to use `ws`](https://brisa.build/api-reference/components/request-context#ws)
    */
   ws: ServerWebSocket<unknown>;
 
@@ -212,7 +212,7 @@ export interface RequestContext extends Request {
    * const ip = getIP();
    * ```
    *
-   *  - [How to use `getIP`](https://brisa.build/building-your-application/data-fetching/request-context#getip)
+   *  - [How to use `getIP`](https://brisa.build/api-reference/components/request-context#getip)
    */
   getIP: () => SocketAddress | null;
 
@@ -235,7 +235,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `finalURL`](https://brisa.build/building-your-application/data-fetching/request-context#final-url)
+   * - [How to use `finalURL`](https://brisa.build/api-reference/components/request-context#final-url)
    */
   finalURL: string;
 
@@ -253,7 +253,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `id`](https://brisa.build/building-your-application/data-fetching/request-context#id)
+   * - [How to use `id`](https://brisa.build/api-reference/components/request-context#id)
    */
   id: string;
 
@@ -270,7 +270,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `css`](https://brisa.build/building-your-application/data-fetching/request-context#css)
+   * - [How to use `css`](https://brisa.build/api-reference/components/request-context#css)
    */
   css(strings: TemplateStringsArray, ...values: string[]): void;
 }
@@ -570,7 +570,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `reset`](https://brisa.build/building-your-application/data-fetching/web-context#reset)
+   * - [How to use `reset`](https://brisa.build/api-reference/components/web-context#reset)
    */
   reset: () => void;
 
@@ -589,7 +589,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `self`](https://brisa.build/building-your-application/data-fetching/web-context#self)
+   * - [How to use `self`](https://brisa.build/api-reference/components/web-context#self)
    */
   self?: HTMLElement;
 }
