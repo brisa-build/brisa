@@ -10,7 +10,7 @@ Developers can specify which origins are permissible for content sources, script
 
 ## Nonces
 
-A [nonce](https://developer.mozilla.org/docs/Web/HTML/Global_attributes/nonce) is a unique, random string of characters created for a one-time use. It is used in conjunction with CSP to selectively allow certain inline scripts or styles to execute, bypassing strict CSP directives.
+A [nonce](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/nonce) is a unique, random string of characters created for a one-time use. It is used in conjunction with CSP to selectively allow certain inline scripts or styles to execute, bypassing strict CSP directives.
 
 ### Why use a nonce?
 
