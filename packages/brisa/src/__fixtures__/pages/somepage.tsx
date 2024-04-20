@@ -6,6 +6,8 @@ export default async function SomePage() {
   return (
     <context-provider serverOnly context={context} value="bar">
       <h1>Some page</h1>
+      {/* @ts-ignore */}
+      <with-link />
     </context-provider>
   );
 }

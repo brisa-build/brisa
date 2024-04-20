@@ -4,8 +4,8 @@ import { join } from "node:path";
 import { getConstants } from "@/constants";
 import AST from "@/utils/ast";
 import {
-  injectActionRPCCode,
-  injectActionRPCLazyCode,
+  injectRPCCode,
+  injectRPCLazyCode,
 } from "@/utils/rpc" with { type: "macro" };
 import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
 import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
@@ -31,8 +31,8 @@ type ClientCodeInPageProps = {
 
 const ASTUtil = AST("tsx");
 const unsuspenseScriptCode = await injectUnsuspenseCode();
-const actionRPCCode = await injectActionRPCCode();
-const actionRPCLazyCode = await injectActionRPCLazyCode();
+const rpcCode = await injectRPCCode();
+const RPCLazyCode = await injectRPCLazyCode();
 const ENV_VAR_PREFIX = "BRISA_PUBLIC_";
 
 async function getAstFromPath(path: string) {
@@ -51,11 +51,8 @@ export default async function getClientCodeInPage({
 
   const ast = await getAstFromPath(pagePath);
 
-  let { useSuspense, useContextProvider, useActions } = analyzeServerAst(
-    ast,
-    allWebComponents,
-    layoutHasContextProvider,
-  );
+  let { useSuspense, useContextProvider, useActions, useHyperlink } =
+    analyzeServerAst(ast, allWebComponents, layoutHasContextProvider);
 
   // Web components inside web components
   const nestedComponents = await Promise.all(
@@ -67,23 +64,24 @@ export default async function getClientCodeInPage({
   for (const item of nestedComponents) {
     useContextProvider ||= item.useContextProvider;
     useSuspense ||= item.useSuspense;
+    useHyperlink ||= item.useHyperlink;
     Object.assign(pageWebComponents, item.webComponents);
   }
 
   const unsuspense = useSuspense ? unsuspenseScriptCode : "";
-  const actionRPC = useActions ? actionRPCCode : "";
-  const actionRPCLazy = useActions ? actionRPCLazyCode : "";
+  const rpc = useActions || useHyperlink ? rpcCode : "";
+  const lazyRPC = useActions || useHyperlink ? RPCLazyCode : "";
 
   size += unsuspense.length;
-  size += actionRPC.length;
+  size += rpc.length;
 
   if (!Object.keys(pageWebComponents).length)
     return {
       code,
       unsuspense,
-      actionRPC,
+      rpc,
       useContextProvider,
-      actionRPCLazy,
+      lazyRPC,
       size,
       useI18n: false,
       i18nKeys: new Set<string>(),
@@ -104,9 +102,9 @@ export default async function getClientCodeInPage({
   return {
     code,
     unsuspense,
-    actionRPC,
+    rpc,
     useContextProvider,
-    actionRPCLazy,
+    lazyRPC,
     size,
     useI18n: transformedCode.useI18n,
     i18nKeys: transformedCode.i18nKeys,

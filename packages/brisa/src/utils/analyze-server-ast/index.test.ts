@@ -202,7 +202,7 @@ describe("utils", () => {
       expect(res.webComponents).toEqual({});
       expect(res.useActions).toBeFalse();
       expect(res.useHyperlink).toBeFalse();
-    })
+    });
 
     it("should detect hyperlink if there are a lot of links and one of them is relative path", () => {
       const ast = parseCodeToAST(`
@@ -226,6 +226,6 @@ describe("utils", () => {
       expect(res.webComponents).toEqual({});
       expect(res.useActions).toBeFalse();
       expect(res.useHyperlink).toBeTrue();
-    })
+    });
   });
 });
