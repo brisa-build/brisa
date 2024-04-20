@@ -441,7 +441,7 @@ describe("utils", () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 190 B     | ${greenLog("2 kB")}  
+    ${info}λ /pages/index  | 190 B     | ${greenLog("3 kB")}  
     ${info}Δ /layout       | 435 B     |
     ${info}
     ${info}λ Server entry-points

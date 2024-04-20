@@ -8,6 +8,18 @@ const stringify = JSON.stringify;
 const $Promise = Promise;
 let isReady = false;
 
+function loadRPCResolver() {
+  return $window._rpc
+    ? $Promise.resolve()
+    : new $Promise((res) => {
+        let scriptElement = $document.createElement("script");
+        const basePath = getAttribute($document.head, "basepath") ?? "";
+        scriptElement.onload = scriptElement.onerror = res;
+        scriptElement.src = basePath + __RPC_LAZY_FILE__;
+        $document.head.appendChild(scriptElement);
+      });
+}
+
 /**
  * RPC (Remote Procedure Call)
  *
@@ -23,16 +35,7 @@ async function rpc(
   const errorIndicator = "e" + indicator;
   const elementsWithIndicator = [];
   const store = $window._s;
-
-  let promise = $window._rpc
-    ? $Promise.resolve()
-    : new $Promise((res) => {
-        let scriptElement = $document.createElement("script");
-        const basePath = getAttribute($document.head, "basepath") ?? "";
-        scriptElement.onload = scriptElement.onerror = res;
-        scriptElement.src = basePath + __RPC_LAZY_FILE__;
-        $document.head.appendChild(scriptElement);
-      });
+  let promise = loadRPCResolver();
 
   // Add the "brisa-request" class to all indicators
   if (indicator) {
@@ -136,6 +139,24 @@ function registerActions() {
   }
 }
 
+function spaNavigation(event: any) {
+  const url = new URL(event.destination.url);
+
+  if (location.origin !== url.origin) return;
+
+  event.intercept({
+    async handler() {
+      const res = await fetch(url.pathname);
+
+      if (res.ok) {
+        await loadRPCResolver();
+        await $window._rpc(res);
+        event.scroll();
+      }
+    },
+  });
+}
+
 function getAttribute(el: Element, attr: string) {
   return el.getAttribute(attr);
 }
@@ -150,6 +171,10 @@ function initActionRegister() {
 }
 
 initActionRegister();
+
+if ("navigation" in window) {
+  window.navigation.addEventListener("navigate", spaNavigation);
+}
 
 $document.addEventListener("DOMContentLoaded", () => {
   isReady = true;

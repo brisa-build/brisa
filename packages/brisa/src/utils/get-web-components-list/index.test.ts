@@ -46,6 +46,7 @@ describe("utils", () => {
           "web-components",
           "with-context.tsx",
         ),
+        "with-link": path.join(fixturesDir, "web-components", "with-link.tsx"),
       });
     });
 
@@ -76,6 +77,7 @@ describe("utils", () => {
           "web-components",
           "with-context.tsx",
         ),
+        "with-link": path.join(fixturesDir, "web-components", "with-link.tsx"),
       });
     });
 
@@ -105,6 +107,7 @@ describe("utils", () => {
           "web-components",
           "with-context.tsx",
         ),
+        "with-link": path.join(fixturesDir, "web-components", "with-link.tsx"),
       });
     });
 

@@ -17,6 +17,16 @@ const pageWebComponents = {
   "native-some-example": allWebComponents["native-some-example"],
 };
 
+const i18nCode = 3072;
+const brisaSize = 5650; // TODO: Reduce this size
+const webComponents = 660;
+const unsuspenseSize = 217;
+const rpcSize = 2020; // TODO: Reduce this size
+const lazyRPCSize = 2863;
+// lazyRPC is loaded after user interaction (action, link),
+// so it's not included in the initial size
+const initialSize = unsuspenseSize + rpcSize;
+
 describe("utils", () => {
   beforeEach(async () => {
     fs.mkdirSync(build, { recursive: true });
@@ -42,8 +52,8 @@ describe("utils", () => {
       const output = await getClientCodeInPage({ pagePath, allWebComponents });
       const expected = {
         code: "",
-        actionRPC: "",
-        actionRPCLazy: "",
+        rpc: "",
+        lazyRPC: "",
         unsuspense: "",
         size: 0,
         useI18n: false,
@@ -60,9 +70,6 @@ describe("utils", () => {
         allWebComponents,
         pageWebComponents,
       });
-      const i18nCode = 3072;
-      const brisaSize = 5650; // TODO: Reduce this size
-      const webComponents = 660;
 
       expect(output).not.toBeNull();
       expect(output!.size).toEqual(brisaSize + i18nCode + webComponents);
@@ -76,20 +83,13 @@ describe("utils", () => {
       expect(output!.size).toEqual(0);
     });
 
-    it("should return client code in page with suspense and actionRPC", async () => {
+    it("should return client code in page with suspense and rpc", async () => {
       const pagePath = path.join(pages, "index.tsx");
       const output = await getClientCodeInPage({ pagePath, allWebComponents });
-      const unsuspenseSize = 217;
-      const actionRPCSize = 1721;
-      const actionRPCLazySize = 2863;
-
-      // actionRPCLazy is loaded after user interaction (action),
-      // so it's not included in the initial size
-      const initialSize = unsuspenseSize + actionRPCSize;
 
       expect(output?.unsuspense.length).toBe(unsuspenseSize);
-      expect(output?.actionRPC.length).toBe(actionRPCSize);
-      expect(output?.actionRPCLazy.length).toBe(actionRPCLazySize);
+      expect(output?.rpc.length).toBe(rpcSize);
+      expect(output?.lazyRPC.length).toBe(lazyRPCSize);
       expect(output?.size).toBe(initialSize);
       expect(output?.code).toBeEmpty();
       expect(output?.useI18n).toBeFalse();
@@ -105,6 +105,24 @@ describe("utils", () => {
       });
       expect(output!.code).toContain('"web-component"');
       expect(output!.code).toContain('"native-some-example"');
+    });
+
+    it("should load lazyRPC in /somepage because it has an hyperlink", async () => {
+      const webComponentSize = 82;
+      const output = await getClientCodeInPage({
+        pagePath: path.join(pages, "somepage.tsx"),
+        allWebComponents,
+        pageWebComponents: {
+          "with-link": allWebComponents["with-link"],
+        },
+      });
+      expect(output!.code).toContain('"with-link"');
+      expect(output?.unsuspense.length).toBe(0);
+      expect(output?.rpc.length).toBe(rpcSize);
+      expect(output?.lazyRPC.length).toBe(lazyRPCSize);
+      expect(output?.size).toBe(brisaSize + webComponentSize + rpcSize);
+      expect(output?.useI18n).toBeFalse();
+      expect(output?.i18nKeys).toBeEmpty();
     });
 
     it("should add context-provider if the page has a context-provider without serverOnly attribute", async () => {
