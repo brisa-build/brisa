@@ -45,7 +45,7 @@ export default function analyzeServerAst(
 
       for (let prop of value.arguments[1].properties) {
         // avoid target="_blank"
-        if(prop.key.name === "target" && prop.value.value === "_blank") {
+        if (prop.key.name === "target" && prop.value.value === "_blank") {
           detected = false;
           break;
         }

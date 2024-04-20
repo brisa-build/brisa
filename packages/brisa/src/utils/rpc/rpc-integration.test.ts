@@ -1,13 +1,18 @@
-import { describe, it, expect, beforeEach, afterEach, spyOn } from "bun:test";
 import {
-  injectActionRPCCode,
-  injectActionRPCLazyCode,
-} from "." with { type: "macro" };
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  spyOn,
+  mock,
+} from "bun:test";
+import { injectRPCCode, injectRPCLazyCode } from "." with { type: "macro" };
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { serialize } from "../serialization";
 
-const actionRPCCode = await injectActionRPCCode();
-const actionRPCLazyCode = await injectActionRPCLazyCode();
+const rpcCode = await injectRPCCode();
+const lazyRPCCode = await injectRPCLazyCode();
 const INDICATOR_ID = "__ind:action";
 const stringify = (obj: any) => encodeURIComponent(JSON.stringify(obj));
 const requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 0);
@@ -48,8 +53,8 @@ async function simulateRPC({
   document.body.appendChild(el);
 
   // Inject RPC code
-  eval(actionRPCLazyCode);
-  eval(actionRPCCode);
+  eval(lazyRPCCode);
+  eval(rpcCode);
 
   let headers = new Headers();
 
@@ -96,18 +101,18 @@ async function simulateRPC({
 }
 
 describe("utils", () => {
-  describe("rpc", () => {
-    beforeEach(() => {
-      GlobalRegistrator.register();
-      window.requestAnimationFrame = requestAnimationFrame;
-    });
-    afterEach(() => {
-      window._S = window._s = undefined;
-      mockFetch?.mockRestore();
-      GlobalRegistrator.unregister();
-      globalThis.requestAnimationFrame = requestAnimationFrame;
-    });
+  beforeEach(() => {
+    GlobalRegistrator.register();
+    window.requestAnimationFrame = requestAnimationFrame;
+  });
+  afterEach(() => {
+    window._S = window._s = undefined;
+    mockFetch?.mockRestore();
+    GlobalRegistrator.unregister();
+    globalThis.requestAnimationFrame = requestAnimationFrame;
+  });
 
+  describe("rpc", () => {
     it("should redirect to 404", async () => {
       await simulateRPC({ navigateTo: "http://localhost/?_not-found=1" });
       // Simulate the script to be loaded
@@ -343,6 +348,54 @@ describe("utils", () => {
       >;
       expect(headers["x-action"]).toBe("a1_1");
       expect(headers["x-actions"]).toBeEmpty();
+    });
+  });
+
+  describe("SPA Navigation", () => {
+    const mockSPAHandler = mock(() => {});
+    async function simulateSPANavigation(url: string) {
+      let fn: any;
+
+      // Initial page (with same origin)
+      location.href = "http://localhost/";
+      window.navigation = {
+        addEventListener: (eventName: string, callback: any) => {
+          if (eventName === "navigate") fn = callback;
+        },
+      };
+
+      // Inject RPC code
+      eval(lazyRPCCode);
+      eval(rpcCode);
+
+      // Simulate the event
+      fn({
+        destination: { url },
+        scroll: () => {},
+        intercept: ({ handler }: any) => {
+          if (handler) {
+            mockSPAHandler();
+            location.href = url;
+          }
+        },
+      });
+      await Bun.sleep(0);
+    }
+
+    beforeEach(() => {
+      mockSPAHandler.mockClear();
+    });
+
+    it("should work SPA navigation", async () => {
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockSPAHandler).toHaveBeenCalled();
+      expect(location.href).toBe("http://localhost/some-page");
+    });
+
+    it("should not work SPA navigation with different origin", async () => {
+      await simulateSPANavigation("http://test.com/some-page");
+      expect(mockSPAHandler).not.toHaveBeenCalled();
+      expect(location.href).toBe("http://localhost/");
     });
   });
 });

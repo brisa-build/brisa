@@ -2,12 +2,12 @@ import path from "node:path";
 import constants from "@/constants";
 
 // Should be used via macro
-export async function injectActionRPCCode() {
+export async function injectRPCCode() {
   return await buildRPC("rpc.ts");
 }
 
 // Should be used via macro
-export async function injectActionRPCLazyCode() {
+export async function injectRPCLazyCode() {
   return await buildRPC(path.join("resolve-rpc", "index.ts"));
 }
 

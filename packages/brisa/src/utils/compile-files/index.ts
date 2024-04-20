@@ -269,29 +269,21 @@ async function compileClientCodePage(
 
     if (!pageCode) return null;
 
-    let {
-      size,
-      actionRPC,
-      actionRPCLazy,
-      code,
-      unsuspense,
-      useI18n,
-      i18nKeys,
-    } = pageCode;
+    let { size, rpc, lazyRPC, code, unsuspense, useI18n, i18nKeys } = pageCode;
 
     // If there are no actions in the page but there are actions in
     // the layout, then it is as if the page also has actions.
-    if (!actionRPC && layoutCode?.actionRPC) {
-      size += layoutCode.actionRPC.length;
-      actionRPC = layoutCode.actionRPC;
+    if (!rpc && layoutCode?.rpc) {
+      size += layoutCode.rpc.length;
+      rpc = layoutCode.rpc;
     }
 
     // It is not necessary to increase the size here because this
     // code even if it is necessary to generate it if it does not
     // exist yet, it is not part of the initial size of the page
     // because it is loaded in a lazy way.
-    if (!actionRPCLazy && layoutCode?.actionRPCLazy) {
-      actionRPCLazy = layoutCode.actionRPCLazy;
+    if (!lazyRPC && layoutCode?.lazyRPC) {
+      lazyRPC = layoutCode.lazyRPC;
     }
 
     // If there is no unsuspense in the page but there is unsuspense
@@ -326,13 +318,13 @@ async function compileClientCodePage(
     });
 
     // create _rpc-[versionhash].js and _rpc.txt (list of pages with actions)
-    clientSizesPerPage[route] += addExtraChunk(actionRPC, "_rpc", {
+    clientSizesPerPage[route] += addExtraChunk(rpc, "_rpc", {
       pagesClientPath,
       pagePath,
     });
 
     // create _rpc-lazy-[versionhash].js
-    clientSizesPerPage[route] += addExtraChunk(actionRPCLazy, "_rpc-lazy", {
+    clientSizesPerPage[route] += addExtraChunk(lazyRPC, "_rpc-lazy", {
       pagesClientPath,
       pagePath,
       skipList: true,
