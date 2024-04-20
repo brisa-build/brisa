@@ -1,16 +1,19 @@
 import type { ESTree } from "meriyah";
 
+const jsx = new Set(["jsx", "jsxDEV"]);
+
 export default function analyzeServerAst(
   ast: ESTree.Program,
   allWebComponents: Record<string, string>,
   layoutHasContextProvider?: boolean,
 ) {
   const webComponents: Record<string, string> = {};
+  let useHyperlink = false;
   let useSuspense = false;
   let useActions = false;
   let useContextProvider = layoutHasContextProvider ?? false;
 
-  JSON.stringify(ast, (key, value) => {
+  JSON.stringify(ast, function (key, value) {
     const webComponentSelector = value?.arguments?.[0]?.value ?? "";
     const webComponentPath = allWebComponents[webComponentSelector];
     const isCustomElement =
@@ -32,6 +35,30 @@ export default function analyzeServerAst(
       webComponents[webComponentSelector] = webComponentPath;
     }
 
+    const isHyperlink =
+      jsx.has(value?.callee?.name) &&
+      value?.arguments?.[0]?.type === "Literal" &&
+      value?.arguments?.[0]?.value === "a";
+
+    if (isHyperlink) {
+      let detected = false;
+
+      for (let prop of value.arguments[1].properties) {
+        // avoid target="_blank"
+        if(prop.key.name === "target" && prop.value.value === "_blank") {
+          detected = false;
+          break;
+        }
+
+        // Detect hyperlink with relative path
+        if (prop.key.name === "href" && !URL.canParse(prop.value.value)) {
+          detected = true;
+        }
+      }
+
+      useHyperlink ||= detected;
+    }
+
     // Detect actions
     useActions ||= value === "data-action";
 
@@ -44,5 +71,11 @@ export default function analyzeServerAst(
     return value;
   });
 
-  return { webComponents, useSuspense, useContextProvider, useActions };
+  return {
+    webComponents,
+    useSuspense,
+    useContextProvider,
+    useActions,
+    useHyperlink,
+  };
 }
