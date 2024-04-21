@@ -77,7 +77,7 @@ describe("utils", () => {
       expect(output!.i18nKeys).toEqual(new Set(["hello"]));
     });
 
-    it("shoukld return client code size as 0 when a page does not have web components", async () => {
+    it("should return client code size as 0 when a page does not have web components", async () => {
       const pagePath = path.join(pages, "somepage.tsx");
       const output = await getClientCodeInPage({ pagePath, allWebComponents });
       expect(output!.size).toEqual(0);
