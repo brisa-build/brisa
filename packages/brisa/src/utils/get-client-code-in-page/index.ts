@@ -155,10 +155,8 @@ async function transformToWebComponents({
     customElementKeys.unshift("context-provider");
   }
 
-  const numCustomElements = customElementKeys.length;
   const customElementsDefinitions = customElementKeys
-    .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`,
-    )
+    .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`)
     .join("\n");
 
   let code = "";
@@ -175,10 +173,7 @@ async function transformToWebComponents({
     code += "window._P=webContextPlugins;\n";
   }
 
-  code +=
-    numCustomElements === 1
-      ? customElementsDefinitions
-      : `${defineElement}\n${customElementsDefinitions};`;
+  code += `${defineElement}\n${customElementsDefinitions};`;
 
   await writeFile(webEntrypoint, code);
 
