@@ -147,7 +147,7 @@ async function transformToWebComponents({
   }
 
   const defineElement =
-    "const defineElement = (name, component) => name && customElements.define(name, component);";
+    "const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);";
 
   const customElementKeys = Object.keys(webComponentsList);
 
@@ -157,12 +157,7 @@ async function transformToWebComponents({
 
   const numCustomElements = customElementKeys.length;
   const customElementsDefinitions = customElementKeys
-    .map((k) =>
-      numCustomElements === 1
-        ? `if(${snakeToCamelCase(
-            k,
-          )}) customElements.define("${k}", ${snakeToCamelCase(k)})`
-        : `defineElement("${k}", ${snakeToCamelCase(k)});`,
+    .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`,
     )
     .join("\n");
 
