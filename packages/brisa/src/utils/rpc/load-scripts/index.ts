@@ -16,6 +16,7 @@ export function loadScripts(node: Node) {
       script.innerHTML = (node as HTMLScriptElement).innerHTML;
       script.onload = script.onerror = () => script.remove();
       document.head.appendChild(script);
+      if (!src) script.remove();
     }
   }
 }
