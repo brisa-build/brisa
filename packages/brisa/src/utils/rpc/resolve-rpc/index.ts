@@ -1,6 +1,5 @@
 import diff from "diff-dom-streaming";
 
-const unsuspenseRegex = new RegExp("^R:(\\d+)$");
 const scripts = new Set();
 
 async function resolveRPC(res: Response, args: unknown[] = []) {
@@ -40,16 +39,12 @@ async function resolveRPC(res: Response, args: unknown[] = []) {
 
   await diff(document, res.body.getReader(), (node) => {
     if (node.nodeName === "SCRIPT") {
-      // Unsuspense
-      const unsuspenseId = (node as Element).id.match(unsuspenseRegex)?.[1];
-      if (unsuspenseId) window.u$?.(unsuspenseId);
-
-      // Load new scripts
+      // Load new scripts and manage "unsuspense" scripts
       const src = (node as HTMLScriptElement).getAttribute("src");
-      if (src && !scripts.has(src)) {
+      if (!scripts.has(src)) {
         const script = document.createElement("script");
-        script.src = src;
-        script.textContent = node.textContent;
+        if (src) script.src = src;
+        script.innerHTML = (node as HTMLScriptElement).innerHTML;
         script.onload = script.onerror = () => script.remove();
         document.head.appendChild(script);
       }
