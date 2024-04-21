@@ -1,6 +1,5 @@
+import { loadScripts, registerCurrentScripts } from "@/utils/rpc/load-scripts";
 import diff from "diff-dom-streaming";
-
-const scripts = new Set();
 
 async function resolveRPC(res: Response, args: unknown[] = []) {
   const urlToNavigate = res.headers.get("X-Navigate");
@@ -32,24 +31,9 @@ async function resolveRPC(res: Response, args: unknown[] = []) {
 
   if (!res.body || !res.headers.get("content-type")) return;
 
-  // Register all scripts from the current document
-  for (let script of document.scripts) {
-    if (script.hasAttribute("src")) scripts.add(script.getAttribute("src"));
-  }
+  registerCurrentScripts();
 
-  await diff(document, res.body.getReader(), (node) => {
-    if (node.nodeName === "SCRIPT") {
-      // Load new scripts and manage "unsuspense" scripts
-      const src = (node as HTMLScriptElement).getAttribute("src");
-      if (!scripts.has(src)) {
-        const script = document.createElement("script");
-        if (src) script.src = src;
-        script.innerHTML = (node as HTMLScriptElement).innerHTML;
-        script.onload = script.onerror = () => script.remove();
-        document.head.appendChild(script);
-      }
-    }
-  });
+  await diff(document, res.body.getReader(), loadScripts);
 }
 
 window._rpc = resolveRPC;
