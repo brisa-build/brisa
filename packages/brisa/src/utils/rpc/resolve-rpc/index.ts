@@ -1,6 +1,7 @@
 import diff from "diff-dom-streaming";
 
 const unsuspenseRegex = new RegExp("^R:(\\d+)$");
+const scripts = new Set();
 
 async function resolveRPC(res: Response, args: unknown[] = []) {
   const urlToNavigate = res.headers.get("X-Navigate");
@@ -32,12 +33,25 @@ async function resolveRPC(res: Response, args: unknown[] = []) {
 
   if (!res.body || !res.headers.get("content-type")) return;
 
+  // Register all scripts from the current document
+  for (let script of document.scripts) {
+    if (script.hasAttribute("src")) scripts.add(script.getAttribute("src"));
+  }
+
   await diff(document, res.body.getReader(), (node) => {
-    // Unsuspense scripts
     if (node.nodeName === "SCRIPT") {
+      // Unsuspense
       const unsuspenseId = (node as Element).id.match(unsuspenseRegex)?.[1];
-      if (unsuspenseId) {
-        window.u$?.(unsuspenseId);
+      if (unsuspenseId) window.u$?.(unsuspenseId);
+
+      // Load new scripts
+      const src = (node as HTMLScriptElement).getAttribute("src");
+      if (src && !scripts.has(src)) {
+        const script = document.createElement("script");
+        script.src = src;
+        script.textContent = node.textContent;
+        script.onload = script.onerror = () => script.remove();
+        document.head.appendChild(script);
       }
     }
   });

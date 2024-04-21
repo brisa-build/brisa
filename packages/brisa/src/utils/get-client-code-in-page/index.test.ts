@@ -22,7 +22,7 @@ const brisaSize = 5650; // TODO: Reduce this size
 const webComponents = 684;
 const unsuspenseSize = 217;
 const rpcSize = 2020; // TODO: Reduce this size
-const lazyRPCSize = 2863;
+const lazyRPCSize = 3145; // TODO: Reduce this size
 // lazyRPC is loaded after user interaction (action, link),
 // so it's not included in the initial size
 const initialSize = unsuspenseSize + rpcSize;
@@ -108,7 +108,7 @@ describe("utils", () => {
     });
 
     it("should load lazyRPC in /somepage because it has an hyperlink", async () => {
-      const webComponentSize = 68;
+      const webComponentSize = 125;
       const output = await getClientCodeInPage({
         pagePath: path.join(pages, "somepage.tsx"),
         allWebComponents,
