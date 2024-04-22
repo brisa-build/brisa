@@ -121,6 +121,15 @@ describe("utils", () => {
       expect(location.toString()).toBe("http://localhost/?_not-found=1");
     });
 
+    it('should "fetch" receive a signal', async () => {
+      await simulateRPC({ navigateTo: "http://localhost/some-page" });
+
+      const signal = mockFetch.mock.calls[0][1].signal;
+
+      expect(signal).toBeDefined();
+      expect(signal.aborted).toBeFalse();
+    });
+
     it('should serialize an event and call "rpc" with the correct parameters', async () => {
       const mockFetch = await simulateRPC();
 
