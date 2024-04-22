@@ -1,7 +1,5 @@
 import type { ESTree } from "meriyah";
 
-const jsx = new Set(["jsx", "jsxDEV"]);
-
 export default function analyzeServerAst(
   ast: ESTree.Program,
   allWebComponents: Record<string, string>,
@@ -13,7 +11,7 @@ export default function analyzeServerAst(
   let useActions = false;
   let useContextProvider = layoutHasContextProvider ?? false;
 
-  JSON.stringify(ast, function (key, value) {
+  JSON.stringify(ast, (key, value) => {
     const webComponentSelector = value?.arguments?.[0]?.value ?? "";
     const webComponentPath = allWebComponents[webComponentSelector];
     const isCustomElement =
@@ -36,9 +34,9 @@ export default function analyzeServerAst(
     }
 
     const isHyperlink =
-      jsx.has(value?.callee?.name) &&
       value?.arguments?.[0]?.type === "Literal" &&
-      value?.arguments?.[0]?.value === "a";
+      value?.arguments?.[0]?.value === "a" &&
+      value?.arguments?.[1]?.properties;
 
     if (isHyperlink) {
       let detected = false;
