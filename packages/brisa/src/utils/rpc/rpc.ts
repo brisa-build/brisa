@@ -6,6 +6,7 @@ const $document = document;
 const $window = window;
 const stringify = JSON.stringify;
 const $Promise = Promise;
+let controller = new AbortController();
 let isReady = false;
 
 function loadRPCResolver() {
@@ -49,8 +50,11 @@ async function rpc(
   }
 
   try {
+    controller.abort();
+    controller = new AbortController();
     const res = await fetch(location.toString(), {
       method: "POST",
+      signal: controller.signal,
       headers: {
         "x-action": actionId,
         "x-actions": actionsDeps ?? "",
@@ -146,12 +150,14 @@ function spaNavigation(event: any) {
 
   event.intercept({
     async handler() {
-      const res = await fetch(url.pathname);
+      controller.abort();
+      controller = new AbortController();
+      const res = await fetch(url.pathname, { signal: controller.signal });
 
       if (res.ok) {
         await loadRPCResolver();
+        document.documentElement.scrollTop = 0;
         await $window._rpc(res);
-        event.scroll();
       }
     },
   });
