@@ -169,7 +169,8 @@ export default function signals() {
     const derivedState = state<T>();
 
     effect(() => {
-      derivedState.value = fn();
+      const result = fn();
+      if (result !== derivedState.value) derivedState.value = result;
     });
 
     return derivedState;
