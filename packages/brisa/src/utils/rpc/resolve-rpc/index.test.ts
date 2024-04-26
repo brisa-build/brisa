@@ -133,5 +133,79 @@ describe("utils", () => {
 
       expect(formEvent.target.reset).toHaveBeenCalled();
     });
+
+    it('should not do transition with X-Mode header as "reactivity"', async () => {
+      const mockDiff = mock((...args: any) => {});
+
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode("<html>"));
+          controller.enqueue(encoder.encode("<head />"));
+          controller.enqueue(encoder.encode("<body>"));
+
+          controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
+
+          controller.enqueue(encoder.encode("</body>"));
+          controller.enqueue(encoder.encode("</html>"));
+          controller.close();
+        },
+      });
+      const res = new Response(stream, {
+        headers: {
+          "content-type": "text/html",
+          "X-Mode": "reactivity",
+        },
+      });
+
+      await initBrowser();
+      await resolveRPC(res);
+
+      expect(mockDiff).toBeCalledWith(document, expect.any, {
+        onNextNode: expect.any(Function),
+        transition: false,
+      });
+    });
+
+    it('should do transition with X-Mode header as "transition"', async () => {
+      const mockDiff = mock((...args: any) => {});
+
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode("<html>"));
+          controller.enqueue(encoder.encode("<head />"));
+          controller.enqueue(encoder.encode("<body>"));
+
+          controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
+
+          controller.enqueue(encoder.encode("</body>"));
+          controller.enqueue(encoder.encode("</html>"));
+          controller.close();
+        },
+      });
+      const res = new Response(stream, {
+        headers: {
+          "content-type": "text/html",
+          "X-Mode": "transition",
+        },
+      });
+
+      await initBrowser();
+      await resolveRPC(res);
+
+      expect(mockDiff).toBeCalledWith(document, expect.any, {
+        onNextNode: expect.any(Function),
+        transition: true,
+      });
+    });
   });
 });
