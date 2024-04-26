@@ -50,11 +50,9 @@ async function rpc(
   }
 
   try {
-    controller.abort();
-    controller = new AbortController();
     const res = await fetch(location.toString(), {
       method: "POST",
-      signal: controller.signal,
+      signal: getAbortSignal(),
       headers: {
         "x-action": actionId,
         "x-actions": actionsDeps ?? "",
@@ -150,9 +148,7 @@ function spaNavigation(event: any) {
 
   event.intercept({
     async handler() {
-      controller.abort();
-      controller = new AbortController();
-      const res = await fetch(url.pathname, { signal: controller.signal });
+      const res = await fetch(url.pathname, { signal: getAbortSignal() });
 
       if (res.ok) {
         await loadRPCResolver();
@@ -167,6 +163,12 @@ function getAttribute(el: Element, attr: string) {
   return el.getAttribute(attr);
 }
 
+function getAbortSignal() {
+  controller.abort();
+  controller = new AbortController();
+  return controller.signal;
+}
+
 function querySelectorAll(query: string) {
   return $document.querySelectorAll(query);
 }
@@ -178,8 +180,8 @@ function initActionRegister() {
 
 initActionRegister();
 
-if ("navigation" in window) {
-  window.navigation.addEventListener("navigate", spaNavigation);
+if ("navigation" in $window) {
+  $window.navigation.addEventListener("navigate", spaNavigation);
 }
 
 $document.addEventListener("DOMContentLoaded", () => {

@@ -168,7 +168,7 @@ describe("utils", () => {
           }`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(files).toHaveLength(15);
+      expect(files).toHaveLength(17);
       expect(files[0]).toBe("_brisa");
       expect(files[1]).toBe("actions");
       expect(files[2]).toBe("api");
@@ -177,13 +177,15 @@ describe("utils", () => {
       expect(files[5]).toStartWith("chunk-");
       expect(files[6]).toStartWith("chunk-");
       expect(files[7]).toStartWith("chunk-");
-      expect(files[8]).toBe("i18n.js");
-      expect(files[9]).toBe("layout.js");
-      expect(files[10]).toBe("middleware.js");
-      expect(files[11]).toBe("pages");
-      expect(files[12]).toBe("pages-client");
-      expect(files[13]).toBe("web-components");
-      expect(files[14]).toBe("websocket.js");
+      expect(files[8]).toStartWith("chunk-");
+      expect(files[9]).toStartWith("chunk-");
+      expect(files[10]).toBe("i18n.js");
+      expect(files[11]).toBe("layout.js");
+      expect(files[12]).toBe("middleware.js");
+      expect(files[13]).toBe("pages");
+      expect(files[14]).toBe("pages-client");
+      expect(files[15]).toBe("web-components");
+      expect(files[16]).toBe("websocket.js");
 
       // Test actions
       const homePageContent = await Bun.file(
@@ -276,7 +278,7 @@ describe("utils", () => {
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 103 B     |
-    ${info}Φ /chunk-hash                    | 233 B     |
+    ${info}Φ /chunk-hash                    | 238 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -511,7 +513,7 @@ describe("utils", () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 190 B     | ${greenLog("186 B")}  
+    ${info}λ /pages/index  | 190 B     | ${greenLog("187 B")}  
     ${info}Δ /layout       | 536 B     |
     ${info}
     ${info}λ Server entry-points

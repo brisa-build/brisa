@@ -5,6 +5,7 @@ async function resolveRPC(res: Response, args: unknown[] = []) {
   const urlToNavigate = res.headers.get("X-Navigate");
   const storeRaw = res.headers.get("X-S");
   const resetForm = res.headers.has("X-Reset-Form");
+  const transition = res.headers.get("X-Mode") === "transition";
 
   // Reset form from the server action
   if (resetForm) {
@@ -33,7 +34,10 @@ async function resolveRPC(res: Response, args: unknown[] = []) {
 
   registerCurrentScripts();
 
-  await diff(document, res.body.getReader(), loadScripts);
+  await diff(document, res.body.getReader(), {
+    onNextNode: loadScripts,
+    transition,
+  });
 }
 
 window._rpc = resolveRPC;
