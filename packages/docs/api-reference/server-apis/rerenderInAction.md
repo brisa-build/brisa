@@ -32,7 +32,7 @@ function handleEvent() {
 #### Parameters:
 
 - `type`: The type of the rerender. It can be `component` or `page`. By default, it is `component`.
-- `mode`: The type of the rerender. It can be `reactivity` or `transition`. By default, it is `reactivity`.
+- `mode`: The type of the rerender. It can be `reactivity` or `transition`. By default, it is `reactivity`. When using `transition` it is done under [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API).
 
 #### Returns:
 
