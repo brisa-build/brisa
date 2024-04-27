@@ -142,7 +142,7 @@ function registerActions() {
 }
 
 function spaNavigation(event: any) {
-  const renderMode = getAttribute($document.activeElement, "rendermode");
+  const renderMode = getAttribute(getActiveElement(), "rendermode");
 
   if (
     renderMode === "native" ||
@@ -160,10 +160,16 @@ function spaNavigation(event: any) {
         signal: getAbortSignal(),
       });
       await loadRPCResolver();
-      document.documentElement.scrollTop = 0;
+      event.scroll();
       await $window._rpc(res, renderMode);
     },
   });
+}
+
+function getActiveElement(element = $document.activeElement) {
+  if (element?.shadowRoot)
+    return getActiveElement(element.shadowRoot.activeElement);
+  return element;
 }
 
 function getAttribute(el: Element | null, attr: string) {
