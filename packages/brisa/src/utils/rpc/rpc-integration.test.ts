@@ -438,15 +438,81 @@ describe("utils", () => {
       expect(mockSPAHandler).not.toHaveBeenCalled();
     });
 
+    it("should not work SPA navigation with some custom element with renderMode='native'", async () => {
+      const page = "http://localhost/some-page";
+      customElements.define(
+        "custom-element",
+        class extends HTMLElement {
+          constructor() {
+            super();
+            const shadowRoot = this.attachShadow({ mode: "open" });
+            shadowRoot.innerHTML = `<a href="${page}" rendermode="native">Click me</a>`;
+          }
+        },
+      );
+
+      document.body.innerHTML = `<custom-element></custom-element>`;
+      const customElement = document.querySelector("custom-element");
+      // focus to the hyperlink to activate the document.activeElement.shadowRoot.activeElement
+      customElement?.shadowRoot?.querySelector("a")?.focus();
+
+      await simulateSPANavigation(page);
+      expect(mockSPAHandler).not.toHaveBeenCalled();
+    });
+
     it("should work SPA navigation with renderMode='reactivity'", async () => {
       document.activeElement?.setAttribute("rendermode", "reactivity");
       await simulateSPANavigation("http://localhost/some-page");
       expect(mockSPAHandler).toHaveBeenCalled();
     });
 
+    it("should work SPA navigation with some custom element with renderMode='reactivity'", async () => {
+      const page = "http://localhost/some-page";
+      customElements.define(
+        "custom-element",
+        class extends HTMLElement {
+          constructor() {
+            super();
+            const shadowRoot = this.attachShadow({ mode: "open" });
+            shadowRoot.innerHTML = `<a href="${page}" rendermode="reactivity">Click me</a>`;
+          }
+        },
+      );
+
+      document.body.innerHTML = `<custom-element></custom-element>`;
+      const customElement = document.querySelector("custom-element");
+      // focus to the hyperlink to activate the document.activeElement.shadowRoot.activeElement
+      customElement?.shadowRoot?.querySelector("a")?.focus();
+
+      await simulateSPANavigation(page);
+      expect(mockSPAHandler).toHaveBeenCalled();
+    });
+
     it("should work SPA navigation with renderMode='transition'", async () => {
       document.activeElement?.setAttribute("rendermode", "transition");
       await simulateSPANavigation("http://localhost/some-page");
+      expect(mockSPAHandler).toHaveBeenCalled();
+    });
+
+    it("should work SPA navigation with some custom element with renderMode='transition'", async () => {
+      const page = "http://localhost/some-page";
+      customElements.define(
+        "custom-element",
+        class extends HTMLElement {
+          constructor() {
+            super();
+            const shadowRoot = this.attachShadow({ mode: "open" });
+            shadowRoot.innerHTML = `<a href="${page}" rendermode="transition">Click me</a>`;
+          }
+        },
+      );
+
+      document.body.innerHTML = `<custom-element></custom-element>`;
+      const customElement = document.querySelector("custom-element");
+      // focus to the hyperlink to activate the document.activeElement.shadowRoot.activeElement
+      customElement?.shadowRoot?.querySelector("a")?.focus();
+
+      await simulateSPANavigation(page);
       expect(mockSPAHandler).toHaveBeenCalled();
     });
 
