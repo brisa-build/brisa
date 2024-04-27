@@ -29,7 +29,7 @@
 <div align="center">
   <a href="https://brisa.build">Documentation</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://discord.com/invite/89Y9HMYZ">Discord</a>
+  <a href="https://discord.gg/MsE9RN3FU4">Discord</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   <a href="https://github.com/brisa-build/brisa/issues/new">Issues</a>
   <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -125,7 +125,7 @@ See [Contributing Guide](CONTRIBUTING.md) and please follow our [Code of Conduct
 
 ## Discord
 
-Come join the [Discord community channel~](https://discord.gg/89Y9HMYZ)
+Come join the [Discord community channel~](https://discord.gg/MsE9RN3FU4)
 
 ## License
 
