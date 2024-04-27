@@ -432,6 +432,24 @@ describe("utils", () => {
       expect(mockSPAHandler).not.toHaveBeenCalled();
     });
 
+    it("should not work SPA navigation with renderMode='native'", async () => {
+      document.activeElement?.setAttribute("rendermode", "native");
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockSPAHandler).not.toHaveBeenCalled();
+    });
+
+    it("should work SPA navigation with renderMode='reactivity'", async () => {
+      document.activeElement?.setAttribute("rendermode", "reactivity");
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockSPAHandler).toHaveBeenCalled();
+    });
+
+    it("should work SPA navigation with renderMode='transition'", async () => {
+      document.activeElement?.setAttribute("rendermode", "transition");
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockSPAHandler).toHaveBeenCalled();
+    });
+
     it("should work SPA navigation", async () => {
       await simulateSPANavigation("http://localhost/some-page");
       expect(mockSPAHandler).toHaveBeenCalled();

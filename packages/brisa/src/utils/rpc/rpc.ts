@@ -129,7 +129,7 @@ function registerActions() {
               rpc(
                 actionId!,
                 isFormData,
-                getAttribute(element, "indicate" + eventName),
+                getAttribute(element, "indicate" + eventName)!,
                 dataSet.actions,
                 ...args,
               ),
@@ -142,7 +142,10 @@ function registerActions() {
 }
 
 function spaNavigation(event: any) {
+  const renderMode = getAttribute($document.activeElement, "rendermode");
+
   if (
+    renderMode === "native" ||
     event.hashChange ||
     event.downloadRequest !== null ||
     !event.canIntercept
@@ -158,13 +161,13 @@ function spaNavigation(event: any) {
       });
       await loadRPCResolver();
       document.documentElement.scrollTop = 0;
-      await $window._rpc(res);
+      await $window._rpc(res, renderMode);
     },
   });
 }
 
-function getAttribute(el: Element, attr: string) {
-  return el.getAttribute(attr);
+function getAttribute(el: Element | null, attr: string) {
+  return el?.getAttribute(attr);
 }
 
 function getAbortSignal() {

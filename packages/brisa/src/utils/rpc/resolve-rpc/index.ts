@@ -1,11 +1,16 @@
 import { loadScripts, registerCurrentScripts } from "@/utils/rpc/load-scripts";
 import diff from "diff-dom-streaming";
 
-async function resolveRPC(res: Response, args: unknown[] = []) {
+type RenderMode = "native" | "transition" | "reactivity";
+
+const TRANSITION_MODE = "transition";
+
+async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
   const urlToNavigate = res.headers.get("X-Navigate");
   const storeRaw = res.headers.get("X-S");
   const resetForm = res.headers.has("X-Reset-Form");
-  const transition = res.headers.get("X-Mode") === "transition";
+  const transition =
+    args === TRANSITION_MODE || res.headers.get("X-Mode") === TRANSITION_MODE;
 
   // Reset form from the server action
   if (resetForm) {
