@@ -38,6 +38,7 @@ async function testRequest(
 
 describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
   beforeEach(async () => {
+    globalThis.__BASE_PATH__ = "";
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
@@ -56,6 +57,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
   });
 
   afterEach(() => {
+    globalThis.__BASE_PATH__ = "";
     globalThis.mockConstants = undefined;
     jest.restoreAllMocks();
   });
@@ -406,6 +408,45 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     expect(html).toContain("<web-component></web-component>");
   });
 
+  it("should return 200 page with client page code using a hash", async () => {
+    const response = await testRequest(
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component#hash`,
+      ),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain(
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`,
+    );
+    expect(html).toContain("<web-component></web-component>");
+  });
+
+  it("should return 200 page with client page code using a hash and trailingSlash", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        trailingSlash: true,
+      },
+    };
+    const response = await testRequest(
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component/#hash`,
+      ),
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain(
+      `<script async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`,
+    );
+    expect(html).toContain("<web-component></web-component>");
+  });
+
   it("should return 404 page with client page code without the basePath", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
@@ -560,6 +601,40 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     expect(response.status).toBe(301);
     expect(response.headers.get("Location")).toBe(
       `https://en.test.com${basePath}/en/somepage-en`,
+    );
+  });
+
+  it("should redirect to the correct browser locale changing the subdomain and the page route name with hash", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      I18N_CONFIG: {
+        locales: ["en", "es"],
+        defaultLocale: "es",
+        domains: {
+          "en.test.com": {
+            defaultLocale: "en",
+          },
+          "es.test.com": {
+            defaultLocale: "es",
+          },
+        },
+        pages: {
+          "/somepage": {
+            en: "/somepage-en",
+          },
+        },
+      },
+    };
+
+    const req = new Request(`https://es.test.com${basePath}/somepage#hash`);
+
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
+
+    const response = await testRequest(req);
+    expect(response.status).toBe(301);
+    expect(response.headers.get("Location")).toBe(
+      `https://en.test.com${basePath}/en/somepage-en#hash`,
     );
   });
 
