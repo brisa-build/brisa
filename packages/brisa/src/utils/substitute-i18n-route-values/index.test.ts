@@ -55,5 +55,29 @@ describe("utils", () => {
 
       expect(output).toBe("/example/1/settings/2/3");
     });
+
+    it("should work with params and hash routes", () => {
+      mock.module("@/constants", () => ({
+        default: () => ({
+          ...constants,
+          I18N_CONFIG: {
+            locales: ["es", "en"],
+            defaultLocale: "es",
+            pages: {
+              "/example": {
+                es: "/ejemplo",
+              },
+            },
+          },
+        }),
+      }));
+
+      const output = substituteI18nRouteValues(
+        "/example",
+        "/ejemplo?foo=bar#baz",
+      );
+
+      expect(output).toBe("/example?foo=bar#baz");
+    });
   });
 });

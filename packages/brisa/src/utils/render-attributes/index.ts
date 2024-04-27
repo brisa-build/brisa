@@ -15,6 +15,7 @@ import { addBasePathToStringURL } from "@/utils/base-path";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
+const fakeOrigin = "http://localhost";
 
 export default function renderAttributes({
   elementProps,
@@ -229,9 +230,12 @@ export function renderHrefAttribute(
   return addBasePathToStringURL(fixedUrl);
 }
 
-function findTranslatedPage(pages: I18nConfig["pages"], pathname: string) {
+function findTranslatedPage(pages: I18nConfig["pages"], href: string) {
+  const url = new URL(href, fakeOrigin);
+  const pathnameWithoutTrailingSlash = url.pathname.replace(/\/$/, "");
+
   for (const page of Object.entries(pages ?? {})) {
-    if (routeMatchPathname(page[0], pathname)) return page;
+    if (routeMatchPathname(page[0], pathnameWithoutTrailingSlash)) return page;
   }
 }
 
@@ -240,7 +244,6 @@ function manageTrailingSlash(urlString: string) {
 
   if (!CONFIG.trailingSlash) return urlString;
 
-  const fakeOrigin = "http://localhost";
   const url = new URL(urlString, fakeOrigin);
 
   url.pathname = url.pathname.endsWith("/") ? url.pathname : `${url.pathname}/`;
