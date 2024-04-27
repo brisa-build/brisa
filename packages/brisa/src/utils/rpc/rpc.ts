@@ -142,19 +142,23 @@ function registerActions() {
 }
 
 function spaNavigation(event: any) {
-  const url = new URL(event.destination.url);
-
-  if (event.downloadRequest || location.origin !== url.origin) return;
+  if (
+    event.hashChange ||
+    event.downloadRequest !== null ||
+    !event.canIntercept
+  ) {
+    return;
+  }
 
   event.intercept({
     async handler() {
-      const res = await fetch(url.pathname, { signal: getAbortSignal() });
-
-      if (res.ok) {
-        await loadRPCResolver();
-        document.documentElement.scrollTop = 0;
-        await $window._rpc(res);
-      }
+      // We do not validate res.ok because we also want to render 404 or 500 pages.
+      const res = await fetch(event.destination.url, {
+        signal: getAbortSignal(),
+      });
+      await loadRPCResolver();
+      document.documentElement.scrollTop = 0;
+      await $window._rpc(res);
     },
   });
 }
