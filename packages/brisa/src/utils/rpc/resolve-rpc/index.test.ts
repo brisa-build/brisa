@@ -1,7 +1,7 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { describe, expect, it, afterEach, mock } from "bun:test";
 
-let resolveRPC: (res: Response, args?: unknown[]) => Promise<void>;
+let resolveRPC: (res: Response, args?: unknown[] | string) => Promise<void>;
 
 async function initBrowser() {
   GlobalRegistrator.register();
@@ -201,6 +201,114 @@ describe("utils", () => {
 
       await initBrowser();
       await resolveRPC(res);
+
+      expect(mockDiff).toBeCalledWith(document, expect.any, {
+        onNextNode: expect.any(Function),
+        transition: true,
+      });
+    });
+
+    it('should not do transition with second param as renderMode as "reactivity"', async () => {
+      const mockDiff = mock((...args: any) => {});
+
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode("<html>"));
+          controller.enqueue(encoder.encode("<head />"));
+          controller.enqueue(encoder.encode("<body>"));
+
+          controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
+
+          controller.enqueue(encoder.encode("</body>"));
+          controller.enqueue(encoder.encode("</html>"));
+          controller.close();
+        },
+      });
+      const res = new Response(stream, {
+        headers: {
+          "content-type": "text/html",
+        },
+      });
+
+      await initBrowser();
+      await resolveRPC(res, "reactivity");
+
+      expect(mockDiff).toBeCalledWith(document, expect.any, {
+        onNextNode: expect.any(Function),
+        transition: false,
+      });
+    });
+
+    it("should not do transition without renderMode neither X-Mode header", async () => {
+      const mockDiff = mock((...args: any) => {});
+
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode("<html>"));
+          controller.enqueue(encoder.encode("<head />"));
+          controller.enqueue(encoder.encode("<body>"));
+
+          controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
+
+          controller.enqueue(encoder.encode("</body>"));
+          controller.enqueue(encoder.encode("</html>"));
+          controller.close();
+        },
+      });
+      const res = new Response(stream, {
+        headers: {
+          "content-type": "text/html",
+        },
+      });
+
+      await initBrowser();
+      await resolveRPC(res);
+
+      expect(mockDiff).toBeCalledWith(document, expect.any, {
+        onNextNode: expect.any(Function),
+        transition: false,
+      });
+    });
+
+    it('should do transition with second param as renderMode as "transition"', async () => {
+      const mockDiff = mock((...args: any) => {});
+
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream({
+        start(controller) {
+          controller.enqueue(encoder.encode("<html>"));
+          controller.enqueue(encoder.encode("<head />"));
+          controller.enqueue(encoder.encode("<body>"));
+
+          controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
+
+          controller.enqueue(encoder.encode("</body>"));
+          controller.enqueue(encoder.encode("</html>"));
+          controller.close();
+        },
+      });
+      const res = new Response(stream, {
+        headers: {
+          "content-type": "text/html",
+        },
+      });
+
+      await initBrowser();
+      await resolveRPC(res, "transition");
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
