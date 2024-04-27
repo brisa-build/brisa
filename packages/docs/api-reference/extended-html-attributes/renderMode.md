@@ -12,7 +12,7 @@ The `renderMode` attribute is present on the `<a>` element to specify the render
 
 There are three possible values:
 
-- `reactivity`: The next document will be rendered using reactivity (it only changes the parts of the page that have changed).
+- `reactivity`: The next document will be rendered using reactivity. It only changes the parts of the page that have changed, perserving Web Component states.
 - `transition`: The next document will be rendered using reactivity and also using View Transition API.
 - `native`: The next document will be rendered using the browser's native rendering engine.
 
