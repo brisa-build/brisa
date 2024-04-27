@@ -5,6 +5,7 @@ const dec = new TextDecoder();
 
 Bun.env.__CRYPTO_KEY__ = crypto.randomBytes(32).toString("hex");
 Bun.env.__CRYPTO_IV__ = crypto.randomBytes(8).toString("hex");
+globalThis.__BASE_PATH__ = "";
 
 // All tests about this diff dom streaming algorithm are inside the library
 mock.module("diff-dom-streaming", () => ({
