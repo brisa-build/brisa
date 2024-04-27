@@ -9,6 +9,12 @@ const $Promise = Promise;
 let controller = new AbortController();
 let isReady = false;
 
+const serializeStore = () =>
+  encodeURIComponent(
+    // @ts-ignore
+    stringify($window._s ? [..._s.Map.entries()] : $window._S) ?? "",
+  );
+
 function loadRPCResolver() {
   return $window._rpc
     ? $Promise.resolve()
@@ -56,10 +62,7 @@ async function rpc(
       headers: {
         "x-action": actionId,
         "x-actions": actionsDeps ?? "",
-        "x-s": encodeURIComponent(
-          // @ts-ignore
-          stringify(store ? [..._s.Map.entries()] : $window._S) ?? "",
-        ),
+        "x-s": serializeStore(),
       },
       body: isFormData
         ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
@@ -158,6 +161,9 @@ function spaNavigation(event: any) {
       // We do not validate res.ok because we also want to render 404 or 500 pages.
       const res = await fetch(event.destination.url, {
         signal: getAbortSignal(),
+        headers: {
+          "x-s": serializeStore(),
+        },
       });
       await loadRPCResolver();
       event.scroll();

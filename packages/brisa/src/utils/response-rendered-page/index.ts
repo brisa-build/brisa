@@ -4,6 +4,7 @@ import processPageRoute from "@/utils/process-page-route";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
 import { getConstants } from "@/constants";
 import importFileIfExists from "@/utils/import-file-if-exists";
+import transferStoreService from "@/utils/transfer-store-service";
 
 export default async function responseRenderedPage({
   req,
@@ -18,12 +19,16 @@ export default async function responseRenderedPage({
   error?: Error;
   headers?: Record<string, string>;
 }) {
+  const { transfeClientStoreToServer, transferServerStoreToClient } =
+    transferStoreService(req);
   const { HEADERS, BUILD_DIR } = getConstants();
   const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
   const { pageElement, module, layoutModule } = await processPageRoute(
     route,
     error,
   );
+
+  transfeClientStoreToServer();
 
   const middlewareResponseHeaders =
     middlewareModule?.responseHeaders?.(req, status) ?? {};
@@ -52,5 +57,9 @@ export default async function responseRenderedPage({
     status,
   };
 
-  return new Response(htmlStream, responseOptions);
+  const res = new Response(htmlStream, responseOptions);
+
+  transferServerStoreToClient(res);
+
+  return res;
 }

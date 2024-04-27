@@ -1,27 +1,21 @@
 import { join } from "node:path";
 import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
-import getClientStoreEntries from "@/utils/get-client-store-entries";
 import { deserialize } from "@/utils/serialization";
-import {
-  ENCRYPT_NONTEXT_PREFIX,
-  ENCRYPT_PREFIX,
-  decrypt,
-} from "@/utils/crypto";
-import { logError } from "@/utils/log/log-build";
+import transferStoreService from "@/utils/transfer-store-service";
 
 export default async function responseAction(req: RequestContext) {
+  const { transfeClientStoreToServer, transferServerStoreToClient } =
+    transferStoreService(req);
   const { BUILD_DIR } = getConstants();
   const url = new URL(req.url);
   const action =
     req.headers.get("x-action") ?? url.searchParams.get("_aid") ?? "";
   const actionsHeaderValue = req.headers.get("x-actions") ?? "[]";
-  const storeRaw = req.headers.get("x-s") ?? "[]";
   const actionFile = action.split("_").at(0);
   const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
   const contentType = req.headers.get("content-type");
   const isFormData = contentType?.includes("multipart/form-data");
-  const encryptedKeys = new Set<string>();
   let resetForm = false;
 
   const target = {
@@ -66,30 +60,7 @@ export default async function responseAction(req: RequestContext) {
   if (isWebComponentEvent) params[0] = params[0].detail;
 
   // Transfer client store to server store
-  if (storeRaw) {
-    let entries = JSON.parse(decodeURIComponent(storeRaw));
-    for (const [key, value] of entries) {
-      try {
-        let storeValue = value;
-
-        if (
-          typeof value === "string" &&
-          (value.startsWith(ENCRYPT_PREFIX) ||
-            value.startsWith(ENCRYPT_NONTEXT_PREFIX))
-        ) {
-          encryptedKeys.add(key);
-          storeValue = decrypt(value);
-        }
-
-        req.store.set(key, storeValue);
-      } catch (e: any) {
-        logError([
-          `Error transferring client "${key}" store to server store`,
-          e.message,
-        ]);
-      }
-    }
-  }
+  transfeClientStoreToServer();
 
   req.store.set(`__params:${action}`, params);
 
@@ -142,13 +113,7 @@ export default async function responseAction(req: RequestContext) {
     response.headers.set("X-Reset-Form", "1");
   }
 
-  // Transfer server store to client store
-  response.headers.set(
-    "X-S",
-    encodeURIComponent(
-      JSON.stringify(getClientStoreEntries(req, encryptedKeys)),
-    ),
-  );
+  transferServerStoreToClient(response);
 
   return response;
 }

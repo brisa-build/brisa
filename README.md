@@ -125,7 +125,7 @@ See [Contributing Guide](CONTRIBUTING.md) and please follow our [Code of Conduct
 
 ## Discord
 
-Come join the [Discord community channel~](https://discord.gg/89Y9HMYZ)
+Come join the [Discord community channel~](https://discord.gg/MsE9RN3FU4)
 
 ## License
 

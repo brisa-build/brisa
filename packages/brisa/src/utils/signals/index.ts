@@ -138,6 +138,7 @@ export default function signals() {
   async function effect(fn: Effect) {
     stack.unshift(fn);
     const p = fn(addSubEffect(fn));
+    // @ts-ignore
     if (p?.then) await p;
     removeFromStack(fn);
   }
