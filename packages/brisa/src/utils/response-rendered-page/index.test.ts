@@ -116,5 +116,25 @@ describe("utils", () => {
 
       expect(response.headers.get("X-Test")).toBe("test");
     });
+
+    it("should transfer the store from client to server and server to client", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/es", {
+          headers: {
+            "x-s": encodeURIComponent(JSON.stringify([["key", "value"]])),
+          },
+        }),
+      });
+      const response = await responseRenderedPage({
+        req,
+        route: {
+          filePath: path.join(PAGES_DIR, "index.tsx"),
+        } as MatchedRoute,
+      });
+
+      expect(response.headers.get("X-S")).toBe(
+        encodeURIComponent(JSON.stringify([["key", "value"]])),
+      );
+    });
   });
 });

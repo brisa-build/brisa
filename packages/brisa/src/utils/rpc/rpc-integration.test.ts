@@ -361,7 +361,7 @@ describe("utils", () => {
   });
 
   describe("SPA Navigation", () => {
-    const mockSPAHandler = mock(() => {});
+    const mockNavigationIntercept = mock((handler: () => {}) => {});
     async function simulateSPANavigation(
       url: string,
       {
@@ -394,7 +394,7 @@ describe("utils", () => {
         canIntercept,
         intercept: ({ handler }: any) => {
           if (handler) {
-            mockSPAHandler();
+            mockNavigationIntercept(handler);
             location.href = url;
           }
         },
@@ -403,39 +403,39 @@ describe("utils", () => {
     }
 
     beforeEach(() => {
-      mockSPAHandler.mockClear();
+      mockNavigationIntercept.mockClear();
     });
 
     it("should not work SPA navigation with different origin", async () => {
       await simulateSPANavigation("http://test.com/some-page");
-      expect(mockSPAHandler).not.toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with same origin but hashChange is true", async () => {
       await simulateSPANavigation("http://localhost/some-page", {
         hashChange: true,
       });
-      expect(mockSPAHandler).not.toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with 'download' attribute", async () => {
       await simulateSPANavigation("http://localhost/some-page", {
         downloadRequest: "name-of-file",
       });
-      expect(mockSPAHandler).not.toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with 'download' attribute as empty string", async () => {
       await simulateSPANavigation("http://localhost/some-page", {
         downloadRequest: "",
       });
-      expect(mockSPAHandler).not.toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with renderMode='native'", async () => {
       document.activeElement?.setAttribute("rendermode", "native");
       await simulateSPANavigation("http://localhost/some-page");
-      expect(mockSPAHandler).not.toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with some custom element with renderMode='native'", async () => {
@@ -457,13 +457,13 @@ describe("utils", () => {
       customElement?.shadowRoot?.querySelector("a")?.focus();
 
       await simulateSPANavigation(page);
-      expect(mockSPAHandler).not.toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should work SPA navigation with renderMode='reactivity'", async () => {
       document.activeElement?.setAttribute("rendermode", "reactivity");
       await simulateSPANavigation("http://localhost/some-page");
-      expect(mockSPAHandler).toHaveBeenCalled();
+      expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it("should work SPA navigation with some custom element with renderMode='reactivity'", async () => {
@@ -485,13 +485,13 @@ describe("utils", () => {
       customElement?.shadowRoot?.querySelector("a")?.focus();
 
       await simulateSPANavigation(page);
-      expect(mockSPAHandler).toHaveBeenCalled();
+      expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it("should work SPA navigation with renderMode='transition'", async () => {
       document.activeElement?.setAttribute("rendermode", "transition");
       await simulateSPANavigation("http://localhost/some-page");
-      expect(mockSPAHandler).toHaveBeenCalled();
+      expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it("should work SPA navigation with some custom element with renderMode='transition'", async () => {
@@ -513,13 +513,29 @@ describe("utils", () => {
       customElement?.shadowRoot?.querySelector("a")?.focus();
 
       await simulateSPANavigation(page);
-      expect(mockSPAHandler).toHaveBeenCalled();
+      expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it("should work SPA navigation", async () => {
       await simulateSPANavigation("http://localhost/some-page");
-      expect(mockSPAHandler).toHaveBeenCalled();
+      expect(mockNavigationIntercept).toHaveBeenCalled();
       expect(location.href).toBe("http://localhost/some-page");
+    });
+
+    it("should add x-s (store header) during SPA navigation", async () => {
+      window._S = [["a", "b"]];
+      const res = new Response('<div id="some-id"></div>', {
+        headers: { "content-type": "text/html" },
+      });
+      mockFetch = spyOn(window, "fetch").mockImplementation(async () => res);
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockNavigationIntercept).toHaveBeenCalled();
+      const handler = mockNavigationIntercept.mock.calls[0][0];
+      await handler();
+      expect(mockFetch).toHaveBeenCalled();
+      expect(mockFetch.mock.calls[0][1].headers["x-s"]).toBe(
+        encodeURIComponent(JSON.stringify([["a", "b"]])),
+      );
     });
   });
 });
