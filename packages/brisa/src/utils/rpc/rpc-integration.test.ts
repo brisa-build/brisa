@@ -364,12 +364,17 @@ describe("utils", () => {
     const mockSPAHandler = mock(() => {});
     async function simulateSPANavigation(
       url: string,
-      { downloadRequest = false } = {},
+      {
+        downloadRequest = null,
+        hashChange = false,
+      }: { downloadRequest?: string | null; hashChange?: boolean } = {},
     ) {
+      const origin = `http://localhost`;
+      let canIntercept = new URL(url).origin === origin;
       let fn: any;
 
       // Initial page (with same origin)
-      location.href = "http://localhost/";
+      location.href = origin;
       window.navigation = {
         addEventListener: (eventName: string, callback: any) => {
           if (eventName === "navigate") fn = callback;
@@ -384,7 +389,9 @@ describe("utils", () => {
       fn({
         destination: { url },
         scroll: () => {},
+        hashChange,
         downloadRequest,
+        canIntercept,
         intercept: ({ handler }: any) => {
           if (handler) {
             mockSPAHandler();
@@ -399,24 +406,36 @@ describe("utils", () => {
       mockSPAHandler.mockClear();
     });
 
-    it("should work SPA navigation", async () => {
-      await simulateSPANavigation("http://localhost/some-page");
-      expect(mockSPAHandler).toHaveBeenCalled();
-      expect(location.href).toBe("http://localhost/some-page");
-    });
-
     it("should not work SPA navigation with different origin", async () => {
       await simulateSPANavigation("http://test.com/some-page");
       expect(mockSPAHandler).not.toHaveBeenCalled();
-      expect(location.href).toBe("http://localhost/");
+    });
+
+    it("should not work SPA navigation with same origin but hashChange is true", async () => {
+      await simulateSPANavigation("http://localhost/some-page", {
+        hashChange: true,
+      });
+      expect(mockSPAHandler).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with 'download' attribute", async () => {
       await simulateSPANavigation("http://localhost/some-page", {
-        downloadRequest: true,
+        downloadRequest: "name-of-file",
       });
       expect(mockSPAHandler).not.toHaveBeenCalled();
-      expect(location.href).toBe("http://localhost/");
+    });
+
+    it("should not work SPA navigation with 'download' attribute as empty string", async () => {
+      await simulateSPANavigation("http://localhost/some-page", {
+        downloadRequest: "",
+      });
+      expect(mockSPAHandler).not.toHaveBeenCalled();
+    });
+
+    it("should work SPA navigation", async () => {
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockSPAHandler).toHaveBeenCalled();
+      expect(location.href).toBe("http://localhost/some-page");
     });
   });
 });
