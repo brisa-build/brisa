@@ -38,7 +38,6 @@ async function testRequest(
 
 describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
   beforeEach(async () => {
-    globalThis.__BASE_PATH__ = "";
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,

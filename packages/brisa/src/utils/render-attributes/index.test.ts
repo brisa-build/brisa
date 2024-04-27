@@ -367,6 +367,69 @@ describe("utils", () => {
       );
     });
 
+    it('should translate the "a" href attribute with params and hash', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "en",
+          pages: {
+            "/some-page": {
+              es: "/alguna-pagina",
+            },
+            "/user/[id]": {
+              es: "/usuario/[id]",
+            },
+            "/catch/[[...catchAll]]": {
+              es: "/atrapar/[[...catchAll]]",
+            },
+            "/dynamic/[id]/catch/[...rest]": {
+              es: "/dinamico/[id]/atrapar/[...rest]",
+            },
+          },
+        },
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/es?foo=bar#baz"),
+      });
+
+      request.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+        pages: {},
+        t: () => "" as any,
+        overrideMessages: () => {},
+      };
+
+      const hrefOfATag = (href: string) =>
+        renderAttributes({
+          elementProps: {
+            href,
+          },
+          request,
+          type: "a",
+        });
+
+      expect(hrefOfATag("/?foo=bar#baz")).toBe(' href="/es/?foo=bar#baz"');
+      expect(hrefOfATag("/some-page?foo=bar#baz")).toBe(
+        ' href="/es/alguna-pagina?foo=bar#baz"',
+      );
+      expect(hrefOfATag("/user/aral?foo=bar#baz")).toBe(
+        ' href="/es/usuario/aral?foo=bar#baz"',
+      );
+      expect(hrefOfATag("https://example.com?foo=bar#baz")).toBe(
+        ' href="https://example.com?foo=bar#baz"',
+      );
+      expect(hrefOfATag("/catch/first/second?foo=bar#baz")).toBe(
+        ' href="/es/atrapar/first/second?foo=bar#baz"',
+      );
+      expect(hrefOfATag("/dynamic/1/catch/first/second?foo=bar#baz")).toBe(
+        ' href="/es/dinamico/1/atrapar/first/second?foo=bar#baz"',
+      );
+    });
+
     it("should work with trailing slash enable in the config", () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
