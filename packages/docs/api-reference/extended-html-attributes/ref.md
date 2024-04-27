@@ -6,7 +6,7 @@ description: Use `ref` attribute to reference to HTML element
 
 ## Reference
 
-### `ref={string}`
+### `ref={Signal}`
 
 When the `ref` attribute is used on an HTML element, you can access the current value of that `ref` through the `ref.value` property.
 

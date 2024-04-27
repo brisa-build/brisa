@@ -366,6 +366,10 @@ export default defineConfig({
                 link: "/api-reference/extended-html-attributes/skipSSR",
                 text: "skipSSR",
               },
+              {
+                link: "/api-reference/extended-html-attributes/renderMode",
+                text: "renderMode",
+              },
             ],
           },
           {

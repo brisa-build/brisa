@@ -8066,6 +8066,33 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/required)
        */
       required?: boolean | undefined;
+
+      /**
+       * The `renderMode` is a specific Brisa attribute.
+       *
+       * This attribute is present on the `<a>` element to specify the render mode of the next document after the link is followed.
+       *
+       * There are three possible values:
+       *
+       * - `reactivity`: The next document will be rendered using reactivity (it only changes the parts of the page that have changed).
+       * - `transition`: The next document will be rendered using reactivity and also using View Transition API.
+       * - `native`: The next document will be rendered using the browser's native rendering engine.
+       *
+       * By default, the value is `reactivity`.
+       *
+       * **Note**: If the origin of the next document is different from the current document, the value will be ignored and the next document will be rendered using the browser's native rendering engine.
+       *
+       * Example:
+       *
+       * ```tsx
+       * return <a href="/" renderMode="transition" />;
+       * ```
+       *
+       * Docs:
+       *
+       * - [How to use `renderMode`](https://brisa.build/api-reference/extended-html-attributes/renderMode)
+       */
+      renderMode?: "reactivity" | "transition" | "native";
       /**
        * The `reversed` attribute is a boolean attribute that is present on the `<ol>` element to specify that the list should be displayed in reverse order.
        *
