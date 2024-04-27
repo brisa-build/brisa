@@ -166,10 +166,10 @@ function spaNavigation(event: any) {
   });
 }
 
-function getActiveElement(element = $document.activeElement) {
-  if (element?.shadowRoot)
-    return getActiveElement(element.shadowRoot.activeElement);
-  return element;
+function getActiveElement(element = $document.activeElement): Element | null {
+  return element?.shadowRoot
+    ? getActiveElement(element.shadowRoot.activeElement)
+    : element;
 }
 
 function getAttribute(el: Element | null, attr: string) {
