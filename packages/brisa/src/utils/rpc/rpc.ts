@@ -144,7 +144,7 @@ function registerActions() {
 function spaNavigation(event: any) {
   const url = new URL(event.destination.url);
 
-  if (location.origin !== url.origin) return;
+  if (event.downloadRequest || location.origin !== url.origin) return;
 
   event.intercept({
     async handler() {

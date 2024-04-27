@@ -362,7 +362,10 @@ describe("utils", () => {
 
   describe("SPA Navigation", () => {
     const mockSPAHandler = mock(() => {});
-    async function simulateSPANavigation(url: string) {
+    async function simulateSPANavigation(
+      url: string,
+      { downloadRequest = false } = {},
+    ) {
       let fn: any;
 
       // Initial page (with same origin)
@@ -381,6 +384,7 @@ describe("utils", () => {
       fn({
         destination: { url },
         scroll: () => {},
+        downloadRequest,
         intercept: ({ handler }: any) => {
           if (handler) {
             mockSPAHandler();
@@ -403,6 +407,14 @@ describe("utils", () => {
 
     it("should not work SPA navigation with different origin", async () => {
       await simulateSPANavigation("http://test.com/some-page");
+      expect(mockSPAHandler).not.toHaveBeenCalled();
+      expect(location.href).toBe("http://localhost/");
+    });
+
+    it("should not work SPA navigation with 'download' attribute", async () => {
+      await simulateSPANavigation("http://localhost/some-page", {
+        downloadRequest: true,
+      });
       expect(mockSPAHandler).not.toHaveBeenCalled();
       expect(location.href).toBe("http://localhost/");
     });
