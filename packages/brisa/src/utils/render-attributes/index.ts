@@ -15,6 +15,7 @@ import { addBasePathToStringURL } from "@/utils/base-path";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
+const TAGNAME_WITH_HREF = new Set(["a", "link"]);
 const fakeOrigin = "http://localhost";
 
 export default function renderAttributes({
@@ -115,7 +116,7 @@ export default function renderAttributes({
     }
 
     // i18n navigation
-    if (type === "a" && prop === "href" && typeof value === "string") {
+    if (prop === "href" && typeof value === "string" && TAGNAME_WITH_HREF.has(type)) {
       attributes += ` ${key}="${renderHrefAttribute(value, request)}"`;
       continue;
     }

@@ -223,3 +223,11 @@ In this above example, when navigating to `/foo` the result will be immediate be
 > The i18n is managed in the same way as the links, so if `/foo` in Spanish is called `/bar`, it will automatically convert `/foo` to `/es/bar`.
 
 Consider an e-commerce website with a multi-step checkout process consisting of distinct pages for entering shipping information, payment details, and order confirmation. By implementing prefetching, we can ensure that each step of the checkout process loads instantly as the user progresses, providing a seamless and frictionless experience.
+
+> [!NOTE]
+>
+> For more information access the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel/prefetch).
+
+> [!WARNING]
+>
+> Although it is implemented in all browsers, in Safari and Safari iOS it is under a preference setting, so probably will be users who do not have the prefetch applied to them.

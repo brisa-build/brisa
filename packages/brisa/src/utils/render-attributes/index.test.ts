@@ -430,6 +430,130 @@ describe("utils", () => {
       );
     });
 
+    it('should translate the "link" href attribute', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "en",
+          pages: {
+            "/some-page": {
+              es: "/alguna-pagina",
+            },
+            "/user/[id]": {
+              es: "/usuario/[id]",
+            },
+            "/catch/[[...catchAll]]": {
+              es: "/atrapar/[[...catchAll]]",
+            },
+            "/dynamic/[id]/catch/[...rest]": {
+              es: "/dinamico/[id]/atrapar/[...rest]",
+            },
+          },
+        },
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/es"),
+      });
+
+      request.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+        pages: {},
+        t: () => "" as any,
+        overrideMessages: () => {},
+      };
+
+      const hrefOfPrefetch = (href: string) =>
+        renderAttributes({
+          elementProps: {
+            rel: "prefetch",
+            href,
+          },
+          request,
+          type: "link",
+        });
+
+      expect(hrefOfPrefetch("/")).toBe(' rel="prefetch" href="/es"');
+      expect(hrefOfPrefetch("/some-page")).toBe(' rel="prefetch" href="/es/alguna-pagina"');
+      expect(hrefOfPrefetch("/user/aral")).toBe(' rel="prefetch" href="/es/usuario/aral"');
+      expect(hrefOfPrefetch("https://example.com")).toBe(
+        ' rel="prefetch" href="https://example.com"',
+      );
+      expect(hrefOfPrefetch("/catch/first/second")).toBe(
+        ' rel="prefetch" href="/es/atrapar/first/second"',
+      );
+      expect(hrefOfPrefetch("/dynamic/1/catch/first/second")).toBe(
+        ' rel="prefetch" href="/es/dinamico/1/atrapar/first/second"',
+      );
+    });
+
+    it('should translate the "link" href attribute with params and hash', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        I18N_CONFIG: {
+          locales: ["en", "es"],
+          defaultLocale: "en",
+          pages: {
+            "/some-page": {
+              es: "/alguna-pagina",
+            },
+            "/user/[id]": {
+              es: "/usuario/[id]",
+            },
+            "/catch/[[...catchAll]]": {
+              es: "/atrapar/[[...catchAll]]",
+            },
+            "/dynamic/[id]/catch/[...rest]": {
+              es: "/dinamico/[id]/atrapar/[...rest]",
+            },
+          },
+        },
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/es?foo=bar#baz"),
+      });
+
+      request.i18n = {
+        locale: "es",
+        locales: ["en", "es"],
+        defaultLocale: "en",
+        pages: {},
+        t: () => "" as any,
+        overrideMessages: () => {},
+      };
+
+      const hrefOfPrefetch = (href: string) =>
+        renderAttributes({
+          elementProps: {
+            rel: "prefetch",
+            href,
+          },
+          request,
+          type: "link",
+        });
+
+      expect(hrefOfPrefetch("/?foo=bar#baz")).toBe(' rel="prefetch" href="/es/?foo=bar#baz"');
+      expect(hrefOfPrefetch("/some-page?foo=bar#baz")).toBe(
+        ' rel="prefetch" href="/es/alguna-pagina?foo=bar#baz"',
+      );
+      expect(hrefOfPrefetch("/user/aral?foo=bar#baz")).toBe(
+        ' rel="prefetch" href="/es/usuario/aral?foo=bar#baz"',
+      );
+      expect(hrefOfPrefetch("https://example.com?foo=bar#baz")).toBe(
+        ' rel="prefetch" href="https://example.com?foo=bar#baz"',
+      );
+      expect(hrefOfPrefetch("/catch/first/second?foo=bar#baz")).toBe(
+        ' rel="prefetch" href="/es/atrapar/first/second?foo=bar#baz"',
+      );
+      expect(hrefOfPrefetch("/dynamic/1/catch/first/second?foo=bar#baz")).toBe(
+        ' rel="prefetch" href="/es/dinamico/1/atrapar/first/second?foo=bar#baz"',
+      );
+    });
+
     it("should work with trailing slash enable in the config", () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
