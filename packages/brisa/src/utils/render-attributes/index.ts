@@ -116,7 +116,11 @@ export default function renderAttributes({
     }
 
     // i18n navigation
-    if (prop === "href" && typeof value === "string" && TAGNAME_WITH_HREF.has(type)) {
+    if (
+      prop === "href" &&
+      typeof value === "string" &&
+      TAGNAME_WITH_HREF.has(type)
+    ) {
       attributes += ` ${key}="${renderHrefAttribute(value, request)}"`;
       continue;
     }

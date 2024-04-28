@@ -265,9 +265,9 @@ describe("utils", () => {
     ${info}
     ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
-    ${info}λ /pages/_404                    | 470 B     | ${greenLog("4 kB")} 
-    ${info}λ /pages/_500                    | 476 B     | ${greenLog("4 kB")} 
-    ${info}λ /pages/page-with-web-component | 409 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/_404                    | 641 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/_500                    | 647 B     | ${greenLog("4 kB")} 
+    ${info}λ /pages/page-with-web-component | 580 B     | ${greenLog("4 kB")} 
     ${info}λ /pages/somepage                | 396 B     | ${greenLog("0 B")} 
     ${info}λ /pages/somepage-with-context   | 324 B     | ${greenLog("0 B")} 
     ${info}λ /pages/index                   | 550 B     | ${greenLog("3 kB")}  
@@ -278,7 +278,6 @@ describe("utils", () => {
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 103 B     |
-    ${info}Φ /chunk-hash                    | 238 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
