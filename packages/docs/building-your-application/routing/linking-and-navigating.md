@@ -167,6 +167,8 @@ export default function Home() {
 }
 ```
 
+TODO: Confirm the TIP after implement this task: https://github.com/brisa-build/brisa/issues/55
+
 ## `navigate` function
 
 The [`navigate`](/api-reference/functions/navigate) function is used for imperative navigation.
@@ -192,4 +194,32 @@ The `navigate` function can be used both on the client and on the server. Althou
 >
 > `navigate('/some')` does not require you to use `return navigate('/some')` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
 
-TODO: Confirm the TIP after implement this task: https://github.com/brisa-build/brisa/issues/55
+## Prefetch
+
+Prefetching is a technique used in web browsing to enhance the user experience by proactively loading resources before they are explicitly requested by the user. When a user visits a webpage, their browser typically fetches resources such as HTML files, CSS stylesheets, JavaScript files, images, and other assets required to render the page. Prefetching allows the browser to anticipate the user's next actions and fetch resources that are likely to be needed soon.
+
+Prefetching can significantly improve perceived page load times and responsiveness, especially on high-latency networks or devices with limited processing power. However, it's essential to implement prefetching judiciously to avoid unnecessary bandwidth consumption and ensure that prefetching does not interfere with other critical tasks, such as fetching resources for the currently viewed page.
+
+To apply the prefetch we can apply it thanks to the [`Head`](/building-your-application/routing/pages-and-layouts.html#head) component of the page:
+
+```tsx
+export function Head({}, { route }: RequestContext) {
+  return (
+    <>
+      <link rel="prefetch" href="/foo"></link>
+    </>
+  );
+}
+
+export default function Page() {
+  return <a href="/foo">Navigate to foo</a>;
+}
+```
+
+In this above example, when navigating to `/foo` the result will be immediate because the request has already been processed.
+
+> [!NOTE]
+>
+> The i18n is managed in the same way as the links, so if `/foo` in Spanish is called `/bar`, it will automatically convert `/foo` to `/es/bar`.
+
+Consider an e-commerce website with a multi-step checkout process consisting of distinct pages for entering shipping information, payment details, and order confirmation. By implementing prefetching, we can ensure that each step of the checkout process loads instantly as the user progresses, providing a seamless and frictionless experience.
