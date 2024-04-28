@@ -255,6 +255,10 @@ export default function SomeWebComponent() {
 }
 ```
 
-> [!CAUTION]
+> [!WARNING]
 >
-> This imperative `prefetch` doesn't work in Server Components. For Server Components you can use the the [`link`](#prefetch) element.
+> The imperative `prefetch` using `fetch` doesn't work in Server Components. For Server Components you can use the the [`link`](#prefetch) element.
+
+> [!WARNING]
+>
+> The imperative `prefetch` using `fetch` don't translate i18n pages, so you need to manage with the [`i18n`](/api-reference/components/web-context#i18n) info from the [`WebContext`](/api-reference/components/web-context).
