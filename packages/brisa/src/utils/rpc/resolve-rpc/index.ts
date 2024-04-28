@@ -4,6 +4,7 @@ import diff from "diff-dom-streaming";
 type RenderMode = "native" | "transition" | "reactivity";
 
 const TRANSITION_MODE = "transition";
+const $window = window as any;
 
 async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
   const urlToNavigate = res.headers.get("X-Navigate");
@@ -21,11 +22,11 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
     const entries = JSON.parse(decodeURIComponent(storeRaw));
 
     // Store WITHOUT web components signals
-    if (!window._s) window._S = entries;
+    if (!$window._s) $window._S = entries;
     // Store WITH web components signals
     else {
       for (const [key, value] of entries) {
-        window._s.set(key, value);
+        $window._s.set(key, value);
       }
     }
   }
@@ -45,4 +46,4 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
   });
 }
 
-window._rpc = resolveRPC;
+$window._rpc = resolveRPC;
