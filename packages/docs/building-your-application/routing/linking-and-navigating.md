@@ -231,3 +231,30 @@ Consider an e-commerce website with a multi-step checkout process consisting of 
 > [!WARNING]
 >
 > Although it is implemented in all browsers, in Safari and Safari iOS it is under a preference setting, so probably will be users who do not have the prefetch applied to them.
+
+### Prefetch with JavaScript/TypeScript
+
+To prefetch imperatively with JavaScript or TypeScript, you can do it from the Web Components with the [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) method. As in production the pages have this header:
+
+```
+Cache-Control:
+no-store, must-revalidate, public, max-age=3600
+```
+
+They are cached for 1 hour.
+
+Therefore, you can use the fetch without processing the response, only as a prefetch to ensure that during navigation it pulls the cache.
+
+Example:
+
+```tsx
+export default function SomeWebComponent() {
+  // The prefetch don't need await because we are not processing the response in this
+  fetch("/foo");
+  return <a href="/foo">Navigate to foo</a>;
+}
+```
+
+> [!CAUTION]
+>
+> This imperative `prefetch` doesn't work in Server Components. For Server Components you can use the the [`link`](#prefetch) element.
