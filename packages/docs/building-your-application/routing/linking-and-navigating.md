@@ -4,7 +4,9 @@ description: Learn how navigation works in Brisa.
 
 # Linking and Navigating
 
-Brisa works with MPA like SPA thanks to [View Transitions](https://github.com/WICG/view-transitions/blob/main/explainer.md), so we will use the native HTML navigation and you can use the `a` tag directly:
+## Navigation with reactivity
+
+Brisa works with MPA like SPA thanks to [Navigation API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_API), so we will use the native HTML navigation and you can use the `a` tag directly:
 
 ```jsx
 export default function Home() {
@@ -29,6 +31,91 @@ The example above uses multiple `a` tags. Each one maps a path (`href`) to a kno
 - `/` → `src/pages/index.js`
 - `/about` → `src/pages/about.js`
 - `/blog/hello-world` → `src/pages/blog/[slug].js`
+
+By default, without the [`renderMode`](/api-reference/extended-html-attributes/renderMode) attribute, it acts with the `reactivity` mode. This means that it does a diff of the DOM between the new document and the current one, thus maintaining the states of the web components that are still visible (either because they are in the layout or because we are navigating to the same page in another language) and the store signal between pages.
+
+Although it is a DOM diff it works with incremental rendering, that is to say, that if the following page uses suspense, when processing the diff with HTML streaming the suspense mode continues working.
+
+## Navigation with transition
+
+There are times when we want to make transition animations between one page and another. To achieve this we can use the [`renderMode`](/api-reference/extended-html-attributes/renderMode) attribute of `<a>` to specify that this navigation uses the [View Transition AP](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API).
+
+When using the transitions it still works like the `reactivity` mode, plus the addition of the View Transition API transition. It still works with suspense and HTML streaming.
+
+Example:
+
+```tsx
+export default function Home() {
+  return (
+    <ul>
+      <li>
+        <a href="/" renderMode="transition">
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="/about" renderMode="transition">
+          About Us
+        </a>
+      </li>
+      <li>
+        <a href="/blog/hello-world" renderMode="transition">
+          Blog Post
+        </a>
+      </li>
+    </ul>
+  );
+}
+```
+
+To add custom transition animations, you have to do it with CSS and the [view-transition-name](https://developer.mozilla.org/en-US/docs/Web/CSS/view-transition-name) property.
+
+For example, to change the speed of it:
+
+```css
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+}
+```
+
+> [!TIP]
+>
+> To access the transition with JavaScript/TypeScript you can access the global property `window.lastDiffTransition`
+
+## Navigation in native way
+
+If we want to force the navigation to be native (that of the browser, without simulating SPA), we can indicate it with the [`renderMode`](/api-reference/extended-html-attributes/renderMode) attribute:
+
+```tsx
+export default function Home() {
+  return (
+    <ul>
+      <li>
+        <a href="/" renderMode="native">
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="/about" renderMode="native">
+          About Us
+        </a>
+      </li>
+      <li>
+        <a href="/blog/hello-world" renderMode="native">
+          Blog Post
+        </a>
+      </li>
+    </ul>
+  );
+}
+```
+
+By default it is already native in these cases:
+
+- If you use another target, such as `target="_blank"`.
+- Using another origin ex: `<a href="https://example.com">`.
+- Using the `download` attribute, ex: `<a href="/some-file.pdf" download>`.
 
 ## Navigation to dynamic paths
 
@@ -106,5 +193,3 @@ The `navigate` function can be used both on the client and on the server. Althou
 > `navigate('/some')` does not require you to use `return navigate('/some')` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
 
 TODO: Confirm the TIP after implement this task: https://github.com/brisa-build/brisa/issues/55
-
-TODO: Implement View transitions https://github.com/WICG/view-transitions/blob/main/explainer.md
