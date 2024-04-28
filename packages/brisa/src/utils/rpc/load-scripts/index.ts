@@ -1,7 +1,10 @@
+const $window = window;
+const $document = document;
+
 export const scripts = new Set();
 
 export function registerCurrentScripts() {
-  for (let script of document.scripts) {
+  for (let script of $document.scripts) {
     const hasValidID = script.id && !/R:\d+/.test(script.id);
     if (hasValidID || script.hasAttribute("src")) {
       scripts.add(script.id || script.getAttribute("src"));
@@ -19,15 +22,15 @@ export async function loadScripts(node: Node) {
     return;
   }
 
-  if (window.lastDiffTransition) await window.lastDiffTransition.finished;
+  if ($window.lastDiffTransition) await $window.lastDiffTransition.finished;
 
-  const script = document.createElement("script");
+  const script = $document.createElement("script");
 
   if (src) script.src = src;
 
   script.innerHTML = (node as HTMLScriptElement).innerHTML;
   script.onload = script.onerror = () => script.remove();
-  document.head.appendChild(script);
+  $document.head.appendChild(script);
 
   if (!src) script.remove();
 }
