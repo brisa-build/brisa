@@ -1,6 +1,6 @@
 {
   "name": "create-brisa",
-  "version": "0.0.46",
+  "version": "0.0.47",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -8,7 +8,7 @@
     "release:alpha": "npm publish --tag next"
   },
   "author": {
-    "name": "Aral Roca GÃ²mez",
+    "name": "Aral Roca GÃÂ²mez",
     "email": "contact@aralroca.com"
   },
   "repository": {

@@ -1,12 +1,12 @@
 {
   "name": "brisa-monorepo",
-  "version": "0.0.46",
+  "version": "0.0.47",
   "packageManager": "bun@1.1.4",
   "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
   "author": {
-    "name": "Aral Roca GÃ²mez",
+    "name": "Aral Roca GÃÂ²mez",
     "email": "contact@aralroca.com"
   },
   "repository": {
