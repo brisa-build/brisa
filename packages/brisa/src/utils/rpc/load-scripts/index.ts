@@ -1,10 +1,7 @@
-const $window = window;
-const $document = document;
-
 export const scripts = new Set();
 
 export function registerCurrentScripts() {
-  for (let script of $document.scripts) {
+  for (let script of document.scripts) {
     const hasValidID = script.id && !/R:\d+/.test(script.id);
     if (hasValidID || script.hasAttribute("src")) {
       scripts.add(script.id || script.getAttribute("src"));
@@ -14,6 +11,9 @@ export function registerCurrentScripts() {
 
 // Load new scripts and manage "unsuspense" scripts
 export async function loadScripts(node: Node) {
+  const $window = window;
+  const $document = document;
+
   if (node.nodeName !== "SCRIPT") return;
 
   const src = (node as HTMLScriptElement).getAttribute("src");
