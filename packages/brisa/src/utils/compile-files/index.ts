@@ -63,7 +63,10 @@ export default async function compileFiles() {
     // Necessary to use bun:ffi and bun API in server files
     target: "bun",
     minify: IS_PRODUCTION,
-    splitting: true,
+    // splitting: false -> necessary to analyze the server pages
+    // for the client build. FIXME: improve this to analyze each
+    // server page including the chunks that the page needs.
+    splitting: false,
     external: ["brisa", "brisa/server"],
     define,
     plugins: extendPlugins(

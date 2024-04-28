@@ -477,8 +477,12 @@ describe("utils", () => {
         });
 
       expect(hrefOfPrefetch("/")).toBe(' rel="prefetch" href="/es"');
-      expect(hrefOfPrefetch("/some-page")).toBe(' rel="prefetch" href="/es/alguna-pagina"');
-      expect(hrefOfPrefetch("/user/aral")).toBe(' rel="prefetch" href="/es/usuario/aral"');
+      expect(hrefOfPrefetch("/some-page")).toBe(
+        ' rel="prefetch" href="/es/alguna-pagina"',
+      );
+      expect(hrefOfPrefetch("/user/aral")).toBe(
+        ' rel="prefetch" href="/es/usuario/aral"',
+      );
       expect(hrefOfPrefetch("https://example.com")).toBe(
         ' rel="prefetch" href="https://example.com"',
       );
@@ -536,7 +540,9 @@ describe("utils", () => {
           type: "link",
         });
 
-      expect(hrefOfPrefetch("/?foo=bar#baz")).toBe(' rel="prefetch" href="/es/?foo=bar#baz"');
+      expect(hrefOfPrefetch("/?foo=bar#baz")).toBe(
+        ' rel="prefetch" href="/es/?foo=bar#baz"',
+      );
       expect(hrefOfPrefetch("/some-page?foo=bar#baz")).toBe(
         ' rel="prefetch" href="/es/alguna-pagina?foo=bar#baz"',
       );
