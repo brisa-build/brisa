@@ -8,7 +8,7 @@
     "release:alpha": "npm publish --tag next"
   },
   "author": {
-    "name": "Aral Roca GÃÂ²mez",
+    "name": "Aral Roca Gòmez",
     "email": "contact@aralroca.com"
   },
   "repository": {
