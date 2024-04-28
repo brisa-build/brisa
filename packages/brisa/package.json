@@ -73,7 +73,7 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "14.7.1",
     "@types/bun": "1.1.0",
-    "brisa": "0.0.45"
+    "brisa": "0.0.47"
   },
   "peerDependencies": {
     "typescript": "5.4.5"
@@ -84,9 +84,9 @@
     "meriyah": "4.4.2",
     "diff-dom-streaming": "0.3.0"
   },
-  "packageManager": "bun@1.1.4",
+  "packageManager": "bun@1.1.6",
   "engines": {
-    "bun": ">= 1.1.4",
+    "bun": ">= 1.1.6",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
