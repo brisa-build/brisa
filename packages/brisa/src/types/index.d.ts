@@ -9545,14 +9545,14 @@ declare global {
   }
 }
 
-declare module 'csstype' {
+declare module "csstype" {
   interface Properties {
     /**
-     * `view-transition-name` The view-transition-name CSS property provides the 
-     * selected element with a distinct identifying name (a <custom-ident>) and 
-     * causes it to participate in a separate view transition from the root view 
+     * `view-transition-name` The view-transition-name CSS property provides the
+     * selected element with a distinct identifying name (a <custom-ident>) and
+     * causes it to participate in a separate view transition from the root view
      * transition — or no view transition if the none value is specified.
      */
-    'view-transition-name'?: string;
+    "view-transition-name"?: string;
   }
 }
