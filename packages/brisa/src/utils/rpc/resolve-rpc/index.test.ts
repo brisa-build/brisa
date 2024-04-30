@@ -117,14 +117,14 @@ describe("utils", () => {
       });
     });
 
-    it("should call e.target.reset() if receive the X-Reset-Form header", async () => {
+    it("should call e.target.reset() if receive the X-Reset header", async () => {
       const formEvent = {
         target: { reset: mock(() => {}) },
       };
 
       const res = new Response(null, {
         headers: {
-          "X-Reset-Form": "1",
+          "X-Reset": "1",
         },
       });
 
@@ -173,6 +173,7 @@ describe("utils", () => {
 
     it('should do transition with X-Mode header as "transition"', async () => {
       const mockDiff = mock((...args: any) => {});
+      const mockTransitionFinished = mock(() => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -200,12 +201,21 @@ describe("utils", () => {
       });
 
       await initBrowser();
+
+      window.lastDiffTransition = {
+        get finished() {
+          mockTransitionFinished();
+          return Promise.resolve();
+        },
+      };
+
       await resolveRPC(res);
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
         transition: true,
       });
+      expect(mockTransitionFinished).toBeCalled();
     });
 
     it('should not do transition with second param as renderMode as "reactivity"', async () => {
@@ -282,6 +292,7 @@ describe("utils", () => {
 
     it('should do transition with second param as renderMode as "transition"', async () => {
       const mockDiff = mock((...args: any) => {});
+      const mockTransitionFinished = mock(() => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -308,12 +319,21 @@ describe("utils", () => {
       });
 
       await initBrowser();
+
+      window.lastDiffTransition = {
+        get finished() {
+          mockTransitionFinished();
+          return Promise.resolve();
+        },
+      };
+
       await resolveRPC(res, "transition");
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
         transition: true,
       });
+      expect(mockTransitionFinished).toBeCalled();
     });
   });
 });

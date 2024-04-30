@@ -9,7 +9,7 @@ const $window = window as any;
 async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
   const urlToNavigate = res.headers.get("X-Navigate");
   const storeRaw = res.headers.get("X-S");
-  const resetForm = res.headers.has("X-Reset-Form");
+  const resetForm = res.headers.has("X-Reset");
   const transition =
     args === TRANSITION_MODE || res.headers.get("X-Mode") === TRANSITION_MODE;
 
@@ -31,19 +31,22 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
     }
   }
 
+  // Navigate to a different page
   if (urlToNavigate) {
     location.href = urlToNavigate;
-    return;
   }
 
-  if (!res.body || !res.headers.get("content-type")) return;
+  // Diff HTML Stream
+  else if (res.body && res.headers.get("content-type")) {
+    registerCurrentScripts();
 
-  registerCurrentScripts();
+    await diff(document, res.body.getReader(), {
+      onNextNode: loadScripts,
+      transition,
+    });
 
-  await diff(document, res.body.getReader(), {
-    onNextNode: loadScripts,
-    transition,
-  });
+    await $window.lastDiffTransition?.finished;
+  }
 }
 
 $window._rpc = resolveRPC;

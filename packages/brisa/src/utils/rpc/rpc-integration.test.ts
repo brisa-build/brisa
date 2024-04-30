@@ -537,5 +537,22 @@ describe("utils", () => {
         encodeURIComponent(JSON.stringify([["a", "b"]])),
       );
     });
+
+    it('should register actions after SPA navigation with "data-action" attribute', async () => {
+      await simulateSPANavigation("http://localhost/some-page");
+
+      const res = new Response("<div data-action></div>", {
+        headers: { "content-type": "text/html" },
+      });
+
+      mockFetch = spyOn(window, "fetch").mockImplementation(async () => res);
+      const handler = mockNavigationIntercept.mock.calls[0][0];
+      await handler();
+
+      expect(location.href).toBe("http://localhost/some-page");
+
+      // Should remove data-action attribute after register the action
+      expect(document.body.querySelector("[data-action]")).toBeNull();
+    });
   });
 });

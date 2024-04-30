@@ -133,10 +133,10 @@ describe("utils", () => {
           type: "formdata",
         },
       ]);
-      expect(res.headers.get("x-reset-form")).toBeEmpty();
+      expect(res.headers.get("x-reset")).toBeEmpty();
     });
 
-    it('should add the "x-reset-form" header when using e.target.reset() in form-data', async () => {
+    it('should add the "x-reset" header when using e.target.reset() in form-data', async () => {
       const formData = new FormData();
       formData.append("foo", "bar");
 
@@ -155,7 +155,7 @@ describe("utils", () => {
 
       const res = await responseAction(req);
 
-      expect(res.headers.get("x-reset-form")).toBe("1");
+      expect(res.headers.get("x-reset")).toBe("1");
     });
 
     it("should form-data work with ?_aid instead of x-action to work without JS", async () => {
@@ -210,7 +210,7 @@ describe("utils", () => {
           type: "formdata",
         },
       ]);
-      expect(res.headers.get("x-reset-form")).toBeEmpty();
+      expect(res.headers.get("x-reset")).toBeEmpty();
     });
 
     it("should add the correct param when using web component event", async () => {
