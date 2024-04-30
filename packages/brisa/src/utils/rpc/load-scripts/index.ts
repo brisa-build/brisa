@@ -22,7 +22,7 @@ export async function loadScripts(node: Node) {
     return;
   }
 
-  if ($window.lastDiffTransition) await $window.lastDiffTransition.finished;
+  await $window.lastDiffTransition?.finished;
 
   const script = $document.createElement("script");
 

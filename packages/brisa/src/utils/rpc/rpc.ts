@@ -7,13 +7,14 @@ const $window = window;
 const stringify = JSON.stringify;
 const $Promise = Promise;
 let controller = new AbortController();
-let isReady = false;
+let isReady = 0;
 
-const serializeStore = () =>
-  encodeURIComponent(
+const storeHeader = () => ({
+  "x-s": encodeURIComponent(
     // @ts-ignore
     stringify($window._s ? [..._s.Map.entries()] : $window._S) ?? "",
-  );
+  ),
+});
 
 function loadRPCResolver() {
   return $window._rpc
@@ -62,7 +63,7 @@ async function rpc(
       headers: {
         "x-action": actionId,
         "x-actions": actionsDeps ?? "",
-        "x-s": serializeStore(),
+        ...storeHeader(),
       },
       body: isFormData
         ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
@@ -161,13 +162,12 @@ function spaNavigation(event: any) {
       // We do not validate res.ok because we also want to render 404 or 500 pages.
       const res = await fetch(event.destination.url, {
         signal: getAbortSignal(),
-        headers: {
-          "x-s": serializeStore(),
-        },
+        headers: storeHeader(),
       });
       await loadRPCResolver();
       event.scroll();
       await $window._rpc(res, renderMode);
+      registerActions();
     },
   });
 }
@@ -204,6 +204,6 @@ if ("navigation" in $window) {
 }
 
 $document.addEventListener("DOMContentLoaded", () => {
-  isReady = true;
+  isReady = 1;
   registerActions();
 });

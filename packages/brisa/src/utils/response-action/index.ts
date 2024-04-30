@@ -110,7 +110,7 @@ export default async function responseAction(req: RequestContext) {
 
   // Reset form after use e.target.reset() in server action
   if (resetForm) {
-    response.headers.set("X-Reset-Form", "1");
+    response.headers.set("X-Reset", "1");
   }
 
   transferServerStoreToClient(response);
