@@ -136,5 +136,26 @@ describe("utils", () => {
         encodeURIComponent(JSON.stringify([["key", "value"]])),
       );
     });
+
+    it("should NOT transfer the store when is already transferred for the server action (POST)", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/es", {
+          method: "POST",
+          headers: {
+            "x-s": encodeURIComponent(JSON.stringify([["key", "value"]])),
+          },
+        }),
+      });
+      const response = await responseRenderedPage({
+        req,
+        route: {
+          filePath: path.join(PAGES_DIR, "index.tsx"),
+        } as MatchedRoute,
+      });
+
+      expect(response.headers.get("X-S")).not.toBe(
+        encodeURIComponent(JSON.stringify([["key", "value"]])),
+      );
+    });
   });
 });
