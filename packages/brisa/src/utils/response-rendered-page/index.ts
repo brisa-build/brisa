@@ -28,7 +28,10 @@ export default async function responseRenderedPage({
     error,
   );
 
-  transfeClientStoreToServer();
+  // Avoid to transfer again if comes from a rerender from an action
+  if (req.method !== "POST") {
+    transfeClientStoreToServer();
+  }
 
   const middlewareResponseHeaders =
     middlewareModule?.responseHeaders?.(req, status) ?? {};
