@@ -10,7 +10,7 @@ description: Learn how to deploy to fly.io
 
 Follow this docs to install `flyctl`:
 
-- https://fly.io/docs/hands-on/install-flyctl/#windows
+- https://fly.io/docs/hands-on/install-flyctl/
 
 Then, login with:
 
@@ -23,7 +23,7 @@ flyctl auth login
 Deploying your Brisa app is done with the following command:
 
 ```sh
-fly deploy
+fly launch --now
 ```
 
 That's all 🥳.
