@@ -9,6 +9,7 @@ export default defineConfig({
   title: "Brisa Framework",
   ignoreDeadLinks: true,
   lastUpdated: true,
+  head: [['link', { rel: 'icon', href: '/brisa.svg' }]],
   markdown: {
     config(md) {
       md.use(tabsMarkdownPlugin);
