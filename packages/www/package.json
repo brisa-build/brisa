@@ -13,7 +13,8 @@
     "url": "https://github.com/brisa-build/brisa.git"
   },
   "scripts": {
-    "dev": "bunx serve ."
+    "dev": "bunx serve .",
+    "build": "echo 'No build'"
   },
   "engines": {
     "bun": ">= 1.1.6",
