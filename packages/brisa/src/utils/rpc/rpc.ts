@@ -113,6 +113,7 @@ function registerActions() {
   for (let element of elements) {
     if (!element.hasAttribute(ACTION_ATTRIBUTE)) continue;
 
+    // Remove the action attribute to avoid registering the same element twice
     element.removeAttribute(ACTION_ATTRIBUTE);
 
     const dataSet = (element as HTMLElement).dataset;
@@ -125,6 +126,10 @@ function registerActions() {
       let timeout: ReturnType<typeof setTimeout>;
 
       if (actionName.startsWith(ACTION)) {
+        // It is registered once, when diffing the navigation, if the element 
+        // is the same, the action attribute (data-action) is not added and 
+        // therefore it is not added again, only the new elements that have 
+        // the data-action are registered.
         element.addEventListener(eventName, (...args: unknown[]) => {
           if (args[0] instanceof Event) args[0].preventDefault();
           clearTimeout(timeout);
