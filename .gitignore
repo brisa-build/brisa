@@ -21,4 +21,7 @@ tsconfig.tsbuildinfo
 # Editors
 .vscode
 .idea
+
+# Deployment
+.vercel*
 .vercel
