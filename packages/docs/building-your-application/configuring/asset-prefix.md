@@ -12,7 +12,7 @@ Open the `brisa.config.ts` file and add the `assetPrefix` configuration:
 import type { Configuration } from "brisa";
 
 export default {
-  assetPrefix: true,
+  assetPrefix: "https://your-cdn-url.com",
 } satisfies Configuration;
 ```
 
