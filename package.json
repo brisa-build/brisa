@@ -26,6 +26,7 @@
     "release:alpha": "bun run release-brisa:alpha && bun run release-create-brisa:alpha",
     "clean": "bun run --cwd packages/brisa clean",
     "format": "bunx prettier@3.1.1 --write .",
+    "www:dev": "bun run --cwd packages/www dev",
     "docs:dev": "bun run --cwd packages/docs dev",
     "docs:build": "bun run --cwd packages/docs build",
     "docs:preview": "bun run --cwd packages/docs preview",

@@ -5,6 +5,7 @@ import packageJSON from "../package.json";
 import brisaPackageJSON from "../packages/brisa/package.json";
 import createBrisaPackageJSON from "../packages/create-brisa/package.json";
 import docsPackageJSON from "../packages/docs/package.json";
+import wwwwPackageJSON from "../packages/www/package.json";
 
 const oldVersion = packageJSON.packageManager.replace("bun@", "");
 
@@ -43,6 +44,10 @@ fs.writeFileSync(
 fs.writeFileSync(
   join(import.meta.dir, "..", "packages", "docs", "package.json"),
   JSON.stringify(docsPackageJSON, null, 2),
+);
+fs.writeFileSync(
+  join(import.meta.dir, "..", "packages", "www", "package.json"),
+  JSON.stringify(wwwwPackageJSON, null, 2),
 );
 
 // Update the test.yml file
