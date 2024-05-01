@@ -4,6 +4,7 @@ import packageJSON from "../package.json";
 import brisaPackageJSON from "../packages/brisa/package.json";
 import createBrisaPackageJSON from "../packages/create-brisa/package.json";
 import docsPackageJSON from "../packages/docs/package.json";
+import wwwPackageJSON from "../packages/www/package.json";
 
 const currentVersion = packageJSON.version;
 const version = prompt(
@@ -46,6 +47,13 @@ docsPackageJSON.version = version;
 fs.writeFileSync(
   join(import.meta.dir, "..", "packages", "docs", "package.json"),
   JSON.stringify(docsPackageJSON, null, 2),
+);
+
+// WWW package.json
+wwwPackageJSON.version = version;
+fs.writeFileSync(
+  join(import.meta.dir, "..", "packages", "www", "package.json"),
+  JSON.stringify(wwwPackageJSON, null, 2),
 );
 
 // Update Brisa CLI version
