@@ -54,6 +54,7 @@ describe("utils", () => {
         ...getConstants(),
         ROOT_DIR,
         BUILD_DIR: ROOT_DIR,
+        IS_STATIC_EXPORT: true,
       };
     });
 
@@ -64,6 +65,8 @@ describe("utils", () => {
       globalThis.mockConstants = undefined;
       mock.restore();
     });
+
+    describe('when IS_STATIC_EXPORT=true', () => {
 
     it("should generate static export without i18n and without trailingSlash", () => {
       expect(generateStaticExport()).resolves.toBeTrue();
@@ -93,6 +96,7 @@ describe("utils", () => {
       globalThis.mockConstants = {
         ...getConstants(),
         ROOT_DIR,
+        IS_STATIC_EXPORT: true,
         BUILD_DIR: ROOT_DIR,
         I18N_CONFIG: {
           locales: ["en", "pt"],
@@ -192,6 +196,7 @@ describe("utils", () => {
           ...constants.CONFIG,
           trailingSlash: true,
         },
+        IS_STATIC_EXPORT: true,
       };
 
       expect(generateStaticExport()).resolves.toBeTrue();
@@ -253,6 +258,7 @@ describe("utils", () => {
           locales: ["en", "pt"],
           defaultLocale: "en",
         },
+        IS_STATIC_EXPORT: true,
       };
       spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
 
@@ -299,6 +305,7 @@ describe("utils", () => {
         ...getConstants(),
         ROOT_DIR: dynamicPath,
         BUILD_DIR: dynamicPath,
+        IS_STATIC_EXPORT: true,
       };
 
       expect(generateStaticExport()).resolves.toBeTrue();
@@ -325,6 +332,7 @@ describe("utils", () => {
         ...getConstants(),
         ROOT_DIR: dynamicPath,
         BUILD_DIR: dynamicPath,
+        IS_STATIC_EXPORT: true,
       };
 
       expect(generateStaticExport()).resolves.toBeTrue();
@@ -351,6 +359,7 @@ describe("utils", () => {
         ...getConstants(),
         ROOT_DIR: dynamicPath,
         BUILD_DIR: dynamicPath,
+        IS_STATIC_EXPORT: true,
       };
 
       expect(generateStaticExport()).resolves.toBeTrue();
@@ -362,5 +371,76 @@ describe("utils", () => {
         'The dynamic route "/[[...catchall]]" does not have a "prerender" function.',
       );
     });
+  });
+
+  describe('when IS_STATIC_EXPORT=false', () => {
+    it("should NOT warn an error with a dynamic page without prerender function", () => {
+      const mockLog = mock((...args: any[]) => null);
+      const dynamicPath = path.join(
+        import.meta.dir,
+        "__fixtures__",
+        "dynamic-route",
+      );
+
+      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+      mockConstants = {
+        ...getConstants(),
+        ROOT_DIR: dynamicPath,
+        BUILD_DIR: dynamicPath,
+        IS_STATIC_EXPORT: false,
+      };
+
+      expect(generateStaticExport()).resolves.toBeTrue();
+
+      const logs = mockLog.mock.calls.flat().toString();
+
+      expect(mockLog).not.toHaveBeenCalled();
+    });
+
+    it("should NOT warn an error with a [...rest] page without prerender function", () => {
+      const mockLog = mock((...args: any[]) => null);
+      const dynamicPath = path.join(
+        import.meta.dir,
+        "__fixtures__",
+        "dynamic-rest-route",
+      );
+
+      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+      mockConstants = {
+        ...getConstants(),
+        ROOT_DIR: dynamicPath,
+        BUILD_DIR: dynamicPath,
+        IS_STATIC_EXPORT: false,
+      };
+
+      expect(generateStaticExport()).resolves.toBeTrue();
+
+      expect(mockLog).not.toHaveBeenCalled();
+    });
+
+    it("should NOT warn an error with a [[...catchall]] page without prerender function", () => {
+      const mockLog = mock((...args: any[]) => null);
+      const dynamicPath = path.join(
+        import.meta.dir,
+        "__fixtures__",
+        "dynamic-catchall-route",
+      );
+
+      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+      mockConstants = {
+        ...getConstants(),
+        ROOT_DIR: dynamicPath,
+        BUILD_DIR: dynamicPath,
+        IS_STATIC_EXPORT: false,
+      };
+
+      expect(generateStaticExport()).resolves.toBeTrue();
+
+      expect(mockLog).not.toHaveBeenCalled();
+    });
+  });
   });
 });
