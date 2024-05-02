@@ -16,6 +16,7 @@ export default async function generateStaticExport() {
     CONFIG,
     SCRIPT_404,
     IS_PRODUCTION,
+    REGEX,
   } = getConstants();
   const outDir = path.join(ROOT_DIR, "out");
   const serveOptions = await getServeOptions();
@@ -34,6 +35,16 @@ export default async function generateStaticExport() {
 
   await Promise.all(
     routes.map(async ([routeName]) => {
+      const route = router.match(routeName);
+
+      if (route && route.kind !== "exact") {
+        const module = await import(route.filePath);
+        if (typeof module.prerender !== "function")
+          return logMissingPrerender(routeName);
+        // TODO: Implement prerender dynamic pages based on the
+        // params returned by prerennder function
+      }
+
       const request = new Request(new URL(routeName, fakeOrigin));
       const response = await serveOptions.fetch.call(
         fakeServer,
@@ -66,12 +77,18 @@ export default async function generateStaticExport() {
     });
   }
 
-  fs.cpSync(path.join(BUILD_DIR, "public"), outDir, { recursive: true });
-  fs.cpSync(
-    path.join(BUILD_DIR, "pages-client"),
-    path.join(outDir, "_brisa", "pages"),
-    { recursive: true },
-  );
+  const publicPath = path.join(BUILD_DIR, "public");
+  const clientPagesPath = path.join(BUILD_DIR, "pages-client");
+
+  if (fs.existsSync(publicPath)) {
+    fs.cpSync(publicPath, outDir, { recursive: true });
+  }
+
+  if (fs.existsSync(clientPagesPath)) {
+    fs.cpSync(clientPagesPath, path.join(outDir, "_brisa", "pages"), {
+      recursive: true,
+    });
+  }
 
   return true;
 }
@@ -160,4 +177,15 @@ async function createSoftRedirectToLocale({
   ]);
 
   await Bun.write(htmlPath, html);
+}
+
+function logMissingPrerender(routeName: string) {
+  logWarning([
+    `The dynamic route "${routeName}" does not have a "prerender" function.`,
+    "",
+    'To fix this, you need to add a "prerender" function to the route file.',
+    "",
+    "For more information, check the docs:",
+    "https://brisa.build/building-your-application/configuring/static-pages",
+  ]);
 }
