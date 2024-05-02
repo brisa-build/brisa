@@ -16,7 +16,7 @@ export default async function generateStaticExport() {
     CONFIG,
     SCRIPT_404,
     IS_PRODUCTION,
-    REGEX,
+    IS_STATIC_EXPORT
   } = getConstants();
   const outDir = path.join(ROOT_DIR, "out");
   const serveOptions = await getServeOptions();
@@ -31,16 +31,21 @@ export default async function generateStaticExport() {
     dir: path.join(BUILD_DIR, "pages"),
   });
 
-  const routes = formatRoutes(Object.entries(router.routes));
+  const routes = formatRoutes(Object.keys(router.routes));
 
   await Promise.all(
-    routes.map(async ([routeName]) => {
-      const route = router.match(routeName);
+    routes.map(async (routeName) => {
+      let route = router.match(routeName);
 
       if (route && route.kind !== "exact") {
         const module = await import(route.filePath);
-        if (typeof module.prerender !== "function")
+
+        // Warning on missing prerender function in dynamic routes 
+        // during output=static
+        if (IS_STATIC_EXPORT && typeof module.prerender !== "function") {
           return logMissingPrerender(routeName);
+        }
+        
         // TODO: Implement prerender dynamic pages based on the
         // params returned by prerennder function
       }
@@ -93,13 +98,13 @@ export default async function generateStaticExport() {
   return true;
 }
 
-function formatRoutes(routes: [string, string][]) {
+function formatRoutes(routes: string[]) {
   const { I18N_CONFIG, CONFIG } = getConstants();
   const trailingSlash = CONFIG.trailingSlash;
   const locales = I18N_CONFIG?.locales?.length ? I18N_CONFIG.locales : [""];
-  let newRoutes: [string, string][] = [];
+  let newRoutes: string[] = [];
 
-  for (const [pageName, pagePath] of routes) {
+  for (const pageName of routes) {
     for (const locale of locales) {
       const pathname = locale
         ? I18N_CONFIG.pages?.[pageName]?.[locale] ?? pageName
@@ -117,7 +122,7 @@ function formatRoutes(routes: [string, string][]) {
         newRoute = newRoute.slice(0, -1);
       }
 
-      newRoutes.push([newRoute, pagePath]);
+      newRoutes.push(newRoute);
     }
   }
 
