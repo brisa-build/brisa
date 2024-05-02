@@ -15,13 +15,16 @@ export default async function generateStaticExport() {
     BUILD_DIR,
     I18N_CONFIG,
     CONFIG,
+    SRC_DIR,
     SCRIPT_404,
     IS_PRODUCTION,
     IS_STATIC_EXPORT,
   } = getConstants();
-  const outDir = path.join(ROOT_DIR, "out");
   const serveOptions = await getServeOptions();
   const pathnameRoot = process.platform === "win32" ? "" : "/";
+  const outDir = IS_STATIC_EXPORT
+    ? path.join(ROOT_DIR, "out")
+    : path.join(ROOT_DIR, "build", "prerendered-pages");
 
   if (!serveOptions) return null;
 
