@@ -284,5 +284,31 @@ describe("utils", () => {
 
       expect(mockWrite).not.toHaveBeenCalled();
     });
+
+    it("should warn an error with a dynamic page without prerender function", () => {
+      const mockLog = mock((...args: any[]) => null);
+      const dynamicPath = path.join(
+        import.meta.dir,
+        "__fixtures__",
+        "dynamic-route",
+      );
+
+      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+      mockConstants = {
+        ...getConstants(),
+        ROOT_DIR: dynamicPath,
+        BUILD_DIR: dynamicPath,
+      };
+
+      expect(generateStaticExport()).resolves.toBeTrue();
+
+      const logs = mockLog.mock.calls.flat().toString();
+
+      expect(logs).toContain("Ops! Warning:");
+      expect(logs).toContain(
+        'The dynamic route "/[slug]" does not have a "prerender" function.',
+      );
+    });
   });
 });
