@@ -66,100 +66,103 @@ describe("utils", () => {
       mock.restore();
     });
 
-    describe('when IS_STATIC_EXPORT=true', () => {
+    describe("when IS_STATIC_EXPORT=true", () => {
+      it("should generate static export without i18n and without trailingSlash", () => {
+        expect(generateStaticExport()).resolves.toBeTrue();
 
-    it("should generate static export without i18n and without trailingSlash", () => {
-      expect(generateStaticExport()).resolves.toBeTrue();
+        // Fetch to generate static export
+        expect(mockFetch).toHaveBeenCalledTimes(7);
+        testFetchIndex(0, "/_404");
+        testFetchIndex(1, "/_500");
+        testFetchIndex(2, "/page-with-web-component");
+        testFetchIndex(3, "/somepage");
+        testFetchIndex(4, "/somepage-with-context");
+        testFetchIndex(5, "/");
+        testFetchIndex(6, "/user/[username]");
 
-      // Fetch to generate static export
-      expect(mockFetch).toHaveBeenCalledTimes(7);
-      testFetchIndex(0, "/_404");
-      testFetchIndex(1, "/_500");
-      testFetchIndex(2, "/page-with-web-component");
-      testFetchIndex(3, "/somepage");
-      testFetchIndex(4, "/somepage-with-context");
-      testFetchIndex(5, "/");
-      testFetchIndex(6, "/user/[username]");
+        // Write to generate static export
+        expect(mockWrite).toHaveBeenCalledTimes(7);
+        testGeneratedPathnamesByIndex(0, "_404.html");
+        testGeneratedPathnamesByIndex(1, "_500.html");
+        testGeneratedPathnamesByIndex(2, "page-with-web-component.html");
+        testGeneratedPathnamesByIndex(3, "somepage.html");
+        testGeneratedPathnamesByIndex(4, "somepage-with-context.html");
+        testGeneratedPathnamesByIndex(5, "index.html");
+        testGeneratedPathnamesByIndex(6, "user", "[username].html");
+      });
 
-      // Write to generate static export
-      expect(mockWrite).toHaveBeenCalledTimes(7);
-      testGeneratedPathnamesByIndex(0, "_404.html");
-      testGeneratedPathnamesByIndex(1, "_500.html");
-      testGeneratedPathnamesByIndex(2, "page-with-web-component.html");
-      testGeneratedPathnamesByIndex(3, "somepage.html");
-      testGeneratedPathnamesByIndex(4, "somepage-with-context.html");
-      testGeneratedPathnamesByIndex(5, "index.html");
-      testGeneratedPathnamesByIndex(6, "user", "[username].html");
-    });
-
-    it("should generate static export with i18n with a soft redirect to the locale", () => {
-      globalThis.mockConstants = {
-        ...getConstants(),
-        ROOT_DIR,
-        IS_STATIC_EXPORT: true,
-        BUILD_DIR: ROOT_DIR,
-        I18N_CONFIG: {
-          locales: ["en", "pt"],
-          defaultLocale: "en",
-          pages: {
-            "/somepage": {
-              en: "/somepage",
-              pt: "/alguma-pagina",
-            },
-            "/somepage-with-context": {
-              en: "/somepage-with-context",
-              pt: "/alguma-pagina-com-contexto",
-            },
-            "/page-with-web-component": {
-              en: "/page-with-web-component",
-              pt: "/pagina-com-web-component",
-            },
-            "/user/[username]": {
-              en: "/user/[username]",
-              pt: "/usuario/[username]",
+      it("should generate static export with i18n with a soft redirect to the locale", () => {
+        globalThis.mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          IS_STATIC_EXPORT: true,
+          BUILD_DIR: ROOT_DIR,
+          I18N_CONFIG: {
+            locales: ["en", "pt"],
+            defaultLocale: "en",
+            pages: {
+              "/somepage": {
+                en: "/somepage",
+                pt: "/alguma-pagina",
+              },
+              "/somepage-with-context": {
+                en: "/somepage-with-context",
+                pt: "/alguma-pagina-com-contexto",
+              },
+              "/page-with-web-component": {
+                en: "/page-with-web-component",
+                pt: "/pagina-com-web-component",
+              },
+              "/user/[username]": {
+                en: "/user/[username]",
+                pt: "/usuario/[username]",
+              },
             },
           },
-        },
-      };
+        };
 
-      expect(generateStaticExport()).resolves.toBeTrue();
+        expect(generateStaticExport()).resolves.toBeTrue();
 
-      // Fetch to generate static export
-      expect(mockFetch).toHaveBeenCalledTimes(14);
-      testFetchIndex(0, "/en/_404");
-      testFetchIndex(1, "/pt/_404");
-      testFetchIndex(2, "/en/_500");
-      testFetchIndex(3, "/pt/_500");
-      testFetchIndex(4, "/en/page-with-web-component");
-      testFetchIndex(5, "/pt/pagina-com-web-component");
-      testFetchIndex(6, "/en/somepage");
-      testFetchIndex(7, "/pt/alguma-pagina");
-      testFetchIndex(8, "/en/somepage-with-context");
-      testFetchIndex(9, "/pt/alguma-pagina-com-contexto");
-      testFetchIndex(10, "/en");
-      testFetchIndex(11, "/pt");
-      testFetchIndex(12, "/en/user/[username]");
-      testFetchIndex(13, "/pt/usuario/[username]");
+        // Fetch to generate static export
+        expect(mockFetch).toHaveBeenCalledTimes(14);
+        testFetchIndex(0, "/en/_404");
+        testFetchIndex(1, "/pt/_404");
+        testFetchIndex(2, "/en/_500");
+        testFetchIndex(3, "/pt/_500");
+        testFetchIndex(4, "/en/page-with-web-component");
+        testFetchIndex(5, "/pt/pagina-com-web-component");
+        testFetchIndex(6, "/en/somepage");
+        testFetchIndex(7, "/pt/alguma-pagina");
+        testFetchIndex(8, "/en/somepage-with-context");
+        testFetchIndex(9, "/pt/alguma-pagina-com-contexto");
+        testFetchIndex(10, "/en");
+        testFetchIndex(11, "/pt");
+        testFetchIndex(12, "/en/user/[username]");
+        testFetchIndex(13, "/pt/usuario/[username]");
 
-      // Write to generate static export
-      expect(mockWrite).toHaveBeenCalledTimes(15);
-      testGeneratedPathnamesByIndex(0, "en", "_404.html");
-      testGeneratedPathnamesByIndex(1, "pt", "_404.html");
-      testGeneratedPathnamesByIndex(2, "en", "_500.html");
-      testGeneratedPathnamesByIndex(3, "pt", "_500.html");
-      testGeneratedPathnamesByIndex(4, "en", "page-with-web-component.html");
-      testGeneratedPathnamesByIndex(5, "pt", "pagina-com-web-component.html");
-      testGeneratedPathnamesByIndex(6, "en", "somepage.html");
-      testGeneratedPathnamesByIndex(7, "pt", "alguma-pagina.html");
-      testGeneratedPathnamesByIndex(8, "en", "somepage-with-context.html");
-      testGeneratedPathnamesByIndex(9, "pt", "alguma-pagina-com-contexto.html");
-      testGeneratedPathnamesByIndex(10, "en.html");
-      testGeneratedPathnamesByIndex(11, "pt.html");
-      testGeneratedPathnamesByIndex(12, "en", "user", "[username].html");
-      testGeneratedPathnamesByIndex(13, "pt", "usuario", "[username].html");
-      testGeneratedPathnamesByIndex(14, "index.html"); // Soft redirect to default locale
+        // Write to generate static export
+        expect(mockWrite).toHaveBeenCalledTimes(15);
+        testGeneratedPathnamesByIndex(0, "en", "_404.html");
+        testGeneratedPathnamesByIndex(1, "pt", "_404.html");
+        testGeneratedPathnamesByIndex(2, "en", "_500.html");
+        testGeneratedPathnamesByIndex(3, "pt", "_500.html");
+        testGeneratedPathnamesByIndex(4, "en", "page-with-web-component.html");
+        testGeneratedPathnamesByIndex(5, "pt", "pagina-com-web-component.html");
+        testGeneratedPathnamesByIndex(6, "en", "somepage.html");
+        testGeneratedPathnamesByIndex(7, "pt", "alguma-pagina.html");
+        testGeneratedPathnamesByIndex(8, "en", "somepage-with-context.html");
+        testGeneratedPathnamesByIndex(
+          9,
+          "pt",
+          "alguma-pagina-com-contexto.html",
+        );
+        testGeneratedPathnamesByIndex(10, "en.html");
+        testGeneratedPathnamesByIndex(11, "pt.html");
+        testGeneratedPathnamesByIndex(12, "en", "user", "[username].html");
+        testGeneratedPathnamesByIndex(13, "pt", "usuario", "[username].html");
+        testGeneratedPathnamesByIndex(14, "index.html"); // Soft redirect to default locale
 
-      const expectedSoftRedirectCode = toInline(`
+        const expectedSoftRedirectCode = toInline(`
         <!DOCTYPE html>
         <html lang="en">
           <head>
@@ -183,264 +186,408 @@ describe("utils", () => {
         </html>
       `);
 
-      testGeneratedContentByIndex(14, expectedSoftRedirectCode);
+        testGeneratedContentByIndex(14, expectedSoftRedirectCode);
+      });
+
+      it("should generate static export with trailingSlash", () => {
+        const constants = getConstants();
+        globalThis.mockConstants = {
+          ...constants,
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          CONFIG: {
+            ...constants.CONFIG,
+            trailingSlash: true,
+          },
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        // Fetch to generate static export
+        expect(mockFetch).toHaveBeenCalledTimes(7);
+        testFetchIndex(0, "/_404/");
+        testFetchIndex(1, "/_500/");
+        testFetchIndex(2, "/page-with-web-component/");
+        testFetchIndex(3, "/somepage/");
+        testFetchIndex(4, "/somepage-with-context/");
+        testFetchIndex(5, "/");
+        testFetchIndex(6, "/user/[username]/");
+
+        // Write to generate static export
+        expect(mockWrite).toHaveBeenCalledTimes(7);
+        testGeneratedPathnamesByIndex(0, "_404", "index.html");
+        testGeneratedPathnamesByIndex(1, "_500", "index.html");
+        testGeneratedPathnamesByIndex(
+          2,
+          "page-with-web-component",
+          "index.html",
+        );
+        testGeneratedPathnamesByIndex(3, "somepage", "index.html");
+        testGeneratedPathnamesByIndex(4, "somepage-with-context", "index.html");
+        testGeneratedPathnamesByIndex(5, "index.html");
+        testGeneratedPathnamesByIndex(6, "user", "[username]", "index.html");
+      });
+
+      it('should move all the assets inside the "out" folder', () => {
+        spyOn(fs, "cpSync").mockImplementationOnce(() => null);
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(fs.cpSync).toHaveBeenCalledTimes(2);
+        expect(fs.cpSync).toHaveBeenCalledWith(
+          path.join(ROOT_DIR, "public"),
+          path.join(ROOT_DIR, "out"),
+          { recursive: true },
+        );
+      });
+
+      it("should move all JS client code files inside _brisa/pages folder", () => {
+        spyOn(fs, "cpSync").mockImplementationOnce(() => null);
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(fs.cpSync).toHaveBeenCalledTimes(2);
+        expect(fs.cpSync).toHaveBeenCalledWith(
+          path.join(ROOT_DIR, "pages-client"),
+          path.join(ROOT_DIR, "out", "_brisa", "pages"),
+          { recursive: true },
+        );
+      });
+
+      it('should warn about redirect when "i18n" is defined', () => {
+        const mockLog = mock((...args: any[]) => null);
+        globalThis.mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          I18N_CONFIG: {
+            locales: ["en", "pt"],
+            defaultLocale: "en",
+          },
+          IS_STATIC_EXPORT: true,
+        };
+        spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        const logs = mockLog.mock.calls.flat().toString();
+        const expectedTitle =
+          "Unable to generate a hard redirect to the user browser language.";
+        const expectedDocs =
+          "https://brisa.build/building-your-application/deploying/static-exports#hard-redirects";
+        expect(logs).toContain("Ops! Warning:");
+        expect(logs).toContain(expectedTitle);
+        expect(logs).toContain(expectedDocs);
+      });
+
+      it('should not warn about redirect when "i18n" is not defined', () => {
+        spyOn(console, "log").mockImplementation(() => null);
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(console.log).not.toHaveBeenCalled();
+      });
+
+      it("should not generate a page that during the streaming returns the soft redirect to 404 (notFound method)", () => {
+        const constants = getConstants();
+        mockFetch.mockImplementation(() => new Response(constants.SCRIPT_404));
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(mockWrite).not.toHaveBeenCalled();
+      });
+
+      it("should warn an error with a dynamic page without prerender function", () => {
+        const mockLog = mock((...args: any[]) => null);
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-route",
+        );
+
+        spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        const logs = mockLog.mock.calls.flat().toString();
+
+        expect(logs).toContain("Ops! Warning:");
+        expect(logs).toContain(
+          'The dynamic route "/[slug]" does not have a "prerender" function.',
+        );
+      });
+
+      it("should warn an error with a [...rest] page without prerender function", () => {
+        const mockLog = mock((...args: any[]) => null);
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-rest-route",
+        );
+
+        spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        const logs = mockLog.mock.calls.flat().toString();
+
+        expect(logs).toContain("Ops! Warning:");
+        expect(logs).toContain(
+          'The dynamic route "/[...rest]" does not have a "prerender" function.',
+        );
+      });
+
+      it("should warn an error with a [[...catchall]] page without prerender function", () => {
+        const mockLog = mock((...args: any[]) => null);
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-catchall-route",
+        );
+
+        spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        const logs = mockLog.mock.calls.flat().toString();
+
+        expect(logs).toContain("Ops! Warning:");
+        expect(logs).toContain(
+          'The dynamic route "/[[...catchall]]" does not have a "prerender" function.',
+        );
+      });
     });
 
-    it("should generate static export with trailingSlash", () => {
-      const constants = getConstants();
-      globalThis.mockConstants = {
-        ...constants,
-        ROOT_DIR,
-        BUILD_DIR: ROOT_DIR,
-        CONFIG: {
-          ...constants.CONFIG,
-          trailingSlash: true,
-        },
-        IS_STATIC_EXPORT: true,
-      };
+    describe("when IS_STATIC_EXPORT=false", () => {
+      it("should NOT warn an error with a dynamic page without prerender function", () => {
+        const mockLog = mock((...args: any[]) => null);
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-route",
+        );
 
-      expect(generateStaticExport()).resolves.toBeTrue();
+        spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
 
-      // Fetch to generate static export
-      expect(mockFetch).toHaveBeenCalledTimes(7);
-      testFetchIndex(0, "/_404/");
-      testFetchIndex(1, "/_500/");
-      testFetchIndex(2, "/page-with-web-component/");
-      testFetchIndex(3, "/somepage/");
-      testFetchIndex(4, "/somepage-with-context/");
-      testFetchIndex(5, "/");
-      testFetchIndex(6, "/user/[username]/");
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: false,
+        };
 
-      // Write to generate static export
-      expect(mockWrite).toHaveBeenCalledTimes(7);
-      testGeneratedPathnamesByIndex(0, "_404", "index.html");
-      testGeneratedPathnamesByIndex(1, "_500", "index.html");
-      testGeneratedPathnamesByIndex(2, "page-with-web-component", "index.html");
-      testGeneratedPathnamesByIndex(3, "somepage", "index.html");
-      testGeneratedPathnamesByIndex(4, "somepage-with-context", "index.html");
-      testGeneratedPathnamesByIndex(5, "index.html");
-      testGeneratedPathnamesByIndex(6, "user", "[username]", "index.html");
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        const logs = mockLog.mock.calls.flat().toString();
+
+        expect(mockLog).not.toHaveBeenCalled();
+      });
+
+      it("should NOT warn an error with a [...rest] page without prerender function", () => {
+        const mockLog = mock((...args: any[]) => null);
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-rest-route",
+        );
+
+        spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: false,
+        };
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(mockLog).not.toHaveBeenCalled();
+      });
+
+      it("should NOT warn an error with a [[...catchall]] page without prerender function", () => {
+        const mockLog = mock((...args: any[]) => null);
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-catchall-route",
+        );
+
+        spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: false,
+        };
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(mockLog).not.toHaveBeenCalled();
+      });
+
+      it("should NOT generate a soft redirect to the locale (with i18n)", () => {
+        globalThis.mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          IS_STATIC_EXPORT: false,
+          BUILD_DIR: ROOT_DIR,
+          I18N_CONFIG: {
+            locales: ["en", "pt"],
+            defaultLocale: "en",
+            pages: {
+              "/user/[username]": {
+                en: "/user/[username]",
+                pt: "/usuario/[username]",
+              },
+            },
+          },
+        };
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        // Should only generate the dynamic routes in this case,
+        // without the soft redirect index.html
+        expect(mockFetch).toHaveBeenCalledTimes(2);
+        testFetchIndex(0, "/en/user/[username]");
+        testFetchIndex(1, "/pt/usuario/[username]");
+
+        // Should only generate the dynamic routes in this case,
+        // without the soft redirect index.html
+        expect(mockWrite).toHaveBeenCalledTimes(2);
+        testGeneratedPathnamesByIndex(0, "en", "user", "[username].html");
+        testGeneratedPathnamesByIndex(1, "pt", "usuario", "[username].html");
+      });
+
+      it('should NOT move assets neither client code inside the "out" folder', () => {
+        const constants = getConstants();
+        globalThis.mockConstants = {
+          ...constants,
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          IS_STATIC_EXPORT: false,
+        };
+        spyOn(fs, "cpSync").mockImplementationOnce(() => null);
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(fs.cpSync).toHaveBeenCalledTimes(0);
+      });
+
+      it('should NOT warn about redirect when "i18n"', () => {
+        const mockLog = mock((...args: any[]) => null);
+        globalThis.mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          I18N_CONFIG: {
+            locales: ["en", "pt"],
+            defaultLocale: "en",
+          },
+          IS_STATIC_EXPORT: false,
+        };
+        spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(mockLog).not.toHaveBeenCalled();
+      });
+
+      it('should NOT warn about redirect when "i18n" neither when i18n is not defined', () => {
+        const mockLog = mock((...args: any[]) => null);
+        globalThis.mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          IS_STATIC_EXPORT: false,
+        };
+        spyOn(console, "log").mockImplementation(() => null);
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(console.log).not.toHaveBeenCalled();
+      });
+
+      it("should NOT generate a page that during the streaming returns the soft redirect to 404 (notFound method)", () => {
+        const mockLog = mock((...args: any[]) => null);
+        globalThis.mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          IS_STATIC_EXPORT: false,
+        };
+        const constants = getConstants();
+        mockFetch.mockImplementation(() => new Response(constants.SCRIPT_404));
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        expect(mockWrite).not.toHaveBeenCalled();
+      });
+
+      it("should prerender dynamic routes without i18n and without trailingSlash", () => {
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          IS_STATIC_EXPORT: false,
+        };
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        // Fetch to generate static export
+        expect(mockFetch).toHaveBeenCalledTimes(1);
+        testFetchIndex(0, "/user/[username]");
+
+        // Write to generate static export
+        expect(mockWrite).toHaveBeenCalledTimes(1);
+        testGeneratedPathnamesByIndex(0, "user", "[username].html");
+      });
+
+      it("should prerender dynamic route with trailingSlash", () => {
+        const constants = getConstants();
+        globalThis.mockConstants = {
+          ...constants,
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          CONFIG: {
+            ...constants.CONFIG,
+            trailingSlash: true,
+          },
+          IS_STATIC_EXPORT: false,
+        };
+
+        expect(generateStaticExport()).resolves.toBeTrue();
+
+        // Fetch to generate static export
+        expect(mockFetch).toHaveBeenCalledTimes(1);
+        testFetchIndex(0, "/user/[username]/");
+
+        // Write to generate static export
+        expect(mockWrite).toHaveBeenCalledTimes(1);
+        testGeneratedPathnamesByIndex(0, "user", "[username]", "index.html");
+      });
     });
-
-    it('should move all the assets inside the "out" folder', () => {
-      spyOn(fs, "cpSync").mockImplementationOnce(() => null);
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      expect(fs.cpSync).toHaveBeenCalledTimes(2);
-      expect(fs.cpSync).toHaveBeenCalledWith(
-        path.join(ROOT_DIR, "public"),
-        path.join(ROOT_DIR, "out"),
-        { recursive: true },
-      );
-    });
-
-    it("should move all JS client code files inside _brisa/pages folder", () => {
-      spyOn(fs, "cpSync").mockImplementationOnce(() => null);
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      expect(fs.cpSync).toHaveBeenCalledTimes(2);
-      expect(fs.cpSync).toHaveBeenCalledWith(
-        path.join(ROOT_DIR, "pages-client"),
-        path.join(ROOT_DIR, "out", "_brisa", "pages"),
-        { recursive: true },
-      );
-    });
-
-    it('should warn about redirect when "i18n" is defined', () => {
-      const mockLog = mock((...args: any[]) => null);
-      globalThis.mockConstants = {
-        ...getConstants(),
-        ROOT_DIR,
-        BUILD_DIR: ROOT_DIR,
-        I18N_CONFIG: {
-          locales: ["en", "pt"],
-          defaultLocale: "en",
-        },
-        IS_STATIC_EXPORT: true,
-      };
-      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      const logs = mockLog.mock.calls.flat().toString();
-      const expectedTitle =
-        "Unable to generate a hard redirect to the user browser language.";
-      const expectedDocs =
-        "https://brisa.build/building-your-application/deploying/static-exports#hard-redirects";
-      expect(logs).toContain("Ops! Warning:");
-      expect(logs).toContain(expectedTitle);
-      expect(logs).toContain(expectedDocs);
-    });
-
-    it('should not warn about redirect when "i18n" is not defined', () => {
-      spyOn(console, "log").mockImplementation(() => null);
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      expect(console.log).not.toHaveBeenCalled();
-    });
-
-    it("should not generate a page that during the streaming returns the soft redirect to 404 (notFound method)", () => {
-      const constants = getConstants();
-      mockFetch.mockImplementation(() => new Response(constants.SCRIPT_404));
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      expect(mockWrite).not.toHaveBeenCalled();
-    });
-
-    it("should warn an error with a dynamic page without prerender function", () => {
-      const mockLog = mock((...args: any[]) => null);
-      const dynamicPath = path.join(
-        import.meta.dir,
-        "__fixtures__",
-        "dynamic-route",
-      );
-
-      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
-
-      mockConstants = {
-        ...getConstants(),
-        ROOT_DIR: dynamicPath,
-        BUILD_DIR: dynamicPath,
-        IS_STATIC_EXPORT: true,
-      };
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      const logs = mockLog.mock.calls.flat().toString();
-
-      expect(logs).toContain("Ops! Warning:");
-      expect(logs).toContain(
-        'The dynamic route "/[slug]" does not have a "prerender" function.',
-      );
-    });
-
-    it("should warn an error with a [...rest] page without prerender function", () => {
-      const mockLog = mock((...args: any[]) => null);
-      const dynamicPath = path.join(
-        import.meta.dir,
-        "__fixtures__",
-        "dynamic-rest-route",
-      );
-
-      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
-
-      mockConstants = {
-        ...getConstants(),
-        ROOT_DIR: dynamicPath,
-        BUILD_DIR: dynamicPath,
-        IS_STATIC_EXPORT: true,
-      };
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      const logs = mockLog.mock.calls.flat().toString();
-
-      expect(logs).toContain("Ops! Warning:");
-      expect(logs).toContain(
-        'The dynamic route "/[...rest]" does not have a "prerender" function.',
-      );
-    });
-
-    it("should warn an error with a [[...catchall]] page without prerender function", () => {
-      const mockLog = mock((...args: any[]) => null);
-      const dynamicPath = path.join(
-        import.meta.dir,
-        "__fixtures__",
-        "dynamic-catchall-route",
-      );
-
-      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
-
-      mockConstants = {
-        ...getConstants(),
-        ROOT_DIR: dynamicPath,
-        BUILD_DIR: dynamicPath,
-        IS_STATIC_EXPORT: true,
-      };
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      const logs = mockLog.mock.calls.flat().toString();
-
-      expect(logs).toContain("Ops! Warning:");
-      expect(logs).toContain(
-        'The dynamic route "/[[...catchall]]" does not have a "prerender" function.',
-      );
-    });
-  });
-
-  describe('when IS_STATIC_EXPORT=false', () => {
-    it("should NOT warn an error with a dynamic page without prerender function", () => {
-      const mockLog = mock((...args: any[]) => null);
-      const dynamicPath = path.join(
-        import.meta.dir,
-        "__fixtures__",
-        "dynamic-route",
-      );
-
-      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
-
-      mockConstants = {
-        ...getConstants(),
-        ROOT_DIR: dynamicPath,
-        BUILD_DIR: dynamicPath,
-        IS_STATIC_EXPORT: false,
-      };
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      const logs = mockLog.mock.calls.flat().toString();
-
-      expect(mockLog).not.toHaveBeenCalled();
-    });
-
-    it("should NOT warn an error with a [...rest] page without prerender function", () => {
-      const mockLog = mock((...args: any[]) => null);
-      const dynamicPath = path.join(
-        import.meta.dir,
-        "__fixtures__",
-        "dynamic-rest-route",
-      );
-
-      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
-
-      mockConstants = {
-        ...getConstants(),
-        ROOT_DIR: dynamicPath,
-        BUILD_DIR: dynamicPath,
-        IS_STATIC_EXPORT: false,
-      };
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      expect(mockLog).not.toHaveBeenCalled();
-    });
-
-    it("should NOT warn an error with a [[...catchall]] page without prerender function", () => {
-      const mockLog = mock((...args: any[]) => null);
-      const dynamicPath = path.join(
-        import.meta.dir,
-        "__fixtures__",
-        "dynamic-catchall-route",
-      );
-
-      spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
-
-      mockConstants = {
-        ...getConstants(),
-        ROOT_DIR: dynamicPath,
-        BUILD_DIR: dynamicPath,
-        IS_STATIC_EXPORT: false,
-      };
-
-      expect(generateStaticExport()).resolves.toBeTrue();
-
-      expect(mockLog).not.toHaveBeenCalled();
-    });
-  });
   });
 });

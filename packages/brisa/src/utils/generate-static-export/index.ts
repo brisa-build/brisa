@@ -4,6 +4,7 @@ import { getConstants } from "@/constants";
 import { getServeOptions } from "./utils";
 import { toInline } from "@/helpers";
 import { logWarning } from "@/utils/log/log-build";
+import type { FileSystemRouter, MatchedRoute } from "bun";
 
 const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = "http://localhost";
@@ -16,7 +17,7 @@ export default async function generateStaticExport() {
     CONFIG,
     SCRIPT_404,
     IS_PRODUCTION,
-    IS_STATIC_EXPORT
+    IS_STATIC_EXPORT,
   } = getConstants();
   const outDir = path.join(ROOT_DIR, "out");
   const serveOptions = await getServeOptions();
@@ -31,25 +32,19 @@ export default async function generateStaticExport() {
     dir: path.join(BUILD_DIR, "pages"),
   });
 
-  const routes = formatRoutes(Object.keys(router.routes));
+  const routes = await formatRoutes(Object.keys(router.routes), router);
 
   await Promise.all(
-    routes.map(async (routeName) => {
-      let route = router.match(routeName);
-
-      if (route && route.kind !== "exact") {
+    routes.map(async ([routeName, route]) => {
+      // Prerender when "export default prerender = true"
+      if (route && !IS_STATIC_EXPORT) {
         const module = await import(route.filePath);
 
-        // Warning on missing prerender function in dynamic routes 
-        // during output=static
-        if (IS_STATIC_EXPORT && typeof module.prerender !== "function") {
-          return logMissingPrerender(routeName);
-        }
-        
-        // TODO: Implement prerender dynamic pages based on the
-        // params returned by prerennder function
+        // Skip if there is no prerender function
+        if (!module.prerender) return;
       }
 
+      // Prerender all pages in case of output=static
       const request = new Request(new URL(routeName, fakeOrigin));
       const response = await serveOptions.fetch.call(
         fakeServer,
@@ -74,7 +69,11 @@ export default async function generateStaticExport() {
     }),
   );
 
-  if (I18N_CONFIG?.locales?.length && I18N_CONFIG?.defaultLocale) {
+  if (
+    IS_STATIC_EXPORT &&
+    I18N_CONFIG?.locales?.length &&
+    I18N_CONFIG?.defaultLocale
+  ) {
     await createSoftRedirectToLocale({
       locales: I18N_CONFIG.locales,
       defaultLocale: I18N_CONFIG.defaultLocale,
@@ -84,6 +83,8 @@ export default async function generateStaticExport() {
 
   const publicPath = path.join(BUILD_DIR, "public");
   const clientPagesPath = path.join(BUILD_DIR, "pages-client");
+
+  if (!IS_STATIC_EXPORT) return true;
 
   if (fs.existsSync(publicPath)) {
     fs.cpSync(publicPath, outDir, { recursive: true });
@@ -98,14 +99,31 @@ export default async function generateStaticExport() {
   return true;
 }
 
-function formatRoutes(routes: string[]) {
-  const { I18N_CONFIG, CONFIG } = getConstants();
+async function formatRoutes(routes: string[], router: FileSystemRouter) {
+  const { I18N_CONFIG, CONFIG, IS_STATIC_EXPORT } = getConstants();
   const trailingSlash = CONFIG.trailingSlash;
   const locales = I18N_CONFIG?.locales?.length ? I18N_CONFIG.locales : [""];
-  let newRoutes: string[] = [];
+  let newRoutes: [string, MatchedRoute | null][] = [];
 
   for (const pageName of routes) {
     for (const locale of locales) {
+      let route = router.match(pageName);
+
+      if (route && route.kind !== "exact") {
+        const module = await import(route.filePath);
+        const prerenderFn = typeof module.prerender !== "function";
+
+        // Warning on missing prerender function in dynamic routes
+        // during output=static
+        if (IS_STATIC_EXPORT && prerenderFn) {
+          logMissingPrerender(pageName);
+          continue;
+        }
+
+        // TODO: Implement prerender dynamic pages based on the
+        // params returned by prerennder function
+      }
+
       const pathname = locale
         ? I18N_CONFIG.pages?.[pageName]?.[locale] ?? pageName
         : pageName;
@@ -122,7 +140,7 @@ function formatRoutes(routes: string[]) {
         newRoute = newRoute.slice(0, -1);
       }
 
-      newRoutes.push(newRoute);
+      newRoutes.push([newRoute, route]);
     }
   }
 
