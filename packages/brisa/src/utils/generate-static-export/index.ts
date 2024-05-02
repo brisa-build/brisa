@@ -33,6 +33,7 @@ export default async function generateStaticExport() {
   });
 
   const routes = await formatRoutes(Object.keys(router.routes), router);
+  const prerenderedRoutes: string[] = [];
 
   await Promise.all(
     routes.map(async ([routeName, route]) => {
@@ -56,16 +57,18 @@ export default async function generateStaticExport() {
       let htmlPath: string;
 
       if (CONFIG.trailingSlash) {
-        htmlPath = path.join(outDir, routeName, "index.html");
+        htmlPath = path.join(routeName, "index.html");
       } else if (routeName === "/") {
-        htmlPath = path.join(outDir, "index.html");
+        htmlPath = "/index.html";
       } else {
-        htmlPath = path.join(outDir, routeName.replace(/\/$/, "") + ".html");
+        htmlPath = path.join(routeName.replace(/\/$/, "") + ".html");
       }
 
       if (html.includes(SCRIPT_404)) return;
 
-      return Bun.write(htmlPath, html);
+      prerenderedRoutes.push(htmlPath);
+
+      return Bun.write(path.join(outDir, htmlPath), html);
     }),
   );
 
@@ -74,6 +77,7 @@ export default async function generateStaticExport() {
     I18N_CONFIG?.locales?.length &&
     I18N_CONFIG?.defaultLocale
   ) {
+    prerenderedRoutes.push("/index.html");
     await createSoftRedirectToLocale({
       locales: I18N_CONFIG.locales,
       defaultLocale: I18N_CONFIG.defaultLocale,
@@ -84,7 +88,7 @@ export default async function generateStaticExport() {
   const publicPath = path.join(BUILD_DIR, "public");
   const clientPagesPath = path.join(BUILD_DIR, "pages-client");
 
-  if (!IS_STATIC_EXPORT) return true;
+  if (!IS_STATIC_EXPORT) return prerenderedRoutes;
 
   if (fs.existsSync(publicPath)) {
     fs.cpSync(publicPath, outDir, { recursive: true });
@@ -96,7 +100,7 @@ export default async function generateStaticExport() {
     });
   }
 
-  return true;
+  return prerenderedRoutes;
 }
 
 async function formatRoutes(routes: string[], router: FileSystemRouter) {
