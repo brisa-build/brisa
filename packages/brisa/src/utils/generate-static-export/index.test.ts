@@ -57,7 +57,7 @@ describe("utils", () => {
     });
 
     describe("when IS_STATIC_EXPORT=true", () => {
-      it("should generate static export without i18n and without trailingSlash", () => {
+      it("should generate static export to 'out' folder without i18n and without trailingSlash", () => {
         expect(generateStaticExport()).resolves.toEqual([
           getPathname("_404.html"),
           getPathname("_500.html"),
@@ -67,6 +67,9 @@ describe("utils", () => {
           getPathname("index.html"),
           getPathname("user", "[username].html"),
         ]);
+        expect(mockWrite.mock.calls[0][0]).toStartWith(
+          path.join(ROOT_DIR, "out"),
+        );
       });
 
       it("should generate static export with i18n with a soft redirect to the locale", () => {
@@ -488,6 +491,10 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual([
           getPathname("user", "[username].html"),
         ]);
+
+        expect(mockWrite.mock.calls[0][0]).toStartWith(
+          path.join(ROOT_DIR, "build", "prerendered-pages"),
+        );
       });
 
       it("should prerender dynamic route with trailingSlash", () => {
