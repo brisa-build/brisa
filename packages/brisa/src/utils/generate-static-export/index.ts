@@ -159,10 +159,13 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
           let correctPathname = pathname;
 
           for (const [key, value] of Object.entries(params)) {
-            correctPathname = pathname
-              .replace(`[[...${key}]]`, value)
-              .replace(`[...${key}]`, value)
-              .replace(`[${key}]`, value);
+            const stringValue = Array.isArray(value)
+              ? value.join(path.sep)
+              : value;
+            correctPathname = correctPathname
+              .replace(`[[...${key}]]`, stringValue)
+              .replace(`[...${key}]`, stringValue)
+              .replace(`[${key}]`, stringValue);
           }
           addPathname(correctPathname, locale, route);
         }
