@@ -224,11 +224,21 @@ describe("utils", () => {
       });
 
       it('should not warn about redirect when "i18n" is not defined', async () => {
-        spyOn(console, "log").mockImplementation(() => null);
+        const constants = getConstants();
+
+        const mockLog = spyOn(console, "log").mockImplementation(() => null);
 
         await generateStaticExport();
 
-        expect(console.log).not.toHaveBeenCalled();
+        // All are correct logs withouth the warning
+        expect(mockLog).toHaveBeenCalledTimes(7);
+        expect(mockLog.mock.calls[0]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/_404.html prerendered ")]);
+        expect(mockLog.mock.calls[1]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/_500.html prerendered in ")]);
+        expect(mockLog.mock.calls[2]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/page-with-web-component.html prerendered in ")]);
+        expect(mockLog.mock.calls[3]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/somepage.html prerendered in ")]);
+        expect(mockLog.mock.calls[4]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/somepage-with-context.html prerendered in ")]);
+        expect(mockLog.mock.calls[5]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/index.html prerendered in ")]);
+        expect(mockLog.mock.calls[6]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/user/testUserName.html prerendered in ")]);
       });
 
       it("should not generate a page that during the streaming returns the soft redirect to 404 (notFound method)", () => {
@@ -539,8 +549,9 @@ describe("utils", () => {
 
       it('should NOT warn about redirect when "i18n"', () => {
         const mockLog = mock((...args: any[]) => null);
+        const constants = getConstants();
         globalThis.mockConstants = {
-          ...getConstants(),
+          ...constants,
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
           I18N_CONFIG: {
@@ -556,12 +567,15 @@ describe("utils", () => {
           getPathname("pt", "user", "testUserName.html"),
         ]);
 
-        expect(mockLog).not.toHaveBeenCalled();
+        expect(mockLog).toHaveBeenCalledTimes(2);
+        expect(mockLog.mock.calls[0]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/en/user/testUserName.html prerendered in ")]);
+        expect(mockLog.mock.calls[1]).toEqual([constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/pt/user/testUserName.html prerendered in ")]);
       });
 
       it('should NOT warn about redirect when "i18n" neither when i18n is not defined', () => {
+        const constants = getConstants();
         globalThis.mockConstants = {
-          ...getConstants(),
+          ...constants,
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
           IS_STATIC_EXPORT: false,
@@ -572,7 +586,8 @@ describe("utils", () => {
           getPathname("user", "testUserName.html"),
         ]);
 
-        expect(console.log).not.toHaveBeenCalled();
+        expect(console.log).toHaveBeenCalledTimes(1);
+        expect(console.log).toHaveBeenCalledWith(constants.LOG_PREFIX.INFO, constants.LOG_PREFIX.TICK, expect.stringContaining("/user/testUserName.html prerendered in "));
       });
 
       it("should NOT generate a page that during the streaming returns the soft redirect to 404 (notFound method)", () => {
