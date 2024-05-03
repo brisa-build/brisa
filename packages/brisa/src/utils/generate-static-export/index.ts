@@ -134,6 +134,7 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
   for (const pageName of routes) {
     for (const locale of locales) {
       let route = router.match(pageName);
+
       const pathname = locale
         ? I18N_CONFIG.pages?.[pageName]?.[locale] ?? pageName
         : pageName;
