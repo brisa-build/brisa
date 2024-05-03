@@ -13,6 +13,7 @@ import serverComponentPlugin from "@/utils/server-component-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import getI18nClientMessages from "@/utils/get-i18n-client-messages";
 import compileActions from "@/utils/compile-actions";
+import generateStaticExport from "@/utils/generate-static-export";
 
 export default async function compileFiles() {
   const {
@@ -149,6 +150,8 @@ export default async function compileFiles() {
   if (!IS_PRODUCTION || IS_STATIC_EXPORT) {
     return { success, logs, pagesSize };
   }
+
+  const generated = await generateStaticExport();
 
   logTable(
     outputs.map((output) => {
