@@ -65,7 +65,7 @@ describe("utils", () => {
           getPathname("somepage.html"),
           getPathname("somepage-with-context.html"),
           getPathname("index.html"),
-          getPathname("user", "[username].html"),
+          getPathname("user", "testUserName.html"),
         ]);
         expect(mockWrite.mock.calls[0][0]).toStartWith(
           path.join(ROOT_DIR, "out"),
@@ -115,8 +115,8 @@ describe("utils", () => {
           getPathname("pt", "alguma-pagina-com-contexto.html"),
           getPathname("en.html"),
           getPathname("pt.html"),
-          getPathname("en", "user", "[username].html"),
-          getPathname("pt", "usuario", "[username].html"),
+          getPathname("en", "user", "testUserName.html"),
+          getPathname("pt", "usuario", "testUserName.html"),
           getPathname("index.html"), // Soft redirect to default locale
         ]);
 
@@ -167,7 +167,7 @@ describe("utils", () => {
           getPathname("somepage", "index.html"),
           getPathname("somepage-with-context", "index.html"),
           getPathname("index.html"),
-          getPathname("user", "[username]", "index.html"),
+          getPathname("user", "testUserName", "index.html"),
         ]);
       });
 
@@ -405,8 +405,8 @@ describe("utils", () => {
         };
 
         expect(generateStaticExport()).resolves.toEqual([
-          getPathname("en", "user", "[username].html"),
-          getPathname("pt", "usuario", "[username].html"),
+          getPathname("en", "user", "testUserName.html"),
+          getPathname("pt", "usuario", "testUserName.html"),
         ]);
       });
 
@@ -421,7 +421,7 @@ describe("utils", () => {
         spyOn(fs, "cpSync").mockImplementationOnce(() => null);
 
         expect(generateStaticExport()).resolves.toEqual([
-          getPathname("user", "[username].html"),
+          getPathname("user", "testUserName.html"),
         ]);
 
         expect(fs.cpSync).toHaveBeenCalledTimes(0);
@@ -442,8 +442,8 @@ describe("utils", () => {
         spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
 
         expect(generateStaticExport()).resolves.toEqual([
-          getPathname("en", "user", "[username].html"),
-          getPathname("pt", "user", "[username].html"),
+          getPathname("en", "user", "testUserName.html"),
+          getPathname("pt", "user", "testUserName.html"),
         ]);
 
         expect(mockLog).not.toHaveBeenCalled();
@@ -460,7 +460,7 @@ describe("utils", () => {
         spyOn(console, "log").mockImplementation(() => null);
 
         expect(generateStaticExport()).resolves.toEqual([
-          getPathname("user", "[username].html"),
+          getPathname("user", "testUserName.html"),
         ]);
 
         expect(console.log).not.toHaveBeenCalled();
@@ -489,7 +489,7 @@ describe("utils", () => {
         };
 
         expect(generateStaticExport()).resolves.toEqual([
-          getPathname("user", "[username].html"),
+          getPathname("user", "testUserName.html"),
         ]);
 
         expect(mockWrite.mock.calls[0][0]).toStartWith(
@@ -511,7 +511,7 @@ describe("utils", () => {
         };
 
         expect(generateStaticExport()).resolves.toEqual([
-          getPathname("user", "[username]", "index.html"),
+          getPathname("user", "testUserName", "index.html"),
         ]);
       });
     });
