@@ -409,6 +409,27 @@ describe("utils", () => {
           "/a.html",
         ]);
       });
+
+      it("should prerender all routes althought only one has prerender=true (IS_STATIC_EXPORT=true do all)", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "prerender-one",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/a.html",
+          "/b.html",
+          "/c.html",
+        ]);
+      });
     });
 
     describe("when IS_STATIC_EXPORT=false", () => {
@@ -689,6 +710,23 @@ describe("utils", () => {
           "/a/b.html",
           "/a.html",
         ]);
+      });
+
+      it("should prerender only the route with prerender=true", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "prerender-one",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: false,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual(["/b.html"]);
       });
     });
   });
