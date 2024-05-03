@@ -61,6 +61,7 @@ export default async function build() {
     for (const [pageName, size] of Object.entries(pagesSize)) {
       const route = pageName.replace(BUILD_DIR, "");
       const isPage = route.startsWith("/pages");
+      const prerenderedRoutes = generated.get(route) ?? [];
 
       if (!isPage) continue;
 
@@ -68,6 +69,15 @@ export default async function build() {
         Route: `○ ${route.replace(".js", "")}`,
         "JS client (gz)": byteSizeToString(size ?? 0, 0, true),
       });
+
+      if (prerenderedRoutes.length > 1) {
+        for (const prerenderRoute of prerenderedRoutes) {
+          logs.push({
+            Route: `| ○ ${prerenderRoute.replace(".html", "")}`,
+            "JS client (gz)": byteSizeToString(size ?? 0, 0, true),
+          });
+        }
+      }
     }
 
     console.log(LOG_PREFIX.INFO);
