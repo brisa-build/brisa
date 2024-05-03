@@ -58,6 +58,23 @@ describe("utils", () => {
     });
 
     describe("when IS_STATIC_EXPORT=true", () => {
+      it('should remove the "out" directory if it exists', async () => {
+        globalThis.mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          IS_PRODUCTION: true,
+          IS_STATIC_EXPORT: true,
+        };
+        spyOn(fs, "existsSync").mockImplementationOnce(() => true);
+        spyOn(fs, "rmSync").mockImplementationOnce(() => null);
+
+        await generateStaticExport();
+
+        expect(fs.existsSync).toHaveBeenCalled();
+        expect(fs.rmSync).toHaveBeenCalled();
+      });
+
       it("should generate static export to 'out' folder without i18n and without trailingSlash", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
@@ -573,6 +590,22 @@ describe("utils", () => {
     });
 
     describe("when IS_STATIC_EXPORT=false", () => {
+      it('should NOT remove the "build" directory if it exists', async () => {
+        globalThis.mockConstants = {
+          ...getConstants(),
+          ROOT_DIR,
+          BUILD_DIR: ROOT_DIR,
+          IS_PRODUCTION: true,
+          IS_STATIC_EXPORT: false,
+        };
+        spyOn(fs, "existsSync").mockImplementationOnce(() => true);
+        spyOn(fs, "rmSync").mockImplementationOnce(() => null);
+
+        await generateStaticExport();
+
+        expect(fs.rmSync).not.toHaveBeenCalled();
+      });
+
       it("should NOT warn an error with a dynamic page without prerender function", () => {
         const mockLog = mock((...args: any[]) => null);
         const dynamicPath = path.join(
