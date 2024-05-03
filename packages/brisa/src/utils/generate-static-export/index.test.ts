@@ -13,15 +13,16 @@ import generateStaticExport from "./index";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
 
-const fakeOrigin = "http://localhost";
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const mockFetch = mock((request: Request) => new Response(""));
 const mockWrite = mock(async (...args: any[]) => 0);
 let spyWrite;
 
-const getPathname = (...paths: string[]) => {
-  return new URL(path.join(...paths), fakeOrigin).pathname;
-};
+function formatPath(...args: string[]) {
+  const pathname = args.join(path.sep);
+  const prefix = pathname[0] === path.sep ? "" : path.sep;
+  return prefix + pathname;
+}
 
 const testGeneratedContentByIndex = (index: number, content: string) => {
   expect(mockWrite.mock.calls[index][1]).toBe(content);
@@ -58,15 +59,27 @@ describe("utils", () => {
 
     describe("when IS_STATIC_EXPORT=true", () => {
       it("should generate static export to 'out' folder without i18n and without trailingSlash", () => {
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("_404.html"),
-          getPathname("_500.html"),
-          getPathname("page-with-web-component.html"),
-          getPathname("somepage.html"),
-          getPathname("somepage-with-context.html"),
-          getPathname("index.html"),
-          getPathname("user", "testUserName.html"),
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [formatPath("_404"), [formatPath("_404.html")]],
+            [formatPath("_500"), [formatPath("_500.html")]],
+            [
+              formatPath("page-with-web-component"),
+              [formatPath("page-with-web-component.html")],
+            ],
+            [formatPath("somepage"), [formatPath("somepage.html")]],
+            [
+              formatPath("somepage-with-context"),
+              [formatPath("somepage-with-context.html")],
+            ],
+            [formatPath(""), [formatPath("index.html")]],
+            [
+              formatPath("user", "[username]"),
+              [formatPath("user", "testUserName.html")],
+            ],
+          ]),
+        );
+
         expect(mockWrite.mock.calls[0][0]).toStartWith(
           path.join(ROOT_DIR, "out"),
         );
@@ -102,23 +115,54 @@ describe("utils", () => {
           },
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("en", "_404.html"),
-          getPathname("pt", "_404.html"),
-          getPathname("en", "_500.html"),
-          getPathname("pt", "_500.html"),
-          getPathname("en", "page-with-web-component.html"),
-          getPathname("pt", "pagina-com-web-component.html"),
-          getPathname("en", "somepage.html"),
-          getPathname("pt", "alguma-pagina.html"),
-          getPathname("en", "somepage-with-context.html"),
-          getPathname("pt", "alguma-pagina-com-contexto.html"),
-          getPathname("en.html"),
-          getPathname("pt.html"),
-          getPathname("en", "user", "testUserName.html"),
-          getPathname("pt", "usuario", "testUserName.html"),
-          getPathname("index.html"), // Soft redirect to default locale
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("_404"),
+              [formatPath("en", "_404.html"), formatPath("pt", "_404.html")],
+            ],
+            [
+              formatPath("_500"),
+              [formatPath("en", "_500.html"), formatPath("pt", "_500.html")],
+            ],
+            [
+              formatPath("page-with-web-component"),
+              [
+                formatPath("en", "page-with-web-component.html"),
+                formatPath("pt", "pagina-com-web-component.html"),
+              ],
+            ],
+            [
+              formatPath("somepage"),
+              [
+                formatPath("en", "somepage.html"),
+                formatPath("pt", "alguma-pagina.html"),
+              ],
+            ],
+            [
+              formatPath("somepage-with-context"),
+              [
+                formatPath("en", "somepage-with-context.html"),
+                formatPath("pt", "alguma-pagina-com-contexto.html"),
+              ],
+            ],
+            [
+              formatPath(""),
+              [
+                formatPath("en.html"),
+                formatPath("pt.html"),
+                formatPath("index.html"),
+              ],
+            ],
+            [
+              formatPath("user", "[username]"),
+              [
+                formatPath("en", "user", "testUserName.html"),
+                formatPath("pt", "usuario", "testUserName.html"),
+              ],
+            ],
+          ]),
+        );
 
         const expectedSoftRedirectCode = toInline(`
         <!DOCTYPE html>
@@ -160,15 +204,26 @@ describe("utils", () => {
           IS_STATIC_EXPORT: true,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("_404", "index.html"),
-          getPathname("_500", "index.html"),
-          getPathname("page-with-web-component", "index.html"),
-          getPathname("somepage", "index.html"),
-          getPathname("somepage-with-context", "index.html"),
-          getPathname("index.html"),
-          getPathname("user", "testUserName", "index.html"),
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [formatPath("_404"), [formatPath("_404", "index.html")]],
+            [formatPath("_500"), [formatPath("_500", "index.html")]],
+            [
+              formatPath("page-with-web-component"),
+              [formatPath("page-with-web-component", "index.html")],
+            ],
+            [formatPath("somepage"), [formatPath("somepage", "index.html")]],
+            [
+              formatPath("somepage-with-context"),
+              [formatPath("somepage-with-context", "index.html")],
+            ],
+            [formatPath(""), [formatPath("index.html")]],
+            [
+              formatPath("user", "[username]"),
+              [formatPath("user", "testUserName", "index.html")],
+            ],
+          ]),
+        );
       });
 
       it('should move all the assets inside the "out" folder', async () => {
@@ -378,10 +433,14 @@ describe("utils", () => {
           IS_STATIC_EXPORT: true,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/user.html",
-          "/user2.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("[slug]"),
+              [formatPath("user.html"), formatPath("user2.html")],
+            ],
+          ]),
+        );
       });
 
       it("should generate nested dynamic routes thanks to prerender function", () => {
@@ -398,17 +457,29 @@ describe("utils", () => {
           IS_STATIC_EXPORT: true,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/foo.html",
-          "/bar.html",
-          "/baz.html",
-          "/foo/user.html",
-          "/bar/user.html",
-          "/baz/user.html",
-          "/foo/user2.html",
-          "/bar/user2.html",
-          "/baz/user2.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("[foo]"),
+              [
+                formatPath("foo.html"),
+                formatPath("bar.html"),
+                formatPath("baz.html"),
+              ],
+            ],
+            [
+              formatPath("[foo]", "[slug]"),
+              [
+                formatPath("foo", "user.html"),
+                formatPath("bar", "user.html"),
+                formatPath("baz", "user.html"),
+                formatPath("foo", "user2.html"),
+                formatPath("bar", "user2.html"),
+                formatPath("baz", "user2.html"),
+              ],
+            ],
+          ]),
+        );
       });
 
       it("should generate dynamic rest routes thanks to prerender function", () => {
@@ -425,10 +496,17 @@ describe("utils", () => {
           IS_STATIC_EXPORT: true,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/foo/bar/baz.html",
-          "/foo/bar/baz/qux.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("[...rest]"),
+              [
+                formatPath("foo", "bar", "baz.html"),
+                formatPath("foo", "bar", "baz", "qux.html"),
+              ],
+            ],
+          ]),
+        );
       });
 
       it("should generate dynamic catchall routes thanks to prerender function an array of strings", () => {
@@ -446,11 +524,18 @@ describe("utils", () => {
           IS_STATIC_EXPORT: true,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/a/b/c.html",
-          "/a/b.html",
-          "/a.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("[[...catchall]]"),
+              [
+                formatPath("a", "b", "c.html"),
+                formatPath("a", "b.html"),
+                formatPath("a.html"),
+              ],
+            ],
+          ]),
+        );
       });
 
       it("should prerender all routes althought only one has prerender=true (IS_STATIC_EXPORT=true do all)", () => {
@@ -467,11 +552,13 @@ describe("utils", () => {
           IS_STATIC_EXPORT: true,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/a.html",
-          "/b.html",
-          "/c.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [formatPath("a"), [formatPath("a.html")]],
+            [formatPath("b"), [formatPath("b.html")]],
+            [formatPath("c"), [formatPath("c.html")]],
+          ]),
+        );
       });
     });
 
@@ -557,10 +644,17 @@ describe("utils", () => {
           },
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("en", "user", "testUserName.html"),
-          getPathname("pt", "usuario", "testUserName.html"),
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("user", "[username]"),
+              [
+                formatPath("en", "user", "testUserName.html"),
+                formatPath("pt", "usuario", "testUserName.html"),
+              ],
+            ],
+          ]),
+        );
       });
 
       it('should NOT move assets neither client code inside the "out" folder', () => {
@@ -573,9 +667,14 @@ describe("utils", () => {
         };
         spyOn(fs, "cpSync").mockImplementationOnce(() => null);
 
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("user", "testUserName.html"),
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("user", "[username]"),
+              [formatPath("user", "testUserName.html")],
+            ],
+          ]),
+        );
 
         expect(fs.cpSync).toHaveBeenCalledTimes(0);
       });
@@ -595,10 +694,17 @@ describe("utils", () => {
         };
         spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
 
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("en", "user", "testUserName.html"),
-          getPathname("pt", "user", "testUserName.html"),
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("user", "[username]"),
+              [
+                formatPath("en", "user", "testUserName.html"),
+                formatPath("pt", "user", "testUserName.html"),
+              ],
+            ],
+          ]),
+        );
 
         expect(mockLog).toHaveBeenCalledTimes(5);
         expect(mockLog.mock.calls[0]).toEqual([constants.LOG_PREFIX.INFO]);
@@ -629,9 +735,14 @@ describe("utils", () => {
         };
         const mockLog = spyOn(console, "log").mockImplementation(() => null);
 
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("user", "testUserName.html"),
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("user", "[username]"),
+              [formatPath("user", "testUserName.html")],
+            ],
+          ]),
+        );
 
         expect(mockLog).toHaveBeenCalledTimes(4);
         expect(mockLog.mock.calls[0]).toEqual([constants.LOG_PREFIX.INFO]);
@@ -668,9 +779,14 @@ describe("utils", () => {
           IS_STATIC_EXPORT: false,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("user", "testUserName.html"),
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("user", "[username]"),
+              [formatPath("user", "testUserName.html")],
+            ],
+          ]),
+        );
 
         expect(mockWrite.mock.calls[0][0]).toStartWith(
           path.join(ROOT_DIR, "build", "prerendered-pages"),
@@ -690,9 +806,14 @@ describe("utils", () => {
           IS_STATIC_EXPORT: false,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          getPathname("user", "testUserName", "index.html"),
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("user", "[username]"),
+              [formatPath("user", "testUserName", "index.html")],
+            ],
+          ]),
+        );
       });
 
       it("should generate dynamic routes thanks to prerender function", () => {
@@ -709,10 +830,14 @@ describe("utils", () => {
           IS_STATIC_EXPORT: false,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/user.html",
-          "/user2.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("[slug]"),
+              [formatPath("user.html"), formatPath("user2.html")],
+            ],
+          ]),
+        );
       });
 
       it("should generate nested dynamic routes thanks to prerender function", () => {
@@ -729,17 +854,29 @@ describe("utils", () => {
           IS_STATIC_EXPORT: false,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/foo.html",
-          "/bar.html",
-          "/baz.html",
-          "/foo/user.html",
-          "/bar/user.html",
-          "/baz/user.html",
-          "/foo/user2.html",
-          "/bar/user2.html",
-          "/baz/user2.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("[foo]"),
+              [
+                formatPath("foo.html"),
+                formatPath("bar.html"),
+                formatPath("baz.html"),
+              ],
+            ],
+            [
+              formatPath("[foo]", "[slug]"),
+              [
+                formatPath("foo", "user.html"),
+                formatPath("bar", "user.html"),
+                formatPath("baz", "user.html"),
+                formatPath("foo", "user2.html"),
+                formatPath("bar", "user2.html"),
+                formatPath("baz", "user2.html"),
+              ],
+            ],
+          ]),
+        );
       });
 
       it("should generate dynamic rest routes thanks to prerender function", () => {
@@ -756,10 +893,17 @@ describe("utils", () => {
           IS_STATIC_EXPORT: false,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/foo/bar/baz.html",
-          "/foo/bar/baz/qux.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("[...rest]"),
+              [
+                formatPath("foo", "bar", "baz.html"),
+                formatPath("foo", "bar", "baz", "qux.html"),
+              ],
+            ],
+          ]),
+        );
       });
 
       it("should generate dynamic catchall routes thanks to prerender function an array of strings", () => {
@@ -777,11 +921,18 @@ describe("utils", () => {
           IS_STATIC_EXPORT: false,
         };
 
-        expect(generateStaticExport()).resolves.toEqual([
-          "/a/b/c.html",
-          "/a/b.html",
-          "/a.html",
-        ]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([
+            [
+              formatPath("[[...catchall]]"),
+              [
+                formatPath("a", "b", "c.html"),
+                formatPath("a", "b.html"),
+                formatPath("a.html"),
+              ],
+            ],
+          ]),
+        );
       });
 
       it("should prerender only the route with prerender=true", () => {
@@ -798,7 +949,9 @@ describe("utils", () => {
           IS_STATIC_EXPORT: false,
         };
 
-        expect(generateStaticExport()).resolves.toEqual(["/b.html"]);
+        expect(generateStaticExport()).resolves.toEqual(
+          new Map([[formatPath("b"), [formatPath("/b.html")]]]),
+        );
       });
     });
   });
