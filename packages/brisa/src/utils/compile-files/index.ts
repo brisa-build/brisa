@@ -159,6 +159,7 @@ export default async function compileFiles() {
       const prerenderedRoutes = generated.get(route) ?? [];
       const isChunk = route.startsWith("/chunk-");
       const isPage = route.startsWith("/pages");
+      const isPrerender = prerenderedRoutes.length === 1;
       let symbol = "λ";
 
       if (isChunk) {
@@ -177,10 +178,8 @@ export default async function compileFiles() {
 
       const res = [
         {
-          Route: `${
-            prerenderedRoutes.length === 1 ? "○" : symbol
-          } ${route.replace(".js", "")}`,
-          "JS server": byteSizeToString(output.size, 0),
+          Route: `${isPrerender ? "○" : symbol} ${route.replace(".js", "")}`,
+          "JS server": byteSizeToString(isPrerender ? 0 : output.size, 0),
           "JS client (gz)": isPage
             ? byteSizeToString(pagesSize[route] ?? 0, 0, true)
             : "",
