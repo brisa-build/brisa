@@ -14,6 +14,7 @@ export default function replaceAstImportsToAbsolute(
     try {
       // "import something from '../some/path'" => "import something from '/absolute/some/path'"
       if (value?.type === "ImportDeclaration") {
+        // TODO: Migrate to no deprecated method
         value.source.value = import.meta.resolveSync(value.source.value, path);
       }
 
