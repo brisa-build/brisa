@@ -19,9 +19,17 @@ const defaultResult = {
   },
 } as const;
 
+const resultWithdDynamicRoute = {
+  success: true,
+  pagesSize: {
+    "/pages/index.js": 100,
+    "/pages/user/[username].js": 0,
+  },
+} as const;
+
 const mockCompileAll = mock(async () => defaultResult);
 const mockTable = mock((v: any) => null);
-const mockGenerateStaticExport = mock(async () => true);
+const mockGenerateStaticExport = mock(async () => new Map<string, string[]>());
 const mockLog = mock((...logs: string[]) => {});
 const green = (text: string) =>
   Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
@@ -37,7 +45,7 @@ describe("cli", () => {
       mock.module("./build-utils", () => ({
         logTable: (v: any) => mockTable(v),
         generateStaticExport: async () =>
-          (await mockGenerateStaticExport()) || true,
+          (await mockGenerateStaticExport()) || new Map<string, string[]>(),
       }));
     });
 
@@ -45,6 +53,7 @@ describe("cli", () => {
       mockCompileAll.mockRestore();
       mockGenerateStaticExport.mockRestore();
       mockTable.mockRestore();
+      mockLog.mockRestore();
       mock.restore();
       globalThis.mockConstants = undefined;
     });
@@ -168,6 +177,53 @@ describe("cli", () => {
       ]);
       expect(logs).toContain("Generated static pages successfully!");
       expect(logs).toContain("Ω  (i18n) prerendered for each locale");
+    });
+
+    it('should log prerendered dynamic routes with output="static"', async () => {
+      mockCompileAll.mockImplementationOnce(
+        async () => resultWithdDynamicRoute,
+      );
+      mockGenerateStaticExport.mockImplementationOnce(async () => {
+        const map = new Map<string, string[]>();
+        map.set("/pages/user/[username].js", [
+          "/user/john.html",
+          "/user/jane.html",
+        ]);
+        return map;
+      });
+
+      const constants = getConstants() ?? {};
+
+      globalThis.mockConstants = {
+        ...constants,
+        IS_PRODUCTION: true,
+        IS_STATIC_EXPORT: true,
+        CONFIG: {
+          output: "static",
+        },
+      };
+
+      await build();
+      const logs = mockLog.mock.calls.flat().toString();
+      expect(mockTable.mock.calls.flat()[0]).toEqual([
+        {
+          "JS client (gz)": green("100 B"),
+          Route: "○ /pages/index",
+        },
+        {
+          "JS client (gz)": green("0 B"),
+          Route: "○ /pages/user/[username]",
+        },
+        {
+          "JS client (gz)": green("0 B"),
+          Route: "| ○ /user/john",
+        },
+        {
+          "JS client (gz)": green("0 B"),
+          Route: "| ○ /user/jane",
+        },
+      ]);
+      expect(logs).toContain("Generated static pages successfully!");
     });
   });
 });
