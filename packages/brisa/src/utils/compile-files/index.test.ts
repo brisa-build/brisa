@@ -701,5 +701,70 @@ describe("utils", () => {
   `);
       expect(logOutput).toContain(expected);
     });
+
+    it('should compile an app prerendering dynamic routes with "prerender" function', async () => {
+      const SRC_DIR = path.join(FIXTURES, "with-dynamic-prerendered-routes");
+      const BUILD_DIR = path.join(SRC_DIR, "out");
+      const PAGES_DIR = path.join(BUILD_DIR, "pages");
+      const ASSETS_DIR = path.join(BUILD_DIR, "public");
+      const constants = getConstants();
+      globalThis.mockConstants = {
+        ...constants,
+        PAGES_DIR,
+        BUILD_DIR,
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+        SRC_DIR,
+        ASSETS_DIR,
+      };
+
+      mockConsoleLog.mockImplementation(() => {});
+
+      const { success, logs } = await compileFiles();
+
+      expect(logs).toBeEmpty();
+
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
+
+      expect(success).toBe(true);
+      expect(files).toEqual([
+        "_brisa",
+        "pages",
+        "pages-client",
+        "prerendered-pages",
+      ]);
+
+      const prerendered = fs
+        .readdirSync(path.join(BUILD_DIR, "prerendered-pages", "pokemon"))
+        .toSorted((a, b) => a.localeCompare(b));
+
+      expect(prerendered).toEqual(["charizard.html", "pikachu.html"]);
+
+      const info = constants.LOG_PREFIX.INFO;
+
+      const logOutput = minifyText(
+        mockConsoleLog.mock.calls
+          .flat()
+          .join("\n")
+          .replace(/chunk-\S*/g, "chunk-hash"),
+      );
+
+      const expected = minifyText(`
+    ${info}Route                        | JS server | JS client (gz)  
+    ${info}-------------------------------------------------------
+    ${info}λ /pages/index               | 190 B   | ${greenLog("0 B")}
+    ${info}λ /pages/pokemon/[slug]      | 258 B   | ${greenLog("0 B")}
+    ${info}| ○ /pokemon/charizard       | 0 B     | ${greenLog("0 B")}
+    ${info}| ○ /pokemon/pikachu         | 0 B     | ${greenLog("0 B")}
+    ${info}
+    ${info}λ Server entry-points
+    ${info}○ Prerendered pages
+    ${info}Φ JS shared by all
+    ${info}
+  `);
+      expect(logOutput).toContain(expected);
+    });
   });
 });

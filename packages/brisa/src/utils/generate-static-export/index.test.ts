@@ -61,20 +61,23 @@ describe("utils", () => {
       it("should generate static export to 'out' folder without i18n and without trailingSlash", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
-            [formatPath("_404"), [formatPath("_404.html")]],
-            [formatPath("_500"), [formatPath("_500.html")]],
+            [formatPath("pages", "_404.tsx"), [formatPath("_404.html")]],
+            [formatPath("pages", "_500.tsx"), [formatPath("_500.html")]],
             [
-              formatPath("page-with-web-component"),
+              formatPath("pages", "page-with-web-component.tsx"),
               [formatPath("page-with-web-component.html")],
             ],
-            [formatPath("somepage"), [formatPath("somepage.html")]],
             [
-              formatPath("somepage-with-context"),
+              formatPath("pages", "somepage.tsx"),
+              [formatPath("somepage.html")],
+            ],
+            [
+              formatPath("pages", "somepage-with-context.tsx"),
               [formatPath("somepage-with-context.html")],
             ],
-            [formatPath(""), [formatPath("index.html")]],
+            [formatPath("pages", "index.tsx"), [formatPath("index.html")]],
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName.html")],
             ],
           ]),
@@ -118,49 +121,47 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("_404"),
+              formatPath("pages", "_404.tsx"),
               [formatPath("en", "_404.html"), formatPath("pt", "_404.html")],
             ],
             [
-              formatPath("_500"),
+              formatPath("pages", "_500.tsx"),
               [formatPath("en", "_500.html"), formatPath("pt", "_500.html")],
             ],
             [
-              formatPath("page-with-web-component"),
+              formatPath("pages", "page-with-web-component.tsx"),
               [
                 formatPath("en", "page-with-web-component.html"),
                 formatPath("pt", "pagina-com-web-component.html"),
               ],
             ],
             [
-              formatPath("somepage"),
+              formatPath("pages", "somepage.tsx"),
               [
                 formatPath("en", "somepage.html"),
                 formatPath("pt", "alguma-pagina.html"),
               ],
             ],
             [
-              formatPath("somepage-with-context"),
+              formatPath("pages", "somepage-with-context.tsx"),
               [
                 formatPath("en", "somepage-with-context.html"),
                 formatPath("pt", "alguma-pagina-com-contexto.html"),
               ],
             ],
             [
-              formatPath(""),
-              [
-                formatPath("en.html"),
-                formatPath("pt.html"),
-                formatPath("index.html"),
-              ],
+              formatPath("pages", "index.tsx"),
+              [formatPath("en.html"), formatPath("pt.html")],
             ],
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [
                 formatPath("en", "user", "testUserName.html"),
                 formatPath("pt", "usuario", "testUserName.html"),
               ],
             ],
+            // Soft redirect to the locale
+            [formatPath("/"), [formatPath("index.html")]],
           ]),
         );
 
@@ -206,20 +207,29 @@ describe("utils", () => {
 
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
-            [formatPath("_404"), [formatPath("_404", "index.html")]],
-            [formatPath("_500"), [formatPath("_500", "index.html")]],
             [
-              formatPath("page-with-web-component"),
+              formatPath("pages", "_404.tsx"),
+              [formatPath("_404", "index.html")],
+            ],
+            [
+              formatPath("pages", "_500.tsx"),
+              [formatPath("_500", "index.html")],
+            ],
+            [
+              formatPath("pages", "page-with-web-component.tsx"),
               [formatPath("page-with-web-component", "index.html")],
             ],
-            [formatPath("somepage"), [formatPath("somepage", "index.html")]],
             [
-              formatPath("somepage-with-context"),
+              formatPath("pages", "somepage.tsx"),
+              [formatPath("somepage", "index.html")],
+            ],
+            [
+              formatPath("pages", "somepage-with-context.tsx"),
               [formatPath("somepage-with-context", "index.html")],
             ],
-            [formatPath(""), [formatPath("index.html")]],
+            [formatPath("pages", "index.tsx"), [formatPath("index.html")]],
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName", "index.html")],
             ],
           ]),
@@ -436,7 +446,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("[slug]"),
+              formatPath("pages", "[slug].tsx"),
               [formatPath("user.html"), formatPath("user2.html")],
             ],
           ]),
@@ -460,7 +470,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("[foo]"),
+              formatPath("pages", "[foo]", "index.tsx"),
               [
                 formatPath("foo.html"),
                 formatPath("bar.html"),
@@ -468,7 +478,7 @@ describe("utils", () => {
               ],
             ],
             [
-              formatPath("[foo]", "[slug]"),
+              formatPath("pages", "[foo]", "[slug].tsx"),
               [
                 formatPath("foo", "user.html"),
                 formatPath("bar", "user.html"),
@@ -499,7 +509,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("[...rest]"),
+              formatPath("pages", "[...rest].tsx"),
               [
                 formatPath("foo", "bar", "baz.html"),
                 formatPath("foo", "bar", "baz", "qux.html"),
@@ -527,7 +537,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("[[...catchall]]"),
+              formatPath("pages", "[[...catchall]].tsx"),
               [
                 formatPath("a", "b", "c.html"),
                 formatPath("a", "b.html"),
@@ -554,9 +564,9 @@ describe("utils", () => {
 
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
-            [formatPath("a"), [formatPath("a.html")]],
-            [formatPath("b"), [formatPath("b.html")]],
-            [formatPath("c"), [formatPath("c.html")]],
+            [formatPath("pages", "a.tsx"), [formatPath("a.html")]],
+            [formatPath("pages", "b.tsx"), [formatPath("b.html")]],
+            [formatPath("pages", "c.tsx"), [formatPath("c.html")]],
           ]),
         );
       });
@@ -647,7 +657,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [
                 formatPath("en", "user", "testUserName.html"),
                 formatPath("pt", "usuario", "testUserName.html"),
@@ -670,7 +680,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName.html")],
             ],
           ]),
@@ -697,7 +707,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [
                 formatPath("en", "user", "testUserName.html"),
                 formatPath("pt", "user", "testUserName.html"),
@@ -738,7 +748,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName.html")],
             ],
           ]),
@@ -782,14 +792,14 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName.html")],
             ],
           ]),
         );
 
         expect(mockWrite.mock.calls[0][0]).toStartWith(
-          path.join(ROOT_DIR, "build", "prerendered-pages"),
+          path.join(ROOT_DIR, "prerendered-pages", "user", "testUserName.html"),
         );
       });
 
@@ -809,7 +819,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("user", "[username]"),
+              formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName", "index.html")],
             ],
           ]),
@@ -833,7 +843,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("[slug]"),
+              formatPath("pages", "[slug].tsx"),
               [formatPath("user.html"), formatPath("user2.html")],
             ],
           ]),
@@ -857,7 +867,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("[foo]"),
+              formatPath("pages", "[foo]", "index.tsx"),
               [
                 formatPath("foo.html"),
                 formatPath("bar.html"),
@@ -865,7 +875,7 @@ describe("utils", () => {
               ],
             ],
             [
-              formatPath("[foo]", "[slug]"),
+              formatPath("pages", "[foo]", "[slug].tsx"),
               [
                 formatPath("foo", "user.html"),
                 formatPath("bar", "user.html"),
@@ -896,7 +906,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("[...rest]"),
+              formatPath("pages", "[...rest].tsx"),
               [
                 formatPath("foo", "bar", "baz.html"),
                 formatPath("foo", "bar", "baz", "qux.html"),
@@ -924,7 +934,7 @@ describe("utils", () => {
         expect(generateStaticExport()).resolves.toEqual(
           new Map([
             [
-              formatPath("[[...catchall]]"),
+              formatPath("pages", "[[...catchall]].tsx"),
               [
                 formatPath("a", "b", "c.html"),
                 formatPath("a", "b.html"),
@@ -950,7 +960,7 @@ describe("utils", () => {
         };
 
         expect(generateStaticExport()).resolves.toEqual(
-          new Map([[formatPath("b"), [formatPath("/b.html")]]]),
+          new Map([[formatPath("pages", "b.tsx"), [formatPath("/b.html")]]]),
         );
       });
     });
