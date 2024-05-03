@@ -111,42 +111,65 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
   const locales = I18N_CONFIG?.locales?.length ? I18N_CONFIG.locales : [""];
   let newRoutes: [string, MatchedRoute | null][] = [];
 
+  const addPathname = (
+    pathname: string,
+    locale: string,
+    route: MatchedRoute | null,
+  ) => {
+    let newRoute = `${locale ? `/${locale}` : ""}${pathname}`;
+    let endsWithTrailingSlash = newRoute.endsWith("/");
+
+    // Add trailing slash
+    if (!endsWithTrailingSlash && trailingSlash) {
+      newRoute += "/";
+    }
+    // Remove trailing slash
+    else if (endsWithTrailingSlash && !trailingSlash && newRoute.length > 1) {
+      newRoute = newRoute.slice(0, -1);
+    }
+
+    newRoutes.push([newRoute, route]);
+  };
+
   for (const pageName of routes) {
     for (const locale of locales) {
       let route = router.match(pageName);
-
-      if (route && route.kind !== "exact") {
-        const module = await import(route.filePath);
-        const prerenderFn = typeof module.prerender !== "function";
-
-        // Warning on missing prerender function in dynamic routes
-        // during output=static
-        if (IS_STATIC_EXPORT && prerenderFn) {
-          logMissingPrerender(pageName);
-          continue;
-        }
-
-        // TODO: Implement prerender dynamic pages based on the
-        // params returned by prerennder function
-      }
-
       const pathname = locale
         ? I18N_CONFIG.pages?.[pageName]?.[locale] ?? pageName
         : pageName;
 
-      let newRoute = `${locale ? `/${locale}` : ""}${pathname}`;
-      let endsWithTrailingSlash = newRoute.endsWith("/");
+      if (route && route.kind !== "exact") {
+        const module = await import(route.filePath);
+        const prerenderFn = typeof module.prerender === "function";
 
-      // Add trailing slash
-      if (!endsWithTrailingSlash && trailingSlash) {
-        newRoute += "/";
-      }
-      // Remove trailing slash
-      else if (endsWithTrailingSlash && !trailingSlash && newRoute.length > 1) {
-        newRoute = newRoute.slice(0, -1);
+        // Warning on missing prerender function in dynamic routes
+        // during output=static
+        if (IS_STATIC_EXPORT && !prerenderFn) {
+          logMissingPrerender(pageName);
+          continue;
+        }
+        // Skip if there is no prerender function
+        if (!prerenderFn) continue;
+
+        // Prerender dynamic routes
+        const paramsOfAllStaticPages: { [key: string]: string }[] =
+          await module.prerender();
+
+        for (const params of paramsOfAllStaticPages) {
+          let correctPathname = pathname;
+
+          for (const [key, value] of Object.entries(params)) {
+            correctPathname = pathname
+              .replace(`[[...${key}]]`, value)
+              .replace(`[...${key}]`, value)
+              .replace(`[${key}]`, value);
+          }
+          addPathname(correctPathname, locale, route);
+        }
+        continue;
       }
 
-      newRoutes.push([newRoute, route]);
+      addPathname(pathname, locale, route);
     }
   }
 
