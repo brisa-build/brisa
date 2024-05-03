@@ -52,9 +52,9 @@ export default async function build() {
   if (IS_PRODUCTION && IS_STATIC_EXPORT && pagesSize) {
     console.log(LOG_PREFIX.INFO);
     console.log(LOG_PREFIX.WAIT, "📄 Generating static pages...");
-    const success = await generateStaticExport();
+    const generated = await generateStaticExport();
 
-    if (!success) return process.exit(1);
+    if (!generated) return process.exit(1);
 
     const logs = [];
 
