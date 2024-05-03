@@ -18,8 +18,9 @@ export default async function generateStaticExport() {
     SCRIPT_404,
     IS_PRODUCTION,
     IS_STATIC_EXPORT,
-    LOG_PREFIX
+    LOG_PREFIX,
   } = getConstants();
+  let fistLog = true;
   const serveOptions = await getServeOptions();
   const outDir = IS_STATIC_EXPORT
     ? path.join(ROOT_DIR, "out")
@@ -48,6 +49,16 @@ export default async function generateStaticExport() {
         if (!module.prerender) return;
       }
 
+      if (fistLog) {
+        if (IS_STATIC_EXPORT) {
+          console.log(LOG_PREFIX.INFO);
+        } else {
+          console.log(LOG_PREFIX.INFO);
+          console.log(LOG_PREFIX.WAIT, "📄 Prerendering pages...");
+          console.log(LOG_PREFIX.INFO);
+        }
+        fistLog = false;
+      }
 
       // Prerender all pages in case of output=static
       const start = Bun.nanoseconds();
@@ -75,7 +86,11 @@ export default async function generateStaticExport() {
 
       const timeMs = ((Bun.nanoseconds() - start) / 1e6).toFixed(2);
 
-      console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `${htmlPath} prerendered in ${timeMs}ms`);
+      console.log(
+        LOG_PREFIX.INFO,
+        LOG_PREFIX.TICK,
+        `${htmlPath} prerendered in ${timeMs}ms`,
+      );
       return Bun.write(path.join(outDir, htmlPath), html);
     }),
   );
