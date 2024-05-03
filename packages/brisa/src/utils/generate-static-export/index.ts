@@ -14,9 +14,9 @@ export default async function generateStaticExport() {
     ROOT_DIR,
     BUILD_DIR,
     I18N_CONFIG,
+    IS_PRODUCTION,
     CONFIG,
     SCRIPT_404,
-    IS_PRODUCTION,
     IS_STATIC_EXPORT,
     LOG_PREFIX,
   } = getConstants();
@@ -24,12 +24,14 @@ export default async function generateStaticExport() {
   const serveOptions = await getServeOptions();
   const outDir = IS_STATIC_EXPORT
     ? path.join(ROOT_DIR, "out")
-    : path.join(ROOT_DIR, "build", "prerendered-pages");
+    : path.join(BUILD_DIR, "prerendered-pages");
 
   if (!serveOptions) return null;
 
-  if (IS_PRODUCTION && !fs.existsSync(outDir)) fs.mkdirSync(outDir);
-  else if (IS_PRODUCTION) fs.rmSync(outDir, { recursive: true, force: true });
+  // Clean "out" folder if it exists
+  if (IS_PRODUCTION && IS_STATIC_EXPORT && fs.existsSync(outDir)) {
+    fs.rmSync(outDir, { recursive: true, force: true });
+  }
 
   const router = new Bun.FileSystemRouter({
     style: "nextjs",
@@ -70,7 +72,7 @@ export default async function generateStaticExport() {
       );
 
       const html = await response.text();
-      const routePathname = route?.pathname ?? "";
+      const relativePath = (route?.filePath ?? "").replace(BUILD_DIR, "");
       let htmlPath: string;
 
       if (CONFIG.trailingSlash) {
@@ -83,12 +85,12 @@ export default async function generateStaticExport() {
 
       if (html.includes(SCRIPT_404)) return;
 
-      if (!prerenderedRoutes.has(routePathname)) {
-        prerenderedRoutes.set(routePathname, []);
+      if (!prerenderedRoutes.has(relativePath)) {
+        prerenderedRoutes.set(relativePath, []);
       }
 
-      prerenderedRoutes.set(routePathname, [
-        ...prerenderedRoutes.get(routePathname)!,
+      prerenderedRoutes.set(relativePath, [
+        ...prerenderedRoutes.get(relativePath)!,
         htmlPath,
       ]);
 
@@ -99,6 +101,8 @@ export default async function generateStaticExport() {
         LOG_PREFIX.TICK,
         `${htmlPath} prerendered in ${timeMs}ms`,
       );
+
+      // Bun.write creates the folder if it doesn't exist
       return Bun.write(path.join(outDir, htmlPath), html);
     }),
   );
@@ -106,7 +110,8 @@ export default async function generateStaticExport() {
   if (
     IS_STATIC_EXPORT &&
     I18N_CONFIG?.locales?.length &&
-    I18N_CONFIG?.defaultLocale
+    I18N_CONFIG?.defaultLocale &&
+    prerenderedRoutes.size
   ) {
     if (!prerenderedRoutes.has(path.sep)) {
       prerenderedRoutes.set(path.sep, []);

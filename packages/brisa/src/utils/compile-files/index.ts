@@ -13,7 +13,7 @@ import serverComponentPlugin from "@/utils/server-component-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import getI18nClientMessages from "@/utils/get-i18n-client-messages";
 import compileActions from "@/utils/compile-actions";
-import { generateStaticExport } from "@/cli/build-utils";
+import generateStaticExport from "@/utils/generate-static-export";
 
 export default async function compileFiles() {
   const {
@@ -151,11 +151,12 @@ export default async function compileFiles() {
     return { success, logs, pagesSize };
   }
 
-  const generated = await generateStaticExport();
+  const generated = (await generateStaticExport()) ?? new Map();
 
   logTable(
-    outputs.map((output) => {
+    outputs.flatMap((output) => {
       const route = output.path.replace(BUILD_DIR, "");
+      const prerenderedRoutes = generated.get(route) ?? [];
       const isChunk = route.startsWith("/chunk-");
       const isPage = route.startsWith("/pages");
       let symbol = "λ";
@@ -174,13 +175,31 @@ export default async function compileFiles() {
         symbol = "Θ";
       }
 
-      return {
-        Route: `${symbol} ${route.replace(".js", "")}`,
-        "JS server": byteSizeToString(output.size, 0),
-        "JS client (gz)": isPage
-          ? byteSizeToString(pagesSize[route] ?? 0, 0, true)
-          : "",
-      };
+      const res = [
+        {
+          Route: `${
+            prerenderedRoutes.length === 1 ? "○" : symbol
+          } ${route.replace(".js", "")}`,
+          "JS server": byteSizeToString(output.size, 0),
+          "JS client (gz)": isPage
+            ? byteSizeToString(pagesSize[route] ?? 0, 0, true)
+            : "",
+        },
+      ];
+
+      if (prerenderedRoutes.length > 1) {
+        for (const prerenderRoute of prerenderedRoutes) {
+          res.push({
+            Route: `| ○ ${prerenderRoute.replace(".html", "")}`,
+            "JS server": byteSizeToString(0, 0),
+            "JS client (gz)": isPage
+              ? byteSizeToString(pagesSize[route] ?? 0, 0, true)
+              : "",
+          });
+        }
+      }
+
+      return res;
     }),
   );
 
@@ -189,6 +208,7 @@ export default async function compileFiles() {
   if (layoutPath) console.log(LOG_PREFIX.INFO, "Δ  Layout");
   if (middlewarePath) console.log(LOG_PREFIX.INFO, "ƒ  Middleware");
   if (i18nPath) console.log(LOG_PREFIX.INFO, "Ω  i18n");
+  if (generated.size) console.log(LOG_PREFIX.INFO, "○  Prerendered pages");
   if (websocketPath) console.log(LOG_PREFIX.INFO, "Ψ  Websocket");
   if (integrationsPath) {
     console.log(LOG_PREFIX.INFO, "Θ  Web components integrations");
