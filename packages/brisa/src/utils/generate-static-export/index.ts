@@ -15,13 +15,11 @@ export default async function generateStaticExport() {
     BUILD_DIR,
     I18N_CONFIG,
     CONFIG,
-    SRC_DIR,
     SCRIPT_404,
     IS_PRODUCTION,
     IS_STATIC_EXPORT,
   } = getConstants();
   const serveOptions = await getServeOptions();
-  const pathnameRoot = process.platform === "win32" ? "" : "/";
   const outDir = IS_STATIC_EXPORT
     ? path.join(ROOT_DIR, "out")
     : path.join(ROOT_DIR, "build", "prerendered-pages");
@@ -62,8 +60,8 @@ export default async function generateStaticExport() {
 
       if (CONFIG.trailingSlash) {
         htmlPath = path.join(routeName, "index.html");
-      } else if (routeName === pathnameRoot) {
-        htmlPath = path.join(pathnameRoot, "index.html");
+      } else if (routeName === path.sep) {
+        htmlPath = path.join(path.sep, "index.html");
       } else {
         htmlPath = path.join(routeName.replace(/\/$/, "") + ".html");
       }
@@ -81,7 +79,7 @@ export default async function generateStaticExport() {
     I18N_CONFIG?.locales?.length &&
     I18N_CONFIG?.defaultLocale
   ) {
-    prerenderedRoutes.push(path.join(pathnameRoot, "index.html"));
+    prerenderedRoutes.push(path.join(path.sep, "index.html"));
     await createSoftRedirectToLocale({
       locales: I18N_CONFIG.locales,
       defaultLocale: I18N_CONFIG.defaultLocale,
