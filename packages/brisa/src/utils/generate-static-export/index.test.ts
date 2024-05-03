@@ -320,6 +320,95 @@ describe("utils", () => {
           'The dynamic route "/[[...catchall]]" does not have a "prerender" function.',
         );
       });
+
+      it("should generate dynamic routes thanks to prerender function", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-route-prerender",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/user.html",
+          "/user2.html",
+        ]);
+      });
+
+      it("should generate nested dynamic routes thanks to prerender function", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "nested-dynamic-route-prerender",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/foo.html",
+          "/bar.html",
+          "/baz.html",
+          "/foo/user.html",
+          "/bar/user.html",
+          "/baz/user.html",
+          "/foo/user2.html",
+          "/bar/user2.html",
+          "/baz/user2.html",
+        ]);
+      });
+
+      it("should generate dynamic rest routes thanks to prerender function", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-rest-route-prerender",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/foo/bar/baz.html",
+          "/foo/bar/baz/qux.html",
+        ]);
+      });
+
+      it("should generate dynamic catchall routes thanks to prerender function an array of strings", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          // This route returns an array of strings
+          "dynamic-catchall-route-prerender",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/a/b/c.html",
+          "/a/b.html",
+          "/a.html",
+        ]);
+      });
     });
 
     describe("when IS_STATIC_EXPORT=false", () => {
@@ -450,7 +539,6 @@ describe("utils", () => {
       });
 
       it('should NOT warn about redirect when "i18n" neither when i18n is not defined', () => {
-        const mockLog = mock((...args: any[]) => null);
         globalThis.mockConstants = {
           ...getConstants(),
           ROOT_DIR,
@@ -467,7 +555,6 @@ describe("utils", () => {
       });
 
       it("should NOT generate a page that during the streaming returns the soft redirect to 404 (notFound method)", () => {
-        const mockLog = mock((...args: any[]) => null);
         globalThis.mockConstants = {
           ...getConstants(),
           ROOT_DIR,
@@ -512,6 +599,95 @@ describe("utils", () => {
 
         expect(generateStaticExport()).resolves.toEqual([
           getPathname("user", "testUserName", "index.html"),
+        ]);
+      });
+
+      it("should generate dynamic routes thanks to prerender function", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-route-prerender",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: false,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/user.html",
+          "/user2.html",
+        ]);
+      });
+
+      it("should generate nested dynamic routes thanks to prerender function", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "nested-dynamic-route-prerender",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: false,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/foo.html",
+          "/bar.html",
+          "/baz.html",
+          "/foo/user.html",
+          "/bar/user.html",
+          "/baz/user.html",
+          "/foo/user2.html",
+          "/bar/user2.html",
+          "/baz/user2.html",
+        ]);
+      });
+
+      it("should generate dynamic rest routes thanks to prerender function", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          "dynamic-rest-route-prerender",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: false,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/foo/bar/baz.html",
+          "/foo/bar/baz/qux.html",
+        ]);
+      });
+
+      it("should generate dynamic catchall routes thanks to prerender function an array of strings", () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          "__fixtures__",
+          // This route returns an array of strings
+          "dynamic-catchall-route-prerender",
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: false,
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          "/a/b/c.html",
+          "/a/b.html",
+          "/a.html",
         ]);
       });
     });
