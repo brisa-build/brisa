@@ -18,6 +18,7 @@ export default async function generateStaticExport() {
     SCRIPT_404,
     IS_PRODUCTION,
     IS_STATIC_EXPORT,
+    LOG_PREFIX
   } = getConstants();
   const serveOptions = await getServeOptions();
   const outDir = IS_STATIC_EXPORT
@@ -47,7 +48,9 @@ export default async function generateStaticExport() {
         if (!module.prerender) return;
       }
 
+
       // Prerender all pages in case of output=static
+      const start = Bun.nanoseconds();
       const request = new Request(new URL(routeName, fakeOrigin));
       const response = await serveOptions.fetch.call(
         fakeServer,
@@ -70,6 +73,9 @@ export default async function generateStaticExport() {
 
       prerenderedRoutes.push(htmlPath);
 
+      const timeMs = ((Bun.nanoseconds() - start) / 1e6).toFixed(2);
+
+      console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `${htmlPath} prerendered in ${timeMs}ms`);
       return Bun.write(path.join(outDir, htmlPath), html);
     }),
   );
