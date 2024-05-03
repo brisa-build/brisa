@@ -37,7 +37,7 @@ export default async function generateStaticExport() {
   });
 
   const routes = await formatRoutes(Object.keys(router.routes), router);
-  const prerenderedRoutes: string[] = [];
+  const prerenderedRoutes = new Map<string, string[]>();
 
   await Promise.all(
     routes.map(async ([routeName, route]) => {
@@ -70,6 +70,7 @@ export default async function generateStaticExport() {
       );
 
       const html = await response.text();
+      const routePathname = route?.pathname ?? "";
       let htmlPath: string;
 
       if (CONFIG.trailingSlash) {
@@ -82,7 +83,14 @@ export default async function generateStaticExport() {
 
       if (html.includes(SCRIPT_404)) return;
 
-      prerenderedRoutes.push(htmlPath);
+      if (!prerenderedRoutes.has(routePathname)) {
+        prerenderedRoutes.set(routePathname, []);
+      }
+
+      prerenderedRoutes.set(routePathname, [
+        ...prerenderedRoutes.get(routePathname)!,
+        htmlPath,
+      ]);
 
       const timeMs = ((Bun.nanoseconds() - start) / 1e6).toFixed(2);
 
@@ -100,7 +108,15 @@ export default async function generateStaticExport() {
     I18N_CONFIG?.locales?.length &&
     I18N_CONFIG?.defaultLocale
   ) {
-    prerenderedRoutes.push(path.join(path.sep, "index.html"));
+    if (!prerenderedRoutes.has(path.sep)) {
+      prerenderedRoutes.set(path.sep, []);
+    }
+
+    prerenderedRoutes.set(path.sep, [
+      ...prerenderedRoutes.get(path.sep)!,
+      path.join(path.sep, "index.html"),
+    ]);
+
     await createSoftRedirectToLocale({
       locales: I18N_CONFIG.locales,
       defaultLocale: I18N_CONFIG.defaultLocale,
