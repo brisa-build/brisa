@@ -151,7 +151,7 @@ export default async function compileFiles() {
     return { success, logs, pagesSize };
   }
 
-  const generated = (await generateStaticExport()) ?? new Map();
+  const [generated] = (await generateStaticExport()) ?? [new Map()];
 
   logTable(
     outputs.flatMap((output) => {

@@ -33,10 +33,10 @@ In the case of a page that is `[dynamic]`, `[[...catchAll]]`, or `[...rest]`, we
 Example of `/pokemons/[slug].tsx`:
 
 ```tsx
-import type { RequestContext } from 'brisa';
+import type { RequestContext } from "brisa";
 import { pokemons } from "@/data";
 
-// To prerender all pokemons, it is necessary to provide the 
+// To prerender all pokemons, it is necessary to provide the
 // slug of "/pokemons/[slug].tsx"
 export function prerender() {
   return pokemons.map((pokemon) => ({
@@ -51,6 +51,7 @@ export default function PokemonPage({}, { route }: RequestContext) {
   return <h1>{pokemon.name}</h1>;
 }
 ```
+
 In this case, to prerender all pokemons, it is necessary that the prerender function returns an array with the slug of `/pokemons/[slug].tsx`.
 
 The `prerender` function can be synchronous or asynchronous, if you need to do `fetch` or any async operation you can do it without problems.

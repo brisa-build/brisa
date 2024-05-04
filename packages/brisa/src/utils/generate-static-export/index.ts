@@ -9,7 +9,9 @@ import type { FileSystemRouter, MatchedRoute } from "bun";
 const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = "http://localhost";
 
-export default async function generateStaticExport() {
+export default async function generateStaticExport(): Promise<
+  [Map<string, string[]>, string] | null
+> {
   const {
     ROOT_DIR,
     BUILD_DIR,
@@ -22,7 +24,8 @@ export default async function generateStaticExport() {
   } = getConstants();
   let fistLog = true;
   const serveOptions = await getServeOptions();
-  const outDir = IS_STATIC_EXPORT
+  const basePath = CONFIG.basePath ?? "";
+  let outDir = IS_STATIC_EXPORT
     ? path.join(ROOT_DIR, "out")
     : path.join(BUILD_DIR, "prerendered-pages");
 
@@ -31,6 +34,11 @@ export default async function generateStaticExport() {
   // Clean "out" folder if it exists
   if (IS_PRODUCTION && IS_STATIC_EXPORT && fs.existsSync(outDir)) {
     fs.rmSync(outDir, { recursive: true, force: true });
+  }
+
+  // It's important after cleaning the "out" folder
+  if (basePath && IS_STATIC_EXPORT) {
+    outDir = path.join(outDir, basePath);
   }
 
   const router = new Bun.FileSystemRouter({
@@ -64,7 +72,7 @@ export default async function generateStaticExport() {
 
       // Prerender all pages in case of output=static
       const start = Bun.nanoseconds();
-      const request = new Request(new URL(routeName, fakeOrigin));
+      const request = new Request(new URL(basePath + routeName, fakeOrigin));
       const response = await serveOptions.fetch.call(
         fakeServer,
         request,
@@ -113,6 +121,8 @@ export default async function generateStaticExport() {
     I18N_CONFIG?.defaultLocale &&
     prerenderedRoutes.size
   ) {
+    let homePath = path.join(outDir, "index.html");
+
     if (!prerenderedRoutes.has(path.sep)) {
       prerenderedRoutes.set(path.sep, []);
     }
@@ -125,14 +135,14 @@ export default async function generateStaticExport() {
     await createSoftRedirectToLocale({
       locales: I18N_CONFIG.locales,
       defaultLocale: I18N_CONFIG.defaultLocale,
-      outDir,
+      homePath,
     });
   }
 
   const publicPath = path.join(BUILD_DIR, "public");
   const clientPagesPath = path.join(BUILD_DIR, "pages-client");
 
-  if (!IS_STATIC_EXPORT) return prerenderedRoutes;
+  if (!IS_STATIC_EXPORT) return [prerenderedRoutes, outDir];
 
   if (fs.existsSync(publicPath)) {
     fs.cpSync(publicPath, outDir, { recursive: true });
@@ -144,7 +154,7 @@ export default async function generateStaticExport() {
     });
   }
 
-  return prerenderedRoutes;
+  return [prerenderedRoutes, outDir];
 }
 
 async function formatRoutes(routes: string[], router: FileSystemRouter) {
@@ -225,13 +235,14 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
 async function createSoftRedirectToLocale({
   locales,
   defaultLocale,
-  outDir,
+  homePath,
 }: {
   locales: string[];
   defaultLocale: string;
-  outDir: string;
+  homePath: string;
 }) {
-  const htmlPath = path.join(outDir, "index.html");
+  const { CONFIG } = getConstants();
+  const basePath = CONFIG.basePath ?? "";
   const html = toInline(`
     <!DOCTYPE html>
     <html lang="${defaultLocale}">
@@ -246,11 +257,11 @@ async function createSoftRedirectToLocale({
           )};
 
           if (supportedLocales.includes(shortBrowserLanguage)) {
-            window.location.href = "/" + shortBrowserLanguage;
+            window.location.href = "/" + "${basePath}" + shortBrowserLanguage;
           } else if (supportedLocales.includes(browserLanguage)) {
-            window.location.href = "/" + browserLanguage;
+            window.location.href = "/" + "${basePath}" + browserLanguage;
           } else {
-            window.location.href = "/${defaultLocale}";
+            window.location.href = "/" + "${basePath}" + "${defaultLocale}";
           }
         </script>
       </head>
@@ -274,7 +285,7 @@ async function createSoftRedirectToLocale({
     "https://brisa.build/building-your-application/deploying/static-exports#hard-redirects",
   ]);
 
-  await Bun.write(htmlPath, html);
+  await Bun.write(homePath, html);
 }
 
 function logMissingPrerender(routeName: string) {
