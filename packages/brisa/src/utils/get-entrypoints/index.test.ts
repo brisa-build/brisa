@@ -17,6 +17,7 @@ describe("utils", () => {
       const expected = [
         "_404.tsx",
         "_500.tsx",
+        "foo.tsx",
         "page-with-web-component.tsx",
         "somepage.tsx",
         "somepage-with-context.tsx",

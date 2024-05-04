@@ -17,7 +17,7 @@ export default async function processPageRoute(
   const layoutModule = layoutPath ? await import(layoutPath) : undefined;
   const PageComponent = module.default;
 
-  const pageElement = (
+  const Page = () => (
     <>
       {dangerHTML("<!DOCTYPE html>")}
       <PageLayout layoutModule={layoutModule}>
@@ -26,7 +26,7 @@ export default async function processPageRoute(
     </>
   );
 
-  return { pageElement, module, layoutModule } as const;
+  return { Page, module, layoutModule } as const;
 }
 
 function PageLayout({
