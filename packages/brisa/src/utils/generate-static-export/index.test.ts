@@ -15,20 +15,21 @@ import { toInline } from "@/helpers";
 
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const mockFetch = mock((request: Request) => new Response(""));
+const BASE_PATHS = ["", "some-dir", "/some-dir", "/es", "/some/dir"];
 const mockWrite = mock(async (...args: any[]) => 0);
 let spyWrite;
-
-function formatPath(...args: string[]) {
-  const pathname = args.join(path.sep);
-  const prefix = pathname[0] === path.sep ? "" : path.sep;
-  return prefix + pathname;
-}
 
 const testGeneratedContentByIndex = (index: number, content: string) => {
   expect(mockWrite.mock.calls[index][1]).toBe(content);
 };
 
-describe("utils", () => {
+describe.each(BASE_PATHS)("utils", (basePath) => {
+  function formatPath(...args: string[]) {
+    const pathname = args.join(path.sep);
+    let prefix = pathname[0] === path.sep ? "" : path.sep;
+    return prefix + pathname;
+  }
+
   describe("generate-static-export", () => {
     beforeEach(() => {
       spyWrite = spyOn(Bun, "write").mockImplementation((...args) =>
@@ -45,6 +46,9 @@ describe("utils", () => {
         ...getConstants(),
         ROOT_DIR,
         BUILD_DIR: ROOT_DIR,
+        CONFIG: {
+          basePath,
+        },
         IS_STATIC_EXPORT: true,
       };
     });
@@ -64,6 +68,9 @@ describe("utils", () => {
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
           IS_PRODUCTION: true,
+          CONFIG: {
+            basePath,
+          },
           IS_STATIC_EXPORT: true,
         };
         spyOn(fs, "existsSync").mockImplementationOnce(() => true);
@@ -71,12 +78,11 @@ describe("utils", () => {
 
         await generateStaticExport();
 
-        expect(fs.existsSync).toHaveBeenCalled();
         expect(fs.rmSync).toHaveBeenCalled();
       });
 
       it("should generate static export to 'out' folder without i18n and without trailingSlash", () => {
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [formatPath("pages", "_404.tsx"), [formatPath("_404.html")]],
             [formatPath("pages", "_500.tsx"), [formatPath("_500.html")]],
@@ -99,7 +105,8 @@ describe("utils", () => {
               [formatPath("user", "testUserName.html")],
             ],
           ]),
-        );
+          path.join(ROOT_DIR, "out", basePath),
+        ]);
 
         expect(mockWrite.mock.calls[0][0]).toStartWith(
           path.join(ROOT_DIR, "out"),
@@ -110,6 +117,9 @@ describe("utils", () => {
         globalThis.mockConstants = {
           ...getConstants(),
           ROOT_DIR,
+          CONFIG: {
+            basePath,
+          },
           IS_STATIC_EXPORT: true,
           BUILD_DIR: ROOT_DIR,
           I18N_CONFIG: {
@@ -136,7 +146,7 @@ describe("utils", () => {
           },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "_404.tsx"),
@@ -185,7 +195,8 @@ describe("utils", () => {
             // Soft redirect to the locale
             [formatPath("/"), [formatPath("index.html")]],
           ]),
-        );
+          path.join(ROOT_DIR, "out", basePath),
+        ]);
 
         const expectedSoftRedirectCode = toInline(`
         <!DOCTYPE html>
@@ -199,11 +210,11 @@ describe("utils", () => {
               const supportedLocales = ["en","pt"];
 
               if (supportedLocales.includes(shortBrowserLanguage)) {
-                window.location.href = "/" + shortBrowserLanguage;
+                window.location.href = "/" + "${basePath}" + shortBrowserLanguage;
               } else if (supportedLocales.includes(browserLanguage)) {
-                window.location.href = "/" + browserLanguage;
+                window.location.href = "/" + "${basePath}" + browserLanguage;
               } else {
-                window.location.href = "/en";
+                window.location.href = "/" + "${basePath}" + "en";
               }
             </script>
           </head>
@@ -223,11 +234,12 @@ describe("utils", () => {
           CONFIG: {
             ...constants.CONFIG,
             trailingSlash: true,
+            basePath,
           },
           IS_STATIC_EXPORT: true,
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "_404.tsx"),
@@ -256,7 +268,8 @@ describe("utils", () => {
               [formatPath("user", "testUserName", "index.html")],
             ],
           ]),
-        );
+          path.join(ROOT_DIR, "out", basePath),
+        ]);
       });
 
       it('should move all the assets inside the "out" folder', async () => {
@@ -267,7 +280,7 @@ describe("utils", () => {
         expect(fs.cpSync).toHaveBeenCalledTimes(2);
         expect(fs.cpSync).toHaveBeenCalledWith(
           path.join(ROOT_DIR, "public"),
-          path.join(ROOT_DIR, "out"),
+          path.join(ROOT_DIR, "out", basePath),
           { recursive: true },
         );
       });
@@ -280,7 +293,7 @@ describe("utils", () => {
         expect(fs.cpSync).toHaveBeenCalledTimes(2);
         expect(fs.cpSync).toHaveBeenCalledWith(
           path.join(ROOT_DIR, "pages-client"),
-          path.join(ROOT_DIR, "out", "_brisa", "pages"),
+          path.join(ROOT_DIR, "out", basePath, "_brisa", "pages"),
           { recursive: true },
         );
       });
@@ -296,6 +309,9 @@ describe("utils", () => {
             defaultLocale: "en",
           },
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
         spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
 
@@ -371,8 +387,10 @@ describe("utils", () => {
         const constants = getConstants();
         mockFetch.mockImplementation(() => new Response(constants.SCRIPT_404));
 
-        expect(generateStaticExport()).resolves.toBeEmpty();
-
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map(),
+          path.join(ROOT_DIR, "out", basePath),
+        ]);
         expect(mockWrite).not.toHaveBeenCalled();
       });
 
@@ -391,9 +409,15 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toBeEmpty();
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map(),
+          path.join(dynamicPath, "out", basePath),
+        ]);
 
         const logs = mockLog.mock.calls.flat().toString();
 
@@ -418,9 +442,15 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toBeEmpty();
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map(),
+          path.join(dynamicPath, "out", basePath),
+        ]);
 
         const logs = mockLog.mock.calls.flat().toString();
 
@@ -445,9 +475,15 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toBeEmpty();
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map(),
+          path.join(dynamicPath, "out", basePath),
+        ]);
 
         const logs = mockLog.mock.calls.flat().toString();
 
@@ -469,16 +505,20 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "[slug].tsx"),
               [formatPath("user.html"), formatPath("user2.html")],
             ],
           ]),
-        );
+          path.join(dynamicPath, "out", basePath),
+        ]);
       });
 
       it("should generate nested dynamic routes thanks to prerender function", () => {
@@ -493,9 +533,12 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "[foo]", "index.tsx"),
@@ -517,7 +560,8 @@ describe("utils", () => {
               ],
             ],
           ]),
-        );
+          path.join(dynamicPath, "out", basePath),
+        ]);
       });
 
       it("should generate dynamic rest routes thanks to prerender function", () => {
@@ -532,9 +576,12 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "[...rest].tsx"),
@@ -544,7 +591,8 @@ describe("utils", () => {
               ],
             ],
           ]),
-        );
+          path.join(dynamicPath, "out", basePath),
+        ]);
       });
 
       it("should generate dynamic catchall routes thanks to prerender function an array of strings", () => {
@@ -560,9 +608,12 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "[[...catchall]].tsx"),
@@ -573,7 +624,8 @@ describe("utils", () => {
               ],
             ],
           ]),
-        );
+          path.join(dynamicPath, "out", basePath),
+        ]);
       });
 
       it("should prerender all routes althought only one has prerender=true (IS_STATIC_EXPORT=true do all)", () => {
@@ -588,15 +640,19 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [formatPath("pages", "a.tsx"), [formatPath("a.html")]],
             [formatPath("pages", "b.tsx"), [formatPath("b.html")]],
             [formatPath("pages", "c.tsx"), [formatPath("c.html")]],
           ]),
-        );
+          path.join(dynamicPath, "out", basePath),
+        ]);
       });
     });
 
@@ -608,6 +664,9 @@ describe("utils", () => {
           BUILD_DIR: ROOT_DIR,
           IS_PRODUCTION: true,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
         spyOn(fs, "existsSync").mockImplementationOnce(() => true);
         spyOn(fs, "rmSync").mockImplementationOnce(() => null);
@@ -632,9 +691,15 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toBeEmpty();
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map(),
+          path.join(dynamicPath, "prerendered-pages"),
+        ]);
         expect(mockLog).not.toHaveBeenCalled();
       });
 
@@ -653,9 +718,15 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toBeEmpty();
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map(),
+          path.join(dynamicPath, "prerendered-pages"),
+        ]);
         expect(mockLog).not.toHaveBeenCalled();
       });
 
@@ -674,9 +745,15 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toBeEmpty();
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map(),
+          path.join(dynamicPath, "prerendered-pages"),
+        ]);
         expect(mockLog).not.toHaveBeenCalled();
       });
 
@@ -686,6 +763,9 @@ describe("utils", () => {
           ROOT_DIR,
           IS_STATIC_EXPORT: false,
           BUILD_DIR: ROOT_DIR,
+          CONFIG: {
+            basePath,
+          },
           I18N_CONFIG: {
             locales: ["en", "pt"],
             defaultLocale: "en",
@@ -698,7 +778,7 @@ describe("utils", () => {
           },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "user", "[username].tsx"),
@@ -708,7 +788,8 @@ describe("utils", () => {
               ],
             ],
           ]),
-        );
+          path.join(ROOT_DIR, "prerendered-pages"),
+        ]);
       });
 
       it('should NOT move assets neither client code inside the "out" folder', () => {
@@ -718,17 +799,21 @@ describe("utils", () => {
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
         spyOn(fs, "cpSync").mockImplementationOnce(() => null);
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName.html")],
             ],
           ]),
-        );
+          path.join(ROOT_DIR, "prerendered-pages"),
+        ]);
 
         expect(fs.cpSync).toHaveBeenCalledTimes(0);
       });
@@ -745,10 +830,13 @@ describe("utils", () => {
             defaultLocale: "en",
           },
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
         spyOn(console, "log").mockImplementation((...args) => mockLog(...args));
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "user", "[username].tsx"),
@@ -758,7 +846,8 @@ describe("utils", () => {
               ],
             ],
           ]),
-        );
+          path.join(ROOT_DIR, "prerendered-pages"),
+        ]);
 
         expect(mockLog).toHaveBeenCalledTimes(5);
         expect(mockLog.mock.calls[0]).toEqual([constants.LOG_PREFIX.INFO]);
@@ -786,17 +875,21 @@ describe("utils", () => {
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
         const mockLog = spyOn(console, "log").mockImplementation(() => null);
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName.html")],
             ],
           ]),
-        );
+          path.join(ROOT_DIR, "prerendered-pages"),
+        ]);
 
         expect(mockLog).toHaveBeenCalledTimes(4);
         expect(mockLog.mock.calls[0]).toEqual([constants.LOG_PREFIX.INFO]);
@@ -818,11 +911,17 @@ describe("utils", () => {
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
         const constants = getConstants();
         mockFetch.mockImplementation(() => new Response(constants.SCRIPT_404));
 
-        expect(generateStaticExport()).resolves.toBeEmpty();
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map(),
+          path.join(ROOT_DIR, "prerendered-pages"),
+        ]);
       });
 
       it("should prerender dynamic routes without i18n and without trailingSlash", () => {
@@ -831,16 +930,20 @@ describe("utils", () => {
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName.html")],
             ],
           ]),
-        );
+          path.join(ROOT_DIR, "prerendered-pages"),
+        ]);
 
         expect(mockWrite.mock.calls[0][0]).toStartWith(
           path.join(ROOT_DIR, "prerendered-pages", "user", "testUserName.html"),
@@ -856,18 +959,20 @@ describe("utils", () => {
           CONFIG: {
             ...constants.CONFIG,
             trailingSlash: true,
+            basePath,
           },
           IS_STATIC_EXPORT: false,
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "user", "[username].tsx"),
               [formatPath("user", "testUserName", "index.html")],
             ],
           ]),
-        );
+          path.join(ROOT_DIR, "prerendered-pages"),
+        ]);
       });
 
       it("should generate dynamic routes thanks to prerender function", () => {
@@ -882,16 +987,20 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "[slug].tsx"),
               [formatPath("user.html"), formatPath("user2.html")],
             ],
           ]),
-        );
+          path.join(dynamicPath, "prerendered-pages"),
+        ]);
       });
 
       it("should generate nested dynamic routes thanks to prerender function", () => {
@@ -906,9 +1015,12 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "[foo]", "index.tsx"),
@@ -930,7 +1042,8 @@ describe("utils", () => {
               ],
             ],
           ]),
-        );
+          path.join(dynamicPath, "prerendered-pages"),
+        ]);
       });
 
       it("should generate dynamic rest routes thanks to prerender function", () => {
@@ -945,9 +1058,12 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "[...rest].tsx"),
@@ -957,7 +1073,8 @@ describe("utils", () => {
               ],
             ],
           ]),
-        );
+          path.join(dynamicPath, "prerendered-pages"),
+        ]);
       });
 
       it("should generate dynamic catchall routes thanks to prerender function an array of strings", () => {
@@ -973,9 +1090,12 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [
               formatPath("pages", "[[...catchall]].tsx"),
@@ -986,7 +1106,8 @@ describe("utils", () => {
               ],
             ],
           ]),
-        );
+          path.join(dynamicPath, "prerendered-pages"),
+        ]);
       });
 
       it("should prerender only the route with prerender=true", () => {
@@ -1001,11 +1122,15 @@ describe("utils", () => {
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
           IS_STATIC_EXPORT: false,
+          CONFIG: {
+            basePath,
+          },
         };
 
-        expect(generateStaticExport()).resolves.toEqual(
+        expect(generateStaticExport()).resolves.toEqual([
           new Map([[formatPath("pages", "b.tsx"), [formatPath("/b.html")]]]),
-        );
+          path.join(dynamicPath, "prerendered-pages"),
+        ]);
       });
     });
   });
