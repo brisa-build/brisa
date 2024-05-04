@@ -63,6 +63,119 @@ describe("utils", () => {
       expect(html).toContain("<web-component></web-component>");
     });
 
+    it("should return 200 page with client page code from prerendered page", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/foo"),
+      });
+      const response = await responseRenderedPage({
+        req,
+        route: {
+          filePath: path.join(PAGES_DIR, "foo.tsx"),
+          pathname: "/foo",
+        } as MatchedRoute,
+        headers: {
+          "X-Mode": "reactivity",
+        },
+      });
+      const html = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get("X-Mode")).toBe("reactivity");
+      expect(html).toContain("<h1>Prerendered page</h1>");
+    });
+
+    it("should return 200 page with client page code from prerendered page with trailingSlash", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        CONFIG: {
+          trailingSlash: true,
+        },
+      };
+
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/foo/"),
+      });
+      const response = await responseRenderedPage({
+        req,
+        route: {
+          filePath: path.join(PAGES_DIR, "foo.tsx"),
+          pathname: "/foo/",
+        } as MatchedRoute,
+        headers: {
+          "X-Mode": "reactivity",
+        },
+      });
+      const html = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get("X-Mode")).toBe("reactivity");
+      expect(html).toContain("<h1>Prerendered page with trailing slash</h1>");
+    });
+
+    it("should return 200 page with client page code from prerendered page with i18n", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/es/foo"),
+        i18n: {
+          locale: "es",
+          defaultLocale: "es",
+          locales: ["es", "en"],
+          pages: {},
+          t: ((key: string) => key) as Translate,
+          overrideMessages: () => {},
+        },
+      });
+      const response = await responseRenderedPage({
+        req,
+        route: {
+          filePath: path.join(PAGES_DIR, "foo.tsx"),
+          pathname: "/foo",
+        } as MatchedRoute,
+        headers: {
+          "X-Mode": "reactivity",
+        },
+      });
+      const html = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get("X-Mode")).toBe("reactivity");
+      expect(html).toContain("<h1>Prerendered page</h1>");
+    });
+
+    it("should return 200 page with client page code from prerendered page with i18n and trailingSlash", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        CONFIG: {
+          trailingSlash: true,
+        },
+      };
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost:1234/es/foo/"),
+        i18n: {
+          locale: "es",
+          defaultLocale: "es",
+          locales: ["es", "en"],
+          pages: {},
+          t: ((key: string) => key) as Translate,
+          overrideMessages: () => {},
+        },
+      });
+      const response = await responseRenderedPage({
+        req,
+        route: {
+          filePath: path.join(PAGES_DIR, "foo.tsx"),
+          pathname: "/foo/",
+        } as MatchedRoute,
+        headers: {
+          "X-Mode": "reactivity",
+        },
+      });
+      const html = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get("X-Mode")).toBe("reactivity");
+      expect(html).toContain("<h1>Prerendered page with trailing slash</h1>");
+    });
+
     it("should return a page with layout and i18n", async () => {
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost:1234/es/somepage"),

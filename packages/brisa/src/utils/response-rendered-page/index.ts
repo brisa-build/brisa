@@ -1,5 +1,7 @@
 import type { RequestContext } from "@/types";
 import type { MatchedRoute } from "bun";
+import path from "node:path";
+import fs from "node:fs";
 import processPageRoute from "@/utils/process-page-route";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
 import { getConstants } from "@/constants";
@@ -23,10 +25,7 @@ export default async function responseRenderedPage({
     transferStoreService(req);
   const { HEADERS, BUILD_DIR } = getConstants();
   const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
-  const { pageElement, module, layoutModule } = await processPageRoute(
-    route,
-    error,
-  );
+  const { Page, module, layoutModule } = await processPageRoute(route, error);
 
   // Avoid to transfer again if comes from a rerender from an action
   if (req.method !== "POST") {
@@ -41,10 +40,14 @@ export default async function responseRenderedPage({
 
   const pageResponseHeaders =
     (await module.responseHeaders?.(req, status)) ?? {};
-  const htmlStream = renderToReadableStream(pageElement, {
-    request: req,
-    head: module.Head,
-  });
+
+  const fileStream = getPrerenderedPage(route);
+  const htmlStream =
+    fileStream ??
+    renderToReadableStream(Page(), {
+      request: req,
+      head: module.Head,
+    });
 
   const responseOptions = {
     headers: {
@@ -65,4 +68,16 @@ export default async function responseRenderedPage({
   transferServerStoreToClient(res);
 
   return res;
+}
+
+function getPrerenderedPage(route: MatchedRoute) {
+  const { BUILD_DIR, CONFIG } = getConstants();
+  const { pathname } = new URL(route.pathname, "http://localhost");
+  const filePath = path.join(
+    BUILD_DIR,
+    "prerendered-pages",
+    CONFIG.trailingSlash ? `${pathname}/index.html` : `${pathname}.html`,
+  );
+
+  return fs.existsSync(filePath) ? Bun.file(filePath).stream() : null;
 }
