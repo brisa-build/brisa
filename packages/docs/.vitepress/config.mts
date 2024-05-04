@@ -203,6 +203,10 @@ export default defineConfig({
                 link: "/building-your-application/configuring/output",
               },
               {
+                text: "Static pages",
+                link: "/building-your-application/configuring/static-pages",
+              },
+              {
                 text: "Content Security Policy",
                 link: "/building-your-application/configuring/content-security-policy",
               },
