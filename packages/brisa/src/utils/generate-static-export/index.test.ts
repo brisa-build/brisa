@@ -80,6 +80,7 @@ describe("utils", () => {
           new Map([
             [formatPath("pages", "_404.tsx"), [formatPath("_404.html")]],
             [formatPath("pages", "_500.tsx"), [formatPath("_500.html")]],
+            [formatPath("pages", "foo.tsx"), [formatPath("foo.html")]],
             [
               formatPath("pages", "page-with-web-component.tsx"),
               [formatPath("page-with-web-component.html")],
@@ -146,6 +147,10 @@ describe("utils", () => {
               [formatPath("en", "_500.html"), formatPath("pt", "_500.html")],
             ],
             [
+              formatPath("pages", "foo.tsx"),
+              [formatPath("en", "foo.html"), formatPath("pt", "foo.html")],
+            ],
+            [
               formatPath("pages", "page-with-web-component.tsx"),
               [
                 formatPath("en", "page-with-web-component.html"),
@@ -206,7 +211,7 @@ describe("utils", () => {
         </html>
       `);
 
-        testGeneratedContentByIndex(14, expectedSoftRedirectCode);
+        testGeneratedContentByIndex(16, expectedSoftRedirectCode);
       });
 
       it("should generate static export with trailingSlash", () => {
@@ -232,6 +237,7 @@ describe("utils", () => {
               formatPath("pages", "_500.tsx"),
               [formatPath("_500", "index.html")],
             ],
+            [formatPath("pages", "foo.tsx"), [formatPath("foo", "index.html")]],
             [
               formatPath("pages", "page-with-web-component.tsx"),
               [formatPath("page-with-web-component", "index.html")],
@@ -313,7 +319,7 @@ describe("utils", () => {
         await generateStaticExport();
 
         // All are correct logs withouth the warning
-        expect(mockLog).toHaveBeenCalledTimes(8);
+        expect(mockLog).toHaveBeenCalledTimes(9);
         expect(mockLog.mock.calls[0]).toEqual([constants.LOG_PREFIX.INFO]);
         expect(mockLog.mock.calls[1]).toEqual([
           constants.LOG_PREFIX.INFO,
@@ -328,28 +334,33 @@ describe("utils", () => {
         expect(mockLog.mock.calls[3]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
-          expect.stringContaining(
-            "/page-with-web-component.html prerendered in ",
-          ),
+          expect.stringContaining("/foo.html prerendered in "),
         ]);
         expect(mockLog.mock.calls[4]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
-          expect.stringContaining("/somepage.html prerendered in "),
+          expect.stringContaining(
+            "/page-with-web-component.html prerendered in ",
+          ),
         ]);
         expect(mockLog.mock.calls[5]).toEqual([
+          constants.LOG_PREFIX.INFO,
+          constants.LOG_PREFIX.TICK,
+          expect.stringContaining("/somepage.html prerendered in "),
+        ]);
+        expect(mockLog.mock.calls[6]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
           expect.stringContaining(
             "/somepage-with-context.html prerendered in ",
           ),
         ]);
-        expect(mockLog.mock.calls[6]).toEqual([
+        expect(mockLog.mock.calls[7]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
           expect.stringContaining("/index.html prerendered in "),
         ]);
-        expect(mockLog.mock.calls[7]).toEqual([
+        expect(mockLog.mock.calls[8]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
           expect.stringContaining("/user/testUserName.html prerendered in "),

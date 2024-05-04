@@ -49,10 +49,10 @@ describe("utils", () => {
         IS_DEVELOPMENT: false,
       };
 
-      const { pageElement } = await processPageRoute(routeHomepage);
+      const { Page } = await processPageRoute(routeHomepage);
 
       // Rendered html
-      const stream = renderToReadableStream(pageElement, testOptions);
+      const stream = renderToReadableStream(Page(), testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
@@ -75,8 +75,8 @@ describe("utils", () => {
     });
 
     it("should return the page with hotreload connection in development", async () => {
-      const { pageElement } = await processPageRoute(routeHomepage);
-      const stream = renderToReadableStream(pageElement, testOptions);
+      const { Page } = await processPageRoute(routeHomepage);
+      const stream = renderToReadableStream(Page(), testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toContain(
