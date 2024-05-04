@@ -42,6 +42,10 @@ if (I18N_CONFIG?.pages) {
   );
 }
 
+if (CONFIG?.basePath && !CONFIG.basePath.startsWith(path.sep)) {
+  CONFIG.basePath = path.sep + CONFIG.basePath;
+}
+
 const defaultConfig = {
   trailingSlash: false,
   assetPrefix: "",
