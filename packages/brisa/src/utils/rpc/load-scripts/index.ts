@@ -1,5 +1,7 @@
 export const scripts = new Set();
 
+let scriptLoaded: Promise<void>;
+
 export function registerCurrentScripts() {
   for (let script of document.scripts) {
     const hasValidID = script.id && !/R:\d+/.test(script.id);
@@ -29,8 +31,18 @@ export async function loadScripts(node: Node) {
   if (src) script.src = src;
 
   script.innerHTML = (node as HTMLScriptElement).innerHTML;
-  script.onload = script.onerror = () => script.remove();
+
+  await scriptLoaded;
+
+  if (src) {
+    scriptLoaded = new Promise(
+      (r) => (script.onload = script.onerror = () => r(script.remove())),
+    );
+  }
+
   $document.head.appendChild(script);
 
-  if (!src) script.remove();
+  if (!src) {
+    script.remove();
+  }
 }

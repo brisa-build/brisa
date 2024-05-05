@@ -4,7 +4,15 @@ import {
   scripts,
 } from "@/utils/rpc/load-scripts";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { describe, expect, it, beforeEach, afterEach, spyOn } from "bun:test";
+import {
+  describe,
+  expect,
+  it,
+  beforeEach,
+  afterEach,
+  spyOn,
+  mock,
+} from "bun:test";
 
 let mockLog: ReturnType<typeof spyOn>;
 
@@ -24,7 +32,7 @@ describe("utils", () => {
       document.head.innerHTML = content
         ? `<script id="${id}">${content}</script>`
         : `<script src=${src}></script>`;
-      const script = document.createElement("script");
+      const script = document.createElement("script")!;
       if (src) script.src = src;
       if (id) script.id = id;
       if (content) script.innerHTML = content;
@@ -80,6 +88,42 @@ describe("utils", () => {
 
       expect(scripts.size).toBe(0);
       expect(mockLog).toHaveBeenCalledWith("hello");
+    });
+
+    it("should execute the scripts in order", async () => {
+      const append = document.head.appendChild.bind(document.head);
+
+      // @ts-ignore
+      document.head.appendChild = mock(async (script) => {
+        // Await the second script to be appended
+        if (script.src.endsWith("cp")) await Bun.sleep(1);
+        append(script);
+      });
+
+      const src1 = `data:text/javascript;base64,${btoa(
+        `console.log('first')`,
+      )}`;
+      const src2 = `data:text/javascript;base64,${btoa(
+        `console.log('second')`,
+      )}`;
+      const src3 = `data:text/javascript;base64,${btoa(
+        `console.log('third')`,
+      )}`;
+
+      const script1 = createScript(src1);
+      const script2 = createScript(src2);
+      const script3 = createScript(src3);
+
+      await loadScripts(script1);
+      await loadScripts(script2);
+      await loadScripts(script3);
+      await Bun.sleep(1);
+
+      registerCurrentScripts();
+
+      expect(mockLog).toHaveBeenCalledWith("first");
+      expect(mockLog).toHaveBeenCalledWith("second");
+      expect(mockLog).toHaveBeenCalledWith("third");
     });
   });
 });
