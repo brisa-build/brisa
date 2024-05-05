@@ -560,7 +560,36 @@ describe("utils", () => {
       );
     });
 
-    it("should work with trailing slash enable in the config", () => {
+    it("should work href with trailing slash enable in the config", () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          trailingSlash: true,
+        },
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/es"),
+      });
+
+      const hrefOfATag = (href: string) =>
+        renderAttributes({
+          elementProps: {
+            href,
+          },
+          request,
+          type: "a",
+        });
+
+      expect(hrefOfATag("/")).toBe(' href="/"');
+      expect(hrefOfATag("/pokemon/charmander")).toBe(
+        ' href="/pokemon/charmander/"',
+      );
+      expect(hrefOfATag("/some-page")).toBe(' href="/some-page/"');
+      expect(hrefOfATag("/some-page/")).toBe(' href="/some-page/"');
+    });
+
+    it("should work href with i18n and trailing slash enable in the config", () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
@@ -609,6 +638,9 @@ describe("utils", () => {
         });
 
       expect(hrefOfATag("/")).toBe(' href="/es/"');
+      expect(hrefOfATag("/pokemon/charmander")).toBe(
+        ' href="/es/pokemon/charmander/"',
+      );
       expect(hrefOfATag("/some-page")).toBe(' href="/es/alguna-pagina/"');
       expect(hrefOfATag("/some-page/")).toBe(' href="/es/alguna-pagina/"');
       expect(hrefOfATag("/user/aral")).toBe(' href="/es/usuario/aral/"');
