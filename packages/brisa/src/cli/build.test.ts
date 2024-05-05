@@ -29,7 +29,9 @@ const resultWithdDynamicRoute = {
 
 const mockCompileAll = mock(async () => defaultResult);
 const mockTable = mock((v: any) => null);
-const mockGenerateStaticExport = mock(async () => new Map<string, string[]>());
+const mockGenerateStaticExport = mock(async () => [
+  new Map<string, string[]>(),
+]);
 const mockLog = mock((...logs: string[]) => {});
 const green = (text: string) =>
   Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
@@ -45,7 +47,7 @@ describe("cli", () => {
       mock.module("./build-utils", () => ({
         logTable: (v: any) => mockTable(v),
         generateStaticExport: async () =>
-          (await mockGenerateStaticExport()) || new Map<string, string[]>(),
+          (await mockGenerateStaticExport()) || [new Map<string, string[]>()],
       }));
     });
 
@@ -189,7 +191,7 @@ describe("cli", () => {
           "/user/john.html",
           "/user/jane.html",
         ]);
-        return map;
+        return [map];
       });
 
       const constants = getConstants() ?? {};
