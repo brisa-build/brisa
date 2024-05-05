@@ -115,7 +115,7 @@ export default function renderAttributes({
       continue;
     }
 
-    // i18n navigation
+    // Improve navigation: i18n, trailing slash, basepath etc.
     if (
       prop === "href" &&
       typeof value === "string" &&
@@ -214,8 +214,13 @@ export function renderHrefAttribute(
     formattedHref = formattedHref.replace(`[${key}]`, value);
   }
 
-  if (isExternalUrl) return hrefValue;
-  if (!locale) return addBasePathToStringURL(hrefValue);
+  if (isExternalUrl) {
+    return hrefValue;
+  }
+
+  if (!locale) {
+    return manageTrailingSlash(addBasePathToStringURL(hrefValue));
+  }
 
   const page = findTranslatedPage(pages, formattedHref);
 
