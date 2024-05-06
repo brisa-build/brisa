@@ -10,7 +10,13 @@ description: Learn how to debug your Brisa application
 
 Start your development server as usual by running `bun dev` (or `brisa dev`). Once the server starts, open `http://localhost:3000` (or your alternate URL) in Chrome. Next, open Chrome's Developer Tools (`Ctrl+Shift+J` on Windows/Linux, `⌥+⌘+I` on macOS), then go to the **Sources** tab.
 
-Now, any time your client-side code reaches a [`debugger`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/debugger) statement, code execution will pause and that file will appear in the debug area. You can also press `Ctrl+P` on Windows/Linux or `⌘+P` on macOS to search for a file and set breakpoints manually. Note that when searching here, your source files will have paths starting with `webpack://_N_E/./`.
+Now, any time your client-side code reaches a [`debugger`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/debugger) statement, code execution will pause and that file will appear in the debug area. You can also press `Ctrl+P` on Windows/Linux or `⌘+P` on macOS to search for a file and set breakpoints manually.
+
+### Debug Web Components changes from Signals
+
+To debug the interactions with the DOM that are generated inside the Web Components thanks to the signals, you have to place over the `#shadow-root (open)` (Dev tools → element tab) and right click → `Break on` → `subtree modifications`.
+
+By activating the subtree modifications, the debugger will be opened each time a signal changes the DOM of the web component.
 
 ### Server-side code
 
