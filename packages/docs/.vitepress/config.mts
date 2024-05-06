@@ -424,7 +424,7 @@ export default defineConfig({
     },
     footer: {
       message: "Released under the MIT License.",
-      copyright: "Copyright © 2023-present Aral Roca",
+      copyright: "Copyright © 2023-present Aral Roca and contributors",
     },
   },
 });
