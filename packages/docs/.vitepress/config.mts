@@ -225,8 +225,16 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
-                text: "WIP",
-                link: "/wip",
+                text: "introduction",
+                link: "/building-your-application/testing/introduction",
+              },
+              {
+                text: "Matchers",
+                link: "/building-your-application/testing/matchers",
+              },
+              {
+                text: "Test API",
+                link: "/building-your-application/testing/test-api",
               },
             ],
           },

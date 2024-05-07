@@ -39,10 +39,10 @@ function toHaveTagName(received: unknown, tagName: string) {
   };
 }
 
-function toHaveRenderedText(received: unknown, text: string) {
+function toHaveTextContent(received: unknown, text: string) {
   if (received instanceof HTMLElement === false) {
     throw new Error(
-      "Invalid usage of toHaveRenderedText(received, text). The argument received should be an HTMLElement",
+      "Invalid usage of toHaveTextContent(received, text). The argument received should be an HTMLElement",
     );
   }
 
@@ -52,10 +52,10 @@ function toHaveRenderedText(received: unknown, text: string) {
   };
 }
 
-function toContainRenderedText(received: unknown, text: string) {
+function toContainTextContent(received: unknown, text: string) {
   if (received instanceof HTMLElement === false) {
     throw new Error(
-      "Invalid usage of toContainRenderedText(received, text). The argument received should be an HTMLElement",
+      "Invalid usage of toContainTextContent(received, text). The argument received should be an HTMLElement",
     );
   }
 
@@ -231,8 +231,8 @@ export default {
   toBeChecked,
   toHaveAttribute,
   toHaveTagName,
-  toHaveRenderedText,
-  toContainRenderedText,
+  toHaveTextContent,
+  toContainTextContent,
   toHaveStyle,
   toHaveClass,
   toHaveValue,
