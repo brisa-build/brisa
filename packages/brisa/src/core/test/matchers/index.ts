@@ -78,11 +78,22 @@ function toHaveStyle(received: unknown, style: string, value: string) {
   };
 }
 
+function toHaveClass(received: unknown, className: string) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toHaveClass(received, className). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: received.classList.contains(className),
+    message: () => `expected element to have class ${className}`,
+  };
+}
+
 /**
  * 
  * TODO:
-- `toHaveStyle`: Validates the styling properties of the target element.
-- `toHaveClass`: Checks for the presence of a specified CSS class within the target element.
 - `toHaveValue`: Verifies the current value of form elements such as input fields.
 - `toHaveFocus`: Indicates whether the target element currently has focus.
 - `toBeVisible`: Checks if the target element is visible within the DOM.
@@ -102,4 +113,5 @@ export default {
   toHaveRenderedText,
   toContainRenderedText,
   toHaveStyle,
+  toHaveClass,
 };

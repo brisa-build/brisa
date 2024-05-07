@@ -155,4 +155,22 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toHaveClass", () => {
+    it("should pass if the element has the class", () => {
+      const div = document.createElement("div");
+      div.classList.add("test");
+
+      expect(true).toBe(true);
+      expect(div).toHaveClass("test");
+    });
+
+    it("should fail if the element does not have the class", () => {
+      const div = document.createElement("div");
+
+      expect(() => expect(div).toHaveClass("test")).toThrowError(
+        "expected element to have class test",
+      );
+    });
+  });
 });
