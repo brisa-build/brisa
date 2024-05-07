@@ -222,4 +222,40 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toBeVisible", () => {
+    it("should pass if the element is visible", () => {
+      const div = document.createElement("div");
+      document.body.appendChild(div);
+
+      expect(div).toBeVisible();
+    });
+
+    it("should fail if the element offsetParent is null", () => {
+      const div = document.createElement("div");
+      // @ts-ignore offsetParent is readonly but we need to set 
+      // it to null for the test
+      div.offsetParent = null;
+
+      expect(() => expect(div).toBeVisible()).toThrowError(
+        "expected element to be visible",
+      );
+    });
+
+    it("should fail if the element is not visible", () => {
+      const div = document.createElement("div");
+      div.style.display = "none";
+      document.body.appendChild(div);
+
+      expect(() => expect(div).toBeVisible()).toThrowError(
+        "expected element to be visible",
+      );
+    });
+
+    it('should fail when the received is not an element', () => {
+      expect(() => expect('foo').toBeVisible()).toThrowError(
+        'Invalid usage of toBeVisible(received). The argument received should be an HTMLElement',
+      );
+    });
+  });
 });

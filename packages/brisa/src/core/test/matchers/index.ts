@@ -117,10 +117,22 @@ function toHaveFocus(received: unknown) {
   };
 }
 
+function toBeVisible(received: unknown) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toBeVisible(received). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: received.offsetParent !== null && received.style.display !== "none",
+    message: () => "expected element to be visible",
+  };
+}
+
 /**
  * 
  * TODO:
-- `toHaveFocus`: Indicates whether the target element currently has focus.
 - `toBeVisible`: Checks if the target element is visible within the DOM.
 - `toBeEnabled`: Verifies that the target element is enabled and interactive.
 - `toBeDisabled`: Indicates whether the target element is disabled and non-interactive.
@@ -141,4 +153,5 @@ export default {
   toHaveClass,
   toHaveValue,
   toHaveFocus,
+  toBeVisible,
 };
