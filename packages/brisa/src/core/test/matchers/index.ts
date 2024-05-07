@@ -130,10 +130,35 @@ function toBeVisible(received: unknown) {
   };
 }
 
+function toBeEnabled(received: unknown) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toBeEnabled(received). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: !received.hasAttribute("disabled"),
+    message: () => "expected element to be enabled",
+  };
+}
+
+function toBeDisabled(received: unknown) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toBeDisabled(received). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: received.hasAttribute("disabled"),
+    message: () => "expected element to be disabled",
+  };
+}
+
 /**
  * 
  * TODO:
-- `toBeVisible`: Checks if the target element is visible within the DOM.
 - `toBeEnabled`: Verifies that the target element is enabled and interactive.
 - `toBeDisabled`: Indicates whether the target element is disabled and non-interactive.
 - `toBeSelected`: Indicates whether the target element is selected.
@@ -154,4 +179,6 @@ export default {
   toHaveValue,
   toHaveFocus,
   toBeVisible,
+  toBeEnabled,
+  toBeDisabled,
 };

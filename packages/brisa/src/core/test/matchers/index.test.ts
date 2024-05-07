@@ -258,4 +258,50 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toBeEnabled", () => {
+    it("should pass if the element is enabled", () => {
+      const button = document.createElement("button");
+
+      expect(button).toBeEnabled();
+    });
+
+    it("should fail if the element is disabled", () => {
+      const button = document.createElement("button");
+      button.setAttribute("disabled", "");
+
+      expect(() => expect(button).toBeEnabled()).toThrowError(
+        "expected element to be enabled",
+      );
+    });
+
+    it('should fail when the received is not an element', () => {
+      expect(() => expect('foo').toBeEnabled()).toThrowError(
+        'Invalid usage of toBeEnabled(received). The argument received should be an HTMLElement',
+      );
+    });
+  });
+
+  describe("toBeDisabled", () => {
+    it("should pass if the element is disabled", () => {
+      const button = document.createElement("button");
+      button.setAttribute("disabled", "");
+
+      expect(button).toBeDisabled();
+    });
+
+    it("should fail if the element is enabled", () => {
+      const button = document.createElement("button");
+
+      expect(() => expect(button).toBeDisabled()).toThrowError(
+        "expected element to be disabled",
+      );
+    });
+
+    it('should fail when the received is not an element', () => {
+      expect(() => expect('foo').toBeDisabled()).toThrowError(
+        'Invalid usage of toBeDisabled(received). The argument received should be an HTMLElement',
+      );
+    });
+  });
 });
