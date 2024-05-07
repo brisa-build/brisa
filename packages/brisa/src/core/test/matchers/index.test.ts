@@ -5,15 +5,15 @@ import type { BrisaTestMatchers } from "@/types";
 
 expect.extend<BrisaTestMatchers>(matchers);
 
-describe("matchers", () => {
-  describe("toBeChecked", () => {
-    beforeEach(() => {
-      GlobalRegistrator.register();
-    });
-    afterEach(() => {
-      GlobalRegistrator.unregister();
-    });
+describe("test matchers", () => {
+  beforeEach(() => {
+    GlobalRegistrator.register();
+  });
+  afterEach(() => {
+    GlobalRegistrator.unregister();
+  });
 
+  describe("toBeChecked", () => {
     it("should pass if the input is checked", () => {
       const input = document.createElement("input");
       input.checked = true;
@@ -32,13 +32,6 @@ describe("matchers", () => {
   });
 
   describe("toHaveAttribute", () => {
-    beforeEach(() => {
-      GlobalRegistrator.register();
-    });
-    afterEach(() => {
-      GlobalRegistrator.unregister();
-    });
-
     it("should pass if the element has the attribute", () => {
       const div = document.createElement("div");
       div.setAttribute("data-test", "test");
@@ -51,6 +44,28 @@ describe("matchers", () => {
 
       expect(() => expect(div).toHaveAttribute("data-test")).toThrowError(
         "expected element to have attribute data-test",
+      );
+    });
+  });
+
+  describe("toHaveTagName", () => {
+    it("should pass if the element has the tag name", () => {
+      const div = document.createElement("div");
+
+      expect(div).toHaveTagName("div");
+    });
+
+    it('should pass if the element has the tag name in uppercase', () => {
+      const div = document.createElement('div');
+
+      expect(div).toHaveTagName('DIV');
+    });
+
+    it("should fail if the element does not have the tag name", () => {
+      const div = document.createElement("div");
+
+      expect(() => expect(div).toHaveTagName("span")).toThrowError(
+        "expected element to have tag name span",
       );
     });
   });
