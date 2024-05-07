@@ -225,7 +225,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
-                text: "introduction",
+                text: "Introduction",
                 link: "/building-your-application/testing/introduction",
               },
               {
