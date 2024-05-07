@@ -156,11 +156,22 @@ function toBeDisabled(received: unknown) {
   };
 }
 
+function toBeSelected(received: unknown) {
+  if (received instanceof HTMLOptionElement === false) {
+    throw new Error(
+      "Invalid usage of toBeSelected(received). The argument received should be an HTMLOptionElement",
+    );
+  }
+
+  return {
+    pass: received.selected,
+    message: () => "expected element to be selected",
+  };
+}
+
 /**
  * 
  * TODO:
-- `toBeEnabled`: Verifies that the target element is enabled and interactive.
-- `toBeDisabled`: Indicates whether the target element is disabled and non-interactive.
 - `toBeSelected`: Indicates whether the target element is selected.
 - `toBeRequired`: Indicates whether the target element is required.
 - `toBeInvalid`: Indicates whether the target element is invalid.
@@ -181,4 +192,5 @@ export default {
   toBeVisible,
   toBeEnabled,
   toBeDisabled,
+  toBeSelected,
 };
