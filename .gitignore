@@ -11,6 +11,7 @@ packages/brisa/jsx-dev-runtime/
 packages/brisa/client/
 packages/brisa/server/
 packages/brisa/build
+packages/brisa/test
 
 # Docs
 packages/docs/.vitepress/cache/
