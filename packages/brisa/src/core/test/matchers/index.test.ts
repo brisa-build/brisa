@@ -39,6 +39,13 @@ describe("test matchers", () => {
       expect(div).toHaveAttribute("data-test");
     });
 
+    it("should pass if the element has the attribute specifing the attribute", () => {
+      const div = document.createElement("div");
+      div.setAttribute("data-test", "test");
+
+      expect(div).toHaveAttribute("data-test", "test");
+    });
+
     it("should fail if the element does not have the attribute", () => {
       const div = document.createElement("div");
 
