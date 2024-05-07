@@ -24,6 +24,19 @@ function toHaveAttribute(received: unknown, attribute: string) {
   };
 }
 
+function toHaveTagName(received: unknown, tagName: string) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toHaveTagName(received, tagName). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: received.tagName.toLowerCase() === tagName.toLowerCase(),
+    message: () => `expected element to have tag name ${tagName}`,
+  };
+}
+
 /**
  * 
  * TODO:
@@ -51,4 +64,5 @@ function toHaveAttribute(received: unknown, attribute: string) {
 export default {
   toBeChecked,
   toHaveAttribute,
+  toHaveTagName,
 };
