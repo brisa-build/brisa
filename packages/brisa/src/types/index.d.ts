@@ -9557,7 +9557,28 @@ declare module "csstype" {
   }
 }
 
-export type InputType = 'text' | 'password' | 'email' | 'number' | 'checkbox' | 'radio' | 'file' | 'submit' | 'reset' | 'button' | 'image' | 'date' | 'datetime-local' | 'time' | 'week' | 'month' | 'url' | 'search' | 'tel' | 'color' | 'hidden';
+export type InputType =
+  | "text"
+  | "password"
+  | "email"
+  | "number"
+  | "checkbox"
+  | "radio"
+  | "file"
+  | "submit"
+  | "reset"
+  | "button"
+  | "image"
+  | "date"
+  | "datetime-local"
+  | "time"
+  | "week"
+  | "month"
+  | "url"
+  | "search"
+  | "tel"
+  | "color"
+  | "hidden";
 
 export interface BrisaTestMatchers {
   toBeChecked(): void;

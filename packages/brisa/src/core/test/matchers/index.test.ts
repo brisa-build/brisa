@@ -190,11 +190,11 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an input element', () => {
-      const div = document.createElement('div');
+    it("should fail when the received is not an input element", () => {
+      const div = document.createElement("div");
 
-      expect(() => expect(div).toHaveValue('test')).toThrowError(
-        'Invalid usage of toHaveValue(received, value). The argument received should be an HTMLInputElement',
+      expect(() => expect(div).toHaveValue("test")).toThrowError(
+        "Invalid usage of toHaveValue(received, value). The argument received should be an HTMLInputElement",
       );
     });
   });
@@ -216,9 +216,9 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an element', () => {
-      expect(() => expect('foo').toHaveFocus()).toThrowError(
-        'Invalid usage of toHaveFocus(received). The argument received should be an HTMLElement',
+    it("should fail when the received is not an element", () => {
+      expect(() => expect("foo").toHaveFocus()).toThrowError(
+        "Invalid usage of toHaveFocus(received). The argument received should be an HTMLElement",
       );
     });
   });
@@ -233,7 +233,7 @@ describe("test matchers", () => {
 
     it("should fail if the element offsetParent is null", () => {
       const div = document.createElement("div");
-      // @ts-ignore offsetParent is readonly but we need to set 
+      // @ts-ignore offsetParent is readonly but we need to set
       // it to null for the test
       div.offsetParent = null;
 
@@ -252,9 +252,9 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an element', () => {
-      expect(() => expect('foo').toBeVisible()).toThrowError(
-        'Invalid usage of toBeVisible(received). The argument received should be an HTMLElement',
+    it("should fail when the received is not an element", () => {
+      expect(() => expect("foo").toBeVisible()).toThrowError(
+        "Invalid usage of toBeVisible(received). The argument received should be an HTMLElement",
       );
     });
   });
@@ -275,9 +275,9 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an element', () => {
-      expect(() => expect('foo').toBeEnabled()).toThrowError(
-        'Invalid usage of toBeEnabled(received). The argument received should be an HTMLElement',
+    it("should fail when the received is not an element", () => {
+      expect(() => expect("foo").toBeEnabled()).toThrowError(
+        "Invalid usage of toBeEnabled(received). The argument received should be an HTMLElement",
       );
     });
   });
@@ -298,9 +298,9 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an element', () => {
-      expect(() => expect('foo').toBeDisabled()).toThrowError(
-        'Invalid usage of toBeDisabled(received). The argument received should be an HTMLElement',
+    it("should fail when the received is not an element", () => {
+      expect(() => expect("foo").toBeDisabled()).toThrowError(
+        "Invalid usage of toBeDisabled(received). The argument received should be an HTMLElement",
       );
     });
   });
@@ -321,11 +321,11 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an option element', () => {
-      const div = document.createElement('div');
+    it("should fail when the received is not an option element", () => {
+      const div = document.createElement("div");
 
       expect(() => expect(div).toBeSelected()).toThrowError(
-        'Invalid usage of toBeSelected(received). The argument received should be an HTMLOptionElement',
+        "Invalid usage of toBeSelected(received). The argument received should be an HTMLOptionElement",
       );
     });
   });
@@ -346,11 +346,11 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an input element', () => {
-      const div = document.createElement('div');
+    it("should fail when the received is not an input element", () => {
+      const div = document.createElement("div");
 
       expect(() => expect(div).toBeRequired()).toThrowError(
-        'Invalid usage of toBeRequired(received). The argument received should be an HTMLInputElement',
+        "Invalid usage of toBeRequired(received). The argument received should be an HTMLInputElement",
       );
     });
   });
@@ -371,11 +371,11 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an input element', () => {
-      const div = document.createElement('div');
+    it("should fail when the received is not an input element", () => {
+      const div = document.createElement("div");
 
       expect(() => expect(div).toBeValid()).toThrowError(
-        'Invalid usage of toBeValid(received). The argument received should be an HTMLInputElement',
+        "Invalid usage of toBeValid(received). The argument received should be an HTMLInputElement",
       );
     });
   });
@@ -396,11 +396,11 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an input element', () => {
-      const div = document.createElement('div');
+    it("should fail when the received is not an input element", () => {
+      const div = document.createElement("div");
 
       expect(() => expect(div).toBeInvalid()).toThrowError(
-        'Invalid usage of toBeInvalid(received). The argument received should be an HTMLInputElement',
+        "Invalid usage of toBeInvalid(received). The argument received should be an HTMLInputElement",
       );
     });
   });
@@ -436,11 +436,11 @@ describe("test matchers", () => {
       );
     });
 
-    it('should fail when the received is not an input element', () => {
-      const div = document.createElement('div');
+    it("should fail when the received is not an input element", () => {
+      const div = document.createElement("div");
 
-      expect(() => expect(div).toBeInputTypeOf('text')).toThrowError(
-        'Invalid usage of toBeInputType(received, type). The argument received should be an HTMLInputElement',
+      expect(() => expect(div).toBeInputTypeOf("text")).toThrowError(
+        "Invalid usage of toBeInputType(received, type). The argument received should be an HTMLInputElement",
       );
     });
   });
