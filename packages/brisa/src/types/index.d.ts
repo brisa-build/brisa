@@ -9560,6 +9560,7 @@ declare module "csstype" {
 export interface BrisaTestMatchers {
   toBeChecked(): void;
   toHaveAttribute(name: string, value?: string): void;
+  toHaveTagName(tagName: string): void;
 }
 
 declare module "bun:test" {
