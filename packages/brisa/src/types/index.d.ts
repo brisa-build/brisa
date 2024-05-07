@@ -9568,6 +9568,8 @@ export interface BrisaTestMatchers {
   toHaveValue(value: string): void;
   toHaveFocus(): void;
   toBeVisible(): void;
+  toBeDisabled(): void;
+  toBeEnabled(): void;
 }
 
 declare module "bun:test" {
