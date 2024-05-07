@@ -37,11 +37,37 @@ function toHaveTagName(received: unknown, tagName: string) {
   };
 }
 
+function toHaveRenderedText(received: unknown, text: string) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toHaveRenderedText(received, text). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: received.textContent === text,
+    message: () => `expected element to have rendered text ${text}`,
+  };
+}
+
+function toContainRenderedText(received: unknown, text: string) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toContainRenderedText(received, text). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass:
+      typeof received.textContent === "string" &&
+      received.textContent.includes(text),
+    message: () => `expected element to contain rendered text ${text}`,
+  };
+}
+
 /**
  * 
  * TODO:
-- `toHaveAttribute`: Verifies whether a specified attribute exists within the target element.
-- `toHaveTagName`: Checks if the target element has a specific HTML tag.
 - `toHaveRenderedText`: Ensures that the target element renders the expected text content.
 - `toHaveBeenRenderedTimes`: Checks the number of times the target element has been rendered.
 - `toContainRenderedText`: Verifies if the rendered text content contains a specific string.
@@ -65,4 +91,6 @@ export default {
   toBeChecked,
   toHaveAttribute,
   toHaveTagName,
+  toHaveRenderedText,
+  toContainRenderedText,
 };
