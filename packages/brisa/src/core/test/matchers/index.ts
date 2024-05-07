@@ -227,6 +227,19 @@ function toBeInputTypeOf(received: unknown, type: InputType) {
   };
 }
 
+function toBeInTheDocument(received: unknown) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toBeInTheDocument(received). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: document.documentElement.contains(received),
+    message: () => "expected element to be in the document",
+  };
+}
+
 export default {
   toBeChecked,
   toHaveAttribute,
@@ -245,4 +258,5 @@ export default {
   toBeValid,
   toBeInvalid,
   toBeInputTypeOf,
+  toBeInTheDocument,
 };
