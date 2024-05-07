@@ -9570,6 +9570,7 @@ export interface BrisaTestMatchers {
   toBeVisible(): void;
   toBeDisabled(): void;
   toBeEnabled(): void;
+  toBeSelected(): void;
 }
 
 declare module "bun:test" {

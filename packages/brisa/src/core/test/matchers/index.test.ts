@@ -304,4 +304,29 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toBeSelected", () => {
+    it("should pass if the element is selected", () => {
+      const option = document.createElement("option");
+      option.selected = true;
+
+      expect(option).toBeSelected();
+    });
+
+    it("should fail if the element is not selected", () => {
+      const option = document.createElement("option");
+
+      expect(() => expect(option).toBeSelected()).toThrowError(
+        "expected element to be selected",
+      );
+    });
+
+    it('should fail when the received is not an option element', () => {
+      const div = document.createElement('div');
+
+      expect(() => expect(div).toBeSelected()).toThrowError(
+        'Invalid usage of toBeSelected(received). The argument received should be an HTMLOptionElement',
+      );
+    });
+  });
 });
