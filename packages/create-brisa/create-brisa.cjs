@@ -122,8 +122,7 @@ bun start
 
   fs.writeFileSync(
     "bunfig.toml",
-    `[test]
-    preload = "brisa/test"`,
+    '[test]\npreload = "brisa/test"',
   );
 
   fs.writeFileSync(".gitignore", "build\nnode_modules\nout\n");
