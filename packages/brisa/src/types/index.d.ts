@@ -9556,3 +9556,12 @@ declare module "csstype" {
     "view-transition-name"?: string;
   }
 }
+
+export interface BrisaTestMatchers {
+  toBeChecked(): void;
+}
+
+declare module "bun:test" {
+  interface Matchers<T> extends BrisaTestMatchers {}
+  interface AsymmetricMatchers<T> extends BrisaTestMatchers {}
+}
