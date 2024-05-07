@@ -12,7 +12,7 @@
   --vp-c-brand-1: #080426;
   --vp-c-text-1: rgb(86 86 93);
   --vp-c-brand-2: var(--vp-c-brand-light);
-  --vp-code-block-bg: var(--vp-sidebar-bg-color)
+  --vp-code-block-bg: var(--vp-sidebar-bg-color);
 }
 
 .VPFeature {
