@@ -9581,22 +9581,209 @@ export type InputType =
   | "hidden";
 
 export interface BrisaTestMatchers {
+  /**
+   * Use `toBeChecked` to assert that an element is checked.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(checkbox).toBeChecked();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobechecked)
+   */
   toBeChecked(): void;
+  /**
+   * Use `toHaveAttribute` to assert that an element has a specific attribute.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toHaveAttribute('name', 'value');
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tohaveattribute)
+   */
   toHaveAttribute(name: string, value?: string): void;
+  /**
+   *  Use `toHaveTagName` to assert that an element has a specific tag name.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toHaveTagName('div');
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tohavetagname)
+   */
   toHaveTagName(tagName: string): void;
-  toHaveRenderedText(text: string): void;
-  toContainRenderedText(text: string): void;
+  /**
+   * Use `toHaveTextContent` to assert that an element has a specific text content.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toHaveTextContent('text');
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tohavetextcontent)
+   */
+  toHaveTextContent(text: string): void;
+  /**
+   * Use `toContainTextContent` to assert that an element contains a specific text content.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toContainTextContent('text');
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tocontaintextcontent)
+   */
+  toContainTextContent(text: string): void;
+  /**
+   * Use `toHaveStyle` to assert that an element has a specific style.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toHaveStyle('color', 'red');
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tohavestyle)
+   */
   toHaveStyle(style: string, value: string): void;
+  /**
+   * Use `toHaveClass` to assert that an element has a specific class.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toHaveClass('class');
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tohaveclass)
+   */
   toHaveClass(className: string): void;
+  /**
+   * Use `toHaveValue` to assert that an element has a specific value.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(input).toHaveValue('value');
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tohavevalue)
+   */
   toHaveValue(value: string): void;
+  /**
+   * Use `toHaveFocus` to assert that an element has focus.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(input).toHaveFocus();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tohavefocus)
+   */
   toHaveFocus(): void;
+  /**
+   * Use `toBeVisible` to assert that an element is visible.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toBeVisible();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobevisible)
+   */
   toBeVisible(): void;
+  /**
+   * Use `toBeDisabled` to assert that an element is hidden.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toBeDisabled();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobedisabled)
+   */
   toBeDisabled(): void;
+  /**
+   * Use `toBeEnabled` to assert that an element is enabled.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toBeEnabled();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobeenabled)
+   */
   toBeEnabled(): void;
+  /**
+   * Use `toBeSelected` to assert that an element is selected.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toBeSelected();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobeselected)
+   */
   toBeSelected(): void;
+  /**
+   * Use `toBeRequired` to assert that an element is required.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(input).toBeRequired();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#toberequired)
+   */
   toBeRequired(): void;
+  /**
+   * Use `toBeValid` to assert that an element is valid.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(input).toBeValid();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobevalid)
+   */
   toBeValid(): void;
+  /**
+   * Use `toBeInvalid` to assert that an element is invalid.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(input).toBeInvalid();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobeinvalid)
+   */
   toBeInvalid(): void;
+  /**
+   * Use `toBeInputTypeOf` to assert that an element is of a specific input type.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(input).toBeInputTypeOf('text');
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobeinputtypeof)
+   */
   toBeInputTypeOf(type: InputType): void;
 }
 

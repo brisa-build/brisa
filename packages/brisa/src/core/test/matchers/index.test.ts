@@ -70,12 +70,12 @@ describe("test matchers", () => {
     });
   });
 
-  describe("toHaveRenderedText", () => {
+  describe("toHaveTextContent", () => {
     it("should pass if the element has the rendered text", () => {
       const div = document.createElement("div");
       div.textContent = "test";
 
-      expect(div).toHaveRenderedText("test");
+      expect(div).toHaveTextContent("test");
     });
 
     it("should pass if the element contains the rendered text in a nested element", () => {
@@ -84,31 +84,31 @@ describe("test matchers", () => {
       span.textContent = "test";
       div.appendChild(span);
 
-      expect(div).toContainRenderedText("test");
+      expect(div).toContainTextContent("test");
     });
 
     it("should fail if the element does not have the rendered text", () => {
       const div = document.createElement("div");
 
-      expect(() => expect(div).toHaveRenderedText("test")).toThrowError(
+      expect(() => expect(div).toHaveTextContent("test")).toThrowError(
         "expected element to have rendered text test",
       );
     });
   });
 
-  describe("toContainRenderedText", () => {
+  describe("toContainTextContent", () => {
     it("should pass if the element contains the rendered text", () => {
       const div = document.createElement("div");
       div.textContent = "test";
 
-      expect(div).toContainRenderedText("test");
+      expect(div).toContainTextContent("test");
     });
 
     it("should pass if the element contains the rendered text in a long phrase", () => {
       const div = document.createElement("div");
       div.textContent = "this is a long phrase with test in it";
 
-      expect(div).toContainRenderedText("test");
+      expect(div).toContainTextContent("test");
     });
 
     it("should pass if the element contains the rendered text in a nested element", () => {
@@ -117,7 +117,7 @@ describe("test matchers", () => {
       span.textContent = "test";
       div.appendChild(span);
 
-      expect(div).toContainRenderedText("test");
+      expect(div).toContainTextContent("test");
     });
 
     it("should pass if the element contains the rendered text in a nested element in a long phrase", () => {
@@ -126,13 +126,13 @@ describe("test matchers", () => {
       span.textContent = "this is a long phrase with test in it";
       div.appendChild(span);
 
-      expect(div).toContainRenderedText("test");
+      expect(div).toContainTextContent("test");
     });
 
     it("should fail if the element does not contain the rendered text", () => {
       const div = document.createElement("div");
 
-      expect(() => expect(div).toContainRenderedText("test")).toThrowError(
+      expect(() => expect(div).toContainTextContent("test")).toThrowError(
         "expected element to contain rendered text test",
       );
     });
