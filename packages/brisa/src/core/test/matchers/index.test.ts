@@ -354,4 +354,54 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toBeValid", () => {
+    it("should pass if the element is valid", () => {
+      const input = document.createElement("input");
+
+      expect(input).toBeValid();
+    });
+
+    it("should fail if the element is not valid", () => {
+      const input = document.createElement("input");
+      input.setCustomValidity("test");
+
+      expect(() => expect(input).toBeValid()).toThrowError(
+        "expected input element to be valid",
+      );
+    });
+
+    it('should fail when the received is not an input element', () => {
+      const div = document.createElement('div');
+
+      expect(() => expect(div).toBeValid()).toThrowError(
+        'Invalid usage of toBeValid(received). The argument received should be an HTMLInputElement',
+      );
+    });
+  });
+
+  describe("toBeInvalid", () => {
+    it("should pass if the element is invalid", () => {
+      const input = document.createElement("input");
+      input.setCustomValidity("test");
+
+      expect(input).toBeInvalid();
+    });
+
+    it("should fail if the element is valid", () => {
+      const input = document.createElement("input");
+
+      expect(() => expect(input).toBeInvalid()).toThrowError(
+        "expected input element to be invalid",
+      );
+    });
+
+    it('should fail when the received is not an input element', () => {
+      const div = document.createElement('div');
+
+      expect(() => expect(div).toBeInvalid()).toThrowError(
+        'Invalid usage of toBeInvalid(received). The argument received should be an HTMLInputElement',
+      );
+    });
+  });
 });
