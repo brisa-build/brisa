@@ -169,10 +169,22 @@ function toBeSelected(received: unknown) {
   };
 }
 
+function toBeRequired(received: unknown) {
+  if (received instanceof HTMLInputElement === false) {
+    throw new Error(
+      "Invalid usage of toBeRequired(received). The argument received should be an HTMLInputElement",
+    );
+  }
+
+  return {
+    pass: received.required,
+    message: () => "expected input element to be required",
+  };
+}
+
 /**
  * 
  * TODO:
-- `toBeSelected`: Indicates whether the target element is selected.
 - `toBeRequired`: Indicates whether the target element is required.
 - `toBeInvalid`: Indicates whether the target element is invalid.
 - `toBeValid`: Checks if the target element is valid.
@@ -193,4 +205,5 @@ export default {
   toBeEnabled,
   toBeDisabled,
   toBeSelected,
+  toBeRequired,
 };
