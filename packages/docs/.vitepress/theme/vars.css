@@ -5,7 +5,8 @@
   --vp-c-brand-lightest: #d6e6f7;
   --vp-c-brand-dark: #1d4ed8;
   --vp-c-brand-darker: #071237;
-  --vp-c-bg-soft: #f8fbfd;
+  --vp-c-bg-soft-1: #dae6f3;
+  --vp-c-bg-soft: #f7fbff66;
   --vp-sidebar-bg-color: var(--vp-c-bg-soft);
   --vp-c-brand-dimm: rgba(100, 108, 255, 0.08);
   --vp-c-brand-1: #080426;
@@ -14,9 +15,14 @@
   --vp-code-block-bg: var(--vp-sidebar-bg-color)
 }
 
+.VPFeature {
+  border: solid 1px var(--vp-c-bg-soft-1) !important;
+}
+
 .dark {
   --vp-c-brand-1: #93c5fd;
   --vp-c-bg: #0d1218;
+  --vp-c-bg-soft-1: #1b1c22;
   --vp-c-text-1: #d6e6f7;
   --vp-c-bg-soft: #1b1c22;
   --vp-sidebar-bg-color: #000019;
