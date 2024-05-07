@@ -43,6 +43,6 @@ This allows to preload all the matchers from Brisa and it will also take care of
 - `toBeRequired`: Indicates whether the target element is required.
 - `toBeInvalid`: Indicates whether the target element is invalid.
 - `toBeValid`: Checks if the target element is valid.
-- `toBeHidden`: Verifies if the target element is hidden.
+- `toBeInputTypeOf`: Verifies the target element type.
 
 ## API

@@ -404,4 +404,44 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toBeInputTypeOf", () => {
+    it("should pass if the element is of the given type as text", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+
+      expect(input).toBeInputTypeOf("text");
+    });
+
+    it("should pass if the element is of the given type as number", () => {
+      const input = document.createElement("input");
+      input.type = "number";
+
+      expect(input).toBeInputTypeOf("number");
+    });
+
+    it("should pass if the element is of the given type as email", () => {
+      const input = document.createElement("input");
+      input.type = "email";
+
+      expect(input).toBeInputTypeOf("email");
+    });
+
+    it("should fail if the element is not of the given type", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+
+      expect(() => expect(input).toBeInputTypeOf("number")).toThrowError(
+        "expected input element to be of type number",
+      );
+    });
+
+    it('should fail when the received is not an input element', () => {
+      const div = document.createElement('div');
+
+      expect(() => expect(div).toBeInputTypeOf('text')).toThrowError(
+        'Invalid usage of toBeInputType(received, type). The argument received should be an HTMLInputElement',
+      );
+    });
+  });
 });
