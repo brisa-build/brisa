@@ -9564,6 +9564,7 @@ export interface BrisaTestMatchers {
   toHaveRenderedText(text: string): void;
   toContainRenderedText(text: string): void;
   toHaveStyle(style: string, value: string): void;
+  toHaveClass(className: string): void;
 }
 
 declare module "bun:test" {
