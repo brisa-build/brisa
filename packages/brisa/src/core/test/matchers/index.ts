@@ -1,3 +1,5 @@
+import type { InputType } from "@/types";
+
 function toBeChecked(received: unknown) {
   if (received instanceof HTMLInputElement === false) {
     throw new Error(
@@ -125,7 +127,7 @@ function toBeVisible(received: unknown) {
   }
 
   return {
-    pass: received.offsetParent !== null && received.style.display !== "none",
+    pass: received.offsetParent !== null && received.style.display !== "none" && received.style.visibility !== "hidden",
     message: () => "expected element to be visible",
   };
 }
@@ -208,13 +210,18 @@ function toBeInvalid(received: unknown) {
   };
 }
 
-/**
- * 
- * TODO:
-- `toBeInvalid`: Indicates whether the target element is invalid.
-- `toBeValid`: Checks if the target element is valid.
-- `toBeHidden`: Verifies if the target element is hidden.
- */
+function toBeInputTypeOf(received: unknown, type: InputType) {
+  if (received instanceof HTMLInputElement === false) {
+    throw new Error(
+      "Invalid usage of toBeInputType(received, type). The argument received should be an HTMLInputElement",
+    );
+  }
+
+  return {
+    pass: received.type === type,
+    message: () => `expected input element to be of type ${type}`,
+  };
+}
 
 export default {
   toBeChecked,
@@ -233,4 +240,5 @@ export default {
   toBeRequired,
   toBeValid,
   toBeInvalid,
+  toBeInputTypeOf,
 };
