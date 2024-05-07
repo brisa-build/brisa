@@ -104,6 +104,19 @@ function toHaveValue(received: unknown, value: string) {
   };
 }
 
+function toHaveFocus(received: unknown) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toHaveFocus(received). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: received === document.activeElement,
+    message: () => "expected element to have focus",
+  };
+}
+
 /**
  * 
  * TODO:
@@ -127,4 +140,5 @@ export default {
   toHaveStyle,
   toHaveClass,
   toHaveValue,
+  toHaveFocus,
 };

@@ -198,4 +198,28 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toHaveFocus", () => {
+    it("should pass if the element has focus", () => {
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.focus();
+
+      expect(input).toHaveFocus();
+    });
+
+    it("should fail if the element does not have focus", () => {
+      const input = document.createElement("input");
+
+      expect(() => expect(input).toHaveFocus()).toThrowError(
+        "expected element to have focus",
+      );
+    });
+
+    it('should fail when the received is not an element', () => {
+      expect(() => expect('foo').toHaveFocus()).toThrowError(
+        'Invalid usage of toHaveFocus(received). The argument received should be an HTMLElement',
+      );
+    });
+  });
 });
