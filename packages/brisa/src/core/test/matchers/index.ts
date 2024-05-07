@@ -91,10 +91,22 @@ function toHaveClass(received: unknown, className: string) {
   };
 }
 
+function toHaveValue(received: unknown, value: string) {
+  if (received instanceof HTMLInputElement === false) {
+    throw new Error(
+      "Invalid usage of toHaveValue(received, value). The argument received should be an HTMLInputElement",
+    );
+  }
+
+  return {
+    pass: received.value === value,
+    message: () => `expected input element to have value ${value}`,
+  };
+}
+
 /**
  * 
  * TODO:
-- `toHaveValue`: Verifies the current value of form elements such as input fields.
 - `toHaveFocus`: Indicates whether the target element currently has focus.
 - `toBeVisible`: Checks if the target element is visible within the DOM.
 - `toBeEnabled`: Verifies that the target element is enabled and interactive.
@@ -114,4 +126,5 @@ export default {
   toContainRenderedText,
   toHaveStyle,
   toHaveClass,
+  toHaveValue,
 };

@@ -173,4 +173,29 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toHaveValue", () => {
+    it("should pass if the input has the value", () => {
+      const input = document.createElement("input");
+      input.value = "test";
+
+      expect(input).toHaveValue("test");
+    });
+
+    it("should fail if the input does not have the value", () => {
+      const input = document.createElement("input");
+
+      expect(() => expect(input).toHaveValue("test")).toThrowError(
+        "expected input element to have value test",
+      );
+    });
+
+    it('should fail when the received is not an input element', () => {
+      const div = document.createElement('div');
+
+      expect(() => expect(div).toHaveValue('test')).toThrowError(
+        'Invalid usage of toHaveValue(received, value). The argument received should be an HTMLInputElement',
+      );
+    });
+  });
 });
