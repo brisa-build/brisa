@@ -9785,6 +9785,18 @@ export interface BrisaTestMatchers {
    * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobeinputtypeof)
    */
   toBeInputTypeOf(type: InputType): void;
+  /**
+   * Use `toBeInTheDocument` to assert that an element is in the document.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toBeInTheDocument();
+   * ```
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobeinvalid)
+   */
+  toBeInTheDocument(): void;
 }
 
 declare module "bun:test" {

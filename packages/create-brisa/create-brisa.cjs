@@ -120,10 +120,7 @@ bun start
 }`,
   );
 
-  fs.writeFileSync(
-    "bunfig.toml",
-    '[test]\npreload = "brisa/test"',
-  );
+  fs.writeFileSync("bunfig.toml", '[test]\npreload = "brisa/test"');
 
   fs.writeFileSync(".gitignore", "build\nnode_modules\nout\n");
 
