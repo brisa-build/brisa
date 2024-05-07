@@ -65,18 +65,26 @@ function toContainRenderedText(received: unknown, text: string) {
   };
 }
 
+function toHaveStyle(received: unknown, style: string, value: string) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toHaveStyle(received, style). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: received.style[style as any] === value,
+    message: () => `expected element to have style ${style} with value ${value}`,
+  };
+}
+
 /**
  * 
  * TODO:
-- `toHaveRenderedText`: Ensures that the target element renders the expected text content.
-- `toHaveBeenRenderedTimes`: Checks the number of times the target element has been rendered.
-- `toContainRenderedText`: Verifies if the rendered text content contains a specific string.
 - `toHaveStyle`: Validates the styling properties of the target element.
 - `toHaveClass`: Checks for the presence of a specified CSS class within the target element.
 - `toHaveValue`: Verifies the current value of form elements such as input fields.
 - `toHaveFocus`: Indicates whether the target element currently has focus.
-- `toBeSuspenseMode`: Checks if the target component is in suspense mode.
-- `toBeErrorMode`: Indicates whether the target component is in error mode.
 - `toBeVisible`: Checks if the target element is visible within the DOM.
 - `toBeEnabled`: Verifies that the target element is enabled and interactive.
 - `toBeDisabled`: Indicates whether the target element is disabled and non-interactive.
@@ -93,4 +101,5 @@ export default {
   toHaveTagName,
   toHaveRenderedText,
   toContainRenderedText,
+  toHaveStyle,
 };

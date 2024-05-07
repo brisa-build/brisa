@@ -137,4 +137,22 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toHaveStyle", () => {
+    it("should pass if the element has the style", () => {
+      const div = document.createElement("div");
+      div.style.color = "red";
+
+      expect(div).toHaveStyle("color", "red");
+    });
+
+    it("should fail if the element does not have the style", () => {
+      const div = document.createElement("div");
+      div.style.color = "red";
+
+      expect(() => expect(div).toHaveStyle("color", "blue")).toThrowError(
+        "expected element to have style color with value blue",
+      );
+    });
+  });
 });
