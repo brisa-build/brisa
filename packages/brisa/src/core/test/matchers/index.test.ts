@@ -30,4 +30,28 @@ describe("matchers", () => {
       );
     });
   });
+
+  describe("toHaveAttribute", () => {
+    beforeEach(() => {
+      GlobalRegistrator.register();
+    });
+    afterEach(() => {
+      GlobalRegistrator.unregister();
+    });
+
+    it("should pass if the element has the attribute", () => {
+      const div = document.createElement("div");
+      div.setAttribute("data-test", "test");
+
+      expect(div).toHaveAttribute("data-test");
+    });
+
+    it("should fail if the element does not have the attribute", () => {
+      const div = document.createElement("div");
+
+      expect(() => expect(div).toHaveAttribute("data-test")).toThrowError(
+        "expected element to have attribute data-test",
+      );
+    });
+  });
 });
