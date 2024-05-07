@@ -9561,6 +9561,8 @@ export interface BrisaTestMatchers {
   toBeChecked(): void;
   toHaveAttribute(name: string, value?: string): void;
   toHaveTagName(tagName: string): void;
+  toHaveRenderedText(text: string): void;
+  toContainRenderedText(text: string): void;
 }
 
 declare module "bun:test" {
