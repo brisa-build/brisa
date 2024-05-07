@@ -9563,6 +9563,7 @@ export interface BrisaTestMatchers {
   toHaveTagName(tagName: string): void;
   toHaveRenderedText(text: string): void;
   toContainRenderedText(text: string): void;
+  toHaveStyle(style: string, value: string): void;
 }
 
 declare module "bun:test" {
