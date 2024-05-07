@@ -76,7 +76,8 @@ function toHaveStyle(received: unknown, style: string, value: string) {
 
   return {
     pass: received.style[style as any] === value,
-    message: () => `expected element to have style ${style} with value ${value}`,
+    message: () =>
+      `expected element to have style ${style} with value ${value}`,
   };
 }
 
@@ -127,7 +128,10 @@ function toBeVisible(received: unknown) {
   }
 
   return {
-    pass: received.offsetParent !== null && received.style.display !== "none" && received.style.visibility !== "hidden",
+    pass:
+      received.offsetParent !== null &&
+      received.style.display !== "none" &&
+      received.style.visibility !== "hidden",
     message: () => "expected element to be visible",
   };
 }
