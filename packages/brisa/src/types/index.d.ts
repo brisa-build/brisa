@@ -9557,6 +9557,8 @@ declare module "csstype" {
   }
 }
 
+export type InputType = 'text' | 'password' | 'email' | 'number' | 'checkbox' | 'radio' | 'file' | 'submit' | 'reset' | 'button' | 'image' | 'date' | 'datetime-local' | 'time' | 'week' | 'month' | 'url' | 'search' | 'tel' | 'color' | 'hidden';
+
 export interface BrisaTestMatchers {
   toBeChecked(): void;
   toHaveAttribute(name: string, value?: string): void;
@@ -9574,6 +9576,7 @@ export interface BrisaTestMatchers {
   toBeRequired(): void;
   toBeValid(): void;
   toBeInvalid(): void;
+  toBeInputTypeOf(type: InputType): void;
 }
 
 declare module "bun:test" {
