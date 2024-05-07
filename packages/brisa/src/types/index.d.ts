@@ -9572,6 +9572,8 @@ export interface BrisaTestMatchers {
   toBeEnabled(): void;
   toBeSelected(): void;
   toBeRequired(): void;
+  toBeValid(): void;
+  toBeInvalid(): void;
 }
 
 declare module "bun:test" {

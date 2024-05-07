@@ -182,10 +182,35 @@ function toBeRequired(received: unknown) {
   };
 }
 
+function toBeValid(received: unknown) {
+  if (received instanceof HTMLInputElement === false) {
+    throw new Error(
+      "Invalid usage of toBeValid(received). The argument received should be an HTMLInputElement",
+    );
+  }
+
+  return {
+    pass: received.validity.valid,
+    message: () => "expected input element to be valid",
+  };
+}
+
+function toBeInvalid(received: unknown) {
+  if (received instanceof HTMLInputElement === false) {
+    throw new Error(
+      "Invalid usage of toBeInvalid(received). The argument received should be an HTMLInputElement",
+    );
+  }
+
+  return {
+    pass: !received.validity.valid,
+    message: () => "expected input element to be invalid",
+  };
+}
+
 /**
  * 
  * TODO:
-- `toBeRequired`: Indicates whether the target element is required.
 - `toBeInvalid`: Indicates whether the target element is invalid.
 - `toBeValid`: Checks if the target element is valid.
 - `toBeHidden`: Verifies if the target element is hidden.
@@ -206,4 +231,6 @@ export default {
   toBeDisabled,
   toBeSelected,
   toBeRequired,
+  toBeValid,
+  toBeInvalid,
 };
