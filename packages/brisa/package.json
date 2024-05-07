@@ -77,9 +77,9 @@
     "brisa": "./cli.cjs"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "14.7.1",
-    "@types/bun": "1.1.0",
-    "brisa": "0.0.47"
+    "@happy-dom/global-registrator": "14.10.1",
+    "@types/bun": "1.1.1",
+    "brisa": "0.0.56"
   },
   "peerDependencies": {
     "typescript": "5.4.5"
