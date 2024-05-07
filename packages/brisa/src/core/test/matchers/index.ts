@@ -11,6 +11,19 @@ function toBeChecked(received: unknown) {
   };
 }
 
+function toHaveAttribute(received: unknown, attribute: string) {
+  if (received instanceof HTMLElement === false) {
+    throw new Error(
+      "Invalid usage of toHaveAttribute(received, attribute). The argument received should be an HTMLElement",
+    );
+  }
+
+  return {
+    pass: received.hasAttribute(attribute),
+    message: () => `expected element to have attribute ${attribute}`,
+  };
+}
+
 /**
  * 
  * TODO:
@@ -24,7 +37,6 @@ function toBeChecked(received: unknown) {
 - `toHaveValue`: Verifies the current value of form elements such as input fields.
 - `toHaveFocus`: Indicates whether the target element currently has focus.
 - `toBeSuspenseMode`: Checks if the target component is in suspense mode.
-- `toFinishSuspenseMode`: Verifies if the suspense mode of the target component has finished.
 - `toBeErrorMode`: Indicates whether the target component is in error mode.
 - `toBeVisible`: Checks if the target element is visible within the DOM.
 - `toBeEnabled`: Verifies that the target element is enabled and interactive.
@@ -38,4 +50,5 @@ function toBeChecked(received: unknown) {
 
 export default {
   toBeChecked,
+  toHaveAttribute,
 };
