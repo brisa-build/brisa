@@ -292,3 +292,20 @@ Types:
 ```ts
 toBeInputTypeOf(type: string): void;
 ```
+
+## `toBeInTheDocument`
+
+Checks if the target element is present in the DOM.
+
+Example:
+
+```ts
+expect(element).toBeInTheDocument();
+expect(element).not.toBeInTheDocument();
+```
+
+Types:
+
+```ts
+toBeInTheDocument(): void;
+```

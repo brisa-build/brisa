@@ -444,4 +444,34 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toBeInTheDocument", () => {
+    it("should pass if the element is in the document body", () => {
+      const div = document.createElement("div");
+      document.body.appendChild(div);
+
+      expect(div).toBeInTheDocument();
+    });
+
+    it("should pass if the element is in the document head", () => {
+      const link = document.createElement("link");
+      document.head.appendChild(link);
+
+      expect(link).toBeInTheDocument();
+    });
+
+    it("should fail if the element is not in the document", () => {
+      const div = document.createElement("div");
+
+      expect(() => expect(div).toBeInTheDocument()).toThrowError(
+        "expected element to be in the document",
+      );
+    });
+
+    it("should fail when the received is not an element", () => {
+      expect(() => expect("foo").toBeInTheDocument()).toThrowError(
+        "Invalid usage of toBeInTheDocument(received). The argument received should be an HTMLElement",
+      );
+    });
+  });
 });
