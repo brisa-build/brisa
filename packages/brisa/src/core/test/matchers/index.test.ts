@@ -329,4 +329,29 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toBeRequired", () => {
+    it("should pass if the element is required", () => {
+      const input = document.createElement("input");
+      input.required = true;
+
+      expect(input).toBeRequired();
+    });
+
+    it("should fail if the element is not required", () => {
+      const input = document.createElement("input");
+
+      expect(() => expect(input).toBeRequired()).toThrowError(
+        "expected input element to be required",
+      );
+    });
+
+    it('should fail when the received is not an input element', () => {
+      const div = document.createElement('div');
+
+      expect(() => expect(div).toBeRequired()).toThrowError(
+        'Invalid usage of toBeRequired(received). The argument received should be an HTMLInputElement',
+      );
+    });
+  });
 });
