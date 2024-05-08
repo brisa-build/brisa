@@ -1,9 +1,5 @@
 import { expect, describe, it, beforeEach, afterEach } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import matchers from "@/core/test/matchers";
-import type { BrisaTestMatchers } from "@/types";
-
-expect.extend<BrisaTestMatchers>(matchers);
 
 describe("test matchers", () => {
   beforeEach(() => {
