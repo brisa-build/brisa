@@ -1,4 +1,6 @@
-import { mock } from "bun:test";
+import matchers from "@/core/test/matchers";
+import type { BrisaTestMatchers } from "@/types";
+import { mock, expect } from "bun:test";
 import crypto from "node:crypto";
 
 const dec = new TextDecoder();
@@ -22,3 +24,5 @@ mock.module("diff-dom-streaming", () => ({
     doc.documentElement.innerHTML = result;
   },
 }));
+
+expect.extend<BrisaTestMatchers>(matchers);
