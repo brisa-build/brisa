@@ -309,3 +309,9 @@ Types:
 ```ts
 toBeInTheDocument(): void;
 ```
+
+## More Matchers from Bun
+
+In addition to the custom matchers provided by Brisa, you can also use the default matchers from Bun, such as `toBe`, `toEqual`, `toBeTruthy`, `toBeFalsy`...
+
+For more information on how to use these matchers, refer to the [Bun documentation](https://bun.sh/docs/test/writing#matchers).
