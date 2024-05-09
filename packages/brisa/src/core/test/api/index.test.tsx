@@ -44,6 +44,45 @@ describe("test api", () => {
       expect(container).toContainTextContent("Foo");
     });
 
+    it("should append the container to the document.body by default", async () => {
+      function Foo() {
+        return <div>Foo</div>;
+      }
+      const { container } = await render(<Foo />);
+      expect(document.body.contains(container)).toBeTrue();
+    });
+
+    it("should append the container to a baseElement", async () => {
+      function Foo() {
+        return <div>Foo</div>;
+      }
+      const parent = document.createElement("div");
+      const { container } = await render(<Foo />, parent);
+      expect(parent.contains(container)).toBeTrue();
+    });
+
+    it("should work with a response", async () => {
+      const response = new Response("Foo");
+      const { container } = await render(response);
+      expect(container.innerHTML).toBe("Foo");
+      expect(container).toContainTextContent("Foo");
+    });
+
+    it("should work with a response that return HTML", async () => {
+      const response = new Response('<div id="test">Foo</div>');
+      const { container } = await render(response);
+      const testedElement = container.querySelector("#test")!;
+      expect(testedElement.innerHTML).toBe("Foo");
+      expect(container).toContainTextContent("Foo");
+    });
+
+    it("should unmount the container", async () => {
+      const Foo = () => <div>Foo</div>;
+      const { container, unmount } = await render(<Foo />);
+      unmount();
+      expect(container.innerHTML).toBeEmpty();
+    });
+
     it.todo("should render a web component", async () => {});
 
     it.todo("should render a web component with props", async () => {});
