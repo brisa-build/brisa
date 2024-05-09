@@ -6,6 +6,10 @@ description: Learn how to set up Brisa with Bun test runner
 
 Brisa utilizes the [Bun test runner](https://bun.sh/docs/cli/test) to execute tests, coupled with [@happy-dom/global-registrator](https://github.com/capricorn86/happy-dom/wiki/Global-Registrator) for DOM manipulation within the tests. Additionally, Brisa exposes a [testing API](/building-your-application/testing/test-api) and extends [test matchers](/building-your-application/testing/matchers) with to streamline integration with components in the tests.
 
+> [!NOTE]
+>
+> Take a look at the [Bun test runner documentation](https://bun.sh/docs/cli/test) for more information on how to run tests and the available options.
+
 ## Getting started
 
 To use tests in Brisa, you need to have the `bunfig.toml` file on the root of the project with this configuration:
@@ -34,7 +38,7 @@ test("sum", () => {
 });
 ```
 
-#### Component testing
+#### Component testing
 
 Is a more focused version of unit testing where the primary subject of the tests is Brisa components. This may involve testing how components are rendered, their interaction with props, and their behavior in response to user events.
 
@@ -90,7 +94,7 @@ test("integration", async () => {
 });
 ```
 
-### End-to-End (E2E) Testing
+### End-to-End (E2E) Testing
 
 Involves testing user flows in an environment that simulates real user scenarios, like the browser. This means testing specific tasks (e.g. signup flow) in a production-like environment.
 
