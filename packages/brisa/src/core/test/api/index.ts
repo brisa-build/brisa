@@ -115,13 +115,13 @@ function isTemplate(
  * User events
  */
 export const userEvent = {
-  click: async (element: Element) => {
+  click: (element: Element) => {
     element.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   },
-  dblClick: async (element: Element) => {
+  dblClick: (element: Element) => {
     element.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
   },
-  type: async (element: HTMLInputElement, text: string) => {
+  type: (element: HTMLInputElement, text: string) => {
     for (const char of text) {
       element.dispatchEvent(new KeyboardEvent("keydown", { key: char }));
       element.dispatchEvent(new KeyboardEvent("keypress", { key: char }));
@@ -130,44 +130,44 @@ export const userEvent = {
       element.dispatchEvent(new InputEvent("input", { bubbles: true }));
     }
   },
-  clear: async (element: HTMLInputElement) => {
+  clear: (element: HTMLInputElement) => {
     element.dispatchEvent(new KeyboardEvent("keydown", { key: "" }));
     element.dispatchEvent(new KeyboardEvent("keypress", { key: "" }));
     element.dispatchEvent(new KeyboardEvent("keyup", { key: "" }));
     element.value = "";
     element.dispatchEvent(new InputEvent("input", { bubbles: true }));
   },
-  hover: async (element: Element) => {
+  hover: (element: Element) => {
     element.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
   },
-  unhover: async (element: Element) => {
+  unhover: (element: Element) => {
     element.dispatchEvent(new MouseEvent("mouseout", { bubbles: true }));
   },
-  focus: async (element: Element) => {
+  focus: (element: Element) => {
     element.dispatchEvent(new FocusEvent("focus", { bubbles: true }));
   },
-  blur: async (element: Element) => {
+  blur: (element: Element) => {
     element.dispatchEvent(new FocusEvent("blur", { bubbles: true }));
   },
-  select: async (element: HTMLSelectElement, value: string) => {
+  select: (element: HTMLSelectElement, value: string) => {
     element.value = value;
     dispatchEvent(new Event("change", { bubbles: true }));
   },
-  deselect: async (element: HTMLSelectElement, value: string) => {
+  deselect: (element: HTMLSelectElement, value: string) => {
     if (value === element.value) {
       element.value = "";
     }
     dispatchEvent(new Event("change", { bubbles: true }));
   },
-  upload: async (input: HTMLInputElement, file: File) => {
+  upload: (input: HTMLInputElement, file: File) => {
     // @ts-ignore
     input.files = [file];
     input.dispatchEvent(new Event("change", { bubbles: true }));
   },
-  tab: async () => {
+  tab: () => {
     document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab" }));
   },
-  paste: async (element: HTMLInputElement, text: string) => {
+  paste: (element: HTMLInputElement, text: string) => {
     element.value = text;
     element.dispatchEvent(
       new ClipboardEvent("paste", {
