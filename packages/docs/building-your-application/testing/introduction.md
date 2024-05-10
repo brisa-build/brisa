@@ -70,21 +70,12 @@ Involves testing how multiple units work together. This can be a combination of 
 Example:
 
 ```tsx
-import { render, userEvent } from "brisa/test";
+import { render, userEvent, serveRoute } from "brisa/test";
 import { test, expect } from "bun:test";
 
-// Imagine that Button and App are two different
-// imports from different files.
-function Button() {
-  return <button onClick={() => console.log("clicked")}>Click me</button>;
-}
-
-function App() {
-  return <Button />;
-}
-
 test("integration", async () => {
-  const { container } = await render(<App />);
+  const response = await serveRoute('/')
+  const { container } = await render(response);
   const button = container.querySelector("button");
 
   expect(button).toHaveTextContent("Click me");
@@ -93,6 +84,10 @@ test("integration", async () => {
   expect(console.log).toHaveBeenCalledWith("clicked");
 });
 ```
+
+> [!NOTE]
+>
+> Brisa provides a [testing API](/building-your-application/testing/test-api) to help you interact with entrypoints and test their behavior. This is not considered full E2E testing because it doesn't simulate real user scenarios like a browser would do, but it can be used to test entrypoints of your application.
 
 ### End-to-End (E2E) Testing
 
@@ -130,7 +125,7 @@ import { test, expect } from "bun:test";
 
 test("snapshot", async () => {
   const { container } = await render(<div>Hello, World!</div>);
-  expect(container).toMatchSnapshot();
+  expect(container.innerHTML).toMatchSnapshot();
 });
 ```
 
