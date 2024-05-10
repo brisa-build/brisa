@@ -28,7 +28,7 @@ test("component", async () => {
 });
 ```
 
-The second argument is an optional `baseElement` that you can use to render the component into a specific element (by default, it uses the `document.body`).
+The second argument is an optional `baseElement` that you can use to render the component into a specific element (by default, it uses the `document.documentElement`).
 
 Example:
 
@@ -47,7 +47,7 @@ test("component", async () => {
 Types:
 
 ```ts
-render(element: JSX.Element | Response, baseElement?: HTMLElement
+render(element: JSX.Element | Response | string, baseElement?: HTMLElement
 ): Promise<{ container: HTMLElement, unmount: () => void }>;
 ```
 
@@ -82,6 +82,10 @@ test("page", async () => {
   expect(container).toHaveTextContent("About us");
 });
 ```
+
+> [!TIP]
+>
+> You can use `render` after `serveRoute` to render the page and interact with it, and you can pass the `response` or the `response.text()` directly to the `render` function.
 
 Types:
 
