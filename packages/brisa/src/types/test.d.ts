@@ -1,4 +1,6 @@
 async function render(
-  element: JSX.Element | Response,
+  element: JSX.Element | Response | string,
   baseElement?: HTMLElement,
 ): Promise<{ container: HTMLElement; unmount: () => void }>;
+
+async function serveRoute(route: string): Promise<Response>;

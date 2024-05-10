@@ -1,6 +1,12 @@
-import { render } from "@/core/test/api";
+import path from "node:path";
+import { render, serveRoute } from "@/core/test/api";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
+import { getConstants } from "@/constants";
+
+const BUILD_DIR = path.join(import.meta.dir, "..", "..", "..", "__fixtures__");
+const PAGES_DIR = path.join(BUILD_DIR, "pages");
+const ASSETS_DIR = path.join(BUILD_DIR, "public");
 
 describe("test api", () => {
   beforeEach(() => {
@@ -9,7 +15,6 @@ describe("test api", () => {
   afterEach(() => {
     GlobalRegistrator.unregister();
   });
-
   describe("render", () => {
     it("should render the element", async () => {
       function Foo() {
@@ -49,7 +54,7 @@ describe("test api", () => {
         return <div>Foo</div>;
       }
       const { container } = await render(<Foo />);
-      expect(document.body.contains(container)).toBeTrue();
+      expect(document.documentElement.contains(container)).toBeTrue();
     });
 
     it("should append the container to a baseElement", async () => {
@@ -101,5 +106,47 @@ describe("test api", () => {
       "should be possible to render a server component with a web component inside",
       async () => {},
     );
+  });
+
+  describe("serveRoute", () => {
+    beforeEach(() => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        PAGES_DIR,
+        BUILD_DIR,
+        SRC_DIR: BUILD_DIR,
+        ASSETS_DIR,
+      };
+    });
+
+    it("should throw an error if build is not executed", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        PAGES_DIR: "invalid",
+        BUILD_DIR: "invalid",
+        SRC_DIR: "invalid",
+        ASSETS_DIR: "invalid",
+      };
+      await expect(serveRoute("/api/example")).rejects.toThrow(
+        new Error(
+          "Error: Unable to execute 'serveRoute'. Prior execution of 'brisa build' is required to utilize the 'serveRoute' method.",
+        ),
+      );
+    });
+
+    it("should serve an API endpoint", async () => {
+      const response = await serveRoute("/api/example");
+      const data = await response.json();
+
+      expect(data).toEqual({ hello: "world" });
+    });
+
+    it("should serve a page", async () => {
+      const response = await serveRoute("/somepage");
+      const { container } = await render(response);
+
+      expect(response.headers.get("x-test")).toBe("test");
+      expect(container).toContainTextContent("Some page");
+    });
   });
 });
