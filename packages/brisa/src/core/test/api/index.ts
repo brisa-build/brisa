@@ -2,6 +2,9 @@ import { getServeOptions } from "@/cli/serve/serve-options";
 import renderToString from "@/utils/render-to-string";
 import { blueLog, greenLog, cyanLog } from "@/utils/log/log-color";
 
+/**
+ * Render a JSX element, a string or a Response object into a container
+ */
 export async function render(
   element: JSX.Element | Response | string,
   baseElement: HTMLElement = document.documentElement,
@@ -26,6 +29,9 @@ export async function render(
   return { container, unmount };
 }
 
+/**
+ * Serve a route and return the response
+ */
 export async function serveRoute(route: string) {
   const serveOptions = await getServeOptions();
 
@@ -54,6 +60,9 @@ export async function waitFor(fn: () => unknown) {
   }
 }
 
+/**
+ * Debug the current DOM
+ */
 export function debug() {
   console.log(prettyDOM(document.documentElement));
 }
@@ -101,3 +110,72 @@ function isTemplate(
 ): node is HTMLTemplateElement {
   return (node as Element)?.tagName === "TEMPLATE";
 }
+
+/**
+ * User events
+ */
+export const userEvent = {
+  click: async (element: Element) => {
+    element.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  },
+  dblClick: async (element: Element) => {
+    element.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+  },
+  type: async (element: HTMLInputElement, text: string) => {
+    for (const char of text) {
+      element.dispatchEvent(new KeyboardEvent("keydown", { key: char }));
+      element.dispatchEvent(new KeyboardEvent("keypress", { key: char }));
+      element.dispatchEvent(new KeyboardEvent("keyup", { key: char }));
+      element.value += char;
+      element.dispatchEvent(new InputEvent("input", { bubbles: true }));
+    }
+  },
+  clear: async (element: HTMLInputElement) => {
+    element.dispatchEvent(new KeyboardEvent("keydown", { key: "" }));
+    element.dispatchEvent(new KeyboardEvent("keypress", { key: "" }));
+    element.dispatchEvent(new KeyboardEvent("keyup", { key: "" }));
+    element.value = "";
+    element.dispatchEvent(new InputEvent("input", { bubbles: true }));
+  },
+  hover: async (element: Element) => {
+    element.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+  },
+  unhover: async (element: Element) => {
+    element.dispatchEvent(new MouseEvent("mouseout", { bubbles: true }));
+  },
+  focus: async (element: Element) => {
+    element.dispatchEvent(new FocusEvent("focus", { bubbles: true }));
+  },
+  blur: async (element: Element) => {
+    element.dispatchEvent(new FocusEvent("blur", { bubbles: true }));
+  },
+  select: async (element: HTMLSelectElement, value: string) => {
+    element.value = value;
+    dispatchEvent(new Event("change", { bubbles: true }));
+  },
+  deselect: async (element: HTMLSelectElement, value: string) => {
+    if (value === element.value) {
+      element.value = "";
+    }
+    dispatchEvent(new Event("change", { bubbles: true }));
+  },
+  upload: async (input: HTMLInputElement, file: File) => {
+    // @ts-ignore
+    input.files = [file];
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  },
+  tab: async () => {
+    document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab" }));
+  },
+  paste: async (element: HTMLInputElement, text: string) => {
+    element.value = text;
+    element.dispatchEvent(
+      new ClipboardEvent("paste", {
+        bubbles: true,
+        clipboardData: {
+          getData: () => text,
+        },
+      } as any),
+    );
+  },
+};

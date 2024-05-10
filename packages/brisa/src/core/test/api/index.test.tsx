@@ -1,5 +1,5 @@
 import path from "node:path";
-import { debug, render, serveRoute, waitFor } from "@/core/test/api";
+import { debug, render, serveRoute, waitFor, userEvent } from "@/core/test/api";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import {
   describe,
@@ -9,6 +9,7 @@ import {
   afterEach,
   spyOn,
   jest,
+  mock,
 } from "bun:test";
 import { getConstants } from "@/constants";
 import { blueLog, cyanLog, greenLog } from "@/utils/log/log-color";
@@ -215,6 +216,180 @@ describe("test api", () => {
           "=" +
           greenLog('"test"'),
       );
+    });
+  });
+
+  describe("userEvent", () => {
+    describe("click", () => {
+      it("should click the element", async () => {
+        const mockClick = mock(() => {});
+        const element = document.createElement("button");
+
+        element.textContent = "Click me";
+        document.body.appendChild(element);
+        element.addEventListener("click", mockClick);
+        userEvent.click(element);
+
+        expect(mockClick).toHaveBeenCalled();
+      });
+    });
+    describe("dblClick", () => {
+      it("should double click the element", async () => {
+        const mockDblClick = mock(() => {});
+        const element = document.createElement("button");
+
+        element.textContent = "Click me";
+        document.body.appendChild(element);
+        element.addEventListener("dblclick", mockDblClick);
+
+        userEvent.dblClick(element);
+        expect(mockDblClick).toHaveBeenCalled();
+      });
+    });
+    describe("type", () => {
+      it("should type the element", async () => {
+        const element = document.createElement("input");
+        document.body.appendChild(element);
+
+        userEvent.type(element, "Foo");
+
+        expect(element).toHaveValue("Foo");
+
+        userEvent.type(element, "Bar");
+
+        expect(element).toHaveValue("FooBar");
+      });
+    });
+    describe("clear", () => {
+      it("should clear the element", async () => {
+        const element = document.createElement("input");
+        element.value = "Foo";
+        document.body.appendChild(element);
+
+        userEvent.clear(element);
+
+        expect(element).toHaveValue("");
+      });
+    });
+    describe("hover", () => {
+      it("should hover the element", async () => {
+        const mockHover = mock(() => {});
+        const element = document.createElement("button");
+
+        element.textContent = "Hover me";
+        document.body.appendChild(element);
+        element.addEventListener("mouseover", mockHover);
+
+        userEvent.hover(element);
+        expect(mockHover).toHaveBeenCalled();
+      });
+    });
+    describe("unhover", () => {
+      it("should unhover the element", async () => {
+        const mockUnhover = mock(() => {});
+        const element = document.createElement("button");
+
+        element.textContent = "Unhover me";
+        document.body.appendChild(element);
+        element.addEventListener("mouseout", mockUnhover);
+
+        userEvent.unhover(element);
+        expect(mockUnhover).toHaveBeenCalled();
+      });
+    });
+    describe("focus", () => {
+      it("should focus the element", async () => {
+        const mockFocus = mock(() => {});
+        const element = document.createElement("input");
+
+        document.body.appendChild(element);
+        element.addEventListener("focus", mockFocus);
+
+        userEvent.focus(element);
+        expect(mockFocus).toHaveBeenCalled();
+      });
+    });
+    describe("blur", () => {
+      it("should blur the element", async () => {
+        const mockBlur = mock(() => {});
+        const element = document.createElement("input");
+
+        document.body.appendChild(element);
+        element.addEventListener("blur", mockBlur);
+
+        userEvent.blur(element);
+        expect(mockBlur).toHaveBeenCalled();
+      });
+    });
+    describe("select", () => {
+      it("should select the element", async () => {
+        const element = document.createElement("select");
+        const option1 = document.createElement("option");
+        const option2 = document.createElement("option");
+        option1.value = "Foo";
+        option2.value = "Bar";
+        element.appendChild(option1);
+        element.appendChild(option2);
+        document.body.appendChild(element);
+
+        userEvent.select(element, "Bar");
+
+        expect(option1.selected).toBeFalse();
+        expect(option2.selected).toBeTrue();
+      });
+    });
+    describe("deselect", () => {
+      it("should deselect the element", async () => {
+        const element = document.createElement("select");
+        const option1 = document.createElement("option");
+        const option2 = document.createElement("option");
+        option1.value = "Foo";
+        option2.value = "Bar";
+        option2.selected = true;
+        element.appendChild(option1);
+        element.appendChild(option2);
+        document.body.appendChild(element);
+
+        userEvent.deselect(element, "Bar");
+
+        expect(option1.selected).toBeFalse();
+        expect(option2.selected).toBeFalse();
+      });
+    });
+    describe("upload", () => {
+      it("should upload the element", async () => {
+        const file = new File(["foo"], "foo.txt", {
+          type: "text/plain",
+        });
+        const element = document.createElement("input");
+        element.type = "file";
+        document.body.appendChild(element);
+
+        userEvent.upload(element, file);
+
+        expect(element.files).toContain(file);
+      });
+    });
+    describe("tab", () => {
+      it("should tab the element", async () => {
+        const mockTab = mock(() => {});
+        document.body.addEventListener("keydown", mockTab);
+
+        userEvent.tab();
+        expect(mockTab).toHaveBeenCalled();
+      });
+    });
+    describe("paste", () => {
+      it("should paste the element", async () => {
+        const mockPaste = mock(() => {});
+        const element = document.createElement("input");
+        document.body.appendChild(element);
+        element.addEventListener("paste", mockPaste);
+
+        userEvent.paste(element, "Foo");
+        expect(mockPaste).toHaveBeenCalled();
+        expect(element).toHaveValue("Foo");
+      });
     });
   });
 });
