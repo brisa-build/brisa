@@ -169,20 +169,20 @@ Each method simulates a different user event:
 Types:
 
 ```ts
-userEvent: {
-  click(element: Element): Promise<void>;
-  dblClick(element: Element): Promise<void>;
-  type(element: Element, text: string): Promise<void>;
-  hover(element: Element): Promise<void>;
-  unhover(element: Element): Promise<void>;
-  focus(element: Element): Promise<void>;
-  blur(element: Element): Promise<void>;
-  select(element: Element, value: string): Promise<void>;
-  deselect(element: Element, value: string): Promise<void>;
-  upload(element: Element, file: File): Promise<void>;
-  clear(element: Element): Promise<void>;
-  tab(): Promise<void>;
-  paste(element: Element, text: string): Promise<void>;
+type userEvent = {
+  click(element: Element): void;
+  dblClick(element: Element): void;
+  type(element: HTMLInputElement, text: string): void;
+  hover(element: Element): void;
+  unhover(element: Element): void;
+  focus(element: Element): void;
+  blur(element: Element): void;
+  select(element: HTMLSelectElement, value: string): void;
+  deselect(element: HTMLSelectElement, value: string): void;
+  upload(element: HTMLInputElement, file: File): void;
+  clear(element: HTMLInputElement): void;
+  tab(): void;
+  paste(element: Element, text: string): void;
 };
 ```
 
@@ -228,6 +228,18 @@ test("debug", async () => {
   const { container } = await render(<button>Click me</button>);
   debug();
 });
+```
+
+In the console, you will see the HTML of the document in a readable format:
+
+```html
+<html>
+  <body>
+    <button>
+      Click me
+    </button>
+  </body>
+</html>
 ```
 
 Types:
