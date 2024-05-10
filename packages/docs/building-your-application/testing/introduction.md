@@ -21,6 +21,26 @@ preload = "brisa/test"
 
 This allows to preload all the [matchers](/building-your-application/testing/matchers) from Brisa and it will also take care of loading [happy-dom](https://github.com/capricorn86/happy-dom) library in case you don't have it as `devDependencies`, which is a prerequisite that `brisa/test` needs to run DOM tests.
 
+## Server vs Browser
+
+When running tests, you can choose to run them in a server environment or in a browser environment. The server environment is the default and it's useful for testing functions and components that don't rely on the DOM. The browser environment is useful for testing components that rely on the DOM.
+
+To run tests in the browser environment, you can use the `GlobalRegistrator` class from `@happy-dom/global-registrator` to register the global objects that are available in the browser environment.
+
+```tsx
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
+
+GlobalRegistrator.register();
+```
+
+To come back to the server environment, you can use the `GlobalRegistrator.unregister` method.
+
+```tsx
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
+
+GlobalRegistrator.unregister();
+```
+
 ## Types of tests
 
 ### Unit testing
@@ -74,7 +94,7 @@ import { render, userEvent, serveRoute } from "brisa/test";
 import { test, expect } from "bun:test";
 
 test("integration", async () => {
-  const response = await serveRoute('/')
+  const response = await serveRoute("/");
   const { container } = await render(response);
   const button = container.querySelector("button");
 
