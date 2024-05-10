@@ -43,3 +43,12 @@ export async function serveRoute(route: string) {
 
   return response;
 }
+
+export async function waitFor(fn: () => unknown) {
+  try {
+    fn();
+  } catch (error) {
+    await Bun.sleep(10);
+    return waitFor(fn);
+  }
+}

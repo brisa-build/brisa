@@ -4,3 +4,5 @@ async function render(
 ): Promise<{ container: HTMLElement; unmount: () => void }>;
 
 async function serveRoute(route: string): Promise<Response>;
+
+async function waitFor(fn: () => unknown): Promise<void>;

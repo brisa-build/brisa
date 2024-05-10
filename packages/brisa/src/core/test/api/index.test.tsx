@@ -1,5 +1,5 @@
 import path from "node:path";
-import { render, serveRoute } from "@/core/test/api";
+import { render, serveRoute, waitFor } from "@/core/test/api";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import { getConstants } from "@/constants";
@@ -147,6 +147,19 @@ describe("test api", () => {
 
       expect(response.headers.get("x-test")).toBe("test");
       expect(container).toContainTextContent("Some page");
+    });
+  });
+
+  describe("waitFor", () => {
+    it("should wait for the content of the element", async () => {
+      const element = document.createElement("div");
+
+      setTimeout(() => {
+        element.textContent = "Foo";
+      }, 100);
+
+      await waitFor(() => expect(element).toHaveTextContent("Foo"));
+      expect(element).toHaveTextContent("Foo");
     });
   });
 });
