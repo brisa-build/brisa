@@ -1,8 +1,17 @@
 import path from "node:path";
-import { render, serveRoute, waitFor } from "@/core/test/api";
+import { debug, render, serveRoute, waitFor } from "@/core/test/api";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { describe, it, expect, beforeEach, afterEach } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  spyOn,
+  jest,
+} from "bun:test";
 import { getConstants } from "@/constants";
+import { blueLog, cyanLog, greenLog } from "@/utils/log/log-color";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -14,6 +23,7 @@ describe("test api", () => {
   });
   afterEach(() => {
     GlobalRegistrator.unregister();
+    jest.restoreAllMocks();
   });
   describe("render", () => {
     it("should render the element", async () => {
@@ -160,6 +170,51 @@ describe("test api", () => {
 
       await waitFor(() => expect(element).toHaveTextContent("Foo"));
       expect(element).toHaveTextContent("Foo");
+    });
+  });
+
+  describe("debug", () => {
+    it("should log the document", () => {
+      const mockLog = spyOn(console, "log");
+      document.body.innerHTML = "<div>Foo</div>";
+      debug();
+      expect(mockLog.mock.calls[0][0]).toBe(
+        blueLog("<html") +
+          blueLog(">") +
+          "\n  " +
+          blueLog("<head") +
+          blueLog(">") +
+          "\n  " +
+          blueLog("</head>") +
+          "\n  " +
+          blueLog("<body") +
+          blueLog(">") +
+          "\n    " +
+          blueLog("<div") +
+          blueLog(">") +
+          "\n    " +
+          "Foo\n    " +
+          blueLog("</div>") +
+          "\n  " +
+          blueLog("</body>") +
+          "\n" +
+          blueLog("</html>"),
+      );
+    });
+
+    it("should log the attributes in cyan (key) and green (value)", () => {
+      const mockLog = spyOn(console, "log");
+      document.body.innerHTML = '<div id="test" class="test">Foo</div>';
+      debug();
+      expect(mockLog.mock.calls[0][0]).toContain(
+        cyanLog("id") +
+          "=" +
+          greenLog('"test"') +
+          "\n        " +
+          cyanLog("class") +
+          "=" +
+          greenLog('"test"'),
+      );
     });
   });
 });

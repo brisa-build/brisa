@@ -6,3 +6,5 @@ async function render(
 async function serveRoute(route: string): Promise<Response>;
 
 async function waitFor(fn: () => unknown): Promise<void>;
+
+function debug(): void;
