@@ -204,6 +204,10 @@ test("wait for", async () => {
 });
 ```
 
+> [!TIP]
+>
+> You can use `waitFor` to wait for an element to be visible, to have a specific text content, or to have a specific class name.
+
 Types:
 
 ```ts
