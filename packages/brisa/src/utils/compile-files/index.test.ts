@@ -205,32 +205,44 @@ describe("utils", () => {
 
       expect(pagesClient).toEqual([
         `_404-${HASH}-en.js`,
+        `_404-${HASH}-en.js.br`,
         `_404-${HASH}-en.js.gz`,
         `_404-${HASH}-pt.js`,
+        `_404-${HASH}-pt.js.br`,
         `_404-${HASH}-pt.js.gz`,
         `_404-${HASH}.js`,
+        `_404-${HASH}.js.br`,
         `_404-${HASH}.js.gz`,
         `_404.txt`,
         `_500-${HASH}-en.js`,
+        `_500-${HASH}-en.js.br`,
         `_500-${HASH}-en.js.gz`,
         `_500-${HASH}-pt.js`,
+        `_500-${HASH}-pt.js.br`,
         `_500-${HASH}-pt.js.gz`,
         `_500-${HASH}.js`,
+        `_500-${HASH}.js.br`,
         `_500-${HASH}.js.gz`,
         `_500.txt`,
         `_rpc-${constants.VERSION_HASH}.js`,
+        `_rpc-${constants.VERSION_HASH}.js.br`,
         `_rpc-${constants.VERSION_HASH}.js.gz`,
         `_rpc-lazy-${constants.VERSION_HASH}.js`,
+        `_rpc-lazy-${constants.VERSION_HASH}.js.br`,
         `_rpc-lazy-${constants.VERSION_HASH}.js.gz`,
         `_rpc.txt`,
         `_unsuspense-${constants.VERSION_HASH}.js`,
+        `_unsuspense-${constants.VERSION_HASH}.js.br`,
         `_unsuspense-${constants.VERSION_HASH}.js.gz`,
         `_unsuspense.txt`,
         `page-with-web-component-${HASH}-en.js`,
+        `page-with-web-component-${HASH}-en.js.br`,
         `page-with-web-component-${HASH}-en.js.gz`,
         `page-with-web-component-${HASH}-pt.js`,
+        `page-with-web-component-${HASH}-pt.js.br`,
         `page-with-web-component-${HASH}-pt.js.gz`,
         `page-with-web-component-${HASH}.js`,
+        `page-with-web-component-${HASH}.js.br`,
         `page-with-web-component-${HASH}.js.gz`,
         `page-with-web-component.txt`,
       ]);
@@ -339,6 +351,7 @@ describe("utils", () => {
 
       expect(pagesClient).toEqual([
         `index-${HASH}.js`,
+        `index-${HASH}.js.br`,
         `index-${HASH}.js.gz`,
         `index.txt`,
       ]);
@@ -423,8 +436,10 @@ describe("utils", () => {
 
       expect(pagesClient).toEqual([
         `_rpc-${constants.VERSION_HASH}.js`,
+        `_rpc-${constants.VERSION_HASH}.js.br`,
         `_rpc-${constants.VERSION_HASH}.js.gz`,
         `_rpc-lazy-${constants.VERSION_HASH}.js`,
+        `_rpc-lazy-${constants.VERSION_HASH}.js.br`,
         `_rpc-lazy-${constants.VERSION_HASH}.js.gz`,
         `_rpc.txt`,
       ]);
@@ -495,6 +510,7 @@ describe("utils", () => {
 
       expect(pagesClient).toEqual([
         `_unsuspense-${constants.VERSION_HASH}.js`,
+        `_unsuspense-${constants.VERSION_HASH}.js.br`,
         `_unsuspense-${constants.VERSION_HASH}.js.gz`,
         `_unsuspense.txt`,
       ]);
@@ -596,10 +612,13 @@ describe("utils", () => {
 
       expect(pagesClient).toEqual([
         `index-${HASH}-en.js`,
+        `index-${HASH}-en.js.br`,
         `index-${HASH}-en.js.gz`,
         `index-${HASH}-fr.js`,
+        `index-${HASH}-fr.js.br`,
         `index-${HASH}-fr.js.gz`,
         `index-${HASH}.js`,
+        `index-${HASH}.js.br`,
         `index-${HASH}.js.gz`,
         `index.txt`,
       ]);
@@ -666,6 +685,7 @@ describe("utils", () => {
 
       expect(pagesClient).toEqual([
         `index-${HASH}.js`,
+        `index-${HASH}.js.br`,
         `index-${HASH}.js.gz`,
         `index.txt`,
       ]);

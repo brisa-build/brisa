@@ -1,4 +1,5 @@
 import { gzipSync, type BuildArtifact } from "bun";
+import { brotliCompressSync } from "node:zlib";
 import fs from "node:fs";
 import { join } from "node:path";
 
@@ -369,6 +370,7 @@ async function compileClientCodePage(
           `${i18nPagePath}.gz`,
           gzipSync(new TextEncoder().encode(i18nCode)),
         );
+        Bun.write(`${i18nPagePath}.br`, brotliCompressSync(i18nCode));
       }
     }
 
@@ -376,6 +378,7 @@ async function compileClientCodePage(
     Bun.write(clientPagePath.replace(".js", ".txt"), hash.toString());
     Bun.write(clientPage, code);
     Bun.write(`${clientPage}.gz`, gzipClientPage);
+    Bun.write(`${clientPage}.br`, brotliCompressSync(code));
     clientSizesPerPage[route] += gzipClientPage.length;
   }
 
@@ -425,6 +428,10 @@ function addExtraChunk(
 
   Bun.write(join(pagesClientPath, jsFilename), code);
   Bun.write(join(pagesClientPath, `${jsFilename}.gz`), gzipUnsuspense);
+  Bun.write(
+    join(pagesClientPath, `${jsFilename}.br`),
+    brotliCompressSync(code),
+  );
 
   if (!skipList) {
     Bun.write(
