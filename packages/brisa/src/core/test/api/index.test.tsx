@@ -232,6 +232,17 @@ describe("test api", () => {
 
         expect(mockClick).toHaveBeenCalled();
       });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <button onClick={mockFn}>Click me</button>,
+        );
+        const button = container.querySelector("button");
+
+        userEvent.click(button!);
+        expect(mockFn).toHaveBeenCalled();
+      });
     });
     describe("dblClick", () => {
       it("should double click the element", async () => {
@@ -244,6 +255,17 @@ describe("test api", () => {
 
         userEvent.dblClick(element);
         expect(mockDblClick).toHaveBeenCalled();
+      });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <button onDblClick={mockFn}>Click me</button>,
+        );
+        const button = container.querySelector("button");
+
+        userEvent.dblClick(button!);
+        expect(mockFn).toHaveBeenCalled();
       });
     });
     describe("type", () => {
@@ -259,6 +281,18 @@ describe("test api", () => {
 
         expect(element).toHaveValue("FooBar");
       });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <input onInput={mockFn} type="text" />,
+        );
+        const input = container.querySelector("input")!;
+
+        userEvent.type(input, "Hello World");
+        expect(input.value).toBe("Hello World");
+        expect(mockFn).toHaveBeenCalledTimes(11);
+      });
     });
     describe("clear", () => {
       it("should clear the element", async () => {
@@ -269,6 +303,19 @@ describe("test api", () => {
         userEvent.clear(element);
 
         expect(element).toHaveValue("");
+      });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <input onInput={mockFn} type="text" />,
+        );
+        const input = container.querySelector("input")!;
+
+        userEvent.type(input, "Hello World");
+        userEvent.clear(input);
+        expect(input.value).toBeEmpty();
+        expect(mockFn).toHaveBeenCalledTimes(12);
       });
     });
     describe("hover", () => {
@@ -283,6 +330,17 @@ describe("test api", () => {
         userEvent.hover(element);
         expect(mockHover).toHaveBeenCalled();
       });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <button onMouseOver={mockFn}>Hover me</button>,
+        );
+        const button = container.querySelector("button");
+
+        userEvent.hover(button!);
+        expect(mockFn).toHaveBeenCalled();
+      });
     });
     describe("unhover", () => {
       it("should unhover the element", async () => {
@@ -296,6 +354,17 @@ describe("test api", () => {
         userEvent.unhover(element);
         expect(mockUnhover).toHaveBeenCalled();
       });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <button onMouseOut={mockFn}>Unhover me</button>,
+        );
+        const button = container.querySelector("button");
+
+        userEvent.unhover(button!);
+        expect(mockFn).toHaveBeenCalled();
+      });
     });
     describe("focus", () => {
       it("should focus the element", async () => {
@@ -308,6 +377,17 @@ describe("test api", () => {
         userEvent.focus(element);
         expect(mockFocus).toHaveBeenCalled();
       });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <input onFocus={mockFn} type="text" />,
+        );
+        const input = container.querySelector("input")!;
+
+        userEvent.focus(input);
+        expect(mockFn).toHaveBeenCalled();
+      });
     });
     describe("blur", () => {
       it("should blur the element", async () => {
@@ -319,6 +399,18 @@ describe("test api", () => {
 
         userEvent.blur(element);
         expect(mockBlur).toHaveBeenCalled();
+      });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <input onBlur={mockFn} type="text" />,
+        );
+        const input = container.querySelector("input")!;
+
+        userEvent.focus(input);
+        userEvent.blur(input);
+        expect(mockFn).toHaveBeenCalled();
       });
     });
     describe("select", () => {
@@ -336,6 +428,21 @@ describe("test api", () => {
 
         expect(option1.selected).toBeFalse();
         expect(option2.selected).toBeTrue();
+      });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <select onChange={mockFn}>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+          </select>,
+        );
+        const select = container.querySelector("select")!;
+
+        userEvent.select(select, "2");
+        expect(select.value).toBe("2");
+        expect(mockFn).toHaveBeenCalled();
       });
     });
     describe("deselect", () => {
@@ -355,6 +462,22 @@ describe("test api", () => {
         expect(option1.selected).toBeFalse();
         expect(option2.selected).toBeFalse();
       });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <select onChange={mockFn}>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+          </select>,
+        );
+        const select = container.querySelector("select")!;
+
+        userEvent.select(select, "2");
+        userEvent.deselect(select, "2");
+        expect(select.value).toBeEmpty();
+        expect(mockFn).toHaveBeenCalledTimes(2);
+      });
     });
     describe("upload", () => {
       it("should upload the element", async () => {
@@ -369,6 +492,21 @@ describe("test api", () => {
 
         expect(element.files).toContain(file);
       });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <input type="file" onChange={mockFn} />,
+        );
+        const input = container.querySelector("input")!;
+        const file = new File(["foo"], "foo.txt", {
+          type: "text/plain",
+        });
+
+        userEvent.upload(input, file);
+        expect(input.files).toContain(file);
+        expect(mockFn).toHaveBeenCalled();
+      });
     });
     describe("tab", () => {
       it("should tab the element", async () => {
@@ -377,6 +515,14 @@ describe("test api", () => {
 
         userEvent.tab();
         expect(mockTab).toHaveBeenCalled();
+      });
+
+      it("should work with render", async () => {
+        const { container } = await render(<input type="text" />);
+        const input = container.querySelector("input")!;
+
+        userEvent.tab();
+        expect(input.isEqualNode(document.activeElement)).toBeTrue();
       });
     });
     describe("paste", () => {
@@ -389,6 +535,18 @@ describe("test api", () => {
         userEvent.paste(element, "Foo");
         expect(mockPaste).toHaveBeenCalled();
         expect(element).toHaveValue("Foo");
+      });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <input onPaste={mockFn} type="text" />,
+        );
+        const input = container.querySelector("input")!;
+
+        userEvent.paste(input, "Hello World");
+        expect(input.value).toBe("Hello World");
+        expect(mockFn).toHaveBeenCalled();
       });
     });
   });

@@ -235,9 +235,7 @@ In the console, you will see the HTML of the document in a readable format:
 ```html
 <html>
   <body>
-    <button>
-      Click me
-    </button>
+    <button>Click me</button>
   </body>
 </html>
 ```
