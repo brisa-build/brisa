@@ -11,7 +11,7 @@ related:
 
 ### System Requirements
 
-- Bun [<Badge type="tip" text="1.1.6" />](https://bun.sh/) or later
+- Bun [<Badge type="tip" text="1.1.8" />](https://bun.sh/) or later
 - macOS, Windows (including WSL), and Linux are supported.
 
 ### Automatic Installation
