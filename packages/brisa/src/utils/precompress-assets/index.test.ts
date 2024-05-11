@@ -1,6 +1,7 @@
-import { describe, it, expect, afterEach } from "bun:test";
+import { describe, it, expect, afterEach, beforeEach } from "bun:test";
 import { exists, unlink } from "node:fs/promises";
 import path from "node:path";
+import { getConstants } from "@/constants";
 import precompressAssets from ".";
 
 const assetsPath = path.join(
@@ -13,15 +14,20 @@ const assetsPath = path.join(
 
 describe("utils", () => {
   describe("precompressAssets", () => {
+    beforeEach(() => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_PRODUCTION: true,
+      };
+    });
     afterEach(async () =>
       Promise.all([
         unlink(`${assetsPath}/favicon.ico.gz`),
         unlink(`${assetsPath}/some-dir/some-img.png.gz`),
         unlink(`${assetsPath}/favicon.ico.br`),
         unlink(`${assetsPath}/some-dir/some-img.png.br`),
-        // some-text.txt.gz is not deleted here because it is used in
-        // other tests to check if is seved correctly as text
-        // encoding with gzip
+        // some-text.txt.gz and some-text.txt.br are not deleted
+        // to use them in other tests suites.
       ]),
     );
 
@@ -38,6 +44,13 @@ describe("utils", () => {
       expect(
         await exists(`${assetsPath}/some-dir/some-text.txt.br`),
       ).toBeTrue();
+    });
+
+    it("should not precomopress any file in development", async () => {
+      globalThis.mockConstants!.IS_PRODUCTION = false;
+      const res = await precompressAssets(assetsPath);
+
+      expect(res).toBeNull();
     });
   });
 });
