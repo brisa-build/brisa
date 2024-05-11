@@ -28,3 +28,17 @@ The folder is also useful for `robots.txt`, `favicon.ico`, Google Site Verificat
 > [!TIP]
 >
 > We recommend to create subfolders to avoid conflicts with page names: `/public/assets` or `/public/images`, `/public/fonts`, etc.
+
+## Compression applied to static assets
+
+Brisa automatically compresses static assets in the `public` folder using Brotli and Gzip. This is done at build time, so the server doesn't need to compress the files on the fly.
+
+When a browser requests a file, it sends an `Accept-Encoding` header to tell the server which compression algorithms it supports. The server then sends the file compressed with the best algorithm supported by the browser.
+
+### Gzip
+
+Gzip is a widely supported compression algorithm that reduces the size of files by up to 70%. It's [supported](https://caniuse.com/?search=gzip) by all modern browsers and is the most common compression algorithm used on the web.
+
+### Brotli
+
+Brotli is a newer compression algorithm developed by Google that can reduce file sizes by up to 30% more than Gzip. It's [supported](https://caniuse.com/brotli) by all modern browsers.
