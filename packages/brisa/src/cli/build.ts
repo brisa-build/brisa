@@ -29,13 +29,6 @@ export default async function build() {
     fs.rmSync(BUILD_DIR, { recursive: true });
   }
 
-  const { success, pagesSize } = await compileAll();
-
-  if (!success) return process.exit(1);
-
-  if (IS_PRODUCTION && IS_STATIC_EXPORT) console.log(LOG_PREFIX.INFO);
-  console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `Compiled successfully!`);
-
   // Copy prebuild folder inside build
   // useful for FFI: https://brisa.build/building-your-application/configuring/zig-rust-c-files
   if (fs.existsSync(prebuildPath)) {
@@ -48,6 +41,13 @@ export default async function build() {
     );
     if (IS_PRODUCTION && !IS_STATIC_EXPORT) console.log(LOG_PREFIX.INFO);
   }
+
+  const { success, pagesSize } = await compileAll();
+
+  if (!success) return process.exit(1);
+
+  if (IS_PRODUCTION && IS_STATIC_EXPORT) console.log(LOG_PREFIX.INFO);
+  console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `Compiled successfully!`);
 
   if (IS_PRODUCTION && IS_STATIC_EXPORT && pagesSize) {
     console.log(LOG_PREFIX.INFO);
