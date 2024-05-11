@@ -30,6 +30,28 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
+      it("should transform jsxDEV (jsx-runtime method) to an array", () => {
+        const input = parseCodeToAST(
+          `export default () => jsxDEV('div', {}, 'foo', false, false)`,
+        );
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(
+          `export default () => ['div', {key: 'foo'}, ''];`,
+        );
+        expect(output).toBe(expected);
+      });
+
+      it("should transform jsxs (jsx-runtime method) to an array", () => {
+        const input = parseCodeToAST(
+          `export default () => jsxs('div', {children: 'bar'}, 'foo')`,
+        );
+        const output = toOutputCode(transformToReactiveArrays(input));
+        const expected = normalizeQuotes(
+          `export default () => ['div', {key: 'foo'}, 'bar'];`,
+        );
+        expect(output).toBe(expected);
+      });
+
       it("should transform JSX to an array if is a web-component", () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
