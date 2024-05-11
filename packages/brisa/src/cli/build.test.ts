@@ -79,7 +79,7 @@ describe("cli", () => {
     });
 
     it("should copy the prebuild directory to the build directory", async () => {
-      const { ROOT_DIR, BUILD_DIR } = getConstants();
+      const { ROOT_DIR, BUILD_DIR, LOG_PREFIX } = getConstants();
       const originPrebuildPath = path.join(ROOT_DIR, "prebuild");
       const finalPrebuildPath = path.join(BUILD_DIR, "prebuild");
 
@@ -89,6 +89,14 @@ describe("cli", () => {
       spyOn(fs, "cpSync").mockImplementationOnce(() => null);
 
       await build();
+      const logs = mockLog.mock.calls.flat().join("");
+
+      // It's important the order of logs, prebuild should be necessary
+      // before the build because it needs to find the correct path
+      // during the build
+      expect(logs).toContain(
+        `Copied prebuild folder inside build${LOG_PREFIX.INFO}${LOG_PREFIX.TICK}Compiled successfully!`,
+      );
       expect(fs.existsSync).toHaveBeenCalledTimes(2);
       expect(fs.cpSync).toHaveBeenCalledWith(
         originPrebuildPath,
