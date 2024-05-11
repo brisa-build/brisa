@@ -146,7 +146,7 @@ Like actions and API routes, you can manage authorization within [Server Compone
 
 In Server Components, a common practice is to conditionally render UI elements based on the user's role. This approach enhances user experience and security by ensuring users only access content they are authorized to view.
 
-```tsx 11-13,17
+```tsx 13-15,19
 import type { RequestContext } from "brisa";
 import parseCookies from "@/utils/auth/parse-cookies";
 import AdminDashboard from "@/components/admin-dashboard";
