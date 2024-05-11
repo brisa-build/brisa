@@ -19,13 +19,13 @@ const ASSETS_DIR = path.join(BUILD_DIR, "public");
 const CLIENT_PAGES = path.join(BUILD_DIR, "pages-client");
 
 describe("compileAssets", () => {
-  beforeAll(() => {
+  beforeEach(() => {
     fs.mkdirSync(BUILD_DIR);
     fs.mkdirSync(CLIENT_PAGES);
     fs.writeFileSync(path.join(CLIENT_PAGES, "index.js"), "");
   });
 
-  afterAll(() => {
+  afterEach(() => {
     fs.rmSync(BUILD_DIR, { recursive: true });
   });
 
@@ -36,6 +36,7 @@ describe("compileAssets", () => {
       BUILD_DIR,
       SRC_DIR,
       ASSETS_DIR,
+      IS_PRODUCTION: true,
     };
   });
 
@@ -67,6 +68,14 @@ describe("compileAssets", () => {
         "some-img.png",
         "some-text.txt",
       ].toSorted(),
+    );
+  });
+
+  it("should not compress fixtures assets in development", async () => {
+    globalThis.mockConstants!.IS_PRODUCTION = false;
+    await compileAssets();
+    expect(fs.readdirSync(path.join(BUILD_DIR, "public")).toSorted()).toEqual(
+      ["favicon.ico", "some-dir"].toSorted(),
     );
   });
 });

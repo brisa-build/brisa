@@ -890,6 +890,10 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
   });
 
   it("should return an asset in gzip if the browser accept it", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+    };
     const textDecoder = new TextDecoder("utf-8");
     const req = new Request(
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
@@ -914,7 +918,30 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     expect(text).toBe("Some text :D");
   });
 
+  it("should not return in DEVELOPMENT an asset in gzip", async () => {
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          "accept-encoding": "gzip",
+        },
+      },
+    );
+    const response = await testRequest(req);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-encoding")).toBe(null);
+    expect(response.headers.get("vary")).toBe(null);
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8",
+    );
+  });
+
   it('should return an asset in brotli if the browser accept it and the "brotli" option is enabled', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+    };
     const textDecoder = new TextDecoder("utf-8");
     const req = new Request(
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
@@ -937,6 +964,25 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       "text/plain;charset=utf-8",
     );
     expect(text).toBe("Some text :D");
+  });
+
+  it("should not return in DEVELOPMENT an asset in brotli", async () => {
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          "accept-encoding": "br",
+        },
+      },
+    );
+    const response = await testRequest(req);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-encoding")).toBe(null);
+    expect(response.headers.get("vary")).toBe(null);
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8",
+    );
   });
 
   it("should not return an asset with incorrect basePath", async () => {

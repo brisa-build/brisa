@@ -239,7 +239,7 @@ async function compileClientCodePage(
     layoutPath?: string | null;
   },
 ) {
-  const { BUILD_DIR, I18N_CONFIG } = getConstants();
+  const { BUILD_DIR, I18N_CONFIG, IS_PRODUCTION } = getConstants();
   const pagesClientPath = join(BUILD_DIR, "pages-client");
   const internalPath = join(BUILD_DIR, "_brisa");
   const layoutBuildPath = layoutPath ? getBuildPath(layoutPath) : "";
@@ -334,7 +334,6 @@ async function compileClientCodePage(
 
     const hash = Bun.hash(code);
     const clientPage = clientPagePath.replace(".js", `-${hash}.js`);
-    const gzipClientPage = gzipSync(new TextEncoder().encode(code));
     clientSizesPerPage[route] = 0;
 
     // create _unsuspense.js and _unsuspense.txt (list of pages with unsuspense)
@@ -366,20 +365,30 @@ async function compileClientCodePage(
         const i18nCode = `window.i18nMessages=${JSON.stringify(messages)};`;
 
         Bun.write(i18nPagePath, i18nCode);
-        Bun.write(
-          `${i18nPagePath}.gz`,
-          gzipSync(new TextEncoder().encode(i18nCode)),
-        );
-        Bun.write(`${i18nPagePath}.br`, brotliCompressSync(i18nCode));
+
+        // Compression in production
+        if (IS_PRODUCTION) {
+          Bun.write(
+            `${i18nPagePath}.gz`,
+            gzipSync(new TextEncoder().encode(i18nCode)),
+          );
+          Bun.write(`${i18nPagePath}.br`, brotliCompressSync(i18nCode));
+        }
       }
     }
 
     // create page file
     Bun.write(clientPagePath.replace(".js", ".txt"), hash.toString());
     Bun.write(clientPage, code);
-    Bun.write(`${clientPage}.gz`, gzipClientPage);
-    Bun.write(`${clientPage}.br`, brotliCompressSync(code));
-    clientSizesPerPage[route] += gzipClientPage.length;
+
+    // Compression in production
+    if (IS_PRODUCTION) {
+      const gzipClientPage = gzipSync(new TextEncoder().encode(code));
+
+      Bun.write(`${clientPage}.gz`, gzipClientPage);
+      Bun.write(`${clientPage}.br`, brotliCompressSync(code));
+      clientSizesPerPage[route] += gzipClientPage.length;
+    }
   }
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
@@ -405,7 +414,7 @@ function addExtraChunk(
     skipList = false,
   }: { pagesClientPath: string; pagePath: string; skipList?: boolean },
 ) {
-  const { BUILD_DIR, VERSION_HASH } = getConstants();
+  const { BUILD_DIR, VERSION_HASH, IS_PRODUCTION } = getConstants();
   const jsFilename = `${filename}-${VERSION_HASH}.js`;
 
   if (!code) return 0;
@@ -424,14 +433,7 @@ function addExtraChunk(
     return 0;
   }
 
-  const gzipUnsuspense = gzipSync(new TextEncoder().encode(code));
-
   Bun.write(join(pagesClientPath, jsFilename), code);
-  Bun.write(join(pagesClientPath, `${jsFilename}.gz`), gzipUnsuspense);
-  Bun.write(
-    join(pagesClientPath, `${jsFilename}.br`),
-    brotliCompressSync(code),
-  );
 
   if (!skipList) {
     Bun.write(
@@ -440,7 +442,18 @@ function addExtraChunk(
     );
   }
 
-  return gzipUnsuspense.length;
+  if (IS_PRODUCTION) {
+    const gzipUnsuspense = gzipSync(new TextEncoder().encode(code));
+
+    Bun.write(join(pagesClientPath, `${jsFilename}.gz`), gzipUnsuspense);
+    Bun.write(
+      join(pagesClientPath, `${jsFilename}.br`),
+      brotliCompressSync(code),
+    );
+    return gzipUnsuspense.length;
+  }
+
+  return code.length;
 }
 
 function getBuildPath(path: string) {
