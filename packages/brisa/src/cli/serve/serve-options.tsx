@@ -249,19 +249,26 @@ export async function getServeOptions() {
   }
 
   function serveAsset(path: string, req: RequestContext) {
-    const isGzip = req.headers.get("accept-encoding")?.includes?.("gzip");
-    const isBrotli = req.headers.get("accept-encoding")?.includes?.("br");
-    const compressionFormat = isBrotli ? "br" : isGzip ? "gz" : "";
+    const encoding = req.headers.get("accept-encoding") || "";
+    let compressionFormat = "";
+
+    if (IS_PRODUCTION && encoding.includes("br")) {
+      compressionFormat = "br";
+    } else if (IS_PRODUCTION && encoding.includes("gzip")) {
+      compressionFormat = "gz";
+    }
+
     const file = Bun.file(path);
-    const compressionHeaders = {
-      "content-encoding": isBrotli ? "br" : "gzip",
-      vary: "Accept-Encoding",
-    };
     const responseOptions = {
       headers: {
         "content-type": file.type,
         "cache-control": CACHE_CONTROL,
-        ...(compressionFormat ? compressionHeaders : {}),
+        ...(compressionFormat
+          ? {
+              "content-encoding": compressionFormat === "br" ? "br" : "gzip",
+              vary: "Accept-Encoding",
+            }
+          : {}),
       },
     };
 

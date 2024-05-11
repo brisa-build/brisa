@@ -1,8 +1,13 @@
 import { gzipSync } from "bun";
 import { brotliCompressSync } from "node:zlib";
 import getFilesFromDir from "@/utils/get-files-from-dir";
+import { getConstants } from "@/constants";
 
 export default async function precompressAssets(assetsPath: string) {
+  const { IS_PRODUCTION } = getConstants();
+
+  if (!IS_PRODUCTION) return null;
+
   const assets = await getFilesFromDir(assetsPath);
 
   await Promise.all(
