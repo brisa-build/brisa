@@ -10,7 +10,7 @@ type ServerComponentPluginOptions = {
 };
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const JSX_NAME = new Set(["jsx", "jsxDEV"]);
+const JSX_NAME = new Set(["jsx", "jsxDEV", "jsxs"]);
 const WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
 
 // TODO: Remove this workaround when this issue will be fixed:
@@ -20,6 +20,7 @@ const Fragment = props => props.children;
 
 function jsxDEV(type, props){ return { type, props }};
 function jsx(type, props){ return { type, props }};
+function jsxs(type, props){ return { type, props }};
 
 Fragment.__isFragment = true;
 `;
