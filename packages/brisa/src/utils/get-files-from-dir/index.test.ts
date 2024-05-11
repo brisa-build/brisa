@@ -19,6 +19,7 @@ describe("utils", () => {
         path.join(assetsPath, "favicon.ico"),
         path.join(assetsPath, "some-dir", "some-img.png"),
         path.join(assetsPath, "some-dir", "some-text.txt"),
+        path.join(assetsPath, "some-dir", "some-text.txt.br"),
         path.join(assetsPath, "some-dir", "some-text.txt.gz"),
       ]);
 

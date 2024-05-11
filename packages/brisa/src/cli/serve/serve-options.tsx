@@ -250,21 +250,23 @@ export async function getServeOptions() {
 
   function serveAsset(path: string, req: RequestContext) {
     const isGzip = req.headers.get("accept-encoding")?.includes?.("gzip");
+    const isBrotli = req.headers.get("accept-encoding")?.includes?.("br");
+    const compressionFormat = isBrotli ? "br" : isGzip ? "gz" : "";
     const file = Bun.file(path);
-    const gzipHeaders = {
-      "content-encoding": "gzip",
+    const compressionHeaders = {
+      "content-encoding": isBrotli ? "br" : "gzip",
       vary: "Accept-Encoding",
     };
     const responseOptions = {
       headers: {
         "content-type": file.type,
         "cache-control": CACHE_CONTROL,
-        ...(isGzip ? gzipHeaders : {}),
+        ...(compressionFormat ? compressionHeaders : {}),
       },
     };
 
     return new Response(
-      isGzip ? Bun.file(`${path}.gz`) : file,
+      compressionFormat ? Bun.file(`${path}.${compressionFormat}`) : file,
       responseOptions,
     );
   }
