@@ -42,3 +42,7 @@ Gzip is a widely supported compression algorithm that reduces the size of files 
 ### Brotli
 
 Brotli is a newer compression algorithm developed by Google that can reduce file sizes by up to 30% more than Gzip. It's [supported](https://caniuse.com/brotli) by all modern browsers.
+
+> [!CAUTION]
+>
+> Compression is only applied in production mode.
