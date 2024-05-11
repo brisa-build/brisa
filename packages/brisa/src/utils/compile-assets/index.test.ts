@@ -49,12 +49,19 @@ describe("compileAssets", () => {
       ["public", "pages-client"].toSorted(),
     );
     expect(fs.readdirSync(path.join(BUILD_DIR, "public")).toSorted()).toEqual(
-      ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted(),
+      [
+        "favicon.ico",
+        "favicon.ico.br",
+        "favicon.ico.gz",
+        "some-dir",
+      ].toSorted(),
     );
     expect(
       fs.readdirSync(path.join(BUILD_DIR, "public", "some-dir")).toSorted(),
     ).toEqual(
       [
+        "some-text.txt.br",
+        "some-img.png.br",
         "some-text.txt.gz",
         "some-img.png.gz",
         "some-img.png",

@@ -9,6 +9,7 @@ import {
   mock,
   jest,
 } from "bun:test";
+import { brotliDecompressSync } from "node:zlib";
 import path from "node:path";
 import { getConstants } from "@/constants";
 import type { ServerWebSocket } from "bun";
@@ -906,6 +907,31 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("content-encoding")).toBe("gzip");
+    expect(response.headers.get("vary")).toBe("Accept-Encoding");
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8",
+    );
+    expect(text).toBe("Some text :D");
+  });
+
+  it('should return an asset in brotli if the browser accept it and the "brotli" option is enabled', async () => {
+    const textDecoder = new TextDecoder("utf-8");
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          "accept-encoding": "br",
+        },
+      },
+    );
+    const response = await testRequest(req);
+    const textBuffer = brotliDecompressSync(
+      new Uint8Array(await response.arrayBuffer()),
+    );
+    const text = textDecoder.decode(textBuffer);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-encoding")).toBe("br");
     expect(response.headers.get("vary")).toBe("Accept-Encoding");
     expect(response.headers.get("content-type")).toBe(
       "text/plain;charset=utf-8",
