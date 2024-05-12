@@ -1,6 +1,14 @@
 import { type MatchedRoute } from "bun";
 import path from "node:path";
-import { afterAll, afterEach, describe, expect, it, mock } from "bun:test";
+import {
+  afterAll,
+  afterEach,
+  describe,
+  expect,
+  it,
+  mock,
+  spyOn,
+} from "bun:test";
 import renderToReadableStream from ".";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
@@ -40,6 +48,7 @@ describe("utils", () => {
     testRequest.store.clear();
     mockConsoleError.mockClear();
     globalThis.mockConstants = undefined;
+    globalThis.REGISTERED_ACTIONS = undefined;
   });
 
   afterAll(() => {
@@ -57,6 +66,37 @@ describe("utils", () => {
       expect(mockConsoleError.mock.calls[0].at(0) as unknown as string).toEqual(
         "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
       );
+    });
+
+    it("should register the server action inside globalThis.REGISTERED_ACTIONS when is defined", async () => {
+      globalThis.REGISTERED_ACTIONS = [];
+      const mockLog = spyOn(console, "log");
+      const element = (
+        <div onClick={() => console.log("Hello Action")} class="test">
+          Hello World
+        </div>
+      );
+      const stream = renderToReadableStream(element, testOptions);
+      await Bun.readableStreamToText(stream);
+
+      expect(globalThis.REGISTERED_ACTIONS.length).toBe(1);
+
+      const action = globalThis.REGISTERED_ACTIONS[0] as any;
+      action();
+
+      expect(mockLog).toHaveBeenCalledWith("Hello Action");
+    });
+
+    it("should NOT register the server action inside globalThis.REGISTERED_ACTIONS when is NOT defined", async () => {
+      const element = (
+        <div onClick={() => console.log("Hello Action")} class="test">
+          Hello World
+        </div>
+      );
+      const stream = renderToReadableStream(element, testOptions);
+      await Bun.readableStreamToText(stream);
+
+      expect(globalThis.REGISTERED_ACTIONS).toBeEmpty();
     });
 
     it("should render with a Request without RequextContext extension", async () => {

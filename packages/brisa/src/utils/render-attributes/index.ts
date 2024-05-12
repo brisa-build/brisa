@@ -57,6 +57,18 @@ export default function renderAttributes({
       value = `${useAssetPrefix ? assetPrefix : basePath}${value}`;
     }
 
+    // Manage unregistered actions (useful to use it outside of Brisa to recover the actions)
+    // In Brisa, currently it's only useful for the testing API (render method), to recover
+    // the actions to test them.
+    if (
+      globalThis.REGISTERED_ACTIONS &&
+      typeof value === "function" &&
+      !isAnAction(value)
+    ) {
+      (value as any).actionId =
+        globalThis.REGISTERED_ACTIONS.push(value as Function) - 1;
+    }
+
     // Nested actions (coming from props)
     if (isAnAction(value)) {
       const actionKey = `data-action`;
@@ -99,7 +111,9 @@ export default function renderAttributes({
     }
 
     // Skip types that are not supported in HTML
-    if (VALUES_TYPE_TO_IGNORE.has(typeof value)) continue;
+    if (VALUES_TYPE_TO_IGNORE.has(typeof value)) {
+      continue;
+    }
 
     // Example <dialog open> => <dialog>
     if (typeof value === "boolean" && BOOLEANS_IN_HTML.has(key)) {
