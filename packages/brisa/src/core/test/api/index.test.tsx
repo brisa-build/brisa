@@ -20,6 +20,7 @@ const ASSETS_DIR = path.join(BUILD_DIR, "public");
 
 describe("test api", () => {
   beforeEach(() => {
+    globalThis.REGISTERED_ACTIONS = [];
     GlobalRegistrator.register();
   });
   afterEach(() => {
@@ -172,14 +173,11 @@ describe("test api", () => {
 
       await render(await serveRoute("/en"));
 
-      const content = document
-        .querySelector("template")!
-        .content.cloneNode(true);
-      const div = content.firstChild as HTMLDivElement;
+      const div = document.querySelector("[data-action-onclick]")!;
 
-      userEvent.click(div!);
+      await userEvent.click(div!);
 
-      expect(content).toContainTextContent("hello-world");
+      expect(div).toContainTextContent("hello-world");
       expect(mockLog).toHaveBeenCalledWith("hello world");
     });
   });

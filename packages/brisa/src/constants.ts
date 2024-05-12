@@ -147,6 +147,7 @@ export const getConstants = () =>
 declare global {
   var mockConstants: Partial<typeof constants> | undefined;
   var REGISTERED_ACTIONS: Function[] | undefined;
+  var FORCE_SUSPENSE_DEFAULT: boolean | undefined;
   var BrisaRegistry: Map<string, number>;
   var lastContextProviderId: number;
   var watcher: import("node:fs").FSWatcher;

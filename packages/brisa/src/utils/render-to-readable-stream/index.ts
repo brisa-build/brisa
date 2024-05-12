@@ -29,7 +29,14 @@ const NO_INDEX = '<meta name="robots" content="noindex" />';
 
 export default function renderToReadableStream(
   element: JSX.Element,
-  { request, head, log = true }: Options,
+  {
+    request,
+    head,
+    log = true,
+    // Useful default to avoid suspense in tests, because tests not
+    // use HTML streaming ("render" and "serveRoute" testing API)
+    applySuspense = globalThis.FORCE_SUSPENSE_DEFAULT ?? true,
+  }: Options,
 ) {
   const req = extendRequestContext({ originalRequest: request });
   const { IS_PRODUCTION, BUILD_DIR, SCRIPT_404 } = getConstants();
@@ -40,7 +47,11 @@ export default function renderToReadableStream(
 
   return new ReadableStream({
     async start(controller) {
-      const extendedController = extendStreamController(controller, head);
+      const extendedController = extendStreamController(
+        controller,
+        head,
+        applySuspense,
+      );
       const abortPromise = new Promise((res) =>
         req.signal.addEventListener("abort", () => {
           aborted = true;
@@ -187,7 +198,8 @@ async function enqueueDuringRendering(
     if (isComponent(type) && !isTagToIgnore) {
       const processedProps = processServerComponentProps(props, componentProps);
       const componentContent = { component: type, props: processedProps };
-      const isSuspenseComponent = isComponent(type.suspense);
+      const isSuspenseComponent =
+        controller.applySuspense && isComponent(type.suspense);
 
       if (isSuspenseComponent) {
         const id = controller.nextSuspenseIndex();

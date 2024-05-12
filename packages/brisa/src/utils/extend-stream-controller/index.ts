@@ -19,6 +19,7 @@ export type Controller = {
   addId(id: string): void;
   hasId(id: string): boolean;
   hasHeadTag: boolean;
+  applySuspense: boolean;
   insideHeadTag: boolean;
   hasUnsuspense: boolean;
   hasActionRPC: boolean;
@@ -36,6 +37,7 @@ const wrapSuspenseTag = (chunk: string, id: number) =>
 export default function extendStreamController(
   controller: ReadableStreamDefaultController<string>,
   head?: ComponentType,
+  applySuspense = true,
 ): Controller {
   const ids = new Set<string>();
   const openWebComponents: symbol[] = [];
@@ -53,6 +55,7 @@ export default function extendStreamController(
     insideHeadTag: false,
     hasUnsuspense: false,
     hasActionRPC: false,
+    applySuspense,
     setCurrentWebComponentSymbol(symbol) {
       if (symbol) openWebComponents.push(symbol);
       else openWebComponents.pop();

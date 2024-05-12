@@ -8,6 +8,7 @@ describe("utils", () => {
   describe("renderAttributes", () => {
     afterEach(() => {
       globalThis.mockConstants = undefined;
+      // @ts-ignore
       globalThis.REGISTERED_ACTIONS = undefined;
     });
 

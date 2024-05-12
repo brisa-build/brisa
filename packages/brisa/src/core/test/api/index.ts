@@ -1,6 +1,7 @@
 import { getServeOptions } from "@/cli/serve/serve-options";
 import renderToString from "@/utils/render-to-string";
 import { blueLog, greenLog, cyanLog } from "@/utils/log/log-color";
+import { registerActions } from "@/utils/rpc/register-actions";
 
 /**
  * Render a JSX element, a string or a Response object into a container
@@ -9,7 +10,7 @@ export async function render(
   element: JSX.Element | Response | string,
   baseElement: HTMLElement = document.documentElement,
 ) {
-  const container = baseElement.appendChild(document.createElement("div"));
+  let container = baseElement;
   let htmlString;
 
   if (typeof element === "string") {
@@ -17,7 +18,11 @@ export async function render(
   } else if (element instanceof Response) {
     htmlString = await element.text();
   } else {
+    container = baseElement.appendChild(document.createElement("div"));
+    globalThis.REGISTERED_ACTIONS = [];
+    globalThis.FORCE_SUSPENSE_DEFAULT = false;
     htmlString = await renderToString(element);
+    globalThis.FORCE_SUSPENSE_DEFAULT = undefined;
   }
 
   container.innerHTML = htmlString;
@@ -25,6 +30,21 @@ export async function render(
   const unmount = () => {
     container.innerHTML = "";
   };
+
+  // Register Server Actions
+  if (globalThis.REGISTERED_ACTIONS?.length) {
+    registerActions(
+      (
+        actionId: string,
+        isFormData: boolean,
+        indicator: string | undefined,
+        actionDeps: string | undefined,
+        ...args: unknown[]
+      ) => {
+        globalThis.REGISTERED_ACTIONS[actionId](...args);
+      },
+    );
+  }
 
   return { container, unmount };
 }
@@ -43,10 +63,13 @@ export async function serveRoute(route: string) {
 
   const url = new URL(route, "http://localhost:3000");
   const request = new Request(url);
+
+  globalThis.FORCE_SUSPENSE_DEFAULT = false;
   const response = await (serveOptions as any).fetch(request, {
     requestIP: () => {},
     upgrade: () => false,
   });
+  globalThis.FORCE_SUSPENSE_DEFAULT = undefined;
 
   return response;
 }

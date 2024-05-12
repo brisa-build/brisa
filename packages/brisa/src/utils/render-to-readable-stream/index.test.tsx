@@ -48,7 +48,9 @@ describe("utils", () => {
     testRequest.store.clear();
     mockConsoleError.mockClear();
     globalThis.mockConstants = undefined;
+    // @ts-ignore
     globalThis.REGISTERED_ACTIONS = undefined;
+    globalThis.FORCE_SUSPENSE_DEFAULT = undefined;
   });
 
   afterAll(() => {
@@ -544,7 +546,7 @@ describe("utils", () => {
         locales: ["en", "es"],
         defaultLocale: "en",
       };
-      req.i18n = { ...i18n, t: () => "", pages: {} };
+      req.i18n = { ...i18n, t: () => "", pages: {} } as any;
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
@@ -578,7 +580,7 @@ describe("utils", () => {
         locales: ["en", "ar"],
         defaultLocale: "en",
       };
-      req.i18n = { ...i18n, t: () => "", pages: {} };
+      req.i18n = { ...i18n, t: () => "", pages: {} } as any;
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
@@ -1216,7 +1218,7 @@ describe("utils", () => {
         defaultLocale: "en",
         t: () => "",
         pages: {},
-      };
+      } as any;
       const element = (
         <html>
           <head></head>
@@ -1433,7 +1435,7 @@ describe("utils", () => {
         t: () => "",
         overrideMessages: () => {},
         pages: {},
-      };
+      } as any;
       const element = (
         <html lang="en">
           <head></head>
@@ -1454,7 +1456,7 @@ describe("utils", () => {
         t: () => "",
         overrideMessages: () => {},
         pages: {},
-      };
+      } as any;
       const home = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/">Test</a>, testOptions),
       );
@@ -1479,7 +1481,7 @@ describe("utils", () => {
         t: () => "",
         overrideMessages: () => {},
         pages: {},
-      };
+      } as any;
       const essencePage = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence">Test</a>, testOptions),
       );
@@ -1514,7 +1516,7 @@ describe("utils", () => {
         t: () => "",
         overrideMessages: () => {},
         pages: {},
-      };
+      } as any;
       const essencePage = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence">Test</a>, testOptions),
       );
@@ -1541,7 +1543,7 @@ describe("utils", () => {
         defaultLocale: "en",
         t: () => "",
         pages: {},
-      };
+      } as any;
       const element = <a href="http://test.com/test">Test</a>;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
@@ -2894,6 +2896,47 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe('<p data-action-onclick="a1_1" data-action>bar</p>');
+    });
+
+    it("should skip suspense when applySuspense is false", async () => {
+      const Component = async () => <div>test</div>;
+      Component.suspense = () => <div>suspense</div>;
+      const stream = renderToReadableStream(<Component />, {
+        ...testOptions,
+        applySuspense: false,
+      });
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe("<div>test</div>");
+    });
+
+    it("should do suspense when applySuspense is true", async () => {
+      const Component = async () => <div>test</div>;
+      Component.suspense = () => <div>suspense</div>;
+      const stream = renderToReadableStream(<Component />, {
+        ...testOptions,
+        applySuspense: true,
+      });
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        `<div id="S:1"><div>suspense</div></div><template id="U:1"><div>test</div></template><script id="R:1">u$('1')</script>`,
+      );
+    });
+
+    it("should skip suspense when FORCE_SUSPENSE_DEFAULT=false", async () => {
+      globalThis.FORCE_SUSPENSE_DEFAULT = false;
+      const Component = async () => <div>test</div>;
+      Component.suspense = () => <div>suspense</div>;
+      const stream = renderToReadableStream(<Component />, {
+        ...testOptions,
+      });
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe("<div>test</div>");
     });
   });
 });
