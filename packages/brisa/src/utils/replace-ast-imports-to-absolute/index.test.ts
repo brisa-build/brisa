@@ -1,11 +1,11 @@
 import { describe, it, expect, spyOn } from "bun:test";
 import AST from "@/utils/ast";
+import { join } from "node:path";
 import replaceAstImportsToAbsolute from ".";
 import { normalizeQuotes } from "@/helpers";
-import { getConstants } from "@/constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const { SRC_DIR } = getConstants();
+const utilsDir = join(import.meta.dir, "..");
 
 describe("utils", () => {
   describe("replace-ast-imports-to-absolute", () => {
@@ -27,11 +27,11 @@ describe("utils", () => {
       );
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
-        import createPortal from "${SRC_DIR}/utils/create-portal/index.ts";
-        import dangerHTML from "${SRC_DIR}/utils/danger-html/index.ts";
-        import createContext from "${SRC_DIR}/utils/create-context/index.ts";
-        import notFound from "${SRC_DIR}/utils/not-found/index.ts";
-        import translateCore from "${SRC_DIR}/utils/translate-core/index.ts";
+        import createPortal from "${utilsDir}/create-portal/index.ts";
+        import dangerHTML from "${utilsDir}/danger-html/index.ts";
+        import createContext from "${utilsDir}/create-context/index.ts";
+        import notFound from "${utilsDir}/not-found/index.ts";
+        import translateCore from "${utilsDir}/translate-core/index.ts";
         
         export {createPortal, dangerHTML, createContext, notFound, translateCore};
       `);
@@ -57,11 +57,11 @@ describe("utils", () => {
       );
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
-        const createPortal = require("${SRC_DIR}/utils/create-portal/index.ts");
-        const dangerHTML = require("${SRC_DIR}/utils/danger-html/index.ts");
-        const createContext = require("${SRC_DIR}/utils/create-context/index.ts");
-        const notFound = require("${SRC_DIR}/utils/not-found/index.ts");
-        const translateCore = require("${SRC_DIR}/utils/translate-core/index.ts");
+        const createPortal = require("${utilsDir}/create-portal/index.ts");
+        const dangerHTML = require("${utilsDir}/danger-html/index.ts");
+        const createContext = require("${utilsDir}/create-context/index.ts");
+        const notFound = require("${utilsDir}/not-found/index.ts");
+        const translateCore = require("${utilsDir}/translate-core/index.ts");
         
         module.exports = {createPortal,dangerHTML,createContext,notFound,translateCore};
       `);
@@ -85,11 +85,11 @@ describe("utils", () => {
       );
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
-        import("${SRC_DIR}/utils/create-portal/index.ts");
-        import("${SRC_DIR}/utils/danger-html/index.ts");
-        import("${SRC_DIR}/utils/create-context/index.ts");
-        import("${SRC_DIR}/utils/not-found/index.ts");
-        import("${SRC_DIR}/utils/translate-core/index.ts");
+        import("${utilsDir}/create-portal/index.ts");
+        import("${utilsDir}/danger-html/index.ts");
+        import("${utilsDir}/create-context/index.ts");
+        import("${utilsDir}/not-found/index.ts");
+        import("${utilsDir}/translate-core/index.ts");
       `);
 
       expect(result).toEqual(expected);
@@ -115,7 +115,7 @@ describe("utils", () => {
         "Error resolving import path:",
       );
       expect(mockLogError.mock.calls.toString()).toContain(
-        `Cannot find module "@/foo/unknown" from "file://${SRC_DIR}/utils/replace-ast-imports-to-absolute/index.test.ts`,
+        `Cannot find module "@/foo/unknown" from "file://${utilsDir}/replace-ast-imports-to-absolute/index.test.ts`,
       );
       expect(result).toEqual(expected);
       mockLogError.mockRestore();

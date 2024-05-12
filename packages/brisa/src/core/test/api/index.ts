@@ -74,12 +74,15 @@ export async function serveRoute(route: string) {
   return response;
 }
 
-export async function waitFor(fn: () => unknown) {
+export async function waitFor(fn: () => unknown, maxMilliseconds = 1000) {
   try {
     fn();
   } catch (error) {
     await Bun.sleep(10);
-    return waitFor(fn);
+    if (maxMilliseconds === 0) {
+      throw error;
+    }
+    return waitFor(fn, maxMilliseconds - 10);
   }
 }
 
