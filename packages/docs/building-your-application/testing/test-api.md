@@ -121,6 +121,10 @@ Each method simulates a different user event:
   ```js
   await userEvent.dblClick(button);
   ```
+- `submit`: Simulates a submit event.
+  ```js
+  await userEvent.submit(form);
+  ```
 - `type`: Simulates typing text into an input.
   ```js
   await userEvent.type(input, "Hello, world!");
@@ -172,6 +176,7 @@ Types:
 type userEvent = {
   click(element: Element): void;
   dblClick(element: Element): void;
+  submit(element: HTMLFormElement): void;
   type(element: HTMLInputElement, text: string): void;
   hover(element: Element): void;
   unhover(element: Element): void;
@@ -211,7 +216,10 @@ test("wait for", async () => {
 Types:
 
 ```ts
-waitFor(condition: () => void): Promise<void>;
+async function waitFor(
+  fn: () => unknown,
+  maxMilliseconds: number,
+): Promise<void>;
 ```
 
 ## `debug`

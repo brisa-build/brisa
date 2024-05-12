@@ -41,6 +41,9 @@ export async function render(
         actionDeps: string | undefined,
         ...args: unknown[]
       ) => {
+        if (isFormData && args[0]) {
+          args[0].formData = new FormData(args[0].target as HTMLFormElement);
+        }
         globalThis.REGISTERED_ACTIONS[+actionId](...args);
       },
     );
@@ -143,6 +146,9 @@ function isTemplate(
 export const userEvent = {
   click: (element: Element) => {
     element.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  },
+  submit: (form: HTMLFormElement) => {
+    form.dispatchEvent(new MouseEvent("submit", { bubbles: true }));
   },
   dblClick: (element: Element) => {
     element.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));

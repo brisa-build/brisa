@@ -100,17 +100,46 @@ describe("test api", () => {
       expect(container.innerHTML).toBeEmpty();
     });
 
+    it("should be possible to interact with a server action of a server component", async () => {
+      const mockLog = spyOn(console, "log");
+      const { container } = await render(
+        <button onClick={() => console.log("hello server action")}>
+          Click me
+        </button>,
+      );
+      const button = container.querySelector("button");
+
+      button?.click();
+
+      expect(mockLog).toHaveBeenCalledWith("hello server action");
+    });
+
+    it("should onSubmit server action of form be transformed to an event with formData", async () => {
+      const mockLog = spyOn(console, "log");
+      const { container } = await render(
+        <form
+          onSubmit={(event: FormDataEvent) => {
+            // In the server the formData is already generated and accessible inside the serialized event
+            console.log(event.formData.get("name"));
+          }}
+        >
+          <input type="text" name="name" value="foo" />
+          <button type="submit">Submit</button>
+        </form>,
+      );
+      const form = container.querySelector("form")!;
+
+      userEvent.submit(form);
+
+      expect(mockLog).toHaveBeenCalledWith("foo");
+    });
+
     it.todo("should render a web component", async () => {});
 
     it.todo("should render a web component with props", async () => {});
 
     it.todo(
       "should be possible to interact with a web component",
-      async () => {},
-    );
-
-    it.todo(
-      "should be possible to interact with a server action of a server component",
       async () => {},
     );
 
@@ -265,6 +294,31 @@ describe("test api", () => {
         const button = container.querySelector("button");
 
         userEvent.click(button!);
+        expect(mockFn).toHaveBeenCalled();
+      });
+    });
+    describe("submit", () => {
+      it("should submit the element", async () => {
+        const mockSubmit = mock(() => {});
+        const element = document.createElement("form");
+
+        document.body.appendChild(element);
+        element.addEventListener("submit", mockSubmit);
+
+        userEvent.submit(element);
+        expect(mockSubmit).toHaveBeenCalled();
+      });
+
+      it("should work with render", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <form onSubmit={mockFn}>
+            <button type="submit">Submit</button>
+          </form>,
+        );
+        const form = container.querySelector("form");
+
+        userEvent.submit(form!);
         expect(mockFn).toHaveBeenCalled();
       });
     });
