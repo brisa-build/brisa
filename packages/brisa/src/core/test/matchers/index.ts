@@ -40,7 +40,10 @@ function toHaveTagName(received: unknown, tagName: string) {
 }
 
 function toHaveTextContent(received: unknown, text: string) {
-  if (received instanceof HTMLElement === false) {
+  const isValidElement =
+    received instanceof HTMLElement || received instanceof DocumentFragment;
+
+  if (!isValidElement) {
     throw new Error(
       "Invalid usage of toHaveTextContent(received, text). The argument received should be an HTMLElement",
     );
@@ -53,7 +56,10 @@ function toHaveTextContent(received: unknown, text: string) {
 }
 
 function toContainTextContent(received: unknown, text: string) {
-  if (received instanceof HTMLElement === false) {
+  const isValidElement =
+    received instanceof HTMLElement || received instanceof DocumentFragment;
+
+  if (!isValidElement) {
     throw new Error(
       "Invalid usage of toContainTextContent(received, text). The argument received should be an HTMLElement",
     );
