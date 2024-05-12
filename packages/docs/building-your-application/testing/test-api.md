@@ -66,7 +66,7 @@ test("component", async () => {
   );
   const button = container.querySelector("button");
 
-  await userEvent.click(button);
+  userEvent.click(button);
 
   expect(mockServerAction).toHaveBeenCalled();
 });
@@ -88,7 +88,7 @@ test("component", async () => {
   );
   const form = container.querySelector("form");
 
-  await userEvent.submit(form);
+  userEvent.submit(form);
 
   expect(mockServerAction).toHaveBeenCalledWith("foo");
 });
@@ -154,7 +154,7 @@ test("user event", async () => {
   const { container } = await render(<button>Click me</button>);
   const button = container.querySelector("button");
 
-  await userEvent.click(button); // Simulate a click event
+  userEvent.click(button); // Simulate a click event
 });
 ```
 
@@ -162,59 +162,59 @@ Each method simulates a different user event:
 
 - `click`: Simulates a click event.
   ```js
-  await userEvent.click(button);
+  userEvent.click(button);
   ```
 - `dblClick`: Simulates a double click event.
   ```js
-  await userEvent.dblClick(button);
+  userEvent.dblClick(button);
   ```
 - `submit`: Simulates a submit event.
   ```js
-  await userEvent.submit(form);
+  userEvent.submit(form);
   ```
 - `type`: Simulates typing text into an input.
   ```js
-  await userEvent.type(input, "Hello, world!");
+  userEvent.type(input, "Hello, world!");
   ```
 - `hover`: Simulates hovering over an element.
   ```js
-  await userEvent.hover(element);
+  userEvent.hover(element);
   ```
 - `unhover`: Simulates unhovering an element.
   ```js
-  await userEvent.unhover(element);
+  userEvent.unhover(element);
   ```
 - `focus`: Simulates focusing on an element.
   ```js
-  await userEvent.focus(input);
+  userEvent.focus(input);
   ```
 - `blur`: Simulates blurring an element.
   ```js
-  await userEvent.blur(input);
+  userEvent.blur(input);
   ```
 - `select`: Simulates selecting an option from a dropdown.
   ```js
-  await userEvent.select(select, "option-1");
+  userEvent.select(select, "option-1");
   ```
 - `deselect`: Simulates deselecting an option from a dropdown.
   ```js
-  await userEvent.deselect(select, "option-1");
+  userEvent.deselect(select, "option-1");
   ```
 - `upload`: Simulates uploading a file.
   ```js
-  await userEvent.upload(input, file);
+  userEvent.upload(input, file);
   ```
 - `clear`: Simulates clearing an input.
   ```js
-  await userEvent.clear(input);
+  userEvent.clear(input);
   ```
 - `tab`: Simulates pressing the tab key.
   ```js
-  await userEvent.tab();
+  userEvent.tab();
   ```
 - `paste`: Simulates pasting text into an input.
   ```js
-  await userEvent.paste(input, "Hello, world!");
+  userEvent.paste(input, "Hello, world!");
   ```
 
 Types:
