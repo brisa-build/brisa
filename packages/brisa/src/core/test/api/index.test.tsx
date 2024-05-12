@@ -188,7 +188,7 @@ describe("test api", () => {
 
       const withDelay = async (ms: number) => {
         await Bun.sleep(ms);
-        element = document.createElement("div")
+        element = document.createElement("div");
         element.textContent = "Foo";
       };
       withDelay(1);
