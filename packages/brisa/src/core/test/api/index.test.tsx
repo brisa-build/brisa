@@ -24,8 +24,8 @@ describe("test api", () => {
     GlobalRegistrator.register();
   });
   afterEach(() => {
-    GlobalRegistrator.unregister();
     jest.restoreAllMocks();
+    GlobalRegistrator.unregister();
   });
   describe("render", () => {
     it("should render the element", async () => {
@@ -186,9 +186,11 @@ describe("test api", () => {
     it("should wait for the content of the element", async () => {
       const element = document.createElement("div");
 
-      setTimeout(() => {
+      const updateWithDelay = async () => {
+        await Bun.sleep(0);
         element.textContent = "Foo";
-      }, 100);
+      };
+      await updateWithDelay();
 
       await waitFor(() => expect(element).toHaveTextContent("Foo"));
       expect(element).toHaveTextContent("Foo");

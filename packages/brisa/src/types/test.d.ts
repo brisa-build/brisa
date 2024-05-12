@@ -82,9 +82,14 @@ export async function serveRoute(route: string): Promise<Response>;
  * await waitFor(() => expect(document.querySelector("button")).not.toBeNull());
  * ```
  *
+ * > Note: The maxMilliseconds parameter is the maximum time to wait for the assertion to pass. By default, it is 1000 milliseconds.
+ *
  * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#waitfor)
  */
-export async function waitFor(fn: () => unknown): Promise<void>;
+export async function waitFor(
+  fn: () => unknown,
+  maxMilliseconds: number,
+): Promise<void>;
 
 /**
  * debug - Brisa Test API
