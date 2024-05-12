@@ -164,6 +164,35 @@ type userEvent = {
   dblClick(element: Element): void;
 
   /**
+   * Simulate a submit event on a form element.
+   *
+   * Example:
+   *
+   * ```tsx
+   * import { render, userEvent } from "brisa";
+   * import { mock, expect } from "bun:test";
+   *
+   * const mockFn = mock(() => {});
+   *
+   * const { container } = await render(
+   *  <form onSubmit={mockFn}>
+   *   <input type="text" />
+   *  <button type="submit">Submit</button>
+   * </form>
+   * );
+   *
+   * const form = container.querySelector("form");
+   *
+   * userEvent.submit(form);
+   *
+   * expect(mockFn).toHaveBeenCalled();
+   * ```
+   *
+   * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#userevent)
+   */
+  submit(form: HTMLFormElement): void;
+
+  /**
    * Simulate typing text on an input element.
    *
    * Example:
