@@ -184,15 +184,16 @@ describe("test api", () => {
 
   describe("waitFor", () => {
     it("should wait for the content of the element", async () => {
-      const element = document.createElement("div");
+      let element: any;
 
-      const updateWithDelay = async () => {
-        await Bun.sleep(0);
+      const withDelay = async (ms: number) => {
+        await Bun.sleep(ms);
+        element = document.createElement("div")
         element.textContent = "Foo";
       };
-      await updateWithDelay();
+      withDelay(1);
 
-      await waitFor(() => expect(element).toHaveTextContent("Foo"));
+      await waitFor(() => expect(element).toBeDefined());
       expect(element).toHaveTextContent("Foo");
     });
   });
