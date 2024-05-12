@@ -42,7 +42,8 @@ export async function render(
         ...args: unknown[]
       ) => {
         if (isFormData && args[0]) {
-          args[0].formData = new FormData(args[0].target as HTMLFormElement);
+          // @ts-ignore
+          args[0].formData = new FormData(args[0].target);
         }
         globalThis.REGISTERED_ACTIONS[+actionId](...args);
       },
