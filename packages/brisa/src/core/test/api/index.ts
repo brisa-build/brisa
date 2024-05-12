@@ -41,7 +41,7 @@ export async function render(
         actionDeps: string | undefined,
         ...args: unknown[]
       ) => {
-        globalThis.REGISTERED_ACTIONS[actionId](...args);
+        globalThis.REGISTERED_ACTIONS[+actionId](...args);
       },
     );
   }
@@ -172,23 +172,42 @@ export const userEvent = {
   blur: (element: Element) => {
     element.dispatchEvent(new FocusEvent("blur", { bubbles: true }));
   },
-  select: (element: HTMLSelectElement, value: string) => {
-    element.value = value;
-    dispatchEvent(new Event("change", { bubbles: true }));
+  select: (select: HTMLSelectElement, value: string) => {
+    select.value = value;
+    select.dispatchEvent(new Event("input", { bubbles: true }));
+    select.dispatchEvent(new Event("change", { bubbles: true }));
   },
-  deselect: (element: HTMLSelectElement, value: string) => {
-    if (value === element.value) {
-      element.value = "";
+  deselect: (selecgt: HTMLSelectElement, value: string) => {
+    if (value === selecgt.value) {
+      selecgt.value = "";
     }
-    dispatchEvent(new Event("change", { bubbles: true }));
+    selecgt.dispatchEvent(new Event("input", { bubbles: true }));
+    selecgt.dispatchEvent(new Event("change", { bubbles: true }));
   },
   upload: (input: HTMLInputElement, file: File) => {
     // @ts-ignore
     input.files = [file];
+    input.dispatchEvent(new Event("input", { bubbles: true }));
     input.dispatchEvent(new Event("change", { bubbles: true }));
   },
-  tab: () => {
-    document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Tab" }));
+  tab: ({ shift = false } = {}) => {
+    const focusableElements = document.querySelectorAll(
+      "input, button, select, textarea, a[href], [tabindex]",
+    );
+    const list = Array.prototype.filter
+      .call(focusableElements, (item) => item.getAttribute("tabindex") !== "-1")
+      .sort((a, b) => {
+        const tabIndexA = a.getAttribute("tabindex");
+        const tabIndexB = b.getAttribute("tabindex");
+        return tabIndexA < tabIndexB ? -1 : tabIndexA > tabIndexB ? 1 : 0;
+      });
+    const index = list.indexOf(document.activeElement);
+
+    let nextIndex = shift ? index - 1 : index + 1;
+    let defaultIndex = shift ? list.length - 1 : 0;
+
+    const next = list[nextIndex] || list[defaultIndex];
+    if (next) next.focus();
   },
   paste: (element: HTMLInputElement, text: string) => {
     element.value = text;

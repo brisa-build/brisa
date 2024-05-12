@@ -161,7 +161,7 @@ describe("test api", () => {
       expect(container).toContainTextContent("Some page");
     });
 
-    it.only("should serve a page should be interactive (server actions)", async () => {
+    it("should serve a page should be interactive (server actions)", async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
@@ -465,6 +465,21 @@ describe("test api", () => {
         expect(select.value).toBe("2");
         expect(mockFn).toHaveBeenCalled();
       });
+
+      it("should work with render and onInput", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <select onInput={mockFn}>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+          </select>,
+        );
+        const select = container.querySelector("select")!;
+
+        userEvent.select(select, "2");
+        expect(select.value).toBe("2");
+        expect(mockFn).toHaveBeenCalled();
+      });
     });
     describe("deselect", () => {
       it("should deselect the element", async () => {
@@ -488,6 +503,22 @@ describe("test api", () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <select onChange={mockFn}>
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+          </select>,
+        );
+        const select = container.querySelector("select")!;
+
+        userEvent.select(select, "2");
+        userEvent.deselect(select, "2");
+        expect(select.value).toBeEmpty();
+        expect(mockFn).toHaveBeenCalledTimes(2);
+      });
+
+      it("should work with render and onInput", async () => {
+        const mockFn = mock(() => {});
+        const { container } = await render(
+          <select onInput={mockFn}>
             <option value="1">Option 1</option>
             <option value="2">Option 2</option>
           </select>,
@@ -531,19 +562,68 @@ describe("test api", () => {
     });
     describe("tab", () => {
       it("should tab the element", async () => {
-        const mockTab = mock(() => {});
-        document.body.addEventListener("keydown", mockTab);
+        const input = document.createElement("input");
+        const button = document.createElement("button");
+        document.body.appendChild(input);
+        document.body.appendChild(button);
 
         userEvent.tab();
-        expect(mockTab).toHaveBeenCalled();
+        expect(document.activeElement).toBe(input);
+
+        userEvent.tab();
+        expect(document.activeElement).toBe(button);
       });
 
       it("should work with render", async () => {
-        const { container } = await render(<input type="text" />);
+        const { container } = await render(
+          <>
+            <input type="text" />
+            <button>Click me</button>
+            <a href="#">Link</a>
+          </>,
+        );
         const input = container.querySelector("input")!;
+        const button = container.querySelector("button")!;
+        const link = container.querySelector("a")!;
 
         userEvent.tab();
-        expect(input.isEqualNode(document.activeElement)).toBeTrue();
+        expect(document.activeElement).toBe(input);
+
+        userEvent.tab();
+        expect(document.activeElement).toBe(button);
+
+        userEvent.tab();
+        expect(document.activeElement).toBe(link);
+      });
+
+      it("should respect dom order when tabindex are all the same", async () => {
+        const { container } = await render(
+          <div>
+            <input tabIndex={0} type="checkbox" />
+            <input tabIndex={1} type="radio" />
+            <input tabIndex={0} type="number" />
+          </div>,
+        );
+
+        const checkbox = container.querySelector("input[type=checkbox]")!;
+        const radio = container.querySelector("input[type=radio]")!;
+        const number = container.querySelector("input[type=number]")!;
+
+        userEvent.tab();
+
+        expect(document.activeElement).toBe(checkbox);
+
+        userEvent.tab();
+
+        expect(document.activeElement).toBe(number);
+
+        userEvent.tab();
+
+        expect(document.activeElement).toBe(radio);
+
+        userEvent.tab();
+
+        expect(document.activeElement).toBe(checkbox);
       });
     });
     describe("paste", () => {
