@@ -1,7 +1,7 @@
-const ACTION = "action";
+import { registerActions } from "@/utils/rpc/register-actions";
+
 const INDICATOR = "indicator";
 const BRISA_REQUEST_CLASS = "brisa-request";
-const ACTION_ATTRIBUTE = "data-" + ACTION;
 const $document = document;
 const $window = window;
 const stringify = JSON.stringify;
@@ -106,50 +106,6 @@ function serialize(k: string, v: unknown) {
   return v;
 }
 
-function registerActions() {
-  const elements = querySelectorAll(`[${ACTION_ATTRIBUTE}]`);
-  const onPrefix = "on";
-
-  for (let element of elements) {
-    if (!element.hasAttribute(ACTION_ATTRIBUTE)) continue;
-
-    // Remove the action attribute to avoid registering the same element twice
-    element.removeAttribute(ACTION_ATTRIBUTE);
-
-    const dataSet = (element as HTMLElement).dataset;
-
-    for (let [action, actionId] of Object.entries(dataSet)) {
-      const actionName = action.toLowerCase();
-      const eventName = actionName.replace(ACTION, "").replace(onPrefix, "");
-      const isFormData = element.tagName === "FORM" && eventName === "submit";
-      const debounceMs = +(getAttribute(element, "debounce" + eventName) ?? 0);
-      let timeout: ReturnType<typeof setTimeout>;
-
-      if (actionName.startsWith(ACTION)) {
-        // It is registered once, when diffing the navigation, if the element
-        // is the same, the action attribute (data-action) is not added and
-        // therefore it is not added again, only the new elements that have
-        // the data-action are registered.
-        element.addEventListener(eventName, (...args: unknown[]) => {
-          if (args[0] instanceof Event) args[0].preventDefault();
-          clearTimeout(timeout);
-          timeout = setTimeout(
-            () =>
-              rpc(
-                actionId!,
-                isFormData,
-                getAttribute(element, "indicate" + eventName)!,
-                dataSet.actions,
-                ...args,
-              ),
-            debounceMs,
-          );
-        });
-      }
-    }
-  }
-}
-
 function spaNavigation(event: any) {
   const renderMode = getAttribute(getActiveElement(), "rendermode");
 
@@ -172,7 +128,7 @@ function spaNavigation(event: any) {
       await loadRPCResolver();
       event.scroll();
       await $window._rpc(res, renderMode);
-      registerActions();
+      registerActions(rpc);
     },
   });
 }
@@ -198,7 +154,7 @@ function querySelectorAll(query: string) {
 }
 
 function initActionRegister() {
-  registerActions();
+  registerActions(rpc);
   if (!isReady) requestAnimationFrame(initActionRegister);
 }
 
@@ -210,5 +166,5 @@ if ("navigation" in $window) {
 
 $document.addEventListener("DOMContentLoaded", () => {
   isReady = 1;
-  registerActions();
+  registerActions(rpc);
 });
