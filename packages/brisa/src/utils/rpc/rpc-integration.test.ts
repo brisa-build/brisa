@@ -253,6 +253,7 @@ describe("utils", () => {
         navigateTo: "http://localhost/some-page",
         useIndicator: true,
         slowRequest: true,
+        debounceMs: 1,
       });
 
       const element = document.body.firstChild as HTMLElement;
@@ -260,7 +261,7 @@ describe("utils", () => {
       expect(element.classList.contains("brisa-request")).toBeTrue();
       // Simulate the script to be loaded
       document.head.querySelector("script")?.dispatchEvent(new Event("load"));
-      await Bun.sleep(0);
+      await Bun.sleep(1);
       expect(element.classList.contains("brisa-request")).toBeFalse();
     });
 
@@ -276,12 +277,13 @@ describe("utils", () => {
         useIndicator: true,
         slowRequest: true,
         fails: true,
+        debounceMs: 1,
       });
 
       const element = document.body.firstChild as HTMLElement;
 
       expect(element.classList.contains("brisa-request")).toBeTrue();
-      await Bun.sleep(0);
+      await Bun.sleep(1);
       expect(element.classList.contains("brisa-request")).toBeFalse();
 
       const errorMessage = window._s.get("e" + INDICATOR_ID);
@@ -300,12 +302,13 @@ describe("utils", () => {
         useIndicator: true,
         slowRequest: true,
         failsThrowingAnError: true,
+        debounceMs: 1,
       });
 
       const element = document.body.firstChild as HTMLElement;
 
       expect(element.classList.contains("brisa-request")).toBeTrue();
-      await Bun.sleep(0);
+      await Bun.sleep(1);
       expect(element.classList.contains("brisa-request")).toBeFalse();
       const errorMessage = window._s.get("e" + INDICATOR_ID);
       expect(errorMessage).toEqual("Some throwable error");
@@ -324,12 +327,13 @@ describe("utils", () => {
         navigateTo: "http://localhost/some-page",
         useIndicator: true,
         slowRequest: true,
+        debounceMs: 1,
       });
 
       expect(window._s.get(INDICATOR_ID)).toBeTrue();
       // Simulate the script to be loaded
       document.head.querySelector("script")?.dispatchEvent(new Event("load"));
-      await Bun.sleep(0);
+      await Bun.sleep(1);
       expect(window._s.get(INDICATOR_ID)).toBeFalse();
     });
 
