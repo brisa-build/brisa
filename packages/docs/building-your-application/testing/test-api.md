@@ -51,6 +51,53 @@ render(element: JSX.Element | Response | string, baseElement?: HTMLElement
 ): Promise<{ container: HTMLElement, unmount: () => void }>;
 ```
 
+### Test server actions after rendering
+
+After rendering the component, you can interact with it thanks to [`userEvent`](#userevent). For example, you can simulate a click event on a button:
+
+```tsx
+import { render, userEvent } from "brisa/test";
+import { test, mock } from "bun:test";
+
+test("component", async () => {
+  const mockServerAction = mock(() => {});
+  const { container } = await render(
+    <button onClick={mockServerAction}>Click me</button>,
+  );
+  const button = container.querySelector("button");
+
+  await userEvent.click(button);
+
+  expect(mockServerAction).toHaveBeenCalled();
+});
+```
+
+It's very similar to browser events, but it has some differences, for example in `onSubmit` of a form, you can access directly to `event.formData`, because the browser event was already handled by the RPC layer and the form was submitted to the server, converting the [`SubmitEvent`](https://developer.mozilla.org/en-US/docs/Web/API/SubmitEvent) into a [`FormDataEvent`](https://developer.mozilla.org/en-US/docs/Web/API/FormDataEvent).
+
+```tsx
+import { render, userEvent } from "brisa/test";
+import { test, mock } from "bun:test";
+
+test("component", async () => {
+  const mockServerAction = mock(() => {});
+  const { container } = await render(
+    <form onSubmit={(e) => mockServerAction(e.formData.get("name"))}>
+      <input type="text" name="name" value="foo" />
+      <button type="submit">Submit</button>
+    </form>,
+  );
+  const form = container.querySelector("form");
+
+  await userEvent.submit(form);
+
+  expect(mockServerAction).toHaveBeenCalledWith("foo");
+});
+```
+
+> [!WARNING]
+>
+> [`rerenderInAction`](/api-reference/server-apis/rerenderInAction), [`navigate`](/api-reference/functions/navigate), and other actions that change the state of the application are not available in the test environment. You can use the [`mock`](https://bun.sh/docs/test/mocks) function to simulate the server action and test the component behavior.
+
 ## `serveRoute`
 
 Request a Brisa route and return the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response). These routes can be API endpoints, pages, assets, or any other type of route.
