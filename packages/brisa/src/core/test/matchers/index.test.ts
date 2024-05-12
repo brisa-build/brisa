@@ -90,6 +90,15 @@ describe("test matchers", () => {
       expect(div).toContainTextContent("test");
     });
 
+    it("should pass if the element is a documentFragment", () => {
+      const fragment = document.createDocumentFragment();
+      const div = document.createElement("div");
+      div.textContent = "test";
+      fragment.appendChild(div);
+
+      expect(fragment).toHaveTextContent("test");
+    });
+
     it("should fail if the element does not have the rendered text", () => {
       const div = document.createElement("div");
 
@@ -112,6 +121,15 @@ describe("test matchers", () => {
       div.textContent = "this is a long phrase with test in it";
 
       expect(div).toContainTextContent("test");
+    });
+
+    it("should pass if the element is a documentFragment", () => {
+      const fragment = document.createDocumentFragment();
+      const div = document.createElement("div");
+      div.textContent = "test";
+      fragment.appendChild(div);
+
+      expect(fragment).toContainTextContent("test");
     });
 
     it("should pass if the element contains the rendered text in a nested element", () => {
