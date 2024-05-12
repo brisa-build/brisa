@@ -8,6 +8,7 @@ describe("utils", () => {
   describe("renderAttributes", () => {
     afterEach(() => {
       globalThis.mockConstants = undefined;
+      globalThis.REGISTERED_ACTIONS = undefined;
     });
 
     it("should render attributes", () => {
@@ -906,6 +907,25 @@ describe("utils", () => {
       });
 
       expect(attributes).toBe("");
+    });
+
+    it("should add unregistered actions as attributes only when global.REGISTERED_ACTIONS is setted", () => {
+      globalThis.REGISTERED_ACTIONS = [];
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+      const action = () => {};
+
+      const attributes = renderAttributes({
+        elementProps: {
+          onClick: action,
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(` data-action-onclick="0" data-action`);
+      expect(globalThis.REGISTERED_ACTIONS[0]).toEqual(action);
     });
 
     it("should add the data-action-onClick if the onClick function is a function with actionId property", () => {
