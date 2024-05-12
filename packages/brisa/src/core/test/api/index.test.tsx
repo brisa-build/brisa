@@ -159,6 +159,29 @@ describe("test api", () => {
       expect(response.headers.get("x-test")).toBe("test");
       expect(container).toContainTextContent("Some page");
     });
+
+    it.only("should serve a page should be interactive (server actions)", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        I18N_CONFIG: {
+          defaultLocale: "en",
+          locales: ["en", "es"],
+        },
+      };
+      const mockLog = spyOn(console, "log");
+
+      await render(await serveRoute("/en"));
+
+      const content = document
+        .querySelector("template")!
+        .content.cloneNode(true);
+      const div = content.firstChild as HTMLDivElement;
+
+      userEvent.click(div!);
+
+      expect(content).toContainTextContent("hello-world");
+      expect(mockLog).toHaveBeenCalledWith("hello world");
+    });
   });
 
   describe("waitFor", () => {
@@ -233,7 +256,7 @@ describe("test api", () => {
         expect(mockClick).toHaveBeenCalled();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <button onClick={mockFn}>Click me</button>,
@@ -257,7 +280,7 @@ describe("test api", () => {
         expect(mockDblClick).toHaveBeenCalled();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <button onDblClick={mockFn}>Click me</button>,
@@ -282,7 +305,7 @@ describe("test api", () => {
         expect(element).toHaveValue("FooBar");
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <input onInput={mockFn} type="text" />,
@@ -305,7 +328,7 @@ describe("test api", () => {
         expect(element).toHaveValue("");
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <input onInput={mockFn} type="text" />,
@@ -331,7 +354,7 @@ describe("test api", () => {
         expect(mockHover).toHaveBeenCalled();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <button onMouseOver={mockFn}>Hover me</button>,
@@ -355,7 +378,7 @@ describe("test api", () => {
         expect(mockUnhover).toHaveBeenCalled();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <button onMouseOut={mockFn}>Unhover me</button>,
@@ -378,7 +401,7 @@ describe("test api", () => {
         expect(mockFocus).toHaveBeenCalled();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <input onFocus={mockFn} type="text" />,
@@ -401,7 +424,7 @@ describe("test api", () => {
         expect(mockBlur).toHaveBeenCalled();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <input onBlur={mockFn} type="text" />,
@@ -430,7 +453,7 @@ describe("test api", () => {
         expect(option2.selected).toBeTrue();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <select onChange={mockFn}>
@@ -463,7 +486,7 @@ describe("test api", () => {
         expect(option2.selected).toBeFalse();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <select onChange={mockFn}>
@@ -493,7 +516,7 @@ describe("test api", () => {
         expect(element.files).toContain(file);
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <input type="file" onChange={mockFn} />,
@@ -517,7 +540,7 @@ describe("test api", () => {
         expect(mockTab).toHaveBeenCalled();
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const { container } = await render(<input type="text" />);
         const input = container.querySelector("input")!;
 
@@ -537,7 +560,7 @@ describe("test api", () => {
         expect(element).toHaveValue("Foo");
       });
 
-      it.todo("should work with render", async () => {
+      it("should work with render", async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <input onPaste={mockFn} type="text" />,
