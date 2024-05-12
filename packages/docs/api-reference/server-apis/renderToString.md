@@ -13,7 +13,24 @@ The `renderToString` function is used to render a JSX element to a string on the
 #### Parameters:
 
 - `element`: The JSX element to render.
-- `request` (optional): An optional parameter of type `Request | RequestContext`.
+- `options` (optional): An optional object with `request` and `applySuspense`.
+
+Types:
+
+```ts
+export async function renderToString(
+  element: JSX.Element,
+  options: { request?: Request; applySuspense?: boolean } = {},
+): Promise<string>;
+```
+
+> [!NOTE]
+>
+> The `request` parameter by default is `new Request('http://localhost')`. The request object can be used inside the JSX Server Components, for this, you can change the default value to the request object that you want to use.
+
+> [!NOTE]
+>
+> The default value for `applySuspense` is `false`. Normally, we only need suspense during HTML streaming, so we don't need to apply it when rendering to a string. However, if you want to apply suspense, you can set `applySuspense` to `true`.
 
 #### Returns:
 

@@ -13,14 +13,20 @@ The `renderToReadableStream` function is used to render a JSX element to a strea
 #### Parameters:
 
 - `element`: The JSX element to render.
-- `options`: Options is an object with `request`, `head`, `log`, these is `Options` the type:
+- `options`: Options is an object with `request`, `head`, `log` and `applySuspense`, these is `Options` the type:
   ```tsx
   type Options = {
     request: Request | RequestContext;
     head?: ComponentType;
     log?: boolean;
+    applySuspense?: boolean;
   };
   ```
+
+> [!NOTE]
+>
+> The `request` parameter is mandatory here. Meanwhile the `head`, `log` and `applySuspense` are optional. The
+> default value for `log` is `true`. The default value for `applySuspense` is `true` because `renderToReadableStream` is used for streaming and we need to apply suspense to avoid blocking the chunks.
 
 #### Returns:
 

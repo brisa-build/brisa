@@ -4,6 +4,7 @@ export type Options = {
   request: Request | RequestContext;
   head?: ComponentType;
   log?: boolean;
+  applySuspense?: boolean;
 };
 
 export type RerenderInActionProps = {
@@ -40,7 +41,7 @@ export function renderToReadableStream(
  */
 export async function renderToString(
   element: JSX.Element,
-  request?: Request,
+  options: { request?: Request; applySuspense?: boolean } = {},
 ): Promise<string>;
 
 /**
