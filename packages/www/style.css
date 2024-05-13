@@ -1266,6 +1266,9 @@ html:not(.dark) .vp-code span {
 .vp-doc h3 > code {
   font-size: 0.9em;
 }
+.VPNav {
+  background-color: white;
+}
 .vp-doc div[class*="language-"],
 .vp-block {
   position: relative;
