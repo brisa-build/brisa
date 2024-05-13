@@ -5428,7 +5428,7 @@ svg.DocSearch-Hit-Select-Icon {
 svg[data-v-f5c68218] {
   flex: none;
 }
-.newsletter.container {
+.newsletter.container, .newsletter.sponsor {
   padding: 15px;
   border-radius: 10px;
   display: flex;
@@ -5442,7 +5442,35 @@ svg[data-v-f5c68218] {
 .newsletter.container input[type="email"] {
   border: 1px solid #f2ecec;
   border-radius: 10px;
-  padding: 5px;
+  padding: 5px 5px 5px 10px;
   min-width: 250px;
   margin: 0 5px;
+}
+
+.sponsor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap:10px;
+  justify-content: center;
+}
+
+.you {
+  color: #b74357;
+  font-style: oblique;
+  text-decoration: underline;
+  margin-bottom: 100px;
+}
+
+@media (max-width: 400px) {
+  .newsletter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .newsletter button {
+    width: 80%;
+  }
 }
