@@ -39,11 +39,13 @@ function toHaveTagName(received: unknown, tagName: string) {
   };
 }
 
-function toHaveTextContent(received: unknown, text: string) {
-  const isValidElement =
-    received instanceof HTMLElement || received instanceof DocumentFragment;
+function isValidHTMLElement(element: unknown): element is HTMLElement {
+  return typeof (element as any)?.textContent === "string"
+}
 
-  if (!isValidElement) {
+
+function toHaveTextContent(received: unknown, text: string) {
+  if (!isValidHTMLElement(received)) {
     throw new Error(
       "Invalid usage of toHaveTextContent(received, text). The argument received should be an HTMLElement",
     );
@@ -56,11 +58,8 @@ function toHaveTextContent(received: unknown, text: string) {
 }
 
 function toContainTextContent(received: unknown, text: string) {
-  const isValidElement =
-    received instanceof HTMLElement || received instanceof DocumentFragment;
-
-  if (!isValidElement) {
-    throw new Error(
+    if (!isValidHTMLElement(received)) {
+      throw new Error(
       "Invalid usage of toContainTextContent(received, text). The argument received should be an HTMLElement",
     );
   }
