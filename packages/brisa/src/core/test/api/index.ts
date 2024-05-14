@@ -53,6 +53,12 @@ export async function render(
   return { container, unmount };
 }
 
+export function cleanup() {
+  document.body.innerHTML = "";
+  document.head.innerHTML = "";
+  globalThis.REGISTERED_ACTIONS = [];
+}
+
 /**
  * Serve a route and return the response
  */
