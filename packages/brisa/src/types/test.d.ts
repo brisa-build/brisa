@@ -405,3 +405,23 @@ type userEvent = {
  * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#userevent)
  */
 export const userEvent: userEvent;
+
+/**
+ * cleanup - Brisa Test API
+ * 
+ * Cleanup the test environment cleaning up the DOM and other resources.
+ * 
+ * Example:
+ * 
+ * ```tsx
+ * import { cleanup } from "brisa";
+ * import { afterEach } from "bun:test";
+ * 
+ * afterEach(() => {
+ *  cleanup();
+ * });
+ * ```
+ * 
+ * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#cleanup)
+ */
+export function cleanup(): void;
