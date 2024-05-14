@@ -111,7 +111,7 @@ export default async function getClientCodeInPage({
   };
 }
 
-async function transformToWebComponents({
+export async function transformToWebComponents({
   webComponentsList,
   useContextProvider,
   integrationsPath,

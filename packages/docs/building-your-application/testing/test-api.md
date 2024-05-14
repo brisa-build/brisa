@@ -140,6 +140,27 @@ Types:
 serveRoute(route: string): Promise<Response>;
 ```
 
+## `cleanup`
+
+Cleans up the document after each test.
+
+Example:
+
+```tsx
+import { cleanup } from "brisa/test";
+import { afterEach } from "bun:test";
+
+afterEach(() => {
+  cleanup();
+});
+```
+
+Types:
+
+```ts
+cleanup(): void;
+```
+
 ## `userEvent`
 
 Simulates user events on a target element.
