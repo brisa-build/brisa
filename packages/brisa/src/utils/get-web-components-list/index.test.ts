@@ -29,6 +29,11 @@ describe("utils", () => {
       const result = await getWebComponentsList(fixturesDir);
 
       expect(result).toEqual({
+        "custom-counter": path.join(
+          fixturesDir,
+          "web-components",
+          "custom-counter.tsx",
+        ),
         "native-some-example": path.join(
           fixturesDir,
           "web-components",
@@ -59,6 +64,11 @@ describe("utils", () => {
       const result = await getWebComponentsList(fixturesDir, integrationsPath);
 
       expect(result).toEqual({
+        "custom-counter": path.join(
+          fixturesDir,
+          "web-components",
+          "custom-counter.tsx",
+        ),
         "foo-component": path.join(fixturesDir, "lib", "foo.tsx"),
         "native-some-example": path.join(
           fixturesDir,
@@ -90,6 +100,11 @@ describe("utils", () => {
       const result = await getWebComponentsList(fixturesDir, integrationsPath);
 
       expect(result).toEqual({
+        "custom-counter": path.join(
+          fixturesDir,
+          "web-components",
+          "custom-counter.tsx",
+        ),
         "native-some-example": path.join(
           fixturesDir,
           "web-components",

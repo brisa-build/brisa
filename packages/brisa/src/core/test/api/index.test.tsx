@@ -141,14 +141,82 @@ describe("test api", () => {
       expect(mockLog).toHaveBeenCalledWith("foo");
     });
 
-    it.todo("should render a web component", async () => {});
+    it("should render a web component", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+      };
+      // Register DOM and web components from __fixtures__/web-components
+      const runWebComponents = await import(
+        "@/core/test/run-web-components"
+      ).then((m) => m.default);
+      await runWebComponents(globalThis.mockConstants as any);
 
-    it.todo("should render a web component with props", async () => {});
+      // @ts-ignore
+      const { container } = await render(<custom-counter />);
+      const customCounter =
+        container.querySelector("custom-counter")!.shadowRoot!;
 
-    it.todo(
-      "should be possible to interact with a web component",
-      async () => {},
-    );
+      expect(customCounter).toContainTextContent("0");
+    });
+
+    it.todo("should render a web component with props", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+      };
+      // Register DOM and web components from __fixtures__/web-components
+      const runWebComponents = await import(
+        "@/core/test/run-web-components"
+      ).then((m) => m.default);
+      await runWebComponents(globalThis.mockConstants as any);
+
+      // @ts-ignore
+      const { container } = await render(<custom-counter initialValue={5} />);
+      const customCounter =
+        container.querySelector("custom-counter")!.shadowRoot!;
+
+      expect(customCounter.innerHTML).toBe("5");
+    });
+
+    it("should be possible to interact with a web component", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+      };
+      // Register DOM and web components from __fixtures__/web-components
+      const runWebComponents = await import(
+        "@/core/test/run-web-components"
+      ).then((m) => m.default);
+      await runWebComponents(globalThis.mockConstants as any);
+
+      // @ts-ignore
+      const { container } = await render(<custom-counter />);
+      const customCounter =
+        container.querySelector("custom-counter")!.shadowRoot!;
+      const [increment, decrement] = customCounter.querySelectorAll("button");
+
+      expect(customCounter).toContainTextContent("0");
+
+      userEvent.click(increment);
+
+      expect(customCounter).toContainTextContent("1");
+
+      userEvent.click(increment);
+
+      expect(customCounter).toContainTextContent("2");
+
+      userEvent.click(decrement);
+
+      expect(customCounter).toContainTextContent("1");
+
+      userEvent.click(decrement);
+
+      expect(customCounter).toContainTextContent("0");
+    });
 
     it.todo(
       "should be possible to render a server component with a web component inside",
