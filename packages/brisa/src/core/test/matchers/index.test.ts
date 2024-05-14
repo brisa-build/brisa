@@ -99,14 +99,14 @@ describe("test matchers", () => {
       expect(fragment).toHaveTextContent("test");
     });
 
-    it('should pass if the element is ShadowRoot', () => {
-      const div = document.createElement('div');
-      const shadowRoot = div.attachShadow({ mode: 'open' });
-      const span = document.createElement('span');
-      span.textContent = 'test';
+    it("should pass if the element is ShadowRoot", () => {
+      const div = document.createElement("div");
+      const shadowRoot = div.attachShadow({ mode: "open" });
+      const span = document.createElement("span");
+      span.textContent = "test";
       shadowRoot.appendChild(span);
 
-      expect(shadowRoot).toHaveTextContent('test');
+      expect(shadowRoot).toHaveTextContent("test");
     });
 
     it("should fail if the element does not have the rendered text", () => {
