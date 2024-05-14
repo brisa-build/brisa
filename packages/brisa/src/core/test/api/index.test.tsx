@@ -1,5 +1,12 @@
 import path from "node:path";
-import { debug, render, serveRoute, waitFor, userEvent } from "@/core/test/api";
+import {
+  debug,
+  render,
+  serveRoute,
+  waitFor,
+  userEvent,
+  cleanup,
+} from "@/core/test/api";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import {
   describe,
@@ -147,6 +154,26 @@ describe("test api", () => {
       "should be possible to render a server component with a web component inside",
       async () => {},
     );
+  });
+
+  describe("cleanup", () => {
+    it("should cleanup the registed actions", () => {
+      globalThis.REGISTERED_ACTIONS = [() => {}];
+      cleanup();
+      expect(globalThis.REGISTERED_ACTIONS).toBeEmpty();
+    });
+
+    it("should cleanup the document body", async () => {
+      document.body.innerHTML = "<div>Foo</div>";
+      cleanup();
+      expect(document.body.innerHTML).toBeEmpty();
+    });
+
+    it("should cleanup the document head", async () => {
+      document.head.innerHTML = "<title>Foo</title>";
+      cleanup();
+      expect(document.head.innerHTML).toBeEmpty();
+    });
   });
 
   describe("serveRoute", () => {
