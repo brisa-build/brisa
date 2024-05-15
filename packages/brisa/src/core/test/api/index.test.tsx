@@ -247,10 +247,37 @@ describe("test api", () => {
       expect(customCounter).toContainTextContent("0");
     });
 
-    it.todo(
-      "should be possible to render a server component with a web component inside",
-      async () => {},
-    );
+    it("should be possible to render a server component with a web component inside", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+      };
+      // Register DOM and web components from __fixtures__/web-components
+      const runWebComponents = await import(
+        "@/core/test/run-web-components"
+      ).then((m) => m.default);
+      await runWebComponents();
+
+      function ServerComponent() {
+        return (
+          <div>
+            {/* @ts-ignore */}
+            <custom-counter />
+          </div>
+        );
+      }
+
+      // @ts-ignore
+      const { container } = await render(<ServerComponent />);
+      const customCounter =
+        container.querySelector("custom-counter")?.shadowRoot!;
+      const [increment] = customCounter.querySelectorAll("button");
+
+      expect(customCounter).toContainTextContent("0");
+      userEvent.click(increment);
+      expect(customCounter).toContainTextContent("1");
+    });
 
     it("should render server component using i18n", async () => {
       globalThis.mockConstants = {
@@ -281,6 +308,41 @@ describe("test api", () => {
       const span = container.querySelector("span")!;
 
       expect(span.innerHTML).toBe("Hello World");
+    });
+
+    it("should be possible to use overrideMessages inside a server component", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+        I18N_CONFIG: {
+          defaultLocale: "en",
+          locales: ["en", "es"],
+          messages: {
+            en: {
+              "hello-world": "Hello World",
+            },
+          },
+        },
+      };
+
+      function ServerComponent({}, { i18n }: RequestContext) {
+        i18n.overrideMessages(() => ({
+          hello: "Hi {{name}}",
+        }));
+
+        return (
+          <div>
+            <span>{i18n.t("hello", { name: "Foo" })}</span>
+          </div>
+        );
+      }
+
+      // @ts-ignore
+      const { container } = await render(<ServerComponent />, { locale: "en" });
+      const span = container.querySelector("span")!;
+
+      expect(span.innerHTML).toBe("Hi Foo");
     });
 
     it("should render the web component foo-component using i18n", async () => {
