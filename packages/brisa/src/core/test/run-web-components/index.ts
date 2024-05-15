@@ -1,27 +1,14 @@
 import { join } from "node:path";
 import fs from "node:fs";
-import constants from "@/constants";
+import { getConstants } from "@/constants";
 import { transformToWebComponents } from "@/utils/get-client-code-in-page";
 import getWebComponentsList from "@/utils/get-web-components-list";
 import getImportableFilepath from "@/utils/get-importable-filepath";
 
-// TODO: add test about this
-// TODO: not log and early return if there is no web components (test it)
-export default async function runWebComponents({
-  SRC_DIR,
-  BUILD_DIR,
-  LOG_PREFIX,
-}: typeof constants) {
-  console.log(LOG_PREFIX.INFO, "transforming JSX to web components...");
-
-  const time = Date.now();
+export default async function runWebComponents() {
+  const { LOG_PREFIX, SRC_DIR, BUILD_DIR } = getConstants();
   const webComponentsDir = join(SRC_DIR, "web-components");
   const internalBrisaFolder = join(BUILD_DIR, "_brisa");
-
-  if (!fs.existsSync(internalBrisaFolder)) {
-    fs.mkdirSync(internalBrisaFolder, { recursive: true });
-  }
-
   const integrationsPath = getImportableFilepath(
     "_integrations",
     webComponentsDir,
@@ -30,6 +17,17 @@ export default async function runWebComponents({
     SRC_DIR,
     integrationsPath,
   );
+
+  if (Object.keys(allWebComponents).length === 0) return;
+
+  console.log(LOG_PREFIX.INFO, "transforming JSX to web components...");
+
+  const time = Date.now();
+
+  if (!fs.existsSync(internalBrisaFolder)) {
+    fs.mkdirSync(internalBrisaFolder, { recursive: true });
+  }
+
   const res = await transformToWebComponents({
     pagePath: "__tests__",
     webComponentsList: allWebComponents,
