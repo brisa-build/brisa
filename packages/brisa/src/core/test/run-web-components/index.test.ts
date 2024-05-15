@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeEach, afterEach, spyOn } from "bun:test";
-import constants, { getConstants } from "@/constants";
+import { getConstants } from "@/constants";
 import { join } from "node:path";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import runWebComponents from "@/core/test/run-web-components";
@@ -47,5 +47,10 @@ describe("runWebComponents", () => {
     };
     await runWebComponents();
     expect(logSpy).not.toHaveBeenCalled();
+  });
+
+  it("should define i18n", async () => {
+    await runWebComponents();
+    expect(window.i18n).toBeDefined();
   });
 });

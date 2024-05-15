@@ -44,12 +44,21 @@ export async function render(
    * ```
    */
   element: JSX.Element | Response | string,
-  /**
-   * The base element to append the container.
-   *
-   * Default: `document.documentElement`
-   */
-  baseElement?: HTMLElement,
+  options?: {
+    /**
+     * The base element to append the container.
+     *
+     * Default: `document.documentElement`
+     */
+    baseElement?: HTMLElement;
+
+    /**
+     * The i18n locale to use in the rendering.
+     *
+     * Default is the `defaultLocale`.
+     */
+    locale?: string;
+  },
 ): Promise<{ container: HTMLElement; unmount: () => void }>;
 
 /**

@@ -20,6 +20,7 @@ import {
 } from "bun:test";
 import { getConstants } from "@/constants";
 import { blueLog, cyanLog, greenLog } from "@/utils/log/log-color";
+import type { RequestContext } from "brisa";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -33,6 +34,7 @@ describe("test api", () => {
   afterEach(() => {
     jest.restoreAllMocks();
     GlobalRegistrator.unregister();
+    globalThis.mockConstants = undefined;
   });
   describe("render", () => {
     it("should render the element", async () => {
@@ -81,7 +83,7 @@ describe("test api", () => {
         return <div>Foo</div>;
       }
       const parent = document.createElement("div");
-      const { container } = await render(<Foo />, parent);
+      const { container } = await render(<Foo />, { baseElement: parent });
       expect(parent.contains(container)).toBeTrue();
     });
 
@@ -151,7 +153,7 @@ describe("test api", () => {
       const runWebComponents = await import(
         "@/core/test/run-web-components"
       ).then((m) => m.default);
-      await runWebComponents(globalThis.mockConstants as any);
+      await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter />);
@@ -171,7 +173,7 @@ describe("test api", () => {
       const runWebComponents = await import(
         "@/core/test/run-web-components"
       ).then((m) => m.default);
-      await runWebComponents(globalThis.mockConstants as any);
+      await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter initialValue={5} />);
@@ -191,7 +193,7 @@ describe("test api", () => {
       const runWebComponents = await import(
         "@/core/test/run-web-components"
       ).then((m) => m.default);
-      await runWebComponents(globalThis.mockConstants as any);
+      await runWebComponents();
 
       const { container } = await render(
         // @ts-ignore
@@ -218,7 +220,7 @@ describe("test api", () => {
       const runWebComponents = await import(
         "@/core/test/run-web-components"
       ).then((m) => m.default);
-      await runWebComponents(globalThis.mockConstants as any);
+      await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter />);
@@ -249,6 +251,66 @@ describe("test api", () => {
       "should be possible to render a server component with a web component inside",
       async () => {},
     );
+
+    it("should render server component using i18n", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+        I18N_CONFIG: {
+          defaultLocale: "en",
+          locales: ["en", "es"],
+          messages: {
+            en: {
+              "hello-world": "Hello World",
+            },
+          },
+        },
+      };
+
+      function ServerComponent({}, { i18n }: RequestContext) {
+        return (
+          <div>
+            <span>{i18n.t("hello-world")}</span>
+          </div>
+        );
+      }
+
+      // @ts-ignore
+      const { container } = await render(<ServerComponent />, { locale: "en" });
+      const span = container.querySelector("span")!;
+
+      expect(span.innerHTML).toBe("Hello World");
+    });
+
+    it("should render the web component foo-component using i18n", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+        I18N_CONFIG: {
+          defaultLocale: "en",
+          locales: ["en", "es"],
+          messages: {
+            en: {
+              "hello-world": "Hello World",
+            },
+          },
+        },
+      };
+      // Register DOM and web components from __fixtures__/web-components
+      const runWebComponents = await import(
+        "@/core/test/run-web-components"
+      ).then((m) => m.default);
+      await runWebComponents();
+
+      // @ts-ignore
+      const { container } = await render(<foo-component />, { locale: "en" });
+      const fooComponent =
+        container.querySelector("foo-component")?.shadowRoot!;
+
+      expect(fooComponent).toContainTextContent("Foo Hello World");
+    });
   });
 
   describe("cleanup", () => {

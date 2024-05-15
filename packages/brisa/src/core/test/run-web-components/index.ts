@@ -4,9 +4,10 @@ import { getConstants } from "@/constants";
 import { transformToWebComponents } from "@/utils/get-client-code-in-page";
 import getWebComponentsList from "@/utils/get-web-components-list";
 import getImportableFilepath from "@/utils/get-importable-filepath";
+import translateCore from "@/utils/translate-core";
 
 export default async function runWebComponents() {
-  const { LOG_PREFIX, SRC_DIR, BUILD_DIR } = getConstants();
+  const { LOG_PREFIX, SRC_DIR, BUILD_DIR, I18N_CONFIG } = getConstants();
   const webComponentsDir = join(SRC_DIR, "web-components");
   const internalBrisaFolder = join(BUILD_DIR, "_brisa");
   const integrationsPath = getImportableFilepath(
@@ -37,7 +38,7 @@ export default async function runWebComponents() {
 
   if (res) eval(res.code);
   if (res?.useI18n) {
-    // TODO: Implement i18n
+    window.i18n = {};
   }
 
   console.log(LOG_PREFIX.READY, `transformed in ${Date.now() - time}ms`);
