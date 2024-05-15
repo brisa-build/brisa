@@ -107,6 +107,35 @@ test("component", async () => {
 >
 > [`rerenderInAction`](/api-reference/server-apis/rerenderInAction), [`navigate`](/api-reference/functions/navigate), and other actions that change the state of the application are not available in the test environment. You can use the [`mock`](https://bun.sh/docs/test/mocks) function to simulate the server action and test the component behavior.
 
+### Test Web Components after rendering
+
+You can also test Web Components after rendering them. For example, you can test a custom element:
+
+```tsx
+import { render, userEvent } from "brisa/test";
+import { test, expect } from "bun:test";
+
+test("web component", async () => {
+  const { container } = await render(<custom-counter />);
+  const counter = container.querySelector("custom-counter")!.shadowRoot!;
+  const [increment, decrement] = counter.querySelectorAll("button");
+
+  expect(counter).toContainTextContent("0");
+
+  userEvent.click(increment);
+
+  expect(counter).toContainTextContent("1");
+
+  userEvent.click(decrement);
+
+  expect(counter).toContainTextContent("0");
+});
+```
+
+> [!TIP]
+>
+> You can use the `shadowRoot` property to access the shadow DOM of a custom element.
+
 ## `serveRoute`
 
 Request a Brisa route and return the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response). These routes can be API endpoints, pages, assets, or any other type of route.
