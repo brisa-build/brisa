@@ -176,9 +176,35 @@ describe("test api", () => {
       // @ts-ignore
       const { container } = await render(<custom-counter initialValue={5} />);
       const customCounter =
-        container.querySelector("custom-counter")!.shadowRoot!;
+        container.querySelector("custom-counter")?.shadowRoot!;
 
       expect(customCounter.innerHTML).toBe("5");
+    });
+
+    it.todo("should render a web component with slots", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+      };
+      // Register DOM and web components from __fixtures__/web-components
+      const runWebComponents = await import(
+        "@/core/test/run-web-components"
+      ).then((m) => m.default);
+      await runWebComponents(globalThis.mockConstants as any);
+
+      const { container } = await render(
+        // @ts-ignore
+        <custom-slot>
+          <div slot="header">Header</div>
+          <div slot="footer">Footer</div>
+          {/* @ts-ignore */}
+        </custom-slot>,
+      );
+      const customSlot = container.querySelector("custom-slot")?.shadowRoot!;
+
+      expect(customSlot).toContainTextContent("Header");
+      expect(customSlot).toContainTextContent("Footer");
     });
 
     it("should be possible to interact with a web component", async () => {
@@ -341,7 +367,7 @@ describe("test api", () => {
           "\n    " +
           blueLog("<div") +
           blueLog(">") +
-          "\n    " +
+          "\n      " +
           "Foo\n    " +
           blueLog("</div>") +
           "\n  " +
@@ -364,6 +390,46 @@ describe("test api", () => {
           "=" +
           greenLog('"test"'),
       );
+    });
+
+    it("should be possible to log a shadow root", () => {
+      const mockLog = spyOn(console, "log");
+      const shadowRoot = document
+        .createElement("div")
+        .attachShadow({ mode: "open" });
+      shadowRoot.innerHTML = "<div>Foo</div>";
+      debug(shadowRoot);
+      expect(mockLog.mock.calls[0][0]).toBe(
+        blueLog("<div") + blueLog(">") + "\n  " + "Foo\n" + blueLog("</div>"),
+      );
+    });
+
+    it("should be possible to log a document fragment", () => {
+      const mockLog = spyOn(console, "log");
+      const fragment = document.createDocumentFragment();
+      const div = document.createElement("div");
+      div.innerHTML = "Foo<div>Bar</div>";
+      fragment.appendChild(div);
+      debug(fragment);
+      expect(mockLog.mock.calls[0][0]).toBe(
+        blueLog("<div") +
+          blueLog(">") +
+          "\n  " +
+          "Foo\n  " +
+          blueLog("<div") +
+          blueLog(">") +
+          "\n    " +
+          "Bar\n  " +
+          blueLog("</div>") +
+          "\n" +
+          blueLog("</div>"),
+      );
+    });
+
+    it("should be possible to log null element an see an empty fragment", () => {
+      const mockLog = spyOn(console, "log");
+      debug(null);
+      expect(mockLog.mock.calls[0][0]).toBe(blueLog("<>\n</>"));
     });
   });
 

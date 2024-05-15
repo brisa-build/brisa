@@ -99,41 +99,58 @@ export async function waitFor(fn: () => unknown, maxMilliseconds = 1000) {
 /**
  * Debug the current DOM
  */
-export function debug() {
-  console.log(prettyDOM(document.documentElement));
+export function debug(
+  element:
+    | HTMLElement
+    | DocumentFragment
+    | ShadowRoot
+    | null = document.documentElement,
+) {
+  console.log(element ? prettyDOM(element) : blueLog("<>\n</>"));
 }
 
-function prettyDOM(element: HTMLElement, prefix: string = ""): any {
+function prettyDOM(
+  element: HTMLElement | DocumentFragment | ShadowRoot,
+  prefix: string = "",
+): any {
+  const isAnElement = isElement(element);
+  const nextPrefix = !prefix && !isAnElement ? "" : prefix + "  ";
+  const separator = nextPrefix ? "\n" : "";
   const lines = [];
-  const attrs = element.attributes;
-  lines.push(prefix, blueLog("<" + element.localName));
 
-  for (let i = 0; i < attrs.length; i += 1) {
-    const attr = attrs[i];
-    lines.push(
-      "\n",
-      prefix,
-      "    ",
-      cyanLog(attr.name),
-      `=${greenLog('"' + attr.value + '"')}`,
-    );
+  if (isAnElement) {
+    const attrs = element.attributes;
+    lines.push(prefix, blueLog("<" + element.localName));
+
+    for (let i = 0; i < attrs.length; i += 1) {
+      const attr = attrs[i];
+      lines.push(
+        separator,
+        prefix,
+        "    ",
+        cyanLog(attr.name),
+        `=${greenLog('"' + attr.value + '"')}`,
+      );
+    }
+
+    lines.push(blueLog(">"));
   }
-
-  lines.push(blueLog(">"));
   let child = isTemplate(element)
     ? element.content.firstChild
     : element.firstChild;
 
   while (child) {
     if (isElement(child)) {
-      lines.push("\n", prettyDOM(child, prefix + "  "));
+      lines.push(separator, prettyDOM(child, nextPrefix));
     } else {
-      lines.push("\n", prefix, child.textContent);
+      lines.push(separator, prefix + "  ", child.textContent);
     }
     child = child.nextSibling;
   }
 
-  lines.push("\n", prefix, blueLog(`</${element.localName}>`));
+  if (isAnElement) {
+    lines.push(separator, prefix, blueLog(`</${element.localName}>`));
+  }
   return lines.join("");
 }
 
