@@ -310,6 +310,23 @@ Types:
 toBeInTheDocument(): void;
 ```
 
+## `toHaveElementByNodeName`
+
+Verifies the presence of an element with a specific node name.
+
+Example:
+
+```ts
+expect(element).toHaveElementByNodeName("div");
+expect(element).not.toHaveElementByNodeName("span");
+```
+
+Types:
+
+```ts
+toHaveElementByNodeName(nodeName: string): void;
+```
+
 ## More Matchers from Bun
 
 In addition to the custom matchers provided by Brisa, you can also use the default matchers from Bun, such as `toBe`, `toEqual`, `toBeTruthy`, `toBeFalsy`...
