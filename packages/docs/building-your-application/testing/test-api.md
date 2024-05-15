@@ -28,27 +28,36 @@ test("component", async () => {
 });
 ```
 
-The second argument is an optional `baseElement` that you can use to render the component into a specific element (by default, it uses the `document.documentElement`).
+The second argument are the options to render the component:
+
+- `baseElement`: The element where the component will be rendered. By default, it uses the `document.documentElement`.
+- `locale`: The locale to use when rendering the component when using [i18n](/building-your-application/routing/internationalization). By default, it uses the `defaultLocale`.
 
 Example:
 
 ```tsx
 import { render } from "brisa/test";
 import { test, expect } from "bun:test";
+import { Component } from "./Component";
 
 test("component", async () => {
   const baseElement = document.createElement("div");
-  await render(<button>Click me</button>, baseElement);
+  await render(<Component />, { baseElement, locale: "es" });
 
-  expect(baseElement.querySelector("button")).toHaveTextContent("Click me");
+  expect(baseElement.querySelector("button")).toHaveTextContent("Clica aquí");
 });
 ```
 
 Types:
 
 ```ts
-render(element: JSX.Element | Response | string, baseElement?: HTMLElement
-): Promise<{ container: HTMLElement, unmount: () => void }>;
+render(element: JSX.Element | Response | string, options?: {
+  baseElement?: HTMLElement;
+  locale?: string;
+}): Promise<{
+  container: HTMLElement;
+  unmount: () => void;
+}>;
 ```
 
 ### Test server actions after rendering
