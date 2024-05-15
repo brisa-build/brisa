@@ -3,7 +3,7 @@
   "module": "./out/core/index.js",
   "main": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
-  "version": "0.0.59",
+  "version": "0.0.60",
   "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
