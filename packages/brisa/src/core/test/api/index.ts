@@ -2,16 +2,46 @@ import { getServeOptions } from "@/cli/serve/serve-options";
 import renderToString from "@/utils/render-to-string";
 import { blueLog, greenLog, cyanLog } from "@/utils/log/log-color";
 import { registerActions } from "@/utils/rpc/register-actions";
+import { getConstants } from "@/constants";
+import extendRequestContext from "@/utils/extend-request-context";
+import translateCore from "@/utils/translate-core";
 
 /**
  * Render a JSX element, a string or a Response object into a container
  */
 export async function render(
   element: JSX.Element | Response | string,
-  baseElement: HTMLElement = document.documentElement,
+  {
+    locale,
+    baseElement = document.documentElement,
+  }: { locale?: string; baseElement?: HTMLElement } = {},
 ) {
+  const { I18N_CONFIG } = getConstants();
+  const lang = locale ?? I18N_CONFIG?.defaultLocale;
+  let request = new Request("http://localhost");
   let container = baseElement;
   let htmlString;
+
+  if (window.i18n && lang) {
+    const i18n = {
+      ...I18N_CONFIG,
+      t: translateCore(lang, I18N_CONFIG),
+      locale: lang,
+      overrideMessages(callback: any) {
+        const messages = I18N_CONFIG.messages?.[lang] ?? {};
+        const promise = callback(messages);
+        const res = (extendedMessages: Record<string, string>) =>
+          Object.assign(messages, extendedMessages);
+        return promise.then?.(res) ?? res(promise);
+      },
+    } as any;
+
+    request = extendRequestContext({
+      originalRequest: request,
+      i18n,
+    });
+    window.i18n = i18n;
+  }
 
   if (typeof element === "string") {
     htmlString = element;
@@ -21,7 +51,7 @@ export async function render(
     container = baseElement.appendChild(document.createElement("div"));
     globalThis.REGISTERED_ACTIONS = [];
     globalThis.FORCE_SUSPENSE_DEFAULT = false;
-    htmlString = await renderToString(element);
+    htmlString = await renderToString(element, { request });
     globalThis.FORCE_SUSPENSE_DEFAULT = undefined;
   }
 
