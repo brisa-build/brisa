@@ -244,6 +244,16 @@ function toBeInTheDocument(received: unknown) {
   };
 }
 
+function toHaveElementByNodeName(
+  received: HTMLElement | DocumentFragment | ShadowRoot,
+  elementName: string,
+) {
+  return {
+    pass: received.querySelector(elementName) !== null,
+    message: () => `expected element to have ${elementName}`,
+  };
+}
+
 export default {
   toBeChecked,
   toHaveAttribute,
@@ -263,4 +273,5 @@ export default {
   toBeInvalid,
   toBeInputTypeOf,
   toBeInTheDocument,
+  toHaveElementByNodeName,
 };

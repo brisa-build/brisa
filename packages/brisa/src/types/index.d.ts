@@ -9797,6 +9797,18 @@ export interface BrisaTestMatchers {
    * @see [More details](https://brisa.build/building-your-application/testing/matchers#tobeinvalid)
    */
   toBeInTheDocument(): void;
+
+  /**
+   * Use `toHaveElementByNodeName` to assert that an element has a specific node name.
+   *
+   * Example:
+   *
+   * ```ts
+   * expect(element).toHaveElementByNodeName('div');
+   *
+   * @see [More details](https://brisa.build/building-your-application/testing/matchers#tohaveelementbyname)
+   */
+  toHaveElementByNodeName(name: string): void;
 }
 
 declare module "bun:test" {
