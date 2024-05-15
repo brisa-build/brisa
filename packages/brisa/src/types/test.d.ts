@@ -99,10 +99,19 @@ export async function waitFor(
  * Example:
  *
  * ```tsx
- * import { debug } from "brisa";
+ * import { debug, render } from "brisa";
  *
  * await render(<div>Hello World</div>);
  * debug();
+ * ```
+ *
+ * Also you can pass an element to debug:
+ *
+ * ```tsx
+ * import { debug, render } from "brisa";
+ *
+ * await render(<div>Hello World</div>);
+ * debug(document.querySelector("div"));
  * ```
  *
  * In the console you will see:
@@ -119,7 +128,9 @@ export async function waitFor(
  *
  * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#debug)
  */
-export function debug(): void;
+export function debug(
+  element?: HTMLElement | DocumentFragment | ShadowRoot | null,
+): void;
 
 type userEvent = {
   /**

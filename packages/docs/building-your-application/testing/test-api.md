@@ -300,9 +300,25 @@ Example:
 import { render, debug } from "brisa/test";
 import { test, expect } from "bun:test";
 
-test("debug", async () => {
+test("debug a specific element", async () => {
   const { container } = await render(<button>Click me</button>);
-  debug();
+  debug(container);
+});
+```
+
+If no element is passed, it will debug the entire document.
+
+Example:
+
+```tsx
+import { debug, render, serveRoute } from "brisa/test";
+import { test } from "bun:test";
+
+test("debug all the document", async () => {
+  const pageResponse = await serveRoute("/about");
+  await render(pageResponse);
+
+  debug(); // Debug the entire document
 });
 ```
 
@@ -319,5 +335,5 @@ In the console, you will see the HTML of the document in a readable format:
 Types:
 
 ```ts
-debug(): void;
+debug(element?: HTMLElement | DocumentFragment | ShadowRoot | null): void;
 ```
