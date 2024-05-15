@@ -181,7 +181,7 @@ describe("test api", () => {
       expect(customCounter.innerHTML).toBe("5");
     });
 
-    it.todo("should render a web component with slots", async () => {
+    it("should render a web component with slots", async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
@@ -203,8 +203,9 @@ describe("test api", () => {
       );
       const customSlot = container.querySelector("custom-slot")?.shadowRoot!;
 
-      expect(customSlot).toContainTextContent("Header");
-      expect(customSlot).toContainTextContent("Footer");
+      expect(customSlot).toHaveElementByNodeName("slot");
+      expect(container).toContainTextContent("Header");
+      expect(container).toContainTextContent("Footer");
     });
 
     it("should be possible to interact with a web component", async () => {

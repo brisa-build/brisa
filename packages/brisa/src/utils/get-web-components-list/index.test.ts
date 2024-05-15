@@ -34,6 +34,11 @@ describe("utils", () => {
           "web-components",
           "custom-counter.tsx",
         ),
+        "custom-slot": path.join(
+          fixturesDir,
+          "web-components",
+          "custom-slot.tsx",
+        ),
         "native-some-example": path.join(
           fixturesDir,
           "web-components",
@@ -68,6 +73,11 @@ describe("utils", () => {
           fixturesDir,
           "web-components",
           "custom-counter.tsx",
+        ),
+        "custom-slot": path.join(
+          fixturesDir,
+          "web-components",
+          "custom-slot.tsx",
         ),
         "foo-component": path.join(fixturesDir, "lib", "foo.tsx"),
         "native-some-example": path.join(
@@ -104,6 +114,11 @@ describe("utils", () => {
           fixturesDir,
           "web-components",
           "custom-counter.tsx",
+        ),
+        "custom-slot": path.join(
+          fixturesDir,
+          "web-components",
+          "custom-slot.tsx",
         ),
         "native-some-example": path.join(
           fixturesDir,

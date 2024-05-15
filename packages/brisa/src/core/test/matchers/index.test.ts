@@ -515,4 +515,22 @@ describe("test matchers", () => {
       );
     });
   });
+
+  describe("toHaveElementByNodeName", () => {
+    it("should pass if the element has an element with the given node name", () => {
+      const div = document.createElement("div");
+      const span = document.createElement("span");
+      div.appendChild(span);
+
+      expect(div).toHaveElementByNodeName("span");
+    });
+
+    it("should fail if the element does not have an element with the given node name", () => {
+      const div = document.createElement("div");
+
+      expect(() => expect(div).toHaveElementByNodeName("span")).toThrowError(
+        "expected element to have span",
+      );
+    });
+  });
 });
