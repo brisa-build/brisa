@@ -129,72 +129,72 @@ export default function Homepage() {
   fs.writeFileSync(
     "src/components/counter-server.tsx",
     `import type { RequestContext } from "brisa";
-  import { rerenderInAction } from "brisa/server";
-  
-  export default function CounterServer(
-    { initialValue = 0 }: { initialValue: number },
-    { store, method }: RequestContext,
-  ) {
-    const isDuringActionRerender = method === "POST";
-  
-    if (!isDuringActionRerender) store.set("count", initialValue);
-  
-    store.transferToClient(["count"]);
-  
-    function increment() {
-      store.set("count", store.get("count") + 1);
-      rerenderInAction({ type: "page" });
-    }
-  
-    function decrement() {
-      store.set("count", store.get("count") - 1);
-      rerenderInAction({ type: "page" });
-    }
-  
-    return (
-      <div>
-        <h2>Server counter</h2>
-        <button onClick={increment}>+</button>
-        {store.get("count")}
-        <button onClick={decrement}>-</button>
-      </div>
-    );
-  }`,
+import { rerenderInAction } from "brisa/server";
+
+export default function CounterServer(
+  { initialValue = 0 }: { initialValue: number },
+  { store, method }: RequestContext,
+) {
+  const isDuringActionRerender = method === "POST";
+
+  if (!isDuringActionRerender) store.set("count", initialValue);
+
+  store.transferToClient(["count"]);
+
+  function increment() {
+    store.set("count", store.get("count") + 1);
+    rerenderInAction({ type: "page" });
+  }
+
+  function decrement() {
+    store.set("count", store.get("count") - 1);
+    rerenderInAction({ type: "page" });
+  }
+
+  return (
+    <div>
+      <h2>Server counter</h2>
+      <button onClick={increment}>+</button>
+      {store.get("count")}
+      <button onClick={decrement}>-</button>
+    </div>
+  );
+}`,
   );
 
   fs.writeFileSync(
     "src/pages/index.test.tsx",
     `import { render } from "brisa/test"
-  import { describe, expect, it } from "bun:test"
-  import Home from '.'
-  
-  describe("Index", () => {
-    it("should render Hello World",  async () => {
-      const { container } = await render(<Home />)
-      expect(container).toHaveTextContent("Hello World")
-    })
-  });`,
+import { describe, expect, it } from "bun:test"
+import Home from '.'
+
+describe("Index", () => {
+  it("should render Hello World",  async () => {
+    const { container } = await render(<Home />)
+    expect(container).toHaveTextContent("Hello World")
+  })
+});`,
   );
 
   fs.writeFileSync(
     "src/web-components/counter-client.tsx",
     `import type { WebContext } from "brisa";
 
-  export default function Counter(
-    { initialValue = 0 }: { initialValue: number },
-    { state }: WebContext,
-  ) {
-    const count = state(initialValue);
-  
-    return (
-      <div>
-        <h2>Client counter</h2>
-        <button onClick={() => count.value++}>+</button>
-        {count.value}
-        <button onClick={() => count.value--}>-</button>
-      </div>
-    );
-  }`,
+export default function Counter(
+  { initialValue = 0 }: { initialValue: number },
+  { state }: WebContext,
+) {
+  const count = state(initialValue);
+
+  return (
+    <div>
+      <h2>Client counter</h2>
+      <button onClick={() => count.value++}>+</button>
+      {count.value}
+      <button onClick={() => count.value--}>-</button>
+    </div>
+  );
+}`,
   );
 
   fs.writeFileSync("bunfig.toml", '[test]\npreload = "brisa/test"');
