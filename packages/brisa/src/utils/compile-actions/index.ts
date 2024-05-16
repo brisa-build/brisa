@@ -377,8 +377,8 @@ function wrapWithTypeCatch({
   const { IS_PRODUCTION } = getConstants();
   const props = [];
 
-  // Remove default values from props, they are not 
-  // needed to render the component, we need to pass 
+  // Remove default values from props, they are not
+  // needed to render the component, we need to pass
   // all props as object
   for (const prop of (params[0] as any)?.properties ?? []) {
     if (prop.value?.type === "AssignmentPattern") {
