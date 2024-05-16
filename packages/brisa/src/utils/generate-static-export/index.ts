@@ -184,6 +184,7 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
   };
 
   for (const pageName of routes) {
+    if (pageName.endsWith(".test")) continue;
     for (const locale of locales) {
       let route = router.match(pageName);
 
