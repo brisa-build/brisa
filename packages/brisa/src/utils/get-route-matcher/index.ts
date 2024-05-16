@@ -20,6 +20,14 @@ export default function getRouteMatcher(
 
     const route = router.match(url.toString());
 
+    if (
+      route?.name?.endsWith(".test") ||
+      url.pathname.endsWith("/index") ||
+      url.pathname.endsWith("\\index")
+    ) {
+      return { route: null, isReservedPathname: false };
+    }
+
     return {
       route,
       isReservedPathname: reservedPathnamesSet.has(route?.pathname ?? ""),
