@@ -19,26 +19,114 @@ To use tests in Brisa, you need to have the `bunfig.toml` file on the root of th
 preload = "brisa/test"
 ```
 
-This allows to preload all the [matchers](/building-your-application/testing/matchers) from Brisa and it will also take care of loading [happy-dom](https://github.com/capricorn86/happy-dom) library in case you don't have it as `devDependencies`, which is a prerequisite that `brisa/test` needs to run DOM tests.
+This allows to preload all the [matchers](/building-your-application/testing/matchers) from Brisa and it will also take care of initializing [happy-dom](https://github.com/capricorn86/happy-dom) library to manipulate the DOM.
 
-## Server vs Browser
+## Testing Server Actions
 
-When running tests, you can choose to run them in a server environment or in a browser environment. The server environment is the default and it's useful for testing functions and components that don't rely on the DOM. The browser environment is useful for testing components that rely on the DOM.
-
-To run tests in the browser environment, you can use the `GlobalRegistrator` class from `@happy-dom/global-registrator` to register the global objects that are available in the browser environment.
+After rendering the component, you can interact with it thanks to [`userEvent`](#userevent). For example, you can simulate a click event on a button:
 
 ```tsx
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { render, userEvent } from "brisa/test";
+import { test, mock } from "bun:test";
 
-GlobalRegistrator.register();
+test("server action test", async () => {
+  const mockServerAction = mock(() => {});
+  const { container } = await render(
+    <button onClick={mockServerAction}>Click me</button>,
+  );
+  const button = container.querySelector("button");
+
+  userEvent.click(button);
+
+  expect(mockServerAction).toHaveBeenCalled();
+});
 ```
 
-To come back to the server environment, you can use the `GlobalRegistrator.unregister` method.
+It's very similar to browser events, but it has some differences, for example in `onSubmit` of a form, you can access directly to `event.formData`, because the browser event was already handled by the RPC layer and the form was submitted to the server, converting the [`SubmitEvent`](https://developer.mozilla.org/en-US/docs/Web/API/SubmitEvent) into a [`FormDataEvent`](https://developer.mozilla.org/en-US/docs/Web/API/FormDataEvent).
 
 ```tsx
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { render, userEvent } from "brisa/test";
+import { test, mock } from "bun:test";
 
-GlobalRegistrator.unregister();
+test("server action test", async () => {
+  const mockServerAction = mock(() => {});
+  const { container } = await render(
+    <form onSubmit={(e) => mockServerAction(e.formData.get("name"))}>
+      <input type="text" name="name" value="foo" />
+      <button type="submit">Submit</button>
+    </form>,
+  );
+  const form = container.querySelector("form");
+
+  userEvent.submit(form);
+
+  expect(mockServerAction).toHaveBeenCalledWith("foo");
+});
+```
+
+> [!WARNING]
+>
+> [`rerenderInAction`](/api-reference/server-apis/rerenderInAction), [`navigate`](/api-reference/functions/navigate), and other actions that change the state of the application are not available in the test environment. You can use the [`mock`](https://bun.sh/docs/test/mocks) function to simulate the server action and test the component behavior.
+
+## Testing Web Components
+
+You can also test Web Components after rendering them. For example, you can test a custom element:
+
+```tsx
+import { render, userEvent } from "brisa/test";
+import { test, expect } from "bun:test";
+
+test("web component", async () => {
+  const { container } = await render(<custom-counter />);
+  const counter = container.querySelector("custom-counter")!.shadowRoot!;
+  const [increment, decrement] = counter.querySelectorAll("button");
+
+  expect(counter).toContainTextContent("0");
+
+  userEvent.click(increment);
+
+  expect(counter).toContainTextContent("1");
+
+  userEvent.click(decrement);
+
+  expect(counter).toContainTextContent("0");
+});
+```
+
+> [!TIP]
+>
+> You can use the `shadowRoot` property to access the shadow DOM of a custom element.
+
+## Testing API Endpoints
+
+You can test API endpoints using the [`serveRoute`](/building-your-application/testing/test-api#serveroute) function. This function allows you to request a Brisa route and return the [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response). These routes can be API endpoints, pages, assets, or any other type of route.
+
+Example:
+
+```tsx
+import { serveRoute } from "brisa/test";
+import { test, expect } from "bun:test";
+
+test("route", async () => {
+  const response = await serveRoute("/api/hello");
+  const data = await response.json();
+
+  expect(data).toEqual({ message: "Hello, world!" });
+});
+```
+
+For the pages, you can use it with the [`render`](/building-your-application/testing/test-api#render) function to render the page:
+
+```tsx
+import { render, serveRoute } from "brisa/test";
+import { test, expect } from "bun:test";
+
+test("page", async () => {
+  const response = await serveRoute("/about");
+  const { container } = await render(response);
+
+  expect(container).toHaveTextContent("About us");
+});
 ```
 
 ## Types of tests
