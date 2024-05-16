@@ -1,5 +1,6 @@
 import type { MatchedRoute } from "bun";
 import type { RequestContext, RouterType } from "@/types";
+import isTestFile from "@/utils/is-test-file";
 
 export default function getRouteMatcher(
   dir: string,
@@ -21,7 +22,7 @@ export default function getRouteMatcher(
     const route = router.match(url.toString());
 
     if (
-      route?.name?.endsWith(".test") ||
+      isTestFile(route?.name) ||
       url.pathname.endsWith("/index") ||
       url.pathname.endsWith("\\index")
     ) {
