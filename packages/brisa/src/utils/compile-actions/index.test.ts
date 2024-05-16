@@ -72,6 +72,39 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
+    it("should transform a simple component with 1 action and prop with destructuring with default", () => {
+      const code = `
+        export default function Component({ text: { value = 'foo' } }) {
+          return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{value}</div>
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text: {value = 'foo'}}) {
+          return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: value}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text: {value = 'foo'}}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_1'));
+            return new Response(null);
+          } catch (error) {
+            return __resolveAction({ 
+              req, 
+              error, 
+              component: jsxDEV(Component, {text: {value}}, undefined, false, undefined, this)
+            });
+          }
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
     it("should transform a simple component with 1 function action", () => {
       const code = `
         export default function Component({text}) {
