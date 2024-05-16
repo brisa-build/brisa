@@ -40,6 +40,38 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
+    it("should transform a simple component with 1 action and prop default", () => {
+      const code = `
+        export default function Component({initialValue = 0}) {
+          return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({initialValue = 0}) {
+          return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({initialValue = 0}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_1'));
+            return new Response(null);
+          } catch (error) {
+            return __resolveAction({ 
+              req, 
+              error, 
+              component: jsxDEV(Component, {initialValue}, undefined, false, undefined, this)
+            });
+          }
+        }
+      `);
+
+      expect(output).toEqual(expected);
+    });
+
     it("should transform a simple component with 1 function action", () => {
       const code = `
         export default function Component({text}) {
@@ -940,8 +972,8 @@ describe("utils", () => {
           return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
         }
       `;
-      expect(transformToActionCode(code)).toContain(
-        "component: jsx(Component, {text})",
+      expect(normalizeQuotes(transformToActionCode(code))).toContain(
+        normalizeQuotes("component: jsx(Component, {text})"),
       );
     });
     it("should keep variables used inside the action but defined outside", () => {

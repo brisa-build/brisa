@@ -375,6 +375,18 @@ function wrapWithTypeCatch({
   requestParamName: string;
 }): ESTree.BlockStatement {
   const { IS_PRODUCTION } = getConstants();
+  const props = [];
+
+  // Remove default values from props, they are not 
+  // needed to render the component, we need to pass 
+  // all props as object
+  for (const prop of (params[0] as any)?.properties ?? []) {
+    if (prop.value?.type === "AssignmentPattern") {
+      props.push({ ...prop, value: prop.value.left });
+      continue;
+    }
+    props.push(prop);
+  }
 
   return {
     ...body,
@@ -458,7 +470,16 @@ function wrapWithTypeCatch({
                                   // TODO: Support arrow function names
                                   "Component",
                               },
-                              params[0],
+                              props.length
+                                ? {
+                                    type: "ObjectExpression",
+                                    properties: props,
+                                    kind: "init",
+                                    computed: false,
+                                    method: false,
+                                    shorthand: true,
+                                  }
+                                : params[0],
                               ...((IS_PRODUCTION
                                 ? []
                                 : [
