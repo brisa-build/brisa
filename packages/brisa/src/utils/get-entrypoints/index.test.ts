@@ -32,5 +32,10 @@ describe("utils", () => {
       expect(Array.isArray(entrypoints)).toBe(true);
       expect(entrypoints.length).toBe(0);
     });
+
+    it("should not return files that end with '.test'", () => {
+      const entrypoints = getEntrypoints(pagesDir);
+      expect(entrypoints).not.toContain(path.join(pagesDir, "index.test.tsx"));
+    });
   });
 });
