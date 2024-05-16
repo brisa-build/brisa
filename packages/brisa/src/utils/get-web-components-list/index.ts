@@ -5,6 +5,7 @@ import {
   ALTERNATIVE_PREFIX,
   NATIVE_FOLDER,
 } from "@/utils/client-build-plugin/constants";
+import isTestFile from "@/utils/is-test-file";
 
 const CONTEXT_PROVIDER = "context-provider";
 
@@ -42,7 +43,8 @@ export default async function getWebComponentsList(
     entries
       .filter(
         ([key]) =>
-          !key.includes(ALTERNATIVE_PREFIX) || key.includes(NATIVE_FOLDER),
+          !(key.includes(ALTERNATIVE_PREFIX) || isTestFile(key)) ||
+          key.includes(NATIVE_FOLDER),
       )
       .map(([key, path]) => {
         const selector = key.replace(/^\/(_)?/g, "").replaceAll("/", "-");

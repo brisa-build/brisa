@@ -5,6 +5,7 @@ import { getServeOptions } from "./utils";
 import { toInline } from "@/helpers";
 import { logWarning } from "@/utils/log/log-build";
 import type { FileSystemRouter, MatchedRoute } from "bun";
+import isTestFile from "@/utils/is-test-file";
 
 const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = "http://localhost";
@@ -184,7 +185,7 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
   };
 
   for (const pageName of routes) {
-    if (pageName.endsWith(".test")) continue;
+    if (isTestFile(pageName)) continue;
     for (const locale of locales) {
       let route = router.match(pageName);
 
