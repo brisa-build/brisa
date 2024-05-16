@@ -83,7 +83,7 @@ export function LiveReloadScript({
 
   return (
     <>
-      <script>
+      <script id="hotreloading-script">
         {dangerHTML(
           `function wsc() {
             let s = new WebSocket("${wsUrl}");
