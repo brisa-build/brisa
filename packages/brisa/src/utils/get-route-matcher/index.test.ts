@@ -52,5 +52,35 @@ describe("utils", () => {
       expect(isReservedPathname).toBe(false);
       expect(reservedRoutes["/_404"]).toBeDefined();
     });
+
+    it('should return null if the route ends with ".test"', () => {
+      const { match } = getRouteMatcher(PAGES_DIR);
+      const { route } = match(
+        extendRequestContext({
+          originalRequest: new Request("https://example.com/index.test"),
+        }),
+      );
+      expect(route).toBe(null);
+    });
+
+    it('should return null if the route ends with "/index"', () => {
+      const { match } = getRouteMatcher(PAGES_DIR);
+      const { route } = match(
+        extendRequestContext({
+          originalRequest: new Request("https://example.com/index"),
+        }),
+      );
+      expect(route).toBe(null);
+    });
+
+    it('should return null if the route ends with "\\index"', () => {
+      const { match } = getRouteMatcher(PAGES_DIR);
+      const { route } = match(
+        extendRequestContext({
+          originalRequest: new Request("https://example.com\\index"),
+        }),
+      );
+      expect(route).toBe(null);
+    });
   });
 });
