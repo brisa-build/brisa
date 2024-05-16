@@ -8,6 +8,7 @@ export default function Counter(
 
   return (
     <div>
+      <h2>Client counter</h2>
       <button onClick={() => count.value++}>+</button>
       {count.value}
       <button onClick={() => count.value--}>-</button>
