@@ -262,3 +262,36 @@ export default function SomeWebComponent() {
 > [!WARNING]
 >
 > The imperative `prefetch` using `fetch` don't translate i18n pages, so you need to manage with the [`i18n`](/api-reference/components/web-context#i18n) info from the [`WebContext`](/api-reference/components/web-context).
+
+### Speculation Rules for prerendering
+
+The Chrome team has reintroduced full prerendering capabilities to enhance page load times by speculating which pages a user might navigate to next. This new mechanism uses the Speculation Rules API, allowing developers to programmatically prerender pages. This guide will show you how to use this API to prerender a page when a user hovers over a link.
+
+Example:
+
+```html
+<script type="speculationrules">
+  {
+    "prerender": [
+      {
+        "where": {
+          "href_matches": "/*"
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
+</script>
+```
+
+In this example:
+
+1. The speculation rule is defined within a `<script type="speculationrules">` tag.
+2. The rule specifies that all URLs matching the pattern /\* should be prerendered.
+3. The eagerness property is set to moderate, which means that speculation will be triggered when the user hovers over a link for 200 milliseconds or on the pointerdown event (useful for mobile devices where hover events are not applicable).
+
+This setup ensures that prerendering happens efficiently and only when there is a high likelihood of the user navigating to those pages based on their interaction with the links.
+
+> [!NOTE]
+>
+> For more information access the [MDN documentation](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API).
