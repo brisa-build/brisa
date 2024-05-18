@@ -74,6 +74,7 @@ async function rpc(
       await promise;
 
       await $window._rpc(res, args);
+      registerActions(rpc);
     } else {
       store?.set(errorIndicator, await res.text());
     }
