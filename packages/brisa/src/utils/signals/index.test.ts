@@ -432,6 +432,32 @@ describe("signals", () => {
     reset2();
   });
 
+  it("should store.has be reactive", () => {
+    const { store, effect, reset } = signals();
+    const mockEffect = mock<(has: boolean) => void>(() => {});
+
+    store.set("count", 0);
+
+    effect(() => {
+      mockEffect(store.has("count"));
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0][0]).toBeTrue();
+
+    store.delete("count");
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[1][0]).toBeFalse();
+
+    store.set("count", 1);
+
+    expect(mockEffect).toHaveBeenCalledTimes(3);
+    expect(mockEffect.mock.calls[2][0]).toBeTrue();
+
+    reset();
+  });
+
   it('should expose store to window["_s"] to allow RPC to modify it', () => {
     const { store, reset } = signals();
     store.set("count", 0);

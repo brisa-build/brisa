@@ -418,7 +418,7 @@ Whenever a state mutate (change the `.value`) reactively updates these parts of 
 
 ## Store (`store` method)
 
-The difference between state and `store` is that store is a **shared** state among all web-components. The store is a reactive `Map`, where the methods `get`, `set` and `delete` are reactive.
+The difference between state and `store` is that store is a **shared** state among all web-components. The store is a reactive `Map`, where the methods `get`, `has`, `set` and `delete` are reactive.
 
 There is no need to use the `.value` here. But once the `.get` is done you may lose reactivity and need to add it to a `derived`.
 

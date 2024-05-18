@@ -3773,6 +3773,38 @@ describe("integration", () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>REAL: 1</div>");
     });
 
+    it('should store.has to be reactive inside the "suspense" component', async () => {
+      const Component = `
+        export default async function MyComponent({}, {store}) {
+          store.set('foo', 'bar');
+          await new Promise(resolve => setTimeout(resolve, 0))
+          return <div>Loaded</div>
+        }
+
+        MyComponent.suspense = ({}, {store}) => {
+          return store.has('foo') ? 'Loading' : 'Not loading yet'
+        }
+      `;
+
+      document.body.innerHTML = normalizeQuotes(`
+        <my-component></my-component>
+      `);
+
+      defineBrisaWebComponent(Component, "src/web-components/my-component.tsx");
+
+      const myComponent = document.querySelector("my-component") as HTMLElement;
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("Not loading yet");
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("Loading");
+
+      await Bun.sleep(0);
+
+      expect(myComponent?.shadowRoot?.innerHTML).toBe("<div>Loaded</div>");
+    });
+
     it("should not lose reactivity store inside the suspense component", async () => {
       const Component = `
         const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

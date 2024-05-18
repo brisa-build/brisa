@@ -44,7 +44,7 @@ In contrast to other frameworks that necessitate state imports, our methodology 
 
 `store: ReactiveMap`
 
-The `store` property is a reactive map where values can be stored and shared among all web components. It serves as a global state accessible by all components. Values can be set and retrieved using the `store.set` and `store.get` methods.
+The `store` property is a reactive map where values can be stored and shared among all web components. It serves as a global state accessible by all components. Values can be set and retrieved using the `store.set`, `store.delete`, `store.get` and `store.has` methods.
 
 Example setting a value:
 
@@ -58,7 +58,7 @@ Example getting a value:
 <div>{store.get("count")}</div>
 ```
 
-For more details, refer to the [store](/components-details/web-components#store-store-method) documentation.
+For more details, refer to the [store](/building-your-application/components-details/web-components#store-store-method) documentation.
 
 ### `setOptimistic`
 
