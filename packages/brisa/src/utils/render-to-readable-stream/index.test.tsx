@@ -2810,7 +2810,7 @@ describe("utils", () => {
           </body>
           <template id="U:1"><div>Suspense</div></template>
           <script id="R:1">u$('1')</script>
-          <script>for(let [k, v] of [["suspense","foo"]]) _S.set(k, v)</script>
+          <script>for(let e of [["suspense","foo"]]) _S.push(e)</script>
         </html>`),
       );
     });
