@@ -47,11 +47,12 @@ export default function renderToReadableStream(
 
   return new ReadableStream({
     async start(controller) {
-      const extendedController = extendStreamController(
+      const extendedController = extendStreamController({
         controller,
         head,
         applySuspense,
-      );
+        request: req,
+      });
       const abortPromise = new Promise((res) =>
         req.signal.addEventListener("abort", () => {
           aborted = true;
@@ -320,14 +321,7 @@ async function enqueueDuringRendering(
         ?.replace(".js", ".txt");
 
       // Transfer store to client
-      if ((request as any).webStore.size > 0) {
-        controller.enqueue(
-          `<script>window._S=${JSON.stringify([
-            ...(request as any).webStore,
-          ])}</script>`,
-          suspenseId,
-        );
-      }
+      controller.transferStoreToClient(suspenseId);
 
       // Client file
       if (fs.existsSync(clientFile!)) {
@@ -369,6 +363,7 @@ async function enqueueDuringRendering(
           }
         }
 
+        controller.areSignalsInjected = true;
         controller.enqueue(
           `<script async fetchpriority="high" src="${compiledPagesPath}/${filename}"></script>`,
           suspenseId,

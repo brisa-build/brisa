@@ -1,4 +1,4 @@
-import type { ComponentType } from "@/types";
+import type { ComponentType, RequestContext } from "@/types";
 
 export type ChunksOptions = {
   chunk: string;
@@ -17,11 +17,13 @@ export type Controller = {
   endTag(chunk: string | null, suspenseId?: number): void;
   flushAllReady(): void;
   addId(id: string): void;
+  transferStoreToClient(suspenseId?: number): void;
   hasId(id: string): boolean;
   hasHeadTag: boolean;
   applySuspense: boolean;
   insideHeadTag: boolean;
   hasUnsuspense: boolean;
+  areSignalsInjected: boolean;
   hasActionRPC: boolean;
 };
 
@@ -34,11 +36,17 @@ type SuspensedState = {
 const wrapSuspenseTag = (chunk: string, id: number) =>
   `<template id="U:${id}">${chunk}</template><script id="R:${id}">u$('${id}')</script>`;
 
-export default function extendStreamController(
-  controller: ReadableStreamDefaultController<string>,
-  head?: ComponentType,
+export default function extendStreamController({
+  controller,
+  head,
   applySuspense = true,
-): Controller {
+  request,
+}: {
+  controller: ReadableStreamDefaultController<string>;
+  head?: ComponentType;
+  applySuspense?: boolean;
+  request: RequestContext;
+}): Controller {
   const ids = new Set<string>();
   const openWebComponents: symbol[] = [];
   const suspensePromises: Promise<void>[] = [];
@@ -48,6 +56,7 @@ export default function extendStreamController(
 
   let noSuspensedOpenTags = 0;
   let noSuspensedCloseTags = 0;
+  let storeTransfered = false;
 
   return {
     head,
@@ -55,6 +64,7 @@ export default function extendStreamController(
     insideHeadTag: false,
     hasUnsuspense: false,
     hasActionRPC: false,
+    areSignalsInjected: false,
     applySuspense,
     setCurrentWebComponentSymbol(symbol) {
       if (symbol) openWebComponents.push(symbol);
@@ -65,6 +75,30 @@ export default function extendStreamController(
     },
     addId(id) {
       ids.add(id);
+    },
+    transferStoreToClient(suspenseId?: number) {
+      const store = (request as any).webStore as Map<string, any>;
+      const areSignalsInjected = this.areSignalsInjected;
+
+      if (store.size === 0) return;
+
+      const serializedStore = JSON.stringify([...store]);
+      let script;
+
+      if (areSignalsInjected && storeTransfered) {
+        script = `<script>for(let [k, v] of ${serializedStore}) _s.Map.set(k, v); _S.set(k, v)</script>`;
+      } else if (areSignalsInjected && !storeTransfered) {
+        script = `<script>window._S=${serializedStore};for(let [k, v] of _S) _s.Map.set(k, v)</script>`;
+      } else if (storeTransfered && !areSignalsInjected) {
+        script = `<script>for(let [k, v] of ${serializedStore}) _S.set(k, v)</script>`;
+      } else {
+        script = `<script>window._S=${serializedStore}</script>`;
+      }
+
+      this.enqueue(script, suspenseId);
+
+      store.clear();
+      storeTransfered = true;
     },
     hasId(id) {
       return ids.has(id);
@@ -96,7 +130,11 @@ export default function extendStreamController(
       if (!suspenseId) {
         noSuspensedCloseTags++;
         // unsuspense inside the document html
-        if (chunk === "</html>") await this.waitSuspensedPromises();
+        if (chunk === "</html>") {
+          await this.waitSuspensedPromises();
+          this.transferStoreToClient();
+        }
+
         // chunk=null when is a fragment
         if (chunk) controller.enqueue(chunk);
         return this.flushAllReady();
