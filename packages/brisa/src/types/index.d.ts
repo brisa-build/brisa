@@ -2853,10 +2853,22 @@ declare global {
       xChannelSelector?: string | undefined;
       /**
        * The xmlns attribute specifies the XML namespace for the document.
-       * 
+       *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course)
        */
       xmlns?: string;
+      /**
+       * The xmlns:xlink attribute defines the namespace for the xlink reference.
+       *
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course)
+       */
+      "xmlns:xlink"?: string;
+      /**
+       * The xmlns:serif attribute defines the namespace for the serif reference.
+       *
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course)
+       */
+      "xmlns:serif"?: string;
       /**
        * The y1 attribute defines the y-coordinate of the start of the line.
        *
