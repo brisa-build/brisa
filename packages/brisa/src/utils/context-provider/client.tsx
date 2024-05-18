@@ -24,8 +24,8 @@ export default function ClientContextProvider(
   }
 
   effect(() => {
-    self.setAttribute("cid", cId);
-    self.setAttribute("pid", pId + "");
+    self!.setAttribute("cid", cId);
+    self!.setAttribute("pid", pId + "");
     store.set(`context:${cId}:${pId}`, value ?? context?.defaultValue);
   });
 

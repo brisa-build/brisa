@@ -195,6 +195,9 @@ export default function signals() {
       manageStoreSubscription();
       return globalStore.get(ORIGINAL_PREFIX + key) ?? globalStore.get(key);
     },
+    has(key: string) {
+      return store.get(key) !== undefined;
+    },
   } as WebContext["store"];
 
   // generate a server action indicator signal

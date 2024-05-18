@@ -217,7 +217,7 @@ function hasNodeASignal(node: ESTree.Node, allowProperties = false) {
       value?.property?.type === "Identifier" &&
       value?.property?.name === "value";
 
-    // It's a markup generator function
+    // It's a markup generator function, store.get, store.has, etc
     hasSignal ||=
       value?.type === "CallExpression" &&
       !JSX_NAME.has(value?.callee?.name ?? "");

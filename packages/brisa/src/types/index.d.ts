@@ -651,6 +651,7 @@ type ReactiveMap = {
   get: <T>(key: string) => T;
   set: <T>(key: string, value: T) => void;
   delete: (key: string) => void;
+  has: (key: string) => boolean;
   setOptimistic: <T>(
     actionName: string,
     storeKey: string,
