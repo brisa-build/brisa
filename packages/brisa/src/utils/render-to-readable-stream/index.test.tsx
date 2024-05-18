@@ -46,6 +46,8 @@ console.error = mockConsoleError;
 describe("utils", () => {
   afterEach(() => {
     testRequest.store.clear();
+    // @ts-ignore
+    testRequest.webStore.clear();
     mockConsoleError.mockClear();
     globalThis.mockConstants = undefined;
     // @ts-ignore
@@ -2719,6 +2721,96 @@ describe("utils", () => {
             <div>TEST</div>
             <script>window._S=[["test","test"]]</script>
           </body>
+        </html>`),
+      );
+    });
+
+    it("should transfer request store data into the web store working with suspense", () => {
+      async function Component({}, { store }: RequestContext) {
+        await Bun.sleep(0);
+        store.set("test", "test");
+        store.transferToClient(["test"]);
+
+        return <div>TEST</div>;
+      }
+
+      Component.suspense = () => <div>Loading...</div>;
+
+      const element = (
+        <html>
+          <head>
+            <title>Test</title>
+          </head>
+          <body>
+            <Component />
+          </body>
+        </html>
+      );
+
+      const stream = renderToReadableStream(element, testOptions);
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toBe(
+        toInline(`<html>
+          <head>
+            <title>Test</title>
+          </head>
+          <body>
+            <div id="S:1"><div>Loading...</div></div>
+          </body>
+          <template id="U:1"><div>TEST</div></template>
+          <script id="R:1">u$('1')</script>
+          <script>window._S=[["test","test"]]</script>
+        </html>`),
+      );
+    });
+
+    it("should transfer request store twice in a different way data with and without suspense", () => {
+      async function ComponentWithSuspense({}, { store }: RequestContext) {
+        await Bun.sleep(0);
+        store.set("suspense", "foo");
+        store.transferToClient(["suspense"]);
+
+        return <div>Suspense</div>;
+      }
+
+      ComponentWithSuspense.suspense = () => <div>Loading...</div>;
+
+      function ComponentWithoutSuspense({}, { store }: RequestContext) {
+        store.set("no-suspense", "bar");
+        store.transferToClient(["no-suspense"]);
+
+        return <div>Without Suspense</div>;
+      }
+
+      const element = (
+        <html>
+          <head>
+            <title>Test</title>
+          </head>
+          <body>
+            <ComponentWithoutSuspense />
+            <ComponentWithSuspense />
+          </body>
+        </html>
+      );
+
+      const stream = renderToReadableStream(element, testOptions);
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toBe(
+        toInline(`<html>
+          <head>
+            <title>Test</title>
+          </head>
+          <body>
+            <div>Without Suspense</div>
+            <div id="S:1"><div>Loading...</div></div>
+            <script>window._S=[["no-suspense","bar"]]</script>
+          </body>
+          <template id="U:1"><div>Suspense</div></template>
+          <script id="R:1">u$('1')</script>
+          <script>for(let [k, v] of [["suspense","foo"]]) _S.set(k, v)</script>
         </html>`),
       );
     });
