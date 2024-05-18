@@ -2856,7 +2856,7 @@ declare global {
        * 
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course)
        */
-      xmlns: string;
+      xmlns?: string;
       /**
        * The y1 attribute defines the y-coordinate of the start of the line.
        *
