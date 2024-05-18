@@ -220,7 +220,7 @@ describe("extendStreamController", () => {
 
     expect(mockController.enqueue.mock.calls).toEqual([
       [`<script>window._S=[["some","foo"]]</script>`],
-      [`<script>for(let [k, v] of [["another","bar"]]) _S.set(k, v)</script>`],
+      [`<script>for(let e of [["another","bar"]]) _S.push(e)</script>`],
     ]);
   });
 
@@ -247,7 +247,7 @@ describe("extendStreamController", () => {
     expect(mockController.enqueue.mock.calls).toEqual([
       [`<script>window._S=[["some","foo"]]</script>`],
       [
-        `<script>for(let [k, v] of [["another","bar"]]) _s.Map.set(k, v); _S.set(k, v)</script>`,
+        `<script>for(let [k, v] of [["another","bar"]]){ _s.Map.set(k, v); _S.push([k, v])}</script>`,
       ],
     ]);
   });
