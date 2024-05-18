@@ -2852,6 +2852,12 @@ declare global {
        */
       xChannelSelector?: string | undefined;
       /**
+       * The xmlns attribute specifies the XML namespace for the document.
+       * 
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course)
+       */
+      xmlns: string;
+      /**
        * The y1 attribute defines the y-coordinate of the start of the line.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/y1)
