@@ -24,14 +24,13 @@ async function simulateRPC({
   debounceMs = 0,
   slowRequest = false,
   navigateTo = "",
-  htmlChunks = [],
   useIndicator = false,
   fails = false,
   failsThrowingAnError = false,
   dataActions = [] as [string, string][],
+  callbackAfterRPC = () => {},
 } = {}) {
   const el = document.createElement(elementName);
-  let times = 0;
 
   // Simulate a button with a data-action-onClick attribute
   el.setAttribute(`data-action-on${eventName}`, "a1_1");
@@ -56,6 +55,13 @@ async function simulateRPC({
   eval(lazyRPCCode);
   eval(rpcCode);
 
+  // Simulate the document to be loaded to stop registering the actions
+  document.dispatchEvent(new Event("DOMContentLoaded"));
+  await Bun.sleep(0);
+
+  // Simulate some actions after the RPC code is loaded and executed
+  callbackAfterRPC();
+
   let headers = new Headers();
 
   if (navigateTo) {
@@ -71,20 +77,7 @@ async function simulateRPC({
       ok: fails ? false : true,
       text: async () => "Some error",
       body: {
-        getReader: () => {
-          return {
-            read: async () => {
-              times += 1;
-
-              return times <= htmlChunks.length
-                ? {
-                    value: Buffer.from(JSON.stringify(htmlChunks[times - 1])),
-                    done: false,
-                  }
-                : { done: true };
-            },
-          };
-        },
+        getReader: () => ({ read: async () => ({ done: true }) }),
       },
     } as any;
   });
@@ -361,6 +354,22 @@ describe("utils", () => {
       >;
       expect(headers["x-action"]).toBe("a1_1");
       expect(headers["x-actions"]).toBeEmpty();
+    });
+
+    it('should register actions after server action doing a rerender with "data-action" attribute', async () => {
+      await simulateRPC({
+        navigateTo: "http://localhost/some-page",
+        callbackAfterRPC: () => {
+          document.body.innerHTML = `<button data-action-onclick="a1_1" data-action></button>`;
+          expect(document.body.innerHTML).toBe(
+            `<button data-action-onclick="a1_1" data-action=""></button>`,
+          );
+        },
+      });
+
+      expect(document.body.innerHTML).toBe(
+        `<button data-action-onclick="a1_1"></button>`,
+      );
     });
   });
 
