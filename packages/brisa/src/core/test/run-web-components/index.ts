@@ -4,7 +4,6 @@ import { getConstants } from "@/constants";
 import { transformToWebComponents } from "@/utils/get-client-code-in-page";
 import getWebComponentsList from "@/utils/get-web-components-list";
 import getImportableFilepath from "@/utils/get-importable-filepath";
-import translateCore from "@/utils/translate-core";
 
 export default async function runWebComponents() {
   const { LOG_PREFIX, SRC_DIR, BUILD_DIR, I18N_CONFIG } = getConstants();

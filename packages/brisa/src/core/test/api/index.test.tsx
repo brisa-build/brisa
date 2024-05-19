@@ -163,6 +163,14 @@ describe("test api", () => {
       expect(customCounter).toContainTextContent("0");
     });
 
+    // I think it fails the test because the customElement is already defined:
+    //
+    // 1. If customElement is defined: first connectedCallback -> attributeChangeCallback
+    //
+    // 2. If the customElement is not defined: attributeChangeCallback -> connectedCallback
+    //
+    // I think part of the problem is that in the first case the connectedCallback is async,
+    // so the attributeChangeCallback arrives in the middle.
     it.todo("should render a web component with props", async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
