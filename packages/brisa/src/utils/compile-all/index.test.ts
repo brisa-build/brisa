@@ -47,24 +47,24 @@ describe("compileAll", () => {
     const { success } = await compileAll();
     expect(success).toEqual(true);
     const files = fs.readdirSync(OUT_DIR).toSorted();
-    expect(files).toHaveLength(12);
+    expect(files).toHaveLength(11);
     expect(files[0]).toBe("_brisa");
     expect(files[1]).toBe("actions");
     expect(files[2]).toBe("api");
-    expect(files[3]).toContain("chunk-");
-    expect(files[4]).toBe("i18n.js");
-    expect(files[5]).toBe("layout.js");
-    expect(files[6]).toBe("middleware.js");
-    expect(files[7]).toBe("pages");
-    expect(files[8]).toBe("pages-client");
-    expect(files[9]).toBe("public");
-    expect(files[10]).toBe("web-components");
-    expect(files[11]).toBe("websocket.js");
+    expect(files[3]).toBe("i18n.js");
+    expect(files[4]).toBe("layout.js");
+    expect(files[5]).toBe("middleware.js");
+    expect(files[6]).toBe("pages");
+    expect(files[7]).toBe("pages-client");
+    expect(files[8]).toBe("public");
+    expect(files[9]).toBe("web-components");
+    expect(files[10]).toBe("websocket.js");
     expect(fs.readdirSync(path.join(OUT_DIR, "pages")).toSorted()).toEqual(
       [
         "somepage.js",
         "index.js",
         "user",
+        "foo.js",
         "_404.js",
         "_500.js",
         "page-with-web-component.js",
@@ -73,14 +73,14 @@ describe("compileAll", () => {
     );
     expect(fs.readdirSync(path.join(OUT_DIR, "api"))).toEqual(["example.js"]);
     expect(fs.readdirSync(path.join(OUT_DIR, "public")).toSorted()).toEqual(
-      ["favicon.ico", "favicon.ico.gz", "some-dir"].toSorted(),
+      ["favicon.ico", "some-dir"].toSorted(),
     );
     expect(
       fs.readdirSync(path.join(OUT_DIR, "public", "some-dir")).toSorted(),
     ).toEqual(
       [
         "some-text.txt.gz",
-        "some-img.png.gz",
+        "some-text.txt.br",
         "some-img.png",
         "some-text.txt",
       ].toSorted(),
