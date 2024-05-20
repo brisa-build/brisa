@@ -57,7 +57,52 @@ render(element: JSX.Element | Response | string, options?: {
 }): Promise<{
   container: HTMLElement;
   unmount: () => void;
+  store: ReactiveMap;
 }>;
+```
+
+### `container`
+
+The container where the component is rendered.
+
+### `unmount`
+
+Unmounts the component from the container.
+
+Example:
+
+```tsx
+import { render } from "brisa/test";
+import { test, expect } from "bun:test";
+
+test("unmount", async () => {
+  const { container, unmount } = await render(<button>Click me</button>);
+  expect(container.querySelector("button")).toBeInTheDocument();
+  unmount();
+  expect(container.querySelector("button")).not.toBeInTheDocument();
+});
+```
+
+### `store`
+
+The `store` from [`WebContext`](/api-reference/components/web-context) is useful for modifying the store to test how web components react to changes in it.
+
+Example:
+
+```tsx
+import { render } from "brisa/test";
+import { test, expect } from "bun:test";
+
+test("store", async () => {
+  const { container, store } = await render(<counter-example />);
+  const counter = container.querySelector("counter-example")?.shadowRoot;
+
+  expect(counter).toHaveTextContent("0");
+
+  store.set("count", 1);
+
+  expect(counter).toHaveTextContent("1");
+});
 ```
 
 ## `serveRoute`
@@ -159,6 +204,10 @@ Each method simulates a different user event:
   ```js
   userEvent.type(input, "Hello, world!");
   ```
+- `keyboard`: Simulates pressing a key.
+  ```js
+  userEvent.keyboard("Enter");
+  ```
 - `hover`: Simulates hovering over an element.
   ```js
   userEvent.hover(element);
@@ -208,6 +257,7 @@ type userEvent = {
   dblClick(element: Element): void;
   submit(element: HTMLFormElement): void;
   type(element: HTMLInputElement, text: string): void;
+  keyboard(key: string, element?: HTMLElement): void;
   hover(element: Element): void;
   unhover(element: Element): void;
   focus(element: Element): void;
