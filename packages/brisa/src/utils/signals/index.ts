@@ -128,7 +128,7 @@ export default function signals() {
           if (clonedEffects.has(fn)) {
             cleanSubEffects(fn);
             cleanupAnEffect(fn);
-            fn(addSubEffect(fn));
+            effect(fn);
           }
         }
       },

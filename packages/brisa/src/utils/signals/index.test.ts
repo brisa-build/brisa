@@ -1,13 +1,5 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import {
-  afterAll,
-  beforeAll,
-  afterEach,
-  describe,
-  expect,
-  it,
-  mock,
-} from "bun:test";
+import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
 import type { IndicatorSignal } from "@/types";
 
 const signals = () =>
@@ -635,6 +627,33 @@ describe("signals", () => {
     count.value = 1;
 
     expect(mockEffect).toHaveBeenCalledTimes(2);
+    reset();
+  });
+
+  it("should an effect react to different states", () => {
+    const { state, effect, reset } = signals();
+    const mockEffect = mock<(value: string) => void>(() => {});
+    const show = state(false);
+    const foo = state(true);
+
+    effect(() => {
+      if (!show.value) return;
+      if (!foo.value) return mockEffect("Bar");
+      mockEffect("Foo");
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(0);
+
+    show.value = true;
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0][0]).toBe("Foo");
+
+    foo.value = false;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[1][0]).toBe("Bar");
+
     reset();
   });
 });

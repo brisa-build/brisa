@@ -5105,6 +5105,62 @@ describe("integration", () => {
       expect(window.mockLog).toHaveBeenCalledTimes(1);
     });
 
+    it("should work a triple render with store, derived and state", () => {
+      const code = `
+        import type { WebContext } from "brisa";
+
+        export default function TripleRender({ }, { state, derived, store }: WebContext) {
+          const show = derived(() => store.has('show'));
+          const foo = state(true);
+        
+          function onClose() {
+            foo.value = false;
+          }
+        
+          if (!show.value) return null;
+        
+          if (!foo.value) {
+            return (
+              <div>
+                Bar
+              </div>
+            )
+          }
+        
+          return (
+            <div onClick={onClose}>
+              Foo
+            </div>
+          );
+        }
+      `;
+
+      document.body.innerHTML = "<triple-render />";
+      defineBrisaWebComponent(code, "src/web-components/triple-render.tsx");
+
+      const tripleRender = document.querySelector(
+        "triple-render",
+      ) as HTMLElement;
+
+      expect(tripleRender?.shadowRoot?.innerHTML).toBeEmpty();
+
+      window._s.set("show", true);
+
+      const foo = tripleRender?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLDivElement;
+
+      expect(foo?.innerHTML).toBe("Foo");
+
+      foo.click();
+
+      const bar = tripleRender?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLDivElement;
+
+      expect(bar?.innerHTML).toBe("Bar");
+    });
+
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583
     it.todo(
