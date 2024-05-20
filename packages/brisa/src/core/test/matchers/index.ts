@@ -232,14 +232,14 @@ function toBeInputTypeOf(received: unknown, type: InputType) {
 }
 
 function toBeInTheDocument(received: unknown) {
-  if (received instanceof HTMLElement === false) {
+  if (received instanceof HTMLElement === false && received != null) {
     throw new Error(
       "Invalid usage of toBeInTheDocument(received). The argument received should be an HTMLElement",
     );
   }
 
   return {
-    pass: document.documentElement.contains(received),
+    pass: received && document.documentElement.contains(received),
     message: () => "expected element to be in the document",
   };
 }

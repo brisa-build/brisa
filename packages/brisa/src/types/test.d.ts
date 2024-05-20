@@ -1,3 +1,5 @@
+import type { ReactiveMap } from "brisa";
+
 /**
  *  render - Brisa Test API
  *
@@ -59,7 +61,7 @@ export async function render(
      */
     locale?: string;
   },
-): Promise<{ container: HTMLElement; unmount: () => void }>;
+): Promise<{ container: HTMLElement; unmount: () => void; store: ReactiveMap }>;
 
 /**
  * serveRoute - Brisa Test API
@@ -230,6 +232,21 @@ type userEvent = {
    * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#userevent)
    */
   type(element: HTMLInputElement, text: string): void;
+
+  /**
+   * Simulate a keyboard event on an element.
+   *
+   * Example:
+   *
+   * ```tsx
+   * import { render, userEvent } from "brisa";
+   *
+   * userEvent.keyboard("Enter");
+   * ```
+   *
+   * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#userevent)
+   */
+  keyboard(key: string, element?: HTMLElement): void;
 
   /**
    * Simulate hovering an element.

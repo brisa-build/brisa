@@ -6,7 +6,7 @@ import getWebComponentsList from "@/utils/get-web-components-list";
 import getImportableFilepath from "@/utils/get-importable-filepath";
 
 export default async function runWebComponents() {
-  const { LOG_PREFIX, SRC_DIR, BUILD_DIR, I18N_CONFIG } = getConstants();
+  const { LOG_PREFIX, SRC_DIR, BUILD_DIR } = getConstants();
   const webComponentsDir = join(SRC_DIR, "web-components");
   const internalBrisaFolder = join(BUILD_DIR, "_brisa");
   const integrationsPath = getImportableFilepath(
