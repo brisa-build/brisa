@@ -381,6 +381,41 @@ describe("test api", () => {
 
       expect(fooComponent).toContainTextContent("Foo Hello World");
     });
+
+    it("should render the web component and react with store", async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+        I18N_CONFIG: {
+          defaultLocale: "en",
+          locales: ["en", "es"],
+          messages: {
+            en: {
+              "hello-world": "Hello World",
+            },
+          },
+        },
+      };
+      // Register DOM and web components from __fixtures__/web-components
+      const runWebComponents = await import(
+        "@/core/test/run-web-components"
+      ).then((m) => m.default);
+      await runWebComponents();
+
+      // @ts-ignore
+      const { container, store } = await render(<web-component />);
+      const componentComponent =
+        container.querySelector("web-component")?.shadowRoot!;
+
+      expect(componentComponent.innerHTML).toBe(
+        "<native-some-example></native-some-example>",
+      );
+
+      store.set("foo", "bar");
+
+      expect(componentComponent).toContainTextContent("bar");
+    });
   });
 
   describe("cleanup", () => {
@@ -664,6 +699,34 @@ describe("test api", () => {
         userEvent.type(input, "Hello World");
         expect(input.value).toBe("Hello World");
         expect(mockFn).toHaveBeenCalledTimes(11);
+      });
+    });
+    describe("keyboard", () => {
+      it("should trigger a keyboard event", async () => {
+        const mockKeyboard = mock(() => {});
+        const element = document.createElement("input");
+        document.body.appendChild(element);
+        element.addEventListener("keydown", mockKeyboard);
+        element.addEventListener("keypress", mockKeyboard);
+        element.addEventListener("keyup", mockKeyboard);
+
+        userEvent.keyboard("Enter", element);
+
+        expect(mockKeyboard).toHaveBeenCalledTimes(3);
+      });
+
+      it("should trigger a Escape from document.body", async () => {
+        const mockKeyboard = mock(() => {});
+        document.body.addEventListener("keydown", mockKeyboard);
+        document.body.addEventListener("keypress", mockKeyboard);
+        document.body.addEventListener("keyup", mockKeyboard);
+
+        userEvent.keyboard("Escape");
+
+        expect(mockKeyboard).toHaveBeenCalledTimes(3);
+        expect(mockKeyboard).toHaveBeenCalledWith(
+          expect.objectContaining({ key: "Escape" }),
+        );
       });
     });
     describe("clear", () => {

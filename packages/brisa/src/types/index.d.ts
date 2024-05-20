@@ -647,7 +647,7 @@ export type WebContextPlugin = (
   extras: WebContextPluginExtras,
 ) => WebContext;
 
-type ReactiveMap = {
+export type ReactiveMap = {
   get: <T>(key: string) => T;
   set: <T>(key: string, value: T) => void;
   delete: (key: string) => void;
