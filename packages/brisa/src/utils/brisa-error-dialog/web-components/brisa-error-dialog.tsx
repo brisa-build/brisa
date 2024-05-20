@@ -153,11 +153,11 @@ export default function ErrorDialog(
       }
     }
 
-    document.addEventListener("keydown", onKeydown);
+    window.addEventListener("keydown", onKeydown);
     document.body.style.overflow = "hidden";
     currentIndex.value = 0;
 
-    cleanup(() => document.removeEventListener("keydown", onKeydown));
+    cleanup(() => window.removeEventListener("keydown", onKeydown));
     cleanup(() => {
       document.body.style.overflow = "auto";
     });

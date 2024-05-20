@@ -317,8 +317,8 @@ describe("utils", () => {
   });
   describe("brisa-error-dialog web component", () => {
     it("should render the component", async () => {
-      // @ts-ignore
-      const { container } = await render(
+      const { container, store } = await render(
+        // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
       const component =
@@ -329,8 +329,8 @@ describe("utils", () => {
     });
 
     it("should render the component with errors", async () => {
-      // @ts-ignore
       const { container, store } = await render(
+        // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set("__BRISA_ERRORS__", [
@@ -345,8 +345,8 @@ describe("utils", () => {
     });
 
     it("should render the component with multiple errors", async () => {
-      // @ts-ignore
       const { container, store } = await render(
+        // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set("__BRISA_ERRORS__", [
@@ -360,8 +360,6 @@ describe("utils", () => {
         "nav button:last-child",
       ) as Element;
 
-      expect(component).toBeDefined();
-      expect(dialog).not.toBeNull();
       expect(dialog).toContainTextContent("Error 1: An error occurred");
 
       userEvent.click(nextErrorBtn);
@@ -369,9 +367,29 @@ describe("utils", () => {
       expect(dialog).toContainTextContent("Error 2: Another error occurred");
     });
 
-    it.todo("should close the dialog using the button", async () => {
-      // @ts-ignore
+    it("should be possible to navigation using the keyboard to see multiple errors", async () => {
       const { container, store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+      store.set("__BRISA_ERRORS__", [
+        { title: "Error 1", message: "An error occurred" },
+        { title: "Error 2", message: "Another error occurred" },
+      ]);
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+      const dialog = component?.querySelector("dialog");
+
+      expect(dialog).toContainTextContent("Error 1: An error occurred");
+
+      userEvent.keyboard("ArrowRight");
+
+      expect(dialog).toContainTextContent("Error 2: Another error occurred");
+    });
+
+    it.todo("should close the dialog using the button", async () => {
+      const { container, store } = await render(
+        // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set("__BRISA_ERRORS__", [
@@ -391,8 +409,8 @@ describe("utils", () => {
     });
 
     it.todo("should close the dialog using the keyboard", async () => {
-      // @ts-ignore
       const { container, store } = await render(
+        // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set("__BRISA_ERRORS__", [
@@ -405,7 +423,7 @@ describe("utils", () => {
       expect(component).toBeDefined();
       expect(dialog).not.toBeNull();
 
-      userEvent.keyboard("{esc}");
+      userEvent.keyboard("Escape");
 
       expect(dialog).toBeNull();
     });
