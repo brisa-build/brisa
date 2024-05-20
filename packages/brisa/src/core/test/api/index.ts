@@ -216,10 +216,10 @@ export const userEvent = {
       element.dispatchEvent(new InputEvent("input", { bubbles: true }));
     }
   },
-  keyboard: (key: string, element: HTMLElement = document.body) => {
-    element.dispatchEvent(new KeyboardEvent("keydown", { key }));
-    element.dispatchEvent(new KeyboardEvent("keypress", { key }));
-    element.dispatchEvent(new KeyboardEvent("keyup", { key }));
+  keyboard: (key: string, element?: HTMLElement) => {
+    (element ?? window).dispatchEvent(new KeyboardEvent("keydown", { key }));
+    (element ?? window).dispatchEvent(new KeyboardEvent("keypress", { key }));
+    (element ?? window).dispatchEvent(new KeyboardEvent("keyup", { key }));
   },
   clear: (element: HTMLInputElement) => {
     element.dispatchEvent(new KeyboardEvent("keydown", { key: "" }));
