@@ -156,7 +156,7 @@ export async function getServeOptions() {
 
         // Log some feedback in the terminal depending on the error
         // in development and production
-        feedbackError(error);
+        feedbackError(error, request);
 
         // 500 page
         const route500 = pagesRouter.reservedRoutes[PAGE_500];

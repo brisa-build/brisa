@@ -441,7 +441,10 @@ describe("utils", () => {
         "--------------------------",
       ]);
       expect(res.headers.get("x-s")).toBe(
-        stringify([["sensitive-data", null]]),
+        stringify([
+          ["sensitive-data", null],
+          ["__BRISA_ERRORS__", null],
+        ]),
       );
     });
 
