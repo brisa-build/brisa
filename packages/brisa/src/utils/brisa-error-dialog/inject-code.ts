@@ -8,7 +8,7 @@ export async function injectBrisaDialogErrorCode() {
     "web-components",
     "brisa-error-dialog.tsx",
   );
-  const internalComponentId = "__BRISA_CLIENT__BRISA_ERROR_DIALOG__";
+  const internalComponentId = "__BRISA_CLIENT__brisaErrorDialog";
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [pathname],
