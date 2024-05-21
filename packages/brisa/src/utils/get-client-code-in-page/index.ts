@@ -9,6 +9,7 @@ import {
 } from "@/utils/rpc" with { type: "macro" };
 import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
 import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
+import { injectBrisaDialogErrorCode } from "@/utils/brisa-error-dialog/inject-code" with { type: "macro" };
 import clientBuildPlugin from "@/utils/client-build-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import snakeToCamelCase from "@/utils/snake-to-camelcase";
@@ -155,6 +156,10 @@ export async function transformToWebComponents({
     customElementKeys.unshift("context-provider");
   }
 
+  if (!IS_PRODUCTION) {
+    customElementKeys.unshift("brisa-error-dialog");
+  }
+
   const customElementsDefinitions = customElementKeys
     .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`)
     .join("\n");
@@ -164,6 +169,11 @@ export async function transformToWebComponents({
   if (useContextProvider) {
     const contextProviderCode = await injectClientContextProviderCode();
     code += contextProviderCode;
+  }
+
+  if (!IS_PRODUCTION) {
+    const brisaDialogErrorCode = await injectBrisaDialogErrorCode();
+    code += brisaDialogErrorCode;
   }
 
   code += `${imports}\n`;

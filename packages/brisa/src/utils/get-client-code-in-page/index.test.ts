@@ -135,6 +135,36 @@ describe("utils", () => {
       expect(output!.code).toContain('"context-provider"');
     });
 
+    it("should add brisa-error-dialog when the page is in DEV mode", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_DEVELOPMENT: true,
+        IS_PRODUCTION: false,
+      };
+      const pagePath = path.join(pages, "somepage.tsx");
+      const output = await getClientCodeInPage({
+        pagePath,
+        allWebComponents,
+        pageWebComponents,
+      });
+      expect(output!.code).toContain('"brisa-error-dialog"');
+    });
+
+    it("should NOT add brisa-error-dialog when the page is in PROD mode", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_DEVELOPMENT: false,
+        IS_PRODUCTION: true,
+      };
+      const pagePath = path.join(pages, "somepage.tsx");
+      const output = await getClientCodeInPage({
+        pagePath,
+        allWebComponents,
+        pageWebComponents,
+      });
+      expect(output!.code).not.toContain('"brisa-error-dialog"');
+    });
+
     it("should add context-provider if the page has not a context-provider but layoutHasContextProvider is true", async () => {
       const pagePath = path.join(pages, "somepage.tsx");
       const layoutHasContextProvider = true;
