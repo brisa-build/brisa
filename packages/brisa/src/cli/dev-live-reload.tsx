@@ -16,6 +16,7 @@ let waitFilename = "";
 // put inside the renderToReadableStream, but at the same time this method
 // could be used outside for other reasons without having to run hotreloading,
 // it only makes sense to start hotreloading if it is the serve process.
+// IS_DEVELOPMENT instead of !IS_PRODUCTION to avoid Test environments.
 if (IS_DEVELOPMENT && IS_SERVE_PROCESS) {
   if (globalThis.watcher) {
     globalThis.watcher.close();
