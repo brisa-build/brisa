@@ -29,6 +29,7 @@ export default function ErrorDialog(
       justify-content: center;
       align-items: flex-start;
       padding-top: 10vh;
+      z-index: 9000;
     }
 
     nav button {
