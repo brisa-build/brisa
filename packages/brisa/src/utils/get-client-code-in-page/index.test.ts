@@ -177,6 +177,31 @@ describe("utils", () => {
       expect(output!.code).toContain('"context-provider"');
     });
 
+    it("should define brisa-error-dialog (1st) and context-provider (2nd) before the rest of web components", async () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        IS_DEVELOPMENT: true,
+        IS_PRODUCTION: false,
+      };
+      const pagePath = path.join(pages, "somepage.tsx");
+      const layoutHasContextProvider = true;
+      const output = await getClientCodeInPage({
+        pagePath,
+        allWebComponents,
+        pageWebComponents,
+        layoutHasContextProvider,
+      });
+
+      const allDefineElementCalls = output!.code.match(
+        /(defineElement\("([a-z]|-)+", ([a-z]|[A-Z])+\))/gm,
+      );
+      expect(allDefineElementCalls).toEqual([
+        `defineElement("brisa-error-dialog", brisaErrorDialog)`,
+        `defineElement("context-provider", contextProvider)`,
+        `defineElement("native-some-example", SomeExample)`,
+      ]);
+    });
+
     it("should not add context-provider if the page has a context-provider with serverOnly attribute", async () => {
       const pagePath = path.join(pages, "somepage.tsx");
       const output = await getClientCodeInPage({

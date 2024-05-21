@@ -17,6 +17,50 @@ export default function ErrorDialog(
   const numErrors = derived(() => errors.value?.length ?? 0);
   const currentIndex = state(0);
 
+  function onClose() {
+    displayDialog.value = false;
+  }
+
+  function onKeydown(e: KeyboardEvent) {
+    if (e.key === "Escape") onClose();
+    else if (e.key === "ArrowLeft" && currentIndex.value > 0) {
+      currentIndex.value -= 1;
+    } else if (
+      e.key === "ArrowRight" &&
+      currentIndex.value < numErrors.value - 1
+    ) {
+      currentIndex.value += 1;
+    }
+  }
+
+  effect(() => {
+    window.addEventListener("error", (e) => {
+      displayDialog.value = true;
+      store.set("__BRISA_ERRORS__", [
+        ...(store.get<Error[]>("__BRISA_ERRORS__") ?? []),
+        {
+          title: "Uncaught Error",
+          message: e.message,
+          stack: e.error?.stack,
+        },
+      ]);
+    });
+  });
+
+  effect(() => {
+    if (!numErrors.value) return;
+    if (!displayDialog.value) return;
+
+    window.addEventListener("keydown", onKeydown);
+    document.body.style.overflow = "hidden";
+    currentIndex.value = 0;
+
+    cleanup(() => window.removeEventListener("keydown", onKeydown));
+    cleanup(() => {
+      document.body.style.overflow = "auto";
+    });
+  });
+
   css`
     dialog {
       position: fixed;
@@ -137,51 +181,6 @@ export default function ErrorDialog(
       color: #ffffff;
     }
   `;
-
-  effect(() => {
-    function handleError(event: ErrorEvent) {
-      displayDialog.value = true;
-      store.set(ERROR_STORE_KEY, [
-        ...(store.get<Error[]>(ERROR_STORE_KEY) ?? []),
-        {
-          title: "Uncaught Error",
-          message: event.message,
-          stack: event.error?.stack,
-        },
-      ]);
-    }
-    window.addEventListener("error", handleError);
-
-    cleanup(() => window.removeEventListener("error", handleError));
-
-    if (!numErrors.value) return;
-    if (!displayDialog.value) return;
-
-    function onKeydown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowLeft" && currentIndex.value > 0) {
-        currentIndex.value -= 1;
-      } else if (
-        e.key === "ArrowRight" &&
-        currentIndex.value < numErrors.value - 1
-      ) {
-        currentIndex.value += 1;
-      }
-    }
-
-    window.addEventListener("keydown", onKeydown);
-    document.body.style.overflow = "hidden";
-    currentIndex.value = 0;
-
-    cleanup(() => window.removeEventListener("keydown", onKeydown));
-    cleanup(() => {
-      document.body.style.overflow = "auto";
-    });
-  });
-
-  function onClose() {
-    displayDialog.value = false;
-  }
 
   if (!numErrors.value) return null;
 
