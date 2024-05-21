@@ -9,6 +9,10 @@
 
 <p align="center">Brisa is an <i>experimental</i> web framework inspired by the others, taking the best of each one.</p>
 
+> [!WARNING]
+>
+> The 0.x versions of Brisa are considered experimental, use it for experimentation, we do not recommend using it in production until 1.x.
+
 <div align="center">
 
 [![npm version](https://badge.fury.io/js/brisa.svg)](https://badge.fury.io/js/brisa)
