@@ -82,6 +82,7 @@ export default async function resolveAction({
         "",
       ],
       "Docs: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions)",
+      req,
     );
 
     return new Response(error.message, { status: 500 });
@@ -103,7 +104,7 @@ export default async function resolveAction({
 
     if (!route || isReservedPathname) {
       const errorMessage = `Error rerendering page ${url}. Page route not found`;
-      logError([errorMessage]);
+      logError([errorMessage], undefined, req);
       return new Response(errorMessage, { status: 404 });
     }
 
