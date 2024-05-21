@@ -3030,5 +3030,76 @@ describe("utils", () => {
 
       expect(result).toBe("<div>test</div>");
     });
+
+    it("should add brisa-error-dialog when IS_DEVELOPMENT and IS_SERVE_PROCESS are true", async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_PRODUCTION: false,
+        IS_DEVELOPMENT: true,
+        IS_SERVE_PROCESS: true,
+      };
+
+      const Component = async () => (
+        <html>
+          <head></head>
+          <body>test</body>
+        </html>
+      );
+      const stream = renderToReadableStream(<Component />, {
+        ...testOptions,
+      });
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        `<html><head></head><body>test<brisa-error-dialog></brisa-error-dialog></body></html>`,
+      );
+    });
+
+    it("should NOT add brisa-error-dialog when IS_SERVE_PROCESS is true but IS_DEVELOPMENT is false", async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+        IS_SERVE_PROCESS: true,
+      };
+
+      const Component = async () => (
+        <html>
+          <head></head>
+          <body>test</body>
+        </html>
+      );
+      const stream = renderToReadableStream(<Component />, {
+        ...testOptions,
+      });
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(`<html><head></head><body>test</body></html>`);
+    });
+
+    it("should NOT add brisa-error-dialog when IS_DEVELOPMENT is true but IS_SERVE_PROCESS is false", async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_PRODUCTION: false,
+        IS_DEVELOPMENT: true,
+        IS_SERVE_PROCESS: false,
+      };
+
+      const Component = async () => (
+        <html>
+          <head></head>
+          <body>test</body>
+        </html>
+      );
+      const stream = renderToReadableStream(<Component />, {
+        ...testOptions,
+      });
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(`<html><head></head><body>test</body></html>`);
+    });
   });
 });

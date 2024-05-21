@@ -111,7 +111,8 @@ async function enqueueDuringRendering(
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
-  const { BUILD_DIR, VERSION_HASH, CONFIG } = getConstants();
+  const { BUILD_DIR, VERSION_HASH, CONFIG, IS_DEVELOPMENT, IS_SERVE_PROCESS } =
+    getConstants();
   const basePath = CONFIG.basePath || "";
   const compiledPagesPath = basePath + "/_brisa/pages";
 
@@ -316,6 +317,14 @@ async function enqueueDuringRendering(
 
     // Close body tag
     else if (type === "body") {
+      // Brisa error dialog for development
+      if (IS_DEVELOPMENT && IS_SERVE_PROCESS) {
+        controller.enqueue(
+          "<brisa-error-dialog></brisa-error-dialog>",
+          suspenseId,
+        );
+      }
+
       const clientFile = request.route?.filePath
         ?.replace("/pages", "/pages-client")
         ?.replace(".js", ".txt");
