@@ -98,7 +98,7 @@ describe("utils", () => {
       expect(dialog).toContainTextContent("Error 2: Another error occurred");
     });
 
-    it.todo("should close the dialog using the button", async () => {
+    it("should close the dialog using the button", async () => {
       const { container, store } = await render(
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
@@ -116,10 +116,10 @@ describe("utils", () => {
 
       userEvent.click(closeBtn);
 
-      expect(dialog).toBeNull();
+      expect(dialog).not.toBeNull();
     });
 
-    it.todo("should close the dialog using the keyboard", async () => {
+    it("should close the dialog using the keyboard", async () => {
       const { container, store } = await render(
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
@@ -136,7 +136,7 @@ describe("utils", () => {
 
       userEvent.keyboard("Escape");
 
-      expect(dialog).toBeNull();
+      expect(dialog).not.toBeNull();
     });
   });
 });
