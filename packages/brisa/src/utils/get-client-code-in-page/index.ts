@@ -123,6 +123,7 @@ export async function transformToWebComponents({
     BUILD_DIR,
     CONFIG,
     LOG_PREFIX,
+    IS_DEVELOPMENT,
     IS_PRODUCTION,
     VERSION_HASH,
   } = getConstants();
@@ -156,7 +157,7 @@ export async function transformToWebComponents({
     customElementKeys.unshift("context-provider");
   }
 
-  if (!IS_PRODUCTION) {
+  if (IS_DEVELOPMENT) {
     customElementKeys.unshift("brisa-error-dialog");
   }
 
@@ -171,7 +172,8 @@ export async function transformToWebComponents({
     code += contextProviderCode;
   }
 
-  if (!IS_PRODUCTION) {
+  // IS_DEVELOPMENT to avoid PROD and TEST environments
+  if (IS_DEVELOPMENT) {
     const brisaDialogErrorCode = await injectBrisaDialogErrorCode();
     code += brisaDialogErrorCode;
   }
