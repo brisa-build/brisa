@@ -139,6 +139,21 @@ export default function ErrorDialog(
   `;
 
   effect(() => {
+    function handleError(event: ErrorEvent) {
+      displayDialog.value = true;
+      store.set(ERROR_STORE_KEY, [
+        ...(store.get<Error[]>(ERROR_STORE_KEY) ?? []),
+        {
+          title: "Uncaught Error",
+          message: event.message,
+          stack: event.error?.stack,
+        },
+      ]);
+    }
+    window.addEventListener("error", handleError);
+
+    cleanup(() => window.removeEventListener("error", handleError));
+
     if (!numErrors.value) return;
     if (!displayDialog.value) return;
 

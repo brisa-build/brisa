@@ -138,5 +138,31 @@ describe("utils", () => {
 
       expect(dialog).not.toBeNull();
     });
+
+    it('should handle window.addEventListener("error") modifying the store', async () => {
+      const { container, store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+
+      expect(store.get(ERROR_STORE_KEY)).toBeEmpty();
+
+      window.dispatchEvent(
+        new ErrorEvent("error", {
+          message: "An error occurred",
+          error: new Error("An error occurred"),
+        }),
+      );
+
+      expect(store.get(ERROR_STORE_KEY)).toEqual([
+        {
+          title: "Uncaught Error",
+          message: "An error occurred",
+          stack: expect.stringContaining("Error: An error occurred"),
+        },
+      ]);
+    });
   });
 });
