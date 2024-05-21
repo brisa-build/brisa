@@ -1,4 +1,4 @@
-import type { WebContext } from "brisa";
+import type { WebContext } from "@/types";
 
 type Error = {
   title: string;

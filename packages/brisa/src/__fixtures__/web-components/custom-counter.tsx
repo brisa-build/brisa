@@ -1,4 +1,4 @@
-import type { WebContext } from "brisa";
+import type { WebContext } from "@/types";
 
 export default function Counter(
   { initialValue = 0 }: { initialValue: number },

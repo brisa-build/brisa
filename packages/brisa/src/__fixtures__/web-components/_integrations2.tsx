@@ -1,4 +1,4 @@
-import type { WebContextPlugin } from "brisa";
+import type { WebContextPlugin } from "@/types";
 
 export const webContextPlugins: WebContextPlugin[] = [
   (ctx, extras) => {

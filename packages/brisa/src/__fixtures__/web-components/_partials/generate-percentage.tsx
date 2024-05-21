@@ -1,4 +1,4 @@
-import { type Signal } from "brisa";
+import { type Signal } from "@/types";
 
 export default function generatePercentage(percentage: Signal<number>) {
   return (

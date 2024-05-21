@@ -60,7 +60,7 @@ describe("utils", () => {
       const element = output[1] as JSXElement;
 
       expect(output[0]).toBe("this is a ");
-      expect(element.type?.toString()).toBe("(i)=>i.children");
+      expect(element.type?.toString()).toBe("(s)=>s.children");
       expect(element.props?.children).toBe("test");
     });
 

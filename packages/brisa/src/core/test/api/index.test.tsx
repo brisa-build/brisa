@@ -20,7 +20,7 @@ import {
 } from "bun:test";
 import { getConstants } from "@/constants";
 import { blueLog, cyanLog, greenLog } from "@/utils/log/log-color";
-import type { RequestContext } from "brisa";
+import type { RequestContext } from "@/types";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -715,16 +715,17 @@ describe("test api", () => {
         expect(mockKeyboard).toHaveBeenCalledTimes(3);
       });
 
-      it("should trigger a Escape from document.body", async () => {
+      it("should trigger a Escape from window", async () => {
         const mockKeyboard = mock(() => {});
-        document.body.addEventListener("keydown", mockKeyboard);
-        document.body.addEventListener("keypress", mockKeyboard);
-        document.body.addEventListener("keyup", mockKeyboard);
+        window.addEventListener("keydown", mockKeyboard);
+        window.addEventListener("keypress", mockKeyboard);
+        window.addEventListener("keyup", mockKeyboard);
 
         userEvent.keyboard("Escape");
 
         expect(mockKeyboard).toHaveBeenCalledTimes(3);
         expect(mockKeyboard).toHaveBeenCalledWith(
+          // @ts-ignore
           expect.objectContaining({ key: "Escape" }),
         );
       });
