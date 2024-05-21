@@ -1,4 +1,4 @@
-import { createContext } from "brisa";
+import { createContext } from "@/core";
 
 const context = createContext("foo");
 
