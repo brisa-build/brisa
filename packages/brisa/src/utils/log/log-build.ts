@@ -1,4 +1,7 @@
 import { getConstants } from "@/constants";
+import type { RequestContext } from "@/types";
+
+const BRISA_ERRORS = "__BRISA_ERRORS__";
 
 export function logTable(data: { [key: string]: string }[]) {
   const { LOG_PREFIX } = getConstants();
@@ -50,7 +53,22 @@ function log(type: "Error" | "Warning") {
   };
 }
 
-export function logError(messages: string[], footer?: string) {
+export function logError(
+  messages: string[],
+  footer?: string,
+  req?: RequestContext,
+) {
+  if (req) {
+    const store = (req as any).webStore as RequestContext["store"];
+    const error = {
+      title: messages[0],
+      description: [...messages.slice(1), footer ?? ""],
+    };
+
+    const errors = store.get(BRISA_ERRORS) || [];
+    errors.push(error);
+    store.set(BRISA_ERRORS, errors);
+  }
   return log("Error")(messages, footer);
 }
 

@@ -1,6 +1,8 @@
 import { describe, it, expect, mock, afterEach, spyOn } from "bun:test";
-import { logTable } from "./log-build";
+import { logTable, logError } from "./log-build";
 import { getConstants } from "@/constants";
+import extendRequestContext from "@/utils/extend-request-context";
+import type { RequestContext } from "@/types";
 
 describe("utils", () => {
   describe("logTable", () => {
@@ -30,6 +32,30 @@ describe("utils", () => {
       const output = mockLog.mock.results.map((t) => t.value).join("\n");
 
       expect(output).toBe(expected);
+    });
+  });
+
+  describe("logError", () => {
+    it("should log an error", () => {
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost"),
+      });
+      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
+
+      spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
+
+      const messages = ["Error message 1", "Error message 2"];
+      const footer = "Footer message";
+
+      logError(messages, footer, req);
+
+      const output = mockLog.mock.results.map((t) => t.value).join("\n");
+      const store = (req as any).webStore as RequestContext["store"];
+
+      expect(output).toContain("Error message 1");
+      expect(output).toContain("Error message 2");
+      expect(store.get("__BRISA_ERRORS__")).toHaveLength(1);
+      expect(store.get("__BRISA_ERRORS__")[0].title).toBe("Error message 1");
     });
   });
 });
