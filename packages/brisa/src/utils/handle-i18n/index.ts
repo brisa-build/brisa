@@ -70,11 +70,10 @@ export default function handleI18n(req: RequestContext): {
     pages: pages ?? {},
     overrideMessages: (callback) => {
       if (typeof callback !== "function") {
-        return logError(
-          ["overrideMessages requires a callback function"],
-          undefined,
+        return logError({
+          messages: ["overrideMessages requires a callback function"],
           req,
-        );
+        });
       }
 
       const messages = callback(I18N_CONFIG?.messages?.[locale]);

@@ -26,10 +26,12 @@ export default function createContextPlugin() {
           try {
             code = generateContextID(code, path);
           } catch (error) {
-            logError([
-              `It was not possible to generate a contextID in ${path}`,
-              (error as Error).message,
-            ]);
+            logError({
+              messages: [
+                `It was not possible to generate a contextID in ${path}`,
+                (error as Error).message,
+              ],
+            });
           }
 
           return {
