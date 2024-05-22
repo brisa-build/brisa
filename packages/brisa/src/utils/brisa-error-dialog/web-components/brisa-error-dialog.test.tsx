@@ -45,7 +45,7 @@ describe("utils", () => {
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set(ERROR_STORE_KEY, [
-        { title: "Error", message: "An error occurred" },
+        { title: "Error", details: ["An error occurred"] },
       ]);
       const component =
         container.querySelector("brisa-error-dialog")?.shadowRoot;
@@ -61,8 +61,8 @@ describe("utils", () => {
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set(ERROR_STORE_KEY, [
-        { title: "Error 1", message: "An error occurred" },
-        { title: "Error 2", message: "Another error occurred" },
+        { title: "Error 1", details: ["An error occurred"] },
+        { title: "Error 2", details: ["Another error occurred"] },
       ]);
       const component =
         container.querySelector("brisa-error-dialog")?.shadowRoot;
@@ -84,8 +84,8 @@ describe("utils", () => {
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set(ERROR_STORE_KEY, [
-        { title: "Error 1", message: "An error occurred" },
-        { title: "Error 2", message: "Another error occurred" },
+        { title: "Error 1", details: ["An error occurred"] },
+        { title: "Error 2", details: ["Another error occurred"] },
       ]);
       const component =
         container.querySelector("brisa-error-dialog")?.shadowRoot;
@@ -104,7 +104,7 @@ describe("utils", () => {
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set(ERROR_STORE_KEY, [
-        { title: "Error", message: "An error occurred" },
+        { title: "Error", details: ["An error occurred"] },
       ]);
       const component =
         container.querySelector("brisa-error-dialog")?.shadowRoot;
@@ -125,7 +125,7 @@ describe("utils", () => {
         <brisa-error-dialog></brisa-error-dialog>,
       );
       store.set(ERROR_STORE_KEY, [
-        { title: "Error", message: "An error occurred" },
+        { title: "Error", details: ["An error occurred"] },
       ]);
       const component =
         container.querySelector("brisa-error-dialog")?.shadowRoot;
@@ -159,7 +159,7 @@ describe("utils", () => {
       expect(store.get(ERROR_STORE_KEY)).toEqual([
         {
           title: "Uncaught Error",
-          message: "An error occurred",
+          details: ["An error occurred"],
           stack: expect.stringContaining("Error: An error occurred"),
         },
       ]);

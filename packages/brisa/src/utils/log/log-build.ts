@@ -57,16 +57,19 @@ export function logError({
   messages,
   footer,
   req,
+  stack,
 }: {
   messages: string[];
   footer?: string;
   req?: RequestContext;
+  stack?: string;
 }) {
   if (req) {
     const store = (req as any).webStore as RequestContext["store"];
     const error = {
       title: messages[0],
-      description: [...messages.slice(1), footer ?? ""],
+      details: [...messages.slice(1), footer ?? ""],
+      stack,
     };
 
     const errors = store.get(BRISA_ERRORS) || [];
