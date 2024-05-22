@@ -2,7 +2,7 @@ import type { WebContext } from "@/types";
 
 type Error = {
   title: string;
-  message: string;
+  details: string[];
   stack?: string;
 };
 
@@ -40,7 +40,7 @@ export default function ErrorDialog(
         ...(store.get<Error[]>("__BRISA_ERRORS__") ?? []),
         {
           title: "Uncaught Error",
-          message: e.message,
+          details: [e.message],
           stack: e.error?.stack,
         },
       ]);
@@ -128,8 +128,8 @@ export default function ErrorDialog(
       background-color: light-dark(white, black);
       border-radius: 5px;
       border-top: 5px solid #f44336;
-      min-width: 300px;
-      max-width: 80%;
+      min-width: 200px;
+      max-width: min(80%, 900px);
     }
 
     h1 {
@@ -264,10 +264,11 @@ export default function ErrorDialog(
           </nav>
           {closeElement({ onClose })}
         </header>
-        <p>
-          {errors.value[currentIndex.value].title}:{" "}
-          {errors.value[currentIndex.value].message}
-        </p>
+        <p>{errors.value[currentIndex.value].title}: </p>
+        {errors.value[currentIndex.value].details?.map((message) => (
+          <p>{message}</p>
+        ))}
+        <p>{errors.value[currentIndex.value].stack}</p>
         <button class="close-dialog" onClick={onClose}>
           Close
         </button>

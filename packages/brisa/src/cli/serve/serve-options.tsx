@@ -25,6 +25,7 @@ export async function getServeOptions() {
 
   const {
     IS_PRODUCTION,
+    IS_DEVELOPMENT,
     PAGE_404,
     PAGE_500,
     RESERVED_PAGES,
@@ -88,6 +89,18 @@ export async function getServeOptions() {
         id: requestId,
       });
       const url = new URL(request.finalURL);
+
+      // Dev tool to open file in editor
+      if (IS_DEVELOPMENT && url.pathname === "/__brisa_dev_file__") {
+        const file = url.searchParams.get("file");
+        const line = url.searchParams.get("line");
+        const column = url.searchParams.get("column");
+
+        if (file && line != null && column != null) {
+          Bun.openInEditor(file, { line: +line, column: +column });
+          return new Response(null, { status: 200 });
+        }
+      }
 
       if (
         // This parameter is added after "notFound" function call, during the stream
