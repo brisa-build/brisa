@@ -32,14 +32,13 @@ export default function transferStoreService(req: RequestContext) {
 
           req.store.set(key, storeValue);
         } catch (e: any) {
-          logError(
-            [
+          logError({
+            messages: [
               `Error transferring client "${key}" store to server store`,
               e.message,
             ],
-            undefined,
             req,
-          );
+          });
         }
       }
     },

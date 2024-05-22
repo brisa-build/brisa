@@ -50,15 +50,19 @@ export default async function getWebComponentsList(
         const selector = key.replace(/^\/(_)?/g, "").replaceAll("/", "-");
 
         if (selector === CONTEXT_PROVIDER) {
-          logError([
-            `You can't use the reserved name "${CONTEXT_PROVIDER}"`,
-            "Please, rename it to avoid conflicts.",
-          ]);
+          logError({
+            messages: [
+              `You can't use the reserved name "${CONTEXT_PROVIDER}"`,
+              "Please, rename it to avoid conflicts.",
+            ],
+          });
         } else if (existingSelectors.has(selector)) {
-          logError([
-            `You have more than one web-component with the same name: "${selector}"`,
-            "Please, rename one of them to avoid conflicts.",
-          ]);
+          logError({
+            messages: [
+              `You have more than one web-component with the same name: "${selector}"`,
+              "Please, rename one of them to avoid conflicts.",
+            ],
+          });
         } else {
           existingSelectors.add(selector);
         }

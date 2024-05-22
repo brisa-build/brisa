@@ -39,7 +39,9 @@ export default function replaceAstImportsToAbsolute(
         value.source.value = import.meta.resolveSync(value.source.value, path);
       }
     } catch (error) {
-      logError(["Error resolving import path:", (error as Error).message]);
+      logError({
+        messages: ["Error resolving import path:", (error as Error).message],
+      });
     }
 
     return value;

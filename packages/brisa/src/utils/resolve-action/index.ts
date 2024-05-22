@@ -63,8 +63,8 @@ export default async function resolveAction({
 
   // Error not caught
   if (error.name !== "rerender") {
-    logError(
-      [
+    logError({
+      messages: [
         "There was an error executing the server action",
         "",
         ...(error.stack?.toString?.() ?? error.message).split("\n"),
@@ -81,9 +81,10 @@ export default async function resolveAction({
         "auto-generated id.",
         "",
       ],
-      "Docs: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions)",
+      footer:
+        "Docs: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions)",
       req,
-    );
+    });
 
     return new Response(error.message, { status: 500 });
   }
@@ -104,7 +105,7 @@ export default async function resolveAction({
 
     if (!route || isReservedPathname) {
       const errorMessage = `Error rerendering page ${url}. Page route not found`;
-      logError([errorMessage], undefined, req);
+      logError({ messages: [errorMessage], req });
       return new Response(errorMessage, { status: 404 });
     }
 

@@ -3,8 +3,8 @@ import { logError } from "../log/log-build";
 
 export default function feedbackError(error: Error, req?: RequestContext) {
   if (error.name === "ERR_DLOPEN_FAILED") {
-    logError(
-      [
+    logError({
+      messages: [
         "ERR_DLOPEN_FAILED",
         "",
         "If you use FFI you must create a prebuild folder with the compiled files in there.",
@@ -19,11 +19,10 @@ export default function feedbackError(error: Error, req?: RequestContext) {
         "https://brisa.build/building-your-application/configuring/zig-rust-c-files",
         "",
       ],
-      undefined,
       req,
-    );
+    });
     return;
   }
 
-  logError([error.stack?.toString?.() ?? error.message, ""], undefined, req);
+  logError({ messages: [error.stack?.toString?.() ?? error.message, ""], req });
 }
