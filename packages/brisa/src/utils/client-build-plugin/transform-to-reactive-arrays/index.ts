@@ -51,10 +51,11 @@ export default function transformToReactiveArrays(
 
       if (path) errorMessages.push(`File: ${path}`);
 
-      logError(
-        errorMessages,
-        "Docs: https://brisa.build/building-your-application/component-details/web-components",
-      );
+      logError({
+        messages: errorMessages,
+        footer:
+          "Docs: https://brisa.build/building-your-application/component-details/web-components",
+      });
     }
 
     const tagName = value.arguments[0].value ?? null;

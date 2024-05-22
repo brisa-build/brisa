@@ -53,11 +53,15 @@ function log(type: "Error" | "Warning") {
   };
 }
 
-export function logError(
-  messages: string[],
-  footer?: string,
-  req?: RequestContext,
-) {
+export function logError({
+  messages,
+  footer,
+  req,
+}: {
+  messages: string[];
+  footer?: string;
+  req?: RequestContext;
+}) {
   if (req) {
     const store = (req as any).webStore as RequestContext["store"];
     const error = {
