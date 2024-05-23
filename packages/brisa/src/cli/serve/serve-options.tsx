@@ -92,9 +92,16 @@ export async function getServeOptions() {
 
       // Dev tool to open file in editor
       if (IS_DEVELOPMENT && url.pathname === "/__brisa_dev_file__") {
-        const file = url.searchParams.get("file");
+        let file = url.searchParams.get("file");
         const line = url.searchParams.get("line");
         const column = url.searchParams.get("column");
+
+        if (file?.startsWith("/_brisa/pages")) {
+          file = path.join(
+            BUILD_DIR,
+            file.replace(/^\/_brisa\/pages/, "/pages-client"),
+          );
+        }
 
         if (file && line != null && column != null) {
           Bun.openInEditor(file, { line: +line, column: +column });
