@@ -1,5 +1,6 @@
 import { expect, describe, it, beforeEach, afterEach } from "bun:test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import { greenLog, redLog } from "@/utils/log/log-color";
 
 describe("test matchers", () => {
   beforeEach(() => {
@@ -40,6 +41,17 @@ describe("test matchers", () => {
       div.setAttribute("data-test", "test");
 
       expect(div).toHaveAttribute("data-test", "test");
+    });
+
+    it("should not pass if the element has the attribute specifing the attribute", () => {
+      const div = document.createElement("div");
+      div.setAttribute("data-test", "test-2");
+
+      expect(() =>
+        expect(div).toHaveAttribute("data-test", "test"),
+      ).toThrowError(
+        `Expected: ${greenLog("test")}\nReceived: ${redLog("test-2")}`,
+      );
     });
 
     it("should fail if the element does not have the attribute", () => {
@@ -113,7 +125,7 @@ describe("test matchers", () => {
       const div = document.createElement("div");
 
       expect(() => expect(div).toHaveTextContent("test")).toThrowError(
-        "expected element to have rendered text test",
+        `Expected: ${greenLog("test")}\nReceived: ${redLog('""')}`,
       );
     });
   });
@@ -174,7 +186,7 @@ describe("test matchers", () => {
       const div = document.createElement("div");
 
       expect(() => expect(div).toContainTextContent("test")).toThrowError(
-        "expected element to contain rendered text test",
+        `Expected to contain: ${greenLog("test")}\nReceived: ${redLog('""')}`,
       );
     });
   });
