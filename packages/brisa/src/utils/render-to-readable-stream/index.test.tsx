@@ -6,6 +6,7 @@ import {
   describe,
   expect,
   it,
+  beforeEach,
   mock,
   spyOn,
 } from "bun:test";
@@ -39,11 +40,15 @@ const testOptions = {
   request: testRequest,
 };
 
+let mockLog: ReturnType<typeof spyOn>;
 const mockConsoleError = mock(() => {});
 const consoleError = console.error;
 console.error = mockConsoleError;
 
 describe("utils", () => {
+  beforeEach(() => {
+    mockLog = spyOn(console, "log");
+  });
   afterEach(() => {
     testRequest.store.clear();
     // @ts-ignore
@@ -53,6 +58,7 @@ describe("utils", () => {
     // @ts-ignore
     globalThis.REGISTERED_ACTIONS = undefined;
     globalThis.FORCE_SUSPENSE_DEFAULT = undefined;
+    mockLog.mockRestore();
   });
 
   afterAll(() => {
@@ -74,7 +80,6 @@ describe("utils", () => {
 
     it("should register the server action inside globalThis.REGISTERED_ACTIONS when is defined", async () => {
       globalThis.REGISTERED_ACTIONS = [];
-      const mockLog = spyOn(console, "log");
       const element = (
         <div onClick={() => console.log("Hello Action")} class="test">
           Hello World
@@ -2867,6 +2872,60 @@ describe("utils", () => {
         "http://localhost/foo",
       );
       globalThis.location = undefined as any;
+    });
+
+    it("should log an error and not throw error to avoid breaking the rendering when component render fails", async () => {
+      const Component = () => {
+        throw new Error("test");
+      };
+
+      const stream = renderToReadableStream(
+        <html>
+          <head></head>
+          <body>
+            <Component />
+          </body>
+        </html>,
+        testOptions,
+      );
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toStartWith(toInline(`<html><head></head><body>`));
+      expect(result).toContain(
+        toInline(
+          '<script>window._S=[["__BRISA_ERRORS__",[{"title":"Error in SSR of Component component with props {}","details":["test",""],"stack":',
+        ),
+      );
+      expect(result).toEndWith(toInline(`</body></html>`));
+      expect(mockLog.mock.calls.toString()).toContain(
+        "Error in SSR of Component component with props {}",
+      );
+    });
+
+    it("should display the name of the functional component in the error", async () => {
+      function SomeTestComponent() {
+        throw new Error("test");
+      }
+
+      const stream = renderToReadableStream(
+        <html>
+          <head></head>
+          <body>
+            <SomeTestComponent />
+          </body>
+        </html>,
+        testOptions,
+      );
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toStartWith(toInline(`<html><head></head><body>`));
+      expect(result).toContain(
+        toInline(
+          '<script>window._S=[["__BRISA_ERRORS__",[{"title":"Error in SSR of SomeTestComponent component with props {}","details":["test",""],"stack":',
+        ),
+      );
+      expect(result).toEndWith(toInline(`</body></html>`));
+      expect(mockLog.mock.calls.toString()).toContain(
+        "Error in SSR of SomeTestComponent component with props {}",
+      );
     });
 
     it("should render correctly if there is an async event in some element", () => {
