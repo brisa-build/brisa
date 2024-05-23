@@ -1273,12 +1273,44 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     );
     const response = await testRequest(
       new Request(
-        `http://localhost:1234/__brisa_dev_file__?file=src%2Fpages%2Fsomepage.tsx&line=1&column=1`,
+        `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
+          "src/pages/somepage.tsx",
+        )}&line=1&column=1`,
       ),
     );
 
     expect(response.status).toBe(200);
     expect(mockOpenInEditor).toHaveBeenCalledWith("src/pages/somepage.tsx", {
+      line: 1,
+      column: 1,
+    });
+  });
+
+  it("should open the editor calling /__brisa_dev_file__ with internal brisa file from build with line and column", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: false,
+      IS_DEVELOPMENT: true,
+    };
+    const mockOpenInEditor = spyOn(Bun, "openInEditor").mockImplementation(
+      () => {},
+    );
+    const inputFile = encodeURIComponent(
+      "/_brisa/pages/index-595519026220381824.js",
+    );
+    const expectedFile = path.resolve(
+      BUILD_DIR,
+      "pages-client",
+      "index-595519026220381824.js",
+    );
+    const response = await testRequest(
+      new Request(
+        `http://localhost:1234/__brisa_dev_file__?file=${inputFile}&line=1&column=1`,
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    expect(mockOpenInEditor).toHaveBeenCalledWith(expectedFile, {
       line: 1,
       column: 1,
     });
