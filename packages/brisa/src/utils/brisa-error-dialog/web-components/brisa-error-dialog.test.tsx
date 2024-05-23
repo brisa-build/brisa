@@ -140,12 +140,10 @@ describe("utils", () => {
     });
 
     it('should handle window.addEventListener("error") modifying the store', async () => {
-      const { container, store } = await render(
+      const { store } = await render(
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      const component =
-        container.querySelector("brisa-error-dialog")?.shadowRoot;
 
       expect(store.get(ERROR_STORE_KEY)).toBeEmpty();
 
@@ -164,5 +162,90 @@ describe("utils", () => {
         },
       ]);
     });
+
+    it("should add URL link to the error stack", async () => {
+      const { container, store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+      const error = new Error("An error occurred");
+      error.stack =
+        "Error: An error occurred\n    at someFunction (http://localhost:3000/somefile.js:1:2)";
+      store.set(ERROR_STORE_KEY, [
+        { title: "Error", details: [error.message], stack: error.stack },
+      ]);
+      const dialog = component?.querySelector("dialog");
+      const hyperlink = dialog?.querySelector("a");
+
+      expect(dialog).toContainTextContent("Error: An error occurred");
+      expect(hyperlink).toContainTextContent(
+        "http://localhost:3000/somefile.js:1:2",
+      );
+      expect(hyperlink).toHaveAttribute(
+        "ping",
+        encodeLink("/somefile.js", 1, 2),
+      );
+    });
+
+    it("should add file link to the error stack", async () => {
+      const { container, store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+      const error = new Error("An error occurred");
+      error.stack =
+        "Error: An error occurred\n    at someFunction (/Users/someuser/somefile.js:1:2)";
+      store.set(ERROR_STORE_KEY, [
+        { title: "Error", details: [error.message], stack: error.stack },
+      ]);
+      const dialog = component?.querySelector("dialog");
+      const hyperlink = dialog?.querySelector("a");
+
+      expect(dialog).toContainTextContent("Error: An error occurred");
+      expect(hyperlink).toContainTextContent("/Users/someuser/somefile.js:1:2");
+      expect(hyperlink).toHaveAttribute(
+        "ping",
+        encodeLink("/Users/someuser/somefile.js", 1, 2),
+      );
+    });
+
+    it("should work with windows paths in the error stack", async () => {
+      const { container, store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+      const error = new Error("An error occurred");
+      error.stack =
+        "Error: An error occurred\n    at someFunction (C:\\Users\\someuser\\somefile.js:1:2)";
+      store.set(ERROR_STORE_KEY, [
+        { title: "Error", details: [error.message], stack: error.stack },
+      ]);
+      const dialog = component?.querySelector("dialog");
+      const hyperlink = dialog?.querySelector("a");
+
+      expect(dialog).toContainTextContent("Error: An error occurred");
+      expect(hyperlink).toContainTextContent(
+        "C:\\Users\\someuser\\somefile.js:1:2",
+      );
+      expect(hyperlink).toHaveAttribute(
+        "ping",
+        encodeLink(`C:\\Users\\someuser\\somefile.js`, 1, 2),
+      );
+    });
   });
 });
+
+function encodeLink(link: string, line: number, column: number) {
+  const [pathname] = (URL.canParse(link) ? new URL(link).pathname : link).split(
+    ":",
+  );
+  return `/__brisa_dev_file__?file=${encodeURIComponent(
+    pathname,
+  )}&line=${line}&column=${column}`;
+}

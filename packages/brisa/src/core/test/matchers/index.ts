@@ -1,4 +1,5 @@
 import type { InputType } from "@/types";
+import { greenLog, redLog } from "@/utils/log/log-color";
 
 function toBeChecked(received: unknown) {
   if (received instanceof HTMLInputElement === false) {
@@ -13,11 +14,21 @@ function toBeChecked(received: unknown) {
   };
 }
 
-function toHaveAttribute(received: unknown, attribute: string) {
+function toHaveAttribute(received: unknown, attribute: string, value?: string) {
   if (received instanceof HTMLElement === false) {
     throw new Error(
       "Invalid usage of toHaveAttribute(received, attribute). The argument received should be an HTMLElement",
     );
+  }
+
+  if (value !== undefined) {
+    return {
+      pass: received.getAttribute(attribute) === value,
+      message: () =>
+        `Expected: ${greenLog(value)}\nReceived: ${redLog(
+          received.getAttribute(attribute) ?? "",
+        )}`,
+    };
   }
 
   return {
@@ -52,7 +63,10 @@ function toHaveTextContent(received: unknown, text: string) {
 
   return {
     pass: received.textContent === text,
-    message: () => `expected element to have rendered text ${text}`,
+    message: () =>
+      `Expected: ${greenLog(text)}\nReceived: ${redLog(
+        received.textContent || '""',
+      )}`,
   };
 }
 
@@ -67,7 +81,10 @@ function toContainTextContent(received: unknown, text: string) {
     pass:
       typeof received.textContent === "string" &&
       received.textContent.includes(text),
-    message: () => `expected element to contain rendered text ${text}`,
+    message: () =>
+      `Expected to contain: ${greenLog(text)}\nReceived: ${redLog(
+        received.textContent || '""',
+      )}`,
   };
 }
 
