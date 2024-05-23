@@ -20,6 +20,7 @@ import processServerComponentProps from "@/utils/process-server-component-props"
 import extendRequestContext from "@/utils/extend-request-context";
 import type { Options } from "@/types/server";
 import { toInline } from "@/helpers";
+import { logError } from "@/utils/log/log-build";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -528,7 +529,26 @@ async function getValueOfComponent(
   return Promise.resolve()
     .then(() => componentFn(props, request) ?? "")
     .catch((error: Error) => {
-      if (!isComponent(componentFn.error)) throw error;
+      if (isNotFoundError(error) || error.name === "navigate") {
+        throw error;
+      }
+      if (!isComponent(componentFn.error)) {
+        const componentName =
+          ((componentFn as any).__isWebComponent
+            ? props.selector
+            : componentFn.name) || "Component";
+        const title = `Error in SSR of ${componentName} component with props ${JSON.stringify(
+          props,
+        )}`;
+        logError({
+          req: request,
+          messages: [title, error.message],
+          stack: error.stack,
+        });
+
+        // Should not throw error to avoid breaking the rendering
+        return "";
+      }
       return componentFn.error({ error, ...props }, request);
     });
 }
