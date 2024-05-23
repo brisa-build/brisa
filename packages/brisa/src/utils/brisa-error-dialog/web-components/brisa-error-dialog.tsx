@@ -268,7 +268,7 @@ export default function ErrorDialog(
         {errors.value[currentIndex.value].details?.map((message) => (
           <p>{message}</p>
         ))}
-        <p>{errors.value[currentIndex.value].stack}</p>
+        {printStack(errors.value[currentIndex.value].stack)}
         <button class="close-dialog" onClick={onClose}>
           Close
         </button>
@@ -298,5 +298,55 @@ function closeElement({ onClose }: { onClose: () => void }) {
         <path d="m6 6 12 12"></path>
       </svg>
     </button>
+  );
+}
+
+function printStack(stack?: string) {
+  if (!stack) return null;
+
+  function injectStackLinks(stack: string) {
+    const fileLinks: string[] = [];
+    const stackLines = stack.split("\n");
+    let result = stack;
+
+    for (const line of stackLines) {
+      const parts = line.split(" ");
+      for (const part of parts) {
+        if (
+          part.includes("/") ||
+          part.includes("\\") ||
+          part.startsWith("http") ||
+          part.startsWith("file")
+        ) {
+          fileLinks.push(part.replace(/[()]/g, ""));
+        }
+      }
+    }
+
+    for (const link of fileLinks) {
+      const pathname = URL.canParse(link) ? new URL(link).pathname : link;
+
+      let [file, line, column] = pathname.split(":");
+      const finalUrl = `/__brisa_dev_file__?file=${encodeURIComponent(
+        file,
+      )}&line=${line}&column=${column}`;
+      result = result.replace(
+        link,
+        `<a href="javascript:void(0);" ping="${finalUrl}">${link}</a>`,
+      );
+    }
+
+    return result;
+  }
+
+  return (
+    <pre style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+      {{
+        type: "HTML",
+        props: {
+          html: injectStackLinks(stack),
+        },
+      }}
+    </pre>
   );
 }
