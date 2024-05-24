@@ -3,6 +3,7 @@ import path from "node:path";
 import constants from "@/constants";
 import dangerHTML from "@/utils/danger-html";
 import compileAll from "@/utils/compile-all";
+import { toInline } from "@/helpers";
 
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
 const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
@@ -85,12 +86,29 @@ export function LiveReloadScript({
     <>
       <script id="hotreloading-script">
         {dangerHTML(
-          `function wsc() {
-            let s = new WebSocket("${wsUrl}");
-            s.onclose = wsc;
-            s.onmessage = e => e.data === "${LIVE_RELOAD_COMMAND}" && location.reload();
-          }
-          wsc();`,
+          toInline(
+            `(()=>{
+            let s;
+            let tries = 0;
+
+            function wsc() {
+              tries++;
+              if(tries > 10) return;
+              if(s) s.close();
+              s = new WebSocket("${wsUrl}");
+              s.onmessage = e => {
+                if(e.data === "${LIVE_RELOAD_COMMAND}"){
+                  window._nn = true;
+                  location.reload();
+                }
+              };
+              s.onopen = () => { tries = 0 };
+              s.onclose = wsc;
+              s.onerror = () => s.close();
+            }
+            wsc();
+          })();`,
+          ),
         )}
       </script>
       {children}
