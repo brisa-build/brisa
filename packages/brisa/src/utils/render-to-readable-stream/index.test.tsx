@@ -38,12 +38,11 @@ const testRequest = extendRequestContext({
 });
 const testOptions = {
   request: testRequest,
+  isPage: false,
 };
 
 let mockLog: ReturnType<typeof spyOn>;
-const mockConsoleError = mock(() => {});
 const consoleError = console.error;
-console.error = mockConsoleError;
 
 describe("utils", () => {
   beforeEach(() => {
@@ -53,7 +52,6 @@ describe("utils", () => {
     testRequest.store.clear();
     // @ts-ignore
     testRequest.webStore.clear();
-    mockConsoleError.mockClear();
     globalThis.mockConstants = undefined;
     // @ts-ignore
     globalThis.REGISTERED_ACTIONS = undefined;
@@ -68,13 +66,16 @@ describe("utils", () => {
   describe("renderToReadableStream", () => {
     it("should render a simple JSX element", async () => {
       const element = <div class="test">Hello World</div>;
-      const stream = renderToReadableStream(element, testOptions);
+      const stream = renderToReadableStream(element, {
+        ...testOptions,
+        isPage: true,
+      });
       const result = await Bun.readableStreamToText(stream);
 
       const expected = `<div class="test">Hello World</div>`;
       expect(result).toBe(expected);
-      expect(mockConsoleError.mock.calls[0].at(0) as unknown as string).toEqual(
-        "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
+      expect(mockLog.mock.calls.toString()).toContain(
+        "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with client JavaScript code without it.",
       );
     });
 
@@ -152,17 +153,17 @@ describe("utils", () => {
       expect(result).toBe(expected);
     });
 
-    it('should not display the "head" tag warning if log=false', async () => {
+    it('should not display the "head" tag warning if isPage=false', async () => {
       const element = <div class="test">Hello World</div>;
       const stream = renderToReadableStream(element, {
         ...testOptions,
-        log: false,
+        isPage: false,
       });
       const result = await Bun.readableStreamToText(stream);
 
       const expected = `<div class="test">Hello World</div>`;
       expect(result).toBe(expected);
-      expect(mockConsoleError.mock.calls.length).toBe(0);
+      expect(mockLog.mock.calls.length).toBe(0);
     });
 
     it("should render an empty text node", () => {
@@ -195,7 +196,7 @@ describe("utils", () => {
       const expected = `<div class="test">`;
 
       expect(result).toBe(expected);
-      expect(mockConsoleError.mock.calls.length).toBe(0);
+      expect(mockLog.mock.calls.length).toBe(0);
     });
 
     it("should not console.error when it has a <head> tag", async () => {
@@ -207,7 +208,20 @@ describe("utils", () => {
       );
       const stream = renderToReadableStream(element, testOptions);
       await Bun.readableStreamToText(stream);
-      expect(mockConsoleError.mock.calls.length).toEqual(0);
+      expect(mockLog.mock.calls.length).toEqual(0);
+    });
+
+    it('should display the "head" tag warning if isPage=true', async () => {
+      const element = <div class="test">Hello World</div>;
+      const stream = renderToReadableStream(element, {
+        ...testOptions,
+        isPage: true,
+      });
+      const result = await Bun.readableStreamToText(stream);
+
+      const expected = `<div class="test">Hello World</div>`;
+      expect(result).toBe(expected);
+      expect(mockLog.mock.calls.toString()).toContain("No <head> tag");
     });
 
     it("should render a complex JSX element", async () => {
@@ -2891,9 +2905,7 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(toInline(`<html><head></head><body>`));
       expect(result).toContain(
-        toInline(
-          '<script>window._S=[["__BRISA_ERRORS__",[{"title":"Error in SSR of Component component with props {}","details":["test",""],"stack":',
-        ),
+        "Error in SSR of Component component with props {}",
       );
       expect(result).toEndWith(toInline(`</body></html>`));
       expect(mockLog.mock.calls.toString()).toContain(
@@ -2918,9 +2930,7 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(toInline(`<html><head></head><body>`));
       expect(result).toContain(
-        toInline(
-          '<script>window._S=[["__BRISA_ERRORS__",[{"title":"Error in SSR of SomeTestComponent component with props {}","details":["test",""],"stack":',
-        ),
+        "Error in SSR of SomeTestComponent component with props {}",
       );
       expect(result).toEndWith(toInline(`</body></html>`));
       expect(mockLog.mock.calls.toString()).toContain(

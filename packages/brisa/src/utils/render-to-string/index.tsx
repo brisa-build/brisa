@@ -8,6 +8,6 @@ export default async function renderToString(
   }: { request?: Request; applySuspense?: boolean } = {},
 ): Promise<string> {
   return await Bun.readableStreamToText(
-    renderToReadableStream(element, { request, log: false, applySuspense }),
+    renderToReadableStream(element, { request, isPage: false, applySuspense }),
   );
 }

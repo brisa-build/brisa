@@ -13,12 +13,10 @@ export default function feedbackError(error: Error, req?: RequestContext) {
         "Example:",
         "",
         `path.join(Bun.env.BRISA_BUILD_FOLDER, 'prebuild', \`libadd.\${suffix}\`)`,
-        "",
-        "Docs:",
-        "",
-        "https://brisa.build/building-your-application/configuring/zig-rust-c-files",
-        "",
       ],
+      docTitle: "Documentation about FFI",
+      docLink:
+        "https://brisa.build/building-your-application/configuring/zig-rust-c-files",
       req,
     });
     return;
