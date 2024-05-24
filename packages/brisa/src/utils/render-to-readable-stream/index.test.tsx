@@ -42,7 +42,6 @@ const testOptions = {
 };
 
 let mockLog: ReturnType<typeof spyOn>;
-const consoleError = console.error;
 
 describe("utils", () => {
   beforeEach(() => {
@@ -57,10 +56,6 @@ describe("utils", () => {
     globalThis.REGISTERED_ACTIONS = undefined;
     globalThis.FORCE_SUSPENSE_DEFAULT = undefined;
     mockLog.mockRestore();
-  });
-
-  afterAll(() => {
-    console.error = consoleError;
   });
 
   describe("renderToReadableStream", () => {
@@ -199,7 +194,7 @@ describe("utils", () => {
       expect(mockLog.mock.calls.length).toBe(0);
     });
 
-    it("should not console.error when it has a <head> tag", async () => {
+    it("should not log a warning when it has a <head> tag", async () => {
       const element = (
         <html>
           <head></head>
