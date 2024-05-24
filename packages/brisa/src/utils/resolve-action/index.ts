@@ -79,10 +79,10 @@ export default async function resolveAction({
         "actions nested between server components. These are the only props",
         "available and the only thing that is exposed on the client is an",
         "auto-generated id.",
-        "",
       ],
-      footer:
-        "Docs: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions)",
+      docTitle: "Documentation about Server actions",
+      docLink:
+        "https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions",
       req,
     });
 

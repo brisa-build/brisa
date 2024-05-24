@@ -55,6 +55,9 @@ export default async function getWebComponentsList(
               `You can't use the reserved name "${CONTEXT_PROVIDER}"`,
               "Please, rename it to avoid conflicts.",
             ],
+            docTitle: `Documentation about ${CONTEXT_PROVIDER}`,
+            docLink:
+              "https://brisa.build/api-reference/components/context-provider",
           });
         } else if (existingSelectors.has(selector)) {
           logError({
@@ -62,6 +65,9 @@ export default async function getWebComponentsList(
               `You have more than one web-component with the same name: "${selector}"`,
               "Please, rename one of them to avoid conflicts.",
             ],
+            docTitle: "Documentation about web-components",
+            docLink:
+              "https://brisa.build/building-your-application/components-details/web-components",
           });
         } else {
           existingSelectors.add(selector);

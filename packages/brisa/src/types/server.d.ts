@@ -3,7 +3,7 @@ import type { ServeOptions } from "bun";
 export type Options = {
   request: Request | RequestContext;
   head?: ComponentType;
-  log?: boolean;
+  isPage?: boolean;
   applySuspense?: boolean;
 };
 

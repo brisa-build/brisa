@@ -6,7 +6,7 @@ let mockLog: ReturnType<typeof spyOn>;
 describe("utils", () => {
   describe("renderToString", () => {
     beforeEach(() => {
-      mockLog = spyOn(console, "error");
+      mockLog = spyOn(console, "log");
     });
     afterEach(() => {
       mockLog.mockRestore();

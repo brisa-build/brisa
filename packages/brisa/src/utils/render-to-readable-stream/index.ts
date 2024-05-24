@@ -33,7 +33,7 @@ export default function renderToReadableStream(
   {
     request,
     head,
-    log = true,
+    isPage = true,
     // Useful default to avoid suspense in tests, because tests not
     // use HTML streaming ("render" and "serveRoute" testing API)
     applySuspense = globalThis.FORCE_SUSPENSE_DEFAULT ?? true,
@@ -93,10 +93,21 @@ export default function renderToReadableStream(
 
       controller.close();
 
-      if (log && !IS_PRODUCTION && !aborted && !extendedController.hasHeadTag) {
-        console.error(
-          "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with browser JavaScript code without it.",
-        );
+      if (
+        isPage &&
+        !IS_PRODUCTION &&
+        !aborted &&
+        !extendedController.hasHeadTag
+      ) {
+        logError({
+          messages: [
+            "No <head> tag",
+            "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with client JavaScript code without it.",
+          ],
+          docTitle: "Documentation about layout",
+          docLink:
+            "https://brisa.build/building-your-application/routing/pages-and-layouts.html#layout",
+        });
       }
     },
   });

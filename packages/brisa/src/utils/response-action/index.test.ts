@@ -422,7 +422,7 @@ describe("utils", () => {
       const res = await responseAction(req);
       const { LOG_PREFIX } = getConstants();
 
-      expect(logMock).toHaveBeenCalledTimes(6);
+      expect(logMock).toHaveBeenCalledTimes(7);
       expect(logMock.mock.calls[0]).toEqual([LOG_PREFIX.ERROR, "Ops! Error:"]);
       expect(logMock.mock.calls[1]).toEqual([
         LOG_PREFIX.ERROR,
