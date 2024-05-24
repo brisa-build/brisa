@@ -332,7 +332,7 @@ async function enqueueDuringRendering(
       // Brisa error dialog for development
       if (IS_DEVELOPMENT && IS_SERVE_PROCESS) {
         controller.enqueue(
-          "<brisa-error-dialog></brisa-error-dialog>",
+          "<brisa-error-dialog skipSSR></brisa-error-dialog>",
           suspenseId,
         );
       }

@@ -3116,7 +3116,7 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        `<html><head></head><body>test<brisa-error-dialog></brisa-error-dialog></body></html>`,
+        `<html><head></head><body>test<brisa-error-dialog skipSSR></brisa-error-dialog></body></html>`,
       );
     });
 
