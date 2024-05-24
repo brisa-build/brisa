@@ -544,10 +544,9 @@ async function getValueOfComponent(
         throw error;
       }
       if (!isComponent(componentFn.error)) {
+        const isWebComponent = (componentFn as any).__isWebComponent;
         const componentName =
-          ((componentFn as any).__isWebComponent
-            ? props.selector
-            : componentFn.name) || "Component";
+          (isWebComponent ? props.selector : componentFn.name) || "Component";
         const title = `Error in SSR of ${componentName} component with props ${JSON.stringify(
           props,
         )}`;
@@ -555,6 +554,10 @@ async function getValueOfComponent(
           req: request,
           messages: [title, error.message],
           stack: error.stack,
+          docTitle: "Documentation about SSR",
+          docLink: isWebComponent
+            ? "https://brisa.build/building-your-application/components-details/web-components.html#server-side-rendering"
+            : "https://brisa.build/building-your-application/components-details/server-components.html",
         });
 
         // Should not throw error to avoid breaking the rendering
