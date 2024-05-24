@@ -114,7 +114,8 @@ function spaNavigation(event: any) {
     renderMode === "native" ||
     event.hashChange ||
     event.downloadRequest !== null ||
-    !event.canIntercept
+    !event.canIntercept ||
+    $window._nn // Native navigation
   ) {
     return;
   }
