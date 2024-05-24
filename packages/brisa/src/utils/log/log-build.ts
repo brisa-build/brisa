@@ -55,27 +55,38 @@ function log(type: "Error" | "Warning") {
 
 export function logError({
   messages,
-  footer,
   req,
   stack,
+  docTitle,
+  docLink,
 }: {
   messages: string[];
-  footer?: string;
   req?: RequestContext;
   stack?: string;
+  docTitle?: string;
+  docLink?: string;
 }) {
+  let footer;
+
   if (req) {
     const store = (req as any).webStore as RequestContext["store"];
     const error = {
       title: messages[0],
-      details: [...messages.slice(1), footer ?? ""],
+      details: messages.slice(1),
       stack,
+      docTitle,
+      docLink,
     };
 
     const errors = store.get(BRISA_ERRORS) || [];
     errors.push(error);
     store.set(BRISA_ERRORS, errors);
   }
+
+  if (docLink) {
+    footer = `${docTitle ?? "Documentation"}: ${docLink}`;
+  }
+
   return log("Error")(messages, footer);
 }
 

@@ -53,8 +53,9 @@ export default function transformToReactiveArrays(
 
       logError({
         messages: errorMessages,
-        footer:
-          "Docs: https://brisa.build/building-your-application/component-details/web-components",
+        docTitle: "Documentation about web-components",
+        docLink:
+          "https://brisa.build/building-your-application/component-details/web-components",
       });
     }
 

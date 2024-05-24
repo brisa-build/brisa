@@ -37,6 +37,9 @@ export default function transferStoreService(req: RequestContext) {
               `Error transferring client "${key}" store to server store`,
               e.message,
             ],
+            docTitle: "Documentation about store.transferToClient",
+            docLink:
+              "https://brisa.build/api-reference/components/request-context#transfertoclient",
             req,
           });
         }

@@ -71,7 +71,13 @@ export default function handleI18n(req: RequestContext): {
     overrideMessages: (callback) => {
       if (typeof callback !== "function") {
         return logError({
-          messages: ["overrideMessages requires a callback function"],
+          messages: [
+            "Error in overrideMessages",
+            "overrideMessages requires a callback function",
+          ],
+          docTitle: "Documentation about overrideMessages",
+          docLink:
+            "https://brisa.build/building-your-application/routing/internationalization#override-translations-in-web-components",
           req,
         });
       }

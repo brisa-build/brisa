@@ -186,7 +186,7 @@ describe("utils", () => {
         "Please note that for security reasons Brisa does not automatically",
       );
       expect(logs).toContain(
-        "Docs: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions",
+        "Documentation about Server actions: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions",
       );
     });
   });

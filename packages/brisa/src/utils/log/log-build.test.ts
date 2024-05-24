@@ -45,15 +45,18 @@ describe("utils", () => {
       spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
 
       const messages = ["Error message 1", "Error message 2"];
-      const footer = "Footer message";
+      const docTitle = "Footer message";
+      const docLink = "https://example.com";
 
-      logError({ messages, footer, req });
+      logError({ messages, docTitle, docLink, req });
 
       const output = mockLog.mock.results.map((t) => t.value).join("\n");
       const store = (req as any).webStore as RequestContext["store"];
 
       expect(output).toContain("Error message 1");
       expect(output).toContain("Error message 2");
+      expect(output).toContain("Footer message");
+      expect(output).toContain("https://example.com");
       expect(store.get("__BRISA_ERRORS__")).toHaveLength(1);
       expect(store.get("__BRISA_ERRORS__")[0].title).toBe("Error message 1");
     });
