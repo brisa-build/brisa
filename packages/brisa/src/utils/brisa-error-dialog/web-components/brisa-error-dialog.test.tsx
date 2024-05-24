@@ -238,6 +238,51 @@ describe("utils", () => {
         encodeLink(`C:\\Users\\someuser\\somefile.js`, 1, 2),
       );
     });
+
+    it("should include the documentation link", async () => {
+      const { container, store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+      const error = new Error("An error occurred");
+      const docLink = "https://brisa.dev/docs/error-handling";
+      store.set(ERROR_STORE_KEY, [
+        { title: "Error", details: [error.message], docLink },
+      ]);
+      const dialog = component?.querySelector("dialog");
+      const hyperlink = dialog?.querySelector("a");
+
+      expect(hyperlink).toContainTextContent(`📄 Documentation`);
+      expect(hyperlink).toHaveAttribute("href", docLink);
+      expect(hyperlink).toHaveAttribute("target", "_blank");
+    });
+
+    it("should include the documentation link with a title", async () => {
+      const { container, store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+      const error = new Error("An error occurred");
+      const docLink = "https://brisa.dev/docs/error-handling";
+      store.set(ERROR_STORE_KEY, [
+        {
+          title: "Error",
+          details: [error.message],
+          docLink,
+          docTitle: "Some docs",
+        },
+      ]);
+      const dialog = component?.querySelector("dialog");
+      const hyperlink = dialog?.querySelector("a");
+
+      expect(hyperlink).toContainTextContent(`📄 Some docs`);
+      expect(hyperlink).toHaveAttribute("href", docLink);
+      expect(hyperlink).toHaveAttribute("target", "_blank");
+    });
   });
 });
 

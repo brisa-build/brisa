@@ -4,6 +4,8 @@ type Error = {
   title: string;
   details: string[];
   stack?: string;
+  docLink?: string;
+  docTitle?: string;
 };
 
 const ERROR_STORE_KEY = "__BRISA_ERRORS__";
@@ -269,11 +271,22 @@ export default function ErrorDialog(
           <p>{message}</p>
         ))}
         {printStack(errors.value[currentIndex.value].stack)}
+        {renderDocumentation(errors.value[currentIndex.value])}
         <button class="close-dialog" onClick={onClose}>
           Close
         </button>
       </div>
     </dialog>
+  );
+}
+
+function renderDocumentation({ docTitle, docLink }: Error) {
+  if (!docLink) return null;
+
+  return (
+    <a href={docLink} target="_blank">
+      📄 {docTitle ?? "Documentation"}
+    </a>
   );
 }
 
