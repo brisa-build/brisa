@@ -4,6 +4,7 @@ import transformToReactiveArrays from ".";
 import { getConstants } from "@/constants";
 import { normalizeQuotes } from "@/helpers";
 import AST from "@/utils/ast";
+import { boldLog } from "@/utils/log/log-color";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutputCode = (ast: ESTree.Program) =>
@@ -641,7 +642,7 @@ describe("utils", () => {
         ]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.ERROR,
-          `You can't use "Test" variable as a tag name.`,
+          boldLog(`You can't use "Test" variable as a tag name.`),
         ]);
         expect(logs[3]).toEqual([
           LOG_PREFIX.ERROR,

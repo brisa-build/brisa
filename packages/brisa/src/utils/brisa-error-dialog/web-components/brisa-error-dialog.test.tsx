@@ -285,6 +285,24 @@ describe("utils", () => {
       expect(hyperlink).toHaveAttribute("href", docLink);
       expect(hyperlink).toHaveAttribute("target", "_blank");
     });
+
+    it("should title be in bold", async () => {
+      const { container, store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+      const error = new Error("An error occurred");
+      store.set(ERROR_STORE_KEY, [
+        { title: "Error title", details: [error.message] },
+      ]);
+      const dialog = component?.querySelector("dialog");
+      const titles = dialog?.querySelectorAll("b")!;
+
+      expect(titles).toHaveLength(1);
+      expect(titles[0]).toContainTextContent("Error title");
+    });
   });
 });
 
