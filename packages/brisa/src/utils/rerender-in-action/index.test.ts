@@ -10,59 +10,59 @@ describe("utils", () => {
         expect(error.name).toBe("rerender");
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "component", mode: "reactivity" }),
+          JSON.stringify({ type: "component", renderMode: "reactivity" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }
     });
 
-    it("should throw the correct error with type='component' and mode='reactivity'", () => {
+    it("should throw the correct error with type='component' and renderMode='reactivity'", () => {
       try {
-        rerenderInAction({ type: "component", mode: "reactivity" });
+        rerenderInAction({ type: "component", renderMode: "reactivity" });
       } catch (error: any) {
         expect(error.name).toBe("rerender");
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "component", mode: "reactivity" }),
+          JSON.stringify({ type: "component", renderMode: "reactivity" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }
     });
 
-    it("should throw the correct error with type='page' and mode='transition'", () => {
+    it("should throw the correct error with type='page' and renderMode='transition'", () => {
       try {
-        rerenderInAction({ type: "page", mode: "transition" });
+        rerenderInAction({ type: "page", renderMode: "transition" });
       } catch (error: any) {
         expect(error.name).toBe("rerender");
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "page", mode: "transition" }),
+          JSON.stringify({ type: "page", renderMode: "transition" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }
     });
 
-    it("should throw the correct error with type='page' and mode='reactivity'", () => {
+    it("should throw the correct error with type='page' and renderMode='reactivity'", () => {
       try {
         rerenderInAction({ type: "page" });
       } catch (error: any) {
         expect(error.name).toBe("rerender");
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "page", mode: "reactivity" }),
+          JSON.stringify({ type: "page", renderMode: "reactivity" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }
     });
 
-    it("should throw the correct error with type='component' and mode='transition'", () => {
+    it("should throw the correct error with type='component' and renderMode='transition'", () => {
       try {
-        rerenderInAction({ mode: "transition" });
+        rerenderInAction({ renderMode: "transition" });
       } catch (error: any) {
         expect(error.name).toBe("rerender");
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "component", mode: "transition" }),
+          JSON.stringify({ type: "component", renderMode: "transition" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }

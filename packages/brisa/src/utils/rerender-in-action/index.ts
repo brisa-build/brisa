@@ -6,10 +6,10 @@ export const SUFFIX_MESSAGE =
 
 export default function rerenderInAction({
   type = "component",
-  mode = "reactivity",
+  renderMode = "reactivity",
 }: RerenderInActionProps = {}) {
   const throwable = new Error(
-    `${PREFIX_MESSAGE}${JSON.stringify({ type, mode })}${SUFFIX_MESSAGE}`,
+    `${PREFIX_MESSAGE}${JSON.stringify({ type, renderMode })}${SUFFIX_MESSAGE}`,
   );
   throwable.name = "rerender";
   throw throwable;

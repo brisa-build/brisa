@@ -74,7 +74,7 @@ describe("utils", () => {
     it("should log an error trying to rerender a invalid page", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", mode: "reactivity" }) +
+          JSON.stringify({ type: "page", renderMode: "reactivity" }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
@@ -93,7 +93,7 @@ describe("utils", () => {
     it("should rerender the page with reactivity without declarative shadow DOM", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", mode: "reactivity" }) +
+          JSON.stringify({ type: "page", renderMode: "reactivity" }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
@@ -112,7 +112,7 @@ describe("utils", () => {
     it("should rerender the page with reactivity with declarative shadow DOM if is called without JS", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", mode: "reactivity" }) +
+          JSON.stringify({ type: "page", renderMode: "reactivity" }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
@@ -132,7 +132,7 @@ describe("utils", () => {
     it('should rerender the page with reactivity and "x-s" store header', async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", mode: "reactivity" }) +
+          JSON.stringify({ type: "page", renderMode: "reactivity" }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
@@ -154,7 +154,7 @@ describe("utils", () => {
     it("should rerender the page with transition", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", mode: "transition" }) +
+          JSON.stringify({ type: "page", renderMode: "transition" }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
