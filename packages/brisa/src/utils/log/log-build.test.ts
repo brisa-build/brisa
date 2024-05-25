@@ -47,8 +47,9 @@ describe("utils", () => {
       const messages = ["Error message 1", "Error message 2"];
       const docTitle = "Footer message";
       const docLink = "https://example.com";
+      const stack = "Error stack";
 
-      logError({ messages, docTitle, docLink, req });
+      logError({ messages, docTitle, docLink, req, stack });
 
       const output = mockLog.mock.results.map((t) => t.value).join("\n");
       const store = (req as any).webStore as RequestContext["store"];
@@ -57,6 +58,7 @@ describe("utils", () => {
       expect(output).toContain("Error message 2");
       expect(output).toContain("Footer message");
       expect(output).toContain("https://example.com");
+      expect(output).toContain("Error stack");
       expect(store.get("__BRISA_ERRORS__")).toHaveLength(1);
       expect(store.get("__BRISA_ERRORS__")[0].title).toBe("Error message 1");
     });
