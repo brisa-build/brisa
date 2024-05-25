@@ -91,7 +91,11 @@ export async function getServeOptions() {
       const url = new URL(request.finalURL);
 
       // Dev tool to open file in editor
-      if (IS_DEVELOPMENT && url.pathname === "/__brisa_dev_file__") {
+      if (
+        IS_DEVELOPMENT &&
+        url.pathname === "/__brisa_dev_file__" &&
+        req.method === "POST"
+      ) {
         let file = url.searchParams.get("file");
         const line = url.searchParams.get("line");
         const column = url.searchParams.get("column");
