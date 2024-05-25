@@ -36,6 +36,13 @@ export default function ErrorDialog(
   }
 
   effect(() => {
+    if (numErrors.value) {
+      currentIndex.value = numErrors.value - 1;
+      displayDialog.value = true;
+    }
+  });
+
+  effect(() => {
     window.addEventListener("error", (e) => {
       displayDialog.value = true;
       store.set("__BRISA_ERRORS__", [
@@ -50,12 +57,10 @@ export default function ErrorDialog(
   });
 
   effect(() => {
-    if (!numErrors.value) return;
-    if (!displayDialog.value) return;
+    if (!numErrors.value || !displayDialog.value) return;
 
     window.addEventListener("keydown", onKeydown);
     document.body.style.overflow = "hidden";
-    currentIndex.value = 0;
 
     cleanup(() => window.removeEventListener("keydown", onKeydown));
     cleanup(() => {
