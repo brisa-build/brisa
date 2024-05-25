@@ -18,8 +18,8 @@ export default function getClientStoreEntries(
   }
 
   for (let [key] of (req as any).webStore) {
-    // Value is already encrypted (if needed) on the webStore
-    let value = (req as any).webStore.get(key);
+    let value = req.store.get(key);
+    if (encryptedKeys.has(key)) value = encrypt(value);
     map.set(key, value);
   }
 

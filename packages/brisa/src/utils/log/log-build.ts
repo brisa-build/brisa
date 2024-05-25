@@ -69,7 +69,6 @@ export function logError({
   let footer;
 
   if (req) {
-    const store = (req as any).webStore as RequestContext["store"];
     const error = {
       title: messages[0],
       details: messages.slice(1),
@@ -78,9 +77,10 @@ export function logError({
       docLink,
     };
 
-    const errors = store.get(BRISA_ERRORS) || [];
+    const errors = req.store.get(BRISA_ERRORS) || [];
     errors.push(error);
-    store.set(BRISA_ERRORS, errors);
+    req.store.set(BRISA_ERRORS, errors);
+    req.store.transferToClient([BRISA_ERRORS]);
   }
 
   if (docLink) {
