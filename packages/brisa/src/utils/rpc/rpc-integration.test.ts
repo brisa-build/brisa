@@ -446,7 +446,7 @@ describe("utils", () => {
     });
 
     it("should not work SPA navigation with renderMode='native'", async () => {
-      document.activeElement?.setAttribute("rendermode", "native");
+      document.activeElement?.setAttribute("renderMode", "native");
       await simulateSPANavigation("http://localhost/some-page");
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
@@ -459,7 +459,7 @@ describe("utils", () => {
           constructor() {
             super();
             const shadowRoot = this.attachShadow({ mode: "open" });
-            shadowRoot.innerHTML = `<a href="${page}" rendermode="native">Click me</a>`;
+            shadowRoot.innerHTML = `<a href="${page}" renderMode="native">Click me</a>`;
           }
         },
       );
@@ -487,7 +487,7 @@ describe("utils", () => {
           constructor() {
             super();
             const shadowRoot = this.attachShadow({ mode: "open" });
-            shadowRoot.innerHTML = `<a href="${page}" rendermode="reactivity">Click me</a>`;
+            shadowRoot.innerHTML = `<a href="${page}" renderMode="reactivity">Click me</a>`;
           }
         },
       );
@@ -515,7 +515,7 @@ describe("utils", () => {
           constructor() {
             super();
             const shadowRoot = this.attachShadow({ mode: "open" });
-            shadowRoot.innerHTML = `<a href="${page}" rendermode="transition">Click me</a>`;
+            shadowRoot.innerHTML = `<a href="${page}" renderMode="transition">Click me</a>`;
           }
         },
       );
