@@ -12,3 +12,6 @@ export const blueLog = (text: string) =>
 
 export const cyanLog = (text: string) =>
   Bun.enableANSIColors ? `\x1b[36m${text}\x1b[0m` : text;
+
+export const boldLog = (text: string) =>
+  Bun.enableANSIColors ? `\x1b[1m${text}\x1b[0m` : text;
