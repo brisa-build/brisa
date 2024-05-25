@@ -70,14 +70,16 @@ async function rpc(
         : stringify(args, serialize),
     });
 
-    if (res.ok) {
-      await promise;
-
-      await $window._rpc(res, args);
-      registerActions(rpc);
-    } else {
+    if (!res.ok) {
       store?.set(errorIndicator, await res.text());
     }
+
+    await promise;
+
+    // Although !res.ok, we still want to resolve the server action to update signals,
+    // like the error signal to display the error message in dev mode.
+    await $window._rpc(res, args);
+    registerActions(rpc);
   } catch (e: any) {
     store?.set(errorIndicator, e.message);
   } finally {

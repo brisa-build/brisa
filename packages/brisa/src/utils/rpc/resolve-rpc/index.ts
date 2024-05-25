@@ -7,6 +7,7 @@ const TRANSITION_MODE = "transition";
 const $window = window as any;
 
 async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
+  const store = $window._s;
   const urlToNavigate = res.headers.get("X-Navigate");
   const storeRaw = res.headers.get("X-S");
   const resetForm = res.headers.has("X-Reset");
@@ -22,11 +23,11 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
     const entries = JSON.parse(decodeURIComponent(storeRaw));
 
     // Store WITHOUT web components signals
-    if (!$window._s) $window._S = entries;
+    if (!store) $window._S = entries;
     // Store WITH web components signals
     else {
       for (const [key, value] of entries) {
-        $window._s.set(key, value);
+        store.set(key, value);
       }
     }
   }
@@ -37,7 +38,7 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
   }
 
   // Diff HTML Stream
-  else if (res.body && res.headers.get("content-type")) {
+  else if (res.ok && res.body && res.headers.get("content-type")) {
     registerCurrentScripts();
 
     await diff(document, res.body.getReader(), {

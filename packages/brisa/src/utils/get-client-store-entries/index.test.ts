@@ -127,6 +127,26 @@ describe("utils", () => {
       ]);
     });
 
+    it(`should return an array of entries that exists on 'x-s' header and will be transferred with webStore`, () => {
+      const headers = new Headers();
+
+      headers.set("x-s", JSON.stringify([["foo", "bar"]]));
+
+      const req = extendRequestContext({
+        originalRequest: new Request(url, { headers }),
+      }) as any;
+
+      req.webStore.set("foo", "baz");
+      req.webStore.set("bar", "baz");
+
+      const result = getClientStoreEntries(req, emptySet);
+
+      expect(result).toEqual([
+        ["foo", "baz"],
+        ["bar", "baz"],
+      ]);
+    });
+
     it('should encrypt the value of the entries that exists on "x-s" header', () => {
       const headers = new Headers();
 

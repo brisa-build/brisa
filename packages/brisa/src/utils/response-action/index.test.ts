@@ -440,10 +440,25 @@ describe("utils", () => {
         LOG_PREFIX.ERROR,
         "--------------------------",
       ]);
+
       expect(res.headers.get("x-s")).toBe(
         stringify([
           ["sensitive-data", null],
-          ["__BRISA_ERRORS__", null],
+          [
+            "__BRISA_ERRORS__",
+            [
+              {
+                title:
+                  'Error transferring client "sensitive-data" store to server store',
+                details: [
+                  "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.",
+                ],
+                docTitle: "Documentation about store.transferToClient",
+                docLink:
+                  "https://brisa.build/api-reference/components/request-context#transfertoclient",
+              },
+            ],
+          ],
         ]),
       );
     });
