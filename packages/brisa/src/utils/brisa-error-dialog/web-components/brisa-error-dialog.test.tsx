@@ -67,15 +67,15 @@ describe("utils", () => {
       const component =
         container.querySelector("brisa-error-dialog")?.shadowRoot;
       const dialog = component?.querySelector("dialog");
-      const nextErrorBtn = component?.querySelector(
-        "nav button:last-child",
+      const prevErrorBtn = component?.querySelector(
+        "nav button:first-child",
       ) as Element;
 
-      expect(dialog).toContainTextContent("Error 1: An error occurred");
-
-      userEvent.click(nextErrorBtn);
-
       expect(dialog).toContainTextContent("Error 2: Another error occurred");
+
+      userEvent.click(prevErrorBtn);
+
+      expect(dialog).toContainTextContent("Error 1: An error occurred");
     });
 
     it("should be possible to navigation using the keyboard to see multiple errors", async () => {
@@ -91,11 +91,13 @@ describe("utils", () => {
         container.querySelector("brisa-error-dialog")?.shadowRoot;
       const dialog = component?.querySelector("dialog");
 
-      expect(dialog).toContainTextContent("Error 1: An error occurred");
-
-      userEvent.keyboard("ArrowRight");
-
+      // Always start with the last error
       expect(dialog).toContainTextContent("Error 2: Another error occurred");
+
+      userEvent.keyboard("ArrowLeft");
+
+      // Go to the first error
+      expect(dialog).toContainTextContent("Error 1: An error occurred");
     });
 
     it("should close the dialog using the button", async () => {
