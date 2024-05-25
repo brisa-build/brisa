@@ -12,6 +12,7 @@ import extendRequestContext from "@/utils/extend-request-context";
 import responseAction from ".";
 import { getConstants } from "@/constants";
 import { ENCRYPT_NONTEXT_PREFIX, encrypt } from "@/utils/crypto";
+import { boldLog } from "@/utils/log/log-color";
 
 const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGE = "http://locahost/es/somepage";
@@ -430,7 +431,9 @@ describe("utils", () => {
       ]);
       expect(logMock.mock.calls[2]).toEqual([
         LOG_PREFIX.ERROR,
-        'Error transferring client "sensitive-data" store to server store',
+        boldLog(
+          'Error transferring client "sensitive-data" store to server store',
+        ),
       ]);
       expect(logMock.mock.calls[3]).toEqual([
         LOG_PREFIX.ERROR,
