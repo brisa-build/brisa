@@ -271,7 +271,9 @@ export default function ErrorDialog(
           </nav>
           {closeElement({ onClose })}
         </header>
-        <p>{errors.value[currentIndex.value].title}: </p>
+        <p>
+          <b>{errors.value[currentIndex.value].title}: </b>
+        </p>
         {errors.value[currentIndex.value].details?.map((message) => (
           <p>{message}</p>
         ))}

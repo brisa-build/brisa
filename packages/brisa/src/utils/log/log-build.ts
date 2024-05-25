@@ -1,5 +1,6 @@
 import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
+import { boldLog } from "@/utils/log/log-color";
 
 const BRISA_ERRORS = "__BRISA_ERRORS__";
 
@@ -44,12 +45,15 @@ function log(type: "Error" | "Warning") {
       }[type] as keyof typeof LOG_PREFIX
     ];
 
-  return (messages: string[], footer?: string) => {
+  return (messages: string[], footer?: string, stack?: string) => {
     console.log(LOG, `Ops! ${type}:`);
     console.log(LOG, "--------------------------");
-    messages.forEach((message) => console.log(LOG, message));
+    messages.forEach((message, index) =>
+      console.log(LOG, index === 0 ? boldLog(message) : message),
+    );
     console.log(LOG, "--------------------------");
     if (footer) console.log(LOG, footer);
+    if (stack) console.log(LOG, stack);
   };
 }
 
@@ -87,7 +91,7 @@ export function logError({
     footer = `${docTitle ?? "Documentation"}: ${docLink}`;
   }
 
-  return log("Error")(messages, footer);
+  return log("Error")(messages, footer, stack);
 }
 
 export function logWarning(messages: string[], footer?: string) {

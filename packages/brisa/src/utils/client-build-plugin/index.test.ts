@@ -1,6 +1,7 @@
 import { describe, expect, it, spyOn } from "bun:test";
 import clientBuildPlugin from ".";
 import { getConstants } from "@/constants";
+import { boldLog } from "@/utils/log/log-color";
 
 const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 
@@ -389,7 +390,7 @@ describe("utils", () => {
         ]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.ERROR,
-          `You can't use "Test" variable as a tag name.`,
+          boldLog(`You can't use "Test" variable as a tag name.`),
         ]);
         expect(logs[3]).toEqual([
           LOG_PREFIX.ERROR,
@@ -1484,7 +1485,7 @@ describe("utils", () => {
         ]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.WARN,
-          `You can't use spread props inside web-components JSX.`,
+          boldLog(`You can't use spread props inside web-components JSX.`),
         ]);
         expect(logs[3]).toEqual([
           LOG_PREFIX.WARN,

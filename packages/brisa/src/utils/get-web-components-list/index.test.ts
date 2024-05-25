@@ -10,6 +10,7 @@ import {
 import path from "node:path";
 import getWebComponentsList from ".";
 import { getConstants } from "@/constants";
+import { boldLog } from "@/utils/log/log-color";
 
 const fixturesDir = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const reservedNamesDir = path.join(fixturesDir, "reserved-names");
@@ -154,7 +155,9 @@ describe("utils", () => {
       ]);
       expect(mockConsoleLog.mock.calls[2]).toEqual([
         LOG_PREFIX.ERROR,
-        'You have more than one web-component with the same name: "web-component"',
+        boldLog(
+          'You have more than one web-component with the same name: "web-component"',
+        ),
       ]);
       expect(mockConsoleLog.mock.calls[3]).toEqual([
         LOG_PREFIX.ERROR,
@@ -179,7 +182,7 @@ describe("utils", () => {
       ]);
       expect(mockConsoleLog.mock.calls[2]).toEqual([
         LOG_PREFIX.ERROR,
-        `You can't use the reserved name "context-provider"`,
+        boldLog(`You can't use the reserved name "context-provider"`),
       ]);
       expect(mockConsoleLog.mock.calls[3]).toEqual([
         LOG_PREFIX.ERROR,
