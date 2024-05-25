@@ -9,7 +9,7 @@ export type Options = {
 
 export type RerenderInActionProps = {
   type?: "component" | "page";
-  mode?: "reactivity" | "transition";
+  renderMode?: "reactivity" | "transition";
 };
 
 /**
@@ -54,7 +54,7 @@ export async function renderToString(
  *
  * - `type`: The type of the rerender. It can be `component` or `page`.
  *           By default, it is `component`.
- * - `mode`: The type of the rerender. It can be `reactivity` or `transition`.
+ * - `renderMode`: The type of the rerender. It can be `reactivity` or `transition`.
  *           By default, it is `reactivity`.
  *
  * Example:

@@ -102,7 +102,7 @@ export default async function resolveAction({
 
     const res = await responseRenderedPage({ req, route });
 
-    res.headers.set("X-Mode", options.mode);
+    res.headers.set("X-Mode", options.renderMode);
 
     return res;
   }
@@ -112,7 +112,7 @@ export default async function resolveAction({
     status: 200,
     headers: {
       ...headers,
-      "X-Mode": options.mode,
+      "X-Mode": options.renderMode,
     },
   });
 }
