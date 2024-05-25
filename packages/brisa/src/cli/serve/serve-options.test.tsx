@@ -1276,6 +1276,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
         `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
           "src/pages/somepage.tsx",
         )}&line=1&column=1`,
+        { method: "POST" },
       ),
     );
 
@@ -1306,6 +1307,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${inputFile}&line=1&column=1`,
+        { method: "POST" },
       ),
     );
 
@@ -1314,5 +1316,27 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
       line: 1,
       column: 1,
     });
+  });
+
+  it("should return 404 trying to open the editor calling /__brisa_dev_file__ with file, line and column with method GET", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: false,
+      IS_DEVELOPMENT: true,
+    };
+    const mockOpenInEditor = spyOn(Bun, "openInEditor").mockImplementation(
+      () => {},
+    );
+    const response = await testRequest(
+      new Request(
+        `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
+          "src/pages/somepage.tsx",
+        )}&line=1&column=1`,
+        { method: "GET" },
+      ),
+    );
+
+    expect(response.status).toBe(404);
+    expect(mockOpenInEditor).not.toHaveBeenCalled();
   });
 });
