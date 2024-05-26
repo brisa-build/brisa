@@ -21,6 +21,7 @@ import extendRequestContext from "@/utils/extend-request-context";
 import type { Options } from "@/types/server";
 import { toInline } from "@/helpers";
 import { logError } from "@/utils/log/log-build";
+import { getNavigateMode, isNavigateThrowable } from "@/utils/navigate/utils";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -80,9 +81,11 @@ export default function renderToReadableStream(
           if (isNotFoundError(e)) {
             extendedController.enqueue(NO_INDEX);
             extendedController.enqueue(SCRIPT_404);
-          } else if (e.name === "navigate") {
+          } else if (isNavigateThrowable(e)) {
             extendedController.enqueue(
-              `<script>location.replace("${e.message}")</script>`,
+              `<script>window._xm="${getNavigateMode(e)}";location.replace("${
+                e.message
+              }")</script>`,
             );
           } else {
             controller.error(e);
@@ -540,7 +543,7 @@ async function getValueOfComponent(
   return Promise.resolve()
     .then(() => componentFn(props, request) ?? "")
     .catch((error: Error) => {
-      if (isNotFoundError(error) || error.name === "navigate") {
+      if (isNotFoundError(error) || isNavigateThrowable(error)) {
         throw error;
       }
       if (!isComponent(componentFn.error)) {

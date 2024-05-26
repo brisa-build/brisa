@@ -5,6 +5,7 @@ import getRouteMatcher from "@/utils/get-route-matcher";
 import { getConstants } from "@/constants";
 import { logError } from "@/utils/log/log-build";
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
+import { getNavigateMode, isNavigateThrowable } from "@/utils/navigate/utils";
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -38,12 +39,13 @@ export default async function resolveAction({
   }
 
   // Navigate to another page
-  if (error.name === "navigate") {
+  if (isNavigateThrowable(error)) {
     return new Response(null, {
       status: 200,
       headers: {
         ...headers,
         "X-Navigate": error.message,
+        "X-Mode": getNavigateMode(error),
       },
     });
   }

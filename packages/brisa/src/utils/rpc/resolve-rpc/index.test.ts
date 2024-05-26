@@ -28,6 +28,52 @@ describe("utils", () => {
         await resolveRPC(res);
 
         expect(location.toString()).toBe("http://localhost/some-page");
+        expect(window._xm).toBeNull();
+      });
+
+      it("should redirect to a different page with reactivity", async () => {
+        const res = new Response(null, {
+          headers: {
+            "X-Navigate": "http://localhost/some-page",
+            "X-Mode": "reactivity",
+          },
+        });
+
+        await initBrowser();
+        await resolveRPC(res);
+
+        expect(location.toString()).toBe("http://localhost/some-page");
+        expect(window._xm).toBe("reactivity");
+      });
+
+      it("should redirect to a different page with transition", async () => {
+        const res = new Response(null, {
+          headers: {
+            "X-Navigate": "http://localhost/some-page",
+            "X-Mode": "transition",
+          },
+        });
+
+        await initBrowser();
+        await resolveRPC(res);
+
+        expect(location.toString()).toBe("http://localhost/some-page");
+        expect(window._xm).toBe("transition");
+      });
+
+      it("should redirect to a different page with native", async () => {
+        const res = new Response(null, {
+          headers: {
+            "X-Navigate": "http://localhost/some-page",
+            "X-Mode": "native",
+          },
+        });
+
+        await initBrowser();
+        await resolveRPC(res);
+
+        expect(location.toString()).toBe("http://localhost/some-page");
+        expect(window._xm).toBe("native");
       });
     });
 

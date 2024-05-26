@@ -8,6 +8,14 @@ import runWebComponents from "@/core/test/run-web-components";
 const ERROR_STORE_KEY = "__BRISA_ERRORS__";
 const BUILD_DIR = path.join(import.meta.dir, "..");
 
+class ErrorEvent extends Event {
+  readonly error: Error;
+  constructor(type: string, error: Error) {
+    super(type);
+    this.error = error;
+  }
+}
+
 describe("utils", () => {
   beforeEach(async () => {
     globalThis.REGISTERED_ACTIONS = [];
@@ -150,12 +158,12 @@ describe("utils", () => {
       expect(store.get(ERROR_STORE_KEY)).toBeEmpty();
 
       window.dispatchEvent(
-        new ErrorEvent("error", {
-          message: "An error occurred",
-          error: new Error("An error occurred"),
-        }),
+        new ErrorEvent("error", new Error("An error occurred")),
       );
 
+      const dialog = document.querySelector("brisa-error-dialog")?.shadowRoot;
+
+      expect(dialog).not.toBeNull();
       expect(store.get(ERROR_STORE_KEY)).toEqual([
         {
           title: "Uncaught Error",
@@ -213,6 +221,24 @@ describe("utils", () => {
         "ping",
         encodeLink("/Users/someuser/somefile.js", 1, 2),
       );
+    });
+
+    it("should not display throwable navigation error", async () => {
+      const { container } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+
+      const component =
+        container.querySelector("brisa-error-dialog")?.shadowRoot;
+      const error = new Error("https://example.com");
+      error.name = "navigate:reactivity";
+
+      window.dispatchEvent(new ErrorEvent("error", error));
+
+      const dialog = component?.querySelector("dialog");
+
+      expect(dialog).toBeNull();
     });
 
     it("should work with windows paths in the error stack", async () => {

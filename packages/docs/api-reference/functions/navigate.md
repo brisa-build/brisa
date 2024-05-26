@@ -30,6 +30,12 @@ The `navigate` function can be used both on the client and on the server. Althou
 #### Parameters:
 
 - `route`: The `string` with the page route name. Ex: `/about-us`
+- `options`: The `object` with the navigation options. Ex: `{ renderMode: 'transition' }`
+  - `renderMode`: The `string` with the render mode. Supported: `'transition'`, `'reactivity'`, `'native'`. (default: `'reactivity'` when the render mode is applicable, otherwise `'native'`)
+
+> [!IMPORTANT]
+>
+> The usage of `renderMode` is not applicable in the cases that use a hard redirect. Only is applicable in the cases that use a server soft redirect or execute a client-side navigation. Otherwise, always the native render mode is used.
 
 #### Returns:
 

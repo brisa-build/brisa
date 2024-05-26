@@ -57,9 +57,9 @@ describe("utils", () => {
       );
     });
 
-    it("should redirect to an specific url", async () => {
+    it("should redirect to an specific url with reactivity mode", async () => {
       const navigationTrowable = new Error("/some-url");
-      navigationTrowable.name = "navigate";
+      navigationTrowable.name = "navigate:reactivity";
 
       const req = getReq();
       const response = await resolveAction({
@@ -68,7 +68,38 @@ describe("utils", () => {
         component: <div />,
       });
 
-      expect(await response.headers.get("X-Navigate")).toBe("/some-url");
+      expect(response.headers.get("X-Navigate")).toBe("/some-url");
+      expect(response.headers.get("X-Mode")).toBe("reactivity");
+    });
+
+    it("should redirect to an specific url with transition mode", async () => {
+      const navigationTrowable = new Error("/some-url");
+      navigationTrowable.name = "navigate:transition";
+
+      const req = getReq();
+      const response = await resolveAction({
+        req,
+        error: navigationTrowable,
+        component: <div />,
+      });
+
+      expect(response.headers.get("X-Navigate")).toBe("/some-url");
+      expect(response.headers.get("X-Mode")).toBe("transition");
+    });
+
+    it("should redirect to an specific url with native mode", async () => {
+      const navigationTrowable = new Error("/some-url");
+      navigationTrowable.name = "navigate:native";
+
+      const req = getReq();
+      const response = await resolveAction({
+        req,
+        error: navigationTrowable,
+        component: <div />,
+      });
+
+      expect(response.headers.get("X-Navigate")).toBe("/some-url");
+      expect(response.headers.get("X-Mode")).toBe("native");
     });
 
     it("should log an error trying to rerender a invalid page", async () => {

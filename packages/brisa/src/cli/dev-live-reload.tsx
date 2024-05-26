@@ -99,7 +99,7 @@ export function LiveReloadScript({
               s = new WebSocket("${wsUrl}");
               s.onmessage = e => {
                 if(e.data === "${LIVE_RELOAD_COMMAND}"){
-                  window._nn = true;
+                  window._xm = "native";
                   location.reload();
                 }
               };
