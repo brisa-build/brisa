@@ -7,7 +7,7 @@ const transpiler = new Bun.Transpiler({
   loader: "ts",
   exports: {
     eliminate: ["default"],
-  }
+  },
 });
 
 const signals = () =>
@@ -665,7 +665,7 @@ describe("signals", () => {
     reset();
   });
 
-  it('should expose subscriptions to window.sub and keep registered listeners after re-executing the file script', async () => { 
+  it("should expose subscriptions to window.sub and keep registered listeners after re-executing the file script", async () => {
     const firstSubscriptions = (window as any).sub;
     expect((window as any).sub).toBeDefined();
 
@@ -675,5 +675,5 @@ describe("signals", () => {
 
     expect((window as any).sub).toBeDefined();
     expect((window as any).sub).toBe(firstSubscriptions);
-  })
+  });
 });
