@@ -11,8 +11,8 @@ import { injectRPCCode, injectRPCLazyCode } from "." with { type: "macro" };
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { serialize } from "../serialization";
 
-const rpcCode = injectRPCCode();
-const lazyRPCCode = injectRPCLazyCode();
+const rpcCode = injectRPCCode() as unknown as string;
+const lazyRPCCode = injectRPCLazyCode() as unknown as string;
 const INDICATOR_ID = "__ind:action";
 const stringify = (obj: any) => encodeURIComponent(JSON.stringify(obj));
 const requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 0);
