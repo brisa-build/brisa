@@ -15,18 +15,21 @@ const SUBSCRIBE = "s";
 const UNSUBSCRIBE = "u";
 const INDICATE_PREFIX = "__ind:";
 const ORIGINAL_PREFIX = "__o:";
+const $window = window as any;
 
-const subscription = createSubscription();
-const storeMap = new Map((window as any)._S);
-const globalStore = ((window as any)._s = {
+const storeMap = new Map($window._S);
+const globalStore = ($window._s = {
   Map: storeMap,
 } as Record<string, any>);
+
+// Create a subscription object only once (keeping SPA behavior)
+$window.sub ??= createSubscription();
 
 // Only get/set/delete from store are reactive
 for (let op of ["get", "set", "delete"]) {
   globalStore[op] = (key: string, value: any) => {
     const res = storeMap[op as StoreOperation](key, value);
-    subscription[NOTIFY](key, value, op === "get");
+    $window.sub[NOTIFY](key, value, op === "get");
     return res;
   };
 }
@@ -156,7 +159,7 @@ export default function signals() {
   function manageStoreSubscription(subscribe = true) {
     if (subscribed === subscribe) return;
     subscribed = subscribe;
-    subscription[subscribe ? SUBSCRIBE : UNSUBSCRIBE](manageStore);
+    $window.sub[subscribe ? SUBSCRIBE : UNSUBSCRIBE](manageStore);
   }
 
   function cleanup(fn: Cleanup, eff: Effect) {
