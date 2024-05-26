@@ -1,4 +1,5 @@
 import type { WebContext } from "@/types";
+import { isNavigateThrowable } from "@/utils/navigate/utils";
 
 type Error = {
   title: string;
@@ -44,12 +45,13 @@ export default function ErrorDialog(
 
   effect(() => {
     window.addEventListener("error", (e) => {
+      if (isNavigateThrowable(e.error)) return;
       displayDialog.value = true;
       store.set("__BRISA_ERRORS__", [
         ...(store.get<Error[]>("__BRISA_ERRORS__") ?? []),
         {
           title: "Uncaught Error",
-          details: [e.message],
+          details: [e.error.message],
           stack: e.error?.stack,
         },
       ]);

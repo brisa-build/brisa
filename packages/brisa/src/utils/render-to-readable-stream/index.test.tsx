@@ -2867,11 +2867,12 @@ describe("utils", () => {
 
       const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      const scriptNavigate = `location.replace("http://localhost/foo")`;
+      const scriptNavigate = `window._xm="reactivity";location.replace("http://localhost/foo")`;
 
       expect(result).toBe(toInline(`<script>${scriptNavigate}</script>`));
 
       // Test script navigate behavior
+      globalThis.window = {} as any;
       globalThis.location = {
         replace: mock((v) => v),
       } as any;
@@ -2881,6 +2882,7 @@ describe("utils", () => {
         "http://localhost/foo",
       );
       globalThis.location = undefined as any;
+      globalThis.window = undefined as any;
     });
 
     it("should log an error and not throw error to avoid breaking the rendering when component render fails", async () => {

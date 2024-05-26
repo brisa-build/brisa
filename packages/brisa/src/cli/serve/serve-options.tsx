@@ -17,6 +17,7 @@ import responseAction from "@/utils/response-action";
 import { redirectFromUnnormalizedURL } from "@/utils/redirect";
 import responseRenderedPage from "@/utils/response-rendered-page";
 import { removeBasePathFromStringURL } from "@/utils/base-path";
+import { isNavigateThrowable } from "@/utils/navigate/utils";
 
 export async function getServeOptions() {
   // This is necessary in case of Custom Server using the getServeOptions outside
@@ -171,7 +172,9 @@ export async function getServeOptions() {
         if (isNotFoundError(error)) return error404(request);
 
         // "navigate" function call
-        if (error.name === "navigate") {
+        if (isNavigateThrowable(error)) {
+          // Here doesn't matter the render mode, because the navigate it's always
+          // using a hard redirect
           return redirectFromUnnormalizedURL(
             new URL(error.message, url.origin),
             request,

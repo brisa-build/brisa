@@ -17,4 +17,12 @@ describe("dev-live-reload", () => {
       "ws://0.0.0.0:4000/__brisa_live_reload__",
     );
   });
+
+  it('should use native navigation when the websocket message is "hot-reload"', () => {
+    const output = LiveReloadScript({ port: 4000, children: null });
+
+    expect(output.props.children[0].props.children.props.html).toContain(
+      'window._xm = "native";',
+    );
+  });
 });
