@@ -31,9 +31,9 @@ type ClientCodeInPageProps = {
 };
 
 const ASTUtil = AST("tsx");
-const unsuspenseScriptCode = await injectUnsuspenseCode();
-const rpcCode = await injectRPCCode();
-const RPCLazyCode = await injectRPCLazyCode();
+const unsuspenseScriptCode = injectUnsuspenseCode();
+const rpcCode = injectRPCCode();
+const RPCLazyCode = injectRPCLazyCode();
 const ENV_VAR_PREFIX = "BRISA_PUBLIC_";
 
 async function getAstFromPath(path: string) {
@@ -168,13 +168,13 @@ export async function transformToWebComponents({
   let code = "";
 
   if (useContextProvider) {
-    const contextProviderCode = await injectClientContextProviderCode();
+    const contextProviderCode = injectClientContextProviderCode();
     code += contextProviderCode;
   }
 
   // IS_DEVELOPMENT to avoid PROD and TEST environments
   if (IS_DEVELOPMENT) {
-    const brisaDialogErrorCode = await injectBrisaDialogErrorCode();
+    const brisaDialogErrorCode = injectBrisaDialogErrorCode();
     code += brisaDialogErrorCode;
   }
 
