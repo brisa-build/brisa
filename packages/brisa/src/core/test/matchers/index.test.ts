@@ -50,7 +50,17 @@ describe("test matchers", () => {
       expect(() =>
         expect(div).toHaveAttribute("data-test", "test"),
       ).toThrowError(
-        `Expected: ${greenLog("test")}\nReceived: ${redLog("test-2")}`,
+        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('"test-2"')}`,
+      );
+    });
+
+    it("should not pass if the element has not the attribute specifing the attribute", () => {
+      const div = document.createElement("div");
+
+      expect(() =>
+        expect(div).toHaveAttribute("data-test", "test"),
+      ).toThrowError(
+        `Expected: ${greenLog('"test"')}\nReceived: ${redLog("null")}`,
       );
     });
 
@@ -80,7 +90,7 @@ describe("test matchers", () => {
       const div = document.createElement("div");
 
       expect(() => expect(div).toHaveTagName("span")).toThrowError(
-        "expected element to have tag name span",
+        `Expected: ${greenLog("span")}\nReceived: ${redLog("div")}`,
       );
     });
   });
@@ -121,11 +131,20 @@ describe("test matchers", () => {
       expect(shadowRoot).toHaveTextContent("test");
     });
 
+    it("should fail if the element does not have the rendered text because have another one", () => {
+      const div = document.createElement("div");
+      div.textContent = "test-2";
+
+      expect(() => expect(div).toHaveTextContent("test")).toThrowError(
+        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('"test-2"')}`,
+      );
+    });
+
     it("should fail if the element does not have the rendered text", () => {
       const div = document.createElement("div");
 
       expect(() => expect(div).toHaveTextContent("test")).toThrowError(
-        `Expected: ${greenLog("test")}\nReceived: ${redLog('""')}`,
+        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('""')}`,
       );
     });
   });
@@ -182,11 +201,22 @@ describe("test matchers", () => {
       expect(div).toContainTextContent("test");
     });
 
+    it("should fail if the element does not contain the rendered text because have another one", () => {
+      const div = document.createElement("div");
+      div.textContent = "foo";
+
+      expect(() => expect(div).toContainTextContent("test")).toThrowError(
+        `Expected to contain: ${greenLog('"test"')}\nReceived: ${redLog(
+          '"foo"',
+        )}`,
+      );
+    });
+
     it("should fail if the element does not contain the rendered text", () => {
       const div = document.createElement("div");
 
       expect(() => expect(div).toContainTextContent("test")).toThrowError(
-        `Expected to contain: ${greenLog("test")}\nReceived: ${redLog('""')}`,
+        `Expected to contain: ${greenLog('"test"')}\nReceived: ${redLog('""')}`,
       );
     });
   });
@@ -204,7 +234,15 @@ describe("test matchers", () => {
       div.style.color = "red";
 
       expect(() => expect(div).toHaveStyle("color", "blue")).toThrowError(
-        "expected element to have style color with value blue",
+        `Expected: ${greenLog('"blue"')}\nReceived: ${redLog('"red"')}`,
+      );
+    });
+
+    it("should fail if the element does not have any style", () => {
+      const div = document.createElement("div");
+
+      expect(() => expect(div).toHaveStyle("color", "blue")).toThrowError(
+        `Expected: ${greenLog('"blue"')}\nReceived: ${redLog('""')}`,
       );
     });
   });
@@ -222,7 +260,7 @@ describe("test matchers", () => {
       const div = document.createElement("div");
 
       expect(() => expect(div).toHaveClass("test")).toThrowError(
-        "expected element to have class test",
+        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('""')}`,
       );
     });
   });
@@ -239,7 +277,7 @@ describe("test matchers", () => {
       const input = document.createElement("input");
 
       expect(() => expect(input).toHaveValue("test")).toThrowError(
-        "expected input element to have value test",
+        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('""')}`,
       );
     });
 
@@ -485,7 +523,7 @@ describe("test matchers", () => {
       input.type = "text";
 
       expect(() => expect(input).toBeInputTypeOf("number")).toThrowError(
-        "expected input element to be of type number",
+        `Expected: ${greenLog('"number"')}\nReceived: ${redLog('"text"')}`,
       );
     });
 

@@ -22,11 +22,12 @@ function toHaveAttribute(received: unknown, attribute: string, value?: string) {
   }
 
   if (value !== undefined) {
+    const attr = received.getAttribute(attribute);
     return {
-      pass: received.getAttribute(attribute) === value,
+      pass: attr === value,
       message: () =>
-        `Expected: ${greenLog(value)}\nReceived: ${redLog(
-          received.getAttribute(attribute) ?? "",
+        `Expected: ${greenLog(`"${value}"`)}\nReceived: ${redLog(
+          attr ? `"${attr}"` : "null",
         )}`,
     };
   }
@@ -46,7 +47,10 @@ function toHaveTagName(received: unknown, tagName: string) {
 
   return {
     pass: received.tagName.toLowerCase() === tagName.toLowerCase(),
-    message: () => `expected element to have tag name ${tagName}`,
+    message: () =>
+      `Expected: ${greenLog(tagName)}\nReceived: ${redLog(
+        received.tagName.toLowerCase(),
+      )}`,
   };
 }
 
@@ -64,8 +68,8 @@ function toHaveTextContent(received: unknown, text: string) {
   return {
     pass: received.textContent === text,
     message: () =>
-      `Expected: ${greenLog(text)}\nReceived: ${redLog(
-        received.textContent || '""',
+      `Expected: ${greenLog(`"${text}"`)}\nReceived: ${redLog(
+        `"${received.textContent}"`,
       )}`,
   };
 }
@@ -82,8 +86,8 @@ function toContainTextContent(received: unknown, text: string) {
       typeof received.textContent === "string" &&
       received.textContent.includes(text),
     message: () =>
-      `Expected to contain: ${greenLog(text)}\nReceived: ${redLog(
-        received.textContent || '""',
+      `Expected to contain: ${greenLog(`"${text}"`)}\nReceived: ${redLog(
+        `"${received.textContent}"`,
       )}`,
   };
 }
@@ -98,7 +102,9 @@ function toHaveStyle(received: unknown, style: string, value: string) {
   return {
     pass: received.style[style as any] === value,
     message: () =>
-      `expected element to have style ${style} with value ${value}`,
+      `Expected: ${greenLog(`"${value}"`)}\nReceived: ${redLog(
+        `"${received.style[style as any]}"`,
+      )}`,
   };
 }
 
@@ -111,7 +117,10 @@ function toHaveClass(received: unknown, className: string) {
 
   return {
     pass: received.classList.contains(className),
-    message: () => `expected element to have class ${className}`,
+    message: () =>
+      `Expected: ${greenLog(`"${className}"`)}\nReceived: ${redLog(
+        `"${received.className}"`,
+      )}`,
   };
 }
 
@@ -124,7 +133,10 @@ function toHaveValue(received: unknown, value: string) {
 
   return {
     pass: received.value === value,
-    message: () => `expected input element to have value ${value}`,
+    message: () =>
+      `Expected: ${greenLog(`"${value}"`)}\nReceived: ${redLog(
+        `"${received.value}"`,
+      )}`,
   };
 }
 
@@ -244,7 +256,10 @@ function toBeInputTypeOf(received: unknown, type: InputType) {
 
   return {
     pass: received.type === type,
-    message: () => `expected input element to be of type ${type}`,
+    message: () =>
+      `Expected: ${greenLog(`"${type}"`)}\nReceived: ${redLog(
+        `"${received.type}"`,
+      )}`,
   };
 }
 
