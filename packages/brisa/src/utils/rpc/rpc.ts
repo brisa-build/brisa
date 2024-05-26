@@ -110,14 +110,17 @@ function serialize(k: string, v: unknown) {
 }
 
 function spaNavigation(event: any) {
-  const renderMode = getAttribute(getActiveElement(), "rendermode");
+  const renderMode =
+    $window._xm ?? getAttribute(getActiveElement(), "rendermode");
+
+  // Clean render mode from imperative navigate API
+  $window._xm = null;
 
   if (
     renderMode === "native" ||
     event.hashChange ||
     event.downloadRequest !== null ||
-    !event.canIntercept ||
-    $window._nn // Native navigation
+    !event.canIntercept
   ) {
     return;
   }

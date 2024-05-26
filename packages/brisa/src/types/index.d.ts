@@ -1064,6 +1064,23 @@ export function dangerHTML(html: string): DangerHTMLOutput;
  */
 export function notFound(): never;
 
+export type RenderMode = "reactivity" | "transition" | "native";
+
+/**
+ * Description:
+ *
+ * The `NavigateOptions` type is used to set the render mode of the navigation.
+ *
+ * Example:
+ *
+ * ```ts
+ * navigate('/some-page', { renderMode: 'transition' });
+ * ```
+ */
+export type NavigateOptions = {
+  renderMode?: RenderMode;
+};
+
 /**
  * Description:
  *
@@ -1081,7 +1098,7 @@ export function notFound(): never;
  *
  * - [How to use `navigate`](https://brisa.build/api-reference/functions/navigate)
  */
-export function navigate(page: string): never;
+export function navigate(page: string, options?: NavigateOptions): never;
 
 type DangerHTMLOutput = {
   type: "HTML";
@@ -8111,7 +8128,7 @@ declare global {
        *
        * - [How to use `renderMode`](https://brisa.build/api-reference/extended-html-attributes/renderMode)
        */
-      renderMode?: "reactivity" | "transition" | "native";
+      renderMode?: RenderMode;
       /**
        * The `reversed` attribute is a boolean attribute that is present on the `<ol>` element to specify that the list should be displayed in reverse order.
        *

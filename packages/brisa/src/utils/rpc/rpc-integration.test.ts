@@ -419,6 +419,10 @@ describe("utils", () => {
       mockNavigationIntercept.mockClear();
     });
 
+    afterEach(() => {
+      window._xm = null;
+    });
+
     it("should not work SPA navigation with different origin", async () => {
       await simulateSPANavigation("http://test.com/some-page");
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
@@ -428,6 +432,12 @@ describe("utils", () => {
       await simulateSPANavigation("http://localhost/some-page", {
         hashChange: true,
       });
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
+    });
+
+    it('should not work SPA navigation with window._xm === "native"', async () => {
+      window._xm = "native";
+      await simulateSPANavigation("http://localhost/some-page");
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
@@ -479,6 +489,12 @@ describe("utils", () => {
       expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
+    it('should work SPA navigation with window._xm === "reactivity"', async () => {
+      window._xm = "reactivity";
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockNavigationIntercept).toHaveBeenCalled();
+    });
+
     it("should work SPA navigation with some custom element with renderMode='reactivity'", async () => {
       const page = "http://localhost/some-page";
       customElements.define(
@@ -503,6 +519,12 @@ describe("utils", () => {
 
     it("should work SPA navigation with renderMode='transition'", async () => {
       document.activeElement?.setAttribute("rendermode", "transition");
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockNavigationIntercept).toHaveBeenCalled();
+    });
+
+    it('should work SPA navigation with window._xm === "transition"', async () => {
+      window._xm = "transition";
       await simulateSPANavigation("http://localhost/some-page");
       expect(mockNavigationIntercept).toHaveBeenCalled();
     });
@@ -533,6 +555,13 @@ describe("utils", () => {
       await simulateSPANavigation("http://localhost/some-page");
       expect(mockNavigationIntercept).toHaveBeenCalled();
       expect(location.href).toBe("http://localhost/some-page");
+    });
+
+    it("should work window._xm be cleaned after each execution", async () => {
+      window._xm = "reactivity";
+      await simulateSPANavigation("http://localhost/some-page");
+      expect(mockNavigationIntercept).toHaveBeenCalled();
+      expect(window._xm).toBeNull();
     });
 
     it("should add x-s (store header) during SPA navigation", async () => {

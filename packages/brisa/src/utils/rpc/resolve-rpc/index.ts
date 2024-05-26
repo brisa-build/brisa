@@ -34,7 +34,8 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
 
   // Navigate to a different page
   if (urlToNavigate) {
-    location.href = urlToNavigate;
+    $window._xm = res.headers.get("X-Mode");
+    location.assign(urlToNavigate);
   }
 
   // Diff HTML Stream

@@ -46,6 +46,10 @@ if (CONFIG?.basePath && !CONFIG.basePath.startsWith(path.sep)) {
   CONFIG.basePath = path.sep + CONFIG.basePath;
 }
 
+// This is needed for some helpers like "navigate" to work properly
+// in the server side. (For the client-side it's solved during the build process)
+globalThis.__BASE_PATH__ = CONFIG.basePath;
+
 const defaultConfig = {
   trailingSlash: false,
   assetPrefix: "",
