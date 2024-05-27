@@ -129,6 +129,7 @@ function spaNavigation(event: any) {
     async handler() {
       // We do not validate res.ok because we also want to render 404 or 500 pages.
       const res = await fetch(event.destination.url, {
+        method: "POST",
         signal: getAbortSignal(),
         headers: storeHeader(),
       });

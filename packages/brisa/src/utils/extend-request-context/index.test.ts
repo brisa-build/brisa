@@ -4,9 +4,10 @@ import type { ServerWebSocket } from "bun";
 import extendRequestContext from ".";
 import createContext from "@/utils/create-context";
 import { contextProvider } from "@/utils/context-provider/server";
-import type { RequestContext } from "@/types";
+import { type RequestContext } from "@/types";
 import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX } from "@/utils/crypto";
 import { toInline } from "@/helpers";
+import { RenderInitiator } from "@/core/server";
 
 describe("brisa core", () => {
   afterEach(() => {
@@ -292,6 +293,20 @@ describe("brisa core", () => {
       `;
       expect(toInline((requestContext as any)._style)).toBe(
         toInline("body {color: yellow;}"),
+      );
+    });
+
+    it('should have requestInitiator as "INITIAL_REQUEST" by default', () => {
+      const request = new Request("https://example.com");
+      const route = {
+        path: "/",
+      } as any;
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      expect(requestContext.renderInitiator).toBe(
+        RenderInitiator.INITIAL_REQUEST,
       );
     });
   });

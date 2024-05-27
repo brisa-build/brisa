@@ -14,6 +14,7 @@ import path from "node:path";
 import { getConstants } from "@/constants";
 import type { ServerWebSocket } from "bun";
 import type { RequestContext } from "@/types";
+import { RenderInitiator } from "@/public-constants";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -1191,6 +1192,205 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     socket.message(ws, "hello test");
 
     expect(mockLog).toHaveBeenCalledWith("message", "hello test");
+  });
+
+  it('should have req.renderInitiator with "SERVER_ACTION" when is POST method and has x-action header', async () => {
+    const mockResponseAction = mock((req: RequestContext) => {});
+
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    mock.module("@/utils/response-action", () => ({
+      default: (req: RequestContext) => mockResponseAction(req),
+    }));
+
+    await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage`, {
+        method: "POST",
+        headers: {
+          "x-action": "a1_1",
+        },
+      }),
+    );
+
+    expect(mockResponseAction.mock.calls[0][0].renderInitiator).toBe(
+      RenderInitiator.SERVER_ACTION,
+    );
+  });
+
+  it('should have req.renderInitiator with "SERVER_ACTION" when is POST method and has x-action header and i18n', async () => {
+    const mockResponseAction = mock((req: RequestContext) => {});
+
+    mock.module("@/utils/response-action", () => ({
+      default: (req: RequestContext) => mockResponseAction(req),
+    }));
+
+    await testRequest(
+      new Request(`http://localhost:1234${basePath}/es/somepage`, {
+        method: "POST",
+        headers: {
+          "x-action": "a1_1",
+        },
+      }),
+    );
+
+    expect(mockResponseAction.mock.calls[0][0].renderInitiator).toBe(
+      RenderInitiator.SERVER_ACTION,
+    );
+  });
+
+  it('should have req.renderInitiator with "SPA_NAVIGATION" when the Page is POST method without x-action header', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage`, {
+        method: "POST",
+      }),
+    );
+
+    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
+    expect(res.headers.get("x-renderInitiator")).toBe(
+      RenderInitiator.SPA_NAVIGATION,
+    );
+  });
+
+  it('should have req.renderInitiator with "SPA_NAVIGATION" when the Page is POST method without x-action header and i18n', async () => {
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/es/somepage`, {
+        method: "POST",
+      }),
+    );
+
+    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
+    expect(res.headers.get("x-renderInitiator")).toBe(
+      RenderInitiator.SPA_NAVIGATION,
+    );
+  });
+
+  it('should have req.renderInitiator with "INITIAL_REQUEST" when the Page is GET method', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage`, {
+        method: "GET",
+      }),
+    );
+
+    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
+    expect(res.headers.get("x-renderInitiator")).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
+  });
+
+  it('should have req.renderInitiator with "INITIAL_REQUEST" when the Page is GET method and i18n', async () => {
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/es/somepage`, {
+        method: "GET",
+      }),
+    );
+
+    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
+    expect(res.headers.get("x-renderInitiator")).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
+  });
+
+  it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+    const body = new FormData();
+
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
+
+    const res = await testRequest(
+      new Request(`http:///localhost:1234${basePath}/api/example`, {
+        method: "POST",
+        body,
+      }),
+    );
+
+    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
+    expect(res.headers.get("x-renderInitiator")).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
+  });
+
+  it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint and i18n', async () => {
+    const body = new FormData();
+
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
+
+    const res = await testRequest(
+      new Request(`http:///localhost:1234${basePath}/es/api/example`, {
+        method: "POST",
+        body,
+      }),
+    );
+
+    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
+    expect(res.headers.get("x-renderInitiator")).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
+  });
+
+  it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint with x-action header', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+    const body = new FormData();
+
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
+
+    const res = await testRequest(
+      new Request(`http:///localhost:1234${basePath}/api/example`, {
+        method: "POST",
+        body,
+        headers: {
+          "x-action": "a1_1",
+        },
+      }),
+    );
+
+    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
+    expect(res.headers.get("x-renderInitiator")).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
+  });
+
+  it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint with x-action header and i18n', async () => {
+    const body = new FormData();
+
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
+
+    const res = await testRequest(
+      new Request(`http:///localhost:1234${basePath}/es/api/example`, {
+        method: "POST",
+        body,
+        headers: {
+          "x-action": "a1_1",
+        },
+      }),
+    );
+
+    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
+    expect(res.headers.get("x-renderInitiator")).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
   });
 
   it("should NOT call responseAction method with GET and return 200 with the page", async () => {
