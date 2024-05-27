@@ -25,8 +25,10 @@ export default function ErrorDialog(
   }
 
   function onKeydown(e: KeyboardEvent) {
-    if (e.key === "Escape") onClose();
-    else if (e.key === "ArrowLeft" && currentIndex.value > 0) {
+    if (e.key === "Escape" || e.key === "Enter") {
+      e.preventDefault();
+      onClose();
+    } else if (e.key === "ArrowLeft" && currentIndex.value > 0) {
       currentIndex.value -= 1;
     } else if (
       e.key === "ArrowRight" &&

@@ -1,5 +1,13 @@
 import path from "node:path";
-import { describe, expect, it, beforeEach, afterEach, jest } from "bun:test";
+import {
+  describe,
+  expect,
+  it,
+  beforeEach,
+  afterEach,
+  jest,
+  mock,
+} from "bun:test";
 import { getConstants } from "@/constants";
 import { render, userEvent } from "@/core/test";
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
@@ -129,7 +137,7 @@ describe("utils", () => {
       expect(dialog).not.toBeNull();
     });
 
-    it("should close the dialog using the keyboard", async () => {
+    it("should close the dialog using the Escape on the keyboard", async () => {
       const { container, store } = await render(
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
@@ -137,16 +145,47 @@ describe("utils", () => {
       store.set(ERROR_STORE_KEY, [
         { title: "Error", details: ["An error occurred"] },
       ]);
-      const component =
-        container.querySelector("brisa-error-dialog")?.shadowRoot;
-      const dialog = component?.querySelector("dialog");
+      const getDialog = () =>
+        container
+          .querySelector("brisa-error-dialog")
+          ?.shadowRoot?.querySelector("dialog");
 
-      expect(component).toBeDefined();
-      expect(dialog).not.toBeNull();
+      expect(getDialog()).not.toBeNull();
 
       userEvent.keyboard("Escape");
 
-      expect(dialog).not.toBeNull();
+      expect(getDialog()).toBeNull();
+    });
+
+    it("should close the dialog using the Enter on the keyboard and preventDefault", async () => {
+      const mockExternalButtonClick = mock();
+      const { container, store } = await render(
+        // @ts-ignore
+        <>
+          <brisa-error-dialog></brisa-error-dialog>
+          <button>Click</button>
+        </>,
+      );
+      store.set(ERROR_STORE_KEY, [
+        { title: "Error", details: ["An error occurred"] },
+      ]);
+      const button = container.querySelector("button")!;
+      const getDialog = () =>
+        container
+          .querySelector("brisa-error-dialog")
+          ?.shadowRoot?.querySelector("dialog");
+
+      button.addEventListener("click", (event) =>
+        mockExternalButtonClick(event),
+      );
+      button.focus();
+
+      expect(getDialog()).not.toBeNull();
+
+      userEvent.keyboard("Enter");
+
+      expect(mockExternalButtonClick).not.toHaveBeenCalled();
+      expect(getDialog()).toBeNull();
     });
 
     it('should handle window.addEventListener("error") modifying the store', async () => {
