@@ -160,8 +160,8 @@ describe("utils", () => {
     it("should close the dialog using the Enter on the keyboard and preventDefault", async () => {
       const mockExternalButtonClick = mock();
       const { container, store } = await render(
-        // @ts-ignore
         <>
+          {/* @ts-ignore */}
           <brisa-error-dialog></brisa-error-dialog>
           <button>Click</button>
         </>,
