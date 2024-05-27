@@ -32,6 +32,9 @@ export default function ServerComponent(props, requestContext: RequestContext) {
     // Request id
     id,
 
+    // The initiator of the render ("SERVER_ACTION", "SPA_NAVIGATION", "INITIAL_REQUEST")
+    renderInitiator,
+
     // Add styles
     css,
   } = requestContext;
@@ -264,6 +267,20 @@ Example:
 ```ts
 console.log(id); // 1edfa3c2-e101-40e3-af57-8890795dacd4
 ```
+
+## `renderInitiator`
+
+The `renderInitiator` is a string that represents the initiator of the render. It can be:
+
+- `RequestInitiator.SERVER_ACTION` - When is the rerender by a server action.
+- `RequestInitiator.SPA_NAVIGATION` - When the render is initiated by a SPA navigation.
+- `RequestInitiator.INITIAL_REQUEST` - When the render is initiated by the initial request.
+
+The default value is `RequestInitiator.INITIAL_REQUEST`.
+
+> [!NOTE]
+>
+> This is useful to know how the render was initiated and to make decisions based on it, for example initializing the [store](#store) only in the `RequestInitiator.INITIAL_REQUEST`. For API routes, the `renderInitiator` is always `RequestInitiator.INITIAL_REQUEST`.
 
 ## `css`
 
