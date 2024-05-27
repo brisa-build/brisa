@@ -296,7 +296,7 @@ describe("brisa core", () => {
       );
     });
 
-    it('should have requestInitiator as "INITIAL_REQUEST" by default', () => {
+    it('should have renderInitiator as "INITIAL_REQUEST" by default', () => {
       const request = new Request("https://example.com");
       const route = {
         path: "/",
