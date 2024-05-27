@@ -18,6 +18,7 @@ import { redirectFromUnnormalizedURL } from "@/utils/redirect";
 import responseRenderedPage from "@/utils/response-rendered-page";
 import { removeBasePathFromStringURL } from "@/utils/base-path";
 import { isNavigateThrowable } from "@/utils/navigate/utils";
+import { RenderInitiator } from "@/public-constants";
 
 export async function getServeOptions() {
   // This is necessary in case of Custom Server using the getServeOptions outside
@@ -257,8 +258,17 @@ export async function getServeOptions() {
 
     // Pages
     if (!isApi && route && !isReservedPathname) {
-      // Actions
-      if (req.method === "POST") return responseAction(req);
+      const isPOST = req.method === "POST";
+
+      if (isPOST) {
+        // Actions
+        if (req.headers.has("x-action")) {
+          req.renderInitiator = RenderInitiator.SERVER_ACTION;
+          return responseAction(req);
+        }
+        req.renderInitiator = RenderInitiator.SPA_NAVIGATION;
+      }
+
       return responseRenderedPage({ req, route });
     }
 

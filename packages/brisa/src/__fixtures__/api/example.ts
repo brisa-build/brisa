@@ -10,5 +10,7 @@ export async function POST(request: RequestContext) {
   const formData = await request.formData();
   const name = formData.get("name");
   const email = formData.get("email");
-  return new Response(JSON.stringify({ name, email }));
+  return new Response(JSON.stringify({ name, email }), {
+    headers: { "x-renderInitiator": request.renderInitiator },
+  });
 }

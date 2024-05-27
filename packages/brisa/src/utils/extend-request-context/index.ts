@@ -6,6 +6,7 @@ import {
   CONTEXT_STORE_ID,
 } from "@/utils/context-provider/server";
 import { encrypt } from "@/utils/crypto";
+import { RenderInitiator } from "@/core/server";
 
 type ExtendRequestContext = {
   originalRequest: Request;
@@ -118,6 +119,9 @@ export default function extendRequestContext({
   ) => {
     originalRequest._style += String.raw(template, ...values);
   };
+
+  // Default value of renderInitiator (can change the value outside of this function)
+  originalRequest.renderInitiator = RenderInitiator.INITIAL_REQUEST;
 
   return originalRequest as RequestContext;
 }
