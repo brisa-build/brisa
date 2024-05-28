@@ -7,6 +7,7 @@ import renderToReadableStream from "@/utils/render-to-readable-stream";
 import { getConstants } from "@/constants";
 import importFileIfExists from "@/utils/import-file-if-exists";
 import transferStoreService from "@/utils/transfer-store-service";
+import { RenderInitiator } from "@/public-constants";
 
 export default async function responseRenderedPage({
   req,
@@ -21,14 +22,14 @@ export default async function responseRenderedPage({
   error?: Error;
   headers?: Record<string, string>;
 }) {
-  const { transfeClientStoreToServer, transferServerStoreToClient } =
-    transferStoreService(req);
+  const { transferClientStoreToServer: transfeClientStoreToServer } =
+    await transferStoreService(req);
   const { HEADERS, BUILD_DIR } = getConstants();
   const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
   const { Page, module, layoutModule } = await processPageRoute(route, error);
 
   // Avoid to transfer again if comes from a rerender from an action
-  if (req.method !== "POST") {
+  if (req.renderInitiator !== RenderInitiator.SERVER_ACTION) {
     transfeClientStoreToServer();
   }
 
@@ -63,11 +64,7 @@ export default async function responseRenderedPage({
     status,
   };
 
-  const res = new Response(htmlStream, responseOptions);
-
-  transferServerStoreToClient(res);
-
-  return res;
+  return new Response(htmlStream, responseOptions);
 }
 
 function getPrerenderedPage(route: MatchedRoute) {
