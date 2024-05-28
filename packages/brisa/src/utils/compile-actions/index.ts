@@ -229,8 +229,6 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
 
   // await __action(...req.store.get('__params:actionId'));
   body.body.push(getActionCall(info, requestParamName));
-  // return new Response(null);
-  body.body.push(getResponseReturn());
 
   return {
     type: "ExportNamedDeclaration",
@@ -340,25 +338,6 @@ function getActionCall(
           },
         ],
       },
-    },
-  };
-}
-
-function getResponseReturn(): ESTree.ReturnStatement {
-  return {
-    type: "ReturnStatement",
-    argument: {
-      type: "NewExpression",
-      callee: {
-        type: "Identifier",
-        name: "Response",
-      },
-      arguments: [
-        {
-          type: "Literal",
-          value: null,
-        },
-      ],
     },
   };
 }
