@@ -13,12 +13,6 @@ type ResolveActionParams = {
   component: JSX.Element;
 };
 
-const headers = {
-  "Content-Type": "text/html; charset=utf-8",
-  "Transfer-Encoding": "chunked",
-  vary: "Accept-Encoding",
-};
-
 /**
  *
  * This method is called inside the catch block of the action function.
@@ -40,10 +34,10 @@ export default async function resolveAction({
 
   // Navigate to another page
   if (isNavigateThrowable(error)) {
-    return new Response(null, {
+    return new Response(resolveStore(req), {
       status: 200,
       headers: {
-        ...headers,
+        "Content-Type": "application/json",
         "X-Navigate": error.message,
         "X-Mode": getNavigateMode(error),
       },
@@ -54,10 +48,10 @@ export default async function resolveAction({
   if (error.name === "NotFoundError") {
     url.searchParams.set("_not-found", "1");
 
-    return new Response(null, {
+    return new Response(resolveStore(req), {
       status: 200,
       headers: {
-        ...headers,
+        "Content-Type": "application/json",
         "X-Navigate": url.toString(),
       },
     });
@@ -110,11 +104,17 @@ export default async function resolveAction({
   }
 
   // Rerender component: TODO: Implement this
-  return new Response(`TODO RERENDER component`, {
+  return new Response(`Not implemented yet`, {
     status: 200,
     headers: {
-      ...headers,
+      "Content-Type": "text/html; charset=utf-8",
+      "Transfer-Encoding": "chunked",
+      vary: "Accept-Encoding",
       "X-Mode": options.renderMode,
     },
   });
+}
+
+export function resolveStore(req: RequestContext) {
+  return JSON.stringify([...(req as any).webStore]);
 }

@@ -9,12 +9,20 @@ const $Promise = Promise;
 let controller = new AbortController();
 let isReady = 0;
 
-const storeHeader = () => ({
-  "x-s": encodeURIComponent(
-    // @ts-ignore
-    stringify($window._s ? [..._s.Map.entries()] : $window._S) ?? "",
-  ),
-});
+const bodyWithStore = (args?: unknown[], isFormData?: boolean) => {
+  // @ts-ignore
+  const xs = $window._s ? [..._s.Map.entries()] : $window._S ?? [];
+
+  if (isFormData) {
+    const form = new FormData(
+      (args![0] as SubmitEvent).target as HTMLFormElement,
+    );
+    form.append("x-s", stringify(xs));
+    return form;
+  }
+
+  return stringify({ "x-s": xs, args }, serialize);
+};
 
 function loadRPCResolver() {
   return $window._rpc
@@ -63,11 +71,8 @@ async function rpc(
       headers: {
         "x-action": actionId,
         "x-actions": actionsDeps ?? "",
-        ...storeHeader(),
       },
-      body: isFormData
-        ? new FormData((args[0] as SubmitEvent).target as HTMLFormElement)
-        : stringify(args, serialize),
+      body: bodyWithStore(args, isFormData),
     });
 
     if (!res.ok) {
@@ -131,7 +136,7 @@ function spaNavigation(event: any) {
       const res = await fetch(event.destination.url, {
         method: "POST",
         signal: getAbortSignal(),
-        headers: storeHeader(),
+        body: bodyWithStore(),
       });
       await loadRPCResolver();
       event.scroll();

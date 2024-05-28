@@ -18,10 +18,6 @@ const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGE = "http://locahost/es/somepage";
 let logMock: ReturnType<typeof spyOn>;
 
-function stringify(value: any) {
-  return encodeURIComponent(JSON.stringify(value));
-}
-
 describe("utils", () => {
   beforeEach(() => {
     logMock = spyOn(console, "log");
@@ -43,42 +39,48 @@ describe("utils", () => {
             "content-type": "application/json",
             "x-action": "a1_1",
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
 
-      expect(res.headers.get("x-s")).toEqual(stringify([]));
+      expect(resBody).toEqual([]);
       expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
     });
 
-    it('should be possible to access to store variables from "x-s" header', async () => {
-      const xs = stringify([["foo", "bar"]]);
+    it('should be possible to access to store variables from "x-s" store body', async () => {
+      const xs = [["foo", "bar"]];
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             "x-action": "a1_1",
-            "x-s": xs,
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            "x-s": xs,
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
 
       expect(req.store.get("foo")).toBe("bar");
-      expect(res.headers.get("x-s")).toEqual(xs);
+      expect(resBody).toEqual(xs);
     });
 
     it("should add the correct param when using form-data", async () => {
@@ -159,6 +161,30 @@ describe("utils", () => {
       expect(res.headers.get("x-reset")).toBe("1");
     });
 
+    it('should form-data work with "x-s" store appended to the form-data"', async () => {
+      const formData = new FormData();
+      formData.append("foo", "bar");
+      formData.append("x-s", JSON.stringify([["foo", "bar"]]));
+
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "multipart/form-data",
+            "x-action": "a1_1",
+          },
+          body: formData,
+        }),
+      });
+
+      req.formData = async () => formData;
+
+      const res = await responseAction(req);
+
+      expect(req.store.get("foo")).toBe("bar");
+      expect(res.headers.get("x-reset")).toBeEmpty();
+    });
+
     it("should form-data work with ?_aid instead of x-action to work without JS", async () => {
       const formData = new FormData();
       formData.append("foo", "bar");
@@ -222,22 +248,24 @@ describe("utils", () => {
             "content-type": "application/json",
             "x-action": "a1_1",
           },
-          body: JSON.stringify([
-            {
-              isTrusted: true,
-              bubbles: false,
-              cancelBubble: false,
-              cancelable: false,
-              composed: false,
-              currentTarget: null,
-              defaultPrevented: true,
-              eventPhase: 0,
-              _wc: true,
-              detail: {
-                foo: "bar",
+          body: JSON.stringify({
+            args: [
+              {
+                isTrusted: true,
+                bubbles: false,
+                cancelBubble: false,
+                cancelable: false,
+                composed: false,
+                currentTarget: null,
+                defaultPrevented: true,
+                eventPhase: 0,
+                _wc: true,
+                detail: {
+                  foo: "bar",
+                },
               },
-            },
-          ]),
+            ],
+          }),
         }),
       });
 
@@ -255,17 +283,20 @@ describe("utils", () => {
             "x-action": "a1_1",
             "x-actions": "[[['onClick', 'a1_2']]]",
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
 
-      expect(res.headers.get("x-s")).toEqual(stringify([]));
+      expect(resBody).toEqual([]);
       expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
@@ -282,17 +313,20 @@ describe("utils", () => {
             "x-action": "a1_1",
             "x-actions": "[[['onClick', 'a2_1']]]",
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
 
-      expect(res.headers.get("x-s")).toEqual(stringify([]));
+      expect(resBody).toEqual([]);
       expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
@@ -309,17 +343,20 @@ describe("utils", () => {
             "x-action": "a1_1",
             "x-actions": "[[['onClick', 'a2_1']], [['onAction', 'a2_2']]]",
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
 
-      expect(res.headers.get("x-s")).toEqual(stringify([]));
+      expect(resBody).toEqual([]);
       expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
       expect(logMock).toHaveBeenCalledWith("a1_1", {
         onClick: expect.any(Function),
@@ -328,99 +365,102 @@ describe("utils", () => {
       expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1-a2_2-foo");
     });
 
-    it('should decrypt the store variables from "x-s" header that starts with ENCRYPT_PREFIX', async () => {
-      const xs = stringify([["sensitive-data", encrypt("foo")]]);
+    it('should decrypt the store variables from "x-s" store that starts with ENCRYPT_PREFIX', async () => {
+      const xs = [["sensitive-data", encrypt("foo")]];
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             "x-action": "a1_1",
-            "x-s": xs,
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            "x-s": xs,
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
 
       expect(req.store.get("sensitive-data")).toBe("foo");
-      expect(res.headers.get("x-s")).toEqual(xs);
+      expect(resBody).toEqual(xs);
     });
 
-    it('should decrypt the store variables from "x-s" header that starts with ENCRYPT_NONTEXT_PREFIX', async () => {
-      const xs = stringify([["sensitive-data", encrypt({ foo: "bar" })]]);
+    it('should decrypt the store variables from "x-s" body that starts with ENCRYPT_NONTEXT_PREFIX', async () => {
+      const xs = [["sensitive-data", encrypt({ foo: "bar" })]];
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             "x-action": "a1_1",
-            "x-s": xs,
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            "x-s": xs,
+            args: [],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
 
       expect(req.store.get("sensitive-data")).toEqual({ foo: "bar" });
-      expect(res.headers.get("x-s")).toEqual(xs);
+      expect(resBody).toEqual(xs);
     });
 
-    it('should emojis work inside "x-s" header', async () => {
-      const xs = stringify([["sensitive-data", "👍"]]);
+    it("should emojis work inside store", async () => {
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             "x-action": "a1_1",
-            "x-s": xs,
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            "x-s": [["sensitive-data", "👍"]],
+            args: [],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
 
       expect(req.store.get("sensitive-data")).toBe("👍");
-      expect(res.headers.get("x-s")).toEqual(xs);
+      expect(resBody).toEqual([["sensitive-data", "👍"]]);
     });
 
-    it('should log an error if the decryption fails from "x-s" header', async () => {
-      const xs = JSON.stringify([
+    it('should log an error if the decryption fails from "x-s" store body', async () => {
+      const xs = [
         ["sensitive-data", ENCRYPT_NONTEXT_PREFIX + "invalid-encrypted-data"],
-      ]);
+      ];
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             "x-action": "a1_1",
-            "x-s": xs,
           },
-          body: JSON.stringify([
-            {
-              foo: "bar",
-            },
-          ]),
+          body: JSON.stringify({
+            "x-s": xs,
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
         }),
       });
 
       const res = await responseAction(req);
+      const resBody = await res.json();
       const { LOG_PREFIX } = getConstants();
 
       expect(logMock).toHaveBeenCalledTimes(7);
@@ -444,26 +484,23 @@ describe("utils", () => {
         "--------------------------",
       ]);
 
-      expect(res.headers.get("x-s")).toBe(
-        stringify([
-          ["sensitive-data", null],
+      expect(resBody).toEqual([
+        [
+          "__BRISA_ERRORS__",
           [
-            "__BRISA_ERRORS__",
-            [
-              {
-                title:
-                  'Error transferring client "sensitive-data" store to server store',
-                details: [
-                  "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.",
-                ],
-                docTitle: "Documentation about store.transferToClient",
-                docLink:
-                  "https://brisa.build/api-reference/components/request-context#transfertoclient",
-              },
-            ],
+            {
+              title:
+                'Error transferring client "sensitive-data" store to server store',
+              details: [
+                "The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.",
+              ],
+              docTitle: "Documentation about store.transferToClient",
+              docLink:
+                "https://brisa.build/api-reference/components/request-context#transfertoclient",
+            },
           ],
-        ]),
-      );
+        ],
+      ]);
     });
 
     it("should transfer headers from page SYNC responseHeaders from /somepage", async () => {
@@ -474,7 +511,7 @@ describe("utils", () => {
             "content-type": "application/json",
             "x-action": "a1_1",
           },
-          body: JSON.stringify([]),
+          body: JSON.stringify({ args: [] }),
         }),
         route: {
           // Good to know: the pages/somepage.tsx fixture adds
@@ -496,7 +533,7 @@ describe("utils", () => {
             "content-type": "application/json",
             "x-action": "a1_1",
           },
-          body: JSON.stringify([]),
+          body: JSON.stringify({ args: [] }),
         }),
         route: {
           // Good to know: the pages/somepage.tsx fixture adds

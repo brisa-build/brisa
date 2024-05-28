@@ -1250,6 +1250,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage`, {
         method: "POST",
+        body: '{}'
       }),
     );
 
@@ -1263,6 +1264,7 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/es/somepage`, {
         method: "POST",
+        body: '{}'
       }),
     );
 

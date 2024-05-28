@@ -14,7 +14,6 @@ import { serialize } from "../serialization";
 const rpcCode = injectRPCCode() as unknown as string;
 const lazyRPCCode = injectRPCLazyCode() as unknown as string;
 const INDICATOR_ID = "__ind:action";
-const stringify = (obj: any) => encodeURIComponent(JSON.stringify(obj));
 const requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 0);
 let mockFetch: ReturnType<typeof spyOn>;
 
@@ -129,9 +128,9 @@ describe("utils", () => {
       expect(mockFetch.mock.calls[0][0]).toBe(location.toString());
       expect(mockFetch.mock.calls[0][1]?.method).toBe("POST");
 
-      const [{ timeStamp, eventPhase, ...event }] = JSON.parse(
-        mockFetch.mock.calls[0][1]?.body as any,
-      );
+      const {
+        args: [{ timeStamp, eventPhase, ...event }],
+      } = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
 
       expect(event).toEqual({
         defaultPrevented: true,
@@ -166,7 +165,20 @@ describe("utils", () => {
         navigateTo: "http://localhost/some-page",
       });
 
-      expect(mockFetch.mock.calls[0][1]?.body).toBeInstanceOf(FormData);
+      const form = mockFetch.mock.calls[0][1]?.body as FormData;
+      expect(form).toBeInstanceOf(FormData);
+    });
+
+    it("should send FormData with the store", async () => {
+      window._S = [["a", "b"]];
+      const mockFetch = await simulateRPC({
+        elementName: "form",
+        eventName: "submit",
+        navigateTo: "http://localhost/some-page",
+      });
+
+      const form = mockFetch.mock.calls[0][1]?.body as FormData;
+      expect(form.get("x-s")).toEqual(JSON.stringify([["a", "b"]]));
     });
 
     it("should send custom event serialized with _wc property", async () => {
@@ -175,7 +187,9 @@ describe("utils", () => {
         navigateTo: "http://localhost/some-page",
       });
 
-      const [event] = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
+      const {
+        args: [event],
+      } = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
       expect(event._wc).toBeTrue();
     });
 
@@ -190,11 +204,10 @@ describe("utils", () => {
       >;
 
       expect(headers["x-action"]).toBe("a1_1");
-      expect(headers["x-s"]).toBeEmpty();
       expect(headers["x-actions"]).toBeEmpty();
     });
 
-    it('should send the "x-s" header with the serialized store', async () => {
+    it("should send the store in the response", async () => {
       window._S = [["a", "b"]];
 
       window._s = {
@@ -209,18 +222,17 @@ describe("utils", () => {
         navigateTo: "http://localhost/some-page",
       });
 
+      const body = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
       const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
         string,
         string
       >;
 
       expect(headers["x-action"]).toBe("a1_1");
-      expect(headers["x-s"]).toBe(
-        stringify([
-          ["a", "b"],
-          ["c", "d"],
-        ]),
-      );
+      expect(body["x-s"]).toEqual([
+        ["a", "b"],
+        ["c", "d"],
+      ]);
       expect(headers["x-actions"]).toBeEmpty();
     });
 
@@ -231,13 +243,14 @@ describe("utils", () => {
       const mockFetch = await simulateRPC({
         navigateTo: "http://localhost/some-page",
       });
+      const body = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
       const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
         string,
         string
       >;
 
       expect(headers["x-action"]).toBe("a1_1");
-      expect(headers["x-s"]).toBe(stringify([["c", "d"]]));
+      expect(body["x-s"]).toEqual([["c", "d"]]);
       expect(headers["x-actions"]).toBeEmpty();
     });
 
@@ -575,9 +588,9 @@ describe("utils", () => {
       const handler = mockNavigationIntercept.mock.calls[0][0];
       await handler();
       expect(mockFetch).toHaveBeenCalled();
-      expect(mockFetch.mock.calls[0][1].headers["x-s"]).toBe(
-        encodeURIComponent(JSON.stringify([["a", "b"]])),
-      );
+      expect(JSON.parse(mockFetch.mock.calls[0][1].body)["x-s"]).toEqual([
+        ["a", "b"],
+      ]);
     });
 
     it('should register actions after SPA navigation with "data-action" attribute', async () => {

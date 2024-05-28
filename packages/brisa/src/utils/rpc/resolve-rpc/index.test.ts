@@ -18,7 +18,7 @@ describe("utils", () => {
   describe("resolve-rpc", () => {
     describe("when navigate", () => {
       it("should redirect to a different page", async () => {
-        const res = new Response(null, {
+        const res = new Response("[]", {
           headers: {
             "X-Navigate": "http://localhost/some-page",
           },
@@ -32,7 +32,7 @@ describe("utils", () => {
       });
 
       it("should redirect to a different page with reactivity", async () => {
-        const res = new Response(null, {
+        const res = new Response("[]", {
           headers: {
             "X-Navigate": "http://localhost/some-page",
             "X-Mode": "reactivity",
@@ -47,7 +47,7 @@ describe("utils", () => {
       });
 
       it("should redirect to a different page with transition", async () => {
-        const res = new Response(null, {
+        const res = new Response("[]", {
           headers: {
             "X-Navigate": "http://localhost/some-page",
             "X-Mode": "transition",
@@ -62,7 +62,7 @@ describe("utils", () => {
       });
 
       it("should redirect to a different page with native", async () => {
-        const res = new Response(null, {
+        const res = new Response("[]", {
           headers: {
             "X-Navigate": "http://localhost/some-page",
             "X-Mode": "native",
@@ -78,9 +78,9 @@ describe("utils", () => {
     });
 
     it("should update the store", async () => {
-      const res = new Response(null, {
+      const res = new Response(JSON.stringify([["foo", "bar"]]), {
         headers: {
-          "X-S": JSON.stringify([["foo", "bar"]]),
+          "Content-Type": "application/json",
         },
       });
 
@@ -98,9 +98,9 @@ describe("utils", () => {
     });
 
     it("should update the store without initialize (no signals, only server store with transferToClient)", async () => {
-      const res = new Response(null, {
+      const res = new Response(JSON.stringify([["foo", "bar"]]), {
         headers: {
-          "X-S": JSON.stringify([["foo", "bar"]]),
+          "Content-Type": "application/json",
         },
       });
 
@@ -116,10 +116,10 @@ describe("utils", () => {
       expect(error).toBe(false);
     });
 
-    it("should encode emojis work in X-S header", async () => {
-      const res = new Response(null, {
+    it("should allow emojis in the transmited store", async () => {
+      const res = new Response(JSON.stringify([["foo", "🚀"]]), {
         headers: {
-          "X-S": encodeURIComponent(JSON.stringify([["foo", "🚀"]])),
+          "Content-Type": "application/json",
         },
       });
 
@@ -168,7 +168,7 @@ describe("utils", () => {
         target: { reset: mock(() => {}) },
       };
 
-      const res = new Response(null, {
+      const res = new Response("[]", {
         headers: {
           "X-Reset": "1",
         },

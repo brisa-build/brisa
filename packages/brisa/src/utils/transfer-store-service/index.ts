@@ -4,22 +4,31 @@ import {
   ENCRYPT_PREFIX,
   decrypt,
 } from "@/utils/crypto";
-import getClientStoreEntries from "@/utils/get-client-store-entries";
 import { logError } from "@/utils/log/log-build";
 
-export default function transferStoreService(req: RequestContext) {
+export default async function transferStoreService(req: RequestContext) {
+  const contentType = req.headers.get("content-type");
+  const bodyAvailable = req.method === "POST" && !req.bodyUsed;
+  const isFormData = contentType?.includes("multipart/form-data");
+  const formData = isFormData && bodyAvailable ? await req.formData() : null;
   const encryptedKeys = new Set<string>();
-  const storeRaw = req.headers.get("x-s");
+  const body = !isFormData && bodyAvailable ? await req.json() : null;
+  const originalStoreEntries = formData
+    ? JSON.parse(formData.get("x-s")?.toString() ?? "[]")
+    : body?.["x-s"];
+
+  if (formData) formData.delete("x-s");
 
   return {
-    transfeClientStoreToServer() {
-      if (!storeRaw) return;
+    formData,
+    body,
+    transferClientStoreToServer() {
+      if (!originalStoreEntries) return;
 
-      let entries = JSON.parse(decodeURIComponent(storeRaw));
-
-      for (const [key, value] of entries) {
+      for (const [key, value] of originalStoreEntries) {
         try {
           let storeValue = value;
+          let encrypt = false;
 
           if (
             typeof value === "string" &&
@@ -28,9 +37,11 @@ export default function transferStoreService(req: RequestContext) {
           ) {
             encryptedKeys.add(key);
             storeValue = decrypt(value);
+            encrypt = true;
           }
 
           req.store.set(key, storeValue);
+          req.store.transferToClient([key], { encrypt });
         } catch (e: any) {
           logError({
             messages: [
@@ -44,14 +55,6 @@ export default function transferStoreService(req: RequestContext) {
           });
         }
       }
-    },
-    transferServerStoreToClient(res: Response) {
-      res.headers.set(
-        "X-S",
-        encodeURIComponent(
-          JSON.stringify(getClientStoreEntries(req, encryptedKeys)),
-        ),
-      );
     },
   };
 }
