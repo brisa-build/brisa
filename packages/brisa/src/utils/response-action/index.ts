@@ -3,10 +3,11 @@ import { getConstants } from "@/constants";
 import type { RequestContext } from "@/types";
 import { deserialize } from "@/utils/serialization";
 import transferStoreService from "@/utils/transfer-store-service";
+import { resolveStore } from "@/utils/resolve-action";
 
 export default async function responseAction(req: RequestContext) {
-  const { transfeClientStoreToServer, transferServerStoreToClient } =
-    transferStoreService(req);
+  const { transferClientStoreToServer, formData, body } =
+    await transferStoreService(req);
   const { BUILD_DIR } = getConstants();
   const url = new URL(req.url);
   const action =
@@ -14,8 +15,6 @@ export default async function responseAction(req: RequestContext) {
   const actionsHeaderValue = req.headers.get("x-actions") ?? "[]";
   const actionFile = action.split("_").at(0);
   const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
-  const contentType = req.headers.get("content-type");
-  const isFormData = contentType?.includes("multipart/form-data");
   let resetForm = false;
 
   const target = {
@@ -30,7 +29,7 @@ export default async function responseAction(req: RequestContext) {
     },
   };
 
-  const params = isFormData
+  const params = formData
     ? [
         {
           isTrusted: true,
@@ -41,7 +40,7 @@ export default async function responseAction(req: RequestContext) {
           currentTarget: target,
           defaultPrevented: true,
           eventPhase: 0,
-          formData: await req.formData(),
+          formData,
           returnValue: true,
           srcElement: null,
           target,
@@ -49,7 +48,7 @@ export default async function responseAction(req: RequestContext) {
           type: "formdata",
         },
       ]
-    : await req.json();
+    : body?.args ?? [];
 
   const isWebComponentEvent =
     typeof params[0] === "object" &&
@@ -60,7 +59,7 @@ export default async function responseAction(req: RequestContext) {
   if (isWebComponentEvent) params[0] = params[0].detail;
 
   // Transfer client store to server store
-  transfeClientStoreToServer();
+  transferClientStoreToServer();
 
   req.store.set(`__params:${action}`, params);
 
@@ -97,7 +96,13 @@ export default async function responseAction(req: RequestContext) {
 
   let response = await actionModule[action](props, req);
 
-  if (!(response instanceof Response)) response = new Response(null);
+  if (!(response instanceof Response)) {
+    response = new Response(resolveStore(req), {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+  }
 
   const module = req.route ? await import(req.route.filePath) : {};
   const pageResponseHeaders =
@@ -112,8 +117,6 @@ export default async function responseAction(req: RequestContext) {
   if (resetForm) {
     response.headers.set("X-Reset", "1");
   }
-
-  transferServerStoreToClient(response);
 
   return response;
 }

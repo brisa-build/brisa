@@ -9,7 +9,6 @@ const $window = window as any;
 async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
   const store = $window._s;
   const urlToNavigate = res.headers.get("X-Navigate");
-  const storeRaw = res.headers.get("X-S");
   const resetForm = res.headers.has("X-Reset");
   const transition =
     args === TRANSITION_MODE || res.headers.get("X-Mode") === TRANSITION_MODE;
@@ -19,8 +18,8 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
     (args[0] as any).target.reset();
   }
 
-  if (storeRaw) {
-    const entries = JSON.parse(decodeURIComponent(storeRaw));
+  if (verifyBodyContentTypeOfResponse(res, "json")) {
+    const entries = await res.json();
 
     // Store WITHOUT web components signals
     if (!store) $window._S = entries;
@@ -39,10 +38,10 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
   }
 
   // Diff HTML Stream
-  else if (res.ok && res.body && res.headers.get("content-type")) {
+  else if (verifyBodyContentTypeOfResponse(res, "html")) {
     registerCurrentScripts();
 
-    await diff(document, res.body.getReader(), {
+    await diff(document, res.body!.getReader(), {
       onNextNode: loadScripts,
       transition,
     });
@@ -52,3 +51,9 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
 }
 
 $window._rpc = resolveRPC;
+
+function verifyBodyContentTypeOfResponse(res: Response, contentType: string) {
+  return (
+    res.ok && res.body && res.headers.get("content-type")?.includes(contentType)
+  );
+}

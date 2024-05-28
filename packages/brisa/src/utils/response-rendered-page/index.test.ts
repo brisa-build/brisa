@@ -6,6 +6,7 @@ import type { Translate } from "@/types";
 import extendRequestContext from "@/utils/extend-request-context";
 import responseRenderedPage from ".";
 import { getConstants } from "@/constants";
+import { RenderInitiator } from "@/public-constants";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -233,9 +234,10 @@ describe("utils", () => {
     it("should transfer the store from client to server and server to client", async () => {
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost:1234/es", {
-          headers: {
-            "x-s": encodeURIComponent(JSON.stringify([["key", "value"]])),
-          },
+          method: "POST",
+          body: JSON.stringify({
+            "x-s": [["key", "value"]],
+          }),
         }),
       });
       const response = await responseRenderedPage({
@@ -245,20 +247,19 @@ describe("utils", () => {
         } as MatchedRoute,
       });
 
-      expect(response.headers.get("X-S")).toBe(
-        encodeURIComponent(JSON.stringify([["key", "value"]])),
-      );
+      expect(await response.text()).toContain('window._S=[["key","value"]]');
     });
 
     it("should NOT transfer the store when is already transferred for the server action (POST)", async () => {
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost:1234/es", {
           method: "POST",
-          headers: {
-            "x-s": encodeURIComponent(JSON.stringify([["key", "value"]])),
-          },
+          body: JSON.stringify({
+            "x-s": [["key", "value"]],
+          }),
         }),
       });
+      req.renderInitiator = RenderInitiator.SERVER_ACTION;
       const response = await responseRenderedPage({
         req,
         route: {
@@ -266,8 +267,8 @@ describe("utils", () => {
         } as MatchedRoute,
       });
 
-      expect(response.headers.get("X-S")).not.toBe(
-        encodeURIComponent(JSON.stringify([["key", "value"]])),
+      expect(await response.text()).not.toContain(
+        'window._S=[["key","value"]]',
       );
     });
   });
