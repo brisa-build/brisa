@@ -105,3 +105,11 @@ export function rerenderInAction(props: RerenderInActionProps = {}): never;
  * - [How to use `getServeOptions`](https://brisa.build/building-your-application/configuring/custom-server)
  */
 export async function getServeOptions(): Promise<ServeOptions>;
+
+export interface RenderInitiatorType {
+  readonly INITIAL_REQUEST: "INITIAL_REQUEST";
+  readonly SPA_NAVIGATION: "SPA_NAVIGATION";
+  readonly SERVER_ACTION: "SERVER_ACTION";
+}
+
+export const RenderInitiator: RenderInitiatorType;

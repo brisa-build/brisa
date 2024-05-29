@@ -10,7 +10,6 @@ import { RenderInitiator } from "@/core/server";
 
 type ExtendRequestContext = {
   originalRequest: Request;
-  currentRequestContext?: RequestContext;
   route?: MatchedRoute;
   store?: RequestContext["store"];
   i18n?: I18n;
@@ -20,7 +19,6 @@ type ExtendRequestContext = {
 
 export default function extendRequestContext({
   originalRequest,
-  currentRequestContext,
   route,
   store,
   webStore,
@@ -30,28 +28,18 @@ export default function extendRequestContext({
 }: ExtendRequestContext): RequestContext {
   // finalURL
   originalRequest.finalURL =
-    currentRequestContext?.finalURL ??
-    finalURL ??
-    originalRequest.finalURL ??
-    originalRequest.url;
+    finalURL ?? originalRequest.finalURL ?? originalRequest.url;
 
   // route
-  originalRequest.route =
-    currentRequestContext?.route ?? route ?? originalRequest.route;
+  originalRequest.route = route ?? originalRequest.route;
 
   // store
   originalRequest.store =
-    currentRequestContext?.store ??
-    store ??
-    originalRequest.store ??
-    new Map<string | symbol, any>();
+    store ?? originalRequest.store ?? new Map<string | symbol, any>();
 
   // webStore (used for store.transferToClient)
   originalRequest.webStore =
-    currentRequestContext?.webStore ??
-    webStore ??
-    originalRequest.webStore ??
-    new Map<string | symbol, any>();
+    webStore ?? originalRequest.webStore ?? new Map<string | symbol, any>();
 
   // store.transferToClient
   originalRequest.store.transferToClient = (
@@ -86,15 +74,14 @@ export default function extendRequestContext({
   };
 
   // id
-  originalRequest.id = currentRequestContext?.id ?? id ?? originalRequest.id;
+  originalRequest.id = id ?? originalRequest.id;
 
   // ws
   originalRequest.ws = globalThis.sockets?.get(originalRequest.id) ?? null;
   globalThis.sockets?.delete(originalRequest.id);
 
   // i18n
-  originalRequest.i18n = currentRequestContext?.i18n ??
-    originalRequest.i18n ??
+  originalRequest.i18n = originalRequest.i18n ??
     i18n ?? {
       defaultLocale: "",
       locales: [],
@@ -121,7 +108,7 @@ export default function extendRequestContext({
   };
 
   // Default value of renderInitiator (can change the value outside of this function)
-  originalRequest.renderInitiator = RenderInitiator.INITIAL_REQUEST;
+  originalRequest.renderInitiator ??= RenderInitiator.INITIAL_REQUEST;
 
   return originalRequest as RequestContext;
 }
