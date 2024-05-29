@@ -309,5 +309,21 @@ describe("brisa core", () => {
         RenderInitiator.INITIAL_REQUEST,
       );
     });
+
+    it("should keep the renderInitiator of the originalRequest", () => {
+      const request = new Request("https://example.com");
+      // @ts-ignore
+      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      const route = {
+        path: "/",
+      } as any;
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+      expect(requestContext.renderInitiator).toBe(
+        RenderInitiator.SERVER_ACTION,
+      );
+    });
   });
 });
