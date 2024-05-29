@@ -21,6 +21,7 @@ import extendRequestContext from "@/utils/extend-request-context";
 import notFound from "@/utils/not-found";
 import SSRWebComponent from "@/utils/ssr-web-component";
 import handleI18n from "@/utils/handle-i18n";
+import { RenderInitiator } from "@/public-constants";
 
 const emptyI18n = {
   locale: "",
@@ -2879,6 +2880,111 @@ describe("utils", () => {
 
       eval(scriptNavigate);
       expect(globalThis.location.replace).toHaveBeenCalledWith(
+        "http://localhost/foo",
+      );
+      globalThis.location = undefined as any;
+      globalThis.window = undefined as any;
+    });
+
+    it('should add the location.replace script transferring the client store when the "navigate" method is called during rendering', async () => {
+      const Component = () => {
+        navigate("http://localhost/foo");
+        return <div>TEST</div>;
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost/"),
+      });
+      request.store.set("foo", "bar");
+      request.store.set("foo-client", "bar-client");
+      request.store.transferToClient(["foo-client"]);
+      const stream = renderToReadableStream(<Component />, { request });
+      const result = await Bun.readableStreamToText(stream);
+      const scriptNavigate = `window._xm="reactivity";location.replace("http://localhost/foo")`;
+      const scriptStore = `window._S=[["foo-client","bar-client"]]`;
+
+      expect(result).toBe(
+        toInline(
+          `<script>${scriptStore}</script><script>${scriptNavigate}</script>`,
+        ),
+      );
+
+      // Test script navigate behavior
+      globalThis.window = {} as any;
+      globalThis.location = {
+        replace: mock((v) => v),
+      } as any;
+
+      eval(scriptNavigate);
+      expect(globalThis.location.replace).toHaveBeenCalledWith(
+        "http://localhost/foo",
+      );
+      globalThis.location = undefined as any;
+      globalThis.window = undefined as any;
+    });
+
+    it('should add the location.assign script when the "navigate" method is called during server action rerendering', async () => {
+      const Component = () => {
+        navigate("http://localhost/foo");
+        return <div>TEST</div>;
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost/"),
+      });
+      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      const stream = renderToReadableStream(<Component />, { request });
+      const result = await Bun.readableStreamToText(stream);
+      const scriptNavigate = `window._xm="reactivity";location.assign("http://localhost/foo")`;
+
+      expect(result).toBe(toInline(`<script>${scriptNavigate}</script>`));
+
+      // Test script navigate behavior
+      globalThis.window = {} as any;
+      globalThis.location = {
+        assign: mock((v) => v),
+      } as any;
+
+      eval(scriptNavigate);
+      expect(globalThis.location.assign).toHaveBeenCalledWith(
+        "http://localhost/foo",
+      );
+      globalThis.location = undefined as any;
+      globalThis.window = undefined as any;
+    });
+
+    it('should add the location.assign script transferring the client store when the "navigate" method is called during server action rerendering', async () => {
+      const Component = () => {
+        navigate("http://localhost/foo");
+        return <div>TEST</div>;
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost/"),
+      });
+      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      request.store.set("foo", "bar");
+      request.store.set("foo-client", "bar-client");
+      request.store.transferToClient(["foo-client"]);
+      const stream = renderToReadableStream(<Component />, { request });
+      const result = await Bun.readableStreamToText(stream);
+      const scriptNavigate = `window._xm="reactivity";location.assign("http://localhost/foo")`;
+      const scriptStore = `window._S=[["foo-client","bar-client"]]`;
+
+      expect(result).toBe(
+        toInline(
+          `<script>${scriptStore}</script><script>${scriptNavigate}</script>`,
+        ),
+      );
+
+      // Test script navigate behavior
+      globalThis.window = {} as any;
+      globalThis.location = {
+        assign: mock((v) => v),
+      } as any;
+
+      eval(scriptNavigate);
+      expect(globalThis.location.assign).toHaveBeenCalledWith(
         "http://localhost/foo",
       );
       globalThis.location = undefined as any;
