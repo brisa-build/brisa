@@ -2860,6 +2860,111 @@ describe("utils", () => {
       globalThis.location = undefined as any;
     });
 
+    it('should add the meta with noindex and soft redirect to 404 when the "notFound" method is called + transfer store to client', async () => {
+      const Component = () => {
+        notFound();
+        return <div>TEST</div>;
+      };
+
+      const request = extendRequestContext({ originalRequest: new Request("http://localhost/") });
+      request.store.set("server-foo", "server-bar");
+      request.store.set("foo", "bar");
+      request.store.transferToClient(["foo"]);
+      request.store.transferToClient(["foo"]);
+      const stream = renderToReadableStream(<Component />, { request });
+      const result = await Bun.readableStreamToText(stream);
+      const script404 = `(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()`;
+
+      expect(result).toBe(
+        toInline(`
+          <meta name="robots" content="noindex" />
+          <script>window._S=[["foo","bar"]]</script>
+          <script>${script404}</script>
+        `),
+      );
+
+      // Test script 404 behavior
+      globalThis.location = {
+        href: "http://localhost/",
+        replace: mock((v) => v),
+      } as any;
+
+      eval(script404);
+      expect(globalThis.location.replace).toHaveBeenCalledWith(
+        "http://localhost/?_not-found=1",
+      );
+      globalThis.location = undefined as any;
+    });
+
+    it('should add the meta with noindex and soft navigation (no redirect) to 404 when the "notFound" method is called from server action rerendering', async () => {
+      const Component = () => {
+        notFound();
+        return <div>TEST</div>;
+      };
+
+      const request = extendRequestContext({ originalRequest: new Request("http://localhost/") });
+      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      const stream = renderToReadableStream(<Component />, { request });
+      const result = await Bun.readableStreamToText(stream);
+      const script404 = `(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.assign(u.toString())})()`;
+
+      expect(result).toBe(
+        toInline(`
+          <meta name="robots" content="noindex" />
+          <script>${script404}</script>
+        `),
+      );
+
+      // Test script 404 behavior
+      globalThis.location = {
+        href: "http://localhost/",
+        assign: mock((v) => v),
+      } as any;
+
+      eval(script404);
+      expect(globalThis.location.assign).toHaveBeenCalledWith(
+        "http://localhost/?_not-found=1",
+      );
+      globalThis.location = undefined as any;
+    });
+
+    it('should add the meta with noindex and soft navigate (no redirect) to 404 when the "notFound" method is called + transfer store to client', async () => {
+      const Component = () => {
+        notFound();
+        return <div>TEST</div>;
+      };
+
+      const request = extendRequestContext({ originalRequest: new Request("http://localhost/") });
+      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      request.store.set("server-foo", "server-bar");
+      request.store.set("foo", "bar");
+      request.store.transferToClient(["foo"]);
+      request.store.transferToClient(["foo"]);
+      const stream = renderToReadableStream(<Component />, { request });
+      const result = await Bun.readableStreamToText(stream);
+      const script404 = `(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.assign(u.toString())})()`;
+
+      expect(result).toBe(
+        toInline(`
+          <meta name="robots" content="noindex" />
+          <script>window._S=[["foo","bar"]]</script>
+          <script>${script404}</script>
+        `),
+      );
+
+      // Test script 404 behavior
+      globalThis.location = {
+        href: "http://localhost/",
+        assign: mock((v) => v),
+      } as any;
+
+      eval(script404);
+      expect(globalThis.location.assign).toHaveBeenCalledWith(
+        "http://localhost/?_not-found=1",
+      );
+      globalThis.location = undefined as any;
+    });
+
     it('should add the location.replace script when the "navigate" method is called during rendering', async () => {
       const Component = () => {
         navigate("http://localhost/foo");
