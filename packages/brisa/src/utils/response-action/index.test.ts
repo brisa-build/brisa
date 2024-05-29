@@ -83,6 +83,30 @@ describe("utils", () => {
       expect(resBody).toEqual(xs);
     });
 
+    it('should remove the field "x-s" from form-data (Brisa internal field)', async () => {
+      const formData = new FormData();
+      formData.append("foo", "bar");
+      formData.append("x-s", '[["foo", "bar"]]');
+
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "multipart/form-data",
+            "x-action": "a1_1",
+          },
+          body: formData,
+        }),
+      });
+
+      req.formData = async () => formData;
+
+      await responseAction(req);
+
+      expect(formData.get("x-s")).toBeNull();
+      expect(req.store.get("foo")).toBe("bar");
+    });
+
     it("should add the correct param when using form-data", async () => {
       const formData = new FormData();
       formData.append("foo", "bar");
