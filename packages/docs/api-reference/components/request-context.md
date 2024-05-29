@@ -268,7 +268,7 @@ Example:
 console.log(id); // 1edfa3c2-e101-40e3-af57-8890795dacd4
 ```
 
-## `renderInitiator`
+## `renderInitiator`
 
 The `renderInitiator` is a string that represents the initiator of the render. It can be:
 
