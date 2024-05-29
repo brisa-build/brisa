@@ -12,8 +12,10 @@ import fs from "node:fs";
 import generateStaticExport from "./index";
 import { getConstants } from "@/constants";
 import { toInline } from "@/helpers";
+import get404ClientScript from "@/utils/not-found/client-script";
 
 const ROOT_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const SCRIPT_404 = get404ClientScript();
 const mockFetch = mock((request: Request) => new Response(""));
 const BASE_PATHS = ["", "some-dir", "/some-dir", "/es", "/some/dir"];
 const mockWrite = mock(async (...args: any[]) => 0);
@@ -384,8 +386,7 @@ describe.each(BASE_PATHS)("utils", (basePath) => {
       });
 
       it("should not generate a page that during the streaming returns the soft redirect to 404 (notFound method)", () => {
-        const constants = getConstants();
-        mockFetch.mockImplementation(() => new Response(constants.SCRIPT_404));
+        mockFetch.mockImplementation(() => new Response(SCRIPT_404));
 
         expect(generateStaticExport()).resolves.toEqual([
           new Map(),
@@ -915,8 +916,7 @@ describe.each(BASE_PATHS)("utils", (basePath) => {
             basePath,
           },
         };
-        const constants = getConstants();
-        mockFetch.mockImplementation(() => new Response(constants.SCRIPT_404));
+        mockFetch.mockImplementation(() => new Response(SCRIPT_404));
 
         expect(generateStaticExport()).resolves.toEqual([
           new Map(),
