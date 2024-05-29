@@ -199,6 +199,29 @@ describe("extendStreamController", () => {
     ]);
   });
 
+  it("should transferStoreToClient add _S and _s to the window when method is POST (from RPC)", () => {
+    const req = extendRequestContext({
+      originalRequest: new Request("http://localhost", {
+        method: "POST",
+      }),
+    });
+
+    // @ts-ignore
+    req.webStore.set("test", "test");
+
+    const controller = extendStreamController({
+      controller: mockController,
+      request: req,
+    });
+    controller.transferStoreToClient();
+
+    expect(mockController.enqueue.mock.calls).toEqual([
+      [
+        `<script>window._S=[["test","test"]];for(let [k, v] of _S) _s?.set?.(k, v)</script>`,
+      ],
+    ]);
+  });
+
   it("should transferStoreToClient set _S when already was transfered", () => {
     const req = extendRequestContext({
       originalRequest: new Request("http://localhost"),
@@ -247,7 +270,7 @@ describe("extendStreamController", () => {
     expect(mockController.enqueue.mock.calls).toEqual([
       [`<script>window._S=[["some","foo"]]</script>`],
       [
-        `<script>for(let [k, v] of [["another","bar"]]){ _s.set(k, v); _S.push([k, v])}</script>`,
+        `<script>for(let [k, v] of [["another","bar"]]){ _s?.set?.(k, v); _S.push([k, v])}</script>`,
       ],
     ]);
   });
@@ -269,7 +292,7 @@ describe("extendStreamController", () => {
 
     expect(mockController.enqueue.mock.calls).toEqual([
       [
-        `<script>window._S=[["some","foo"]];for(let [k, v] of _S) _s.set(k, v)</script>`,
+        `<script>window._S=[["some","foo"]];for(let [k, v] of _S) _s?.set?.(k, v)</script>`,
       ],
     ]);
   });

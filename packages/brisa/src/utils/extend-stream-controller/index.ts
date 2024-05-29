@@ -64,7 +64,7 @@ export default function extendStreamController({
     insideHeadTag: false,
     hasUnsuspense: false,
     hasActionRPC: false,
-    areSignalsInjected: false,
+    areSignalsInjected: request.method === "POST",
     applySuspense,
     setCurrentWebComponentSymbol(symbol) {
       if (symbol) openWebComponents.push(symbol);
@@ -86,9 +86,9 @@ export default function extendStreamController({
       let script;
 
       if (areSignalsInjected && storeTransfered) {
-        script = `<script>for(let [k, v] of ${serializedStore}){ _s.set(k, v); _S.push([k, v])}</script>`;
+        script = `<script>for(let [k, v] of ${serializedStore}){ _s?.set?.(k, v); _S.push([k, v])}</script>`;
       } else if (areSignalsInjected && !storeTransfered) {
-        script = `<script>window._S=${serializedStore};for(let [k, v] of _S) _s.set(k, v)</script>`;
+        script = `<script>window._S=${serializedStore};for(let [k, v] of _S) _s?.set?.(k, v)</script>`;
       } else if (storeTransfered && !areSignalsInjected) {
         script = `<script>for(let e of ${serializedStore}) _S.push(e)</script>`;
       } else {
