@@ -22,6 +22,7 @@ import type { Options } from "@/types/server";
 import { toInline } from "@/helpers";
 import { logError } from "@/utils/log/log-build";
 import { getNavigateMode, isNavigateThrowable } from "@/utils/navigate/utils";
+import { RenderInitiator } from "@/public-constants";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -82,8 +83,14 @@ export default function renderToReadableStream(
             extendedController.enqueue(NO_INDEX);
             extendedController.enqueue(SCRIPT_404);
           } else if (isNavigateThrowable(e)) {
+            const action =
+              req.renderInitiator === RenderInitiator.SERVER_ACTION
+                ? "assign"
+                : "replace";
+
+            extendedController.transferStoreToClient();
             extendedController.enqueue(
-              `<script>window._xm="${getNavigateMode(e)}";location.replace("${
+              `<script>window._xm="${getNavigateMode(e)}";location.${action}("${
                 e.message
               }")</script>`,
             );
