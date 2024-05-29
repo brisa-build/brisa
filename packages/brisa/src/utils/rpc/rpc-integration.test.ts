@@ -236,7 +236,7 @@ describe("utils", () => {
       expect(headers["x-actions"]).toBeEmpty();
     });
 
-    it('should send the "x-s" header with the serialized store if only are transferred store', async () => {
+    it('should send the "x-s" param with the serialized store if only are transferred store', async () => {
       window._s = undefined;
       window._S = [["c", "d"]];
 
@@ -577,7 +577,7 @@ describe("utils", () => {
       expect(window._xm).toBeNull();
     });
 
-    it("should add x-s (store header) during SPA navigation", async () => {
+    it("should add x-s (store body param) during SPA navigation", async () => {
       window._S = [["a", "b"]];
       const res = new Response('<div id="some-id"></div>', {
         headers: { "content-type": "text/html" },
