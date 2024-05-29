@@ -160,7 +160,7 @@ describe("utils", () => {
       );
     });
 
-    it('should rerender the page with reactivity and "x-s" store header', async () => {
+    it("should rerender the page with reactivity and store", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({ type: "page", renderMode: "reactivity" }) +
