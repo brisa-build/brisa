@@ -16,7 +16,7 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
   fs.mkdirSync(PROJECT_NAME);
   process.chdir(PROJECT_NAME);
 
-  const BRISA_VERSION = "0.0.72";
+  const BRISA_VERSION = "0.0.73";
 
   console.log("\n🛠️  Installing brisa...\n");
 
