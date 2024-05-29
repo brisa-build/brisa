@@ -2866,7 +2866,9 @@ describe("utils", () => {
         return <div>TEST</div>;
       };
 
-      const request = extendRequestContext({ originalRequest: new Request("http://localhost/") });
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost/"),
+      });
       request.store.set("server-foo", "server-bar");
       request.store.set("foo", "bar");
       request.store.transferToClient(["foo"]);
@@ -2902,7 +2904,9 @@ describe("utils", () => {
         return <div>TEST</div>;
       };
 
-      const request = extendRequestContext({ originalRequest: new Request("http://localhost/") });
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost/"),
+      });
       request.renderInitiator = RenderInitiator.SERVER_ACTION;
       const stream = renderToReadableStream(<Component />, { request });
       const result = await Bun.readableStreamToText(stream);
@@ -2934,7 +2938,9 @@ describe("utils", () => {
         return <div>TEST</div>;
       };
 
-      const request = extendRequestContext({ originalRequest: new Request("http://localhost/") });
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost/"),
+      });
       request.renderInitiator = RenderInitiator.SERVER_ACTION;
       request.store.set("server-foo", "server-bar");
       request.store.set("foo", "bar");
