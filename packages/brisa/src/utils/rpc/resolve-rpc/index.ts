@@ -53,7 +53,5 @@ async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
 $window._rpc = resolveRPC;
 
 function verifyBodyContentTypeOfResponse(res: Response, contentType: string) {
-  return (
-    res.ok && res.body && res.headers.get("content-type")?.includes(contentType)
-  );
+  return res.body && res.headers.get("content-type")?.includes(contentType);
 }

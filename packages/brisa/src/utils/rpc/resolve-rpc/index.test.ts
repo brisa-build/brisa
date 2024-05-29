@@ -161,6 +161,33 @@ describe("utils", () => {
         await resolveRPC(res);
         expect(document.body.innerHTML).toBe('<div class="foo">Bar</div>');
       });
+
+      it("should call the diff-dom-streaming library also for 404 pages", async () => {
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(encoder.encode("<html>"));
+            controller.enqueue(encoder.encode("<head />"));
+            controller.enqueue(encoder.encode("<body>"));
+
+            controller.enqueue(encoder.encode('<div class="foo">404</div>'));
+
+            controller.enqueue(encoder.encode("</body>"));
+            controller.enqueue(encoder.encode("</html>"));
+            controller.close();
+          },
+        });
+        const res = new Response(stream, {
+          headers: { "content-type": "text/html" },
+          status: 404,
+        });
+
+        await initBrowser();
+        document.body.innerHTML = '<div class="foo">Foo</div>';
+
+        await resolveRPC(res);
+        expect(document.body.innerHTML).toBe('<div class="foo">404</div>');
+      });
     });
 
     it("should call e.target.reset() if receive the X-Reset header", async () => {
