@@ -6,9 +6,11 @@ import { toInline } from "@/helpers";
 import { logWarning } from "@/utils/log/log-build";
 import type { FileSystemRouter, MatchedRoute } from "bun";
 import isTestFile from "@/utils/is-test-file";
+import get404ClientScript from "@/utils/not-found/client-script";
 
 const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = "http://localhost";
+const SCRIPT_404 = get404ClientScript();
 
 export default async function generateStaticExport(): Promise<
   [Map<string, string[]>, string] | null
@@ -19,7 +21,6 @@ export default async function generateStaticExport(): Promise<
     I18N_CONFIG,
     IS_PRODUCTION,
     CONFIG,
-    SCRIPT_404,
     IS_STATIC_EXPORT,
     LOG_PREFIX,
   } = getConstants();

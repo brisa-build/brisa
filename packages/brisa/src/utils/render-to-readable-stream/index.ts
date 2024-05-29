@@ -23,6 +23,7 @@ import { toInline } from "@/helpers";
 import { logError } from "@/utils/log/log-build";
 import { getNavigateMode, isNavigateThrowable } from "@/utils/navigate/utils";
 import { RenderInitiator } from "@/public-constants";
+import get404ClientScript from "@/utils/not-found/client-script";
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -42,7 +43,7 @@ export default function renderToReadableStream(
   }: Options,
 ) {
   const req = extendRequestContext({ originalRequest: request });
-  const { IS_PRODUCTION, BUILD_DIR, SCRIPT_404 } = getConstants();
+  const { IS_PRODUCTION, BUILD_DIR } = getConstants();
   const pagesClientPath = path.join(BUILD_DIR, "pages-client");
   const unsuspenseListPath = path.join(pagesClientPath, "_unsuspense.txt");
   const actionRPCListPath = path.join(pagesClientPath, "_rpc.txt");
@@ -81,7 +82,8 @@ export default function renderToReadableStream(
         .catch(async (e) => {
           if (isNotFoundError(e)) {
             extendedController.enqueue(NO_INDEX);
-            extendedController.enqueue(SCRIPT_404);
+            extendedController.transferStoreToClient();
+            extendedController.enqueue(get404ClientScript(req));
           } else if (isNavigateThrowable(e)) {
             const action =
               req.renderInitiator === RenderInitiator.SERVER_ACTION

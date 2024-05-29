@@ -90,7 +90,6 @@ const { NODE_ENV } = process.env;
 
 const IS_PRODUCTION =
   process.argv.some((t) => t === "PROD") || NODE_ENV === "production";
-const SCRIPT_404 = `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>`;
 const CACHE_CONTROL = IS_PRODUCTION
   ? "public, max-age=31536000, immutable"
   : "no-store, must-revalidate";
@@ -129,7 +128,6 @@ const constants = {
     DYNAMIC: /\[.*?\]/g,
     REST_DYNAMIC: /\[\.{3}.*?\]/g,
   },
-  SCRIPT_404,
   BOOLEANS_IN_HTML,
   HEADERS: {
     CACHE_CONTROL,
