@@ -75,7 +75,7 @@ const foo = useContext(context);
 return <div>{foo.value}</div>;
 ```
 
-For more details, refer to the [context](/components-details/context) documentation.
+For more details, refer to the [context](/building-your-application/components-details/context) documentation.
 
 > [!IMPORTANT]
 >
@@ -105,7 +105,7 @@ Example mutation:
 count.value += 1;
 ```
 
-For more details, refer to the [state](/components-details/web-components#state-state-method) documentation.
+For more details, refer to the [state](/building-your-application/components-details/web-components#state-state-method) documentation.
 
 ## `derived`
 
@@ -142,7 +142,7 @@ effect(() => {
 });
 ```
 
-For more details, refer to the [effect](/components-details/web-components#effects-effect-method) documentation.
+For more details, refer to the [effect](/building-your-application/components-details/web-components#effects-effect-method) documentation.
 
 ## `cleanup`
 
@@ -161,7 +161,7 @@ effect(() => {
 cleanup(() => console.log("Web Component unmounted!"));
 ```
 
-For more details, refer to the [cleanup](/components-details/web-components#clean-effects-cleanup-method) documentation.
+For more details, refer to the [cleanup](/building-your-application/components-details/web-components#clean-effects-cleanup-method) documentation.
 
 ## `onMount`
 
@@ -179,7 +179,7 @@ onMount(() => {
 });
 ```
 
-For more details, refer to the [onMount](/components-details/web-components#effect-on-mount-onmount-method) documentation.
+For more details, refer to the [onMount](/building-your-application/components-details/web-components#effect-on-mount-onmount-method) documentation.
 
 ## `indicate`
 
@@ -250,7 +250,7 @@ css`
 `;
 ```
 
-For more details, refer to the [Template literal `css`](/components-details/web-components#template-literal-css) documentation.
+For more details, refer to the [Template literal `css`](/building-your-application/components-details/web-components#template-literal-css) documentation.
 
 ## `i18n`
 

@@ -8,14 +8,24 @@ async function validateBrisaURLs(directory: string) {
     const files = fs.readdirSync(dir);
     for (const file of files) {
       const filePath = path.join(dir, file);
+
+      if (!filePath.startsWith('packages') || filePath.startsWith('packages/docs/.vitepress/cache') || filePath.startsWith('packages/docs/.vitepress/dist')) {
+         continue
+      }
+    
       if (fs.statSync(filePath).isDirectory()) {
         searchDirectory(filePath);
       } else if(!filePath.match(/\.test\.(ts|tsx|js|jsx)$/)) {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
-        const match = fileContent.match(/https:\/\/brisa\.build[^\s"']+/g);
+        const isDocs = filePath.startsWith('packages/docs/');
+        const regex = isDocs ? /\(\/[^\s"']+/g : /https:\/\/brisa\.build[^\s"']+/g
+        const match = fileContent.match(regex);
+        
         if (match) {
           match.forEach((url: string) => {
-            const trimUrl = url.trim().replace(/\)$/, '');
+            let trimUrl = url.trim().replace(/\)$/, '').replace(/^\(/, '');
+            if(isDocs) trimUrl = 'https://brisa.build' + trimUrl;
+
             if(!URL.canParse(trimUrl) || trimUrl.includes('${')) {
               return
             }
