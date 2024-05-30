@@ -92,7 +92,7 @@ SomeServerComponent.error = (
 };
 ```
 
-Example [web component](/components-details/web-components):
+Example [web component](/building-your-application/components-details/web-components):
 
 ```tsx
 import { WebContext } from "brisa";

@@ -112,7 +112,7 @@ export default function MyComponent(props, { useContext }) {
 > - `useContext()` call in a component is not affected by providers returned from the same component. The corresponding `<context-provider>` needs to be above the component doing the `useContext()` call.
 > - Instead of an import it is inside the [`RequestContext`](/api-reference/components/request-context) or [`WebContext`](/api-reference/components/web-context). In the case of server the context is stored inside the request, since each request is different and it is better that it is not global to **avoid concurrency problems**. In the case of web is needed within the `WebContext` to generate a reactive signal that is cleared when the web component is disconnected.
 
-### When to use context instead of [`store`](/components-details/web-components#store-store-method)
+### When to use context instead of [`store`](/building-your-application/components-details/web-components#store-store-method)
 
 Using Context instead of `store` comes at a price, since it generates a DOM element _(`context-provider` web component)_ unless you have set [`serverOnly`](#serveronly-property) attribute.
 
