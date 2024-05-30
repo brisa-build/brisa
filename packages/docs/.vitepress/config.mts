@@ -9,6 +9,7 @@ export default defineConfig({
   title: "Brisa Framework",
   ignoreDeadLinks: true,
   lastUpdated: true,
+  cleanUrls: true,
   head: [["link", { rel: "icon", href: "/assets/brisa.svg" }]],
   markdown: {
     config(md) {
