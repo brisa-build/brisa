@@ -172,6 +172,10 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
+                text: "brisa.config.js options",
+                link: "/building-your-application/configuring/brisa-config-js",
+              },
+              {
                 text: "Typescript",
                 link: "/building-your-application/configuring/typescript",
               },
@@ -194,6 +198,10 @@ export default defineConfig({
               {
                 text: "Asset prefix",
                 link: "/building-your-application/configuring/asset-prefix",
+              },
+              {
+                text: "Base path",
+                link: "/building-your-application/configuring/base-path",
               },
               {
                 text: "Plugins",
