@@ -142,7 +142,7 @@ export async function GET(request: RequestContext) {
 
 ## Protecting Server Components
 
-Like actions and API routes, you can manage authorization within [Server Components](/docs/app/building-your-application/rendering/server-components). Server Components in Brisa are designed for server-side execution and offer a secure environment for integrating complex logic like authorization. They enable direct access to back-end resources, optimizing performance for data-heavy tasks and enhancing security for sensitive operations.
+Like actions and API routes, you can manage authorization within [Server Components](/building-your-application/components-details/server-components). Server Components in Brisa are designed for server-side execution and offer a secure environment for integrating complex logic like authorization. They enable direct access to back-end resources, optimizing performance for data-heavy tasks and enhancing security for sensitive operations.
 
 In Server Components, a common practice is to conditionally render UI elements based on the user's role. This approach enhances user experience and security by ensuring users only access content they are authorized to view.
 

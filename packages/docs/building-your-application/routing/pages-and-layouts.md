@@ -18,7 +18,7 @@ export default function About() {
 }
 ```
 
-See the difference between Brisa Components and React Components [here](/building-your-application/components-details).
+See the difference between Brisa Components and React Components [here](/building-your-application/components-details/server-components).
 
 ## Index routes
 
