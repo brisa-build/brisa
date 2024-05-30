@@ -50,7 +50,7 @@ export interface RequestContext extends Request {
    *
    * Docs:
    *
-   * - [How to use `store`](https://brisa.build/components-details/server-components#store-store-method)
+   * - [How to use `store`](https://brisa.build/building-your-application/components-details/server-components#store-store-method)
    */
   store: Map<string | symbol, any> & {
     /**
@@ -328,7 +328,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `store`](https://brisa.build/components-details/web-components#store-store-method)
+   * - [How to use `store`](https://brisa.build/building-your-application/components-details/web-components#store-store-method)
    */
   store: ReactiveMap;
 
@@ -347,7 +347,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `useContext`](https://brisa.build/components-details/context)
+   * - [How to use `useContext`](https://brisa.build/building-your-application/components-details/web-components#context)
    */
   useContext: <T>(context: BrisaContext<T>) => { value: T };
 
@@ -377,7 +377,7 @@ export interface BaseWebContext {
    * ```
    *
    * Docs:
-   *  - [How to use `state`](https://brisa.build/components-details/web-components#state-state-method)
+   *  - [How to use `state`](https://brisa.build/building-your-application/components-details/web-components#state-state-method)
    */
   state<T>(initialValue?: T): Signal<T>;
 
@@ -403,7 +403,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `effect`](https://brisa.build/components-details/web-components#effect-effect-method)
+   * - [How to use `effect`](https://brisa.build/building-your-application/components-details/web-components#effect-effect-method)
    */
   effect(fn: Effect): void;
 
@@ -428,7 +428,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `cleanup`](https://brisa.build/components-details/web-components#clean-effects-cleanup-method)
+   * - [How to use `cleanup`](https://brisa.build/building-your-application/components-details/web-components#clean-effects-cleanup-method)
    */
   cleanup(fn: Cleanup): void;
 
@@ -451,7 +451,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `derived`](https://brisa.build/components-details/web-components#derived-state-and-props-derived-method)
+   * - [How to use `derived`](https://brisa.build/building-your-application/components-details/web-components#derived-state-and-props-derived-method)
    */
   derived<T>(fn: () => T): Signal<T>;
 
@@ -476,7 +476,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `onMount`](https://brisa.build/components-details/web-components#effect-on-mount-onmount-method)
+   * - [How to use `onMount`](https://brisa.build/building-your-application/components-details/web-components#effect-on-mount-onmount-method)
    */
   onMount(fn: Effect): void;
 
@@ -493,7 +493,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `css`](https://brisa.build/components-details/web-components#template-literal-css)
+   * - [How to use `css`](https://brisa.build/building-your-application/components-details/web-components#template-literal-css)
    */
   css(strings: TemplateStringsArray, ...values: string[]): void;
 
@@ -553,7 +553,7 @@ export interface BaseWebContext {
    *
    * Docs:
    *
-   * - [How to use `indicate`](https://brisa.build/api-reference/web-context/indicate)
+   * - [How to use `indicate`](https://brisa.build/api-reference/components/web-context#indicate)
    */
   indicate: (actionName: string) => IndicatorSignal;
 
@@ -1224,7 +1224,7 @@ export interface BrisaDOMAttributes {
    *
    * Docs:
    *
-   * - [How to use `ref`](https://brisa.build/components-details/web-components#events-on-ref)
+   * - [How to use `ref`](https://brisa.build/building-your-application/components-details/web-components#events-on-ref)
    */
   ref?: Signal<unknown>;
 }
@@ -3999,11 +3999,11 @@ declare global {
        * - Web components: it is the normal `onSubmit` of the browser.
        * - Server components: the event already contains the formData field. The event is transformed to [FormDataEvent](https://developer.mozilla.org/en-US/docs/Web/API/FormDataEvent).
        *
-       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*- [Brisa docs](https://brisa.build/components-details/forms)
+       * *🚨 In server, the `preventDefault` method is already called, so you don't need to call it.*- [Brisa docs](https://brisa.build/building-your-application/components-details/forms)
        *
        * **Docs**:
        *
-       * - [Brisa docs](https://brisa.build/components-details/forms)
+       * - [Brisa docs](https://brisa.build/building-your-application/components-details/forms)
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)
        */
       onSubmit?: SubmitEventHandler<Target> | undefined;
@@ -8377,7 +8377,7 @@ declare global {
        *
        * In Brisa the `value` attribute is also used to define the context content inside `<context-provider>`.
        *
-       * - [Brisa docs](https://brisa.build/components-details/context#provider)
+       * - [Brisa docs](https://brisa.build/building-your-application/components-details/context#provider)
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#value)
        */
       value?: string | string[] | number | undefined;
@@ -9598,7 +9598,7 @@ declare global {
        *
        * Docs:
        *
-       * - [How to use `context-provider`](https://brisa.build/components-details/context)
+       * - [How to use `context-provider`](https://brisa.build/building-your-application/components-details/context)
        */
       "context-provider": ContextProviderAttributes<HTMLElement>;
     }
