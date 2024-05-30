@@ -72,7 +72,7 @@ And the HTML is resolved via streaming.
 To share data across all parts of the server ([`middleware`](/building-your-application/routing/middleware), [`layout`](/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
 
 1. Request [`store`](docs/api-reference/components/request-context#store)
-2. [Context API](/components-details/context)
+2. [Context API](/building-your-application/components-details/context)
 
 Example using store:
 
@@ -138,7 +138,7 @@ export function UserInfo({}: Props, request: RequestContext) {
 
 We recommend that whenever possible you add the data to the `store` inside the request. And use the Context API only in specific cases where you only want to share this data with a piece of the component tree.
 
-The reason is that the **Context API is more expensive** and if you don't put the [`serverOnly`](/components-details/context#serveronly-property) attribute it creates a DOM element (`context-provider`) and shares the data with the rest of the web-components that are in the same component tree.
+The reason is that the **Context API is more expensive** and if you don't put the [`serverOnly`](/building-your-application/components-details/context#serveronly-property) attribute it creates a DOM element (`context-provider`) and shares the data with the rest of the web-components that are in the same component tree.
 
 In both cases the data lives within the lifetime of the request, it is not global data, and one of the benefits is that all server-components receive the [`RequestContext`](/api-reference/components/request-context) as a second parameter, and you can access easly to that data.
 
@@ -152,8 +152,8 @@ The `RequestContext` is an extension of the [Request](https://developer.mozilla.
 
 To share data across all web components there are also the same two ways:
 
-1. Web Context [`store`](docs/api-reference/components/web-context#store)
-2. [Context API](/components-details/context)
+1. Web Context [`store`](/api-reference/components/web-context#store)
+2. [Context API](/building-your-application/components-details/context)
 
 Example using store:
 
@@ -234,7 +234,7 @@ The reason is that the **Context API is more expensive** and it creates a DOM el
 
 #### Re-fetch data in web components
 
-[Web-components](/components-detailsweb-components) are reactive, and although they are only rendered once when the component is mounted, an [`effect`](/components-details/web-components#effects-effect-method) can be used to do a `re-fetch` whenever a signal (prop, state, store, context...) changes.
+[Web-components](/building-your-application/components-details/web-components) are reactive, and although they are only rendered once when the component is mounted, an [`effect`](/building-your-application/components-details/web-components#effects-effect-method) can be used to do a `re-fetch` whenever a signal (prop, state, store, context...) changes.
 
 ```tsx
 export default async function WebComponent(
@@ -263,7 +263,7 @@ In this example, every time the `foo` prop signal inside the `effect` changes, t
 To share data across all parts of the server and web there are two ways:
 
 1. Request [`store`](docs/api-reference/components/request-context#store) using [`transferToClient`](docs/api-reference/components/request-context#transfertoclient) method
-2. [Context API](/components-details/context) (without [`serverOnly`](/components-details/context#serveronly-property) prop)
+2. [Context API](/building-your-application/components-details/context) (without [`serverOnly`](/building-your-application/components-details/context#serveronly-property) prop)
 
 Example using store:
 

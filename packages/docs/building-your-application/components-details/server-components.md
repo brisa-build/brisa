@@ -32,7 +32,7 @@ You can be 100% sure that all the code here runs ONLY on the server. All events 
 
 Although the server components are interactive in Brisa, the interactivity of the server components is more focused on interactivity where the server is involved. It would not make sense to do the interactivity on the server for Spreadsheet cell components, since all this interactivity could be on the client avoiding constant calls to the server.
 
-[Web components](/building-your-application/components-details/web-components.md) are fully reactive thanks to [signals](/building-your-application/components-details/web-components.md#state-state-method), and you can access the [Web API](https://developer.mozilla.org/en-US/docs/Web/API).
+[Web components](/building-your-application/components-details/web-components) are fully reactive thanks to [signals](/building-your-application/components-details/web-components#state-state-method), and you can access the [Web API](https://developer.mozilla.org/en-US/docs/Web/API).
 
 ## Creating a Server Component
 
@@ -281,13 +281,13 @@ export default function SharedStore({}, { store }: RequestContext) {
 
 ## Context
 
-To share context between Server Components without prop drilling you can use [context](/components-details/context).
+To share context between Server Components without prop drilling you can use [context](/building-your-application/components-details/context).
 
 To use context take a look to:
 
-- [`createContext`](/components-details/context#create-context-createcontext)
-- [`context-provider`](/components-details/context#provider)
-- [`useContext`](/components-details/context#consume-context-usecontext)
+- [`createContext`](/building-your-application/components-details/context#create-context-createcontext)
+- [`context-provider`](/building-your-application/components-details/context#provider)
+- [`useContext`](/building-your-application/components-details/context#consume-context-usecontext)
 
 Example parent:
 

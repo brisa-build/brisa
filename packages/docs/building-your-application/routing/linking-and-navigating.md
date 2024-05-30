@@ -141,7 +141,7 @@ export default function Posts({ posts }) {
 
 ## I18n navigation
 
-If you have [i18n routing](/routing/internationalization) enabled, during navigation you always have to forget about route translations and during the render of the page will be translated to correct translated page.
+If you have [i18n routing](/building-your-application/routing/internationalization) enabled, during navigation you always have to forget about route translations and during the render of the page will be translated to correct translated page.
 
 ```jsx
 export default function Home() {

@@ -362,7 +362,7 @@ function Page({}, req: RequestContext) {
 
 ## `rerenderInAction`
 
-The [`rerenderInAction`](/api-reference/functions/rerenderInAction) method is used to rerender the component or the page
+The [`rerenderInAction`](/api-reference/server-apis/rerenderInAction) method is used to rerender the component or the page
 inside a server action. Outside of an action, it throws an error.
 
 #### Params:
@@ -390,7 +390,7 @@ function handleEvent() {
 
 ## `navigate`
 
-If you would like to navigate the user to a different route after the completion of a Server Action, you can use [`navigate`](/app/api-reference/functions/navigate) API. `navigate` needs to be called outside of the `try/catch` block:
+If you would like to navigate the user to a different route after the completion of a Server Action, you can use [`navigate`](/api-reference/functions/navigate) API. `navigate` needs to be called outside of the `try/catch` block:
 
 ```tsx
 import { navigate } from "brisa";
