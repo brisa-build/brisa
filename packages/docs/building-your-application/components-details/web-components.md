@@ -603,13 +603,13 @@ export default function DoubleCounter({}, { state, derived }) {
 
 ## Context
 
-To share context between Web Components without prop drilling you can use [context](/components-details/context).
+To share context between Web Components without prop drilling you can use [context](/building-your-application/components-details/context).
 
 To use context take a look to:
 
-- [`createContext`](/components-details/context#create-context-createcontext)
-- [`context-provider`](/components-details/context#provider)
-- [`useContext`](/components-details/context#consume-context-usecontext)
+- [`createContext`](/building-your-application/components-details/context#create-context-createcontext)
+- [`context-provider`](/building-your-application/components-details/context#provider)
+- [`useContext`](/building-your-application/components-details/context#consume-context-usecontext)
 
 Example parent:
 

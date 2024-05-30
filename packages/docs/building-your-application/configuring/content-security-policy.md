@@ -77,7 +77,7 @@ export default function middleware(req: RequestContext) {
 
 ### Reading the nonce
 
-You can now read the nonce from a [Server Component](/components-details/server-components) using the [`Request Context`](/api-reference/components/request-context):
+You can now read the nonce from a [Server Component](/building-your-application/components-details/server-components) using the [`Request Context`](/api-reference/components/request-context):
 
 ```tsx filename="src/page.tsx"
 import type { RequestContext } from "brisa";
