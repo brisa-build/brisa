@@ -8,7 +8,7 @@ The Pages Router has a file-system based router built on the concept of pages (l
 
 When a file is added to the `pages` directory, it's automatically available as a route.
 
-In Brisa framework, a **page** is a [Brisa Server Component](/components-details/server-components) exported from a `.js`, `.jsx`, `.ts`, or `.tsx` file in the `pages` directory. Each page is associated with a route based on its file name.
+In Brisa framework, a **page** is a [Brisa Server Component](/building-your-application/components-details/server-components) exported from a `.js`, `.jsx`, `.ts`, or `.tsx` file in the `pages` directory. Each page is associated with a route based on its file name.
 
 **Example**: If you create `pages/about.js` that exports a Brisa component like below, it will be accessible at `/about`.
 
@@ -18,7 +18,7 @@ export default function About() {
 }
 ```
 
-See the difference between Brisa Components and React Components [here](/components-details).
+See the difference between Brisa Components and React Components [here](/building-your-application/components-details).
 
 ## Index routes
 
@@ -272,7 +272,7 @@ It is a way to modify in a reactive way from a server action the web components 
 
 ### Consume data on client (web-components):
 
-In the web-components instead of the [`RequestContext`](/api-reference/components/request-context), there is the [`WebContext`](/api-reference/components/web-context), where you have a different [`store`](/components-details/web-components#store-store-method), but if you have transferred the data from the `RequestContext` `store`, you will be able to consume it from the `WebContext` `store`.
+In the web-components instead of the [`RequestContext`](/api-reference/components/request-context), there is the [`WebContext`](/api-reference/components/web-context), where you have a different [`store`](/building-your-application/components-details/web-components#store-store-method), but if you have transferred the data from the `RequestContext` `store`, you will be able to consume it from the `WebContext` `store`.
 
 ```tsx
 import { WebContext } from "brisa";
@@ -282,4 +282,4 @@ export default function WebComponent({}, { store }: WebContext) {
 }
 ```
 
-If you want to know more about `store` [check this out](/components-details/web-components#store-store-method).
+If you want to know more about `store` [check this out](/building-your-application/components-details/web-components#store-store-method).

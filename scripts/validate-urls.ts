@@ -31,7 +31,7 @@ async function validateBrisaURLs(directory: string) {
           match.forEach((url: string) => {
             let trimUrl = url
               .trim()
-              .replace(/\)\.?,?:?$/, "")
+              .replace(/\)\.?,?:? ?\**$/, "")
               .replace(/^\(/, "");
             if (isDocs) trimUrl = "https://brisa.build" + trimUrl;
 
