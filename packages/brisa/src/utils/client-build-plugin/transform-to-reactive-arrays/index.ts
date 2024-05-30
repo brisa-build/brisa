@@ -55,7 +55,7 @@ export default function transformToReactiveArrays(
         messages: errorMessages,
         docTitle: "Documentation about web-components",
         docLink:
-          "https://brisa.build/building-your-application/component-details/web-components",
+          "https://brisa.build/building-your-application/components-details/web-components",
       });
     }
 
@@ -101,7 +101,7 @@ export default function transformToReactiveArrays(
 
         logWarning(
           warnMessages,
-          "Docs: https://brisa.build/building-your-application/component-details/web-components",
+          "Docs: https://brisa.build/building-your-application/components-details/web-components",
         );
       }
 
