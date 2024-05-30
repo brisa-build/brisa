@@ -125,7 +125,7 @@ Example of usage:
 <div>{doubleCount.value}</div>
 ```
 
-For more details, refer to the [derived](/components-details/web-components#derived-state-and-props-derived-method) documentation.
+For more details, refer to the [derived](/building-your-application/components-details/web-components#derived-state-and-props-derived-method) documentation.
 
 ## `effect`
 

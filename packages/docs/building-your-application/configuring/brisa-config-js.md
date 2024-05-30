@@ -7,7 +7,7 @@ description: Use brisa.config.js file to configure Brisa.
 The `brisa.config.(js|ts|jsx|tsx)` file is the main configuration file for an application using the Brisa framework. This file should export by default an object that satisfies the `Configuration` type structure. Below is a detailed explanation of how to define this configuration file and a unified example with comments on default values and how to configure them.
 
 ```ts filename="brisa.config.ts"
-import type { Configuration } from 'brisa';
+import type { Configuration } from "brisa";
 
 const config: Configuration = {
   /**
@@ -20,7 +20,7 @@ const config: Configuration = {
    * `assetPrefix` configuration
    * Default: undefined (no prefix added to assets)
    */
-  assetPrefix: 'https://cdn.example.com', // Prefix for assets
+  assetPrefix: "https://cdn.example.com", // Prefix for assets
 
   /**
    * `extendPlugins` configuration
@@ -29,23 +29,23 @@ const config: Configuration = {
   extendPlugins: (plugins, { dev, isServer }) => [
     ...plugins,
     {
-      name: 'my-plugin',
+      name: "my-plugin",
       setup(build) {
         build.onLoad({ filter: /\.txt$/ }, async (args) => {
           return {
-            contents: 'export default ' + JSON.stringify(args.path) + ';',
-            loader: 'js',
+            contents: "export default " + JSON.stringify(args.path) + ";",
+            loader: "js",
           };
         });
       },
-    }
+    },
   ],
 
   /**
    * `basePath` configuration
    * Default: undefined (no base path added)
    */
-  basePath: '/my-app', // Base path for the application
+  basePath: "/my-app", // Base path for the application
 
   /**
    * `tls` configuration
@@ -60,13 +60,12 @@ const config: Configuration = {
    * `output` configuration
    * Default: 'server'
    */
-  output: 'static', // Output type of the application
+  output: "static", // Output type of the application
 };
 
 // Export the configuration as the default export
 export default config satisfies Configuration;
 ```
-
 
 ## `trailingSlash`
 
