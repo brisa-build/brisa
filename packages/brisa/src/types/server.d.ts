@@ -65,7 +65,7 @@ export async function renderToString(
  *
  * Docs:
  *
- * - [How to use `rerenderInAction`](https://brisa.build/api-reference/functions/rerenderInAction)
+ * - [How to use `rerenderInAction`](https://brisa.build/api-reference/server-apis/rerenderInAction#rerenderinaction)
  */
 export function rerenderInAction(props: RerenderInActionProps = {}): never;
 

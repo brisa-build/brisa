@@ -59,7 +59,7 @@ Simple one command:
 bun create brisa@latest
 ```
 
-For more info visit the [docs](https://brisa.build/getting-started/installation).
+For more info visit the [docs](https://brisa.build/getting-started/quick-start).
 
 ## Inspirations
 
