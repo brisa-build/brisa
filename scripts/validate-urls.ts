@@ -15,7 +15,7 @@ async function validateBrisaURLs(directory: string) {
         const match = fileContent.match(/https:\/\/brisa\.build[^\s"']+/g);
         if (match) {
           match.forEach((url: string) => {
-            const trimUrl = url.trim();
+            const trimUrl = url.trim().replace(/\)$/, '');
             if(!URL.canParse(trimUrl) || trimUrl.includes('${')) {
               return
             }
@@ -34,7 +34,7 @@ async function validateBrisaURLs(directory: string) {
   let ko = 0;
   for (const [url, filePath] of urls) {
     // TODO: Remove the replace when the Brisa documentation is public
-    const finalUrl = url.replace('https://brisa.build', 'http://localhost:4173');
+    const finalUrl = url.replace('https://brisa.build', 'https://brisa-mu.vercel.app');
     try {
       const response = await fetch(finalUrl);
       if (!response.ok) {
