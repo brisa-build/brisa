@@ -200,7 +200,7 @@ For more details, refer to the [i18n](/building-your-application/routing/interna
 
 ## `ws`
 
-In case you have [configured WebSockets](/building-your-application/routing/websockets.md), you can access them from any server component, api route, middleware, etc. The `ws` is of type `ServerWebSocket`, where is:
+In case you have [configured WebSockets](/building-your-application/routing/websockets), you can access them from any server component, api route, middleware, etc. The `ws` is of type `ServerWebSocket`, where is:
 
 ```ts
 interface ServerWebSocket {
