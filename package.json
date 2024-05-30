@@ -31,7 +31,8 @@
     "docs:build": "bun run --cwd packages/docs build",
     "docs:preview": "bun run --cwd packages/docs preview",
     "update-version": "bun run scripts/update-brisa-version.ts",
-    "upgrade": "bun run scripts/upgrade-bun.ts"
+    "upgrade": "bun run scripts/upgrade-bun.ts",
+    "validate-urls": "bun run scripts/validate-urls.ts"
   },
   "engines": {
     "bun": ">= 1.1.10",
