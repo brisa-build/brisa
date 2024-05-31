@@ -85,6 +85,7 @@ export default function ErrorDialog(
       align-items: flex-start;
       padding-top: 10vh;
       z-index: 9000;
+      box-sizing: border-box;
     }
 
     nav button {
