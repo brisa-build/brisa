@@ -12,7 +12,7 @@ function init(options: ServeOptions) {
     globalThis.brisaServer = server;
     console.log(
       LOG_PREFIX.READY,
-      `listening on http://${server.hostname}:${server.port}...`,
+      `listening on http://${server.hostname}:${server.port}`,
     );
   } catch (error) {
     const { message } = error as Error;
