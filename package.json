@@ -1,7 +1,7 @@
 {
   "name": "brisa-monorepo",
   "version": "0.0.74",
-  "packageManager": "bun@1.1.10",
+  "packageManager": "bun@1.1.12",
   "description": "The next-gen web framework.",
   "license": "MIT",
   "type": "module",
@@ -35,7 +35,7 @@
     "validate-urls": "bun run scripts/validate-urls.ts"
   },
   "engines": {
-    "bun": ">= 1.1.10",
+    "bun": ">= 1.1.12",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
