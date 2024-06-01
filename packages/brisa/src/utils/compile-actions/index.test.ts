@@ -1431,12 +1431,97 @@ describe("utils", () => {
 
       expect(output).toEqual(expected);
     });
+
+    it.todo("should transform simple HOC with an action", () => {
+      const code = `
+        export default async function AboutUs() {
+          return (
+            <Foo text="Hello" />
+          );
+        }
+
+        const Foo = withAction(({ onClick }) => <button onClick={onClick}>Click me</button>);
+
+        function withAction(Component) {
+          return function WrappedComponent({ text }) {
+            return <Component onClick={() => console.log(text)} />
+          };
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function withAction(Component) {
+          return function WrappedComponent({text}) {
+            return jsxDEV(Component, {onClick: () => console.log(text)}, undefined, false, undefined, this);
+          };
+        }
+
+        async function AboutUs() {
+          return jsxDEV(Foo, {text: "Hello"}, undefined, false, undefined, this);
+        }
+
+        const Foo = withAction(({onClick}) => jsxDEV("button", {onClick, children: "Click me"}, undefined, false, undefined, this));
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => console.log(text);
+            await __action(...req.store.get('__params:a1_1'));
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(AboutUs, {}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
     it.todo(
       "should work with an element with an action defined outside the Component",
+      () => {
+        const code = `
+        const el = <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>Click me</div>;
+
+        export default function Component() {
+          return el;
+        }
+      `;
+
+        const output = normalizeQuotes(transformToActionCode(code));
+
+        const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        const el = jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: "Click me"}, undefined, false, undefined, this);
+
+        function Component() {
+          return el;
+        }
+
+        export async function a1_1({}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_1'));
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+        expect(output).toEqual(expected);
+      },
     );
     it.todo(
       "should work with an element with multiple actions defined outside the Component",
     );
-    it.todo("should transform a simple HOC with an action");
   });
 });
