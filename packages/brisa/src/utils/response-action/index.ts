@@ -101,7 +101,7 @@ export default async function responseAction(req: RequestContext) {
         `The action ${action} was not found.`,
         `Don't worry, it's not your fault. Probably a bug in Brisa.`,
       ],
-      docTitle: "Please report it.",
+      docTitle: "Please report it",
       docLink: "https://github.com/brisa-build/brisa/issues/new",
       req,
     });
