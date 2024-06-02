@@ -570,5 +570,32 @@ describe("utils", () => {
 
       expect(res.headers.get("x-test")).toBe("test");
     });
+
+    it("should log an error if the action does not exist and return a 404 response", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_non-existing-action",
+          },
+          body: JSON.stringify({ args: [] }),
+        }),
+      });
+
+      const res = await responseAction(req);
+      const logMessage = logMock.mock.calls.toString();
+
+      expect(logMock).toHaveBeenCalled();
+      expect(logMessage).toContain(
+        "The action a1_non-existing-action was not found",
+      );
+      expect(logMessage).toContain(
+        "Don't worry, it's not your fault. Probably a bug in Brisa.",
+      );
+
+      expect(res.status).toBe(404);
+      expect(res.headers.get("content-type")).toBe("application/json");
+    });
   });
 });

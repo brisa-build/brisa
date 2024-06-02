@@ -4,6 +4,7 @@ import type { RequestContext } from "@/types";
 import { deserialize } from "@/utils/serialization";
 import transferStoreService from "@/utils/transfer-store-service";
 import { resolveStore } from "@/utils/resolve-action";
+import { logError } from "@/utils/log/log-build";
 
 export default async function responseAction(req: RequestContext) {
   const { transferClientStoreToServer, formData, body } =
@@ -92,6 +93,25 @@ export default async function responseAction(req: RequestContext) {
     }
 
     return nextProps;
+  }
+
+  if (!actionModule[action]) {
+    logError({
+      messages: [
+        `The action ${action} was not found.`,
+        `Don't worry, it's not your fault. Probably a bug in Brisa.`,
+      ],
+      docTitle: "Please report it.",
+      docLink: "https://github.com/brisa-build/brisa/issues/new",
+      req,
+    });
+
+    return new Response(resolveStore(req), {
+      status: 404,
+      headers: {
+        "content-type": "application/json",
+      },
+    });
   }
 
   let response = await actionModule[action](props, req);
