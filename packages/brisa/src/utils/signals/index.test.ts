@@ -1,14 +1,6 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
 import type { IndicatorSignal } from "@/types";
-import { join } from "node:path";
-
-const transpiler = new Bun.Transpiler({
-  loader: "ts",
-  exports: {
-    eliminate: ["default"],
-  },
-});
 
 const signals = () =>
   require(".").default() as ReturnType<typeof import("./index").default>;
