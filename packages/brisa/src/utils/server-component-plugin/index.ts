@@ -2,6 +2,7 @@ import { getConstants } from "@/constants";
 import AST from "@/utils/ast";
 import replaceAstImportsToAbsolute from "@/utils/replace-ast-imports-to-absolute";
 import { logWarning } from "@/utils/log/log-build";
+import getDependenciesList from "@/utils/ast/get-dependencies-list";
 
 type ServerComponentPluginOptions = {
   allWebComponents: Record<string, string>;
@@ -224,5 +225,6 @@ export default function serverComponentPlugin(
     code: generateCodeFromAST(modifiedAst) + workaroundText,
     detectedWebComponents,
     hasActions,
+    dependencies: getDependenciesList(modifiedAst, path),
   };
 }
