@@ -51,7 +51,10 @@ function getActionFnFromActionIdentifier(info: ActionInfo) {
     | undefined;
 
   JSON.stringify(info.componentFnExpression, (k, v) => {
-    if (info.actionIdentifierName === v?.id?.name) {
+    if (
+      info.actionIdentifierName &&
+      info.actionIdentifierName === v?.id?.name
+    ) {
       v.__isActionFn = true;
       actionFn = v;
     }

@@ -1432,6 +1432,74 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
+    it("should work with action.bind(this)", () => {
+      const code = `
+        export default function Component({text}) {
+          const handleClick = (world) => console.log("hello"+world);
+          const onClick = handleClick.bind(this, ' test');
+          return <div onClick={onClick} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          const handleClick = world => console.log("hello" + world);
+          const onClick = handleClick.bind(this, ' test');
+          return jsxDEV("div", {onClick,"data-action-onClick": "a1_1","data-action\": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const handleClick = world => console.log("hello" + world);
+            const onClick = handleClick.bind(this, ' test');
+            await onClick(...req.store.get('__params:a1_1'));
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should work with action.bind(this) defined on the attribute", () => {
+      const code = `
+        export default function Component({text}) {
+          const handleClick = (world) => console.log("hello"+world);
+          return <div onClick={handleClick.bind(this, ' test')} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          const handleClick = world => console.log("hello" + world);
+          return jsxDEV("div", {onClick: handleClick.bind(this, " test"),"data-action-onClick": "a1_1","data-action\": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const handleClick = world => console.log("hello" + world);
+            const __action = handleClick.bind(this, " test");
+            await __action(...req.store.get('__params:a1_1'));
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
     it.todo("should transform simple HOC with an action", () => {
       const code = `
         export default async function AboutUs() {

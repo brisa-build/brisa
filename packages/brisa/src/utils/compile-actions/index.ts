@@ -200,14 +200,28 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
 }
 
 function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
+  const body = getPurgedBody(info);
   const { params, requestDestructuring, requestParamName } =
     getActionParams(info);
-  const declareActionVar =
-    !info.actionIdentifierName && info.actionFnExpression;
-  const body = getPurgedBody(info);
 
-  if (declareActionVar) {
-    body.body.unshift({
+  if (info.actionFnExpression) {
+    let position = 0;
+
+    // There are some cases that exists both, like: onClick={someIdentifier.bind(null, 'foo')}
+    if (info.actionIdentifierName) {
+      const identifierPosition = body.body.findIndex(
+        (node) =>
+          node.type === "VariableDeclaration" &&
+          node.declarations.some(
+            (declaration) =>
+              declaration.id.type === "Identifier" &&
+              declaration.id.name === info.actionIdentifierName,
+          ),
+      );
+      if (identifierPosition !== -1) position = identifierPosition + 1;
+    }
+
+    body.body.splice(position, 0, {
       type: "VariableDeclaration",
       kind: "const",
       declarations: [
@@ -301,7 +315,9 @@ function getActionCall(
         type: "CallExpression",
         callee: {
           type: "Identifier",
-          name: info.actionIdentifierName ?? "__action",
+          name: info.actionFnExpression
+            ? "__action"
+            : info.actionIdentifierName,
         },
         arguments: [
           {

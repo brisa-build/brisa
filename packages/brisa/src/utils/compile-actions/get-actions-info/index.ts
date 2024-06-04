@@ -70,17 +70,25 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
             (e: any) => e?.key?.name?.toLowerCase() === eventName,
           )?.value;
 
+          let actionFnExpression: any | undefined;
+          let actionIdentifierName: string | undefined;
+
+          if (eventContent?.type === "CallExpression") {
+            actionFnExpression = eventContent;
+            actionIdentifierName =
+              eventContent?.callee?.object?.name ?? eventContent?.callee?.name;
+          } else if (eventContent?.type === "Identifier") {
+            actionIdentifierName = eventContent?.name;
+          } else if (FN.has(eventContent?.type)) {
+            actionFnExpression = eventContent;
+          }
+
           registeredActions.add(actionId);
           actionInfo.push({
             actionId,
             componentFnExpression: comp,
-            actionFnExpression: FN.has(eventContent?.type)
-              ? eventContent
-              : undefined,
-            actionIdentifierName:
-              eventContent?.type === "Identifier"
-                ? eventContent?.name
-                : undefined,
+            actionFnExpression,
+            actionIdentifierName,
           });
         }
         return curr;
