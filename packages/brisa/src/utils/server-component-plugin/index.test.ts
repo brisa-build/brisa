@@ -1,4 +1,5 @@
 import { describe, expect, it, afterEach, spyOn, jest } from "bun:test";
+import { join } from "path";
 
 import serverComponentPlugin, { workaroundText } from ".";
 import { normalizeQuotes } from "@/helpers";
@@ -6,6 +7,11 @@ import AST from "@/utils/ast";
 import { getConstants } from "@/constants";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
+
+const FIXTURES = join(import.meta.dir, "..", "..", "__fixtures__");
+const webComponentPath = join(FIXTURES, "web-components", "web-component.tsx");
+const serverComponentPath = join(FIXTURES, "pages", "index.tsx");
+const brisaServer = Bun.fileURLToPath(import.meta.resolve("brisa/server"));
 
 const toExpected = (s: string) =>
   normalizeQuotes(generateCodeFromAST(parseCodeToAST(s)) + workaroundText);
@@ -26,9 +32,10 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
     });
 
     it('should not add the action if is a web-component"', () => {
@@ -38,15 +45,16 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": "src/web-components/web-component.tsx",
+        "web-component": webComponentPath,
       };
 
       const out = serverComponentPlugin(code, {
         allWebComponents,
         fileID: "a1",
-        path: "src/web-components/web-component.tsx",
+        path: webComponentPath,
       });
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
     });
 
     it('should add the attribute "data-action-onclick" when a server-component has an event defined', () => {
@@ -58,11 +66,12 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
       expect(outputCode).toBe(
         toExpected(`
         export default function ServerComponent() {
@@ -79,20 +88,23 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": "src/components/web-component.tsx",
+        "web-component": webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toEqual(
+        new Set([brisaServer, webComponentPath]),
+      );
       expect(outputCode).toBe(
         toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
-        import _Brisa_WC1 from "src/components/web-component.tsx";
+        import _Brisa_WC1 from "${webComponentPath}";
 
         export default function ServerComponent() {
           return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
@@ -110,11 +122,12 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
       expect(outputCode).toBe(
         toExpected(`
         export default function ServerComponent() {
@@ -138,11 +151,12 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
       expect(outputCode).toBe(
         toExpected(`
         export default function ServerComponent() {
@@ -171,10 +185,11 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
 
       expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
         export default function ServerComponent1() {
@@ -208,10 +223,11 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
         export default function ServerComponent1() {
@@ -245,17 +261,18 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
 
       const logs = mockConsoleLog.mock.calls.toString();
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(logs).toContain(
         'Actions are not supported with the "output": "static" option.',
       );
-      expect(logs).toContain("The warn arises in: /component/some.tsx");
+      expect(logs).toContain(`The warn arises in: ${serverComponentPath}`);
     });
 
     it('should not warn in PROD when there are actions and the config.output is "static"', () => {
@@ -279,10 +296,11 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(mockConsoleLog).not.toHaveBeenCalled();
     });
 
@@ -306,10 +324,11 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
       export default function ServerComponent1() {
@@ -343,17 +362,18 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
 
       const logs = mockConsoleLog.mock.calls.toString();
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(logs).toContain(
         'Actions are not supported with the "output": "desktop" option.',
       );
-      expect(logs).toContain("The warn arises in: /component/some.tsx");
+      expect(logs).toContain(`The warn arises in: ${serverComponentPath}`);
     });
 
     it('should not warn in PROD when there are actions and the config.output is "desktop"', () => {
@@ -377,10 +397,11 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(mockConsoleLog).not.toHaveBeenCalled();
     });
 
@@ -391,17 +412,17 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": "src/components/web-component.tsx",
+        "web-component": webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
-        import _Brisa_WC1 from "src/components/web-component.tsx";
+        import _Brisa_WC1 from "${webComponentPath}";
 
         export default function ServerComponent() {
           return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" />;
@@ -409,6 +430,9 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(
+        new Set([brisaServer, webComponentPath]),
+      );
       expect(outputCode).toEqual(expected);
     });
 
@@ -427,17 +451,17 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": "src/components/web-component.tsx",
+        "web-component": webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
-        import _Brisa_WC1 from "src/components/web-component.tsx";
+        import _Brisa_WC1 from "${webComponentPath}";
 
         export default function ServerComponent() {
           return (
@@ -453,6 +477,9 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(
+        new Set([brisaServer, webComponentPath]),
+      );
       expect(outputCode).toEqual(expected);
     });
 
@@ -463,12 +490,12 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": "src/components/web-component.tsx",
+        "web-component": webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
@@ -478,6 +505,7 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(outputCode).toEqual(expected);
     });
 
@@ -493,7 +521,7 @@ describe("utils", () => {
       const out = serverComponentPlugin(code, {
         allWebComponents,
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
@@ -503,6 +531,7 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(outputCode).toEqual(expected);
     });
 
@@ -513,12 +542,12 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": "src/components/web-component.tsx",
+        "web-component": webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
@@ -528,6 +557,7 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
       expect(outputCode).toEqual(expected);
     });
 
@@ -543,17 +573,17 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": "src/components/web-component.tsx",
+        "web-component": webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
         fileID: "a1",
-        path: "/component/some.tsx",
+        path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
-        import _Brisa_WC1 from "src/components/web-component.tsx";
+        import _Brisa_WC1 from "${webComponentPath}";
 
         export default function ServerComponent() {
           return (
@@ -566,7 +596,72 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(
+        new Set([brisaServer, webComponentPath]),
+      );
       expect(outputCode).toEqual(expected);
+    });
+
+    it("should add all the dependencies", () => {
+      const code = `
+        import { Foo } from "./foo.tsx";
+        import { Bar } from "./bar.tsx";
+        import { Baz } from "./baz.tsx";
+
+        export default function ServerComponent() {
+          return (
+            <>
+              <Foo />
+              <Bar />
+              <Baz />
+              <web-component />
+            </>
+          );
+        }
+      `;
+
+      const allWebComponents = {
+        "web-component": webComponentPath,
+      };
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+      const expected = toExpected(`
+        import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
+        import _Brisa_WC1 from "${webComponentPath}";
+        import { Foo } from "./foo.tsx";
+        import { Bar } from "./bar.tsx";
+        import { Baz } from "./baz.tsx";
+
+        export default function ServerComponent() {
+          return (
+            <>
+              <Foo />
+              <Bar />
+              <Baz />
+              <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" />
+            </>
+          );
+        }
+      `);
+
+      const pagesPath = join(FIXTURES, "pages");
+
+      expect(out.hasActions).toBeFalse();
+      expect(outputCode).toEqual(expected);
+      expect(out.dependencies).toEqual(
+        new Set([
+          brisaServer,
+          join(pagesPath, "foo.tsx"),
+          join(pagesPath, "bar.tsx"),
+          join(pagesPath, "baz.tsx"),
+          webComponentPath,
+        ]),
+      );
     });
   });
 });
