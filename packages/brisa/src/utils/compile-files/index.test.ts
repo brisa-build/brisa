@@ -860,4 +860,68 @@ describe("utils", () => {
       expect(logOutput).toContain("/pokemon/pikachu.html prerendered");
     });
   });
+
+  it("should compile an app with a web component inside a server component in a nested way but detected correctly", async () => {
+    const SRC_DIR = path.join(
+      FIXTURES,
+      "with-web-components-inside-server-components",
+    );
+    const BUILD_DIR = path.join(SRC_DIR, "out");
+    const PAGES_DIR = path.join(BUILD_DIR, "pages");
+    const ASSETS_DIR = path.join(BUILD_DIR, "public");
+    const TYPES = path.join(BUILD_DIR, "_brisa", "types.ts");
+    const constants = getConstants();
+    globalThis.mockConstants = {
+      ...constants,
+      PAGES_DIR,
+      BUILD_DIR,
+      IS_PRODUCTION: true,
+      IS_DEVELOPMENT: false,
+      SRC_DIR,
+      ASSETS_DIR,
+    };
+
+    mockConsoleLog.mockImplementation(() => {});
+
+    const { success, logs } = await compileFiles();
+
+    expect(logs).toBeEmpty();
+    expect(success).toBe(true);
+
+    const files = fs
+      .readdirSync(BUILD_DIR)
+      .toSorted((a, b) => a.localeCompare(b));
+
+    expect(fs.existsSync(TYPES)).toBe(true);
+    expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
+      minifyText(
+        `export interface IntrinsicCustomElements { 'some-counter': JSX.WebComponentAttributes<typeof import("${path.join(
+          SRC_DIR,
+          "web-components",
+          "some-counter.tsx",
+        )}").default>; }`,
+      ),
+    );
+    expect(mockConsoleLog).toHaveBeenCalled();
+    expect(files).toEqual(["_brisa", "pages", "pages-client"]);
+
+    const info = constants.LOG_PREFIX.INFO;
+
+    const logOutput = minifyText(mockConsoleLog.mock.calls.flat().join("\n"));
+
+    const expected = minifyText(`
+  ${info}
+  ${info}Route                                | JS server | JS client (gz)  
+  ${info}-------------------------------------------------------------------
+  ${info}λ /pages/page-without-web-component  | 190 B     | ${greenLog("0 B")}  
+  ${info}λ /pages/index                       | 1 kB      | ${greenLog(
+    "3 kB",
+  )}  
+  ${info}
+  ${info}λ Server entry-points
+  ${info}Φ JS shared by all
+  ${info}
+`);
+    expect(logOutput).toContain(expected);
+  });
 });
