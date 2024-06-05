@@ -15,6 +15,7 @@ import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import getI18nClientMessages from "@/utils/get-i18n-client-messages";
 import compileActions from "@/utils/compile-actions";
 import generateStaticExport from "@/utils/generate-static-export";
+import getWebComponentsPerEntryPoints from "@/utils/ast/get-webcomponents-per-entrypoints";
 
 export default async function compileFiles() {
   const {
@@ -43,7 +44,8 @@ export default async function compileFiles() {
     integrationsPath,
   );
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
-  const webComponentsPerEntrypoint: Record<string, Record<string, string>> = {};
+  const webComponentsPerFile: Record<string, Record<string, string>> = {};
+  const dependenciesPerFile = new Map<string, Set<string>>();
   const actionsEntrypoints: string[] = [];
   const define = {
     __DEV__: (!IS_PRODUCTION).toString(),
@@ -90,8 +92,6 @@ export default async function compileFiles() {
                     allWebComponents,
                     fileID,
                   });
-                  const buildPath = getBuildPath(path);
-
                   if (result.hasActions) {
                     const actionEntrypoint = join(
                       BUILD_DIR,
@@ -105,8 +105,8 @@ export default async function compileFiles() {
                   }
 
                   code = result.code;
-                  webComponentsPerEntrypoint[buildPath] =
-                    result.detectedWebComponents;
+                  webComponentsPerFile[path] = result.detectedWebComponents;
+                  dependenciesPerFile.set(path, result.dependencies);
                 } catch (error) {
                   console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
                   console.log(LOG_PREFIX.ERROR, (error as Error).message);
@@ -135,7 +135,11 @@ export default async function compileFiles() {
 
   const pagesSize = await compileClientCodePage(outputs, {
     allWebComponents,
-    webComponentsPerEntrypoint,
+    webComponentsPerEntrypoint: getWebComponentsPerEntryPoints(
+      webComponentsPerFile,
+      dependenciesPerFile,
+      entrypoints,
+    ),
     integrationsPath,
     layoutPath,
   });

@@ -11,13 +11,19 @@ export default function getDependenciesList(ast: ESTree.Program, path: string) {
     for (let specifier of importAst.specifiers) {
       if (!SPECIFIERS.has(specifier.type)) continue;
 
-      const dependencyPath = Bun.fileURLToPath(
-        import.meta.resolve(importAst.source.value as string, path),
-      );
+      const dependencyPath = resolve(importAst.source.value as string, path);
 
-      dependenciesMap.add(dependencyPath);
+      if (dependencyPath) dependenciesMap.add(dependencyPath);
     }
   }
 
   return dependenciesMap;
+}
+
+function resolve(path: string, base: string) {
+  try {
+    return import.meta.resolveSync(path, base);
+  } catch {
+    return Bun.fileURLToPath(import.meta.resolve(path, base));
+  }
 }
