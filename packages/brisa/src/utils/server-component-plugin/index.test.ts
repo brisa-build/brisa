@@ -11,7 +11,6 @@ const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const FIXTURES = join(import.meta.dir, "..", "..", "__fixtures__");
 const webComponentPath = join(FIXTURES, "web-components", "web-component.tsx");
 const serverComponentPath = join(FIXTURES, "pages", "index.tsx");
-const brisaServer = Bun.fileURLToPath(import.meta.resolve("brisa/server"));
 
 const toExpected = (s: string) =>
   normalizeQuotes(generateCodeFromAST(parseCodeToAST(s)) + workaroundText);
@@ -98,9 +97,7 @@ describe("utils", () => {
       const outputCode = normalizeQuotes(out.code);
 
       expect(out.hasActions).toBeTrue();
-      expect(out.dependencies).toEqual(
-        new Set([brisaServer, webComponentPath]),
-      );
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
       expect(outputCode).toBe(
         toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
@@ -430,9 +427,7 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
-      expect(out.dependencies).toEqual(
-        new Set([brisaServer, webComponentPath]),
-      );
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
       expect(outputCode).toEqual(expected);
     });
 
@@ -477,9 +472,7 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
-      expect(out.dependencies).toEqual(
-        new Set([brisaServer, webComponentPath]),
-      );
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
       expect(outputCode).toEqual(expected);
     });
 
@@ -596,9 +589,7 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
-      expect(out.dependencies).toEqual(
-        new Set([brisaServer, webComponentPath]),
-      );
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
       expect(outputCode).toEqual(expected);
     });
 
@@ -655,7 +646,6 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
       expect(out.dependencies).toEqual(
         new Set([
-          brisaServer,
           join(pagesPath, "foo.tsx"),
           join(pagesPath, "bar.tsx"),
           join(pagesPath, "baz.tsx"),
