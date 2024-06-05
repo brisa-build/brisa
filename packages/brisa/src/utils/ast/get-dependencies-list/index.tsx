@@ -1,6 +1,7 @@
 import type { ESTree } from "meriyah";
 
 const SPECIFIERS = new Set(["ImportDefaultSpecifier", "ImportSpecifier"]);
+const AVOIDED_DEPENDENCIES = new Set(["brisa", "brisa/server", "brisa/client"]);
 
 export default function getDependenciesList(ast: ESTree.Program, path: string) {
   const dependenciesMap = new Set<string>();
@@ -21,6 +22,7 @@ export default function getDependenciesList(ast: ESTree.Program, path: string) {
 }
 
 function resolve(path: string, base: string) {
+  if (AVOIDED_DEPENDENCIES.has(path)) return;
   try {
     return import.meta.resolveSync(path, base);
   } catch {
