@@ -45,24 +45,23 @@ function findEntryPoints(
   entryPoints: Set<string>,
 ): string[] {
   const entryPointSet = new Set<string>();
+  const visited = new Set<string>();
 
-  function traverse(currentFile: string, visited: Set<string> = new Set()) {
-    if (visited.has(currentFile)) return;
+  const stack = [file];
+  while (stack.length) {
+    const currentFile = stack.pop();
+    if (!currentFile || visited.has(currentFile)) continue;
     visited.add(currentFile);
 
     for (const [entryPoint, deps] of dependencies.entries()) {
       if (!deps.has(currentFile)) continue;
-
       if (entryPoints.has(entryPoint)) {
         entryPointSet.add(entryPoint);
-        continue;
+      } else {
+        stack.push(entryPoint);
       }
-
-      traverse(entryPoint, visited);
     }
   }
-
-  traverse(file);
 
   return Array.from(entryPointSet);
 }

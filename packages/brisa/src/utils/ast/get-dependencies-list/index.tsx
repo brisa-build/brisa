@@ -27,6 +27,12 @@ function resolve(path: string, base: string) {
   try {
     return import.meta.resolveSync(path, base);
   } catch {
+    // It is not exactly the same, it is only the same if it has
+    // the format, otherwise it does not put the format, but
+    // import.meta.resolveSync does. The import.meta.resolveSync
+    // throws an exception if the file does not exist, but
+    // import.meta.resolve does not check if it exists and resolves
+    // the absolute path without resolving the format (.js|.ts|.tsx...)
     return Bun.fileURLToPath(import.meta.resolve(path, base));
   }
 }
