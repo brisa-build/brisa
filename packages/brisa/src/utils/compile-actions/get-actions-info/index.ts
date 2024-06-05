@@ -11,6 +11,7 @@ export type ActionInfo = {
     | ESTree.FunctionExpression;
 };
 
+const EXPRESSION_TYPES = new Set(["CallExpression", "MemberExpression"]);
 const FN = new Set([
   "ArrowFunctionExpression",
   "FunctionExpression",
@@ -73,10 +74,17 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           let actionFnExpression: any | undefined;
           let actionIdentifierName: string | undefined;
 
-          if (eventContent?.type === "CallExpression") {
+          if (EXPRESSION_TYPES.has(eventContent?.type)) {
             actionFnExpression = eventContent;
-            actionIdentifierName =
-              eventContent?.callee?.object?.name ?? eventContent?.callee?.name;
+            JSON.stringify(eventContent, (k, v) => {
+              if (actionIdentifierName) return null;
+              const name = v?.callee?.name ?? v?.object?.name;
+              if (name) {
+                actionIdentifierName = name;
+                return null;
+              }
+              return v;
+            });
           } else if (eventContent?.type === "Identifier") {
             actionIdentifierName = eventContent?.name;
           } else if (FN.has(eventContent?.type)) {
