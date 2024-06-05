@@ -9,12 +9,13 @@ export default function getDependenciesList(ast: ESTree.Program, path: string) {
   for (let importAst of ast.body) {
     if (importAst.type !== "ImportDeclaration") continue;
 
+    const dependencyPath = resolve(importAst.source.value as string, path);
+
+    if (!dependencyPath) continue;
+
     for (let specifier of importAst.specifiers) {
-      if (!SPECIFIERS.has(specifier.type)) continue;
-
-      const dependencyPath = resolve(importAst.source.value as string, path);
-
-      if (dependencyPath) dependenciesMap.add(dependencyPath);
+      if (!SPECIFIERS.has(specifier.type)) break;
+      dependenciesMap.add(dependencyPath);
     }
   }
 
