@@ -1568,6 +1568,93 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
+    it("should work with an object with a function inside an attribute", () => {
+      const code = `
+        export default function Component({text}) {
+          const obj = {
+            foo: {
+              onClick: () => console.log('hello world')
+            }
+          };
+          return <div onClick={obj.foo.onClick} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          const obj = {
+            foo: {
+              onClick: () => console.log('hello world')
+            }
+          };
+          return jsxDEV("div", {onClick: obj.foo.onClick,"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const obj = {
+              foo: {
+                onClick: () => console.log('hello world')
+              }
+            };
+            const __action = obj.foo.onClick;
+            await __action(...req.store.get('__params:a1_1'));
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it.todo(
+      "should work with a destructured object with a function inside an attribute",
+      () => {
+        const code = `
+        export default function Component({text}) {
+          const obj = {
+            onClick: () => console.log('hello world')
+          };
+          return <div {...obj} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+        const output = normalizeQuotes(transformToActionCode(code));
+        const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          const obj = {
+            onClick: () => console.log('hello world')
+          };
+          return jsxDEV("div", {...obj,"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const obj = {
+              onClick: () => console.log('hello world')
+            };
+            const __action = obj.onClick;
+            await __action(...req.store.get('__params:a1_1'));
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+        expect(output).toEqual(expected);
+      },
+    );
+
     it.todo("should transform simple HOC with an action", () => {
       const code = `
         export default async function AboutUs() {

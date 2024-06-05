@@ -653,5 +653,33 @@ describe("utils", () => {
         ]),
       );
     });
+
+    it.todo(
+      'should add the attribute "data-action-onclick" when a server-component has destructuring props',
+      () => {
+        const code = `
+        export default function ServerComponent() {
+          const props = { onClick: () => console.log('clicked') };
+          return <Component {...props} />;
+        }
+      `;
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: "a1",
+          path: serverComponentPath,
+        });
+
+        expect(out.hasActions).toBeTrue();
+        expect(out.dependencies).toBeEmpty();
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
+        export default function ServerComponent() {
+          const props = { onClick: () => console.log('clicked') };
+          return <Component {...props} data-action-onclick="a1_1" data-action />;
+        }
+      `),
+        );
+      },
+    );
   });
 });
