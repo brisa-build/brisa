@@ -9,10 +9,15 @@ export default function getWebComponentsPerEntryPoints(
 ) {
   const entryPointsSet = new Set(entrypoints);
   const webComponentsPerEntryPoint: Record<string, Record<string, string>> = {};
+  const { SRC_DIR, BUILD_DIR } = getConstants();
+  const getBuildPath = (path: string): string =>
+    path.replace(SRC_DIR, BUILD_DIR).replace(/\.tsx?$/, ".js");
 
   for (const [file, webComponents] of Object.entries(webComponentsPerFile)) {
-    if (entryPointsSet.has(getBuildPath(file))) {
-      webComponentsPerEntryPoint[file] = webComponents;
+    const buildPath = getBuildPath(file);
+
+    if (entryPointsSet.has(buildPath)) {
+      webComponentsPerEntryPoint[buildPath] = webComponents;
       continue;
     }
 
@@ -43,11 +48,11 @@ function findEntryPoints(
   dependencies: DependenciesMap,
   file: string,
   entryPoints: Set<string>,
-): string[] {
+) {
   const entryPointSet = new Set<string>();
   const visited = new Set<string>();
-
   const stack = [file];
+
   while (stack.length) {
     const currentFile = stack.pop();
     if (!currentFile || visited.has(currentFile)) continue;
@@ -63,10 +68,5 @@ function findEntryPoints(
     }
   }
 
-  return Array.from(entryPointSet);
-}
-
-export function getBuildPath(path: string) {
-  const { SRC_DIR, BUILD_DIR } = getConstants();
-  return path.replace(SRC_DIR, BUILD_DIR).replace(/\.tsx?$/, ".js");
+  return entryPointSet;
 }
