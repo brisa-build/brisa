@@ -281,7 +281,7 @@ function toHaveElementByNodeName(
   elementName: string,
 ) {
   return {
-    pass: received.querySelector(elementName) !== null,
+    pass: received && received.querySelector(elementName) !== null,
     message: () => `expected element to have ${elementName}`,
   };
 }
