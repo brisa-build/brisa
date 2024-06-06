@@ -30,10 +30,8 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           curr?.type === "Property" &&
           curr?.key?.value?.startsWith?.("data-action-")
         ) {
-          const eventName = curr?.key?.value
-            ?.replace?.("data-action-", "")
-            ?.toLowerCase();
-
+          const eventName = curr?.key?.value?.replace?.("data-action-", "");
+          const eventNameLowerCase = eventName?.toLowerCase();
           const actionId = curr?.value?.value;
 
           /**
@@ -67,12 +65,27 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
            */
           if (registeredActions.has(actionId)) return curr;
 
-          const eventContent = this.find?.(
-            (e: any) => e?.key?.name?.toLowerCase() === eventName,
+          let eventContent = this.find?.(
+            (e: any) => e?.key?.name?.toLowerCase() === eventNameLowerCase,
           )?.value;
 
           let actionFnExpression: any | undefined;
           let actionIdentifierName: string | undefined;
+
+          // If the eventContent is not found, it means that maybe is
+          //  using destructuring from some object
+          if (!eventContent) {
+            eventContent = {
+              type: "MemberExpression",
+              object: this.find?.((e: any) => e.type === "SpreadElement")
+                ?.argument,
+              computed: false,
+              property: {
+                type: "Identifier",
+                name: eventName,
+              },
+            };
+          }
 
           if (EXPRESSION_TYPES.has(eventContent?.type)) {
             actionFnExpression = eventContent;
