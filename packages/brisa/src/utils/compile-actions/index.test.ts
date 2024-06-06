@@ -1613,10 +1613,8 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo(
-      "should work with a destructured object with a function inside an attribute",
-      () => {
-        const code = `
+    it("should work with a destructured object with a function inside an attribute", () => {
+      const code = `
         export default function Component({text}) {
           const obj = {
             onClick: () => console.log('hello world')
@@ -1624,8 +1622,8 @@ describe("utils", () => {
           return <div {...obj} data-action-onClick="a1_1" data-action>{text}</div>
         }
       `;
-        const output = normalizeQuotes(transformToActionCode(code));
-        const expected = normalizeQuotes(`
+      const output = normalizeQuotes(transformToActionCode(code));
+      const expected = normalizeQuotes(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1651,9 +1649,8 @@ describe("utils", () => {
           }
         }`);
 
-        expect(output).toEqual(expected);
-      },
-    );
+      expect(output).toEqual(expected);
+    });
 
     it.todo("should transform simple HOC with an action", () => {
       const code = `
