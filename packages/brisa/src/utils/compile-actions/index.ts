@@ -209,14 +209,8 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
 
     // There are some cases that exists both, like: onClick={someIdentifier.bind(null, 'foo')}
     if (info.actionIdentifierName) {
-      const identifierPosition = body.body.findIndex(
-        (node) =>
-          node.type === "VariableDeclaration" &&
-          node.declarations.some(
-            (declaration) =>
-              declaration.id.type === "Identifier" &&
-              declaration.id.name === info.actionIdentifierName,
-          ),
+      const identifierPosition = body.body.findLastIndex(
+        (node) => node.type === "VariableDeclaration",
       );
       if (identifierPosition !== -1) position = identifierPosition + 1;
     }

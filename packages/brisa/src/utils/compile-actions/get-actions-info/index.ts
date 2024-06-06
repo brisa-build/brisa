@@ -1,3 +1,4 @@
+import AST from "@/utils/ast";
 import type { ESTree } from "meriyah";
 
 export type ActionInfo = {
@@ -11,7 +12,12 @@ export type ActionInfo = {
     | ESTree.FunctionExpression;
 };
 
-const EXPRESSION_TYPES = new Set(["CallExpression", "MemberExpression"]);
+const { parseCodeToAST } = AST("tsx");
+const EXPRESSION_TYPES = new Set([
+  "CallExpression",
+  "MemberExpression",
+  "LogicalExpression",
+]);
 const FN = new Set([
   "ArrowFunctionExpression",
   "FunctionExpression",
@@ -75,16 +81,18 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           // If the eventContent is not found, it means that maybe is
           //  using destructuring from some object
           if (!eventContent) {
-            eventContent = {
-              type: "MemberExpression",
-              object: this.find?.((e: any) => e.type === "SpreadElement")
-                ?.argument,
-              computed: false,
-              property: {
-                type: "Identifier",
-                name: eventName,
-              },
-            };
+            const spreads =
+              this.filter?.((e: any) => e.type === "SpreadElement") ?? [];
+
+            if (spreads.length) {
+              const expressionCode = spreads
+                .map((e: any) => `${e.argument.name}.${eventName}`)
+                .join(" ?? ");
+              eventContent = (
+                parseCodeToAST(expressionCode)
+                  .body[0] as ESTree.ExpressionStatement
+              )?.expression;
+            }
           }
 
           if (EXPRESSION_TYPES.has(eventContent?.type)) {
