@@ -37,29 +37,131 @@ export default function serverComponentPlugin(
   const isWebComponent = WEB_COMPONENT_REGEX.test(path);
   const detectedWebComponents: Record<string, string> = {};
   const usedWebComponents = new Map<string, string>();
+  const declarations = new Map<string, any>();
   let actionIdCount = 1;
   let count = 1;
   let hasActions = false;
 
-  let modifiedAst = JSON.parse(
-    JSON.stringify(ast, (key, value) => {
-      const isJSX =
-        value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
+  /**
+   * The first traversal is to locate all variable declarations and store
+   * them in a Map along with the identifier name, along with the value.
+   *
+   * This data will be useful in the second traversal, when using props
+   *  in the component with the spreadOperator, we will have to look
+   * (as long as they are declared in the same file), if they have events
+   * inside and in this way we will be able to register these actions.
+   */
+  function traverseA2B(this: any, key: string, value: any) {
+    if (value?.type === "VariableDeclarator" && value?.init) {
+      declarations.set(value.id.name, value.init);
+    } else if (
+      value?.type === "AssignmentExpression" &&
+      value?.left?.type === "Identifier"
+    ) {
+      declarations.set(value.left.name, value.right);
+    } else if (value?.type === "FunctionDeclaration") {
+      declarations.set(value.id.name, value);
+    }
 
-      // Register each JSX action id
-      if (analyzeAction && isJSX && !isWebComponent) {
-        const actionProperties = [];
-        const properties = value.arguments[1]?.properties ?? [];
+    return value;
+  }
 
-        for (let attributeAst of properties) {
-          const isAction = attributeAst?.key?.name?.startsWith("on");
-          if (isAction) hasActions = true;
-          if (isAction && isServerOutput) {
+  /**
+   * The second traversal is useful to add the data-action field with 2 goals:
+   *
+   * - Client (runtime): To let the RPC know that there is a server action
+   *   in the HTML.
+   * - Build time: After this initial compilation, an extra compilation is done
+   *   to generate the action files, where they start from the entrypoints
+   *   (pages) with all the code there. This is necessary for the RPC server
+   *   to know which file to call to execute the action.
+   */
+  function traverseB2A(this: any, key: string, value: any) {
+    const isJSX =
+      value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
+
+    // Register each JSX action id
+    if (analyzeAction && isJSX && !isWebComponent) {
+      const actionProperties = [];
+      const properties = value.arguments[1]?.properties ?? [];
+      const spreadsIdentifiers = [];
+
+      for (let attributeAst of properties) {
+        const isAction = attributeAst?.key?.name?.startsWith("on");
+
+        // In case it is a SpreadElement, we have to note that we want to
+        // verify later after looking at all the props the content of each
+        // identifier if it has actions to also add them. They will only be
+        // registered as long as they are defined in the same document.
+        //
+        // There are other possible cases:
+        //
+        // 1. The spread comes from the props of the component, then it will
+        //    already have the attribute data-action in the prop and it will be
+        //    added together with.
+        // 2. The spread comes from another file with an import. We believe
+        //    that this is a remote case. For now it is not supported.
+        //
+        if (isServerOutput && attributeAst?.type === "SpreadElement") {
+          const identifier = attributeAst.argument?.name;
+
+          if (identifier) {
+            spreadsIdentifiers.push(identifier);
+            continue;
+          }
+
+          // {...foo.bar.baz} or {...foo.bar.baz()} case:
+          JSON.stringify(attributeAst, (k, v) => {
+            const innerIdentifier = v?.object?.name ?? v?.callee?.name;
+            if (innerIdentifier) {
+              spreadsIdentifiers.push(innerIdentifier);
+              return null;
+            }
+            return v;
+          });
+        }
+
+        if (isAction) hasActions = true;
+        if (isAction && isServerOutput) {
+          actionProperties.push({
+            type: "Property",
+            key: {
+              type: "Literal",
+              value: `data-action-${attributeAst?.key?.name?.toLowerCase()}`,
+            },
+            value: {
+              type: "Literal",
+              value: `${fileID}_${actionIdCount++}`,
+            },
+            kind: "init",
+            computed: false,
+            method: false,
+            shorthand: false,
+          });
+        }
+      }
+
+      // If there are spread elements, we have to look at each one to see if
+      // they have actions and add them.
+      for (let identifierName of spreadsIdentifiers) {
+        const declaration = declarations.get(identifierName);
+
+        if (!declaration) continue;
+
+        JSON.stringify(declaration, (k, v) => {
+          if (
+            v?.type === "Property" &&
+            v?.key?.name?.startsWith("on") &&
+            isUpperCaseChar(v?.key?.name[2])
+          ) {
+            const eventName = v.key.name;
+
+            hasActions = true;
             actionProperties.push({
               type: "Property",
               key: {
                 type: "Literal",
-                value: `data-action-${attributeAst?.key?.name?.toLowerCase()}`,
+                value: `data-action-${eventName.toLowerCase()}`,
               },
               value: {
                 type: "Literal",
@@ -71,106 +173,109 @@ export default function serverComponentPlugin(
               shorthand: false,
             });
           }
-        }
+          return v;
+        });
+      }
 
-        if (actionProperties.length) {
-          const dataActionProperty = {
+      if (actionProperties.length) {
+        const dataActionProperty = {
+          type: "Property",
+          key: {
+            type: "Literal",
+            value: "data-action",
+          },
+          value: {
+            type: "Literal",
+            value: true,
+          },
+          kind: "init",
+          computed: false,
+          method: false,
+          shorthand: false,
+        };
+
+        value.arguments[1].properties = [
+          ...properties,
+          ...actionProperties,
+          dataActionProperty,
+        ];
+      }
+    }
+
+    if (
+      isJSX &&
+      value?.arguments?.[0]?.type === "Literal" &&
+      allWebComponents[value?.arguments?.[0]?.value]
+    ) {
+      const selector = value?.arguments?.[0]?.value;
+      const componentPath = allWebComponents[selector];
+
+      detectedWebComponents[selector] = componentPath;
+
+      // Avoid transformation if it is a native web-component
+      if (selector?.startsWith("native-")) return value;
+
+      // Avoid transformation if it has the "skipSSR" attribute
+      if (
+        value?.arguments?.[1]?.properties?.some(
+          (prop: any) =>
+            prop?.key?.name === "skipSSR" && prop?.value?.value !== false,
+        )
+      ) {
+        return value;
+      }
+
+      const ComponentName =
+        usedWebComponents.get(componentPath) ?? `_Brisa_WC${count++}`;
+
+      usedWebComponents.set(componentPath, ComponentName);
+
+      value.arguments[0] = {
+        type: "Identifier",
+        name: "_Brisa_SSRWebComponent",
+      };
+      value.arguments[1] = {
+        type: "ObjectExpression",
+        properties: [
+          {
             type: "Property",
             key: {
-              type: "Literal",
-              value: "data-action",
+              type: "Identifier",
+              name: "Component",
             },
             value: {
-              type: "Literal",
-              value: true,
+              type: "Identifier",
+              name: ComponentName,
             },
             kind: "init",
             computed: false,
             method: false,
             shorthand: false,
-          };
-
-          value.arguments[1].properties = [
-            ...properties,
-            ...actionProperties,
-            dataActionProperty,
-          ];
-        }
-      }
-
-      if (
-        isJSX &&
-        value?.arguments?.[0]?.type === "Literal" &&
-        allWebComponents[value?.arguments?.[0]?.value]
-      ) {
-        const selector = value?.arguments?.[0]?.value;
-        const componentPath = allWebComponents[selector];
-
-        detectedWebComponents[selector] = componentPath;
-
-        // Avoid transformation if it is a native web-component
-        if (selector?.startsWith("native-")) return value;
-
-        // Avoid transformation if it has the "skipSSR" attribute
-        if (
-          value?.arguments?.[1]?.properties?.some(
-            (prop: any) =>
-              prop?.key?.name === "skipSSR" && prop?.value?.value !== false,
-          )
-        ) {
-          return value;
-        }
-
-        const ComponentName =
-          usedWebComponents.get(componentPath) ?? `_Brisa_WC${count++}`;
-
-        usedWebComponents.set(componentPath, ComponentName);
-
-        value.arguments[0] = {
-          type: "Identifier",
-          name: "_Brisa_SSRWebComponent",
-        };
-        value.arguments[1] = {
-          type: "ObjectExpression",
-          properties: [
-            {
-              type: "Property",
-              key: {
-                type: "Identifier",
-                name: "Component",
-              },
-              value: {
-                type: "Identifier",
-                name: ComponentName,
-              },
-              kind: "init",
-              computed: false,
-              method: false,
-              shorthand: false,
+          },
+          {
+            type: "Property",
+            key: {
+              type: "Identifier",
+              name: "selector",
             },
-            {
-              type: "Property",
-              key: {
-                type: "Identifier",
-                name: "selector",
-              },
-              value: {
-                type: "Literal",
-                value: selector,
-              },
-              kind: "init",
-              computed: false,
-              method: false,
-              shorthand: false,
+            value: {
+              type: "Literal",
+              value: selector,
             },
-            ...(value.arguments[1]?.properties ?? []),
-          ],
-        };
-      }
+            kind: "init",
+            computed: false,
+            method: false,
+            shorthand: false,
+          },
+          ...(value.arguments[1]?.properties ?? []),
+        ],
+      };
+    }
 
-      return value;
-    }),
-  );
+    return value;
+  }
+
+  let modifiedAst = JSON.parse(JSON.stringify(ast, traverseA2B), traverseB2A);
 
   if (!isServerOutput && hasActions) {
     logWarning([
@@ -227,4 +332,9 @@ export default function serverComponentPlugin(
     hasActions,
     dependencies: getDependenciesList(modifiedAst, path),
   };
+}
+
+function isUpperCaseChar(char: string) {
+  const code = char.charCodeAt(0);
+  return code >= 65 && code <= 90;
 }

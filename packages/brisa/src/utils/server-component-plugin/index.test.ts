@@ -654,32 +654,83 @@ describe("utils", () => {
       );
     });
 
-    it.todo(
-      'should add the attribute "data-action-onclick" when a server-component has destructuring props',
-      () => {
-        const code = `
+    it('should add the attribute "data-action-onclick" when a server-component has destructuring props', () => {
+      const code = `
         export default function ServerComponent() {
           const props = { onClick: () => console.log('clicked') };
           return <Component {...props} />;
         }
       `;
-        const out = serverComponentPlugin(code, {
-          allWebComponents: {},
-          fileID: "a1",
-          path: serverComponentPath,
-        });
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
 
-        expect(out.hasActions).toBeTrue();
-        expect(out.dependencies).toBeEmpty();
-        expect(normalizeQuotes(out.code)).toBe(
-          toExpected(`
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
         export default function ServerComponent() {
           const props = { onClick: () => console.log('clicked') };
           return <Component {...props} data-action-onclick="a1_1" data-action />;
         }
       `),
-        );
-      },
-    );
+      );
+    });
+
+    it('should add the attribute "data-action-onclick" when a server-component has nested destructuring props', () => {
+      const code = `
+        export default function ServerComponent() {
+          const bar = {}
+          const props = { foo: { onClick: () => console.log('clicked') } };
+          return <Component {...bar} {...props.foo} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent() {
+          const bar = {}
+          const props = { foo: { onClick: () => console.log('clicked') } };
+          return <Component {...bar} {...props.foo} data-action-onclick="a1_1" data-action />;
+        }
+      `),
+      );
+    });
+
+    it('should add the attribute "data-action-onclick" when a server-component has destructuring props via function', () => {
+      const code = `
+        export default function ServerComponent() {
+          const bar = {}
+          const props = () => ({ onClick: () => console.log('clicked') });
+          return <Component {...bar} {...props()} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent() {
+          const bar = {}
+          const props = () => ({ onClick: () => console.log('clicked') });
+          return <Component {...bar} {...props()} data-action-onclick="a1_1" data-action />;
+        }
+      `),
+      );
+    });
   });
 });
