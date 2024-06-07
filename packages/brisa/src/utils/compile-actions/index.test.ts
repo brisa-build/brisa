@@ -1694,6 +1694,73 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
+    it("should work with destructuring and element generator", () => {
+      const code = `
+        const props = {
+          onClick: () => console.log('hello world'),
+          onInput: () => console.log('hello world'),
+        };
+        const getEl = (text) => <div
+          {...props}
+          data-action-onClick="a1_1"
+          data-action-onInput="a1_2"
+          data-action
+        >{text}</div>;
+
+        export default function Component({text}) {
+          return getEl(text);
+        }
+        `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from "brisa/server";
+
+        const props = {
+          onClick: () => console.log('hello world'),
+          onInput: () => console.log('hello world')
+        };
+        
+        function getEl(text) {return jsxDEV("div", {
+          ...props,
+          "data-action-onClick": "a1_1",
+          "data-action-onInput": "a1_2",
+          "data-action": true,
+          children: text}, undefined, false, undefined, this);}
+          
+        function Component({text}) {
+          return getEl(text);
+        }
+
+        export async function a1_1(text, req) {
+          try {
+            const __action = props.onClick;
+            await __action(...req.store.get("__params:a1_1"));
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(getEl, text, undefined, false, undefined, this)});
+            }
+        }
+
+        export async function a1_2(text, req) {
+          try {
+            const __action = props.onInput;
+            await __action(...req.store.get("__params:a1_2"));
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(getEl, text, undefined, false, undefined, this)});
+            }
+          }
+        `);
+
+      expect(output).toEqual(expected);
+    });
+
     it("should work with logical expression as events", () => {
       const code = `
         export default function Component({text}) {
