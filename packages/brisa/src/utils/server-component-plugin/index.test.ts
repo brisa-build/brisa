@@ -860,4 +860,81 @@ describe("utils", () => {
     expect(out.dependencies).toBeEmpty();
     expect(normalizeQuotes(out.code)).toBe(toExpected(code));
   });
+
+  it('should add the attribute "data-action-onclick" with destructuring and element generator', () => {
+    const code = `
+        const props = {
+          onClick: () => console.log('hello world'),
+          onInput: () => console.log('hello world'),
+        };
+        const getEl = (text) => <div {...props} children={text}></div>;
+
+        export default function Component({text}) {
+          return getEl(text);
+        }
+    `;
+
+    const out = serverComponentPlugin(code, {
+      allWebComponents: {},
+      fileID: "a1",
+      path: serverComponentPath,
+    });
+
+    expect(out.hasActions).toBeTrue();
+    expect(out.dependencies).toBeEmpty();
+    expect(normalizeQuotes(out.code)).toBe(
+      toExpected(`
+        const props = {
+          onClick: () => console.log('hello world'),
+          onInput: () => console.log('hello world'),
+        };
+        const getEl = (text) => <div {...props} children={text} data-action-onclick="a1_1" data-action-oninput="a1_2" data-action></div>;
+
+        export default function Component({text}) {
+          return getEl(text);
+        }
+      `),
+    );
+  });
+
+  it('should add the attribute "data-action-onclick" for deeply nested event properties', () => {
+    const code = `
+      export default function ServerComponent() {
+        const props = {
+          level1: {
+            level2: {
+              level3: {
+                onClick: () => console.log('clicked')
+              }
+            }
+          }
+        };
+        return <Component {...props.level1.level2.level3} />;
+      }
+    `;
+    const out = serverComponentPlugin(code, {
+      allWebComponents: {},
+      fileID: "a1",
+      path: serverComponentPath,
+    });
+
+    expect(out.hasActions).toBeTrue();
+    expect(out.dependencies).toBeEmpty();
+    expect(normalizeQuotes(out.code)).toBe(
+      toExpected(`
+      export default function ServerComponent() {
+        const props = {
+          level1: {
+            level2: {
+              level3: {
+                onClick: () => console.log('clicked')
+              }
+            }
+          }
+        };
+        return <Component {...props.level1.level2.level3} data-action-onclick="a1_1" data-action />;
+      }
+    `),
+    );
+  });
 });
