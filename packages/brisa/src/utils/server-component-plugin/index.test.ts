@@ -732,5 +732,132 @@ describe("utils", () => {
       `),
       );
     });
+
+    it('should add the attribute "data-action-onclick" when a server-component has destructuring nested props via function', () => {
+      const code = `
+        export default function ServerComponent() {
+          const bar = {}
+          const props = { bar: () => ({ onClick: () => console.log('clicked') }) };
+          return <Component {...bar} {...props.bar()} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent() {
+          const bar = {}
+          const props = { bar: () => ({ onClick: () => console.log('clicked') }) };
+          return <Component {...bar} {...props.bar()} data-action-onclick="a1_1" data-action />;
+        }
+      `),
+      );
+    });
+
+    it('should add the attribute "data-action-onclick" when a server-component has destructuring nested props via curry function', () => {
+      const code = `
+        export default function ServerComponent() {
+          const bar = {}
+          const props = { bar: () => () => ({ onClick: () => console.log('clicked') }) };
+          return <Component {...bar} {...props.bar()()} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent() {
+          const bar = {}
+          const props = { bar: () => () => ({ onClick: () => console.log('clicked') }) };
+          return <Component {...bar} {...props.bar()()} data-action-onclick="a1_1" data-action />;
+        }
+      `),
+      );
+    });
+
+    it('should add the attribute "data-action-onclick" when a server-component has destructuring nested props via bind function', () => {
+      const code = `
+        export default function ServerComponent() {
+          const bar = {}
+          const onClick = ((foo) => console.log('clicked', foo)).bind(null, 'foo');
+          const props = { bar: () => () => ({ onClick }) };
+          return <Component {...bar} {...props.bar()()} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent() {
+          const bar = {}
+          const onClick = ((foo) => console.log('clicked', foo)).bind(null, 'foo');
+          const props = { bar: () => () => ({ onClick }) };
+          return <Component {...bar} {...props.bar()()} data-action-onclick="a1_1" data-action />;
+        }
+      `),
+      );
+    });
+
+    it('should NOT register destructuring properties that starts with "on" and are not events', () => {
+      const code = `
+        export default function ServerComponent() {
+          const bar = {}
+          const props = { onu: true };
+          return <Component {...bar} {...props.bar()()} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(toExpected(code));
+    });
+  });
+
+  it('should NOT register destructuring events when config.output="static"', () => {
+    const code = `
+      export default function ServerComponent() {
+        const bar = {}
+        const props = { onClick: () => console.log('clicked') };
+        return <Component {...bar} {...props.bar()()} />;
+      }
+    `;
+    globalThis.mockConstants = {
+      ...getConstants(),
+      CONFIG: {
+        output: "static",
+      },
+    };
+    const out = serverComponentPlugin(code, {
+      allWebComponents: {},
+      fileID: "a1",
+      path: serverComponentPath,
+    });
+
+    expect(out.hasActions).toBeFalse();
+    expect(out.dependencies).toBeEmpty();
+    expect(normalizeQuotes(out.code)).toBe(toExpected(code));
   });
 });
