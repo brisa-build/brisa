@@ -85,8 +85,11 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
               this.filter?.((e: any) => e.type === "SpreadElement") ?? [];
 
             if (spreads.length) {
+              const eventNameCamelCase = `on${eventName[2].toUpperCase()}${eventName.slice(
+                3,
+              )}`;
               const expressionCode = spreads
-                .map((e: any) => `${e.argument.name}.${eventName}`)
+                .map((e: any) => `${e.argument.name}.${eventNameCamelCase}`)
                 .join(" ?? ");
               eventContent = (
                 parseCodeToAST(expressionCode)

@@ -73,7 +73,7 @@ describe("utils", () => {
     it("should transform a simple component with 1 action and prop with destructuring with default", () => {
       const code = `
         export default function Component({ text: { value = 'foo' } }) {
-          return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{value}</div>
+          return <div onClick={() => console.log('hello world')} data-action-onclick="a1_1" data-action>{value}</div>
         }
       `;
 
@@ -82,7 +82,7 @@ describe("utils", () => {
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text: {value = 'foo'}}) {
-          return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: value}, undefined, false, undefined, this);
+          return jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onclick": "a1_1","data-action": true,children: value}, undefined, false, undefined, this);
         }
 
         export async function a1_1({text: {value = 'foo'}}, req) {
@@ -1017,7 +1017,7 @@ describe("utils", () => {
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world', FOO: 'foo'};
 
         export default function Component({text}) {
-          return <div onClick={() => console.log(SOME_CONSTANT, FOO)} data-action-onClick="a1_1" data-action>{text}</div>
+          return <div onClick={() => console.log(SOME_CONSTANT, FOO)} data-action-onclick="a1_1" data-action>{text}</div>
         }
       `;
 
@@ -1029,7 +1029,7 @@ describe("utils", () => {
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world',FOO: 'foo'};
 
         function Component({text}) {
-          return jsxDEV("div", {onClick: () => console.log(SOME_CONSTANT, FOO),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+          return jsxDEV("div", {onClick: () => console.log(SOME_CONSTANT, FOO),"data-action-onclick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
         }
 
         export async function a1_1({text}, req) {
@@ -1619,7 +1619,7 @@ describe("utils", () => {
           const obj = {
             onClick: () => console.log('hello world')
           };
-          return <div {...obj} data-action-onClick="a1_1" data-action>{text}</div>
+          return <div {...obj} data-action-onclick="a1_1" data-action>{text}</div>
         }
       `;
       const output = normalizeQuotes(transformToActionCode(code));
@@ -1630,7 +1630,7 @@ describe("utils", () => {
           const obj = {
             onClick: () => console.log('hello world')
           };
-          return jsxDEV("div", {...obj,"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+          return jsxDEV("div", {...obj,"data-action-onclick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
         }
 
         export async function a1_1({text}, req) {
@@ -1694,7 +1694,7 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with logical expression as events', () => {
+    it("should work with logical expression as events", () => {
       const code = `
         export default function Component({text}) {
           const foo = {};
