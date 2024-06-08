@@ -106,7 +106,7 @@ export default async function resolveAction({
   }
 
   // Rerender only component (not page):
-  const {pageHeaders} = await getPageComponentWithHeaders({ req, route });
+  const { pageHeaders } = await getPageComponentWithHeaders({ req, route });
   const stream = await renderToReadableStream(component, {
     request: req,
     isPage: false,

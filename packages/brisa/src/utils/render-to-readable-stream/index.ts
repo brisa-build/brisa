@@ -79,6 +79,7 @@ export default function renderToReadableStream(
         extendedController,
       )
         .then(() => extendedController.waitSuspensedPromises())
+        .then(() => extendedController.transferStoreToClient())
         .catch(async (e) => {
           if (isNotFoundError(e)) {
             extendedController.enqueue(NO_INDEX);
