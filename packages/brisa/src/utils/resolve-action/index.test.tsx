@@ -121,6 +121,23 @@ describe("utils", () => {
       );
     });
 
+    it("should log an error trying to rerender a invalid page using type 'component'", async () => {
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({ type: "component", renderMode: "reactivity" }) +
+          SUFFIX_MESSAGE,
+      );
+      error.name = "rerender";
+
+      const req = extendRequestContext({
+        originalRequest: new Request("http://localhost/invalid-page"),
+      });
+      const response = await resolveAction({ req, error, component: <div /> });
+
+      expect(await response.status).toBe(404);
+      expect(await response.text()).toBe("Error rerendering component on page http://localhost/invalid-page. Page route not found");
+    });
+
     it("should rerender the page with reactivity without declarative shadow DOM", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
@@ -246,18 +263,17 @@ describe("utils", () => {
         component: <Component />,
       });
 
-      const expectedHeaders = new Headers({
-        "Content-Type": "text/html; charset=utf-8",
-        "Transfer-Encoding": "chunked",
-        vary: "Accept-Encoding",
-        "X-Mode": "transition",
-        "X-Type": "component",
-      });
 
       expect(response.status).toBe(200);
       expect(await response.text()).toBe("<div>Test</div>");
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
-      expect(response.headers).toEqual(expectedHeaders);
+      expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
+      expect(response.headers.get("Transfer-Encoding")).toBe("chunked");
+      expect(response.headers.get("vary")).toBe("Accept-Encoding");
+      expect(response.headers.get("X-Mode")).toBe("transition");
+      expect(response.headers.get("X-Type")).toBe("component");
+      // responseHeaders of the page:
+      expect(response.headers.get("X-Test")).toBe("success");
     });
   });
 });
