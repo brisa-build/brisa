@@ -220,5 +220,23 @@ describe("utils", () => {
         "Documentation about Server actions: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions",
       );
     });
+
+    it('should render only the component when type is "component"', async () => {
+      function Component() {
+        return <div>Test</div>;
+      }
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({ type: "component", renderMode: "transition" }) +
+          SUFFIX_MESSAGE,
+      );
+      error.name = "rerender";
+
+      const req = getReq();
+      const response = await resolveAction({ req, error, component: <Component /> });
+
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe("<div>Test</div>");
+    });
   });
 });
