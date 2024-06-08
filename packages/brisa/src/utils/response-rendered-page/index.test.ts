@@ -228,7 +228,7 @@ describe("utils", () => {
         } as MatchedRoute,
       });
 
-      expect(response.headers.get("X-Test")).toBe("test");
+      expect(response.headers.get("X-Test")).toBe("success");
     });
 
     it("should transfer the store from client to server and server to client", async () => {
