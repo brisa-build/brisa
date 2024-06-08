@@ -14,8 +14,8 @@ Home.suspense = () => {
   );
 };
 
-export async function responseHeaders() {
+export async function responseHeaders(req: RequestContext, status: number) {
   return {
-    "x-test": "test",
+    "x-test": status === 500 ? "fail" : "success",
   };
 }
