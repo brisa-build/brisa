@@ -5,7 +5,10 @@ import extendRequestContext from "@/utils/extend-request-context";
 import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from "../rerender-in-action";
 import { getConstants } from "@/constants";
 import resolveAction from ".";
-import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
+import SSRWebComponent, {
+  AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
+} from "@/utils/ssr-web-component";
+import { normalizeQuotes } from "@/helpers";
 
 const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = path.join(BUILD_DIR, "pages");
@@ -135,7 +138,9 @@ describe("utils", () => {
       const response = await resolveAction({ req, error, component: <div /> });
 
       expect(await response.status).toBe(404);
-      expect(await response.text()).toBe("Error rerendering component on page http://localhost/invalid-page. Page route not found");
+      expect(await response.text()).toBe(
+        "Error rerendering component on page http://localhost/invalid-page. Page route not found",
+      );
     });
 
     it("should rerender the page with reactivity without declarative shadow DOM", async () => {
@@ -263,17 +268,56 @@ describe("utils", () => {
         component: <Component />,
       });
 
-
       expect(response.status).toBe(200);
       expect(await response.text()).toBe("<div>Test</div>");
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
-      expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
+      expect(response.headers.get("Content-Type")).toBe(
+        "text/html; charset=utf-8",
+      );
       expect(response.headers.get("Transfer-Encoding")).toBe("chunked");
       expect(response.headers.get("vary")).toBe("Accept-Encoding");
       expect(response.headers.get("X-Mode")).toBe("transition");
       expect(response.headers.get("X-Type")).toBe("component");
       // responseHeaders of the page:
       expect(response.headers.get("X-Test")).toBe("success");
+    });
+
+    it('should render the component with an script to transfer the store when type is "component"', async () => {
+      function Component() {
+        return (
+          <div>
+            Test{" "}
+            <SSRWebComponent
+              selector="some-web-component-to-transfer-store"
+              Component={() => <div />}
+            />
+          </div>
+        );
+      }
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({ type: "component", renderMode: "transition" }) +
+          SUFFIX_MESSAGE,
+      );
+      error.name = "rerender";
+
+      const req = getReq();
+      req.store.set("foo", "bar");
+      (req as any).webStore.set("foo", "bar");
+
+      const response = await resolveAction({
+        req,
+        error,
+        component: <Component />,
+      });
+
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe(
+        normalizeQuotes(`<div>
+          Test <some-web-component-to-transfer-store></some-web-component-to-transfer-store>
+        </div>
+        <script>window._S=[["foo","bar"]]</script>`),
+      );
     });
   });
 });
