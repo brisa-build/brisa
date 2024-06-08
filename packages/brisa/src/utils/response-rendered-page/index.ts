@@ -2,14 +2,13 @@ import type { RequestContext } from "@/types";
 import type { MatchedRoute } from "bun";
 import path from "node:path";
 import fs from "node:fs";
-import processPageRoute from "@/utils/process-page-route";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
 import { getConstants } from "@/constants";
-import importFileIfExists from "@/utils/import-file-if-exists";
 import transferStoreService from "@/utils/transfer-store-service";
 import { RenderInitiator } from "@/public-constants";
+import getPageComponentWithHeaders from "@/utils/get-page-component-with-headers";
 
-type ResponseRenderedPageParams = {
+type Params = {
   req: RequestContext;
   route: MatchedRoute;
   status?: number;
@@ -23,9 +22,8 @@ export default async function responseRenderedPage({
   status = 200,
   error,
   headers = {},
-}: ResponseRenderedPageParams) {
-  const { transferClientStoreToServer } =
-    await transferStoreService(req);
+}: Params) {
+  const { transferClientStoreToServer } = await transferStoreService(req);
   const { PageComponent, pageModule, pageHeaders } =
     await getPageComponentWithHeaders({ req, route, error, status, headers });
 
@@ -60,39 +58,4 @@ function getPrerenderedPage(route: MatchedRoute) {
   );
 
   return fs.existsSync(filePath) ? Bun.file(filePath).stream() : null;
-}
-
-export async function getPageComponentWithHeaders({
-  req,
-  route,
-  error,
-  status = 200,
-  headers,
-}: ResponseRenderedPageParams) {
-  const { HEADERS, BUILD_DIR } = getConstants();
-  const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
-  const { Page, module, layoutModule } = await processPageRoute(route, error);
-  const middlewareResponseHeaders =
-    middlewareModule?.responseHeaders?.(req, status) ?? {};
-
-  const layoutResponseHeaders =
-    layoutModule?.responseHeaders?.(req, status) ?? {};
-
-  const pageResponseHeaders =
-    (await module.responseHeaders?.(req, status)) ?? {};
-
-  return {
-    PageComponent: Page,
-    pageModule: module,
-    pageHeaders: {
-      "cache-control": HEADERS.CACHE_CONTROL,
-      ...middlewareResponseHeaders,
-      ...layoutResponseHeaders,
-      ...pageResponseHeaders,
-      ...headers,
-      "transfer-encoding": "chunked",
-      vary: "Accept-Encoding",
-      "content-type": "text/html; charset=utf-8",
-    },
-  };
 }

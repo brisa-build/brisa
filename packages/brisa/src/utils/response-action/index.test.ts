@@ -568,7 +568,7 @@ describe("utils", () => {
 
       const res = await responseAction(req);
 
-      expect(res.headers.get("x-test")).toBe("test");
+      expect(res.headers.get("x-test")).toBe("success");
     });
 
     it("should log an error if the action does not exist and return a 404 response", async () => {
