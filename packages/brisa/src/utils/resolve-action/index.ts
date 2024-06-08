@@ -7,6 +7,7 @@ import { logError } from "@/utils/log/log-build";
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 import { getNavigateMode, isNavigateThrowable } from "@/utils/navigate/utils";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
+import getPageComponentWithHeaders from "@/utils/get-page-component-with-headers";
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -81,44 +82,42 @@ export default async function resolveAction({
     error.message.replace(PREFIX_MESSAGE, "").replace(SUFFIX_MESSAGE, ""),
   );
 
-  // Rerender page
+  const pagesRouter = getRouteMatcher(
+    PAGES_DIR,
+    RESERVED_PAGES,
+    req.i18n?.locale,
+  );
+
+  const { route, isReservedPathname } = pagesRouter.match(req);
+
+  if (!route || isReservedPathname) {
+    const typeText = options.type === "page" ? "" : "component on ";
+    const errorMessage = `Error rerendering ${typeText}page ${url}. Page route not found`;
+    logError({ messages: [errorMessage], req });
+    return new Response(errorMessage, { status: 404 });
+  }
+
+  // Rerender page:
   if (options.type === "page") {
-    const pagesRouter = getRouteMatcher(
-      PAGES_DIR,
-      RESERVED_PAGES,
-      req.i18n?.locale,
-    );
-
-    const { route, isReservedPathname } = pagesRouter.match(req);
-
-    if (!route || isReservedPathname) {
-      const errorMessage = `Error rerendering page ${url}. Page route not found`;
-      logError({ messages: [errorMessage], req });
-      return new Response(errorMessage, { status: 404 });
-    }
-
     const res = await responseRenderedPage({ req, route });
-
     res.headers.set("X-Mode", options.renderMode);
     res.headers.set("X-Type", "page");
-
     return res;
   }
 
+  // Rerender only component (not page):
+  const {pageHeaders} = await getPageComponentWithHeaders({ req, route });
   const stream = await renderToReadableStream(component, {
     request: req,
     isPage: false,
-    // TODO: component head
   });
+
   return new Response(stream, {
     status: 200,
     headers: {
-      "Content-Type": "text/html; charset=utf-8",
-      "Transfer-Encoding": "chunked",
-      vary: "Accept-Encoding",
+      ...pageHeaders,
       "X-Mode": options.renderMode,
       "X-Type": "component",
-      // TODO: middlewareResponseHeaders
     },
   });
 }
