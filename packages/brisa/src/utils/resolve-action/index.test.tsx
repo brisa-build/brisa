@@ -131,10 +131,17 @@ describe("utils", () => {
 
       const req = getReq();
       const response = await resolveAction({ req, error, component: <div /> });
+      const expectedHeaders = new Headers({
+        "Content-Type": "text/html; charset=utf-8",
+        "Transfer-Encoding": "chunked",
+        vary: "Accept-Encoding",
+        "X-Mode": "reactivity",
+        "X-Type": "page",
+      });
 
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
-      expect(response.headers.get("X-Mode")).toBe("reactivity");
+      expect(response.headers).toEqual(expectedHeaders);
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
       );
@@ -233,10 +240,24 @@ describe("utils", () => {
       error.name = "rerender";
 
       const req = getReq();
-      const response = await resolveAction({ req, error, component: <Component /> });
+      const response = await resolveAction({
+        req,
+        error,
+        component: <Component />,
+      });
+
+      const expectedHeaders = new Headers({
+        "Content-Type": "text/html; charset=utf-8",
+        "Transfer-Encoding": "chunked",
+        vary: "Accept-Encoding",
+        "X-Mode": "transition",
+        "X-Type": "component",
+      });
 
       expect(response.status).toBe(200);
       expect(await response.text()).toBe("<div>Test</div>");
+      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
+      expect(response.headers).toEqual(expectedHeaders);
     });
   });
 });
