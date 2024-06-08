@@ -100,6 +100,7 @@ export default async function resolveAction({
     const res = await responseRenderedPage({ req, route });
 
     res.headers.set("X-Mode", options.renderMode);
+    res.headers.set("X-Type", "page");
 
     return res;
   }
@@ -116,6 +117,8 @@ export default async function resolveAction({
       "Transfer-Encoding": "chunked",
       vary: "Accept-Encoding",
       "X-Mode": options.renderMode,
+      "X-Type": "component",
+      // TODO: middlewareResponseHeaders
     },
   });
 }
