@@ -6,6 +6,7 @@ import { getConstants } from "@/constants";
 import { logError } from "@/utils/log/log-build";
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 import { getNavigateMode, isNavigateThrowable } from "@/utils/navigate/utils";
+import renderToReadableStream from "@/utils/render-to-readable-stream";
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -103,8 +104,12 @@ export default async function resolveAction({
     return res;
   }
 
-  // Rerender component: TODO: Implement this
-  return new Response(`Not implemented yet`, {
+  const stream = await renderToReadableStream(component, {
+    request: req,
+    isPage: false,
+    // TODO: component head
+  });
+  return new Response(stream, {
     status: 200,
     headers: {
       "Content-Type": "text/html; charset=utf-8",
