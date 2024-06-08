@@ -2780,6 +2780,22 @@ describe("utils", () => {
       );
     });
 
+    it("should transfer request store with a component without head, body, and html tags", () => {
+      const Component = ({}, { store }: RequestContext) => {
+        store.set("test", "test");
+        store.transferToClient(["test"]);
+
+        return <div>TEST</div>;
+      };
+
+      const stream = renderToReadableStream(<Component />, testOptions);
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toBe(
+        toInline(`<div>TEST</div><script>window._S=[["test","test"]]</script>`),
+      );
+    });
+
     it("should transfer request store twice in a different way data with and without suspense", () => {
       async function ComponentWithSuspense({}, { store }: RequestContext) {
         await Bun.sleep(0);
