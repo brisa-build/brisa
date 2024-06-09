@@ -638,7 +638,7 @@ describe("utils", () => {
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 190 B     | ${greenLog("4 kB")}  
     ${info}Δ /layout       | 674 B     |
-    ${info}Ω /i18n         | 257 B     |
+    ${info}Ω /i18n         | 261 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
