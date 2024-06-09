@@ -432,6 +432,30 @@ describe("utils", () => {
       );
     });
 
+    it('should NOT add trailing slash on "link" href attribute with rel="icon"', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/ru"),
+      });
+
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          trailingSlash: true,
+        }
+      };
+      
+      const attributes = renderAttributes({
+        elementProps: {
+          href: "favicon.ico",
+          rel: "icon",
+        },
+        request,
+        type: "link",
+      });
+
+      expect(attributes).toBe(' href="favicon.ico" rel="icon"');
+    });
+
     it('should NOT translate the "link" href attribute with rel="icon"', () => {
       const request = extendRequestContext({
         originalRequest: new Request("https://example.com/ru"),
