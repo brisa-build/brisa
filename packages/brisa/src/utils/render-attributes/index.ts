@@ -15,7 +15,6 @@ import { addBasePathToStringURL } from "@/utils/base-path";
 
 const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
 const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
-const TAGNAME_WITH_HREF = new Set(["a", "link"]);
 const fakeOrigin = "http://localhost";
 
 export default function renderAttributes({
@@ -133,7 +132,7 @@ export default function renderAttributes({
     if (
       prop === "href" &&
       typeof value === "string" &&
-      TAGNAME_WITH_HREF.has(type)
+      (type === "a" || (type === "link" && elementProps.rel === "prefetch"))
     ) {
       attributes += ` ${key}="${renderHrefAttribute(value, request)}"`;
       continue;
@@ -242,6 +241,10 @@ export function renderHrefAttribute(
     const [pageName, translations] = page;
     const translatedPage = (translations as Translations)?.[locale] ?? pageName;
     formattedHref = substituteI18nRouteValues(translatedPage, formattedHref);
+  }
+
+  if (formattedHref && formattedHref[0] !== "/") {
+    formattedHref = "/" + formattedHref;
   }
 
   const useI18n = !locales?.some(

@@ -432,7 +432,58 @@ describe("utils", () => {
       );
     });
 
-    it('should translate the "link" href attribute', () => {
+    it('should NOT translate the "link" href attribute with rel="icon"', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/ru"),
+      });
+
+      request.i18n = {
+        locale: "ru",
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        pages: {},
+        t: () => "" as any,
+        overrideMessages: () => {},
+      };
+
+      const attributes = renderAttributes({
+        elementProps: {
+          href: "favicon.ico",
+          rel: "icon",
+        },
+        request,
+        type: "link",
+      });
+
+      expect(attributes).toBe(' href="favicon.ico" rel="icon"');
+    });
+
+    it('should translate the "a" href attribute adding slash when does not have', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com/ru"),
+      });
+
+      request.i18n = {
+        locale: "ru",
+        locales: ["en", "ru"],
+        defaultLocale: "en",
+        pages: {},
+        t: () => "" as any,
+        overrideMessages: () => {},
+      };
+
+      const attributes = renderAttributes({
+        elementProps: {
+          href: "foo",
+        },
+        request,
+        type: "a",
+      });
+
+      expect(attributes).toBe(' href="/ru/foo"');
+    });
+
+    it('should translate the "link" href attribute that is not rel="icon"', () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
