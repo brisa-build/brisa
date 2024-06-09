@@ -38,6 +38,7 @@ export default function serverComponentPlugin(
   const detectedWebComponents: Record<string, string> = {};
   const usedWebComponents = new Map<string, string>();
   const declarations = new Map<string, any>();
+  const imports = new Set<string>();
   let actionIdCount = 1;
   let count = 1;
   let hasActions = false;
@@ -63,6 +64,13 @@ export default function serverComponentPlugin(
       declarations.set(value.id.name, value);
     }
 
+    // Register imports
+    if (value?.type === "ImportDeclaration") {
+      for (let specifier of value.specifiers) {
+        imports.add(specifier.local.name);
+      }
+    }
+
     return value;
   }
 
@@ -77,6 +85,48 @@ export default function serverComponentPlugin(
    *   to know which file to call to execute the action.
    */
   function traverseB2A(this: any, key: string, value: any) {
+    // The next code is to transform the "default export" into a variable, this is
+    // necessary because the default export is not a declaration and we need to
+    // have a declaration to be able to add the Component._id property.
+    //
+    // This _id is only added in case they have server actions inside. It is
+    // necessary to use the id in runtime, during rendering, to wrap the component
+    // with the HTML comment with the id so that the client RPC can then respond
+    // correctly to a component's rerenderInAction.
+    //
+    // Related with https://github.com/brisa-build/brisa/issues/73
+    if (value?.type === "ExportDefaultDeclaration" && !value?.declaration?.id) {
+      let count = 1;
+      let name = "Component";
+
+      while (declarations.has(name) || imports.has(name)) {
+        name = `Component${count++}`;
+      }
+
+      this.push({
+        type: "ExportDefaultDeclaration",
+        declaration: {
+          type: "Identifier",
+          name,
+        },
+      });
+
+      return {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            init: value.declaration,
+            id: {
+              type: "Identifier",
+              name,
+            },
+          },
+        ],
+        kind: "const",
+      };
+    }
+
     const isJSX =
       value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
 
