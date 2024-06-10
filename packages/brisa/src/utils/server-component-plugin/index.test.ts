@@ -118,6 +118,7 @@ describe("utils", () => {
         toExpected(`
         import Component from './Component.tsx';
         const Component1 = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+        Component1._hasActions = true;
         export default Component1;
       `),
       );
@@ -147,9 +148,32 @@ describe("utils", () => {
         const Component1 = () => <div />;
 
         const Component2 = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+        
+        Component2._hasActions = true;
+        
         export default Component2;
       `),
       );
+    });
+
+    it('should NOT generate "export default" name if already exist var name but it has not server actions inside', () => {
+      const code = `
+        import Component from './Component.tsx';
+
+        const Component1 = () => <div />;
+
+        export default () => <Component />;
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies.size).toBe(1);
+      expect(outputCode).toBe(toExpected(code));
     });
 
     it('should add the attribute "data-action-onclick" to web-components inside server-components', () => {
