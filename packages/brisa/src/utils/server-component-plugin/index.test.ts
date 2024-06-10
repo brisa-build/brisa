@@ -124,6 +124,32 @@ describe("utils", () => {
       );
     });
 
+    it('should generate "export default" name when is not an arrow function', () => {
+      const code = `
+        export default {
+          foo: () => <Component onClick={() => console.log('clicked')} />,
+        }
+      `
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(outputCode).toBe(
+        toExpected(`
+        export default {
+          foo: () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />,
+        }
+      `),
+      );
+
+    });
+
     it('should generate "export default" name if already exist var name', () => {
       const code = `
         import Component from './Component.tsx';
