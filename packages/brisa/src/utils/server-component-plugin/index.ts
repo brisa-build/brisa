@@ -99,6 +99,7 @@ export default function serverComponentPlugin(
     if (
       value?.type === "ExportDefaultDeclaration" &&
       !value?.declaration?.id &&
+      value?.declaration?.type === "ArrowFunctionExpression" &&
       hasCurrentComponentActions
     ) {
       let count = 1;
