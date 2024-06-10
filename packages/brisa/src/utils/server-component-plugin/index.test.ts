@@ -1122,6 +1122,53 @@ describe("utils", () => {
     );
   });
 
+  it.todo('should register _hasActions on a function component without export', () => {
+    const code = `
+      function ServerComponent() {
+        return <Component onClick={() => console.log('clicked')} />;
+      }
+    `;
+
+    const out = serverComponentPlugin(code, {
+      allWebComponents: {},
+      fileID: "a1",
+      path: serverComponentPath,
+    });
+
+    expect(out.hasActions).toBeTrue();
+    expect(out.dependencies).toBeEmpty();
+    expect(normalizeQuotes(out.code)).toBe(
+      toExpected(`
+      function ServerComponent() {
+        return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+      }
+
+      ServerComponent._hasActions = true;
+    `),
+    );
+  });
+
+  it.todo('should register _hasActions on a arrow fn component without export', () => {
+    const code = `
+      const ServerComponent = () => <Component onClick={() => console.log('clicked')} />;
+    `;
+
+    const out = serverComponentPlugin(code, {
+      allWebComponents: {},
+      fileID: "a1",
+      path: serverComponentPath,
+    });
+
+    expect(out.hasActions).toBeTrue();
+    expect(out.dependencies).toBeEmpty();
+    expect(normalizeQuotes(out.code)).toBe(
+      toExpected(`
+      const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />;
+      ServerComponent._hasActions = true;
+    `),
+    );
+  });
+
   it.todo(
     "should register _hasActions only in the component that has events using outside elements",
     () => {
@@ -1191,15 +1238,15 @@ describe("utils", () => {
       expect(out.dependencies).toBeEmpty();
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
-      const el = <Component />;
-      const el2 = <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+      const el = () => <Component />;
+      const el2 = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
 
        export function ServerComponent() {
-         return el;
+         return el();
        }
  
        export function ServerComponent2() {
-         return el2;
+         return el2();
        }
 
       ServerComponent2._hasActions = true;
