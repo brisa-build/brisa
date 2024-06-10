@@ -85,74 +85,52 @@ export default function serverComponentPlugin(
    *   to know which file to call to execute the action.
    */
   function traverseB2A(this: any, key: string, value: any) {
-    // The next code is to transform the "default export" into a variable, this is
-    // necessary because the default export is not a declaration and we need to
-    // have a declaration to be able to add the Component._id property.
-    //
-    // This _id is only added in case they have server actions inside. It is
-    // necessary to use the id in runtime, during rendering, to wrap the component
-    // with the HTML comment with the id so that the client RPC can then respond
-    // correctly to a component's rerenderInAction.
-    //
-    // Related with https://github.com/brisa-build/brisa/issues/73
-    if (
-      value?.type === "ExportDefaultDeclaration" &&
-      !value?.declaration?.id &&
-      value?.declaration?.type === "ArrowFunctionExpression" &&
-      value?._hasActions
-    ) {
-      let count = 1;
-      let name = "Component";
+    const isArrowFn = value?.declaration?.type === "ArrowFunctionExpression";
+    const isFunction = value?.declaration?.type === "FunctionDeclaration";
+    const isComponentWithActions =
+      (isArrowFn || isFunction) && isServerOutput && value?._hasActions;
 
-      while (declarations.has(name) || imports.has(name)) {
-        name = `Component${count++}`;
+    if (isComponentWithActions) {
+      // Stop the propagation of the _hasActions property to the parent
+      value._hasActions = false;
+
+      if (value?.declaration?.id) {
+        markComponentHasActions(value.declaration.id.name, this);
+      } else {
+        let count = 1;
+        let name = "Component";
+
+        while (declarations.has(name) || imports.has(name)) {
+          name = `Component${count++}`;
+        }
+
+        markComponentHasActions(name, this);
+
+        if (value?.type === "ExportDefaultDeclaration") {
+          this.push({
+            type: "ExportDefaultDeclaration",
+            declaration: {
+              type: "Identifier",
+              name,
+            },
+          });
+        }
+
+        return {
+          type: "VariableDeclaration",
+          declarations: [
+            {
+              type: "VariableDeclarator",
+              init: value.declaration,
+              id: {
+                type: "Identifier",
+                name,
+              },
+            },
+          ],
+          kind: "const",
+        };
       }
-
-      this.push({
-        type: "ExpressionStatement",
-        expression: {
-          type: "AssignmentExpression",
-          left: {
-            type: "MemberExpression",
-            object: {
-              type: "Identifier",
-              name,
-            },
-            computed: false,
-            property: {
-              type: "Identifier",
-              name: "_hasActions",
-            },
-          },
-          operator: "=",
-          right: {
-            type: "Literal",
-            value: true,
-          },
-        },
-      });
-      this.push({
-        type: "ExportDefaultDeclaration",
-        declaration: {
-          type: "Identifier",
-          name,
-        },
-      });
-
-      return {
-        type: "VariableDeclaration",
-        declarations: [
-          {
-            type: "VariableDeclarator",
-            init: value.declaration,
-            id: {
-              type: "Identifier",
-              name,
-            },
-          },
-        ],
-        kind: "const",
-      };
     }
 
     const isJSX =
@@ -354,7 +332,7 @@ export default function serverComponentPlugin(
     }
 
     // Pass this value to the parent until we arrive at the root component
-    if(value?._hasActions) this._hasActions = true;
+    if (value?._hasActions) this._hasActions = true;
 
     return value;
   }
@@ -421,4 +399,30 @@ export default function serverComponentPlugin(
 function isUpperCaseChar(char: string) {
   const code = char.charCodeAt(0);
   return code >= 65 && code <= 90;
+}
+
+function markComponentHasActions(componentName: string, parent: any) {
+  parent.push({
+    type: "ExpressionStatement",
+    expression: {
+      type: "AssignmentExpression",
+      left: {
+        type: "MemberExpression",
+        object: {
+          type: "Identifier",
+          name: componentName,
+        },
+        computed: false,
+        property: {
+          type: "Identifier",
+          name: "_hasActions",
+        },
+      },
+      operator: "=",
+      right: {
+        type: "Literal",
+        value: true,
+      },
+    },
+  });
 }

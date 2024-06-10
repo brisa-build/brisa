@@ -76,6 +76,8 @@ describe("utils", () => {
         export default function ServerComponent() {
           return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -129,7 +131,7 @@ describe("utils", () => {
         export default {
           foo: () => <Component onClick={() => console.log('clicked')} />,
         }
-      `
+      `;
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
@@ -147,7 +149,6 @@ describe("utils", () => {
         }
       `),
       );
-
     });
 
     it('should generate "export default" name if already exist var name', () => {
@@ -228,6 +229,8 @@ describe("utils", () => {
         export default function ServerComponent() {
           return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -252,6 +255,8 @@ describe("utils", () => {
         export default function ServerComponent() {
           return <Component onClick={() => console.log('clicked')} onMouseEnter={() => console.log('mouse-enter')} data-action-onclick="a1_1" data-action-onmouseenter="a1_2" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -286,6 +291,8 @@ describe("utils", () => {
             </>
           );
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -318,6 +325,9 @@ describe("utils", () => {
         export function ServerComponent2({ onFoo }) {
           return <div onClick={onFoo} data-action-onclick="a1_2" data-action />;
         }
+
+        ServerComponent1._hasActions = true;
+        ServerComponent2._hasActions = true;
       `),
       );
     });
@@ -797,6 +807,8 @@ describe("utils", () => {
           const props = { onClick: () => console.log('clicked') };
           return <Component {...props} data-action-onclick="a1_1" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -824,6 +836,8 @@ describe("utils", () => {
           const props = { foo: { onClick: () => console.log('clicked') } };
           return <Component {...bar} {...props.foo} data-action-onclick="a1_1" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -851,6 +865,8 @@ describe("utils", () => {
           const props = () => ({ onClick: () => console.log('clicked') });
           return <Component {...bar} {...props()} data-action-onclick="a1_1" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -878,6 +894,8 @@ describe("utils", () => {
           const props = { bar: () => ({ onClick: () => console.log('clicked') }) };
           return <Component {...bar} {...props.bar()} data-action-onclick="a1_1" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -905,6 +923,8 @@ describe("utils", () => {
           const props = { bar: () => () => ({ onClick: () => console.log('clicked') }) };
           return <Component {...bar} {...props.bar()()} data-action-onclick="a1_1" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -934,6 +954,8 @@ describe("utils", () => {
           const props = { bar: () => () => ({ onClick }) };
           return <Component {...bar} {...props.bar()()} data-action-onclick="a1_1" data-action />;
         }
+
+        ServerComponent._hasActions = true;
       `),
       );
     });
@@ -994,6 +1016,8 @@ describe("utils", () => {
         export default function Component({text}) {
           return getEl(text);
         }
+
+        Component._hasActions = true;
     `;
 
     const out = serverComponentPlugin(code, {
@@ -1015,6 +1039,8 @@ describe("utils", () => {
         export default function Component({text}) {
           return getEl(text);
         }
+
+        Component._hasActions = true;
       `),
     );
   });
@@ -1056,6 +1082,8 @@ describe("utils", () => {
         };
         return <Component {...props.level1.level2.level3} data-action-onclick="a1_1" data-action />;
       }
+
+      ServerComponent._hasActions = true;
     `),
     );
   });
