@@ -42,6 +42,7 @@ export default function serverComponentPlugin(
   let actionIdCount = 1;
   let count = 1;
   let hasActions = false;
+  let hasCurrentComponentActions = false;
 
   /**
    * The first traversal is to locate all variable declarations and store
@@ -95,7 +96,11 @@ export default function serverComponentPlugin(
     // correctly to a component's rerenderInAction.
     //
     // Related with https://github.com/brisa-build/brisa/issues/73
-    if (value?.type === "ExportDefaultDeclaration" && !value?.declaration?.id) {
+    if (
+      value?.type === "ExportDefaultDeclaration" &&
+      !value?.declaration?.id &&
+      hasCurrentComponentActions
+    ) {
       let count = 1;
       let name = "Component";
 
@@ -103,6 +108,31 @@ export default function serverComponentPlugin(
         name = `Component${count++}`;
       }
 
+      hasCurrentComponentActions = false;
+
+      this.push({
+        type: "ExpressionStatement",
+        expression: {
+          type: "AssignmentExpression",
+          left: {
+            type: "MemberExpression",
+            object: {
+              type: "Identifier",
+              name,
+            },
+            computed: false,
+            property: {
+              type: "Identifier",
+              name: "_hasActions",
+            },
+          },
+          operator: "=",
+          right: {
+            type: "Literal",
+            value: true,
+          },
+        },
+      });
       this.push({
         type: "ExportDefaultDeclaration",
         declaration: {
@@ -171,7 +201,7 @@ export default function serverComponentPlugin(
           });
         }
 
-        if (isAction) hasActions = true;
+        if (isAction) hasCurrentComponentActions = hasActions = true;
         if (isAction && isServerOutput) {
           actionProperties.push({
             type: "Property",
@@ -206,7 +236,7 @@ export default function serverComponentPlugin(
           ) {
             const eventName = v.key.name;
 
-            hasActions = true;
+            hasCurrentComponentActions = hasActions = true;
             actionProperties.push({
               type: "Property",
               key: {
