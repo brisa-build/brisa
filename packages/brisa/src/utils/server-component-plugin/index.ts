@@ -42,7 +42,6 @@ export default function serverComponentPlugin(
   let actionIdCount = 1;
   let count = 1;
   let hasActions = false;
-  let hasCurrentComponentActions = false;
 
   /**
    * The first traversal is to locate all variable declarations and store
@@ -100,7 +99,7 @@ export default function serverComponentPlugin(
       value?.type === "ExportDefaultDeclaration" &&
       !value?.declaration?.id &&
       value?.declaration?.type === "ArrowFunctionExpression" &&
-      hasCurrentComponentActions
+      value?._hasActions
     ) {
       let count = 1;
       let name = "Component";
@@ -108,8 +107,6 @@ export default function serverComponentPlugin(
       while (declarations.has(name) || imports.has(name)) {
         name = `Component${count++}`;
       }
-
-      hasCurrentComponentActions = false;
 
       this.push({
         type: "ExpressionStatement",
@@ -202,7 +199,7 @@ export default function serverComponentPlugin(
           });
         }
 
-        if (isAction) hasCurrentComponentActions = hasActions = true;
+        if (isAction) value._hasActions = hasActions = true;
         if (isAction && isServerOutput) {
           actionProperties.push({
             type: "Property",
@@ -226,6 +223,7 @@ export default function serverComponentPlugin(
       // they have actions and add them.
       for (let identifierName of spreadsIdentifiers) {
         const declaration = declarations.get(identifierName);
+        let declarationHasActions = false;
 
         if (!declaration) continue;
 
@@ -237,7 +235,7 @@ export default function serverComponentPlugin(
           ) {
             const eventName = v.key.name;
 
-            hasCurrentComponentActions = hasActions = true;
+            declarationHasActions = hasActions = true;
             actionProperties.push({
               type: "Property",
               key: {
@@ -256,6 +254,8 @@ export default function serverComponentPlugin(
           }
           return v;
         });
+
+        if (declarationHasActions) value._hasActions = true;
       }
 
       if (actionProperties.length) {
@@ -352,6 +352,9 @@ export default function serverComponentPlugin(
         ],
       };
     }
+
+    // Pass this value to the parent until we arrive at the root component
+    if(value?._hasActions) this._hasActions = true;
 
     return value;
   }
