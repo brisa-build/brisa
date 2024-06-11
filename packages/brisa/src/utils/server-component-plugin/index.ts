@@ -60,7 +60,7 @@ export default function serverComponentPlugin(
    * (as long as they are declared in the same file), if they have events
    * inside and in this way we will be able to register these actions.
    */
-  function traverseA2B(this: any, key: string, value: any) {
+  function registerDeclarationsAndImports(this: any, key: string, value: any) {
     if (value?.type === "VariableDeclarator" && value?.init) {
       declarations.set(value.id.name, value.init);
     } else if (
@@ -93,6 +93,12 @@ export default function serverComponentPlugin(
    *   to know which file to call to execute the action.
    */
   function traverseB2A(this: any, key: string, value: any) {
+    // Register declarations and imports again to update the _hasActions flag
+    // inside the declarations.
+    // This will be useful only if the declaration are upper in the tree. Otherwise,
+    // it will be updated in the next iteration, after the traversal.
+    registerDeclarationsAndImports.call(this, key, value);
+
     const isActionsFlag = isServerOutput && value?._hasActions;
 
     if (
@@ -125,6 +131,12 @@ export default function serverComponentPlugin(
         declarations,
         imports,
       });
+    }
+
+    // Allow to use JSX elements as identifiers or element generators
+    if (value === "Identifier" && declarations.has(this.name)) {
+      const declaration = declarations.get(this.name);
+      if (declaration?._hasActions) this._hasActions = true;
     }
 
     const isJSX =
@@ -331,7 +343,10 @@ export default function serverComponentPlugin(
     return value;
   }
 
-  let modifiedAst = JSON.parse(JSON.stringify(ast, traverseA2B), traverseB2A);
+  let modifiedAst = JSON.parse(
+    JSON.stringify(ast, registerDeclarationsAndImports),
+    traverseB2A,
+  );
 
   if (!isServerOutput && hasActions) {
     logWarning([
