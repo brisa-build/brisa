@@ -15,14 +15,17 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
 
   console.log(`Creating project ${PROJECT_NAME}`);
 
+  // Allow PROJECT_NAME to be a path like @foo/bar/baz
   const folders = PROJECT_NAME.split(path.sep);
   for (let i = 0; i < folders.length; i++) {
     const folder = folders.slice(0, i + 1).join(path.sep);
-    if (!fs.existsSync(folder)) {
-      fs.mkdirSync(folder);
+    if (!fs.existsSync(folder)) fs.mkdirSync(folder);
+    else {
+      console.error(`Error: ${folder} folder already exists`);
+      process.exit(1);
     }
   }
-  
+
   process.chdir(PROJECT_NAME);
 
   const BRISA_VERSION = "0.0.77";
