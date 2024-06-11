@@ -441,9 +441,9 @@ describe("utils", () => {
         ...(getConstants() ?? {}),
         CONFIG: {
           trailingSlash: true,
-        }
+        },
       };
-      
+
       const attributes = renderAttributes({
         elementProps: {
           href: "favicon.ico",
