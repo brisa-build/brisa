@@ -978,212 +978,85 @@ describe("utils", () => {
       expect(out.dependencies).toBeEmpty();
       expect(normalizeQuotes(out.code)).toBe(toExpected(code));
     });
-  });
 
-  it('should NOT register destructuring events when config.output="static"', () => {
-    const code = `
-      export default function ServerComponent() {
-        const bar = {}
-        const props = { onClick: () => console.log('clicked') };
-        return <Component {...bar} {...props.bar()()} />;
-      }
-    `;
-    globalThis.mockConstants = {
-      ...getConstants(),
-      CONFIG: {
-        output: "static",
-      },
-    };
-    const out = serverComponentPlugin(code, {
-      allWebComponents: {},
-      fileID: "a1",
-      path: serverComponentPath,
+    it('should NOT register destructuring events when config.output="static"', () => {
+      const code = `
+        export default function ServerComponent() {
+          const bar = {}
+          const props = { onClick: () => console.log('clicked') };
+          return <Component {...bar} {...props.bar()()} />;
+        }
+      `;
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          output: "static",
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(toExpected(code));
     });
 
-    expect(out.hasActions).toBeFalse();
-    expect(out.dependencies).toBeEmpty();
-    expect(normalizeQuotes(out.code)).toBe(toExpected(code));
-  });
-
-  it('should add the attribute "data-action-onclick" with destructuring and element generator', () => {
-    const code = `
-        const props = {
-          onClick: () => console.log('hello world'),
-          onInput: () => console.log('hello world'),
-        };
-        const getEl = (text) => <div {...props} children={text}></div>;
-
-        export default function Component({text}) {
-          return getEl(text);
+    it('should add the attribute "data-action-onclick" for deeply nested event properties', () => {
+      const code = `
+        export default function ServerComponent() {
+          const props = {
+            level1: {
+              level2: {
+                level3: {
+                  onClick: () => console.log('clicked')
+                }
+              }
+            }
+          };
+          return <Component {...props.level1.level2.level3} />;
         }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
 
-        Component._hasActions = true;
-    `;
-
-    const out = serverComponentPlugin(code, {
-      allWebComponents: {},
-      fileID: "a1",
-      path: serverComponentPath,
-    });
-
-    expect(out.hasActions).toBeTrue();
-    expect(out.dependencies).toBeEmpty();
-    expect(normalizeQuotes(out.code)).toBe(
-      toExpected(`
-        const props = {
-          onClick: () => console.log('hello world'),
-          onInput: () => console.log('hello world'),
-        };
-        const getEl = (text) => <div {...props} children={text} data-action-onclick="a1_1" data-action-oninput="a1_2" data-action></div>;
-
-        export default function Component({text}) {
-          return getEl(text);
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent() {
+          const props = {
+            level1: {
+              level2: {
+                level3: {
+                  onClick: () => console.log('clicked')
+                }
+              }
+            }
+          };
+          return <Component {...props.level1.level2.level3} data-action-onclick="a1_1" data-action />;
         }
-
-        Component._hasActions = true;
+  
+        ServerComponent._hasActions = true;
       `),
-    );
-  });
-
-  it('should add the attribute "data-action-onclick" for deeply nested event properties', () => {
-    const code = `
-      export default function ServerComponent() {
-        const props = {
-          level1: {
-            level2: {
-              level3: {
-                onClick: () => console.log('clicked')
-              }
-            }
-          }
-        };
-        return <Component {...props.level1.level2.level3} />;
-      }
-    `;
-    const out = serverComponentPlugin(code, {
-      allWebComponents: {},
-      fileID: "a1",
-      path: serverComponentPath,
+      );
     });
 
-    expect(out.hasActions).toBeTrue();
-    expect(out.dependencies).toBeEmpty();
-    expect(normalizeQuotes(out.code)).toBe(
-      toExpected(`
-      export default function ServerComponent() {
-        const props = {
-          level1: {
-            level2: {
-              level3: {
-                onClick: () => console.log('clicked')
-              }
-            }
-          }
-        };
-        return <Component {...props.level1.level2.level3} data-action-onclick="a1_1" data-action />;
-      }
-
-      ServerComponent._hasActions = true;
-    `),
-    );
-  });
-
-  it("should register _hasActions only in the component that has events", () => {
-    const code = `
-      export function ServerComponent() {
-        return <Component />;
-      }
-
-      export function ServerComponent2() {
-        return <Component onClick={() => console.log('clicked')} />;
-      }
-    `;
-
-    const out = serverComponentPlugin(code, {
-      allWebComponents: {},
-      fileID: "a1",
-      path: serverComponentPath,
-    });
-
-    expect(out.hasActions).toBeTrue();
-    expect(out.dependencies).toBeEmpty();
-    expect(normalizeQuotes(out.code)).toBe(
-      toExpected(`
-      export function ServerComponent() {
-        return <Component />;
-      }
-
-      export function ServerComponent2() {
-        return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
-      }
-
-      ServerComponent2._hasActions = true;
-    `),
-    );
-  });
-
-  it.todo('should register _hasActions on a function component without export', () => {
-    const code = `
-      function ServerComponent() {
-        return <Component onClick={() => console.log('clicked')} />;
-      }
-    `;
-
-    const out = serverComponentPlugin(code, {
-      allWebComponents: {},
-      fileID: "a1",
-      path: serverComponentPath,
-    });
-
-    expect(out.hasActions).toBeTrue();
-    expect(out.dependencies).toBeEmpty();
-    expect(normalizeQuotes(out.code)).toBe(
-      toExpected(`
-      function ServerComponent() {
-        return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
-      }
-
-      ServerComponent._hasActions = true;
-    `),
-    );
-  });
-
-  it.todo('should register _hasActions on a arrow fn component without export', () => {
-    const code = `
-      const ServerComponent = () => <Component onClick={() => console.log('clicked')} />;
-    `;
-
-    const out = serverComponentPlugin(code, {
-      allWebComponents: {},
-      fileID: "a1",
-      path: serverComponentPath,
-    });
-
-    expect(out.hasActions).toBeTrue();
-    expect(out.dependencies).toBeEmpty();
-    expect(normalizeQuotes(out.code)).toBe(
-      toExpected(`
-      const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />;
-      ServerComponent._hasActions = true;
-    `),
-    );
-  });
-
-  it.todo(
-    "should register _hasActions only in the component that has events using outside elements",
-    () => {
+    it("should register _hasActions only in the component that has events", () => {
       const code = `
-     const el = <Component />;
-     const el2 = <Component onClick={() => console.log('clicked')} />;
-
-      export function ServerComponent() {
-        return el;
-      }
-
-      export function ServerComponent2() {
-        return el2;
-      }
-    `;
+        export function ServerComponent() {
+          return <Component />;
+        }
+  
+        export function ServerComponent2() {
+          return <Component onClick={() => console.log('clicked')} />;
+        }
+      `;
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
@@ -1195,38 +1068,25 @@ describe("utils", () => {
       expect(out.dependencies).toBeEmpty();
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
-      const el = <Component />;
-      const el2 = <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
-
-       export function ServerComponent() {
-         return el;
-       }
- 
-       export function ServerComponent2() {
-         return el2;
-       }
-
-      ServerComponent2._hasActions = true;
-    `),
+        export function ServerComponent() {
+          return <Component />;
+        }
+  
+        export function ServerComponent2() {
+          return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+        }
+  
+        ServerComponent2._hasActions = true;
+      `),
       );
-    },
-  );
+    });
 
-  it.todo(
-    "should register _hasActions only in the component that has events using outside elements generators",
-    () => {
+    it("should register _hasActions on a function component without export", () => {
       const code = `
-     const el = () => <Component />;
-     const el2 = () => <Component onClick={() => console.log('clicked')} />;
-
-      export function ServerComponent() {
-        return el();
-      }
-
-      export function ServerComponent2() {
-        return el2();
-      }
-    `;
+        function ServerComponent() {
+          return <Component onClick={() => console.log('clicked')} />;
+        }
+      `;
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
@@ -1238,20 +1098,189 @@ describe("utils", () => {
       expect(out.dependencies).toBeEmpty();
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
-      const el = () => <Component />;
-      const el2 = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
-
-       export function ServerComponent() {
-         return el();
-       }
- 
-       export function ServerComponent2() {
-         return el2();
-       }
-
-      ServerComponent2._hasActions = true;
-    `),
+        function ServerComponent() {
+          return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+        }
+  
+        ServerComponent._hasActions = true;
+      `),
       );
-    },
-  );
+    });
+
+    it("should register _hasActions on a variable with function component without export", () => {
+      const code = `
+        const Foo = function() {
+          return <Component onClick={() => console.log('clicked')} />;
+        }
+      `;
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        const Foo = function() {
+          return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+        }
+  
+        Foo._hasActions = true;
+      `),
+      );
+    });
+
+    it("should register _hasActions on a arrow fn component without export", () => {
+      const code = `
+        const ServerComponent = () => <Component onClick={() => console.log('clicked')} />;
+      `;
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />;
+        ServerComponent._hasActions = true;
+      `),
+      );
+    });
+
+    it.todo(
+      "should register _hasActions only in the component that has events using outside elements",
+      () => {
+        const code = `
+       const el = <Component />;
+       const el2 = <Component onClick={() => console.log('clicked')} />;
+  
+        export function ServerComponent() {
+          return el;
+        }
+  
+        export function ServerComponent2() {
+          return el2;
+        }
+      `;
+
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: "a1",
+          path: serverComponentPath,
+        });
+
+        expect(out.hasActions).toBeTrue();
+        expect(out.dependencies).toBeEmpty();
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
+        const el = <Component />;
+        const el2 = <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+  
+         export function ServerComponent() {
+           return el;
+         }
+   
+         export function ServerComponent2() {
+           return el2;
+         }
+  
+        ServerComponent2._hasActions = true;
+      `),
+        );
+      },
+    );
+
+    it.todo(
+      "should register _hasActions only in the component that has events using outside elements generators",
+      () => {
+        const code = `
+       const el = () => <Component />;
+       const el2 = () => <Component onClick={() => console.log('clicked')} />;
+  
+        export function ServerComponent() {
+          return el();
+        }
+  
+        export function ServerComponent2() {
+          return el2();
+        }
+      `;
+
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: "a1",
+          path: serverComponentPath,
+        });
+
+        expect(out.hasActions).toBeTrue();
+        expect(out.dependencies).toBeEmpty();
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
+        const el = () => <Component />;
+        const el2 = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+  
+         export function ServerComponent() {
+           return el();
+         }
+   
+         export function ServerComponent2() {
+           return el2();
+         }
+  
+        ServerComponent2._hasActions = true;
+      `),
+        );
+      },
+    );
+
+    it.todo(
+      'should add the attribute "data-action-onclick" with destructuring and element generator',
+      () => {
+        const code = `
+          const props = {
+            onClick: () => console.log('hello world'),
+            onInput: () => console.log('hello world'),
+          };
+          const getEl = (text) => <div {...props} children={text}></div>;
+  
+          export default function Component({text}) {
+            return getEl(text);
+          }
+  
+          Component._hasActions = true;
+      `;
+
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: "a1",
+          path: serverComponentPath,
+        });
+
+        expect(out.hasActions).toBeTrue();
+        expect(out.dependencies).toBeEmpty();
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
+          const props = {
+            onClick: () => console.log('hello world'),
+            onInput: () => console.log('hello world'),
+          };
+          const getEl = (text) => <div {...props} children={text} data-action-onclick="a1_1" data-action-oninput="a1_2" data-action></div>;
+
+          export default function Component({text}) {
+            return getEl(text);
+          }
+  
+          Component._hasActions = true;
+        `),
+        );
+      },
+    );
+  });
 });

@@ -13,6 +13,14 @@ type ServerComponentPluginOptions = {
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const JSX_NAME = new Set(["jsx", "jsxDEV", "jsxs"]);
 const WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
+const FN_EXPRESSIONS = new Set([
+  "ArrowFunctionExpression",
+  "FunctionExpression",
+]);
+const FN_DECLARATIONS = new Set([
+  "ArrowFunctionExpression",
+  "FunctionDeclaration",
+]);
 
 // TODO: Remove this workaround when this issue will be fixed:
 // https://github.com/oven-sh/bun/issues/7499
@@ -85,52 +93,35 @@ export default function serverComponentPlugin(
    *   to know which file to call to execute the action.
    */
   function traverseB2A(this: any, key: string, value: any) {
-    const isArrowFn = value?.declaration?.type === "ArrowFunctionExpression";
-    const isFunction = value?.declaration?.type === "FunctionDeclaration";
-    const isComponentWithActions =
-      (isArrowFn || isFunction) && isServerOutput && value?._hasActions;
+    const isActionsFlag = isServerOutput && value?._hasActions;
 
-    if (isComponentWithActions) {
-      // Stop the propagation of the _hasActions property to the parent
-      value._hasActions = false;
-
-      if (value?.declaration?.id) {
-        markComponentHasActions(value.declaration.id.name, this);
-      } else {
-        let count = 1;
-        let name = "Component";
-
-        while (declarations.has(name) || imports.has(name)) {
-          name = `Component${count++}`;
-        }
-
-        markComponentHasActions(name, this);
-
-        if (value?.type === "ExportDefaultDeclaration") {
-          this.push({
-            type: "ExportDefaultDeclaration",
-            declaration: {
-              type: "Identifier",
-              name,
-            },
+    if (
+      isActionsFlag &&
+      value?.type === "VariableDeclaration" &&
+      Array.isArray(this)
+    ) {
+      for (let declaration of value.declarations) {
+        if (FN_EXPRESSIONS.has(declaration.init?.type)) {
+          declaration = markActionsFlag({
+            value,
+            declaration,
+            parent: this,
+            declarations,
+            imports,
           });
         }
-
-        return {
-          type: "VariableDeclaration",
-          declarations: [
-            {
-              type: "VariableDeclarator",
-              init: value.declaration,
-              id: {
-                type: "Identifier",
-                name,
-              },
-            },
-          ],
-          kind: "const",
-        };
       }
+      return value;
+    }
+
+    if (isActionsFlag && FN_DECLARATIONS.has(value?.declaration?.type)) {
+      return markActionsFlag({
+        value,
+        declaration: value.declaration,
+        parent: this,
+        declarations,
+        imports,
+      });
     }
 
     const isJSX =
@@ -393,6 +384,57 @@ export default function serverComponentPlugin(
     detectedWebComponents,
     hasActions,
     dependencies: getDependenciesList(modifiedAst, path),
+  };
+}
+
+function markActionsFlag({
+  value,
+  declaration,
+  parent,
+  declarations,
+  imports,
+}: any) {
+  // Stop the propagation of the _hasActions property to the parent
+  value._hasActions = false;
+
+  if (declaration?.id) {
+    markComponentHasActions(declaration?.id?.name, parent);
+    return value;
+  }
+
+  // In case it is not the name of the function, we have to create a new one
+  let count = 1;
+  let name = "Component";
+
+  while (declarations.has(name) || imports.has(name)) {
+    name = `Component${count++}`;
+  }
+
+  markComponentHasActions(name, parent);
+
+  if (value?.type === "ExportDefaultDeclaration") {
+    parent.push({
+      type: "ExportDefaultDeclaration",
+      declaration: {
+        type: "Identifier",
+        name,
+      },
+    });
+  }
+
+  return {
+    type: "VariableDeclaration",
+    declarations: [
+      {
+        type: "VariableDeclarator",
+        init: declaration,
+        id: {
+          type: "Identifier",
+          name,
+        },
+      },
+    ],
+    kind: "const",
   };
 }
 
