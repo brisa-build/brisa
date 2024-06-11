@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 const fs = require("node:fs");
+const path = require("node:path");
 const { execSync } = require("node:child_process");
 const readline = require("node:readline");
 
@@ -13,7 +14,15 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
   rl.close();
 
   console.log(`Creating project ${PROJECT_NAME}`);
-  fs.mkdirSync(PROJECT_NAME);
+
+  const folders = PROJECT_NAME.split(path.sep);
+  for (let i = 0; i < folders.length; i++) {
+    const folder = folders.slice(0, i + 1).join(path.sep);
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder);
+    }
+  }
+  
   process.chdir(PROJECT_NAME);
 
   const BRISA_VERSION = "0.0.77";
