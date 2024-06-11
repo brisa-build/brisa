@@ -1154,6 +1154,90 @@ describe("utils", () => {
       );
     });
 
+    it("should register _hasActions on multiple arrow fn component without export", () => {
+      const code = `
+        const ServerComponent = () => <Component onClick={() => console.log('clicked')} />,
+        ServerComponent2 = () => <Component onClick={() => console.log('clicked')} />;
+      `;
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />,
+        ServerComponent2 = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_2" data-action />;
+        
+        ServerComponent._hasActions = true;
+        ServerComponent2._hasActions = true;
+      `),
+      );
+    });
+
+    it("should register only _hasActions on arrow fn component that has actions", () => {
+      const code = `
+        const ServerComponent = () => <Component onClick={() => console.log('clicked')} />,
+        ServerComponent2 = () => <Component onClick={() => console.log('clicked')} />,
+        ServerComponent3 = () => <Component />,
+        ServerComponent4 = () => <Component onClick={() => console.log('clicked')} />;
+      `;
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />,
+        ServerComponent2 = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_2" data-action />,
+        ServerComponent3 = () => <Component />,
+        ServerComponent4 = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_3" data-action />;
+        
+        ServerComponent._hasActions = true;
+        ServerComponent2._hasActions = true;
+        ServerComponent4._hasActions = true;
+      `),
+      );
+    });
+
+    it("should register _hasActions on multiple arrow fn component WITH export", () => {
+      const code = `
+        const ServerComponent = () => <Component onClick={() => console.log('clicked')} />,
+        ServerComponent2 = () => <Component onClick={() => console.log('clicked')} />;
+
+        export { ServerComponent, ServerComponent2 };
+      `;
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />,
+        ServerComponent2 = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_2" data-action />;
+        
+        export { ServerComponent, ServerComponent2 };
+
+        ServerComponent._hasActions = true;
+        ServerComponent2._hasActions = true;
+      `),
+      );
+    });
+
     it.todo(
       "should register _hasActions only in the component that has events using outside elements",
       () => {

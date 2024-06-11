@@ -101,7 +101,10 @@ export default function serverComponentPlugin(
       Array.isArray(this)
     ) {
       for (let declaration of value.declarations) {
-        if (FN_EXPRESSIONS.has(declaration.init?.type)) {
+        if (
+          declaration._hasActions &&
+          FN_EXPRESSIONS.has(declaration.init?.type)
+        ) {
           declaration = markActionsFlag({
             value,
             declaration,
