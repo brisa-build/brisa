@@ -2886,5 +2886,32 @@ describe("utils", () => {
         "<div>this is a test</div>",
       );
     });
+
+    it("should automatic adopt the global style sheets from document.styleSheets", () => {
+      const style = document.createElement("style");
+
+      style.textContent = "div { color: red; }";
+      document.head.appendChild(style);
+
+      const Component = () => {
+        return ["div", {}, ""];
+      };
+
+      customElements.define("style-sheet-component", brisaElement(Component));
+      document.body.innerHTML = "<style-sheet-component />";
+
+      const styleSheetComponent = document.querySelector(
+        "style-sheet-component",
+      ) as HTMLElement;
+
+      const expectedSheet = new CSSStyleSheet();
+
+      expectedSheet.insertRule("div { color: red; }");
+
+      expect(styleSheetComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+      expect(styleSheetComponent?.shadowRoot?.adoptedStyleSheets).toEqual([
+        expectedSheet,
+      ]);
+    });
   });
 });
