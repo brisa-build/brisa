@@ -43,72 +43,73 @@ const PROPS = "p";
 const SUSPENSE_PROPS = "l";
 const NULL = null;
 const CONTEXT = "context";
-const $document = document;
-
-const createTextNode = (text: Children) => {
-  if ((text as any) === false) text = "";
-  return $document.createTextNode(
-    (Array.isArray(text) ? text.join("") : text ?? "").toString(),
-  );
-};
-
-const isObject = (o: unknown) => typeof o === "object";
-const isReactiveArray = (a: any) => a?.some?.(isObject);
-const arr = Array.from;
-const isFunction = (fn: unknown) => typeof fn === "function";
-const isAttributeAnEvent = (key: string) => key.startsWith("on");
-const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
-  parent.appendChild(child);
-
-const createElement = (
-  tagName: string,
-  parent?: HTMLElement | DocumentFragment,
-) => {
-  return tagName === "svg" ||
-    ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
-      lowercase((parent as HTMLElement).tagName) !== "foreignobject")
-    ? $document.createElementNS(SVG_NAMESPACE, tagName)
-    : $document.createElement(tagName);
-};
-
-const setAttribute = (el: HTMLElement, key: string, value: string) => {
-  const on = (value as unknown as symbol) === _on;
-  const off = (value as unknown as symbol) === _off;
-  const isStyleObj = key === "style" && isObject(value);
-  let serializedValue = isStyleObj
-    ? stylePropsToString(value as JSX.CSSProperties)
-    : serialize(value);
-
-  const isWithNamespace =
-    el.namespaceURI === SVG_NAMESPACE &&
-    (key.startsWith("xlink:") || key === "href");
-
-  // Handle base path
-  // This code is removed by the bundler when basePath is not used
-  if (__BASE_PATH__) {
-    if ((key === "src" || key === "href") && !URL.canParse(value)) {
-      serializedValue = __BASE_PATH__ + serializedValue;
-    }
-  }
-
-  if (key === INDICATOR) {
-    if (value) el.classList.add(BRISA_REQUEST_CLASS);
-    else el.classList.remove(BRISA_REQUEST_CLASS);
-  } else if (key === "ref") {
-    (value as unknown as StateSignal).value = el;
-  } else if (isWithNamespace) {
-    if (off) el.removeAttributeNS(XLINK_NAMESPACE, key);
-    else el.setAttributeNS(XLINK_NAMESPACE, key, on ? "" : serializedValue);
-  } else {
-    if (off) el.removeAttribute(key);
-    else el.setAttribute(key, on ? "" : serializedValue);
-  }
-};
 
 export default function brisaElement(
   render: Render,
   observedAttributes: string[] = [],
 ) {
+  const $document = document;
+
+  const createTextNode = (text: Children) => {
+    if ((text as any) === false) text = "";
+    return $document.createTextNode(
+      (Array.isArray(text) ? text.join("") : text ?? "").toString(),
+    );
+  };
+
+  const isObject = (o: unknown) => typeof o === "object";
+  const isReactiveArray = (a: any) => a?.some?.(isObject);
+  const arr = Array.from;
+  const isFunction = (fn: unknown) => typeof fn === "function";
+  const isAttributeAnEvent = (key: string) => key.startsWith("on");
+  const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
+    parent.appendChild(child);
+
+  const createElement = (
+    tagName: string,
+    parent?: HTMLElement | DocumentFragment,
+  ) => {
+    return tagName === "svg" ||
+      ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
+        lowercase((parent as HTMLElement).tagName) !== "foreignobject")
+      ? $document.createElementNS(SVG_NAMESPACE, tagName)
+      : $document.createElement(tagName);
+  };
+
+  const setAttribute = (el: HTMLElement, key: string, value: string) => {
+    const on = (value as unknown as symbol) === _on;
+    const off = (value as unknown as symbol) === _off;
+    const isStyleObj = key === "style" && isObject(value);
+    let serializedValue = isStyleObj
+      ? stylePropsToString(value as JSX.CSSProperties)
+      : serialize(value);
+
+    const isWithNamespace =
+      el.namespaceURI === SVG_NAMESPACE &&
+      (key.startsWith("xlink:") || key === "href");
+
+    // Handle base path
+    // This code is removed by the bundler when basePath is not used
+    if (__BASE_PATH__) {
+      if ((key === "src" || key === "href") && !URL.canParse(value)) {
+        serializedValue = __BASE_PATH__ + serializedValue;
+      }
+    }
+
+    if (key === INDICATOR) {
+      if (value) el.classList.add(BRISA_REQUEST_CLASS);
+      else el.classList.remove(BRISA_REQUEST_CLASS);
+    } else if (key === "ref") {
+      (value as unknown as StateSignal).value = el;
+    } else if (isWithNamespace) {
+      if (off) el.removeAttributeNS(XLINK_NAMESPACE, key);
+      else el.setAttributeNS(XLINK_NAMESPACE, key, on ? "" : serializedValue);
+    } else {
+      if (off) el.removeAttribute(key);
+      else el.setAttribute(key, on ? "" : serializedValue);
+    }
+  };
+
   const attributesLowercase: string[] = [];
   const attributesObj: Record<string, string> = {};
 

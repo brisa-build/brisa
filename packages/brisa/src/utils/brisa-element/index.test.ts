@@ -2887,7 +2887,7 @@ describe("utils", () => {
       );
     });
 
-    it("should automatic adopt the global style sheets from document.styleSheets", () => {
+    it("should automatic adopt the global style sheets from document.styleSheets", async () => {
       const style = document.createElement("style");
 
       style.textContent = "div { color: red; }";
