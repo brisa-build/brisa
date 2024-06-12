@@ -43,10 +43,11 @@ const PROPS = "p";
 const SUSPENSE_PROPS = "l";
 const NULL = null;
 const CONTEXT = "context";
+const $document = document;
 
 const createTextNode = (text: Children) => {
   if ((text as any) === false) text = "";
-  return document.createTextNode(
+  return $document.createTextNode(
     (Array.isArray(text) ? text.join("") : text ?? "").toString(),
   );
 };
@@ -66,8 +67,8 @@ const createElement = (
   return tagName === "svg" ||
     ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
       lowercase((parent as HTMLElement).tagName) !== "foreignobject")
-    ? document.createElementNS(SVG_NAMESPACE, tagName)
-    : document.createElement(tagName);
+    ? $document.createElementNS(SVG_NAMESPACE, tagName)
+    : $document.createElement(tagName);
 };
 
 const setAttribute = (el: HTMLElement, key: string, value: string) => {
@@ -136,11 +137,10 @@ export default function brisaElement(
       const sheet = new CSSStyleSheet();
 
       // Add global CSS to apply to the shadowRoot
-      for (let { cssRules } of document.styleSheets) {
+      for (let { cssRules } of $document.styleSheets) {
         for (let rule of cssRules) sheet.insertRule(rule.cssText);
+        shadowRoot.adoptedStyleSheets.push(sheet);
       }
-
-      shadowRoot.adoptedStyleSheets = [sheet];
 
       function handlePortal(
         children: Children,
@@ -261,7 +261,7 @@ export default function brisaElement(
 
                 if (isDangerHTML || isReactiveArray(child)) {
                   let currentElNodes = arr(el.childNodes);
-                  const fragment = document.createDocumentFragment();
+                  const fragment = $document.createDocumentFragment();
 
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {
