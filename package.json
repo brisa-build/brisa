@@ -1,6 +1,6 @@
 {
   "name": "brisa-monorepo",
-  "version": "0.0.78",
+  "version": "0.0.79",
   "packageManager": "bun@1.1.12",
   "description": "The next-gen web framework.",
   "license": "MIT",
