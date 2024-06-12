@@ -134,6 +134,17 @@ export default function brisaElement(
       const fnToExecuteAfterMount: (() => void)[] = [];
       const cssStyles: CSSStyles = [];
 
+      // Fix global CSS in shadowRoot
+      shadowRoot.adoptedStyleSheets = arr(document.styleSheets).map((x) => {
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync(
+          arr(x.cssRules)
+            .map((rule) => rule.cssText)
+            .join(" "),
+        );
+        return sheet;
+      });
+
       function handlePortal(
         children: Children,
         parent: HTMLElement | DocumentFragment,
