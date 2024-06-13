@@ -99,12 +99,9 @@ export default function serverComponentPlugin(
     // it will be updated in the next iteration, after the traversal.
     registerDeclarationsAndImports.call(this, key, value);
 
-    // Mark that the expression has actions after calling functions containing actions
-    if (
-      value?.type === "CallExpression" &&
-      value?.callee?.type === "Identifier"
-    ) {
-      const declaration = declarations.get(value?.callee?.name);
+    // Mark that the identifier has actions after using declaration with actions
+    if (value?.type === "Identifier" && declarations.has(value.name)) {
+      const declaration = declarations.get(value.name);
       if (declaration?._hasActions) value._hasActions = true;
     }
 
@@ -140,12 +137,6 @@ export default function serverComponentPlugin(
         declarations,
         imports,
       });
-    }
-
-    // Allow to use JSX elements as identifiers or element generators
-    if (value === "Identifier" && declarations.has(this.name)) {
-      const declaration = declarations.get(this.name);
-      if (declaration?._hasActions) this._hasActions = true;
     }
 
     const isJSX =
