@@ -126,7 +126,7 @@ describe("utils", () => {
         },
       };
 
-      mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => { });
 
       const { success, logs } = await compileFiles();
 
@@ -324,7 +324,7 @@ describe("utils", () => {
         ASSETS_DIR,
       };
 
-      mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => { });
 
       const { success, logs } = await compileFiles();
 
@@ -397,7 +397,7 @@ describe("utils", () => {
         ASSETS_DIR,
       };
 
-      mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => { });
 
       const { success, logs } = await compileFiles();
 
@@ -458,7 +458,7 @@ describe("utils", () => {
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 190 B     | ${greenLog("3 kB")}  
-    ${info}Δ /layout       | 435 B     |
+    ${info}Δ /layout       | 452 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -486,7 +486,7 @@ describe("utils", () => {
         ASSETS_DIR,
       };
 
-      mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => { });
 
       const { success, logs } = await compileFiles();
 
@@ -558,7 +558,7 @@ describe("utils", () => {
         I18N_CONFIG: (await import(path.join(SRC_DIR, "i18n"))).default,
       };
 
-      mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => { });
 
       const { success, logs } = await compileFiles();
       const englishFile = Bun.file(
@@ -638,7 +638,7 @@ describe("utils", () => {
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 190 B     | ${greenLog("4 kB")}  
     ${info}Δ /layout       | 674 B     |
-    ${info}Ω /i18n         | 261 B     |
+    ${info}Ω /i18n         | 257 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -666,7 +666,7 @@ describe("utils", () => {
         ASSETS_DIR,
       };
 
-      mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => { });
 
       const { success, logs } = await compileFiles();
       expect(logs).toBeEmpty();
@@ -738,7 +738,7 @@ describe("utils", () => {
         ASSETS_DIR,
       };
 
-      mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => { });
 
       const { success, logs } = await compileFiles();
 
@@ -807,7 +807,7 @@ describe("utils", () => {
         ASSETS_DIR,
       };
 
-      mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => { });
 
       const { success, logs } = await compileFiles();
 
@@ -881,7 +881,7 @@ describe("utils", () => {
       ASSETS_DIR,
     };
 
-    mockConsoleLog.mockImplementation(() => {});
+    mockConsoleLog.mockImplementation(() => { });
 
     const { success, logs } = await compileFiles();
 
@@ -914,9 +914,7 @@ describe("utils", () => {
   ${info}Route                                | JS server | JS client (gz)  
   ${info}-------------------------------------------------------------------
   ${info}λ /pages/page-without-web-component  | 190 B     | ${greenLog("0 B")}  
-  ${info}λ /pages/index                       | 1 kB      | ${greenLog(
-    "3 kB",
-  )}  
+  ${info}λ /pages/index                       | 1 kB      | ${greenLog("3 kB")}  
   ${info}
   ${info}λ Server entry-points
   ${info}Φ JS shared by all
