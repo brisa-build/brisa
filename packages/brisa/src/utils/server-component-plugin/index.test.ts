@@ -1379,6 +1379,46 @@ describe("utils", () => {
       );
     });
 
+    it("should NOT propagate _hasActions from one component to another one consuming with JSX", () => {
+      const code = `
+       const A = () => <Component />;
+       const B = () => <Component onClick={() => console.log('clicked')} />;
+  
+        export function ServerComponent() {
+          return <A />;
+        }
+  
+        export function ServerComponent2() {
+          return <B />;
+        }
+      `;
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        const A = () => <Component />;
+        const B = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+  
+         export function ServerComponent() {
+           return <A />;
+         }
+   
+         export function ServerComponent2() {
+           return <B />;
+         }
+         
+        B._hasActions = true;
+      `),
+      );
+    });
+
     it('should add the attribute "data-action-onclick" with destructuring and element generator', () => {
       const code = `
           const props = {
@@ -1417,5 +1457,39 @@ describe("utils", () => {
         `),
       );
     });
+
+    it.todo(
+      "should solve using identifiers from imports when no actions in the component",
+      () => {
+        const code = `
+        import { getEl } from './el.ts';
+
+        export default function Component({text}) {
+          return getEl(text);
+        }
+      `;
+
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: "a1",
+          path: serverComponentPath,
+        });
+
+        expect(out.dependencies).toEqual(
+          new Set([join(FIXTURES, "pages", "el.ts")]),
+        );
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
+        import { getEl } from './el.ts';
+
+        export default function Component({text}) {
+          return getEl(text);
+        }
+
+        Component._hasActions = getEl?._hasActions;
+      `),
+        );
+      },
+    );
   });
 });
