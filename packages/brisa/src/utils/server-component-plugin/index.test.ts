@@ -1458,8 +1458,46 @@ describe("utils", () => {
       );
     });
 
+    it("should NOT solve identifiers from imports when already exists actions in the component", () => {
+      const code = `
+        import { getEl } from './el.ts';
+
+        export default function Component({text}) {
+          if (text === 'foo') {
+            return <div onClick={() => console.log('foo')} />;
+          }
+          return getEl(text);
+        }
+      `;
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toEqual(
+        new Set([join(FIXTURES, "pages", "el.ts")]),
+      );
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        import { getEl } from './el.ts';
+
+        export default function Component({text}) {
+          if (text === 'foo') {
+            return <div onClick={() => console.log('foo')} data-action-onclick="a1_1" data-action />;
+          }
+          return getEl(text);
+        }
+
+        Component._hasActions = true;
+      `),
+      );
+    });
+
     it.todo(
-      "should solve using identifiers from imports when no actions in the component",
+      "should solve identifiers from imports when no actions in the component",
       () => {
         const code = `
         import { getEl } from './el.ts';
@@ -1487,6 +1525,94 @@ describe("utils", () => {
         }
 
         Component._hasActions = getEl?._hasActions;
+      `),
+        );
+      },
+    );
+
+    it.todo(
+      "should solve different identifiers from imports when no actions in the component",
+      () => {
+        const code = `
+        import getEl from './el.ts';
+        import { getEl2 } from './el2.ts';
+        import { getEl3 } from './el3.ts';
+
+        export default function Component({text}) {
+          return getEl(text) + getEl2(text) + getEl3(text);
+        }
+      `;
+
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: "a1",
+          path: serverComponentPath,
+        });
+
+        expect(out.dependencies).toEqual(
+          new Set([
+            join(FIXTURES, "pages", "el.ts"),
+            join(FIXTURES, "pages", "el2.ts"),
+            join(FIXTURES, "pages", "el3.ts"),
+          ]),
+        );
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
+        import getEl from './el.ts';
+        import { getEl2 } from './el2.ts';
+        import { getEl3 } from './el3.ts';
+
+        export default function Component({text}) {
+          return getEl(text) + getEl2(text) + getEl3(text);
+        }
+
+        Component._hasActions = getEl?._hasActions ?? getEl2?._hasActions ?? getEl3?._hasActions;
+      `),
+        );
+      },
+    );
+
+    it.todo(
+      "should NOT solve identifiers from imports not used in the component",
+      () => {
+        const code = `
+        import getEl from './el.ts';
+        import { getEl2 } from './el2.ts';
+        import { getEl3 } from './el3.ts';
+
+        export default function Component({text}) {
+          return getEl(text) + getEl3(text);
+        }
+
+        console.log(getEl2);
+      `;
+
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: "a1",
+          path: serverComponentPath,
+        });
+
+        expect(out.dependencies).toEqual(
+          new Set([
+            join(FIXTURES, "pages", "el.ts"),
+            join(FIXTURES, "pages", "el2.ts"),
+            join(FIXTURES, "pages", "el3.ts"),
+          ]),
+        );
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
+        import getEl from './el.ts';
+        import { getEl2 } from './el2.ts';
+        import { getEl3 } from './el3.ts';
+
+        export default function Component({text}) {
+          return getEl(text) + getEl3(text);
+        }
+
+        console.log(getEl2);
+
+        Component._hasActions = getEl?._hasActions ?? getEl3?._hasActions;
       `),
         );
       },
