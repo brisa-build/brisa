@@ -1379,10 +1379,8 @@ describe("utils", () => {
       );
     });
 
-    it.todo(
-      'should add the attribute "data-action-onclick" with destructuring and element generator',
-      () => {
-        const code = `
+    it('should add the attribute "data-action-onclick" with destructuring and element generator', () => {
+      const code = `
           const props = {
             onClick: () => console.log('hello world'),
             onInput: () => console.log('hello world'),
@@ -1392,20 +1390,18 @@ describe("utils", () => {
           export default function Component({text}) {
             return getEl(text);
           }
-  
-          Component._hasActions = true;
-      `;
+        `;
 
-        const out = serverComponentPlugin(code, {
-          allWebComponents: {},
-          fileID: "a1",
-          path: serverComponentPath,
-        });
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
 
-        expect(out.hasActions).toBeTrue();
-        expect(out.dependencies).toBeEmpty();
-        expect(normalizeQuotes(out.code)).toBe(
-          toExpected(`
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
           const props = {
             onClick: () => console.log('hello world'),
             onInput: () => console.log('hello world'),
@@ -1415,11 +1411,11 @@ describe("utils", () => {
           export default function Component({text}) {
             return getEl(text);
           }
-  
+          
+          getEl._hasActions = true;
           Component._hasActions = true;
         `),
-        );
-      },
-    );
+      );
+    });
   });
 });
