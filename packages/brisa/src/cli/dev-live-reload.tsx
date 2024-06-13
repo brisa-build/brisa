@@ -21,11 +21,10 @@ export async function activateHotReload() {
 
     if (event !== "change" && file.size !== 0) return;
 
+    // Related with https://github.com/brisa-build/brisa/issues/227
     const hash = Bun.hash(await file.arrayBuffer());
-
     if (hashSet.has(hash)) return;
     if (hashSet.size > MAX_HASHES) hashSet.clear();
-
     hashSet.add(hash);
 
     console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
