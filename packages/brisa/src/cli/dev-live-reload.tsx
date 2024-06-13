@@ -4,6 +4,7 @@ import constants from "@/constants";
 import dangerHTML from "@/utils/danger-html";
 import compileAll from "@/utils/compile-all";
 import { toInline } from "@/helpers";
+import { logError } from "@/utils/log/log-build";
 
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
 const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
@@ -16,20 +17,34 @@ export async function activateHotReload() {
   let waitFilename = "";
 
   async function watchSourceListener(event: any, filename: any) {
-    const filePath = path.join(SRC_DIR, filename);
-    const file = Bun.file(filePath);
+    try {
+      const filePath = path.join(SRC_DIR, filename);
+      const file = Bun.file(filePath);
 
-    if (event !== "change" && file.size !== 0) return;
+      if (event !== "change" && file.size !== 0) return;
 
-    // Related with https://github.com/brisa-build/brisa/issues/227
-    const hash = Bun.hash(await file.arrayBuffer());
-    if (hashSet.has(hash)) return;
-    if (hashSet.size > MAX_HASHES) hashSet.clear();
-    hashSet.add(hash);
+      const hash = (await file.exists())
+        ? Bun.hash(await file.arrayBuffer())
+        : null;
 
-    console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
-    if (semaphore) waitFilename = filename as string;
-    else recompile(filename as string);
+      // Related with:
+      // - https://github.com/brisa-build/brisa/issues/227
+      // - https://github.com/brisa-build/brisa/issues/228
+      if (!hash || hashSet.has(hash)) return;
+      if (hashSet.size > MAX_HASHES) hashSet.clear();
+      hashSet.add(hash);
+
+      console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
+      if (semaphore) waitFilename = filename as string;
+      else recompile(filename as string);
+    } catch (e: any) {
+      logError({
+        messages: [e.message, `Error while trying to recompile ${filename}`],
+        stack: e.stack,
+        docTitle: `Please, file a GitHub issue to Brisa's team`,
+        docLink: "https://github.com/brisa-build/brisa/issues/new",
+      });
+    }
   }
 
   async function recompile(filename: string) {
