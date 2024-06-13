@@ -99,6 +99,15 @@ export default function serverComponentPlugin(
     // it will be updated in the next iteration, after the traversal.
     registerDeclarationsAndImports.call(this, key, value);
 
+    // Mark that the expression has actions after calling functions containing actions
+    if (
+      value?.type === "CallExpression" &&
+      value?.callee?.type === "Identifier"
+    ) {
+      const declaration = declarations.get(value?.callee?.name);
+      if (declaration?._hasActions) value._hasActions = true;
+    }
+
     const isActionsFlag = isServerOutput && value?._hasActions;
 
     if (

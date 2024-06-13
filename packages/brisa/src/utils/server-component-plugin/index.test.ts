@@ -1338,10 +1338,8 @@ describe("utils", () => {
       );
     });
 
-    it.todo(
-      "should register _hasActions only in the component that has events using outside elements generators",
-      () => {
-        const code = `
+    it("should register _hasActions only in the component that has events using outside elements generators", () => {
+      const code = `
        const el = () => <Component />;
        const el2 = () => <Component onClick={() => console.log('clicked')} />;
   
@@ -1354,16 +1352,16 @@ describe("utils", () => {
         }
       `;
 
-        const out = serverComponentPlugin(code, {
-          allWebComponents: {},
-          fileID: "a1",
-          path: serverComponentPath,
-        });
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
 
-        expect(out.hasActions).toBeTrue();
-        expect(out.dependencies).toBeEmpty();
-        expect(normalizeQuotes(out.code)).toBe(
-          toExpected(`
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
         const el = () => <Component />;
         const el2 = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
   
@@ -1374,12 +1372,12 @@ describe("utils", () => {
          export function ServerComponent2() {
            return el2();
          }
-  
+         
+        el2._hasActions = true;
         ServerComponent2._hasActions = true;
       `),
-        );
-      },
-    );
+      );
+    });
 
     it.todo(
       'should add the attribute "data-action-onclick" with destructuring and element generator',
