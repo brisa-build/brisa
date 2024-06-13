@@ -93,6 +93,10 @@ export default function serverComponentPlugin(
    *   to know which file to call to execute the action.
    */
   function traverseB2A(this: any, key: string, value: any) {
+    const isJSX =
+      value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
+    const isActionsFlag = isServerOutput && value?._hasActions;
+
     // Register declarations and imports again to update the _hasActions flag
     // inside the declarations.
     // This will be useful only if the declaration are upper in the tree. Otherwise,
@@ -102,10 +106,15 @@ export default function serverComponentPlugin(
     // Mark that the identifier has actions after using declaration with actions
     if (value?.type === "Identifier" && declarations.has(value.name)) {
       const declaration = declarations.get(value.name);
-      if (declaration?._hasActions) value._hasActions = true;
+      if (declaration?._hasActions) {
+        value._hasActions = true;
+        value._actionPropagation = true;
+      }
     }
 
-    const isActionsFlag = isServerOutput && value?._hasActions;
+    // JSX components should not propagate the _hasActions flag, each component
+    // should have its own flag.
+    if (isJSX && value?._actionPropagation) delete value._hasActions;
 
     if (
       isActionsFlag &&
@@ -138,9 +147,6 @@ export default function serverComponentPlugin(
         imports,
       });
     }
-
-    const isJSX =
-      value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
 
     // Register each JSX action id
     if (analyzeAction && isJSX && !isWebComponent) {
@@ -183,7 +189,10 @@ export default function serverComponentPlugin(
           });
         }
 
-        if (isAction) value._hasActions = hasActions = true;
+        if (isAction) {
+          value._hasActions = hasActions = true;
+        }
+
         if (isAction && isServerOutput) {
           actionProperties.push({
             type: "Property",
@@ -339,6 +348,7 @@ export default function serverComponentPlugin(
 
     // Pass this value to the parent until we arrive at the root component
     if (value?._hasActions) this._hasActions = true;
+    if (value?._actionPropagation) this._actionPropagation = true;
 
     return value;
   }
