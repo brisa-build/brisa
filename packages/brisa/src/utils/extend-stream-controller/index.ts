@@ -8,6 +8,7 @@ export type ChunksOptions = {
 export type Controller = {
   enqueue(chunk: string, suspenseId?: number): void;
   head?: ComponentType;
+  cidNumber: number;
   nextSuspenseIndex(): number;
   suspensePromise(promise: Promise<void>): void;
   waitSuspensedPromises(): Promise<void>;
@@ -56,10 +57,12 @@ export default function extendStreamController({
 
   let noSuspensedOpenTags = 0;
   let noSuspensedCloseTags = 0;
+  let cidNumber = 0;
   let storeTransfered = false;
 
   return {
     head,
+    cidNumber,
     hasHeadTag: false,
     insideHeadTag: false,
     hasUnsuspense: false,

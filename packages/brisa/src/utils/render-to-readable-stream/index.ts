@@ -223,6 +223,7 @@ async function enqueueDuringRendering(
     };
 
     if (isComponent(type) && !isTagToIgnore) {
+      const hasActions = type?._hasActions;
       const processedProps = processServerComponentProps(props, componentProps);
       const componentContent = { component: type, props: processedProps };
       const isSuspenseComponent =
@@ -254,6 +255,14 @@ async function enqueueDuringRendering(
         );
       }
 
+      // Open tag useful for a rerenderInAction to know the component
+      if (hasActions) {
+        controller.enqueue(
+          `<!--o:${request.id}:${++controller.cidNumber}-->`,
+          suspenseId,
+        );
+      }
+
       const res = await enqueueComponent(
         componentContent,
         request,
@@ -261,6 +270,14 @@ async function enqueueDuringRendering(
         suspenseId,
         isNextInSlottedPosition,
       );
+
+      // Close tag useful for a rerenderInAction to know the component
+      if (hasActions) {
+        controller.enqueue(
+          `<!--c:${request.id}:${controller.cidNumber}-->`,
+          suspenseId,
+        );
+      }
 
       manageContextProviderCompletion();
 
@@ -275,6 +292,7 @@ async function enqueueDuringRendering(
       request,
       type,
       componentProps,
+      cid: controller.cidNumber,
     });
     const isContextProvider = type === CONTEXT_PROVIDER;
     let ctx: ProviderType | undefined;
