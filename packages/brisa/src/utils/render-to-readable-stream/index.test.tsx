@@ -12,7 +12,7 @@ import {
 } from "bun:test";
 import renderToReadableStream from ".";
 import { getConstants } from "@/constants";
-import { toInline } from "@/helpers";
+import { normalizeQuotes, toInline } from "@/helpers";
 import type { ComponentType, I18n, RequestContext, Translate } from "@/types";
 import createContext from "@/utils/create-context";
 import navigate from "@/utils/navigate";
@@ -3399,6 +3399,86 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(`<html><head></head><body>test</body></html>`);
+    });
+
+    it("should render comments wrapping a component with _hasActions=true", async () => {
+      const Component = () => <div data-action>test</div>;
+      Component._hasActions = true;
+
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost/"),
+      });
+      request.id = "123456";
+
+      const stream = renderToReadableStream(
+        <Component data-action-onclick="a1_1" data-action />,
+        {
+          ...testOptions,
+          request,
+        },
+      );
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        `<!--o:123456:1--><div data-action data-cid="1">test</div><!--c:123456:1-->`,
+      );
+    });
+
+    it("should render several comments with different final number to each component of a list", async () => {
+      const Component = ({ foo }: any) => <div data-action>{foo}</div>;
+      Component._hasActions = true;
+
+      const List = ({ onClick }: any) => (
+        <>
+          <Component
+            foo="bar"
+            onClick={onClick}
+            data-action-onclick="a1_1"
+            data-action
+          />
+          <Component
+            foo="baz"
+            onClick={onClick}
+            data-action-onclick="a2_1"
+            data-action
+          />
+          <Component
+            foo="foo"
+            onClick={onClick}
+            data-action-onclick="a3_1"
+            data-action
+          />
+        </>
+      );
+
+      const request = extendRequestContext({
+        originalRequest: new Request("http://localhost/"),
+      });
+      request.id = "123456";
+
+      const stream = renderToReadableStream(<List />, {
+        ...testOptions,
+        request,
+      });
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        normalizeQuotes(
+          `
+            <!--o:123456:1-->
+              <div data-action data-cid="1">bar</div>
+            <!--c:123456:1-->
+            
+            <!--o:123456:2-->
+              <div data-action data-cid="2">baz</div>
+            <!--c:123456:2-->
+
+            <!--o:123456:3-->
+              <div data-action data-cid="3">foo</div>
+            <!--c:123456:3-->`,
+        ),
+      );
     });
   });
 });
