@@ -1,5 +1,5 @@
 import { describe, it, expect, mock, afterEach, spyOn } from "bun:test";
-import { logTable, logError } from "./log-build";
+import { logTable, logError, logBuildError } from "./log-build";
 import { getConstants } from "@/constants";
 import extendRequestContext from "@/utils/extend-request-context";
 import type { RequestContext } from "@/types";
@@ -61,6 +61,51 @@ describe("utils", () => {
       expect(output).toContain("Error stack");
       expect(store.get("__BRISA_ERRORS__")).toHaveLength(1);
       expect(store.get("__BRISA_ERRORS__")[0].title).toBe("Error message 1");
+    });
+  });
+
+  describe("logBuildError", () => {
+    it("should log a build error", () => {
+      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
+
+      spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
+
+      const logs = [
+        { message: "Error message 1" },
+        { message: "Error message 2" },
+      ];
+
+      logBuildError(
+        "Failed to compile",
+        logs as (BuildMessage | ResolveMessage)[],
+      );
+
+      const output = mockLog.mock.results.map((t) => t.value).join("\n");
+
+      expect(output).toContain("Failed to compile");
+      expect(output).toContain("Error message 1");
+      expect(output).toContain("Error message 2");
+    });
+
+    it("should improve the JSX runtime error with a better message", () => {
+      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
+
+      spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
+
+      const logs = [{ message: 'Could not resolve: "react/jsx-dev-runtime".' }];
+
+      logBuildError(
+        "Failed to compile",
+        logs as (BuildMessage | ResolveMessage)[],
+      );
+
+      const output = mockLog.mock.results.map((t) => t.value).join("\n");
+
+      expect(output).toContain("Failed to compile");
+      expect(output).toContain('Could not resolve: "react/jsx-dev-runtime".');
+      expect(output).toContain(
+        "Verify inside tsconfig.json the 'jsx' option set to 'react-jsx' and the 'jsxImportSource' option set to 'brisa'",
+      );
     });
   });
 });

@@ -7,6 +7,7 @@ import { getConstants } from "@/constants";
 import type { ActionInfo } from "./get-actions-info";
 import getActionsInfo from "./get-actions-info";
 import { getPurgedBody } from "./get-purged-body";
+import { logBuildError, logError } from "@/utils/log/log-build";
 
 type CompileActionsParams = {
   actionsEntrypoints: string[];
@@ -40,6 +41,10 @@ export default async function compileActions({
     define,
     plugins: [actionPlugin({ actionsEntrypoints })],
   });
+
+  if (!res.success) {
+    logBuildError("Failed to compile actions", res.logs);
+  }
 
   fs.rmSync(rawActionsDir, { recursive: true });
 

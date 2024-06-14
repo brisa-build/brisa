@@ -147,7 +147,11 @@ export default async function compileFiles() {
   if (!pagesSize) {
     return {
       success: false,
-      logs: ["Error compiling web components"],
+      logs: [
+        { message: "Error compiling web components" } as
+          | BuildMessage
+          | ResolveMessage,
+      ],
       pagesSize,
     };
   }

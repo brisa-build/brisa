@@ -1,5 +1,6 @@
 import path from "node:path";
 import clientBuildPlugin from "@/utils/client-build-plugin";
+import { logBuildError } from "@/utils/log/log-build";
 
 // Should be used via macro
 export async function injectBrisaDialogErrorCode() {
@@ -32,7 +33,9 @@ export async function injectBrisaDialogErrorCode() {
     ],
   });
 
-  if (!success) console.error(logs);
+  if (!success) {
+    logBuildError("Failed to use brisa dialog error in development", logs);
+  }
 
   return (await outputs?.[0]?.text?.()) ?? "";
 }

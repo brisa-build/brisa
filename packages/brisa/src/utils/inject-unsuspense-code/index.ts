@@ -1,3 +1,4 @@
+import { logBuildError } from "@/utils/log/log-build";
 import path from "node:path";
 
 // Should be used via macro
@@ -8,7 +9,9 @@ export async function injectUnsuspenseCode() {
     minify: true,
   });
 
-  if (!success) console.error(logs);
+  if (!success) {
+    logBuildError("Failed to compile unsuspense code", logs);
+  }
 
   return (await outputs?.[0]?.text?.()) ?? "";
 }
