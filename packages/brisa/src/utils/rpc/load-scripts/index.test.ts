@@ -40,7 +40,9 @@ describe("utils", () => {
     }
 
     it("should load script with 'src' attribute", async () => {
-      const src = `data:text/javascript;base64,${btoa(`console.log('hello from fetch')`)}`;
+      const src = `data:text/javascript;base64,${btoa(
+        `console.log('hello from fetch')`,
+      )}`;
       const script = createScript(src);
 
       await loadScripts(script);
@@ -98,9 +100,15 @@ describe("utils", () => {
         append(script);
       });
 
-      const src1 = `data:text/javascript;base64,${btoa(`console.log('first')`)}`;
-      const src2 = `data:text/javascript;base64,${btoa(`console.log('second')`)}`;
-      const src3 = `data:text/javascript;base64,${btoa(`console.log('third')`)}`;
+      const src1 = `data:text/javascript;base64,${btoa(
+        `console.log('first')`,
+      )}`;
+      const src2 = `data:text/javascript;base64,${btoa(
+        `console.log('second')`,
+      )}`;
+      const src3 = `data:text/javascript;base64,${btoa(
+        `console.log('third')`,
+      )}`;
 
       const script1 = createScript(src1);
       const script2 = createScript(src2);
