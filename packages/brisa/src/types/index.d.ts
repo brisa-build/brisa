@@ -693,7 +693,12 @@ export type ResponseHeaders = (
   status: number,
 ) => HeadersInit;
 
-export type JSXNode = string | number | null | JSXElement | JSXNode[];
+export type JSXNode<T = Record<string, unknown>> =
+  | string
+  | number
+  | null
+  | JSXElement<T>
+  | JSXNode[];
 
 export type Type = string | number | ComponentType | Promise<ComponentType>;
 
@@ -850,12 +855,12 @@ export type Configuration = {
   output?: "static" | "server" | "desktop" | "android" | "ios";
 };
 
-export type JSXElement =
+export type JSXElement<T = Record<string, unknown>> =
   | Promise<JSXElement>
   | JSXElement[]
   | {
       type: Type;
-      props: Props;
+      props: Props<T>;
     }
   | null;
 
