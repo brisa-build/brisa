@@ -866,8 +866,8 @@ export type JSXComponent<T extends Record<string, unknown> = {}> = ((
   props: Props<T>,
   request: RequestContext
 ) => JSXNode | Promise<JSXNode>) & {
-  suspense: JSXComponent<T>;
-  error: JSXComponent<T & { error: unknown }>;
+  suspense?: JSXComponent<T>;
+  error?: JSXComponent<T & { error: unknown }>;
 };
 
 export interface I18nDictionary {
