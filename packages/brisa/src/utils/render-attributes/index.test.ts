@@ -1356,6 +1356,8 @@ describe("utils", () => {
         originalRequest: new Request("https://example.com"),
       });
 
+      request.id = "123456";
+
       const attributes = renderAttributes({
         elementProps: { "data-action": true },
         request,
@@ -1363,7 +1365,7 @@ describe("utils", () => {
         cid: 123,
       });
 
-      expect(attributes).toBe(` data-action data-cid="123"`);
+      expect(attributes).toBe(` data-action data-cid="123456:123"`);
     });
 
     it("should NOT add data-cid when the data-action is NOT present as attribute", () => {

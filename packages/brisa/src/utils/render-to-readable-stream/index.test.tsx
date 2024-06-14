@@ -3420,7 +3420,7 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        `<!--o:123456:1--><div data-action data-cid="1">test</div><!--c:123456:1-->`,
+        `<!--o:123456:1--><div data-action data-cid="123456:1">test</div><!--c:123456:1-->`,
       );
     });
 
@@ -3467,15 +3467,15 @@ describe("utils", () => {
         normalizeQuotes(
           `
             <!--o:123456:1-->
-              <div data-action data-cid="1">bar</div>
+              <div data-action data-cid="123456:1">bar</div>
             <!--c:123456:1-->
             
             <!--o:123456:2-->
-              <div data-action data-cid="2">baz</div>
+              <div data-action data-cid="123456:2">baz</div>
             <!--c:123456:2-->
 
             <!--o:123456:3-->
-              <div data-action data-cid="3">foo</div>
+              <div data-action data-cid="123456:3">foo</div>
             <!--c:123456:3-->`,
         ),
       );

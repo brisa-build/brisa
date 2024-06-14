@@ -147,7 +147,7 @@ export default function renderAttributes({
 
   // Add component ID (cid) to the element if it has an action
   if (hasActionRegistered && cid) {
-    attributes += ` data-cid="${cid}"`;
+    attributes += ` data-cid="${request.id}:${cid}"`;
   }
 
   // Add external action ids into data-actions attribute.
