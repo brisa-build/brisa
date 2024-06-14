@@ -12,7 +12,9 @@ export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
   "AVOID_DECLARATIVE_SHADOW_DOM",
 );
 
-type SSRWebComponentProps = {
+type SSRWebComponentProps<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = T & {
   Component: JSXComponent;
   selector: string;
   children?: JSXElement;
@@ -28,8 +30,10 @@ function isPromise<T>(v: unknown): v is Promise<T> {
   );
 }
 
-export default async function SSRWebComponent(
-  { Component, selector, children, ...props }: SSRWebComponentProps,
+export default async function SSRWebComponent<
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(
+  { Component, selector, children, ...props }: SSRWebComponentProps<T>,
   { store, useContext, i18n, indicate }: RequestContext,
 ): Promise<JSXNode> {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
