@@ -9,7 +9,7 @@ import type {
 import { getConstants } from "@/constants";
 
 export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
-  "AVOID_DECLARATIVE_SHADOW_DOM"
+  "AVOID_DECLARATIVE_SHADOW_DOM",
 );
 
 type Props<T extends Record<string, unknown>> = T & {
@@ -32,7 +32,7 @@ export default async function SSRWebComponent<
   T extends Record<string, unknown> = {},
 >(
   { Component, selector, children, ...props }: Props<T>,
-  { store, useContext, i18n, indicate }: RequestContext
+  { store, useContext, i18n, indicate }: RequestContext,
 ): Promise<JSXNode> {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
@@ -56,7 +56,7 @@ export default async function SSRWebComponent<
     css: (template: TemplateStringsArray, ...values: string[]) => {
       style += String.raw(
         template,
-        ...values.map((v: unknown) => (typeof v === "function" ? v() : v))
+        ...values.map((v: unknown) => (typeof v === "function" ? v() : v)),
       );
     },
   } as unknown as RequestContext;
@@ -81,7 +81,7 @@ export default async function SSRWebComponent<
       if (Component.error) {
         const maybePromise = Component.error(
           { ...componentProps, error },
-          webContext
+          webContext,
         );
 
         content = isPromise<JSXNode>(maybePromise)
