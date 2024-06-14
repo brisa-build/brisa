@@ -14,6 +14,7 @@ import clientBuildPlugin from "@/utils/client-build-plugin";
 import createContextPlugin from "@/utils/create-context/create-context-plugin";
 import snakeToCamelCase from "@/utils/snake-to-camelcase";
 import analyzeServerAst from "@/utils/analyze-server-ast";
+import { logBuildError } from "@/utils/log/log-build";
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
@@ -258,7 +259,7 @@ export async function transformToWebComponents({
   await rm(webEntrypoint);
 
   if (!success) {
-    logs.forEach((log) => console.error(log));
+    logBuildError("Failed to compile web components", logs);
     return null;
   }
 

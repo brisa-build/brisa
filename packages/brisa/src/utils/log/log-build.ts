@@ -97,3 +97,27 @@ export function logError({
 export function logWarning(messages: string[], footer?: string) {
   return log("Warning")(messages, footer);
 }
+
+export function logBuildError(
+  title: string,
+  logs: (BuildMessage | ResolveMessage)[],
+) {
+  const messages = [title, "", ...logs.map((l) => l.message)];
+  const isJSXRuntimeError = messages.some((m) => m.includes("react/jsx"));
+
+  if (isJSXRuntimeError) {
+    messages.push("");
+    messages.push("The error above is usually caused by the following:");
+    messages.push(
+      "Verify inside tsconfig.json the 'jsx' option set to 'react-jsx' and the 'jsxImportSource' option set to 'brisa'",
+    );
+  }
+
+  messages.push("");
+
+  logError({
+    messages,
+    docTitle: "Please, if you can't solve the problem, open an issue on GitHub",
+    docLink: "https://github.com/brisa-build/brisa/issues/new",
+  });
+}
