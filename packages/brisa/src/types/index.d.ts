@@ -695,9 +695,9 @@ export type ResponseHeaders = (
 
 export type Primitives = string | number | boolean | undefined | null;
 
-export type JSXNode = Primitives | JSXElement | JSXNode[];
-
 export type Type = string | number | ComponentType | Promise<ComponentType>;
+
+export type JSXNode = Primitives | JSXElement | JSXNode[];
 
 export type JSXElement =
   | Primitives
@@ -706,6 +706,15 @@ export type JSXElement =
       type: Type;
       props: Props;
     };
+
+export interface ComponentType extends JSXComponent {
+  error: (
+    props: Props & {
+      error?: Error;
+    },
+    request: RequestContext,
+  ) => JSXNode | Promise<JSXNode>;
+}
 
 export type JSXComponent<
   T extends Record<string, unknown> = Record<string, unknown>,
@@ -992,15 +1001,6 @@ export type I18n = {
    */
   overrideMessages: <T = Record<string, unknown>>(callback: (T) => T) => void;
 };
-
-export interface ComponentType extends JSXComponent {
-  error: (
-    props: Props & {
-      error?: Error;
-    },
-    request: RequestContext,
-  ) => JSXNode | Promise<JSXNode>;
-}
 
 export type ContextProvider<T> = {
   context: BrisaContext<T>;
