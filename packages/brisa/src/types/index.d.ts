@@ -851,7 +851,6 @@ export type Configuration = {
 };
 
 export type JSXElement =
-  | Promise<JSXElement>
   | JSXElement[]
   | {
       type: Type;
