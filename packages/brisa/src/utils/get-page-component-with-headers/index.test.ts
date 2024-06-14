@@ -8,6 +8,11 @@ import { join } from "node:path";
 const BUILD_DIR = join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGES_DIR = join(BUILD_DIR, "pages");
 const ASSETS_DIR = join(BUILD_DIR, "public");
+const req = extendRequestContext({
+  originalRequest: new Request("http://localhost"),
+});
+
+req.id = "123456";
 
 describe("utils", () => {
   describe("getPageComponentWithHeaders", () => {
@@ -31,9 +36,6 @@ describe("utils", () => {
     });
 
     it("should return PageComponent, pageModule and pageHeaders", async () => {
-      const req = extendRequestContext({
-        originalRequest: new Request("http://localhost"),
-      });
       const route = { filePath: join(PAGES_DIR, "foo.tsx") } as MatchedRoute;
       const error = new Error("error");
       const headers = { header: "value" };
@@ -45,20 +47,19 @@ describe("utils", () => {
       });
       expect(result.PageComponent).toBeTypeOf("function");
       expect(result.pageModule.responseHeaders).toBeUndefined();
-      expect(result.pageHeaders).toEqual({
-        "cache-control": "no-store, must-revalidate",
-        "transfer-encoding": "chunked",
-        vary: "Accept-Encoding",
-        "content-type": "text/html; charset=utf-8",
-        ...headers,
-      });
+      expect(result.pageHeaders).toEqual(
+        new Headers({
+          "cache-control": "no-store, must-revalidate",
+          "transfer-encoding": "chunked",
+          vary: "Accept-Encoding",
+          "content-type": "text/html; charset=utf-8",
+          ...headers,
+        }),
+      );
     });
 
     it("should return PageComponent, pageModule and pageHeaders with x-test responseHeaders as fail", async () => {
       const exectedPageResponseHeaders = { "x-test": "fail" };
-      const req = extendRequestContext({
-        originalRequest: new Request("http://localhost"),
-      });
       const route = { filePath: join(PAGES_DIR, "index.tsx") } as MatchedRoute;
       const error = new Error("error");
       const status = 500;
@@ -72,32 +73,33 @@ describe("utils", () => {
       });
       expect(result.PageComponent).toBeTypeOf("function");
       expect(result.pageModule.responseHeaders).toBeTypeOf("function");
-      expect(result.pageHeaders).toEqual({
-        "cache-control": "no-store, must-revalidate",
-        "transfer-encoding": "chunked",
-        vary: "Accept-Encoding",
-        "content-type": "text/html; charset=utf-8",
-        ...headers,
-        ...exectedPageResponseHeaders,
-      });
+      expect(result.pageHeaders).toEqual(
+        new Headers({
+          "cache-control": "no-store, must-revalidate",
+          "transfer-encoding": "chunked",
+          vary: "Accept-Encoding",
+          "content-type": "text/html; charset=utf-8",
+          ...headers,
+          ...exectedPageResponseHeaders,
+        }),
+      );
     });
 
     it("should return PageComponent, pageModule and pageHeaders with x-test responseHeaders as success", async () => {
       const exectedPageResponseHeaders = { "x-test": "success" };
-      const req = extendRequestContext({
-        originalRequest: new Request("http://localhost"),
-      });
       const route = { filePath: join(PAGES_DIR, "index.tsx") } as MatchedRoute;
       const result = await getPageComponentWithHeaders({ req, route });
       expect(result.PageComponent).toBeTypeOf("function");
       expect(result.pageModule.responseHeaders).toBeTypeOf("function");
-      expect(result.pageHeaders).toEqual({
-        "cache-control": "no-store, must-revalidate",
-        "transfer-encoding": "chunked",
-        vary: "Accept-Encoding",
-        "content-type": "text/html; charset=utf-8",
-        ...exectedPageResponseHeaders,
-      });
+      expect(result.pageHeaders).toEqual(
+        new Headers({
+          "cache-control": "no-store, must-revalidate",
+          "transfer-encoding": "chunked",
+          vary: "Accept-Encoding",
+          "content-type": "text/html; charset=utf-8",
+          ...exectedPageResponseHeaders,
+        }),
+      );
     });
   });
 });
