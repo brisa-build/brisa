@@ -26,9 +26,7 @@ function toHaveAttribute(received: unknown, attribute: string, value?: string) {
     return {
       pass: attr === value,
       message: () =>
-        `Expected: ${greenLog(`"${value}"`)}\nReceived: ${redLog(
-          attr ? `"${attr}"` : "null",
-        )}`,
+        `Expected: ${greenLog(`"${value}"`)}\nReceived: ${redLog(attr ? `"${attr}"` : "null")}`,
     };
   }
 
@@ -48,9 +46,7 @@ function toHaveTagName(received: unknown, tagName: string) {
   return {
     pass: received.tagName.toLowerCase() === tagName.toLowerCase(),
     message: () =>
-      `Expected: ${greenLog(tagName)}\nReceived: ${redLog(
-        received.tagName.toLowerCase(),
-      )}`,
+      `Expected: ${greenLog(tagName)}\nReceived: ${redLog(received.tagName.toLowerCase())}`,
   };
 }
 
@@ -68,9 +64,7 @@ function toHaveTextContent(received: unknown, text: string) {
   return {
     pass: received.textContent === text,
     message: () =>
-      `Expected: ${greenLog(`"${text}"`)}\nReceived: ${redLog(
-        `"${received.textContent}"`,
-      )}`,
+      `Expected: ${greenLog(`"${text}"`)}\nReceived: ${redLog(`"${received.textContent}"`)}`,
   };
 }
 
@@ -118,9 +112,7 @@ function toHaveClass(received: unknown, className: string) {
   return {
     pass: received.classList.contains(className),
     message: () =>
-      `Expected: ${greenLog(`"${className}"`)}\nReceived: ${redLog(
-        `"${received.className}"`,
-      )}`,
+      `Expected: ${greenLog(`"${className}"`)}\nReceived: ${redLog(`"${received.className}"`)}`,
   };
 }
 
@@ -134,9 +126,7 @@ function toHaveValue(received: unknown, value: string) {
   return {
     pass: received.value === value,
     message: () =>
-      `Expected: ${greenLog(`"${value}"`)}\nReceived: ${redLog(
-        `"${received.value}"`,
-      )}`,
+      `Expected: ${greenLog(`"${value}"`)}\nReceived: ${redLog(`"${received.value}"`)}`,
   };
 }
 
@@ -257,9 +247,7 @@ function toBeInputTypeOf(received: unknown, type: InputType) {
   return {
     pass: received.type === type,
     message: () =>
-      `Expected: ${greenLog(`"${type}"`)}\nReceived: ${redLog(
-        `"${received.type}"`,
-      )}`,
+      `Expected: ${greenLog(`"${type}"`)}\nReceived: ${redLog(`"${received.type}"`)}`,
   };
 }
 
