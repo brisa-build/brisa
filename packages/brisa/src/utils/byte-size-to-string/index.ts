@@ -20,7 +20,9 @@ export default function byteSizeToString(
   // 100kb
   if (byteCount > 100000) method = redLog;
 
-  const res = `${(byteCount / Math.pow(1000, index)).toFixed(decimals)} ${BYTE_UNITS[index]}`;
+  const res = `${(byteCount / Math.pow(1000, index)).toFixed(decimals)} ${
+    BYTE_UNITS[index]
+  }`;
 
   return useColors ? method(res) : res;
 }

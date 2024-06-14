@@ -937,10 +937,9 @@ export type Paths<T> = RemovePlural<
 type ExtendedWebContext =
   typeof import("@/web-components/_integrations").ExtendedWebContext;
 
-type I18nKey =
-  typeof import("@/i18n").default extends I18nConfig<infer T>
-    ? Paths<T extends object ? T : I18nDictionary>
-    : string;
+type I18nKey = typeof import("@/i18n").default extends I18nConfig<infer T>
+  ? Paths<T extends object ? T : I18nDictionary>
+  : string;
 
 export type TranslateOptions = {
   returnObjects?: boolean;

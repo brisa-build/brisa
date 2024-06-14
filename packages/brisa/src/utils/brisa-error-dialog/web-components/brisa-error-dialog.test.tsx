@@ -375,5 +375,7 @@ function encodeLink(link: string, line: number, column: number) {
   const [pathname] = (URL.canParse(link) ? new URL(link).pathname : link).split(
     ":",
   );
-  return `/__brisa_dev_file__?file=${encodeURIComponent(pathname)}&line=${line}&column=${column}`;
+  return `/__brisa_dev_file__?file=${encodeURIComponent(
+    pathname,
+  )}&line=${line}&column=${column}`;
 }

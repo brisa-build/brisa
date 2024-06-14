@@ -428,7 +428,10 @@ function addExtraChunk(
 
     Bun.write(
       listPath,
-      `${fs.readFileSync(listPath).toString()}\n${pagePath.replace(BUILD_DIR, "")}`,
+      `${fs.readFileSync(listPath).toString()}\n${pagePath.replace(
+        BUILD_DIR,
+        "",
+      )}`,
     );
 
     return 0;
