@@ -1,6 +1,6 @@
 import type { Type, Props } from "@/types";
 
-const Fragment = (props: Props<{ slot: string }>) => props.children ?? null;
+const Fragment = (props: Props) => props.children ?? null;
 const createNode = (type: Type, props: Props) => ({ type, props });
 
 Fragment.__isFragment = true;
