@@ -112,13 +112,12 @@ export default async function resolveAction({
     isPage: false,
   });
 
+  pageHeaders.set("X-Mode", options.renderMode);
+  pageHeaders.set("X-Type", "component");
+
   return new Response(stream, {
     status: 200,
-    headers: {
-      ...pageHeaders,
-      "X-Mode": options.renderMode,
-      "X-Type": "component",
-    },
+    headers: pageHeaders,
   });
 }
 

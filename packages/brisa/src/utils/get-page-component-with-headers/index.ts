@@ -31,18 +31,20 @@ export default async function getPageComponentWithHeaders({
   const pageResponseHeaders =
     (await module.responseHeaders?.(req, status)) ?? {};
 
+  const pageHeaders = new Headers({
+    "cache-control": HEADERS.CACHE_CONTROL,
+    ...middlewareResponseHeaders,
+    ...layoutResponseHeaders,
+    ...pageResponseHeaders,
+    ...headers,
+    "transfer-encoding": "chunked",
+    vary: "Accept-Encoding",
+    "content-type": "text/html; charset=utf-8",
+  });
+
   return {
     PageComponent: Page,
     pageModule: module,
-    pageHeaders: {
-      "cache-control": HEADERS.CACHE_CONTROL,
-      ...middlewareResponseHeaders,
-      ...layoutResponseHeaders,
-      ...pageResponseHeaders,
-      ...headers,
-      "transfer-encoding": "chunked",
-      vary: "Accept-Encoding",
-      "content-type": "text/html; charset=utf-8",
-    },
+    pageHeaders,
   };
 }
