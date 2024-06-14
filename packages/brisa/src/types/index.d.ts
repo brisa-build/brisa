@@ -693,16 +693,29 @@ export type ResponseHeaders = (
   status: number,
 ) => HeadersInit;
 
-export type JSXNode =
-  | string
-  | number
-  | false
-  | undefined
-  | null
-  | JSXElement
-  | JSXNode[];
+export type Primitives = string | number | boolean | undefined | null;
+
+export type JSXNode = Primitives | JSXElement | JSXNode[];
 
 export type Type = string | number | ComponentType | Promise<ComponentType>;
+
+export type JSXElement =
+  | Primitives
+  | JSXElement[]
+  | {
+      type: Type;
+      props: Props;
+    };
+
+export type JSXComponent<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = ((
+  props: Props<T>,
+  request: RequestContext,
+) => JSXNode | Promise<JSXNode>) & {
+  suspense?: JSXComponent<T>;
+  error?: JSXComponent<T & { error: unknown }>;
+};
 
 export type ExtendPluginOptions =
   | {
@@ -855,28 +868,6 @@ export type Configuration = {
    * - [How to use `output`](https://brisa.build/building-your-application/configuring/output)
    */
   output?: "static" | "server" | "desktop" | "android" | "ios";
-};
-
-export type JSXElement =
-  | JSXElement[]
-  | {
-      type: Type;
-      props: Props;
-    }
-  | string
-  | number
-  | false
-  | null
-  | undefined;
-
-export type JSXComponent<
-  T extends Record<string, unknown> = Record<string, unknown>,
-> = ((
-  props: Props<T>,
-  request: RequestContext,
-) => JSXNode | Promise<JSXNode>) & {
-  suspense?: JSXComponent<T>;
-  error?: JSXComponent<T & { error: unknown }>;
 };
 
 export interface I18nDictionary {
