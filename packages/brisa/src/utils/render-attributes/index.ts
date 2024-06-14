@@ -22,11 +22,13 @@ export default function renderAttributes({
   request,
   type,
   componentProps,
+  cid,
 }: {
   elementProps: Props;
   request: RequestContext;
   type: string;
   componentProps?: Props;
+  cid?: number;
 }): string {
   const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
   const { basePath, assetPrefix } = CONFIG;
@@ -141,6 +143,13 @@ export default function renderAttributes({
     attributes += ` ${key}="${value}"`;
   }
 
+  const hasActionRegistered = keys.has("data-action");
+
+  // Add component ID (cid) to the element if it has an action
+  if (hasActionRegistered && cid) {
+    attributes += ` data-cid="${cid}"`;
+  }
+
   // Add external action ids into data-actions attribute.
   //
   // This allows an action to call other actions without having to transfer
@@ -156,7 +165,7 @@ export default function renderAttributes({
   // Actions we don't want to do this kind of magic out of the developer's
   // control, because encrypting/decrypting props slows down requests and
   // exposes code without the developer's will.
-  if (componentProps && keys.has("data-action")) {
+  if (hasActionRegistered && componentProps) {
     const entries = [];
     let dependencies = [];
 

@@ -1350,5 +1350,49 @@ describe("utils", () => {
 
       expect(attributes).toBe(' basepath="/base"');
     });
+
+    it("should add data-cid when the data-action is present as attribute and cid as props", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        elementProps: { "data-action": true },
+        request,
+        type: "div",
+        cid: 123,
+      });
+
+      expect(attributes).toBe(` data-action data-cid="123"`);
+    });
+
+    it("should NOT add data-cid when the data-action is NOT present as attribute", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        elementProps: {},
+        request,
+        type: "div",
+        cid: 123,
+      });
+
+      expect(attributes).toBeEmpty();
+    });
+
+    it("should NOT add data-cid when the data-action is present as attribute but cid is NOT present as props", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        elementProps: { "data-action": true },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe(` data-action`);
+    });
   });
 });
