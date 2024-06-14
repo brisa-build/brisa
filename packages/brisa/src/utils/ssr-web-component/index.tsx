@@ -9,7 +9,7 @@ import type {
 import { getConstants } from "@/constants";
 
 export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
-  "AVOID_DECLARATIVE_SHADOW_DOM"
+  "AVOID_DECLARATIVE_SHADOW_DOM",
 );
 
 type SSRWebComponentProps = {
@@ -30,7 +30,7 @@ function isPromise<T>(v: unknown): v is Promise<T> {
 
 export default async function SSRWebComponent(
   { Component, selector, children, ...props }: SSRWebComponentProps,
-  { store, useContext, i18n, indicate }: RequestContext
+  { store, useContext, i18n, indicate }: RequestContext,
 ): Promise<JSXNode> {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
@@ -54,7 +54,7 @@ export default async function SSRWebComponent(
     css: (template: TemplateStringsArray, ...values: string[]) => {
       style += String.raw(
         template,
-        ...values.map((v: unknown) => (typeof v === "function" ? v() : v))
+        ...values.map((v: unknown) => (typeof v === "function" ? v() : v)),
       );
     },
   } as unknown as RequestContext;
@@ -79,7 +79,7 @@ export default async function SSRWebComponent(
       if (Component.error) {
         content = await Component.error(
           { ...componentProps, error },
-          webContext
+          webContext,
         );
       } else {
         throw error;
