@@ -668,7 +668,7 @@ type WebContextPluginExtras = {
 
 export type WebContextPlugin = (
   webContext: WebContext,
-  extras: WebContextPluginExtras,
+  extras: WebContextPluginExtras
 ) => WebContext;
 
 export type ReactiveMap = {
@@ -679,7 +679,7 @@ export type ReactiveMap = {
   setOptimistic: <T>(
     actionName: string,
     storeKey: string,
-    updater: (value: T) => T,
+    updater: (value: T) => T
   ) => void;
   Map: Map<string, unknown>;
 };
@@ -690,7 +690,7 @@ type Props<T extends Record<string, unknown> = {}> = T & {
 
 export type ResponseHeaders = (
   req: RequestContext,
-  status: number,
+  status: number
 ) => HeadersInit;
 
 export type JSXNode = string | number | null | JSXElement | JSXNode[];
@@ -710,7 +710,7 @@ export type ExtendPluginOptions =
 
 export type ExtendPlugins = (
   plugins: BunPlugin[],
-  options: ExtendPluginOptions,
+  options: ExtendPluginOptions
 ) => BunPlugin[];
 
 export type Configuration = {
@@ -859,11 +859,12 @@ export type JSXElement =
     }
   | string
   | number
+  | boolean
   | null;
 
 export type JSXComponent<T extends Record<string, unknown> = {}> = ((
   props: Props<T>,
-  request: RequestContext,
+  request: RequestContext
 ) => JSXNode | Promise<JSXNode>) & {
   suspense: JSXComponent<T>;
   error: JSXComponent<T & { error: unknown }>;
@@ -963,7 +964,7 @@ export type PageModule = {
 export type Translate = <T extends unknown = string>(
   i18nKey: I18nKey,
   query?: TranslationQuery | null,
-  options?: TranslateOptions,
+  options?: TranslateOptions
 ) => T;
 
 export type I18n = {
@@ -996,7 +997,7 @@ export interface ComponentType extends JSXComponent {
     props: Props & {
       error?: Error;
     },
-    request: RequestContext,
+    request: RequestContext
   ) => JSXNode | Promise<JSXNode>;
 }
 
@@ -1155,7 +1156,7 @@ type DangerHTMLOutput = {
  */
 export function createPortal(
   element: JSX.Element,
-  target: HTMLElement,
+  target: HTMLElement
 ): CreatePortalOutput;
 
 type CreatePortalOutput = {

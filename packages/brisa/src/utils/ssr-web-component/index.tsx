@@ -77,14 +77,10 @@ export default async function SSRWebComponent(
         : maybePromise;
     } catch (error) {
       if (Component.error) {
-        const maybePromise = Component.error(
+        content = await Component.error(
           { ...componentProps, error },
           webContext
         );
-
-        content = isPromise<JSXNode>(maybePromise)
-          ? await maybePromise
-          : maybePromise;
       } else {
         throw error;
       }
@@ -96,7 +92,7 @@ export default async function SSRWebComponent(
       {showContent && (
         <template shadowrootmode="open">
           {content}
-          {style.length > 0 ? <style>{toInline(style)}</style> : null}
+          {style.length > 0 && <style>{toInline(style)}</style>}
         </template>
       )}
       <Fragment slot="">{children}</Fragment>
