@@ -693,7 +693,14 @@ export type ResponseHeaders = (
   status: number,
 ) => HeadersInit;
 
-export type JSXNode = string | number | null | JSXElement | JSXNode[];
+export type JSXNode =
+  | string
+  | number
+  | false
+  | undefined
+  | null
+  | JSXElement
+  | JSXNode[];
 
 export type Type = string | number | ComponentType | Promise<ComponentType>;
 
@@ -859,7 +866,8 @@ export type JSXElement =
   | string
   | number
   | false
-  | null;
+  | null
+  | undefined;
 
 export type JSXComponent<
   T extends Record<string, unknown> = Record<string, unknown>,
