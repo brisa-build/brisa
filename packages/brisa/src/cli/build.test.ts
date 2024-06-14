@@ -101,7 +101,9 @@ describe("cli", () => {
       expect(fs.cpSync).toHaveBeenCalledWith(
         originPrebuildPath,
         finalPrebuildPath,
-        { recursive: true },
+        {
+          recursive: true,
+        },
       );
     });
 

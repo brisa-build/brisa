@@ -206,9 +206,7 @@ describe("test matchers", () => {
       div.textContent = "foo";
 
       expect(() => expect(div).toContainTextContent("test")).toThrowError(
-        `Expected to contain: ${greenLog('"test"')}\nReceived: ${redLog(
-          '"foo"',
-        )}`,
+        `Expected to contain: ${greenLog('"test"')}\nReceived: ${redLog('"foo"')}`,
       );
     });
 
