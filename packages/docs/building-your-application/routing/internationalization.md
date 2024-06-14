@@ -194,8 +194,8 @@ export default function Home({ name }: Props, requestContext: RequestContext) {
 :::
 
 ```js filename="src/i18n/index.js" switcher
-import en from "./messages/en.json";
-import es from "./messages/es.json";
+import en from "./messages/en";
+import es from "./messages/es";
 
 export default {
   defaultLocale: "en",
@@ -232,8 +232,8 @@ In order to consume translations, you need first to define the `messages` proper
 ==js
 
 ```js filename="src/i18n/index.js" switcher
-import en from "./messages/en.json";
-import es from "./messages/es.json";
+import en from "./messages/en";
+import es from "./messages/es";
 
 const i18nConfig = {
   defaultLocale: "en",
@@ -249,8 +249,8 @@ export default i18nConfig;
 ```ts filename="src/i18n/index.ts" switcher
 import { I18nConfig } from "brisa";
 
-import en from "./messages/en.json";
-import es from "./messages/es.json";
+import en from "./messages/en";
+import es from "./messages/es";
 
 const i18nConfig: I18nConfig<typeof en> = {
   defaultLocale: "en",
@@ -844,8 +844,8 @@ If passed as `false`, returns the key name itself.
 ==js
 
 ```js filename="src/i18n/index.js"
-import en from './messages/en.json';
-import es from './messages/es.json';
+import en from './messages/en';
+import es from './messages/es';
 
 const i18nConfig = {
   defaultLocale: "en",
@@ -862,8 +862,8 @@ export default i18nConfig;
 ```ts filename="src/i18n/index.ts"
 import { I18nConfig } from "brisa";
 
-import en from './messages/en.json';
-import es from './messages/es.json';
+import en from './messages/en';
+import es from './messages/es';
 
 const i18nConfig: I18nConfig<typeof en> = {
   defaultLocale: "en",
