@@ -1,46 +1,46 @@
 {
   "name": "brisa-monorepo",
   "version": "0.0.81",
-  "packageManager": "bun@1.1.12",
   "description": "The next-gen web framework.",
-  "license": "MIT",
-  "type": "module",
-  "author": {
-    "name": "Aral Roca Gòmez",
-    "email": "contact@aralroca.com"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/brisa-build/brisa.git"
   },
+  "license": "MIT",
+  "author": {
+    "name": "Aral Roca Gòmez",
+    "email": "contact@aralroca.com"
+  },
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "bun run --cwd packages/brisa build",
+    "clean": "bun run --cwd packages/brisa clean",
+    "docs:build": "bun run --cwd packages/docs build",
+    "docs:dev": "bun run --cwd packages/docs dev",
+    "docs:preview": "bun run --cwd packages/docs preview",
+    "format": "bunx prettier@3.3.2 --write .",
+    "release-all": "bun run release-brisa && bun run release-create-brisa",
+    "release-brisa": "bun run --cwd packages/brisa release",
+    "release-brisa:alpha": "bun run --cwd packages/brisa release:alpha",
+    "release-create-brisa": "bun run --cwd packages/create-brisa release",
+    "release-create-brisa:alpha": "bun run --cwd packages/create-brisa release:alpha",
+    "release:alpha": "bun run release-brisa:alpha && bun run release-create-brisa:alpha",
     "test": "bun run --filter 'brisa' test",
     "test:coverage": "bun run --cwd packages/brisa --coverage",
     "tsc:check": "bun run --cwd packages/brisa tsc:check",
-    "release-create-brisa": "bun run --cwd packages/create-brisa release",
-    "release-create-brisa:alpha": "bun run --cwd packages/create-brisa release:alpha",
-    "release-brisa": "bun run --cwd packages/brisa release",
-    "release-brisa:alpha": "bun run --cwd packages/brisa release:alpha",
-    "release-all": "bun run release-brisa && bun run release-create-brisa",
-    "release:alpha": "bun run release-brisa:alpha && bun run release-create-brisa:alpha",
-    "clean": "bun run --cwd packages/brisa clean",
-    "format": "bunx prettier@3.1.1 --write .",
-    "www:dev": "bun run --cwd packages/www dev",
-    "docs:dev": "bun run --cwd packages/docs dev",
-    "docs:build": "bun run --cwd packages/docs build",
-    "docs:preview": "bun run --cwd packages/docs preview",
     "update-version": "bun run scripts/update-brisa-version.ts",
     "upgrade": "bun run scripts/upgrade-bun.ts",
-    "validate-urls": "bun run scripts/validate-urls.ts"
+    "validate-urls": "bun run scripts/validate-urls.ts",
+    "www:dev": "bun run --cwd packages/www dev"
   },
+  "packageManager": "bun@1.1.12",
   "engines": {
     "bun": ">= 1.1.12",
     "npm": "please-use-bun",
-    "yarn": "please-use-bun",
-    "pnpm": "please-use-bun"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+    "pnpm": "please-use-bun",
+    "yarn": "please-use-bun"
+  }
 }

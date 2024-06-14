@@ -255,9 +255,7 @@ async function createSoftRedirectToLocale({
         <script>
           const browserLanguage = (navigator.language || navigator.userLanguage).toLowerCase();
           const shortBrowserLanguage = browserLanguage.split("-")[0];
-          const supportedLocales = ${JSON.stringify(
-            locales.map((locale) => locale.toLowerCase()),
-          )};
+          const supportedLocales = ${JSON.stringify(locales.map((locale) => locale.toLowerCase()))};
 
           if (supportedLocales.includes(shortBrowserLanguage)) {
             window.location.href = "/" + "${basePath}" + shortBrowserLanguage;

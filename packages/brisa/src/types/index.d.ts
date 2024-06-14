@@ -668,7 +668,7 @@ type WebContextPluginExtras = {
 
 export type WebContextPlugin = (
   webContext: WebContext,
-  extras: WebContextPluginExtras
+  extras: WebContextPluginExtras,
 ) => WebContext;
 
 export type ReactiveMap = {
@@ -679,7 +679,7 @@ export type ReactiveMap = {
   setOptimistic: <T>(
     actionName: string,
     storeKey: string,
-    updater: (value: T) => T
+    updater: (value: T) => T,
   ) => void;
   Map: Map<string, unknown>;
 };
@@ -690,7 +690,7 @@ type Props = Record<string, unknown> & {
 
 export type ResponseHeaders = (
   req: RequestContext,
-  status: number
+  status: number,
 ) => HeadersInit;
 
 export type JSXNode = string | number | null | JSXElement | JSXNode[];
@@ -710,7 +710,7 @@ export type ExtendPluginOptions =
 
 export type ExtendPlugins = (
   plugins: BunPlugin[],
-  options: ExtendPluginOptions
+  options: ExtendPluginOptions,
 ) => BunPlugin[];
 
 export type Configuration = {
@@ -860,7 +860,7 @@ export type JSXElement =
 
 export type JSXComponent = (
   props: Props,
-  request: RequestContext
+  request: RequestContext,
 ) => JSXNode | Promise<JSXNode>;
 
 export interface I18nDictionary {
@@ -937,9 +937,10 @@ export type Paths<T> = RemovePlural<
 type ExtendedWebContext =
   typeof import("@/web-components/_integrations").ExtendedWebContext;
 
-type I18nKey = typeof import("@/i18n").default extends I18nConfig<infer T>
-  ? Paths<T extends object ? T : I18nDictionary>
-  : string;
+type I18nKey =
+  typeof import("@/i18n").default extends I18nConfig<infer T>
+    ? Paths<T extends object ? T : I18nDictionary>
+    : string;
 
 export type TranslateOptions = {
   returnObjects?: boolean;
@@ -957,7 +958,7 @@ export type PageModule = {
 export type Translate = <T extends unknown = string>(
   i18nKey: I18nKey,
   query?: TranslationQuery | null,
-  options?: TranslateOptions
+  options?: TranslateOptions,
 ) => T;
 
 export type I18n = {
@@ -990,7 +991,7 @@ export interface ComponentType extends JSXComponent {
     props: Props & {
       error?: Error;
     },
-    request: RequestContext
+    request: RequestContext,
   ) => JSXNode | Promise<JSXNode>;
 }
 
@@ -1149,7 +1150,7 @@ type DangerHTMLOutput = {
  */
 export function createPortal(
   element: JSX.Element,
-  target: HTMLElement
+  target: HTMLElement,
 ): CreatePortalOutput;
 
 type CreatePortalOutput = {
@@ -1237,7 +1238,7 @@ declare global {
     }
 
     interface ContextProviderAttributes<
-      Target extends EventTarget = HTMLElement
+      Target extends EventTarget = HTMLElement,
     > extends HTMLAttributes<Target> {
       context: BrisaContext<unknown>;
       value: unknown;
@@ -2943,7 +2944,7 @@ declare global {
 
     export type TargetedEvent<
       Target extends EventTarget = EventTarget,
-      TypedEvent extends Event = Event
+      TypedEvent extends Event = Event,
     > = Omit<TypedEvent, "currentTarget"> & {
       readonly currentTarget: Target;
     };

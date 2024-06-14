@@ -2,7 +2,9 @@ import { type IndicatorSignal, type WebContext } from "@/types";
 
 type Effect = ((
   addSubEffect: (effect: Effect) => Effect,
-) => unknown | Promise<unknown>) & { id?: Effect };
+) => unknown | Promise<unknown>) & {
+  id?: Effect;
+};
 type Cleanup = () => void | Promise<void>;
 type Listener = (...params: any[]) => void;
 type State<T> = {

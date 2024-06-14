@@ -1509,7 +1509,9 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${inputFile}&line=1&column=1`,
-        { method: "POST" },
+        {
+          method: "POST",
+        },
       ),
     );
 
