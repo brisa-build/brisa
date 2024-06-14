@@ -1,5 +1,6 @@
 import path from "node:path";
 import constants from "@/constants";
+import { logBuildError } from "@/utils/log/log-build";
 
 // Should be used via macro
 export async function injectRPCCode() {
@@ -21,7 +22,9 @@ async function buildRPC(file: string) {
     },
   });
 
-  if (!success) console.error(logs);
+  if (!success) {
+    logBuildError("Failed to compile RPC code", logs);
+  }
 
   const code = (await outputs?.[0]?.text?.()) ?? "";
 

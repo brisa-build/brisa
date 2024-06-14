@@ -1,5 +1,6 @@
 import path from "node:path";
 import clientBuildPlugin from "@/utils/client-build-plugin";
+import { logBuildError } from "@/utils/log/log-build";
 
 // Should be used via macro
 export async function injectClientContextProviderCode() {
@@ -28,7 +29,9 @@ export async function injectClientContextProviderCode() {
     ],
   });
 
-  if (!success) console.error(logs);
+  if (!success) {
+    logBuildError("Failed to compile client context provider", logs);
+  }
 
   return (await outputs?.[0]?.text?.()) ?? "";
 }
