@@ -6,7 +6,12 @@ type RenderMode = "native" | "transition" | "reactivity";
 const TRANSITION_MODE = "transition";
 const $window = window as any;
 
-async function resolveRPC(res: Response, args: unknown[] | RenderMode = []) {
+// TODO: Implement render of component
+async function resolveRPC(
+  res: Response,
+  dataSet: DOMStringMap,
+  args: unknown[] | RenderMode = [],
+) {
   const store = $window._s;
   const urlToNavigate = res.headers.get("X-Navigate");
   const resetForm = res.headers.has("X-Reset");
