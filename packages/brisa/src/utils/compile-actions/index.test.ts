@@ -1937,6 +1937,75 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       },
     );
+
+    it("should be possible to use destructuring of req", () => {
+      const code = `
+        export default function Component({text}, {foo, ...req}) {
+          return <div onClick={() => console.log(req.store.get('foo'))} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}, {foo, ...req}) {
+          return jsxDEV("div", {onClick: () => console.log(req.store.get('foo')),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const {foo} = req;
+            const __action = () => console.log(req.store.get('foo'));
+            await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should be possible to use destructuring of req with different name", () => {
+      const code = `
+        export default function Component({text}, {foo, ...req2}) {
+          return <div onClick={() => console.log(req2.store.get('foo'))} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}, {foo, ...req2}) {
+          return jsxDEV("div", {onClick: () => console.log(req2.store.get('foo')),"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const {foo, ...req2} = req;
+            const __action = () => console.log(req2.store.get('foo'));
+            await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
     it.todo(
       "should work with an element with multiple actions defined outside the Component",
     );
