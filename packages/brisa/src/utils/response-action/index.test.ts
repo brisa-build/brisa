@@ -389,6 +389,60 @@ describe("utils", () => {
       expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1-a2_2-foo");
     });
 
+    it("should req._promises be empty without nested action calls", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a2_1",
+          },
+          body: JSON.stringify({
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
+        }),
+      });
+
+      await responseAction(req);
+
+      // @ts-ignore - req._promises should not be a public type
+      const promises = req._promises;
+
+      expect(promises).toBeEmpty();
+    });
+
+    it('should wrap nested action calls inside req._promises"', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a2_1",
+            "x-actions": "[[['onAction', 'a2_2']]]",
+          },
+          body: JSON.stringify({
+            args: [
+              {
+                foo: "bar",
+              },
+            ],
+          }),
+        }),
+      });
+
+      await responseAction(req);
+
+      // @ts-ignore - req._promises should not be a public type
+      const promises = req._promises;
+
+      expect(promises).toHaveLength(1);
+      expect(promises[0]).toBeInstanceOf(Promise);
+    });
+
     it('should decrypt the store variables from "x-s" store that starts with ENCRYPT_PREFIX', async () => {
       const xs = [["sensitive-data", encrypt("foo")]];
       const req = extendRequestContext({
