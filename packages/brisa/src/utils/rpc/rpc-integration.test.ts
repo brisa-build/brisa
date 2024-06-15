@@ -34,6 +34,7 @@ async function simulateRPC({
   // Simulate a button with a data-action-onClick attribute
   el.setAttribute(`data-action-on${eventName}`, "a1_1");
   el.setAttribute("data-action", "true");
+  el.setAttribute("data-cid", "1");
 
   if (dataActions?.length) {
     el.setAttribute("data-actions", serialize(dataActions));
@@ -193,7 +194,7 @@ describe("utils", () => {
       expect(event._wc).toBeTrue();
     });
 
-    it('should send the "x-action" header with the actionId', async () => {
+    it('should send the "x-action" with "x-cid" header with the actionId', async () => {
       const mockFetch = await simulateRPC({
         navigateTo: "http://localhost/some-page",
       });
@@ -204,6 +205,7 @@ describe("utils", () => {
       >;
 
       expect(headers["x-action"]).toBe("a1_1");
+      expect(headers["x-cid"]).toBe("1");
       expect(headers["x-actions"]).toBeEmpty();
     });
 
