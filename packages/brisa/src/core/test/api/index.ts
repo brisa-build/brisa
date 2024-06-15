@@ -68,7 +68,7 @@ export async function render(
         actionId: string,
         isFormData: boolean,
         indicator: string | undefined,
-        actionDeps: string | undefined,
+        dataSet: DOMStringMap,
         ...args: unknown[]
       ) => {
         if (isFormData && args[0]) {

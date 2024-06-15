@@ -1,7 +1,12 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { describe, expect, it, afterEach, mock } from "bun:test";
 
-let resolveRPC: (res: Response, args?: unknown[] | string) => Promise<void>;
+let resolveRPC: (
+  res: Response,
+  dataSet: DOMStringMap,
+  args?: unknown[] | string,
+) => Promise<void>;
+const dataSet = { cid: "123" };
 
 async function initBrowser() {
   GlobalRegistrator.register();
@@ -25,7 +30,7 @@ describe("utils", () => {
         });
 
         await initBrowser();
-        await resolveRPC(res);
+        await resolveRPC(res, dataSet);
 
         expect(location.toString()).toBe("http://localhost/some-page");
         expect(window._xm).toBeNull();
@@ -40,7 +45,7 @@ describe("utils", () => {
         });
 
         await initBrowser();
-        await resolveRPC(res);
+        await resolveRPC(res, dataSet);
 
         expect(location.toString()).toBe("http://localhost/some-page");
         expect(window._xm).toBe("reactivity");
@@ -55,7 +60,7 @@ describe("utils", () => {
         });
 
         await initBrowser();
-        await resolveRPC(res);
+        await resolveRPC(res, dataSet);
 
         expect(location.toString()).toBe("http://localhost/some-page");
         expect(window._xm).toBe("transition");
@@ -70,7 +75,7 @@ describe("utils", () => {
         });
 
         await initBrowser();
-        await resolveRPC(res);
+        await resolveRPC(res, dataSet);
 
         expect(location.toString()).toBe("http://localhost/some-page");
         expect(window._xm).toBe("native");
@@ -92,7 +97,7 @@ describe("utils", () => {
         set: (key: string, value: any) => window._s.Map.set(key, value),
       };
 
-      await resolveRPC(res);
+      await resolveRPC(res, dataSet);
 
       expect(window._s.get("foo")).toBe("bar");
     });
@@ -107,7 +112,7 @@ describe("utils", () => {
       let error = false;
 
       await initBrowser();
-      await resolveRPC(res).catch(() => {
+      await resolveRPC(res, dataSet).catch(() => {
         error = true;
       });
 
@@ -126,7 +131,7 @@ describe("utils", () => {
       let error = false;
 
       await initBrowser();
-      await resolveRPC(res).catch(() => {
+      await resolveRPC(res, dataSet).catch(() => {
         error = true;
       });
 
@@ -158,7 +163,7 @@ describe("utils", () => {
         await initBrowser();
         document.body.innerHTML = '<div class="foo">Foo</div>';
 
-        await resolveRPC(res);
+        await resolveRPC(res, dataSet);
         expect(document.body.innerHTML).toBe('<div class="foo">Bar</div>');
       });
 
@@ -185,7 +190,7 @@ describe("utils", () => {
         await initBrowser();
         document.body.innerHTML = '<div class="foo">Foo</div>';
 
-        await resolveRPC(res);
+        await resolveRPC(res, dataSet);
         expect(document.body.innerHTML).toBe('<div class="foo">404</div>');
       });
     });
@@ -202,7 +207,7 @@ describe("utils", () => {
       });
 
       await initBrowser();
-      await resolveRPC(res, [formEvent]);
+      await resolveRPC(res, dataSet, [formEvent]);
 
       expect(formEvent.target.reset).toHaveBeenCalled();
     });
@@ -236,7 +241,7 @@ describe("utils", () => {
       });
 
       await initBrowser();
-      await resolveRPC(res);
+      await resolveRPC(res, dataSet);
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
@@ -282,7 +287,7 @@ describe("utils", () => {
         },
       };
 
-      await resolveRPC(res);
+      await resolveRPC(res, dataSet);
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
@@ -319,7 +324,7 @@ describe("utils", () => {
       });
 
       await initBrowser();
-      await resolveRPC(res, "reactivity");
+      await resolveRPC(res, dataSet, "reactivity");
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
@@ -355,7 +360,7 @@ describe("utils", () => {
       });
 
       await initBrowser();
-      await resolveRPC(res);
+      await resolveRPC(res, dataSet);
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
@@ -400,7 +405,7 @@ describe("utils", () => {
         },
       };
 
-      await resolveRPC(res, "transition");
+      await resolveRPC(res, dataSet, "transition");
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
