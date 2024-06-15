@@ -389,58 +389,28 @@ describe("utils", () => {
       expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1-a2_2-foo");
     });
 
-    it("should req._promises be empty without nested action calls", async () => {
+    it("should req._waitActionCallPromises and req._getCurrentActionId work for nested actions calls", async () => {
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
-            "x-action": "a2_1",
+            "x-action": "a3_1",
+            "x-actions": "[[['onAction2', 'a3_2'], ['onAction3', 'a3_3']]]",
           },
           body: JSON.stringify({
-            args: [
-              {
-                foo: "bar",
-              },
-            ],
+            args: [],
           }),
         }),
       });
 
       await responseAction(req);
 
-      // @ts-ignore - req._promises should not be a public type
-      const promises = req._promises;
+      const logs = logMock.mock.calls.toString();
 
-      expect(promises).toBeEmpty();
-    });
-
-    it('should wrap nested action calls inside req._promises"', async () => {
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "x-action": "a2_1",
-            "x-actions": "[[['onAction', 'a2_2']]]",
-          },
-          body: JSON.stringify({
-            args: [
-              {
-                foo: "bar",
-              },
-            ],
-          }),
-        }),
-      });
-
-      await responseAction(req);
-
-      // @ts-ignore - req._promises should not be a public type
-      const promises = req._promises;
-
-      expect(promises).toHaveLength(1);
-      expect(promises[0]).toBeInstanceOf(Promise);
+      expect(logs).toBe(
+        "a3_1 init,a3_1,a3_2 init,a3_2,a3_2 end,a3_2,finish a3_2,a3_2,a3_1 end,a3_1,finish a3_1,a3_1",
+      );
     });
 
     it('should decrypt the store variables from "x-s" store that starts with ENCRYPT_PREFIX', async () => {
