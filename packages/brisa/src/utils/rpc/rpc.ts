@@ -28,12 +28,12 @@ function loadRPCResolver() {
   return $window._rpc
     ? $Promise.resolve()
     : new $Promise((res) => {
-      let scriptElement = $document.createElement("script");
-      const basePath = getAttribute($document.head, "basepath") ?? "";
-      scriptElement.onload = scriptElement.onerror = res;
-      scriptElement.src = basePath + __RPC_LAZY_FILE__;
-      $document.head.appendChild(scriptElement);
-    });
+        let scriptElement = $document.createElement("script");
+        const basePath = getAttribute($document.head, "basepath") ?? "";
+        scriptElement.onload = scriptElement.onerror = res;
+        scriptElement.src = basePath + __RPC_LAZY_FILE__;
+        $document.head.appendChild(scriptElement);
+      });
 }
 
 /**
@@ -71,7 +71,6 @@ async function rpc(
       headers: {
         "x-action": actionId,
         "x-actions": dataSet.actions ?? "",
-        "x-cid": dataSet.cid!,
       },
       body: bodyWithStore(args, isFormData),
     });
@@ -84,7 +83,7 @@ async function rpc(
 
     // Although !res.ok, we still want to resolve the server action to update signals,
     // like the error signal to display the error message in dev mode.
-    await $window._rpc(res, args);
+    await $window._rpc(res, dataSet, args);
     registerActions(rpc);
   } catch (e: any) {
     store?.set(errorIndicator, e.message);
