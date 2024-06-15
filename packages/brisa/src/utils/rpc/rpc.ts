@@ -46,6 +46,7 @@ async function rpc(
   isFormData = false,
   indicator: string | null,
   actionsDeps: string | undefined,
+  cid: string,
   ...args: unknown[]
 ) {
   const errorIndicator = "e" + indicator;
@@ -71,6 +72,7 @@ async function rpc(
       headers: {
         "x-action": actionId,
         "x-actions": actionsDeps ?? "",
+        "x-cid": cid,
       },
       body: bodyWithStore(args, isFormData),
     });
