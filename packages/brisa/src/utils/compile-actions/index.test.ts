@@ -26,6 +26,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -57,6 +58,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -89,6 +91,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -120,6 +123,7 @@ describe("utils", () => {
           try {
             const __action = function foo() {console.log('hello world');};
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -154,6 +158,7 @@ describe("utils", () => {
             const {store} = req;
             const onClick = () => console.log('hello world');
             await onClick(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -187,6 +192,7 @@ describe("utils", () => {
           try {
             const onClick = () => console.log('hello world');
             await onClick(...requestContext.store.get('__params:a1_1'));
+            await Promise.all(requestContext._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req: requestContext, 
@@ -218,6 +224,7 @@ describe("utils", () => {
         try {
           const __action = () => console.log('hello world');
           await __action(...req.store.get('__params:a1_1'));
+          await Promise.all(req._promises.slice());
         } catch (error) {
           return __resolveAction({ 
             req, 
@@ -249,6 +256,7 @@ describe("utils", () => {
         try {
           const __action = () => console.log('hello world');
           await __action(...req.store.get('__params:a1_1'));
+          await Promise.all(req._promises.slice());
         } catch (error) {
           return __resolveAction({ 
             req, 
@@ -278,6 +286,7 @@ describe("utils", () => {
         try {
           const __action = () => console.log('hello world');
           await __action(...req.store.get('__params:a1_1'));
+          await Promise.all(req._promises.slice());
         } catch (error) {
           return __resolveAction({ 
             req, 
@@ -307,6 +316,7 @@ describe("utils", () => {
         try {
           const __action = () => console.log('hello world');
           await __action(...req.store.get('__params:a1_1'));
+          await Promise.all(req._promises.slice());
         } catch (error) {
           return __resolveAction({ 
             req, 
@@ -338,6 +348,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -386,6 +397,7 @@ describe("utils", () => {
             const {store} = req;
             const __action = () => console.log('Vale');
             await __action(...req.store.get('__params:a2_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -419,6 +431,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -452,6 +465,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -483,6 +497,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -522,6 +537,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -534,6 +550,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_2'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -576,6 +593,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -589,6 +607,7 @@ describe("utils", () => {
           try {
             const onLoad = () => console.log('loaded');
             await onLoad(...req.store.get('__params:a1_2'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -646,6 +665,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('First action');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -659,6 +679,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('Second action');
             await __action(...req.store.get('__params:a1_2'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -672,6 +693,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('Third action');
             await __action(...req.store.get('__params:a1_3'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -715,6 +737,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('a');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -728,6 +751,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('b');
             await __action(...req.store.get('__params:a1_2'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -741,6 +765,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('c');
             await __action(...req.store.get('__params:a1_3'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -785,6 +810,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('a');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -798,6 +824,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('b');
             await __action(...req.store.get('__params:a1_2'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -811,6 +838,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('c');
             await __action(...req.store.get('__params:a1_3'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -861,6 +889,7 @@ describe("utils", () => {
               foo = 'b';
             }
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -880,6 +909,7 @@ describe("utils", () => {
               foo = 'b';
             }
             await __action(...req.store.get('__params:a1_2'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -932,6 +962,7 @@ describe("utils", () => {
                 foo = 'b';
             }
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -952,6 +983,7 @@ describe("utils", () => {
                 foo = 'b';
             }
             await __action(...req.store.get('__params:a1_2'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1001,6 +1033,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log(SOME_CONSTANT);
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1036,6 +1069,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log(SOME_CONSTANT, FOO);
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1073,6 +1107,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log(SOME_CONSTANT);
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1106,6 +1141,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1138,6 +1174,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -1176,6 +1213,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -1189,6 +1227,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_2'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({ 
               req, 
@@ -1240,6 +1279,7 @@ describe("utils", () => {
               console.log(hello);
             };
             await onClick(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1277,6 +1317,7 @@ describe("utils", () => {
             const __action = () => console.log(hello);
             const hello = 'hello world';
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1315,6 +1356,7 @@ describe("utils", () => {
             const hello = 'hello world';
             const foo = someMagicFunction(hello);
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1359,7 +1401,7 @@ describe("utils", () => {
             try {
               const __action = () => console.log("hello world");
               await __action(...req.store.get("__params:a1_1"));
-
+              await Promise.all(req._promises.slice());
             } catch (error) {
               return __resolveAction({
                 req,
@@ -1408,7 +1450,7 @@ describe("utils", () => {
             try {
               const __action = () => console.log("hello world");
               await __action(...req.store.get("__params:a1_1"));
-
+              await Promise.all(req._promises.slice());
             } catch (error) {
               return __resolveAction({
                 req,
@@ -1420,6 +1462,7 @@ describe("utils", () => {
           export async function a1_2(text, req) {
             try {const __action = () => console.log("hello world");
             await __action(...req.store.get("__params:a1_2"));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1455,6 +1498,7 @@ describe("utils", () => {
             const handleClick = world => console.log("hello" + world);
             const onClick = handleClick.bind(this, ' test');
             await onClick(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1488,6 +1532,7 @@ describe("utils", () => {
             const handleClick = world => console.log("hello" + world);
             const __action = handleClick.bind(this, " test");
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1523,6 +1568,7 @@ describe("utils", () => {
             const handleClick = world => world2 => console.log("hello" + world + world2);
             const curried = handleClick(' test');
             await curried(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1556,6 +1602,7 @@ describe("utils", () => {
             const handleClick = world => world2 => console.log("hello" + world + world2);
             const __action = handleClick(" test");
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1601,6 +1648,7 @@ describe("utils", () => {
             };
             const __action = obj.foo.onClick;
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1640,6 +1688,7 @@ describe("utils", () => {
             };
             const __action = obj.onClick;
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1682,6 +1731,7 @@ describe("utils", () => {
             };
             const __action = foo.onClick ?? obj.onClick;
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1737,6 +1787,7 @@ describe("utils", () => {
           try {
             const __action = props.onClick;
             await __action(...req.store.get("__params:a1_1"));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1749,6 +1800,7 @@ describe("utils", () => {
           try {
             const __action = props.onInput;
             await __action(...req.store.get("__params:a1_2"));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1782,6 +1834,7 @@ describe("utils", () => {
             const foo = {};
             const __action = foo.onClick || (() => console.log('hello world'));
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1832,6 +1885,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log(text);
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
@@ -1870,6 +1924,7 @@ describe("utils", () => {
           try {
             const __action = () => console.log('hello world');
             await __action(...req.store.get('__params:a1_1'));
+            await Promise.all(req._promises.slice());
           } catch (error) {
             return __resolveAction({
               req,
