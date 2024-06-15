@@ -7,7 +7,7 @@ import { getConstants } from "@/constants";
 import type { ActionInfo } from "./get-actions-info";
 import getActionsInfo from "./get-actions-info";
 import { getPurgedBody } from "./get-purged-body";
-import { logBuildError, logError } from "@/utils/log/log-build";
+import { logBuildError } from "@/utils/log/log-build";
 
 type CompileActionsParams = {
   actionsEntrypoints: string[];
@@ -243,6 +243,9 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   // await __action(...req.store.get('__params:actionId'));
   body.body.push(getActionCall(info, requestParamName));
 
+  // await Promise.all(req._promises.slice());
+  body.body.push(getPromiseAllCall(requestParamName));
+
   return {
     type: "ExportNamedDeclaration",
     declaration: {
@@ -350,6 +353,58 @@ function getActionCall(
                 },
               ],
             },
+          },
+        ],
+      },
+    },
+  };
+}
+
+function getPromiseAllCall(
+  requestParamName: string,
+): ESTree.ExpressionStatement {
+  return {
+    type: "ExpressionStatement",
+    expression: {
+      type: "AwaitExpression",
+      argument: {
+        type: "CallExpression",
+        callee: {
+          type: "MemberExpression",
+          object: {
+            type: "Identifier",
+            name: "Promise",
+          },
+          computed: false,
+          property: {
+            type: "Identifier",
+            name: "all",
+          },
+        },
+        arguments: [
+          {
+            type: "CallExpression",
+            callee: {
+              type: "MemberExpression",
+              object: {
+                type: "MemberExpression",
+                object: {
+                  type: "Identifier",
+                  name: requestParamName,
+                },
+                computed: false,
+                property: {
+                  type: "Identifier",
+                  name: "_promises",
+                },
+              },
+              computed: false,
+              property: {
+                type: "Identifier",
+                name: "slice",
+              },
+            },
+            arguments: [],
           },
         ],
       },
