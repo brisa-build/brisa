@@ -64,6 +64,9 @@ export default async function responseAction(req: RequestContext) {
 
   req.store.set(`__params:${action}`, params);
 
+  // @ts-ignore - req._promises should not be a public type
+  const promises: Promise[] = (req._promises = []);
+
   const deps = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
   let props: Record<string, any> = {};
 
@@ -80,6 +83,10 @@ export default async function responseAction(req: RequestContext) {
 
     for (const [eventName, actionId] of actions) {
       nextProps[eventName] = async (...params: unknown[]) => {
+        let { promise, resolve } = Promise.withResolvers();
+
+        promises.push(promise);
+
         const file = actionId.split("_").at(0);
         const actionDependency =
           file === actionFile
@@ -88,7 +95,9 @@ export default async function responseAction(req: RequestContext) {
 
         req.store.set(`__params:${actionId}`, params);
 
-        return actionDependency(props, req);
+        const res = await actionDependency(props, req);
+        resolve(res);
+        return res;
       };
     }
 
