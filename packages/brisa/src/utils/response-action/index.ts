@@ -65,7 +65,7 @@ export default async function responseAction(req: RequestContext) {
   req.store.set(`__params:${action}`, params);
 
   // @ts-ignore - req._promises should not be a public type
-  const promises: Promise[] = (req._promises = []);
+  const actionCallPromises: Promise[] = [];
 
   const deps = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
   let props: Record<string, any> = {};
@@ -85,7 +85,7 @@ export default async function responseAction(req: RequestContext) {
       nextProps[eventName] = async (...params: unknown[]) => {
         let { promise, resolve } = Promise.withResolvers();
 
-        promises.push(promise);
+        actionCallPromises.push([actionId, promise]);
 
         const file = actionId.split("_").at(0);
         const actionDependency =
@@ -96,7 +96,10 @@ export default async function responseAction(req: RequestContext) {
         req.store.set(`__params:${actionId}`, params);
 
         const res = await actionDependency(props, req);
+
         resolve(res);
+        actionCallPromises.pop();
+
         return res;
       };
     }
@@ -123,7 +126,32 @@ export default async function responseAction(req: RequestContext) {
     });
   }
 
+  const { promise, resolve } = Promise.withResolvers();
+
+  actionCallPromises.push([action, promise]);
+
+  // waitActionCallPromises is a function used inside the actions to wait for
+  // all nested actions calls at the end (when they don't use "await").
+  // @ts-ignore - req.waitActionCallPromises should not be a public type
+  req._waitActionCallPromises = (currentActionId: string) => {
+    const currentPromiseIndex = actionCallPromises.findIndex(
+      ([actionId]) => actionId === currentActionId,
+    );
+
+    return Promise.all(
+      actionCallPromises
+        .slice(currentPromiseIndex + 1)
+        .map(([, promise]) => promise),
+    );
+  };
+
+  // _getCurrentActionId is a function used inside the actions to get the id of
+  // the current action being executed.
+  // @ts-ignore - req._getCurrentActionId should not be a public type
+  req._getCurrentActionId = () => actionCallPromises.at(-1)?.[0];
+
   let response = await actionModule[action](props, req);
+  resolve(response);
 
   if (!(response instanceof Response)) {
     response = new Response(resolveStore(req), {

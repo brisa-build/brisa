@@ -243,8 +243,8 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   // await __action(...req.store.get('__params:actionId'));
   body.body.push(getActionCall(info, requestParamName));
 
-  // await Promise.all(req._promises.slice());
-  body.body.push(getPromiseAllCall(requestParamName));
+  // await req.waitActionCallPromises('actionId');
+  body.body.push(waitActionCallPromises(info.actionId, requestParamName));
 
   return {
     type: "ExportNamedDeclaration",
@@ -367,7 +367,8 @@ function getActionCall(
   };
 }
 
-function getPromiseAllCall(
+function waitActionCallPromises(
+  actionId: string,
   requestParamName: string,
 ): ESTree.ExpressionStatement {
   return {
@@ -380,38 +381,18 @@ function getPromiseAllCall(
           type: "MemberExpression",
           object: {
             type: "Identifier",
-            name: "Promise",
+            name: requestParamName,
           },
           computed: false,
           property: {
             type: "Identifier",
-            name: "all",
+            name: "_waitActionCallPromises",
           },
         },
         arguments: [
           {
-            type: "CallExpression",
-            callee: {
-              type: "MemberExpression",
-              object: {
-                type: "MemberExpression",
-                object: {
-                  type: "Identifier",
-                  name: requestParamName,
-                },
-                computed: false,
-                property: {
-                  type: "Identifier",
-                  name: "_promises",
-                },
-              },
-              computed: false,
-              property: {
-                type: "Identifier",
-                name: "slice",
-              },
-            },
-            arguments: [],
+            type: "Literal",
+            value: actionId,
           },
         ],
       },
