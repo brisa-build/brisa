@@ -29,8 +29,7 @@ export function registerActions(rpc: Function) {
               actionId!,
               isFormData,
               element.getAttribute("indicate" + eventName)!,
-              dataSet.actions,
-              dataSet.cid,
+              dataSet,
               ...args,
             );
           if (debounceMs) timeout = setTimeout(callRPC, debounceMs);
