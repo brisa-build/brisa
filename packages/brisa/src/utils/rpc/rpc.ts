@@ -28,12 +28,12 @@ function loadRPCResolver() {
   return $window._rpc
     ? $Promise.resolve()
     : new $Promise((res) => {
-        let scriptElement = $document.createElement("script");
-        const basePath = getAttribute($document.head, "basepath") ?? "";
-        scriptElement.onload = scriptElement.onerror = res;
-        scriptElement.src = basePath + __RPC_LAZY_FILE__;
-        $document.head.appendChild(scriptElement);
-      });
+      let scriptElement = $document.createElement("script");
+      const basePath = getAttribute($document.head, "basepath") ?? "";
+      scriptElement.onload = scriptElement.onerror = res;
+      scriptElement.src = basePath + __RPC_LAZY_FILE__;
+      $document.head.appendChild(scriptElement);
+    });
 }
 
 /**
@@ -45,8 +45,7 @@ async function rpc(
   actionId: string,
   isFormData = false,
   indicator: string | null,
-  actionsDeps: string | undefined,
-  cid: string,
+  dataSet: DOMStringMap,
   ...args: unknown[]
 ) {
   const errorIndicator = "e" + indicator;
@@ -71,8 +70,8 @@ async function rpc(
       signal: getAbortSignal(),
       headers: {
         "x-action": actionId,
-        "x-actions": actionsDeps ?? "",
-        "x-cid": cid,
+        "x-actions": dataSet.actions ?? "",
+        "x-cid": dataSet.cid!,
       },
       body: bodyWithStore(args, isFormData),
     });
