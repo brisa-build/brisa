@@ -28,12 +28,12 @@ function loadRPCResolver() {
   return $window._rpc
     ? $Promise.resolve()
     : new $Promise((res) => {
-        let scriptElement = $document.createElement("script");
-        const basePath = getAttribute($document.head, "basepath") ?? "";
-        scriptElement.onload = scriptElement.onerror = res;
-        scriptElement.src = basePath + __RPC_LAZY_FILE__;
-        $document.head.appendChild(scriptElement);
-      });
+      let scriptElement = $document.createElement("script");
+      const basePath = getAttribute($document.head, "basepath") ?? "";
+      scriptElement.onload = scriptElement.onerror = res;
+      scriptElement.src = basePath + __RPC_LAZY_FILE__;
+      $document.head.appendChild(scriptElement);
+    });
 }
 
 /**
@@ -122,28 +122,26 @@ function spaNavigation(event: any) {
   $window._xm = null;
 
   if (
-    renderMode === "native" ||
-    event.hashChange ||
-    event.downloadRequest !== null ||
-    !event.canIntercept
+    renderMode !== "native" &&
+    !event.hashChange &&
+    event.downloadRequest === null &&
+    event.canIntercept
   ) {
-    return;
+    event.intercept({
+      async handler() {
+        // We do not validate res.ok because we also want to render 404 or 500 pages.
+        const res = await fetch(event.destination.url, {
+          method: "POST",
+          signal: getAbortSignal(),
+          body: bodyWithStore(),
+        });
+        await loadRPCResolver();
+        event.scroll();
+        await $window._rpc(res, renderMode);
+        registerActions(rpc);
+      },
+    });
   }
-
-  event.intercept({
-    async handler() {
-      // We do not validate res.ok because we also want to render 404 or 500 pages.
-      const res = await fetch(event.destination.url, {
-        method: "POST",
-        signal: getAbortSignal(),
-        body: bodyWithStore(),
-      });
-      await loadRPCResolver();
-      event.scroll();
-      await $window._rpc(res, renderMode);
-      registerActions(rpc);
-    },
-  });
 }
 
 function getActiveElement(element = $document.activeElement): Element | null {
