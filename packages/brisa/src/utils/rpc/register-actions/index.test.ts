@@ -27,7 +27,7 @@ describe("utils", () => {
       mockElement.setAttribute("indicateclick", "indicator");
       document.body.appendChild(mockElement);
 
-      const mockRPC = mock(() => {});
+      const mockRPC = mock(() => { });
       registerActions(mockRPC);
 
       mockElement.click();
@@ -37,7 +37,7 @@ describe("utils", () => {
       expect(calls[0]).toBe("actionId");
       expect(calls[1]).toBe(false);
       expect(calls[2]).toBe("indicator");
-      expect(calls[3]).toBeUndefined();
+      expect(calls[3]).toEqual({ actionOnclick: "actionId", });
       expect(calls[4]).toBeInstanceOf(Event);
     });
   });
