@@ -28,12 +28,12 @@ function loadRPCResolver() {
   return $window._rpc
     ? $Promise.resolve()
     : new $Promise((res) => {
-      let scriptElement = $document.createElement("script");
-      const basePath = getAttribute($document.head, "basepath") ?? "";
-      scriptElement.onload = scriptElement.onerror = res;
-      scriptElement.src = basePath + __RPC_LAZY_FILE__;
-      $document.head.appendChild(scriptElement);
-    });
+        let scriptElement = $document.createElement("script");
+        const basePath = getAttribute($document.head, "basepath") ?? "";
+        scriptElement.onload = scriptElement.onerror = res;
+        scriptElement.src = basePath + __RPC_LAZY_FILE__;
+        $document.head.appendChild(scriptElement);
+      });
 }
 
 /**
@@ -110,8 +110,7 @@ function serialize(k: string, v: unknown) {
     return ev;
   }
 
-  if (v == null || v === "" || isNode || isInstanceOf(Window)) return;
-  return v;
+  if (v != null && v !== "" && !isNode && !isInstanceOf(Window)) return v;
 }
 
 function spaNavigation(event: any) {
