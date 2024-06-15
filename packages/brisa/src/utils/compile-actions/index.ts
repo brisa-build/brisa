@@ -291,7 +291,14 @@ function getActionParams(info: ActionInfo) {
         declarations: [
           {
             type: "VariableDeclarator",
-            id: currentReq,
+            id: {
+              type: "ObjectPattern",
+              properties: currentReq.properties.filter(
+                (p) =>
+                  p.type !== "RestElement" ||
+                  (p as any).argument?.name !== requestParamName,
+              ),
+            },
             init: {
               type: "Identifier",
               name: requestParamName,
