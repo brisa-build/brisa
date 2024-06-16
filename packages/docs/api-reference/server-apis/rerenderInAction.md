@@ -6,7 +6,7 @@ description: rerender the component or the page inside a server action
 
 ## Reference
 
-### `rerenderInPage({ type, renderMode }: { type: 'component' | 'page', renderMode: 'reactivity' | 'transition' }): Never`
+### `rerenderInPage({ type, renderMode }: { type: 'currentComponent' | 'targetComponent' | 'page', renderMode: 'reactivity' | 'transition' }): Never`
 
 The `rerenderInAction` method is used to rerender the component or the page
 inside a server action. Outside of an action, it throws an error.
@@ -31,7 +31,7 @@ function handleEvent() {
 
 #### Parameters:
 
-- `type`: The type of the rerender. It can be `component` or `page`. By default, it is `component`.
+- `type`: The type of the rerender. It can be `currentComponent`, `targetComponent` or `page`. By default, it is `currentComponent`, this means that it is going to rerender the component that called the `rerenderInAction` method. When using `targetComponent` it is going to rerender the component that fired the original action. When using `page` it is going to rerender the whole page.
 - `renderMode`: The type of the rerender. It can be `reactivity` or `transition`. By default, it is `reactivity`. When using `transition` it is done under [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API).
 
 #### Returns:

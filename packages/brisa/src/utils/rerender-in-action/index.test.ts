@@ -10,20 +10,42 @@ describe("utils", () => {
         expect(error.name).toBe("rerender");
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "component", renderMode: "reactivity" }),
+          JSON.stringify({
+            type: "currentComponent",
+            renderMode: "reactivity",
+          }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }
     });
 
-    it("should throw the correct error with type='component' and renderMode='reactivity'", () => {
+    it("should throw the correct error with type='targetComponent' and renderMode='reactivity'", () => {
       try {
-        rerenderInAction({ type: "component", renderMode: "reactivity" });
+        rerenderInAction({ type: "targetComponent", renderMode: "reactivity" });
       } catch (error: any) {
         expect(error.name).toBe("rerender");
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "component", renderMode: "reactivity" }),
+          JSON.stringify({ type: "targetComponent", renderMode: "reactivity" }),
+        );
+        expect(error.message).toContain(SUFFIX_MESSAGE);
+      }
+    });
+
+    it("should throw the correct error with type='currentComponent' and renderMode='reactivity'", () => {
+      try {
+        rerenderInAction({
+          type: "currentComponent",
+          renderMode: "reactivity",
+        });
+      } catch (error: any) {
+        expect(error.name).toBe("rerender");
+        expect(error.message).toContain(PREFIX_MESSAGE);
+        expect(error.message).toContain(
+          JSON.stringify({
+            type: "currentComponent",
+            renderMode: "reactivity",
+          }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }
@@ -55,14 +77,30 @@ describe("utils", () => {
       }
     });
 
-    it("should throw the correct error with type='component' and renderMode='transition'", () => {
+    it("should throw the correct error with type='currentComponent' and renderMode='transition'", () => {
       try {
         rerenderInAction({ renderMode: "transition" });
       } catch (error: any) {
         expect(error.name).toBe("rerender");
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "component", renderMode: "transition" }),
+          JSON.stringify({
+            type: "currentComponent",
+            renderMode: "transition",
+          }),
+        );
+        expect(error.message).toContain(SUFFIX_MESSAGE);
+      }
+    });
+
+    it("should throw the correct error with type='targetComponent' and renderMode='transition'", () => {
+      try {
+        rerenderInAction({ type: "targetComponent", renderMode: "transition" });
+      } catch (error: any) {
+        expect(error.name).toBe("rerender");
+        expect(error.message).toContain(PREFIX_MESSAGE);
+        expect(error.message).toContain(
+          JSON.stringify({ type: "targetComponent", renderMode: "transition" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }
