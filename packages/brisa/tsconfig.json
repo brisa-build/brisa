@@ -1,9 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "module": "esnext",
     "baseUrl": "./src",
     "target": "esnext",
@@ -23,9 +21,7 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "paths": {
-      "@/*": [
-        "*"
-      ]
+      "@/*": ["*"]
     }
   },
   "exclude": [

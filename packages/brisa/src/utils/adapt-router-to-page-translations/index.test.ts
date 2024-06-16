@@ -33,8 +33,8 @@ const createRequest = (url: string) => {
     t: ((v: any) => "") as any,
     locales: ["en", "es"],
     pages: {},
-    overrideMessages: () => { },
-  }
+    overrideMessages: () => {},
+  };
   return request;
 };
 

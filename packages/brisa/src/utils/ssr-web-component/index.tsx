@@ -13,7 +13,7 @@ type Props = {
   [key: string]: any;
 };
 
-const voidFn = () => { };
+const voidFn = () => {};
 
 export default async function SSRWebComponent(
   { Component, selector, ...props }: Props,
