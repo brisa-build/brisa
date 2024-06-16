@@ -668,7 +668,7 @@ type WebContextPluginExtras = {
 
 export type WebContextPlugin = (
   webContext: WebContext,
-  extras: WebContextPluginExtras,
+  extras: WebContextPluginExtras
 ) => WebContext;
 
 export type ReactiveMap = {
@@ -679,7 +679,7 @@ export type ReactiveMap = {
   setOptimistic: <T>(
     actionName: string,
     storeKey: string,
-    updater: (value: T) => T,
+    updater: (value: T) => T
   ) => void;
   Map: Map<string, unknown>;
 };
@@ -690,7 +690,7 @@ type Props<T extends Record<string, unknown> = Record<string, unknown>> = T & {
 
 export type ResponseHeaders = (
   req: RequestContext,
-  status: number,
+  status: number
 ) => HeadersInit;
 
 export type Primitives = string | number | boolean | undefined | null;
@@ -712,7 +712,7 @@ export interface ComponentType extends JSXComponent {
     props: Props & {
       error?: Error;
     },
-    request: RequestContext,
+    request: RequestContext
   ) => JSXNode | Promise<JSXNode>;
 }
 
@@ -720,7 +720,7 @@ export type JSXComponent<
   T extends Record<string, unknown> = Record<string, unknown>,
 > = ((
   props: Props<T>,
-  request: RequestContext,
+  request: RequestContext
 ) => JSXNode | Promise<JSXNode>) & {
   suspense?: JSXComponent<T>;
   error?: JSXComponent<T & { error: unknown }>;
@@ -739,7 +739,7 @@ export type ExtendPluginOptions =
 
 export type ExtendPlugins = (
   plugins: BunPlugin[],
-  options: ExtendPluginOptions,
+  options: ExtendPluginOptions
 ) => BunPlugin[];
 
 export type Configuration = {
@@ -953,9 +953,10 @@ export type Paths<T> = RemovePlural<
 type ExtendedWebContext =
   typeof import("@/web-components/_integrations").ExtendedWebContext;
 
-type I18nKey = typeof import("@/i18n").default extends I18nConfig<infer T>
-  ? Paths<T extends object ? T : I18nDictionary>
-  : string;
+type I18nKey =
+  typeof import("@/i18n").default extends I18nConfig<infer T>
+    ? Paths<T extends object ? T : I18nDictionary>
+    : string;
 
 export type TranslateOptions = {
   returnObjects?: boolean;
@@ -973,7 +974,7 @@ export type PageModule = {
 export type Translate = <T extends unknown = string>(
   i18nKey: I18nKey,
   query?: TranslationQuery | null,
-  options?: TranslateOptions,
+  options?: TranslateOptions
 ) => T;
 
 export type I18n = {
@@ -1156,7 +1157,7 @@ type DangerHTMLOutput = {
  */
 export function createPortal(
   element: JSX.Element,
-  target: HTMLElement,
+  target: HTMLElement
 ): CreatePortalOutput;
 
 type CreatePortalOutput = {
@@ -3003,7 +3004,7 @@ declare global {
       TargetedEvent<Target, PictureInPictureEvent>;
 
     export type EventHandler<E extends TargetedEvent> = {
-      bivarianceHack(event: E): void;
+      bivarianceHack(event: E): void | Promise<void>;
     }["bivarianceHack"];
 
     export type AnimationEventHandler<Target extends EventTarget> =
