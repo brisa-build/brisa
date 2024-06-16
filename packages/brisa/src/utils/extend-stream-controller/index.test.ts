@@ -305,7 +305,7 @@ describe("extendStreamController", () => {
     ]);
   });
 
-  it("should generateComponentId, getComponentId and removeComponentId work correctly", () => {
+  it("should generateComponentId, getComponentId, getParentComponentId, and removeComponentId work correctly", () => {
     const controller = extendStreamController(controllerParams);
 
     controller.generateComponentId();
@@ -313,24 +313,31 @@ describe("extendStreamController", () => {
 
     controller.generateComponentId();
     expect(controller.getComponentId()).toBe("1");
+    expect(controller.getParentComponentId()).toBe("0");
 
     controller.generateComponentId();
     expect(controller.getComponentId()).toBe("2");
+    expect(controller.getParentComponentId()).toBe("1");
 
     controller.generateComponentId();
     expect(controller.getComponentId()).toBe("3");
+    expect(controller.getParentComponentId()).toBe("2");
 
     controller.removeComponentId();
     expect(controller.getComponentId()).toBe("2");
+    expect(controller.getParentComponentId()).toBe("1");
 
     controller.generateComponentId();
     expect(controller.getComponentId()).toBe("4");
+    expect(controller.getParentComponentId()).toBe("2");
 
     controller.removeComponentId();
     expect(controller.getComponentId()).toBe("2");
+    expect(controller.getParentComponentId()).toBe("1");
 
     controller.removeComponentId();
     expect(controller.getComponentId()).toBe("1");
+    expect(controller.getParentComponentId()).toBe("0");
 
     controller.removeComponentId();
     expect(controller.getComponentId()).toBe("0");

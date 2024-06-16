@@ -1102,11 +1102,13 @@ describe("utils", () => {
 
       const onClick = () => {};
       onClick.actionId = "a1_1";
+      onClick.cid = "c1";
 
       const attributes = renderAttributes({
         elementProps: {
           foo: "bar",
           "data-action": true,
+          "data-cid": "c2",
           onClick,
           onDoubleClick: () => {},
           "data-action-onDoubleClick": "a1_3",
@@ -1122,7 +1124,7 @@ describe("utils", () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1']]]"`,
+        ` foo="bar" data-action data-cid="c2" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1','c1']]]"`,
       );
     });
 
@@ -1133,7 +1135,8 @@ describe("utils", () => {
 
       const onClick = () => {};
       onClick.actionId = "a1_1";
-      onClick.actions = [[["onMouseOver", "a1_2"]]];
+      onClick.cid = "c1";
+      onClick.actions = [[["onMouseOver", "a1_2", "c2"]]];
 
       const attributes = renderAttributes({
         elementProps: {
@@ -1154,7 +1157,7 @@ describe("utils", () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1']],[['onMouseOver','a1_2']]]"`,
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1','c1']],[['onMouseOver','a1_2','c2']]]"`,
       );
     });
 
@@ -1301,12 +1304,14 @@ describe("utils", () => {
 
       const onClick = () => {};
       onClick.actionId = "a1_1";
-      onClick.actions = [[["onMouseOver", "a1_2"]]];
+      onClick.cid = "123";
+      onClick.actions = [[["onMouseOver", "a1_2", "987"]]];
 
       const attributesConfig = {
         elementProps: {
           foo: "bar",
           "data-action": true,
+          "data-cid": "321",
           onClick,
           onDoubleClick: () => {},
           "data-action-onDoubleClick": "a1_3",
@@ -1325,7 +1330,7 @@ describe("utils", () => {
       const attributes2 = renderAttributes(attributesConfig);
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1']],[['onMouseOver','a1_2']]]"`,
+        ` foo="bar" data-action data-cid="321" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1','123']],[['onMouseOver','a1_2','987']]]"`,
       );
       expect(attributes2).toBe(attributes);
     });

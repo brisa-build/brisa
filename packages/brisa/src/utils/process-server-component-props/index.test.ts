@@ -1,7 +1,27 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect, beforeEach, setSystemTime } from "bun:test";
 import processServerComponentProps from ".";
+import extendStreamController, {
+  type Controller,
+} from "@/utils/extend-stream-controller";
+import extendRequestContext from "@/utils/extend-request-context";
+
+let controller: Controller;
 
 describe("utils", () => {
+  beforeEach(() => {
+    setSystemTime(new Date("2024-01-01T00:00:00.000Z"));
+    controller = extendStreamController({
+      controller: { enqueue: () => {} } as any,
+      request: extendRequestContext({
+        originalRequest: new Request("http://localhost"),
+      }),
+    });
+
+    // Parent component
+    controller.generateComponentId();
+    // Child component with action dependencies
+    controller.generateComponentId();
+  });
   describe("processServerComponentProps", () => {
     it("should process nested action props", () => {
       const onClick = () => {};
@@ -60,10 +80,16 @@ describe("utils", () => {
         "data-action-onclick": "1",
       };
 
-      const result = processServerComponentProps(props, parentProps);
+      const result = processServerComponentProps(
+        props,
+        parentProps,
+        controller,
+      );
       expect(result).toEqual({ onClick });
       expect(result.onClick).toHaveProperty("actionId", "2");
-      expect(result.onClick).toHaveProperty("actions", [[["onAction", "1"]]]);
+      expect(result.onClick).toHaveProperty("actions", [
+        [["onAction", "1", "0"]],
+      ]);
     });
     it("should add multiple action dependencies if the actions from parent are different", () => {
       const onClick = () => {};
@@ -84,13 +110,17 @@ describe("utils", () => {
         "data-action-onaction2": "1",
       };
 
-      const result = processServerComponentProps(props, parentProps);
+      const result = processServerComponentProps(
+        props,
+        parentProps,
+        controller,
+      );
       expect(result).toEqual({ onClick });
       expect(result.onClick).toHaveProperty("actionId", "3");
       expect(result.onClick).toHaveProperty("actions", [
         [
-          ["onAction", "2"],
-          ["onAction2", "1"],
+          ["onAction", "2", "0"],
+          ["onAction2", "1", "0"],
         ],
       ]);
     });
@@ -99,7 +129,10 @@ describe("utils", () => {
       const onClick = () => {};
       const onAction = () => {};
       const onAction2 = () => {};
-      const grantparentDeps = [[["onFoo", "bar"]], [["onBar", "foo"]]];
+      const grantparentDeps = [
+        [["onFoo", "bar", "1"]],
+        [["onBar", "foo", "1"]],
+      ];
 
       onAction.actionId = "2";
       onAction2.actionId = "1";
@@ -117,17 +150,38 @@ describe("utils", () => {
         "data-action-onaction2": "1",
       };
 
-      const result = processServerComponentProps(props, parentProps);
+      const result = processServerComponentProps(
+        props,
+        parentProps,
+        controller,
+      );
       expect(result).toEqual({ onClick });
       expect(result.onClick).toHaveProperty("actionId", "3");
       expect(result.onClick).toHaveProperty("actions", [
         [
-          ["onAction", "2"],
-          ["onAction2", "1"],
+          ["onAction", "2", "0"],
+          ["onAction2", "1", "0"],
         ],
-        [["onFoo", "bar"]],
-        [["onBar", "foo"]],
+        [["onFoo", "bar", "1"]],
+        [["onBar", "foo", "1"]],
       ]);
+    });
+
+    it("should increase the component id (cid)", () => {
+      const p1 = { onClick: () => {}, "data-action-onclick": "a1_1" };
+      const p2 = { onClick: () => {}, "data-action-onclick": "a1_2" };
+      const p3 = { onClick: () => {}, "data-action-onclick": "a1_3" };
+      const r1 = processServerComponentProps(p1, undefined, controller);
+
+      controller.generateComponentId();
+      const r2 = processServerComponentProps(p2, undefined, controller);
+
+      controller.generateComponentId();
+      const r3 = processServerComponentProps(p3, undefined, controller);
+
+      expect(r1.onClick).toHaveProperty("cid", "1");
+      expect(r2.onClick).toHaveProperty("cid", "2");
+      expect(r3.onClick).toHaveProperty("cid", "3");
     });
   });
 });

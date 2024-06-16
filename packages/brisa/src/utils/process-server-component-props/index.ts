@@ -1,3 +1,4 @@
+import type { Controller } from "@/utils/extend-stream-controller";
 import isAnAction from "@/utils/is-an-action";
 
 const ACTION_PREFIX = "data-action";
@@ -5,6 +6,7 @@ const ACTION_PREFIX = "data-action";
 export default function processServerComponentProps(
   props: Record<string, unknown>,
   parentProps?: Record<string, unknown>,
+  controller?: Controller,
 ) {
   const processedProps: Record<string, unknown> = {};
   let actions: unknown[] | undefined;
@@ -24,8 +26,18 @@ export default function processServerComponentProps(
       actionIdKey in props &&
       !("actionId" in value)
     ) {
-      if (!actions) actions = getActionDependencies(parentProps);
-      Object.assign(value, { actionId: props[actionIdKey], actions });
+      if (!actions) {
+        actions = getActionDependencies(
+          parentProps,
+          controller?.getParentComponentId(),
+        );
+      }
+
+      Object.assign(value, {
+        actionId: props[actionIdKey],
+        actions,
+        cid: controller?.getComponentId(),
+      });
     }
 
     // These props are injected into build-time in order to manage the actions.
@@ -43,7 +55,10 @@ export default function processServerComponentProps(
   return processedProps;
 }
 
-function getActionDependencies(parentProps?: Record<string, unknown>) {
+function getActionDependencies(
+  parentProps?: Record<string, unknown>,
+  componentId: string = "",
+) {
   const parentDependencies = [];
   let grandparentsDependencies;
 
@@ -54,7 +69,7 @@ function getActionDependencies(parentProps?: Record<string, unknown>) {
     const action = parentProps[parentProp];
 
     if (isAnAction(action)) {
-      parentDependencies.push([parentProp, action.actionId]);
+      parentDependencies.push([parentProp, action.actionId, componentId]);
 
       if (
         !grandparentsDependencies &&

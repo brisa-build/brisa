@@ -171,7 +171,7 @@ export default function renderAttributes({
 
     for (const [key, value] of Object.entries(componentProps)) {
       if (isAnAction(value)) {
-        entries.push([key, value.actionId]);
+        entries.push([key, value.actionId, value.cid]);
 
         if (dependencies.length === 0 && value.actions?.length) {
           dependencies = value.actions.slice() as any[];
