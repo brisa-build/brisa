@@ -224,7 +224,11 @@ async function enqueueDuringRendering(
 
     if (isComponent(type) && !isTagToIgnore) {
       const hasActions = type?._hasActions;
-      const processedProps = processServerComponentProps(props, componentProps);
+      const processedProps = processServerComponentProps(
+        props,
+        componentProps,
+        controller,
+      );
       const componentContent = { component: type, props: processedProps };
       const isSuspenseComponent =
         controller.applySuspense && isComponent(type.suspense);

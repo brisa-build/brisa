@@ -19,6 +19,7 @@ export type Controller = {
   addId(id: string): void;
   generateComponentId(): void;
   getComponentId(): string;
+  getParentComponentId(): string;
   removeComponentId(): void;
   transferStoreToClient(suspenseId?: number): void;
   hasId(id: string): boolean;
@@ -72,12 +73,16 @@ export default function extendStreamController({
     areSignalsInjected: request.method === "POST",
     applySuspense,
     generateComponentId() {
-      if (!initialComponentId)
+      if (!initialComponentId) {
         initialComponentId = millisecondsSinceStartOfMonth();
+      }
       componentIDs.push((initialComponentId++).toString(36));
     },
     getComponentId() {
       return componentIDs.at(-1) ?? "";
+    },
+    getParentComponentId() {
+      return componentIDs.at(-2) ?? "";
     },
     removeComponentId() {
       componentIDs.pop();
