@@ -65,7 +65,7 @@ export default async function responseAction(req: RequestContext) {
   req.store.set(`__params:${action}`, params);
 
   // @ts-ignore - req._promises should not be a public type
-  const actionCallPromises: Promise[] = [];
+  const actionCallPromises: [string, Promise][] = [];
   const responses: Response[] = [];
 
   const deps = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];

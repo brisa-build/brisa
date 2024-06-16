@@ -123,6 +123,7 @@ export default async function resolveAction({
 
   pageHeaders.set("X-Mode", options.renderMode);
   pageHeaders.set("X-Type", options.type);
+  pageHeaders.set("X-Action", actionId);
 
   return new Response(stream, {
     status: 200,
