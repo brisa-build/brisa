@@ -1,5 +1,4 @@
 import { describe, expect, it } from "bun:test";
-import { type JSXElement } from "@/types";
 import formatElements, { tagParsingRegex } from "./format-elements";
 
 describe("utils", () => {
@@ -57,7 +56,7 @@ describe("utils", () => {
   describe("formatElements", () => {
     it("should return a string wrapped with a fragment if no elements are passed", () => {
       const output = formatElements("this is a <0>test</0>");
-      const element = output[1] as JSXElement;
+      const element = output[1] as any;
 
       expect(output[0]).toBe("this is a ");
       expect(element.type?.toString()).toBe("(s)=>s.children");
@@ -66,7 +65,7 @@ describe("utils", () => {
 
     it("should return a string wrapped with a string tag", () => {
       const output = formatElements("this is a <0>test</0>", [<strong />]);
-      const element = output[1] as JSXElement;
+      const element = output[1] as any;
 
       expect(output[0]).toBe("this is a ");
       expect(element.type?.toString()).toBe("strong");
@@ -84,9 +83,9 @@ describe("utils", () => {
         "<a>this is a <b>test</b></a><c>!</c>",
         elements,
       );
-      const elementA = output[0] as JSXElement;
-      const elementB = elementA.props?.children as JSXElement;
-      const elementC = output[1] as JSXElement;
+      const elementA = output[0] as any;
+      const elementB = elementA.props?.children as any;
+      const elementC = output[1] as any;
 
       expect(elementA.type?.toString()).toBe("strong");
       expect(Array.isArray(elementB)).toBe(true);

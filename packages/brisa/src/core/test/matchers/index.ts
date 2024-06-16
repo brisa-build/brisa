@@ -9,7 +9,7 @@ function toBeChecked(received: unknown) {
   }
 
   return {
-    pass: received.checked,
+    pass: Boolean(received.checked),
     message: () => "expected input element to be checked",
   };
 }
@@ -193,7 +193,7 @@ function toBeSelected(received: unknown) {
   }
 
   return {
-    pass: received.selected,
+    pass: Boolean(received.selected),
     message: () => "expected element to be selected",
   };
 }
@@ -206,7 +206,7 @@ function toBeRequired(received: unknown) {
   }
 
   return {
-    pass: received.required,
+    pass: Boolean(received.required),
     message: () => "expected input element to be required",
   };
 }
@@ -219,7 +219,7 @@ function toBeValid(received: unknown) {
   }
 
   return {
-    pass: received.validity.valid,
+    pass: Boolean(received.validity.valid),
     message: () => "expected input element to be valid",
   };
 }
@@ -259,17 +259,17 @@ function toBeInTheDocument(received: unknown) {
   }
 
   return {
-    pass: received && document.documentElement.contains(received),
+    pass: Boolean(received && document.documentElement.contains(received)),
     message: () => "expected element to be in the document",
   };
 }
 
 function toHaveElementByNodeName(
-  received: HTMLElement | DocumentFragment | ShadowRoot,
+  received: unknown,
   elementName: string,
 ) {
   return {
-    pass: received && received.querySelector(elementName) !== null,
+    pass: Boolean(received && (received as HTMLElement).querySelector(elementName) !== null),
     message: () => `expected element to have ${elementName}`,
   };
 }

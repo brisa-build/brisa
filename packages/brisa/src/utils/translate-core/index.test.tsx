@@ -236,7 +236,7 @@ describe("utils", () => {
       };
       const t = translateCore("en", config);
       const output = t("key_1", { name: "test" }, { elements: [<strong />] });
-      const element = output[1] as JSXElement;
+      const element = output[1] as any;
 
       expect(output[0]).toBe("hello ");
       expect(element.type).toBe("strong");

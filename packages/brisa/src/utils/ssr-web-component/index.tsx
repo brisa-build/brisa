@@ -1,47 +1,30 @@
 import { toInline } from "@/helpers";
 import { Fragment } from "@/jsx-runtime";
-import type {
-  JSXNode,
-  JSXElement,
-  JSXComponent,
-  RequestContext,
-} from "@/types";
+import { type RequestContext } from "@/types";
 import { getConstants } from "@/constants";
 
 export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
   "AVOID_DECLARATIVE_SHADOW_DOM",
 );
 
-type SSRWebComponentProps<
-  T extends Record<string, unknown> = Record<string, unknown>,
-> = T & {
-  Component: JSXComponent;
+type Props = {
+  Component: any;
   selector: string;
-  children?: JSXElement;
+  [key: string]: any;
 };
 
-const voidFn = () => {};
-function isPromise<T>(v: unknown): v is Promise<T> {
-  return (
-    typeof v === "object" &&
-    v !== null &&
-    "then" in v &&
-    typeof v.then === "function"
-  );
-}
+const voidFn = () => { };
 
-export default async function SSRWebComponent<
-  T extends Record<string, unknown> = Record<string, unknown>,
->(
-  { Component, selector, children, ...props }: SSRWebComponentProps<T>,
+export default async function SSRWebComponent(
+  { Component, selector, ...props }: Props,
   { store, useContext, i18n, indicate }: RequestContext,
-): Promise<JSXNode> {
+) {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
   let style = "";
   let Selector = selector;
 
-  // @ts-expect-error -- TODO explanation
+  // @ts-ignore
   store.setOptimistic = voidFn;
 
   const webContext = {
@@ -68,17 +51,13 @@ export default async function SSRWebComponent<
   }
 
   const componentProps = { ...props, children: <slot /> };
-  let content: JSXNode | null = null;
+  let content: any;
+
   if (showContent) {
     try {
-      const maybePromise =
-        typeof Component.suspense === "function"
-          ? Component.suspense(componentProps, webContext)
-          : Component(componentProps, webContext);
-
-      content = isPromise<JSXNode>(maybePromise)
-        ? await maybePromise
-        : maybePromise;
+      content = await (typeof Component.suspense === "function"
+        ? Component.suspense(componentProps, webContext)
+        : Component(componentProps, webContext));
     } catch (error) {
       if (Component.error) {
         content = await Component.error(
@@ -99,7 +78,7 @@ export default async function SSRWebComponent<
           {style.length > 0 && <style>{toInline(style)}</style>}
         </template>
       )}
-      <Fragment slot="">{children}</Fragment>
+      <Fragment slot="">{props.children}</Fragment>
     </Selector>
   );
 }
