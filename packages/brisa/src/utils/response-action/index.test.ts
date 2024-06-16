@@ -13,6 +13,7 @@ import responseAction from ".";
 import { getConstants } from "@/constants";
 import { ENCRYPT_NONTEXT_PREFIX, encrypt } from "@/utils/crypto";
 import { boldLog } from "@/utils/log/log-color";
+import { normalizeQuotes } from "@/helpers";
 
 const FIXTURES = path.join(import.meta.dir, "..", "..", "__fixtures__");
 const PAGE = "http://locahost/es/somepage";
@@ -389,14 +390,14 @@ describe("utils", () => {
       expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1-a2_2-foo");
     });
 
-    it("should req._waitActionCallPromises and req._getCurrentActionId work for nested actions calls", async () => {
+    it("should req._waitActionCallPromises work for nested actions calls", async () => {
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
           headers: {
             "content-type": "application/json",
             "x-action": "a3_1",
-            "x-actions": "[[['onAction2', 'a3_2'], ['onAction3', 'a3_3']]]",
+            "x-actions": "[[['onAction2', 'a3_2']], [['onAction3', 'a3_3']]]",
           },
           body: JSON.stringify({
             args: [],
@@ -409,8 +410,153 @@ describe("utils", () => {
       const logs = logMock.mock.calls.toString();
 
       expect(logs).toBe(
-        "a3_1 init,a3_1,a3_2 init,a3_2,a3_2 end,a3_2,finish a3_2,a3_2,a3_1 end,a3_1,finish a3_1,a3_1",
+        normalizeQuotes(`
+          a3_1 before calling nested action,
+            a3_2 before calling nested action,
+              processing a3_3,
+            a3_2 after calling nested action,
+          a3_1 after calling nested action
+        `),
       );
+    });
+
+    it("should req._waitActionCallPromises work for nested actions calls with await", async () => {
+      const withAwait = true;
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a3_1",
+            "x-actions": "[[['onAction2', 'a3_2']], [['onAction3', 'a3_3']]]",
+          },
+          body: JSON.stringify({
+            args: [withAwait],
+          }),
+        }),
+      });
+
+      await responseAction(req);
+
+      const logs = logMock.mock.calls.toString();
+
+      expect(logs).toBe(
+        normalizeQuotes(`
+          a3_1 before calling nested action,
+            a3_2 before calling nested action,
+              processing a3_3,
+            a3_2 after calling nested action,
+          a3_1 after calling nested action
+        `),
+      );
+    });
+
+    it("should req._originalActionId be accessible inside actions", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a3_4",
+            "x-actions": "[[['onAction5', 'a3_5']]]",
+          },
+          body: JSON.stringify({
+            args: [],
+          }),
+        }),
+      });
+
+      await responseAction(req);
+
+      const logs = logMock.mock.calls.toString();
+
+      expect(logs).toBe(
+        "a3_4 is original action?,true,a3_5 is original action?,false",
+      );
+    });
+
+    it("should return the response of the second action when the second one returns a Response", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a3_4",
+            "x-actions": "[[['onAction5', 'a3_5']]]",
+          },
+          body: JSON.stringify({
+            args: [],
+          }),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(await res.text()).toBe("a3_5");
+    });
+
+    it("should return the response of the second action with await call when the second one returns a Response", async () => {
+      const withAwait = true;
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a3_4",
+            "x-actions": "[[['onAction5', 'a3_5']]]",
+          },
+          body: JSON.stringify({
+            args: [withAwait],
+          }),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(await res.text()).toBe("a3_5");
+    });
+
+    it("should be possible to return an error from the nested action and be caught by the parent action", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a3_6",
+            "x-actions": "[[['onAction7', 'a3_7']]]",
+          },
+          body: JSON.stringify({
+            args: [],
+          }),
+        }),
+      });
+
+      const res = await responseAction(req);
+      const resBody = await res.text();
+
+      expect(resBody).toBe("a3_7 error");
+    });
+
+    it("should be possible to return an error from the nested action with await call and be caught by the parent action", async () => {
+      const withAwait = true;
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a3_6",
+            "x-actions": "[[['onAction7', 'a3_7']]]",
+          },
+          body: JSON.stringify({
+            args: [withAwait],
+          }),
+        }),
+      });
+
+      const res = await responseAction(req);
+      const resBody = await res.text();
+
+      expect(resBody).toBe("a3_7 error");
     });
 
     it('should decrypt the store variables from "x-s" store that starts with ENCRYPT_PREFIX', async () => {

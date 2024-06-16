@@ -53,7 +53,12 @@ describe("utils", () => {
       error.name = "NotFoundError";
 
       const req = getReq();
-      const response = await resolveAction({ req, error, component: <div /> });
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div />,
+      });
 
       expect(await response.headers.get("X-Navigate")).toBe(
         "http://localhost/?_not-found=1",
@@ -68,6 +73,7 @@ describe("utils", () => {
       const response = await resolveAction({
         req,
         error: navigationTrowable,
+        actionId: "a1_1",
         component: <div />,
       });
 
@@ -83,6 +89,7 @@ describe("utils", () => {
       const response = await resolveAction({
         req,
         error: navigationTrowable,
+        actionId: "a1_1",
         component: <div />,
       });
 
@@ -98,6 +105,7 @@ describe("utils", () => {
       const response = await resolveAction({
         req,
         error: navigationTrowable,
+        actionId: "a1_1",
         component: <div />,
       });
 
@@ -116,7 +124,12 @@ describe("utils", () => {
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost/invalid-page"),
       });
-      const response = await resolveAction({ req, error, component: <div /> });
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div />,
+      });
 
       expect(await response.status).toBe(404);
       expect(await response.text()).toBe(
@@ -135,7 +148,12 @@ describe("utils", () => {
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost/invalid-page"),
       });
-      const response = await resolveAction({ req, error, component: <div /> });
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div />,
+      });
 
       expect(await response.status).toBe(404);
       expect(await response.text()).toBe(
@@ -152,7 +170,12 @@ describe("utils", () => {
       error.name = "rerender";
 
       const req = getReq();
-      const response = await resolveAction({ req, error, component: <div /> });
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div />,
+      });
       const expectedHeaders = new Headers({
         "Content-Type": "text/html; charset=utf-8",
         "Transfer-Encoding": "chunked",
@@ -179,7 +202,12 @@ describe("utils", () => {
 
       const req = getReq("http://localhost?_aid=1");
       req.headers.delete("x-action");
-      const response = await resolveAction({ req, error, component: <div /> });
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div />,
+      });
 
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(false);
@@ -201,7 +229,12 @@ describe("utils", () => {
 
       req.store.set("foo", "bar");
 
-      const response = await resolveAction({ req, error, component: <div /> });
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div />,
+      });
 
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
@@ -220,7 +253,12 @@ describe("utils", () => {
       error.name = "rerender";
 
       const req = getReq();
-      const response = await resolveAction({ req, error, component: <div /> });
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div />,
+      });
 
       expect(response.status).toBe(200);
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
@@ -234,7 +272,12 @@ describe("utils", () => {
       let error = new Error('Field "foo" does not exist in props');
 
       const req = getReq();
-      const response = await resolveAction({ req, error, component: <div /> });
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div />,
+      });
 
       expect(await response.status).toBe(500);
       expect(await response.text()).toBe('Field "foo" does not exist in props');
@@ -265,6 +308,7 @@ describe("utils", () => {
       const response = await resolveAction({
         req,
         error,
+        actionId: "a1_1",
         component: <Component />,
       });
 
@@ -278,6 +322,62 @@ describe("utils", () => {
       expect(response.headers.get("vary")).toBe("Accept-Encoding");
       expect(response.headers.get("X-Mode")).toBe("transition");
       expect(response.headers.get("X-Type")).toBe("component");
+      // responseHeaders of the page:
+      expect(response.headers.get("X-Test")).toBe("success");
+    });
+
+    it('should throw an error when is not the originalActionId and type is "targetComponent"', async () => {
+      const req = getReq();
+      // @ts-ignore
+      req._originalActionId = "a1_1";
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({
+            type: "targetComponent",
+            renderMode: "transition",
+          }) +
+          SUFFIX_MESSAGE,
+      );
+
+      error.name = "rerender";
+
+      expect(() =>
+        resolveAction({ req, error, actionId: "a1_2", component: <div /> }),
+      ).toThrow(error);
+    });
+
+    it('should render the "targetComponent" when the originalActionId is the same as the actionId', async () => {
+      const req = getReq();
+      // @ts-ignore
+      req._originalActionId = "a1_1";
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({
+            type: "targetComponent",
+            renderMode: "transition",
+          }) +
+          SUFFIX_MESSAGE,
+      );
+
+      error.name = "rerender";
+
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: <div>Test</div>,
+      });
+
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe("<div>Test</div>");
+      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
+      expect(response.headers.get("Content-Type")).toBe(
+        "text/html; charset=utf-8",
+      );
+      expect(response.headers.get("Transfer-Encoding")).toBe("chunked");
+      expect(response.headers.get("vary")).toBe("Accept-Encoding");
+      expect(response.headers.get("X-Mode")).toBe("transition");
+      expect(response.headers.get("X-Type")).toBe("targetComponent");
       // responseHeaders of the page:
       expect(response.headers.get("X-Test")).toBe("success");
     });
@@ -308,6 +408,7 @@ describe("utils", () => {
       const response = await resolveAction({
         req,
         error,
+        actionId: "a1_1",
         component: <Component />,
       });
 
