@@ -3204,6 +3204,8 @@ describe("utils", () => {
         <Parent onClick={() => {}} data-action-onclick="a1_1" data-action />
       );
 
+      Child._hasActions = Parent._hasActions = GrantParent._hasActions = true;
+
       const element = <GrantParent />;
 
       const stream = renderToReadableStream(element, testOptions);
@@ -3211,7 +3213,15 @@ describe("utils", () => {
 
       expect(result).resolves.toBe(
         toInline(
-          `<button data-action-onclick="a1_1" data-action data-actions="[[['onClickAction','a1_1']]]">TEST</button>`,
+          `<!--o:0-->
+            <!--o:1-->
+              <!--o:2-->
+                <button data-action-onclick="a1_1" data-action data-cid="2" data-actions="[[['onClickAction','a1_1','0']]]">
+                TEST
+               </button>
+              <!--c:2-->
+            <!--c:1-->
+          <!--c:0-->`,
         ),
       );
     });
@@ -3262,6 +3272,7 @@ describe("utils", () => {
       );
       const onClick = () => {};
       onClick.actionId = "a1_1";
+      onClick.cid = "1";
       const stream = renderToReadableStream(
         <Component foo="bar" onClick={onClick} />,
         testOptions,
@@ -3269,7 +3280,7 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        "<p data-action-onclick=\"a1_1\" data-action data-actions=\"[[['onClick','a1_1']]]\">bar</p>",
+        "<p data-action-onclick=\"a1_1\" data-action data-actions=\"[[['onClick','a1_1','1']]]\">bar</p>",
       );
     });
 
