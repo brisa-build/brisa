@@ -257,8 +257,9 @@ async function enqueueDuringRendering(
 
       // Open tag useful for a rerenderInAction to know the component
       if (hasActions) {
+        controller.generateComponentId();
         controller.enqueue(
-          `<!--o:${request.id}:${++controller.cidNumber}-->`,
+          `<!--o:${controller.getComponentId()}-->`,
           suspenseId,
         );
       }
@@ -274,9 +275,10 @@ async function enqueueDuringRendering(
       // Close tag useful for a rerenderInAction to know the component
       if (hasActions) {
         controller.enqueue(
-          `<!--c:${request.id}:${controller.cidNumber}-->`,
+          `<!--c:${controller.getComponentId()}-->`,
           suspenseId,
         );
+        controller.removeComponentId();
       }
 
       manageContextProviderCompletion();
@@ -292,7 +294,7 @@ async function enqueueDuringRendering(
       request,
       type,
       componentProps,
-      cid: controller.cidNumber,
+      componentID: controller.getComponentId(),
     });
     const isContextProvider = type === CONTEXT_PROVIDER;
     let ctx: ProviderType | undefined;

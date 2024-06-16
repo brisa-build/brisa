@@ -1,7 +1,7 @@
 import { type MatchedRoute } from "bun";
 import path from "node:path";
 import {
-  afterAll,
+  setSystemTime,
   afterEach,
   describe,
   expect,
@@ -46,6 +46,7 @@ let mockLog: ReturnType<typeof spyOn>;
 
 describe("utils", () => {
   beforeEach(() => {
+    setSystemTime(new Date("2024-01-01T00:00:00.000Z"));
     mockLog = spyOn(console, "log");
   });
   afterEach(() => {
@@ -3420,7 +3421,7 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        `<!--o:123456:1--><div data-action data-cid="123456:1">test</div><!--c:123456:1-->`,
+        `<!--o:0--><div data-action data-cid="0">test</div><!--c:0-->`,
       );
     });
 
@@ -3466,17 +3467,17 @@ describe("utils", () => {
       expect(result).toBe(
         normalizeQuotes(
           `
-            <!--o:123456:1-->
-              <div data-action data-cid="123456:1">bar</div>
-            <!--c:123456:1-->
+            <!--o:0-->
+              <div data-action data-cid="0">bar</div>
+            <!--c:0-->
             
-            <!--o:123456:2-->
-              <div data-action data-cid="123456:2">baz</div>
-            <!--c:123456:2-->
+            <!--o:1-->
+              <div data-action data-cid="1">baz</div>
+            <!--c:1-->
 
-            <!--o:123456:3-->
-              <div data-action data-cid="123456:3">foo</div>
-            <!--c:123456:3-->`,
+            <!--o:2-->
+              <div data-action data-cid="2">foo</div>
+            <!--c:2-->`,
         ),
       );
     });
