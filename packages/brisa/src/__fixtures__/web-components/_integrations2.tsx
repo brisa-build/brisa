@@ -2,6 +2,7 @@ import type { WebContextPlugin } from "@/types";
 
 export const webContextPlugins: WebContextPlugin[] = [
   (ctx, extras) => {
+    // @ts-ignore
     ctx.store.sync = (
       key: string,
       storage: "localStorage" | "sessionStorage" = "localStorage",
