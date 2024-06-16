@@ -1351,21 +1351,19 @@ describe("utils", () => {
       expect(attributes).toBe(' basepath="/base"');
     });
 
-    it("should add data-cid when the data-action is present as attribute and cid as props", () => {
+    it("should add data-cid when the data-action is present as attribute and data-cid as props", () => {
       const request = extendRequestContext({
         originalRequest: new Request("https://example.com"),
       });
-
-      request.id = "123456";
 
       const attributes = renderAttributes({
         elementProps: { "data-action": true },
         request,
         type: "div",
-        cid: 123,
+        componentID: "123",
       });
 
-      expect(attributes).toBe(` data-action data-cid="123456:123"`);
+      expect(attributes).toBe(` data-action data-cid="123"`);
     });
 
     it("should NOT add data-cid when the data-action is NOT present as attribute", () => {
@@ -1377,7 +1375,7 @@ describe("utils", () => {
         elementProps: {},
         request,
         type: "div",
-        cid: 123,
+        componentID: "123",
       });
 
       expect(attributes).toBeEmpty();

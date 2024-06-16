@@ -22,13 +22,13 @@ export default function renderAttributes({
   request,
   type,
   componentProps,
-  cid,
+  componentID,
 }: {
   elementProps: Props;
   request: RequestContext;
   type: string;
   componentProps?: Props;
-  cid?: number;
+  componentID?: string;
 }): string {
   const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
   const { basePath, assetPrefix } = CONFIG;
@@ -146,8 +146,8 @@ export default function renderAttributes({
   const hasActionRegistered = keys.has("data-action");
 
   // Add component ID (cid) to the element if it has an action
-  if (hasActionRegistered && cid) {
-    attributes += ` data-cid="${request.id}:${cid}"`;
+  if (hasActionRegistered && componentID) {
+    attributes += ` data-cid="${componentID}"`;
   }
 
   // Add external action ids into data-actions attribute.
