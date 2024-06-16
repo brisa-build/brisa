@@ -8,7 +8,6 @@ export type ChunksOptions = {
 export type Controller = {
   enqueue(chunk: string, suspenseId?: number): void;
   head?: ComponentType;
-  cidNumber: number;
   nextSuspenseIndex(): number;
   suspensePromise(promise: Promise<void>): void;
   waitSuspensedPromises(): Promise<void>;
@@ -18,6 +17,9 @@ export type Controller = {
   endTag(chunk: string | null, suspenseId?: number): void;
   flushAllReady(): void;
   addId(id: string): void;
+  generateComponentId(): void;
+  getComponentId(): string;
+  removeComponentId(): void;
   transferStoreToClient(suspenseId?: number): void;
   hasId(id: string): boolean;
   hasHeadTag: boolean;
@@ -49,6 +51,7 @@ export default function extendStreamController({
   request: RequestContext;
 }): Controller {
   const ids = new Set<string>();
+  const componentIDs: string[] = [];
   const openWebComponents: symbol[] = [];
   const suspensePromises: Promise<void>[] = [];
   const suspensedMap = new Map<number, SuspensedState>();
@@ -57,18 +60,28 @@ export default function extendStreamController({
 
   let noSuspensedOpenTags = 0;
   let noSuspensedCloseTags = 0;
-  let cidNumber = 0;
   let storeTransfered = false;
+  let initialComponentId: number;
 
   return {
     head,
-    cidNumber,
     hasHeadTag: false,
     insideHeadTag: false,
     hasUnsuspense: false,
     hasActionRPC: false,
     areSignalsInjected: request.method === "POST",
     applySuspense,
+    generateComponentId() {
+      if (!initialComponentId)
+        initialComponentId = millisecondsSinceStartOfMonth();
+      componentIDs.push((initialComponentId++).toString(36));
+    },
+    getComponentId() {
+      return componentIDs.at(-1) ?? "";
+    },
+    removeComponentId() {
+      componentIDs.pop();
+    },
     setCurrentWebComponentSymbol(symbol) {
       if (symbol) openWebComponents.push(symbol);
       else openWebComponents.pop();
@@ -172,4 +185,23 @@ export default function extendStreamController({
       return suspensePromises.length + 1;
     },
   };
+}
+
+/**
+ * The reason of using this function is to generate an initial id value to
+ * increment then for each component and return it as radix 36, which is
+ * a string representation of the number much shorter than the decimal one or
+ * using crypto.randomUUID() which is too long and more expensive in order to
+ * generate a unique id for each component.
+ *
+ * Instead of using 0 as initial value, it's important to have a different
+ * initial value in each navigation, to avoid conflicts with components ids
+ * after diffing the new page conserving the old components ids.
+ *
+ * The probability of collision is very low, but it's not zero.
+ */
+function millisecondsSinceStartOfMonth() {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  return now.getTime() - startOfMonth.getTime();
 }

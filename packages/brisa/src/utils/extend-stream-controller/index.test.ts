@@ -1,4 +1,11 @@
-import { it, describe, expect, mock, beforeEach } from "bun:test";
+import {
+  it,
+  describe,
+  expect,
+  mock,
+  beforeEach,
+  setSystemTime,
+} from "bun:test";
 import extendStreamController from ".";
 import extendRequestContext from "@/utils/extend-request-context";
 
@@ -12,6 +19,7 @@ const controllerParams = { controller: mockController, request };
 
 describe("extendStreamController", () => {
   beforeEach(() => {
+    setSystemTime(new Date("2024-01-01T00:00:00.000Z"));
     mockController.enqueue.mockClear();
   });
 
@@ -295,5 +303,36 @@ describe("extendStreamController", () => {
         `<script>window._S=[["some","foo"]];for(let [k, v] of _S) _s?.set?.(k, v)</script>`,
       ],
     ]);
+  });
+
+  it("should generateComponentId, getComponentId and removeComponentId work correctly", () => {
+    const controller = extendStreamController(controllerParams);
+
+    controller.generateComponentId();
+    expect(controller.getComponentId()).toBe("0");
+
+    controller.generateComponentId();
+    expect(controller.getComponentId()).toBe("1");
+
+    controller.generateComponentId();
+    expect(controller.getComponentId()).toBe("2");
+
+    controller.generateComponentId();
+    expect(controller.getComponentId()).toBe("3");
+
+    controller.removeComponentId();
+    expect(controller.getComponentId()).toBe("2");
+
+    controller.generateComponentId();
+    expect(controller.getComponentId()).toBe("4");
+
+    controller.removeComponentId();
+    expect(controller.getComponentId()).toBe("2");
+
+    controller.removeComponentId();
+    expect(controller.getComponentId()).toBe("1");
+
+    controller.removeComponentId();
+    expect(controller.getComponentId()).toBe("0");
   });
 });
