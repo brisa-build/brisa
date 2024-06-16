@@ -30,10 +30,11 @@ const createRequest = (url: string) => {
   request.i18n = {
     locale: "es",
     defaultLocale: "es",
-    t: (v) => "",
+    t: ((v: any) => "") as any,
     locales: ["en", "es"],
     pages: {},
-  };
+    overrideMessages: () => { },
+  }
   return request;
 };
 

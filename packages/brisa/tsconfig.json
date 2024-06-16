@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "module": "esnext",
     "baseUrl": "./src",
     "target": "esnext",
@@ -21,7 +23,9 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "paths": {
-      "@/*": ["*"]
+      "@/*": [
+        "*"
+      ]
     }
   },
   "exclude": [
@@ -30,6 +34,8 @@
     "server",
     "client",
     "jsx-runtime",
-    "jsx-dev-runtime"
+    "jsx-dev-runtime",
+    "**/out",
+    "**/__fixtures__"
   ]
 }
