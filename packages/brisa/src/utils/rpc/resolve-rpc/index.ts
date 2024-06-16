@@ -13,10 +13,10 @@ async function resolveRPC(
   args: unknown[] | RenderMode = [],
 ) {
   const store = $window._s;
+  const mode = res.headers.get("X-Mode");
   const urlToNavigate = res.headers.get("X-Navigate");
   const resetForm = res.headers.has("X-Reset");
-  const transition =
-    args === TRANSITION_MODE || res.headers.get("X-Mode") === TRANSITION_MODE;
+  const transition = args === TRANSITION_MODE || mode === TRANSITION_MODE;
 
   // Reset form from the server action
   if (resetForm) {
@@ -38,7 +38,7 @@ async function resolveRPC(
 
   // Navigate to a different page
   if (urlToNavigate) {
-    $window._xm = res.headers.get("X-Mode");
+    $window._xm = mode;
     location.assign(urlToNavigate);
   }
 
