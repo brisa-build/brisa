@@ -276,12 +276,11 @@ function toBeInTheDocument(received: unknown) {
   };
 }
 
-function toHaveElementByNodeName(
-  received: unknown,
-  elementName: string,
-) {
+function toHaveElementByNodeName(received: unknown, elementName: string) {
   return {
-    pass: Boolean(received && (received as HTMLElement).querySelector(elementName) !== null),
+    pass: Boolean(
+      received && (received as HTMLElement).querySelector(elementName) !== null,
+    ),
     message: () => `expected element to have ${elementName}`,
   };
 }
