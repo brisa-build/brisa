@@ -66,6 +66,7 @@ export default async function responseAction(req: RequestContext) {
 
   // @ts-ignore - req._promises should not be a public type
   const actionCallPromises: Promise[] = [];
+  const responses: Response[] = [];
 
   const deps = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
   let props: Record<string, any> = {};
@@ -83,7 +84,7 @@ export default async function responseAction(req: RequestContext) {
 
     for (const [eventName, actionId] of actions) {
       nextProps[eventName] = async (...params: unknown[]) => {
-        let { promise, resolve } = Promise.withResolvers();
+        let { promise, resolve, reject } = Promise.withResolvers();
 
         actionCallPromises.push([actionId, promise]);
 
@@ -95,12 +96,17 @@ export default async function responseAction(req: RequestContext) {
 
         req.store.set(`__params:${actionId}`, params);
 
-        const res = await actionDependency(props, req);
+        try {
+          const res = await actionDependency(props, req);
 
-        resolve(res);
-        actionCallPromises.pop();
+          if (res instanceof Response) responses.push(res);
+          actionCallPromises.pop();
+          resolve(res);
 
-        return res;
+          return res;
+        } catch (error) {
+          reject(error);
+        }
       };
     }
 
@@ -145,13 +151,19 @@ export default async function responseAction(req: RequestContext) {
     );
   };
 
-  // _getCurrentActionId is a function used inside the actions to get the id of
-  // the current action being executed.
-  // @ts-ignore - req._getCurrentActionId should not be a public type
-  req._getCurrentActionId = () => actionCallPromises.at(-1)?.[0];
+  // _originalActionId is the value of the action that was called by the user.
+  // This will be used inside the resolve-action to check if the action that
+  // is being executed is the original one or a nested one.
+  // @ts-ignore - req._originalActionId should not be a public type
+  req._originalActionId = action;
 
   let response = await actionModule[action](props, req);
+  const isResponse = response instanceof Response;
   resolve(response);
+
+  if (!isResponse && responses.length > 0) {
+    response = responses[0];
+  }
 
   if (!(response instanceof Response)) {
     response = new Response(resolveStore(req), {

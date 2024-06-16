@@ -12,6 +12,7 @@ import getPageComponentWithHeaders from "@/utils/get-page-component-with-headers
 type ResolveActionParams = {
   req: RequestContext;
   error: Error;
+  actionId: string;
   component: JSX.Element;
 };
 
@@ -22,6 +23,7 @@ type ResolveActionParams = {
 export default async function resolveAction({
   req,
   error,
+  actionId,
   component,
 }: ResolveActionParams) {
   const { PAGES_DIR, RESERVED_PAGES } = getConstants();
@@ -78,9 +80,16 @@ export default async function resolveAction({
     return new Response(error.message, { status: 500 });
   }
 
+  // @ts-ignore
+  const isOriginalAction = req._originalActionId === actionId;
   const options = JSON.parse(
     error.message.replace(PREFIX_MESSAGE, "").replace(SUFFIX_MESSAGE, ""),
   );
+
+  // Return error to be captured on the response-action withResolvers
+  if (!isOriginalAction && options.type === "targetComponent") {
+    throw error;
+  }
 
   const pagesRouter = getRouteMatcher(
     PAGES_DIR,
@@ -113,7 +122,7 @@ export default async function resolveAction({
   });
 
   pageHeaders.set("X-Mode", options.renderMode);
-  pageHeaders.set("X-Type", "component");
+  pageHeaders.set("X-Type", options.type);
 
   return new Response(stream, {
     status: 200,

@@ -8,7 +8,7 @@ export type Options = {
 };
 
 export type RerenderInActionProps = {
-  type?: "component" | "page";
+  type?: "currentComponent" | "targetComponent" | "page";
   renderMode?: "reactivity" | "transition";
 };
 
@@ -52,8 +52,12 @@ export async function renderToString(
  *
  * Params:
  *
- * - `type`: The type of the rerender. It can be `component` or `page`.
- *           By default, it is `component`.
+ * - `type`: `type`: The type of the rerender. It can be `currentComponent`,
+ *           `targetComponent` or `page`. By default, it is `currentComponent`,
+ *            this means that it is going to rerender the component that called
+ *            the `rerenderInAction` method. When using `targetComponent` it is
+ *            going to rerender the component that fired the original action.
+ *            When using `page` it is going to rerender the whole page.
  * - `renderMode`: The type of the rerender. It can be `reactivity` or `transition`.
  *           By default, it is `reactivity`.
  *

@@ -490,6 +490,21 @@ function wrapWithTypeCatch({
                           type: "Property",
                           key: {
                             type: "Identifier",
+                            name: "actionId",
+                          },
+                          value: {
+                            type: "Literal",
+                            value: info.actionId,
+                          },
+                          kind: "init",
+                          computed: false,
+                          method: false,
+                          shorthand: false,
+                        },
+                        {
+                          type: "Property",
+                          key: {
+                            type: "Identifier",
                             name: "component",
                           },
                           value: {
