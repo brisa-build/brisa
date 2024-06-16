@@ -378,6 +378,44 @@ describe("utils", () => {
       expect(response.headers.get("vary")).toBe("Accept-Encoding");
       expect(response.headers.get("X-Mode")).toBe("transition");
       expect(response.headers.get("X-Type")).toBe("targetComponent");
+      expect(response.headers.get("X-Action")).toBe("a1_1");
+      // responseHeaders of the page:
+      expect(response.headers.get("X-Test")).toBe("success");
+    });
+
+    it('should render the "currentComponent" when different originalActionId than actionId', async () => {
+      const req = getReq();
+      // @ts-ignore
+      req._originalActionId = "a1_1";
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({
+            type: "currentComponent",
+            renderMode: "transition",
+          }) +
+          SUFFIX_MESSAGE,
+      );
+
+      error.name = "rerender";
+
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_3",
+        component: <div>Test</div>,
+      });
+
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe("<div>Test</div>");
+      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
+      expect(response.headers.get("Content-Type")).toBe(
+        "text/html; charset=utf-8",
+      );
+      expect(response.headers.get("Transfer-Encoding")).toBe("chunked");
+      expect(response.headers.get("vary")).toBe("Accept-Encoding");
+      expect(response.headers.get("X-Mode")).toBe("transition");
+      expect(response.headers.get("X-Type")).toBe("currentComponent");
+      expect(response.headers.get("X-Action")).toBe("a1_3");
       // responseHeaders of the page:
       expect(response.headers.get("X-Test")).toBe("success");
     });
