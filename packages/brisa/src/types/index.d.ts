@@ -953,9 +953,10 @@ export type Paths<T> = RemovePlural<
 type ExtendedWebContext =
   typeof import("@/web-components/_integrations").ExtendedWebContext;
 
-type I18nKey = typeof import("@/i18n").default extends I18nConfig<infer T>
-  ? Paths<T extends object ? T : I18nDictionary>
-  : string;
+type I18nKey =
+  typeof import("@/i18n").default extends I18nConfig<infer T>
+    ? Paths<T extends object ? T : I18nDictionary>
+    : string;
 
 export type TranslateOptions = {
   returnObjects?: boolean;
@@ -3003,7 +3004,7 @@ declare global {
       TargetedEvent<Target, PictureInPictureEvent>;
 
     export type EventHandler<E extends TargetedEvent> = {
-      bivarianceHack(event: E): void;
+      bivarianceHack(event: E): void | Promise<void>;
     }["bivarianceHack"];
 
     export type AnimationEventHandler<Target extends EventTarget> =
