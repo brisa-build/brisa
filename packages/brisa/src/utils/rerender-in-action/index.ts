@@ -1,8 +1,9 @@
 import type { RerenderInActionProps } from "@/types/server";
+import { blueLog } from "@/utils/log/log-color";
 
 export const PREFIX_MESSAGE = "Error rerendering within action: ";
 export const SUFFIX_MESSAGE =
-  "\nPlease use the 'rerenderInAction' function inside a server action.\nMore details: https://brisa.build/api-reference/server-apis/rerenderInAction#rerenderinaction";
+  `\n\nPlease use the 'rerenderInAction' function inside a server action without using a try-catch block\nbecause 'rerenderInAction' is a throwable caught by Brisa to rerender the component or page.\n\nMore details: ${blueLog('https://brisa.build/api-reference/server-apis/rerenderInAction#rerenderinaction')}`;
 
 export default function rerenderInAction({
   type = "component",
