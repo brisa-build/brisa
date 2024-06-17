@@ -5,8 +5,8 @@ type RenderMode = "native" | "transition" | "reactivity";
 
 const TRANSITION_MODE = "transition";
 const $window = window as any;
+const encoder = new TextEncoder();
 
-// TODO: Implement render of component
 async function resolveRPC(
   res: Response,
   dataSet: DOMStringMap,
@@ -14,9 +14,12 @@ async function resolveRPC(
 ) {
   const store = $window._s;
   const mode = res.headers.get("X-Mode");
+  const type = res.headers.get("X-Type");
   const urlToNavigate = res.headers.get("X-Navigate");
   const resetForm = res.headers.has("X-Reset");
+  const componentId = res.headers.get("X-Cid") ?? dataSet?.cid;
   const transition = args === TRANSITION_MODE || mode === TRANSITION_MODE;
+  const isRerenderOfComponent = type?.includes("C");
 
   // Reset form from the server action
   if (resetForm) {
@@ -46,7 +49,22 @@ async function resolveRPC(
   else if (verifyBodyContentTypeOfResponse(res, "html")) {
     registerCurrentScripts();
 
-    await diff(document, res.body!.getReader(), {
+    const newDocument = isRerenderOfComponent ? new ReadableStream({
+      async start(controller) {
+        const html = document.documentElement.outerHTML;
+        controller.enqueue(encoder.encode(html.split(`<!--o:${componentId}-->`)[0]));
+        const reader = res.body!.getReader();
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          controller.enqueue(value);
+        }
+        controller.enqueue(encoder.encode(html.split(`<!--c:${componentId}-->`)[1]));
+        controller.close();
+      }
+    }) : res.body;
+
+    await diff(document, newDocument!.getReader(), {
       onNextNode: loadScripts,
       transition,
     });
