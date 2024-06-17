@@ -768,7 +768,7 @@ describe("utils", () => {
       expect(res.headers.get("content-type")).toBe("application/json");
     });
 
-    it("should register the dependencies into __deps store correctly", async () => {
+    it("should register the dependencies into dependencies store correctly", async () => {
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: "POST",
@@ -785,7 +785,9 @@ describe("utils", () => {
 
       await responseAction(req);
 
-      expect(req.store.get("__deps")).toEqual([[["onClick", "a1_2"]]]);
+      expect(req.store.get(Symbol.for("DEPENDENCIES"))).toEqual([
+        [["onClick", "a1_2"]],
+      ]);
     });
   });
 });
