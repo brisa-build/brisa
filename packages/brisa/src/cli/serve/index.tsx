@@ -33,15 +33,16 @@ function handleError(errorName: string) {
     logError({
       messages: [
         `Oops! An ${errorName} occurred:`,
-        '',
-        ...e.message.split('\n').map(boldLog),
-        '',
+        "",
+        ...e.message.split("\n").map(boldLog),
+        "",
         `This happened because there might be an unexpected issue in the code or an unforeseen situation.`,
         `If the problem persists, please report this error to the Brisa team:`,
         blueLog("🔗 https://github.com/brisa-build/brisa/issues/new"),
         `Please don't worry, we are here to help.`,
-        "More details about the error:"
-      ], stack: e.stack
+        "More details about the error:",
+      ],
+      stack: e.stack,
     });
     // throw e; // To display the error message, the stack trace and exit the process
   };
