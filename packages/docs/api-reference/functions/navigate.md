@@ -41,6 +41,10 @@ The `navigate` function can be used both on the client and on the server. Althou
 
 - `Never` does not require you to use `return navigate('/some')` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
 
+> [!CAUTION]
+>
+> Avoid using the `navigate` inside a `try/catch` block. The `navigate` is a throwable function and will break the execution of the current function.
+
 ### Support
 
 | Component         | Support |

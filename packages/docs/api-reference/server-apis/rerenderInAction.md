@@ -38,6 +38,10 @@ function handleEvent() {
 
 - `Never` does not require you to use `return rerenderInPage()` due to using the TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) type.
 
+> [!CAUTION]
+>
+> Avoid using the `rerenderInPage` inside a `try/catch` block. The `navigate` is a throwable function and will break the execution of the current function.
+
 > [!TIP]
 >
 > Updating [`Action Signals`](/building-your-application/data-fetching/server-actions#action-signals) by default is going to use a `rerenderInAction` with `component` type and `reactivity` mode without you having to specify it. If you specify it, it will fulfill only the `rerenderInAction` you specify.
