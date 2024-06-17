@@ -767,5 +767,25 @@ describe("utils", () => {
       expect(res.status).toBe(404);
       expect(res.headers.get("content-type")).toBe("application/json");
     });
+
+    it("should register the dependencies into __deps store correctly", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+            "x-actions": "[[['onClick', 'a1_2']]]",
+          },
+          body: JSON.stringify({
+            args: [],
+          }),
+        }),
+      });
+
+      await responseAction(req);
+
+      expect(req.store.get("__deps")).toEqual([[["onClick", "a1_2"]]]);
+    });
   });
 });
