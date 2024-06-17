@@ -18,6 +18,8 @@ type ResolveActionParams = {
 
 type Dependencies = [string, string, string][][];
 
+const DEPENDENCIES = Symbol.for("DEPENDENCIES");
+
 /**
  *
  * This method is called inside the catch block of the action function.
@@ -117,7 +119,7 @@ export default async function resolveAction({
   }
 
   // Rerender only component (not page):
-  const componentId = extractComponentId(req.store.get("__deps"), actionId);
+  const componentId = extractComponentId(req.store.get(DEPENDENCIES), actionId);
   const { pageHeaders } = await getPageComponentWithHeaders({ req, route });
   const stream = await renderToReadableStream(component, {
     request: req,
