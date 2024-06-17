@@ -199,7 +199,7 @@ describe("utils", () => {
 
     it("should call e.target.reset() if receive the X-Reset header", async () => {
       const formEvent = {
-        target: { reset: mock(() => { }) },
+        target: { reset: mock(() => {}) },
       };
 
       const res = new Response("[]", {
@@ -215,7 +215,7 @@ describe("utils", () => {
     });
 
     it('should not do transition with X-Mode header as "reactivity"', async () => {
-      const mockDiff = mock((...args: any) => { });
+      const mockDiff = mock((...args: any) => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -252,8 +252,8 @@ describe("utils", () => {
     });
 
     it('should do transition with X-Mode header as "transition"', async () => {
-      const mockDiff = mock((...args: any) => { });
-      const mockTransitionFinished = mock(() => { });
+      const mockDiff = mock((...args: any) => {});
+      const mockTransitionFinished = mock(() => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -299,7 +299,7 @@ describe("utils", () => {
     });
 
     it('should not do transition with second param as renderMode as "reactivity"', async () => {
-      const mockDiff = mock((...args: any) => { });
+      const mockDiff = mock((...args: any) => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -335,7 +335,7 @@ describe("utils", () => {
     });
 
     it("should not do transition without renderMode neither X-Mode header", async () => {
-      const mockDiff = mock((...args: any) => { });
+      const mockDiff = mock((...args: any) => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -371,8 +371,8 @@ describe("utils", () => {
     });
 
     it('should do transition with second param as renderMode as "transition"', async () => {
-      const mockDiff = mock((...args: any) => { });
-      const mockTransitionFinished = mock(() => { });
+      const mockDiff = mock((...args: any) => {});
+      const mockTransitionFinished = mock(() => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -416,8 +416,8 @@ describe("utils", () => {
       expect(mockTransitionFinished).toBeCalled();
     });
 
-    it('should render currentComponent with reactivity using the comments wrappers (cid)', async () => {
-      const mockDiff = mock((...args: any) => { });
+    it("should render currentComponent with reactivity using the comments wrappers (cid)", async () => {
+      const mockDiff = mock((...args: any) => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -426,7 +426,11 @@ describe("utils", () => {
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
+          controller.enqueue(
+            encoder.encode(
+              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+            ),
+          );
           controller.close();
         },
       });
@@ -441,21 +445,22 @@ describe("utils", () => {
 
       await initBrowser();
 
-      document.body.innerHTML = '<section><!--o:123--><div class="foo">Foo</div><!--c:123--></section>';
+      document.body.innerHTML =
+        '<section><!--o:123--><div class="foo">Foo</div><!--c:123--></section>';
 
       await resolveRPC(res, dataSet);
 
       const [, bufferReader] = mockDiff.mock.calls[0];
-      let text: string = '';
+      let text: string = "";
 
       while (true) {
         const buffer = await bufferReader.read();
         if (buffer.done) break;
         text += decoder.decode(buffer.value);
-
       }
 
-      expect(text).toBe(normalizeQuotes(`
+      expect(text).toBe(
+        normalizeQuotes(`
           <html>
             <head></head>
             <body>
@@ -466,12 +471,13 @@ describe("utils", () => {
               </section>
             </body>
           </html>
-      `))
+      `),
+      );
     });
 
-    it('should render currentComponent with transition using the comments wrappers (cid)', async () => {
-      const mockDiff = mock((...args: any) => { });
-      const mockTransitionFinished = mock(() => { });
+    it("should render currentComponent with transition using the comments wrappers (cid)", async () => {
+      const mockDiff = mock((...args: any) => {});
+      const mockTransitionFinished = mock(() => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -480,7 +486,11 @@ describe("utils", () => {
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
+          controller.enqueue(
+            encoder.encode(
+              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+            ),
+          );
           controller.close();
         },
       });
@@ -495,7 +505,8 @@ describe("utils", () => {
 
       await initBrowser();
 
-      document.body.innerHTML = '<section><!--o:123--><div class="foo">Foo</div><!--c:123--></section>';
+      document.body.innerHTML =
+        '<section><!--o:123--><div class="foo">Foo</div><!--c:123--></section>';
 
       window.lastDiffTransition = {
         get finished() {
@@ -507,7 +518,7 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const [, bufferReader] = mockDiff.mock.calls[0];
-      let text: string = '';
+      let text: string = "";
 
       while (true) {
         const buffer = await bufferReader.read();
@@ -515,7 +526,8 @@ describe("utils", () => {
         text += decoder.decode(buffer.value);
       }
 
-      expect(text).toBe(normalizeQuotes(`
+      expect(text).toBe(
+        normalizeQuotes(`
           <html>
             <head></head>
             <body>
@@ -526,12 +538,13 @@ describe("utils", () => {
               </section>
             </body>
           </html>
-      `));
+      `),
+      );
       expect(mockTransitionFinished).toBeCalled();
     });
 
-    it('should render targetComponent with reactivity using the comments wrappers (cid)', async () => {
-      const mockDiff = mock((...args: any) => { });
+    it("should render targetComponent with reactivity using the comments wrappers (cid)", async () => {
+      const mockDiff = mock((...args: any) => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -540,7 +553,11 @@ describe("utils", () => {
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
+          controller.enqueue(
+            encoder.encode(
+              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+            ),
+          );
           controller.close();
         },
       });
@@ -555,21 +572,22 @@ describe("utils", () => {
 
       await initBrowser();
 
-      document.body.innerHTML = '<section><!--o:123--><div class="foo">Foo</div><!--c:123--></section>';
+      document.body.innerHTML =
+        '<section><!--o:123--><div class="foo">Foo</div><!--c:123--></section>';
 
       await resolveRPC(res, dataSet);
 
       const [, bufferReader] = mockDiff.mock.calls[0];
-      let text: string = '';
+      let text: string = "";
 
       while (true) {
         const buffer = await bufferReader.read();
         if (buffer.done) break;
         text += decoder.decode(buffer.value);
-
       }
 
-      expect(text).toBe(normalizeQuotes(`
+      expect(text).toBe(
+        normalizeQuotes(`
           <html>
             <head></head>
             <body>
@@ -580,12 +598,13 @@ describe("utils", () => {
               </section>
             </body>
           </html>
-      `))
+      `),
+      );
     });
 
-    it('should render targetComponent with transition using the comments wrappers (cid)', async () => {
-      const mockDiff = mock((...args: any) => { });
-      const mockTransitionFinished = mock(() => { });
+    it("should render targetComponent with transition using the comments wrappers (cid)", async () => {
+      const mockDiff = mock((...args: any) => {});
+      const mockTransitionFinished = mock(() => {});
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -594,7 +613,11 @@ describe("utils", () => {
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
+          controller.enqueue(
+            encoder.encode(
+              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+            ),
+          );
           controller.close();
         },
       });
@@ -609,7 +632,8 @@ describe("utils", () => {
 
       await initBrowser();
 
-      document.body.innerHTML = '<section><!--o:123--><div class="foo">Foo</div><!--c:123--></section>';
+      document.body.innerHTML =
+        '<section><!--o:123--><div class="foo">Foo</div><!--c:123--></section>';
 
       window.lastDiffTransition = {
         get finished() {
@@ -621,7 +645,7 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const [, bufferReader] = mockDiff.mock.calls[0];
-      let text: string = '';
+      let text: string = "";
 
       while (true) {
         const buffer = await bufferReader.read();
@@ -629,7 +653,8 @@ describe("utils", () => {
         text += decoder.decode(buffer.value);
       }
 
-      expect(text).toBe(normalizeQuotes(`
+      expect(text).toBe(
+        normalizeQuotes(`
           <html>
             <head></head>
             <body>
@@ -640,7 +665,8 @@ describe("utils", () => {
               </section>
             </body>
           </html>
-      `));
+      `),
+      );
       expect(mockTransitionFinished).toBeCalled();
     });
   });
