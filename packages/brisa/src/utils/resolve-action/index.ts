@@ -16,6 +16,8 @@ type ResolveActionParams = {
   component: JSX.Element;
 };
 
+type Dependencies = [string, string, string][][];
+
 /**
  *
  * This method is called inside the catch block of the action function.
@@ -115,6 +117,7 @@ export default async function resolveAction({
   }
 
   // Rerender only component (not page):
+  const componentId = extractComponentId(req.store.get("__deps"), actionId);
   const { pageHeaders } = await getPageComponentWithHeaders({ req, route });
   const stream = await renderToReadableStream(component, {
     request: req,
@@ -123,7 +126,7 @@ export default async function resolveAction({
 
   pageHeaders.set("X-Mode", options.renderMode);
   pageHeaders.set("X-Type", options.type);
-  pageHeaders.set("X-Action", actionId);
+  if (componentId) pageHeaders.set("X-Cid", componentId);
 
   return new Response(stream, {
     status: 200,
@@ -133,4 +136,15 @@ export default async function resolveAction({
 
 export function resolveStore(req: RequestContext) {
   return JSON.stringify([...(req as any).webStore]);
+}
+
+function extractComponentId(dependencies: Dependencies, actionId: string) {
+  for (const actions of dependencies ?? []) {
+    for (const action of actions ?? []) {
+      if (action[1] === actionId) {
+        return action[2];
+      }
+    }
+  }
+  return null;
 }

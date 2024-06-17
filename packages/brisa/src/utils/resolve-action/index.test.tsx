@@ -378,13 +378,15 @@ describe("utils", () => {
       expect(response.headers.get("vary")).toBe("Accept-Encoding");
       expect(response.headers.get("X-Mode")).toBe("transition");
       expect(response.headers.get("X-Type")).toBe("targetComponent");
-      expect(response.headers.get("X-Action")).toBe("a1_1");
+      expect(response.headers.get("X-Cid")).toBeNull();
       // responseHeaders of the page:
       expect(response.headers.get("X-Test")).toBe("success");
     });
 
-    it('should render the "currentComponent" when different originalActionId than actionId', async () => {
+    it('should render the "currentComponent" with "X-Cid" when different originalActionId than actionId', async () => {
       const req = getReq();
+
+      req.store.set("__deps", [[["onClick", "a1_3", "test-cid"]]]);
       // @ts-ignore
       req._originalActionId = "a1_1";
       const error = new Error(
@@ -415,7 +417,7 @@ describe("utils", () => {
       expect(response.headers.get("vary")).toBe("Accept-Encoding");
       expect(response.headers.get("X-Mode")).toBe("transition");
       expect(response.headers.get("X-Type")).toBe("currentComponent");
-      expect(response.headers.get("X-Action")).toBe("a1_3");
+      expect(response.headers.get("X-Cid")).toBe("test-cid");
       // responseHeaders of the page:
       expect(response.headers.get("X-Test")).toBe("success");
     });
