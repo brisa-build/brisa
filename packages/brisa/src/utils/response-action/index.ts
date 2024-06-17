@@ -62,14 +62,14 @@ export default async function responseAction(req: RequestContext) {
   // Transfer client store to server store
   transferClientStoreToServer();
 
-  req.store.set(`__params:${action}`, params);
-
-  // @ts-ignore - req._promises should not be a public type
-  const actionCallPromises: [string, Promise][] = [];
+  const actionCallPromises: [string, Promise<unknown>][] = [];
   const responses: Response[] = [];
 
   const deps = actionsHeaderValue ? deserialize(actionsHeaderValue) : [];
   let props: Record<string, any> = {};
+
+  req.store.set(`__params:${action}`, params);
+  req.store.set("__deps", deps);
 
   // This part allows actions to be passed as props to enable nested actions
   // of other components. To make this possible, the HTML stores in the HTML
