@@ -386,7 +386,9 @@ describe("utils", () => {
     it('should render the "currentComponent" with "X-Cid" when different originalActionId than actionId', async () => {
       const req = getReq();
 
-      req.store.set("__deps", [[["onClick", "a1_3", "test-cid"]]]);
+      req.store.set(Symbol.for("DEPENDENCIES"), [
+        [["onClick", "a1_3", "test-cid"]],
+      ]);
       // @ts-ignore
       req._originalActionId = "a1_1";
       const error = new Error(

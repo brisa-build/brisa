@@ -6,6 +6,8 @@ import transferStoreService from "@/utils/transfer-store-service";
 import { resolveStore } from "@/utils/resolve-action";
 import { logError } from "@/utils/log/log-build";
 
+const DEPENDENCIES = Symbol.for("DEPENDENCIES");
+
 export default async function responseAction(req: RequestContext) {
   const { transferClientStoreToServer, formData, body } =
     await transferStoreService(req);
@@ -69,7 +71,7 @@ export default async function responseAction(req: RequestContext) {
   let props: Record<string, any> = {};
 
   req.store.set(`__params:${action}`, params);
-  req.store.set("__deps", deps);
+  req.store.set(DEPENDENCIES, deps);
 
   // This part allows actions to be passed as props to enable nested actions
   // of other components. To make this possible, the HTML stores in the HTML
