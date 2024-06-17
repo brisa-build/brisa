@@ -138,6 +138,17 @@ export default async function responseAction(req: RequestContext) {
 
   actionCallPromises.push([action, promise]);
 
+  // _p is a function used inside the actions to wrap
+  // all the sync function calls, to await for that that are async
+  // in reality.
+  // @ts-ignore - req._p should not be a public type
+  req._p = (promise: Promise<unknown>) => {
+    if (promise instanceof Promise) {
+      actionCallPromises.push(["", promise]);
+    }
+    return promise;
+  };
+
   // waitActionCallPromises is a function used inside the actions to wait for
   // all nested actions calls at the end (when they don't use "await").
   // @ts-ignore - req.waitActionCallPromises should not be a public type

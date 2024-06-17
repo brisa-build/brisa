@@ -390,6 +390,26 @@ describe("utils", () => {
       expect(await logMock.mock.calls[0][1].onClick()).toBe("a2_1-a2_2-foo");
     });
 
+    it("should add req._p wrapper function to handle async calls inside actions", async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+          },
+          body: JSON.stringify({
+            args: [],
+          }),
+        }),
+      });
+
+      await responseAction(req);
+
+      // @ts-ignore
+      expect(req._p).toBeTypeOf("function");
+    });
+
     it("should req._waitActionCallPromises work for nested actions calls", async () => {
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
