@@ -170,14 +170,14 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
             declaration.body.type === "BlockStatement"
               ? declaration.body
               : {
-                  type: "BlockStatement",
-                  body: [
-                    {
-                      type: "ReturnStatement",
-                      argument: declaration.body,
-                    },
-                  ],
-                },
+                type: "BlockStatement",
+                body: [
+                  {
+                    type: "ReturnStatement",
+                    argument: declaration.body,
+                  },
+                ],
+              },
           async: declaration.async,
           generator: false,
         },
@@ -208,6 +208,14 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   const body = getPurgedBody(info);
   const { params, requestDestructuring, requestParamName } =
     getActionParams(info);
+  const FUNCTIONS_TO_IGNORE_AWAIT = new Set([
+    requestParamName,
+    "console",
+    "setTimeout",
+    "setInterval",
+    "clearTimeout",
+    "clearInterval",
+  ]);
 
   if (info.actionFnExpression) {
     let position = 0;
@@ -230,7 +238,37 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
             type: "Identifier",
             name: "__action",
           },
-          init: info.actionFnExpression!,
+          init: JSON.parse(
+            JSON.stringify(info.actionFnExpression!),
+            function (key, value) {
+              if (
+                value.type === "CallExpression" &&
+                this?.type !== "AwaitExpression" &&
+                !FUNCTIONS_TO_IGNORE_AWAIT.has(value.callee?.object?.name) &&
+                !FUNCTIONS_TO_IGNORE_AWAIT.has(
+                  value.callee?.object?.object?.name,
+                )
+              ) {
+                return {
+                  type: "CallExpression",
+                  callee: {
+                    type: "MemberExpression",
+                    object: {
+                      type: "Identifier",
+                      name: requestParamName,
+                    },
+                    computed: false,
+                    property: {
+                      type: "Identifier",
+                      name: "_p",
+                    },
+                  },
+                  arguments: [value],
+                };
+              }
+              return value;
+            },
+          ),
         },
       ],
     });
@@ -527,22 +565,22 @@ function wrapWithTypeCatch({
                               ...((IS_PRODUCTION
                                 ? []
                                 : [
-                                    {
-                                      type: "Identifier",
-                                      name: "undefined",
-                                    },
-                                    {
-                                      type: "Literal",
-                                      value: false,
-                                    },
-                                    {
-                                      type: "Identifier",
-                                      name: "undefined",
-                                    },
-                                    {
-                                      type: "ThisExpression",
-                                    },
-                                  ]) as any),
+                                  {
+                                    type: "Identifier",
+                                    name: "undefined",
+                                  },
+                                  {
+                                    type: "Literal",
+                                    value: false,
+                                  },
+                                  {
+                                    type: "Identifier",
+                                    name: "undefined",
+                                  },
+                                  {
+                                    type: "ThisExpression",
+                                  },
+                                ]) as any),
                             ],
                           },
                           kind: "init",
