@@ -1576,7 +1576,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const handleClick = world => console.log("hello" + world);
-            const __action = handleClick.bind(this, " test");
+            const __action = req._p(handleClick.bind(this, " test"));
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
@@ -1648,7 +1648,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const handleClick = world => world2 => console.log("hello" + world + world2);
-            const __action = handleClick(" test");
+            const __action = req._p(handleClick(" test"));
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
@@ -2030,6 +2030,74 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
+    it("should NOT wrap async calls inside the action with req._p", () => {
+      const code = `
+        export default function Component({text}) {
+          return <div onClick={async () => {await foo();}} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          return jsxDEV("div", {onClick: async () => {await foo();},"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = async () => {await foo();};
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should wrap all sync calls inside the action with req._p", () => {
+      const code = `
+        export default function Component({text}) {
+          return <div onClick={() => {const promise = bar(); foo(promise);}} data-action-onClick="a1_1" data-action>{text}</div>
+        }
+      `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function Component({text}) {
+          return jsxDEV("div", {onClick: () => {const promise = bar();foo(promise);},"data-action-onClick": "a1_1","data-action": true,children: text}, undefined, false, undefined, this);
+        }
+
+        export async function a1_1({text}, req) {
+          try {
+            const __action = () => {const promise = req._p(bar());req._p(foo(promise));};
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: jsxDEV(Component, {text}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toEqual(expected);
+    });
+
     it("should be possible to use destructuring of req with different name", () => {
       const code = `
         export default function Component({text}, {foo, ...req2}) {
@@ -2049,7 +2117,7 @@ describe("utils", () => {
         export async function a1_1({text}, req) {
           try {
             const {foo, ...req2} = req;
-            const __action = () => console.log(req2.store.get('foo'));
+            const __action = () => console.log(req._p(req2.store.get('foo')));
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
