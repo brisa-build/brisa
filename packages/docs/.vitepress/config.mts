@@ -130,6 +130,10 @@ export default defineConfig({
                 link: "/building-your-application/components-details/web-components",
               },
               {
+                text: "Reactivity",
+                link: "/building-your-application/components-details/reactivity",
+              },
+              {
                 text: "Context",
                 link: "/building-your-application/components-details/context",
               },
