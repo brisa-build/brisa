@@ -2059,7 +2059,7 @@ describe("utils", () => {
           return getEl(text);
         }
 
-        export async function a1_1(text, req) {
+        export async function a1_1({text}, req) {
           try {
             const __action = props.onClick;
             await __action(...req.store.get("__params:a1_1"));
@@ -2070,11 +2070,11 @@ describe("utils", () => {
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(getEl, {text}, undefined, false, undefined, this)});
+              component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
             }
         }
 
-        export async function a1_2(text, req) {
+        export async function a1_2({text}, req) {
           try {
             const __action = props.onInput;
             await __action(...req.store.get("__params:a1_2"));
@@ -2085,7 +2085,7 @@ describe("utils", () => {
               req,
               error,
               actionId: "a1_2",
-              component: jsxDEV(getEl, {text}, undefined, false, undefined, this)});
+              component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
             }
           }
         `);
@@ -2186,7 +2186,7 @@ describe("utils", () => {
                 req,
                 error,
                 actionId: "a1_1",
-                component: jsxDEV(getEl, {text}, undefined, false, undefined, this)});
+                component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
               }
             }
             
@@ -2200,7 +2200,7 @@ describe("utils", () => {
               req,
               error,
               actionId: "a1_2",
-              component: jsxDEV(getEl, {text}, undefined, false, undefined, this)});
+              component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
             }
           }
       `);
@@ -2254,7 +2254,7 @@ describe("utils", () => {
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(AboutUs, {}, undefined, false, undefined, this)
+              component: jsxDEV(AboutUs, {...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -2295,7 +2295,7 @@ describe("utils", () => {
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {}, undefined, false, undefined, this)
+              component: jsxDEV(Component, {...__props}, undefined, false, undefined, this)
             });
           }
         }`);
