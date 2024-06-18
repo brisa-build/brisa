@@ -1161,6 +1161,41 @@ describe("utils", () => {
       );
     });
 
+    it("should keep onClick.actions as data-actions when onClick.cid is not there (simulating rerender of component from an action)", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const onClick = () => {};
+      onClick.actionId = "a1_1";
+      onClick.actions = [
+        [["onClick", "a1_1", "c1"]],
+        [["onMouseOver", "a1_2", "c2"]],
+      ];
+
+      const attributes = renderAttributes({
+        elementProps: {
+          foo: "bar",
+          "data-action": true,
+          onClick,
+          onDoubleClick: () => {},
+          "data-action-onDoubleClick": "a1_3",
+        },
+        request,
+        type: "div",
+        componentProps: {
+          onClick,
+          someProp: "someValue",
+          empty: undefined,
+          nullable: null,
+        },
+      });
+
+      expect(attributes).toBe(
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1','c1']],[['onMouseOver','a1_2','c2']]]"`,
+      );
+    });
+
     it('should not add the "data-actions" attribute when there are no action properties', () => {
       const request = extendRequestContext({
         originalRequest: new Request("https://example.com"),

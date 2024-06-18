@@ -140,7 +140,10 @@ describe("utils", () => {
     it("should log an error trying to rerender a invalid page using type 'component'", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "component", renderMode: "reactivity" }) +
+          JSON.stringify({
+            type: "targetComponent",
+            renderMode: "reactivity",
+          }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
@@ -148,6 +151,8 @@ describe("utils", () => {
       const req = extendRequestContext({
         originalRequest: new Request("http://localhost/invalid-page"),
       });
+      // @ts-ignore
+      req._originalActionId = "a1_1";
       const response = await resolveAction({
         req,
         error,
@@ -299,12 +304,17 @@ describe("utils", () => {
       }
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "component", renderMode: "transition" }) +
+          JSON.stringify({
+            type: "targetComponent",
+            renderMode: "transition",
+          }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
       const req = getReq();
+      // @ts-ignore
+      req._originalActionId = "a1_1";
       const response = await resolveAction({
         req,
         error,
@@ -321,7 +331,7 @@ describe("utils", () => {
       expect(response.headers.get("Transfer-Encoding")).toBe("chunked");
       expect(response.headers.get("vary")).toBe("Accept-Encoding");
       expect(response.headers.get("X-Mode")).toBe("transition");
-      expect(response.headers.get("X-Type")).toBe("component");
+      expect(response.headers.get("X-Type")).toBe("targetComponent");
       // responseHeaders of the page:
       expect(response.headers.get("X-Test")).toBe("success");
     });
@@ -443,12 +453,17 @@ describe("utils", () => {
       }
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "component", renderMode: "transition" }) +
+          JSON.stringify({
+            type: "targetComponent",
+            renderMode: "transition",
+          }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
       const req = getReq();
+      // @ts-ignore
+      req._originalActionId = "a1_1";
       req.store.set("foo", "bar");
       (req as any).webStore.set("foo", "bar");
 
@@ -472,9 +487,13 @@ describe("utils", () => {
       function Component({ name }: { name: string }) {
         return <div>{name}</div>;
       }
+
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "component", renderMode: "transition" }) +
+          JSON.stringify({
+            type: "targetComponent",
+            renderMode: "transition",
+          }) +
           SUFFIX_MESSAGE,
       );
       error.name = "rerender";
@@ -482,6 +501,8 @@ describe("utils", () => {
       error[Symbol.for("props")] = { name: "John" };
 
       const req = getReq();
+      // @ts-ignore
+      req._originalActionId = "a1_1";
       const response = await resolveAction({
         req,
         error,
@@ -492,6 +513,45 @@ describe("utils", () => {
 
       expect(response.status).toBe(200);
       expect(await response.text()).toBe("<div>John</div>");
+    });
+
+    it('should re-add action dependencies to the component when type is "component"', async () => {
+      const req = getReq();
+      req.store.set(Symbol.for("DEPENDENCIES"), [
+        [["onClick", "a1_3", "test-cid"]],
+        [["onClick", "a1_2", "test-cid"]],
+      ]);
+      // @ts-ignore
+      req._originalActionId = "a1_1";
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({
+            type: "targetComponent",
+            renderMode: "transition",
+          }) +
+          SUFFIX_MESSAGE,
+      );
+      error.name = "rerender";
+
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: (__props: any) => (
+          <div
+            data-action
+            data-actions="[['onClick', 'a1_3', 'test-cid']]"
+            {...__props}
+          >
+            Test
+          </div>
+        ),
+      });
+
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe(
+        `<div data-action data-actions="[['onClick', 'a1_3', 'test-cid']]" data-action-onclick="a1_1">Test</div>`,
+      );
     });
   });
 });

@@ -68,6 +68,9 @@ export default function renderToReadableStream(
         unsuspenseListPath,
         req,
       );
+
+      // @deprecated
+      // TODO: Remove the list generared + replace this to tack type.__isAction
       extendedController.hasActionRPC = await isInPathList(
         actionRPCListPath,
         req,
