@@ -37,6 +37,18 @@ Web components are like other HTML elements, that is, you don't need to import t
 >
 > The type-safe for web components are created inside the development CLI. If they do not appear, you must have "`brisa dev`" open.
 
+## Safe return on components
+
+Using `eslint` (optional) with `@typescript-eslint/no-unsafe-return`, you can use `JSXNode` from `brisa`.
+
+```tsx
+import { JSXNode } from "brisa";
+
+export default function MyComponent(): JSXNode {
+  return <div>Hello World</div>;
+}
+```
+
 ## Type-safe for i18n
 
 There is type-safe enabled for all i18n keys that you can consume on the pages.
