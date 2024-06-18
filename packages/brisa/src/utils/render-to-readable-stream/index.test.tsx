@@ -1109,7 +1109,7 @@ describe("utils", () => {
       const stream = renderToReadableStream(<Page />, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
-        `<html><head></head><body><div id="S:1"><b>Loading...</b></div></body><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script></html>`,
+        `<html><head></head><body><div id="S:1"><b>Loading...</b></div></body></html><template id="U:1"><div>Test</div></template><script id="R:1">u$('1')</script>`,
       );
     });
 
@@ -2774,10 +2774,11 @@ describe("utils", () => {
           <body>
             <div id="S:1"><div>Loading...</div></div>
           </body>
-          <template id="U:1"><div>TEST</div></template>
-          <script id="R:1">u$('1')</script>
-          <script>window._S=[["test","test"]]</script>
-        </html>`),
+        </html>
+        <template id="U:1"><div>TEST</div></template>
+        <script id="R:1">u$('1')</script>
+        <script>window._S=[["test","test"]]</script>
+        `),
       );
     });
 
@@ -2840,10 +2841,11 @@ describe("utils", () => {
             <div id="S:1"><div>Loading...</div></div>
             <script>window._S=[["no-suspense","bar"]]</script>
           </body>
-          <template id="U:1"><div>Suspense</div></template>
-          <script id="R:1">u$('1')</script>
-          <script>for(let e of [["suspense","foo"]]) _S.push(e)</script>
-        </html>`),
+        </html>
+        <template id="U:1"><div>Suspense</div></template>
+        <script id="R:1">u$('1')</script>
+        <script>for(let e of [["suspense","foo"]]) _S.push(e)</script>
+        `),
       );
     });
 

@@ -73,6 +73,98 @@ describe("extendStreamController", () => {
     ]);
   });
 
+  it("should unsuspense at the end of the document and in order", async () => {
+    const controller = extendStreamController(controllerParams);
+    const firstSuspense = Promise.withResolvers<void>();
+    const secondSuspense = Promise.withResolvers<void>();
+
+    controller.startTag("<html>");
+
+    // Pending part before suspensed
+    controller.startTag(`<div id="S:1">`);
+    controller.enqueue("Loading...");
+    controller.endTag("</div>");
+
+    // First suspensed part
+    const suspenseId = controller.nextSuspenseIndex();
+    controller.suspensePromise(firstSuspense.promise);
+    firstSuspense.resolve();
+
+    // Pending second part before suspensed
+    controller.startTag(`<div id="S:2">`);
+    controller.enqueue("Loading...");
+    controller.endTag("</div>");
+
+    // Second suspensed part
+    const secondSuspenseId = controller.nextSuspenseIndex();
+    controller.suspensePromise(secondSuspense.promise);
+
+    controller.startTag("<div>");
+    controller.enqueue("Another");
+    controller.enqueue("Success!", suspenseId);
+    controller.endTag("</div>");
+    controller.endTag("</html>");
+
+    expect(mockController.enqueue.mock.calls).toEqual([
+      [`<html>`],
+      [`<div id="S:1">`],
+      ["Loading..."],
+      ["</div>"],
+      [`<div id="S:2">`],
+      ["Loading..."],
+      ["</div>"],
+      ["<div>"],
+      ["Another"],
+      ["</div>"],
+      ["</html>"],
+    ]);
+
+    await Bun.sleep(0);
+
+    expect(mockController.enqueue.mock.calls).toEqual([
+      [`<html>`],
+      [`<div id="S:1">`],
+      ["Loading..."],
+      ["</div>"],
+      [`<div id="S:2">`],
+      ["Loading..."],
+      ["</div>"],
+      ["<div>"],
+      ["Another"],
+      ["</div>"],
+      ["</html>"],
+      [
+        `<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`,
+      ],
+    ]);
+
+    controller.enqueue("Success 2!", secondSuspenseId);
+
+    secondSuspense.resolve();
+    await controller.waitSuspensedPromises();
+    await Bun.sleep(0);
+
+    expect(mockController.enqueue.mock.calls).toEqual([
+      [`<html>`],
+      [`<div id="S:1">`],
+      ["Loading..."],
+      ["</div>"],
+      [`<div id="S:2">`],
+      ["Loading..."],
+      ["</div>"],
+      ["<div>"],
+      ["Another"],
+      ["</div>"],
+      ["</html>"],
+      [
+        `<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`,
+      ],
+      [
+        `<template id="U:2">Success 2!</template><script id="R:2">u$('2')</script>`,
+      ],
+    ]);
+  });
+
   it("should not enqueue directly the suspensed chunks and do it later with multiple suspenses", async () => {
     const controller = extendStreamController(controllerParams);
     const firstSuspenseId = controller.nextSuspenseIndex();
