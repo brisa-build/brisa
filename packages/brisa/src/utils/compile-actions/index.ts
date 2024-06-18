@@ -505,48 +505,6 @@ function wrapWithTypeCatch({
             type: "BlockStatement",
             body: [
               {
-                type: "VariableDeclaration",
-                kind: "const",
-                declarations: [
-                  {
-                    type: "VariableDeclarator",
-                    id: {
-                      type: "Identifier",
-                      name: "__props",
-                    },
-                    init: {
-                      type: "MemberExpression",
-                      object: {
-                        type: "Identifier",
-                        name: "error",
-                      },
-                      computed: true,
-                      property: {
-                        type: "CallExpression",
-                        callee: {
-                          type: "MemberExpression",
-                          object: {
-                            type: "Identifier",
-                            name: "Symbol",
-                          },
-                          computed: false,
-                          property: {
-                            type: "Identifier",
-                            name: "for",
-                          },
-                        },
-                        arguments: [
-                          {
-                            type: "Literal",
-                            value: "props",
-                          },
-                        ],
-                      },
-                    },
-                  },
-                ],
-              },
-              {
                 type: "ReturnStatement",
                 argument: {
                   type: "CallExpression",
@@ -610,42 +568,53 @@ function wrapWithTypeCatch({
                             name: "component",
                           },
                           value: {
-                            type: "CallExpression",
-                            callee: {
-                              type: "Identifier",
-                              name: IS_PRODUCTION ? "jsx" : "jsxDEV",
-                            },
-                            arguments: [
+                            type: "ArrowFunctionExpression",
+                            params: [
                               {
                                 type: "Identifier",
-                                name:
-                                  (
-                                    info.componentFnExpression as ESTree.FunctionExpression
-                                  )?.id?.name ??
-                                  // TODO: Support arrow function names
-                                  "Component",
+                                name: "__props",
                               },
-                              props,
-                              ...((IS_PRODUCTION
-                                ? []
-                                : [
-                                    {
-                                      type: "Identifier",
-                                      name: "undefined",
-                                    },
-                                    {
-                                      type: "Literal",
-                                      value: false,
-                                    },
-                                    {
-                                      type: "Identifier",
-                                      name: "undefined",
-                                    },
-                                    {
-                                      type: "ThisExpression",
-                                    },
-                                  ]) as any),
                             ],
+                            body: {
+                              type: "CallExpression",
+                              callee: {
+                                type: "Identifier",
+                                name: IS_PRODUCTION ? "jsx" : "jsxDEV",
+                              },
+                              arguments: [
+                                {
+                                  type: "Identifier",
+                                  name:
+                                    (
+                                      info.componentFnExpression as ESTree.FunctionExpression
+                                    )?.id?.name ??
+                                    // TODO: Support arrow function names
+                                    "Component",
+                                },
+                                props,
+                                ...((IS_PRODUCTION
+                                  ? []
+                                  : [
+                                      {
+                                        type: "Identifier",
+                                        name: "undefined",
+                                      },
+                                      {
+                                        type: "Literal",
+                                        value: false,
+                                      },
+                                      {
+                                        type: "Identifier",
+                                        name: "undefined",
+                                      },
+                                      {
+                                        type: "ThisExpression",
+                                      },
+                                    ]) as any),
+                              ],
+                            },
+                            async: false,
+                            expression: true,
                           },
                           kind: "init",
                           computed: false,

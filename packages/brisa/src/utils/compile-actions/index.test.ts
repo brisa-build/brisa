@@ -28,12 +28,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -62,12 +61,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -98,12 +96,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {...props, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {...props, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -134,12 +131,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(SomeComponent, {foo, ...bar, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(SomeComponent, {foo, ...bar, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -168,12 +164,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1", 
-              component: jsxDEV(Component, {initialValue, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {initialValue, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -203,12 +198,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text: {value}, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text: {value}, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -237,12 +231,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -274,12 +267,11 @@ describe("utils", () => {
             await onClick(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -310,12 +302,11 @@ describe("utils", () => {
             await onClick(...requestContext.store.get('__params:a1_1'));
             await requestContext._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req: requestContext, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(SomeComponent, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(SomeComponent, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -344,12 +335,11 @@ describe("utils", () => {
           await __action(...req.store.get('__params:a1_1'));
           await req._waitActionCallPromises("a1_1");
         } catch (error) {
-          const __props = error[Symbol.for("props")];
           return __resolveAction({ 
             req, 
             error,
             actionId: "a1_1",
-            component: jsxDEV(Component__0__, {foo, ...__props}, undefined, false, undefined, this)
+            component: __props => jsxDEV(Component__0__, {foo, ...__props}, undefined, false, undefined, this)
           });
         }
       }
@@ -378,12 +368,11 @@ describe("utils", () => {
           await __action(...req.store.get('__params:a1_1'));
           await req._waitActionCallPromises("a1_1");
         } catch (error) {
-          const __props = error[Symbol.for("props")];
           return __resolveAction({ 
             req, 
             error,
             actionId: "a1_1",
-            component: jsxDEV(Component__0__, {foo, ...__props}, undefined, false, undefined, this)
+            component: __props => jsxDEV(Component__0__, {foo, ...__props}, undefined, false, undefined, this)
           });
         }
       }
@@ -410,12 +399,11 @@ describe("utils", () => {
           await __action(...req.store.get('__params:a1_1'));
           await req._waitActionCallPromises("a1_1");
         } catch (error) {
-          const __props = error[Symbol.for("props")];
           return __resolveAction({ 
             req, 
             error,
             actionId: "a1_1",
-            component: jsxDEV(Component__0__, {foo, ...__props}, undefined, false, undefined, this)
+            component: __props => jsxDEV(Component__0__, {foo, ...__props}, undefined, false, undefined, this)
           });
         }
       }
@@ -442,12 +430,11 @@ describe("utils", () => {
           await __action(...req.store.get('__params:a1_1'));
           await req._waitActionCallPromises("a1_1");
         } catch (error) {
-          const __props = error[Symbol.for("props")];
           return __resolveAction({ 
             req, 
             error,
             actionId: "a1_1",
-            component: jsxDEV(Component__0__, {foo, ...__props}, undefined, false, undefined, this)
+            component: __props => jsxDEV(Component__0__, {foo, ...__props}, undefined, false, undefined, this)
           });
         }
       }
@@ -476,12 +463,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -527,12 +513,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a2_1'));
             await req._waitActionCallPromises("a2_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a2_1",
-              component: jsxDEV(SlowComponent, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(SlowComponent, {...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -563,12 +548,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -599,12 +583,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -633,12 +616,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -675,12 +657,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(ComponentA, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(ComponentA, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -690,12 +671,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_2'));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_2",
-              component: jsxDEV(ComponentB, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(ComponentB, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -735,12 +715,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -751,12 +730,11 @@ describe("utils", () => {
             await onLoad(...req.store.get('__params:a1_2'));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_2",
-              component: jsxDEV(Component, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -811,12 +789,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component__0__, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component__0__, {...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -827,12 +804,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_2'));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_2",
-              component: jsxDEV(Foo, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Foo, {...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -843,12 +819,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_3'));
             await req._waitActionCallPromises("a1_3");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_3",
-              component: jsxDEV(Foo, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Foo, {...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -889,12 +864,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -905,12 +879,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_2'));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_2",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -921,12 +894,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_3'));
             await req._waitActionCallPromises("a1_3");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_3",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -968,12 +940,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -984,12 +955,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_2'));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_2",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -1000,12 +970,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_3'));
             await req._waitActionCallPromises("a1_3");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_3",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1053,12 +1022,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -1075,12 +1043,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_2'));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_2",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1130,12 +1097,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -1153,12 +1119,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_2'));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_2",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1176,7 +1141,9 @@ describe("utils", () => {
         }
       `;
       expect(normalizeQuotes(transformToActionCode(code))).toContain(
-        normalizeQuotes("component: jsx(Component, {text, ...__props})"),
+        normalizeQuotes(
+          "component: __props => jsx(Component, {text, ...__props})",
+        ),
       );
     });
     it("should keep variables used inside the action but defined outside", () => {
@@ -1205,12 +1172,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1243,12 +1209,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1283,12 +1248,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1319,12 +1283,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1354,12 +1317,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1395,12 +1357,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error, 
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }
@@ -1411,12 +1372,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_2'));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({ 
               req, 
               error,
               actionId: "a1_2",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1465,12 +1425,11 @@ describe("utils", () => {
             await onClick(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1505,12 +1464,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1546,12 +1504,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1584,12 +1541,11 @@ describe("utils", () => {
             await onClick(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1620,12 +1576,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1658,12 +1613,11 @@ describe("utils", () => {
             await curried(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1694,12 +1648,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1742,12 +1695,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1784,12 +1736,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1829,12 +1780,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1865,12 +1815,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1901,12 +1850,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1936,12 +1884,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -1971,12 +1918,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -2007,12 +1953,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -2065,12 +2010,11 @@ describe("utils", () => {
             await __action(...req.store.get("__params:a1_1"));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
+              component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
             }
         }
 
@@ -2080,12 +2024,11 @@ describe("utils", () => {
             await __action(...req.store.get("__params:a1_2"));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_2",
-              component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
+              component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
             }
           }
         `);
@@ -2128,12 +2071,11 @@ describe("utils", () => {
               await __action(...req.store.get("__params:a1_1"));
               await req._waitActionCallPromises("a1_1");
             } catch (error) {
-              const __props = error[Symbol.for("props")];
               return __resolveAction({
                 req,
                 error,
                 actionId: "a1_1",
-                component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
+                component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
               }
             }
       `);
@@ -2181,12 +2123,11 @@ describe("utils", () => {
               await __action(...req.store.get("__params:a1_1"));
               await req._waitActionCallPromises("a1_1");
             } catch (error) {
-              const __props = error[Symbol.for("props")];
               return __resolveAction({
                 req,
                 error,
                 actionId: "a1_1",
-                component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
+                component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
               }
             }
             
@@ -2195,12 +2136,11 @@ describe("utils", () => {
             await __action(...req.store.get("__params:a1_2"));
             await req._waitActionCallPromises("a1_2");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_2",
-              component: jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
+              component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
             }
           }
       `);
@@ -2249,12 +2189,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(AboutUs, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(AboutUs, {...__props}, undefined, false, undefined, this)
             });
           }
         }`);
@@ -2290,12 +2229,11 @@ describe("utils", () => {
             await __action(...req.store.get('__params:a1_1'));
             await req._waitActionCallPromises("a1_1");
           } catch (error) {
-            const __props = error[Symbol.for("props")];
             return __resolveAction({
               req,
               error,
               actionId: "a1_1",
-              component: jsxDEV(Component, {...__props}, undefined, false, undefined, this)
+              component: __props => jsxDEV(Component, {...__props}, undefined, false, undefined, this)
             });
           }
         }`);
