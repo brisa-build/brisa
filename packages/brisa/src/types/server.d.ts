@@ -7,10 +7,18 @@ export type Options = {
   applySuspense?: boolean;
 };
 
-export type RerenderInActionProps = {
-  type?: "currentComponent" | "targetComponent" | "page";
-  renderMode?: "reactivity" | "transition";
-};
+type RenderMode = "reactivity" | "transition";
+
+export type RerenderInActionProps<T> =
+  | {
+      type?: "currentComponent" | "targetComponent";
+      renderMode?: RenderMode;
+      props?: T;
+    }
+  | {
+      type?: "page";
+      renderMode?: RenderMode;
+    };
 
 /**
  * `renderToReadableStream`
@@ -71,7 +79,9 @@ export async function renderToString(
  *
  * - [How to use `rerenderInAction`](https://brisa.build/api-reference/server-apis/rerenderInAction#rerenderinaction)
  */
-export function rerenderInAction(props: RerenderInActionProps = {}): never;
+export function rerenderInAction<PropsType>(
+  props: RerenderInActionProps<PropsType> = {},
+): never;
 
 /**
  * Description:

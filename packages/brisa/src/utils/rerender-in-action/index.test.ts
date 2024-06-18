@@ -1,6 +1,8 @@
 import { describe, it, expect } from "bun:test";
 import rerenderInAction, { PREFIX_MESSAGE, SUFFIX_MESSAGE } from ".";
 
+const PROPS_SYMBOL = Symbol.for("props");
+
 describe("utils", () => {
   describe("rerender-in-action", () => {
     it("should throw the correct error", () => {
@@ -29,6 +31,7 @@ describe("utils", () => {
           JSON.stringify({ type: "targetComponent", renderMode: "reactivity" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
+        expect(error[PROPS_SYMBOL]).toEqual({});
       }
     });
 
@@ -48,6 +51,7 @@ describe("utils", () => {
           }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
+        expect(error[PROPS_SYMBOL]).toEqual({});
       }
     });
 
@@ -61,6 +65,7 @@ describe("utils", () => {
           JSON.stringify({ type: "page", renderMode: "transition" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
+        expect(error[PROPS_SYMBOL]).toBeUndefined();
       }
     });
 
@@ -74,6 +79,7 @@ describe("utils", () => {
           JSON.stringify({ type: "page", renderMode: "reactivity" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
+        expect(error[PROPS_SYMBOL]).toBeUndefined();
       }
     });
 
@@ -90,6 +96,7 @@ describe("utils", () => {
           }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
+        expect(error[PROPS_SYMBOL]).toEqual({});
       }
     });
 
@@ -103,6 +110,24 @@ describe("utils", () => {
           JSON.stringify({ type: "targetComponent", renderMode: "transition" }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
+        expect(error[PROPS_SYMBOL]).toEqual({});
+      }
+    });
+
+    it("should throw the correct error with props", () => {
+      try {
+        rerenderInAction({ props: { foo: "bar" } });
+      } catch (error: any) {
+        expect(error.name).toBe("rerender");
+        expect(error.message).toContain(PREFIX_MESSAGE);
+        expect(error.message).toContain(
+          JSON.stringify({
+            type: "currentComponent",
+            renderMode: "reactivity",
+          }),
+        );
+        expect(error.message).toContain(SUFFIX_MESSAGE);
+        expect(error[PROPS_SYMBOL]).toEqual({ foo: "bar" });
       }
     });
   });
