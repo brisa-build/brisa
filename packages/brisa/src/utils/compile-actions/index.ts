@@ -454,7 +454,7 @@ function wrapWithTypeCatch({
   // Remove default values from props, they are not
   // needed to render the component, we need to pass
   // all props as object
-  const props = JSON.parse(JSON.stringify(params[0]), (key, value) => {
+  let props = JSON.parse(JSON.stringify(params[0]), (key, value) => {
     if (value?.value?.type === "AssignmentPattern") {
       return {
         ...value,
@@ -463,6 +463,28 @@ function wrapWithTypeCatch({
     }
     return value;
   });
+
+  if (props.type === "Identifier") {
+    props = {
+      type: "ObjectPattern",
+      properties: [
+        {
+          type: "RestElement",
+          argument: props,
+        },
+      ],
+    };
+  }
+
+  if (props.type === "ObjectPattern") {
+    props.properties.push({
+      type: "RestElement",
+      argument: {
+        type: "Identifier",
+        name: "__props",
+      },
+    });
+  }
 
   return {
     ...body,
@@ -482,6 +504,48 @@ function wrapWithTypeCatch({
           body: {
             type: "BlockStatement",
             body: [
+              {
+                type: "VariableDeclaration",
+                kind: "const",
+                declarations: [
+                  {
+                    type: "VariableDeclarator",
+                    id: {
+                      type: "Identifier",
+                      name: "__props",
+                    },
+                    init: {
+                      type: "MemberExpression",
+                      object: {
+                        type: "Identifier",
+                        name: "error",
+                      },
+                      computed: true,
+                      property: {
+                        type: "CallExpression",
+                        callee: {
+                          type: "MemberExpression",
+                          object: {
+                            type: "Identifier",
+                            name: "Symbol",
+                          },
+                          computed: false,
+                          property: {
+                            type: "Identifier",
+                            name: "for",
+                          },
+                        },
+                        arguments: [
+                          {
+                            type: "Literal",
+                            value: "props",
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
               {
                 type: "ReturnStatement",
                 argument: {
