@@ -170,12 +170,17 @@ export default function renderAttributes({
     let dependencies = [];
 
     for (const [key, value] of Object.entries(componentProps)) {
-      if (isAnAction(value)) {
-        entries.push([key, value.actionId, value.cid]);
+      if (!isAnAction(value)) continue;
 
-        if (dependencies.length === 0 && value.actions?.length) {
-          dependencies = value.actions.slice() as any[];
-        }
+      // Note: value.cid does not come from a rerender of a component inside
+      // a server action, however all the dependencies are the same rendered
+      // dependencies (already including these entries)
+      if (value.cid) {
+        entries.push([key, value.actionId, value.cid]);
+      }
+
+      if (dependencies.length === 0 && value.actions?.length) {
+        dependencies = value.actions.slice() as any[];
       }
     }
 
