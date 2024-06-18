@@ -15,7 +15,7 @@ export type Controller = {
   getCurrentWebComponentSymbol(): symbol | undefined;
   startTag(chunk: string | null, suspenseId?: number): void;
   endTag(chunk: string | null, suspenseId?: number): void;
-  flushAllReady(): void;
+  flushAndUnsupenseAllReady(): void;
   addId(id: string): void;
   generateComponentId(): void;
   getComponentId(): string;
@@ -37,7 +37,7 @@ type SuspensedState = {
   closeTags: number;
 };
 
-const wrapSuspenseTag = (chunk: string, id: number) =>
+const wrapUnsuspenseTag = (chunk: string, id: number) =>
   `<template id="U:${id}">${chunk}</template><script id="R:${id}">u$('${id}')</script>`;
 
 export default function extendStreamController({
@@ -55,12 +55,11 @@ export default function extendStreamController({
   const componentIDs: string[] = [];
   const openWebComponents: symbol[] = [];
   const suspensePromises: Promise<void>[] = [];
+  const finishDocument = Promise.withResolvers<void>();
   const suspensedMap = new Map<number, SuspensedState>();
   const getSuspensedState = (id: number) =>
     suspensedMap.get(id) ?? { chunk: "", openTags: 0, closeTags: 0 };
 
-  let noSuspensedOpenTags = 0;
-  let noSuspensedCloseTags = 0;
   let storeTransfered = false;
   let initialComponentId: number;
 
@@ -126,7 +125,6 @@ export default function extendStreamController({
     },
     startTag(chunk, suspenseId) {
       if (!suspenseId) {
-        noSuspensedOpenTags++;
         // chunk=null when is a fragment
         if (chunk) controller.enqueue(chunk);
         return;
@@ -149,16 +147,25 @@ export default function extendStreamController({
     },
     async endTag(chunk, suspenseId) {
       if (!suspenseId) {
-        noSuspensedCloseTags++;
+        const isClosingHTMLTag = chunk === "</html>";
+
         // unsuspense inside the document html
-        if (chunk === "</html>") {
-          await this.waitSuspensedPromises();
+        if (isClosingHTMLTag) {
           this.transferStoreToClient();
         }
 
         // chunk=null when is a fragment
         if (chunk) controller.enqueue(chunk);
-        return this.flushAllReady();
+
+        // The document is finished, this promise is useful to
+        // start unsuspending the components, outside the head
+        // tag then is not conflicting with diff on navigating
+        // to another pages.
+        if (isClosingHTMLTag) {
+          await this.waitSuspensedPromises();
+        }
+
+        return;
       }
 
       const state = getSuspensedState(suspenseId);
@@ -166,24 +173,25 @@ export default function extendStreamController({
       state.closeTags++;
       state.chunk += chunk ?? "";
       suspensedMap.set(suspenseId, state);
-
-      this.flushAllReady();
     },
-    flushAllReady() {
-      if (noSuspensedOpenTags !== noSuspensedCloseTags) return;
-
+    flushAndUnsupenseAllReady() {
       for (const [suspenseId, state] of suspensedMap.entries()) {
         if (state.closeTags !== state.openTags) continue;
-        controller.enqueue(wrapSuspenseTag(state.chunk, suspenseId));
+        controller.enqueue(wrapUnsuspenseTag(state.chunk, suspenseId));
         suspensedMap.delete(suspenseId);
       }
     },
     suspensePromise(promise: Promise<void>) {
       suspensePromises.push(promise);
+      Promise.all([finishDocument.promise, promise]).then(() =>
+        this.flushAndUnsupenseAllReady(),
+      );
     },
     async waitSuspensedPromises() {
+      if (suspensePromises.length === 0) return;
+      finishDocument.resolve();
       await Promise.all(suspensePromises);
-      this.flushAllReady();
+      this.flushAndUnsupenseAllReady();
       return;
     },
     nextSuspenseIndex() {
