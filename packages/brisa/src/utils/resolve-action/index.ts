@@ -13,7 +13,7 @@ type ResolveActionParams = {
   req: RequestContext;
   error: Error;
   actionId: string;
-  component: JSX.Element;
+  component: (props: unknown) => JSX.Element;
 };
 
 type Dependencies = [string, string, string][][];
@@ -120,8 +120,10 @@ export default async function resolveAction({
 
   // Rerender only component (not page):
   const componentId = extractComponentId(req.store.get(DEPENDENCIES), actionId);
+  // @ts-ignore
+  const props = error[Symbol.for("props")] ?? {};
   const { pageHeaders } = await getPageComponentWithHeaders({ req, route });
-  const stream = await renderToReadableStream(component, {
+  const stream = await renderToReadableStream(component(props), {
     request: req,
     isPage: false,
   });

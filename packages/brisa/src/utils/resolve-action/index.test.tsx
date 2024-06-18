@@ -57,7 +57,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(await response.headers.get("X-Navigate")).toBe(
@@ -74,7 +74,7 @@ describe("utils", () => {
         req,
         error: navigationTrowable,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(response.headers.get("X-Navigate")).toBe("/some-url");
@@ -90,7 +90,7 @@ describe("utils", () => {
         req,
         error: navigationTrowable,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(response.headers.get("X-Navigate")).toBe("/some-url");
@@ -106,7 +106,7 @@ describe("utils", () => {
         req,
         error: navigationTrowable,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(response.headers.get("X-Navigate")).toBe("/some-url");
@@ -128,7 +128,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(await response.status).toBe(404);
@@ -152,7 +152,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(await response.status).toBe(404);
@@ -174,7 +174,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
       const expectedHeaders = new Headers({
         "Content-Type": "text/html; charset=utf-8",
@@ -206,7 +206,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(response.status).toBe(200);
@@ -233,7 +233,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(response.status).toBe(200);
@@ -257,7 +257,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(response.status).toBe(200);
@@ -276,7 +276,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div />,
+        component: () => <div />,
       });
 
       expect(await response.status).toBe(500);
@@ -309,7 +309,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <Component />,
+        component: () => <Component />,
       });
 
       expect(response.status).toBe(200);
@@ -342,7 +342,12 @@ describe("utils", () => {
       error.name = "rerender";
 
       expect(() =>
-        resolveAction({ req, error, actionId: "a1_2", component: <div /> }),
+        resolveAction({
+          req,
+          error,
+          actionId: "a1_2",
+          component: () => <div />,
+        }),
       ).toThrow(error);
     });
 
@@ -365,7 +370,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <div>Test</div>,
+        component: () => <div>Test</div>,
       });
 
       expect(response.status).toBe(200);
@@ -406,7 +411,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_3",
-        component: <div>Test</div>,
+        component: () => <div>Test</div>,
       });
 
       expect(response.status).toBe(200);
@@ -451,7 +456,7 @@ describe("utils", () => {
         req,
         error,
         actionId: "a1_1",
-        component: <Component />,
+        component: () => <Component />,
       });
 
       expect(response.status).toBe(200);
@@ -461,6 +466,32 @@ describe("utils", () => {
         </div>
         <script>window._S=[["foo","bar"]]</script>`),
       );
+    });
+
+    it('should render the component using the Symbol.for("props") from the error throwable', async () => {
+      function Component({ name }: { name: string }) {
+        return <div>{name}</div>;
+      }
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({ type: "component", renderMode: "transition" }) +
+          SUFFIX_MESSAGE,
+      );
+      error.name = "rerender";
+      // @ts-ignore
+      error[Symbol.for("props")] = { name: "John" };
+
+      const req = getReq();
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        // @ts-ignore
+        component: (props) => <Component {...props} />,
+      });
+
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe("<div>John</div>");
     });
   });
 });
