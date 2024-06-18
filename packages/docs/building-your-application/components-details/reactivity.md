@@ -2,7 +2,7 @@
 description: Understand how to use signals and reactivity in Brisa.
 ---
 
-# Reactivity
+# Reactivity
 
 The reactivity in Brisa is based on signals. The signals are the state, the props, the store, the derived and the context. The signals are reactive, that is, when they change, they automatically update the parts of the DOM where they are used.
 
@@ -62,11 +62,11 @@ export default function Counter({}, { state }: WebContext) {
 }
 ```
 
-## Are signals readonly?
+## Are signals readonly?
 
 Yes, the signals are readonly. This means that you can't mutate them directly. You have to use the `.value` clause to mutate them.
 
-## Are props reactive?
+## Are props reactive?
 
 Props are an special kind of signals optimized in compilation-time. You don't need to use the `.value` clause to consume them. They are readonly. So, this means that you can't mutate them.
 
