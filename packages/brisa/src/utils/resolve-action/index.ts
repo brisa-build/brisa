@@ -119,9 +119,20 @@ export default async function resolveAction({
   }
 
   // Rerender only component (not page):
-  const componentId = extractComponentId(req.store.get(DEPENDENCIES), actionId);
+  const dependencies = req.store.get(DEPENDENCIES);
+  const componentId = extractComponentId(dependencies, actionId);
   // @ts-ignore
   const props = error[Symbol.for("props")] ?? {};
+  const actionValue = Object.assign(() => {}, {
+    actionId,
+    actions: dependencies,
+    cid: componentId,
+  });
+
+  for (const deps of dependencies?.[0] ?? []) {
+    props[deps[0]] = actionValue;
+  }
+
   const { pageHeaders } = await getPageComponentWithHeaders({ req, route });
   const stream = await renderToReadableStream(component(props), {
     request: req,
