@@ -249,5 +249,23 @@ describe("utils", () => {
       });
       expect(output!.code).toContain("window._P=");
     });
+
+    it("should add the integrations with emoji-picker as direct import", async () => {
+      const pagePath = path.join(pages, "page-with-web-component.tsx");
+      const integrationsPath = path.join(
+        webComponentsDir,
+        "_integrations3.tsx",
+      );
+      const output = await getClientCodeInPage({
+        pagePath,
+        allWebComponents,
+        pageWebComponents: {
+          ...pageWebComponents,
+          "emoji-picker": "import:" + path.join(src, "lib", "emoji-picker.tsx"),
+        },
+        integrationsPath,
+      });
+      expect(output!.code).toContain('<div class="emoji-picker">');
+    });
   });
 });

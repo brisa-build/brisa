@@ -608,6 +608,37 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
+    it("should NOT convert an integrated web-component with direct import to ServerComponent and will be added as dependencies", () => {
+      const code = `
+        export default function ServerComponent() {
+          return (
+            <>
+            {Array.from({ length: 3 }, (_, i) => (
+              <web-component name={'Hello'+i}>
+                <b> Child </b>
+              </web-component>
+            ))}
+            </>
+          );
+        }
+      `;
+      const DIRECT_IMPORT_PREFIX = "import:";
+      const allWebComponents = {
+        "web-component": DIRECT_IMPORT_PREFIX + webComponentPath,
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+      const expected = toExpected(code);
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
+      expect(outputCode).toEqual(expected);
+    });
+
     it('should not convert a web-component to ServerComponent if has the attribute "skipSSR"', () => {
       const code = `
         export default function ServerComponent() {

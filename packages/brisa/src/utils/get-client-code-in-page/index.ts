@@ -36,9 +36,12 @@ const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
 const rpcCode = injectRPCCode() as unknown as string;
 const RPCLazyCode = injectRPCLazyCode() as unknown as string;
 const ENV_VAR_PREFIX = "BRISA_PUBLIC_";
+const DIRECT_IMPORT = "import:";
 
 async function getAstFromPath(path: string) {
-  return ASTUtil.parseCodeToAST(await Bun.file(path).text());
+  return ASTUtil.parseCodeToAST(
+    path.startsWith(DIRECT_IMPORT) ? "" : await Bun.file(path).text(),
+  );
 }
 
 export default async function getClientCodeInPage({
@@ -136,8 +139,13 @@ export async function transformToWebComponents({
   let i18nKeys = new Set<string>();
   const webComponentsPath = Object.values(webComponentsList);
   let useWebContextPlugins = false;
-  let imports = Object.entries(webComponentsList)
-    .map((e) => `import ${snakeToCamelCase(e[0])} from "${e[1]}";`)
+  const entries = Object.entries(webComponentsList);
+  let imports = entries
+    .map(([name, path]) =>
+      path.startsWith(DIRECT_IMPORT)
+        ? `import "${path.replace(DIRECT_IMPORT, "")}";`
+        : `import ${snakeToCamelCase(name)} from "${path}";`,
+    )
     .join("\n");
 
   // Add web context plugins import only if there is a web context plugin
@@ -152,7 +160,9 @@ export async function transformToWebComponents({
   const defineElement =
     "const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);";
 
-  const customElementKeys = Object.keys(webComponentsList);
+  const customElementKeys = entries
+    .filter(([_, path]) => !path.startsWith(DIRECT_IMPORT))
+    .map(([k]) => k);
 
   if (useContextProvider) {
     customElementKeys.unshift("context-provider");

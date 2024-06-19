@@ -51,7 +51,7 @@ function findEntryPoints(
 ) {
   const entryPointSet = new Set<string>();
   const visited = new Set<string>();
-  const stack = [file];
+  const stack = [file.replace(/^import:/, "")];
 
   while (stack.length) {
     const currentFile = stack.pop();
