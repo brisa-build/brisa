@@ -75,3 +75,39 @@ This approach allows seamless integration of web components within your server c
 > This dynamic loading approach allows seamless integration of web components within your server components, optimizing the performance by loading only the necessary libraries when they are required.
 
 **Note for Developers:** The web components specified in `web-components/_integrations` will be dynamically included in the client-side code only when they are used on a particular page. This behavior ensures optimal loading, preventing unnecessary libraries from being carried until they are explicitly required by the page.
+
+### External Brisa web components vs native web components
+
+For both, you can use the `web-components/_integrations.(tsx|ts|js|jsx)`:
+
+```ts
+export default {
+  "brisa-element": "<library-path>",
+  "native-web-component": "<library-path>",
+};
+```
+
+As a note for those who create open-source libraries, the difference is that if there is a default export, it interprets it as a Brisa web component, so you can create any Brisa library with it:
+
+```tsx
+export default function BrisaElement() {
+  return <div>My Brisa Element</div>;
+}
+```
+
+However, if you want to create a native web component, you don't need to export it, and you can use the `customElements.define` method:
+
+```tsx
+customElements.define(
+  "native-web-component",
+  class extends HTMLElement {
+    connectedCallback() {
+      this.innerHTML = "My Native Web Component";
+    }
+  },
+);
+```
+
+There are some benefits using Brisa web components over native web components, such as the ability to use [Declarative Shadow DOM](https://developer.chrome.com/docs/css-ui/declarative-shadow-dom) ([SSR](https://en.wikipedia.org/wiki/Server-side_scripting#Server-side_rendering) for web components) and type-safety of props.
+
+However, for both, you also have benefits, such as that the web component is only loaded in the page that consumes it, and type-safe of the element name is activated inside your JSX.
