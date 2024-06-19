@@ -111,3 +111,7 @@ customElements.define(
 There are some benefits using Brisa web components over native web components, such as the ability to use [Declarative Shadow DOM](https://developer.chrome.com/docs/css-ui/declarative-shadow-dom) ([SSR](https://en.wikipedia.org/wiki/Server-side_scripting#Server-side_rendering) for web components) and type-safety of props.
 
 However, for both, you also have benefits, such as that the web component is only loaded in the page that consumes it, and type-safe of the element name is activated inside your JSX.
+
+> [!IMPORTANT]
+>
+> **About the definition of the name:** in the Brisa web components as they are not yet defined, you can put the name you want to use, while as the native ones are already defined, you have to put the exact match of the name of the element that defines the library.
