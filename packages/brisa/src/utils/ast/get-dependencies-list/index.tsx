@@ -3,8 +3,12 @@ import type { ESTree } from "meriyah";
 const SPECIFIERS = new Set(["ImportDefaultSpecifier", "ImportSpecifier"]);
 const AVOIDED_DEPENDENCIES = new Set(["brisa", "brisa/server", "brisa/client"]);
 
-export default function getDependenciesList(ast: ESTree.Program, path: string) {
-  const dependenciesMap = new Set<string>();
+export default function getDependenciesList(
+  ast: ESTree.Program,
+  path: string,
+  initialValue?: Set<string>,
+) {
+  const dependenciesMap = new Set<string>(initialValue);
 
   for (let importAst of ast.body) {
     if (importAst.type !== "ImportDeclaration") continue;

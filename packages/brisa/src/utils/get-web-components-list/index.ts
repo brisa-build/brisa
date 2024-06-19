@@ -27,15 +27,21 @@ export default async function getWebComponentsList(
 
   if (integrationsPath) {
     entries.push(
-      ...Object.entries<string>(
-        await import(integrationsPath).then((m) => m.default ?? {}),
-      ).map(
-        ([key, value]) =>
-          [key, import.meta.resolveSync(value, integrationsPath)] satisfies [
-            string,
-            string,
-          ],
-      ),
+      ...(await Promise.all(
+        Object.entries<string>(
+          await import(integrationsPath).then((m) => m.default ?? {}),
+        ).map(async ([key, value]) => {
+          const libPath = import.meta.resolveSync(value, integrationsPath);
+          const hasDefaultExport = (await Bun.file(libPath).text()).includes(
+            "export default",
+          );
+
+          return [
+            key,
+            hasDefaultExport ? libPath : `import:${libPath}`,
+          ] satisfies [string, string];
+        }),
+      )),
     );
   }
 
