@@ -170,14 +170,14 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
             declaration.body.type === "BlockStatement"
               ? declaration.body
               : {
-                type: "BlockStatement",
-                body: [
-                  {
-                    type: "ReturnStatement",
-                    argument: declaration.body,
-                  },
-                ],
-              },
+                  type: "BlockStatement",
+                  body: [
+                    {
+                      type: "ReturnStatement",
+                      argument: declaration.body,
+                    },
+                  ],
+                },
           async: declaration.async,
           generator: false,
         },
@@ -595,22 +595,22 @@ function wrapWithTypeCatch({
                                 ...((IS_PRODUCTION
                                   ? []
                                   : [
-                                    {
-                                      type: "Identifier",
-                                      name: "undefined",
-                                    },
-                                    {
-                                      type: "Literal",
-                                      value: false,
-                                    },
-                                    {
-                                      type: "Identifier",
-                                      name: "undefined",
-                                    },
-                                    {
-                                      type: "ThisExpression",
-                                    },
-                                  ]) as any),
+                                      {
+                                        type: "Identifier",
+                                        name: "undefined",
+                                      },
+                                      {
+                                        type: "Literal",
+                                        value: false,
+                                      },
+                                      {
+                                        type: "Identifier",
+                                        name: "undefined",
+                                      },
+                                      {
+                                        type: "ThisExpression",
+                                      },
+                                    ]) as any),
                               ],
                             },
                             async: false,

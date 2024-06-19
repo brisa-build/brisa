@@ -12,6 +12,7 @@ type ServerComponentPluginOptions = {
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const JSX_NAME = new Set(["jsx", "jsxDEV", "jsxs"]);
+const DIRECT_IMPORT = "import:";
 const WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
 const FN_EXPRESSIONS = new Set([
   "ArrowFunctionExpression",
@@ -47,6 +48,7 @@ export default function serverComponentPlugin(
   const usedWebComponents = new Map<string, string>();
   const declarations = new Map<string, any>();
   const imports = new Set<string>();
+  const importedExternalWebComponents = new Set<string>();
   let actionIdCount = 1;
   let count = 1;
   let hasActions = false;
@@ -299,10 +301,19 @@ export default function serverComponentPlugin(
         return value;
       }
 
-      const ComponentName =
-        usedWebComponents.get(componentPath) ?? `_Brisa_WC${count++}`;
+      let ComponentName = usedWebComponents.get(componentPath);
 
-      usedWebComponents.set(componentPath, ComponentName);
+      if (!ComponentName && !componentPath.startsWith(DIRECT_IMPORT)) {
+        ComponentName = `_Brisa_WC${count++}`;
+      }
+
+      if (ComponentName) usedWebComponents.set(componentPath, ComponentName);
+      else {
+        importedExternalWebComponents.add(
+          componentPath.replace(DIRECT_IMPORT, ""),
+        );
+        return value;
+      }
 
       value.arguments[0] = {
         type: "Identifier",
@@ -411,7 +422,11 @@ export default function serverComponentPlugin(
     code: generateCodeFromAST(modifiedAst) + workaroundText,
     detectedWebComponents,
     hasActions,
-    dependencies: getDependenciesList(modifiedAst, path),
+    dependencies: getDependenciesList(
+      modifiedAst,
+      path,
+      importedExternalWebComponents,
+    ),
   };
 }
 
