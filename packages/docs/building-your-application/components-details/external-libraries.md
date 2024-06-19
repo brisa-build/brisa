@@ -76,7 +76,7 @@ This approach allows seamless integration of web components within your server c
 
 **Note for Developers:** The web components specified in `web-components/_integrations` will be dynamically included in the client-side code only when they are used on a particular page. This behavior ensures optimal loading, preventing unnecessary libraries from being carried until they are explicitly required by the page.
 
-### External Brisa web components vs native web components
+### Third party Brisa web components vs native web components
 
 For both, you can use the `web-components/_integrations.(tsx|ts|js|jsx)`:
 
