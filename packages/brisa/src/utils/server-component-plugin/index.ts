@@ -48,7 +48,7 @@ export default function serverComponentPlugin(
   const usedWebComponents = new Map<string, string>();
   const declarations = new Map<string, any>();
   const imports = new Set<string>();
-  const importedExternalWebComponents = new Set<string>();
+  const webComponentsWithoutSSR = new Set<string>();
   let actionIdCount = 1;
   let count = 1;
   let hasActions = false;
@@ -298,6 +298,7 @@ export default function serverComponentPlugin(
             prop?.key?.name === "skipSSR" && prop?.value?.value !== false,
         )
       ) {
+        webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ""));
         return value;
       }
 
@@ -309,9 +310,7 @@ export default function serverComponentPlugin(
 
       if (ComponentName) usedWebComponents.set(componentPath, ComponentName);
       else {
-        importedExternalWebComponents.add(
-          componentPath.replace(DIRECT_IMPORT, ""),
-        );
+        webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ""));
         return value;
       }
 
@@ -425,7 +424,7 @@ export default function serverComponentPlugin(
     dependencies: getDependenciesList(
       modifiedAst,
       path,
-      importedExternalWebComponents,
+      webComponentsWithoutSSR,
     ),
   };
 }

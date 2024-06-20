@@ -608,7 +608,7 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it("should NOT convert an integrated web-component with direct import to ServerComponent and will be added as dependencies", () => {
+    it("should NOT SSR an integrated web-component with direct import and will be added as dependencies", () => {
       const code = `
         export default function ServerComponent() {
           return (
@@ -639,7 +639,38 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it('should not convert a web-component to ServerComponent if has the attribute "skipSSR"', () => {
+    it("should NOT SSR an integrated web-component with direct import and skipSSR attribute and will be added as dependencies", () => {
+      const code = `
+        export default function ServerComponent() {
+          return (
+            <>
+            {Array.from({ length: 3 }, (_, i) => (
+              <web-component skipSSR name={'Hello'+i}>
+                <b> Child </b>
+              </web-component>
+            ))}
+            </>
+          );
+        }
+      `;
+      const DIRECT_IMPORT_PREFIX = "import:";
+      const allWebComponents = {
+        "web-component": DIRECT_IMPORT_PREFIX + webComponentPath,
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+      const expected = toExpected(code);
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
+      expect(outputCode).toEqual(expected);
+    });
+
+    it('should NOT SSR a web-component if has the attribute "skipSSR"', () => {
       const code = `
         export default function ServerComponent() {
           return <web-component skipSSR />;
@@ -661,11 +692,11 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
-      expect(out.dependencies).toBeEmpty();
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
       expect(outputCode).toEqual(expected);
     });
 
-    it("should not convert a web-component that starts with native-", () => {
+    it("should not SSR a web-component that starts with native-", () => {
       const code = `
         export default function ServerComponent() {
           return <native-web-component />;
@@ -691,7 +722,7 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it('should not convert a web-component to ServerComponent if has the attribute "skipSSR" set to true', () => {
+    it('should NOT SSR a web-component if has the attribute "skipSSR" set to true', () => {
       const code = `
         export default function ServerComponent() {
           return <web-component skipSSR={true} />;
@@ -713,7 +744,7 @@ describe("utils", () => {
       `);
 
       expect(out.hasActions).toBeFalse();
-      expect(out.dependencies).toBeEmpty();
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
       expect(outputCode).toEqual(expected);
     });
 
