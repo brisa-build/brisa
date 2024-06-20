@@ -105,7 +105,7 @@ export function LiveReloadScript({
   children: JSX.Element;
 }) {
   const PORT = globalThis.brisaServer?.port ?? port;
-  const wsUrl = `ws://0.0.0.0:${PORT}/${LIVE_RELOAD_WEBSOCKET_PATH}`;
+  const wsUrl = `ws://localhost:${PORT}/${LIVE_RELOAD_WEBSOCKET_PATH}`;
 
   return (
     <>
