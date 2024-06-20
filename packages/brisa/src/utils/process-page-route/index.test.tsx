@@ -80,7 +80,7 @@ describe("utils", () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toContain(
-        'new WebSocket("ws://0.0.0.0:0/__brisa_live_reload__")',
+        'new WebSocket("ws://localhost:0/__brisa_live_reload__")',
       );
     });
   });
