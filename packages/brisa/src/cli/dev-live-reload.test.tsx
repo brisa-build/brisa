@@ -6,7 +6,7 @@ describe("dev-live-reload", () => {
     const output = LiveReloadScript({ port: 3000, children: null }) as any;
 
     expect(output.props.children[0].props.children.props.html).toContain(
-      "ws://0.0.0.0:3000/__brisa_live_reload__",
+      "ws://localhost:3000/__brisa_live_reload__",
     );
   });
 
@@ -14,7 +14,7 @@ describe("dev-live-reload", () => {
     const output = LiveReloadScript({ port: 4000, children: null }) as any;
 
     expect(output.props.children[0].props.children.props.html).toContain(
-      "ws://0.0.0.0:4000/__brisa_live_reload__",
+      "ws://localhost:4000/__brisa_live_reload__",
     );
   });
 
