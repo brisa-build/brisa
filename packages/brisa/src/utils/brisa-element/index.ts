@@ -138,10 +138,11 @@ export default function brisaElement(
       const sheet = new CSSStyleSheet();
 
       // Add global CSS to apply to the shadowRoot
-      for (let { cssRules } of $document.styleSheets) {
-        for (let rule of cssRules) sheet.insertRule(rule.cssText);
-        shadowRoot.adoptedStyleSheets.push(sheet);
-      }
+      const css: string[] = [];
+      for (const { cssRules } of $document.styleSheets)
+        for (const rule of cssRules) css.push(rule.cssText);
+      sheet.replaceSync(css.join(""));
+      shadowRoot.adoptedStyleSheets.push(sheet);
 
       function handlePortal(
         children: Children,
