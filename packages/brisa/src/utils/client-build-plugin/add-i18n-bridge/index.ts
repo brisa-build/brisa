@@ -11,9 +11,9 @@ type I18nBridgeConfig = {
   i18nAdded: boolean;
 };
 
-const i18nKeysLogic = `
+const i18nKeysLogic = (configText = "i18nConfig") => `
   get t() {
-    return translateCore(this.locale, { ...i18nConfig, messages: this.messages })
+    return translateCore(this.locale, { ...${configText}, messages: this.messages })
   },
   get messages() { return {[this.locale]: window.i18nMessages } },
   overrideMessages(callback) {
@@ -42,13 +42,13 @@ export default function addI18nBridge(
     window.i18n = {
       ...i18nConfig,
       get locale(){ return document.documentElement.lang },
-      ${usei18nKeysLogic ? i18nKeysLogic : ""}
+      ${usei18nKeysLogic ? i18nKeysLogic() : ""}
     }
   `);
 
   if (usei18nKeysLogic && i18nAdded && !isTranslateCoreAdded) {
     const newAst = parseCodeToAST(
-      `Object.assign(window.i18n, {${i18nKeysLogic}})`,
+      `Object.assign(window.i18n, {${i18nKeysLogic(i18nConfig)}})`,
     );
     body = [TRANSLATE_CORE_IMPORT, ...ast.body, ...newAst.body];
   } else if (usei18nKeysLogic) {
