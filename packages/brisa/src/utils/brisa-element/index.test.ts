@@ -2913,5 +2913,47 @@ describe("utils", () => {
         expectedSheet,
       ]);
     });
+
+    it("should adopt more than one style sheet from document.styleSheets", async () => {
+      const style = document.createElement("style");
+      const style2 = document.createElement("style");
+      const css1 = `
+        @import url('styles.css'); 
+        
+        body { background-color: blue; }
+        
+        @media (max-width: 600px) {
+          body { background-color: red; }
+        }
+      `;
+
+      const css2 = `
+        span { color: blue; }
+      `;
+
+      style.textContent = css1;
+      style2.textContent = css2;
+      document.head.appendChild(style);
+      document.head.appendChild(style2);
+
+      const Component = () => {
+        return ["div", {}, ""];
+      };
+
+      customElements.define("style-sheet-component", brisaElement(Component));
+      document.body.innerHTML = "<style-sheet-component />";
+
+      const styleSheetComponent = document.querySelector(
+        "style-sheet-component",
+      ) as HTMLElement;
+
+      const expectedSheet = new CSSStyleSheet();
+      expectedSheet.replaceSync(css1 + css2);
+
+      expect(styleSheetComponent?.shadowRoot?.innerHTML).toBe("<div></div>");
+      expect(styleSheetComponent?.shadowRoot?.adoptedStyleSheets).toEqual([
+        expectedSheet,
+      ]);
+    });
   });
 });
