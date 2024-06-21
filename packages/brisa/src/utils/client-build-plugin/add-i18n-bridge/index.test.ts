@@ -81,7 +81,7 @@ describe("utils", () => {
           const a = 1;
 
           Object.assign(window.i18n, {
-            get t() {return translateCore(this.locale, {...i18nConfig,messages: this.messages});},
+            get t() {return translateCore(this.locale, {...{defaultLocale: "en",locales: ["en", "pt"]},messages: this.messages});},
             get messages() {return {[this.locale]: window.i18nMessages};},
             overrideMessages(callback) {
               const p = callback(window.i18nMessages);
