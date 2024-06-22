@@ -21,14 +21,7 @@ async function resolveRPC(
   const transition = args === TRANSITION_MODE || mode === TRANSITION_MODE;
   const isRerenderOfComponent = type?.includes("C");
 
-  // Reset form from the server action
-  if (resetForm) {
-    (args[0] as any).target.reset();
-  }
-
-  if (verifyBodyContentTypeOfResponse(res, "json")) {
-    const entries = await res.json();
-
+  function updateStore(entries: [string, any][]) {
     // Store WITHOUT web components signals
     if (!store) $window._S = entries;
     // Store WITH web components signals
@@ -37,6 +30,15 @@ async function resolveRPC(
         store.set(key, value);
       }
     }
+  }
+
+  // Reset form from the server action
+  if (resetForm) {
+    (args[0] as any).target.reset();
+  }
+
+  if (verifyBodyContentTypeOfResponse(res, "json")) {
+    updateStore(await res.json());
   }
 
   // Navigate to a different page
@@ -51,33 +53,31 @@ async function resolveRPC(
 
     const newDocument = isRerenderOfComponent
       ? new ReadableStream({
-        async start(controller) {
-          const html = document.documentElement.outerHTML;
-          controller.enqueue(
-            encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
-          );
-          const reader = res.body!.getReader();
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            controller.enqueue(value);
-          }
-          controller.enqueue(
-            encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
-          );
-          controller.close();
-        },
-      })
+          async start(controller) {
+            const html = document.documentElement.outerHTML;
+            controller.enqueue(
+              encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
+            );
+            const reader = res.body!.getReader();
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              controller.enqueue(value);
+            }
+            controller.enqueue(
+              encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
+            );
+            controller.close();
+          },
+        })
       : res.body;
 
     await diff(document, newDocument!.getReader(), {
       onNextNode: loadScripts,
       transition,
       shouldIgnoreNode: (node) => {
-        if ((node as Element)?.id !== 'S') return false;
-        const entries = JSON.parse((node as Element).textContent!);
-        $window.S = entries;
-        for (let [k, v] of entries) store?.set?.(k, v)
+        if ((node as Element)?.id !== "S") return false;
+        updateStore(JSON.parse((node as Element).textContent!));
         return true;
       },
     });
