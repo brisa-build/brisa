@@ -2,6 +2,7 @@ import matchers from "@/core/test/matchers";
 import type { BrisaTestMatchers } from "@/types";
 import { mock, expect } from "bun:test";
 import crypto from "node:crypto";
+import diff from "diff-dom-streaming";
 
 const dec = new TextDecoder();
 

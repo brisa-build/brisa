@@ -2972,7 +2972,7 @@ describe("utils", () => {
       expect(result).toBe(
         toInline(`
           <meta name="robots" content="noindex" />
-          <script>window._S=[["foo","bar"]]</script>
+          <script type="application/json" id="S">[["foo","bar"]]</script>
           <script>${script404}</script>
         `),
       );
@@ -3099,11 +3099,11 @@ describe("utils", () => {
       const stream = renderToReadableStream(<Component />, { request });
       const result = await Bun.readableStreamToText(stream);
       const scriptNavigate = `window._xm="reactivity";location.assign("http://localhost/foo")`;
-      const scriptStore = `window._S=[["foo-client","bar-client"]]`;
+      const scriptStore = '[["foo-client","bar-client"]]';
 
       expect(result).toBe(
         toInline(
-          `<script>${scriptStore}</script><script>${scriptNavigate}</script>`,
+          `<script type="application/json" id="S">${scriptStore}</script><script>${scriptNavigate}</script>`,
         ),
       );
 
