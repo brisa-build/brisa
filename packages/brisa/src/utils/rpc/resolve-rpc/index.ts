@@ -51,28 +51,35 @@ async function resolveRPC(
 
     const newDocument = isRerenderOfComponent
       ? new ReadableStream({
-          async start(controller) {
-            const html = document.documentElement.outerHTML;
-            controller.enqueue(
-              encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
-            );
-            const reader = res.body!.getReader();
-            while (true) {
-              const { value, done } = await reader.read();
-              if (done) break;
-              controller.enqueue(value);
-            }
-            controller.enqueue(
-              encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
-            );
-            controller.close();
-          },
-        })
+        async start(controller) {
+          const html = document.documentElement.outerHTML;
+          controller.enqueue(
+            encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
+          );
+          const reader = res.body!.getReader();
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            controller.enqueue(value);
+          }
+          controller.enqueue(
+            encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
+          );
+          controller.close();
+        },
+      })
       : res.body;
 
     await diff(document, newDocument!.getReader(), {
       onNextNode: loadScripts,
       transition,
+      shouldIgnoreNode: (node) => {
+        if ((node as Element)?.id !== 'S') return false;
+        const entries = JSON.parse((node as Element).textContent!);
+        $window.S = entries;
+        for (let [k, v] of entries) store?.set?.(k, v)
+        return true;
+      },
     });
 
     await $window.lastDiffTransition?.finished;

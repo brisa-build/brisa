@@ -8,12 +8,13 @@ import {
 } from "bun:test";
 import extendStreamController from ".";
 import extendRequestContext from "@/utils/extend-request-context";
+import { RenderInitiator } from "@/public-constants";
 
 const request = extendRequestContext({
   originalRequest: new Request("http://localhost"),
 });
 const mockController = {
-  enqueue: mock(() => {}),
+  enqueue: mock(() => { }),
 } as any;
 const controllerParams = { controller: mockController, request };
 
@@ -321,6 +322,48 @@ describe("extendStreamController", () => {
       ],
     ]);
   });
+
+  it('should transfer store to RPC (SPA_NAVIGATION) with script as JSON', () => {
+    const req = extendRequestContext({
+      originalRequest: new Request("http://localhost"),
+    });
+
+    req.renderInitiator = RenderInitiator.SPA_NAVIGATION;
+
+    // @ts-ignore
+    req.webStore.set("test", "test");
+
+    const controller = extendStreamController({
+      controller: mockController,
+      request: req,
+    });
+    controller.transferStoreToClient();
+
+    expect(mockController.enqueue.mock.calls).toEqual([
+      [`<script type="application/json" id="S">[["test","test"]]</script>`],
+    ]);
+  })
+
+  it('should transfer store to RPC (SERVER_ACTION) with script as JSON', () => {
+    const req = extendRequestContext({
+      originalRequest: new Request("http://localhost"),
+    });
+
+    req.renderInitiator = RenderInitiator.SERVER_ACTION;
+
+    // @ts-ignore
+    req.webStore.set("test", "test");
+
+    const controller = extendStreamController({
+      controller: mockController,
+      request: req,
+    });
+    controller.transferStoreToClient();
+
+    expect(mockController.enqueue.mock.calls).toEqual([
+      [`<script type="application/json" id="S">[["test","test"]]</script>`],
+    ]);
+  })
 
   it("should transferStoreToClient set _S when already was transfered", () => {
     const req = extendRequestContext({

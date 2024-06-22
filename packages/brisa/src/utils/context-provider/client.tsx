@@ -13,7 +13,7 @@ type Props = {
 
 export default function ClientContextProvider(
   { children, context, value, pid, cid }: Props,
-  { effect, self, store }: WebContext,
+  { effect, self, store, cleanup }: WebContext,
 ) {
   const cId = cid ?? context?.id;
   let pId = pid;
@@ -27,6 +27,11 @@ export default function ClientContextProvider(
     self!.setAttribute("cid", cId);
     self!.setAttribute("pid", pId + "");
     store.set(`context:${cId}:${pId}`, value ?? context?.defaultValue);
+  });
+
+  // Remove without reactivity
+  cleanup(() => {
+    store.Map.delete(cId);
   });
 
   return children;
