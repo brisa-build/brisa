@@ -1,3 +1,4 @@
+import { RenderInitiator } from "@/public-constants";
 import type { ComponentType, RequestContext } from "@/types";
 
 export type ChunksOptions = {
@@ -103,9 +104,15 @@ export default function extendStreamController({
       if (store.size === 0) return;
 
       const serializedStore = JSON.stringify([...store]);
+      const isFromRPC =
+        request.renderInitiator === RenderInitiator.SPA_NAVIGATION ||
+        request.renderInitiator === RenderInitiator.SERVER_ACTION;
       let script;
 
-      if (areSignalsInjected && storeTransfered) {
+      if (isFromRPC) {
+        script = `<script type="application/json" id="S">${serializedStore}</script>`;
+      }
+      else if (areSignalsInjected && storeTransfered) {
         script = `<script>for(let [k, v] of ${serializedStore}){ _s?.set?.(k, v); _S.push([k, v])}</script>`;
       } else if (areSignalsInjected && !storeTransfered) {
         script = `<script>window._S=${serializedStore};for(let [k, v] of _S) _s?.set?.(k, v)</script>`;
