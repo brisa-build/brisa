@@ -29,6 +29,23 @@ function handleEvent() {
 }
 ```
 
+Example of Component Rerender:
+
+```tsx
+export default function MyComponent({ text = "foo" }: { text: string }) {
+  function handleClick() {
+    // Trigger a component rerender with new props
+    rerenderInAction({ type: "targetComponent", props: { text: "bar" } });
+  }
+
+  return (
+    <div>
+      <button onClick={handleClick}>{text}</button>
+    </div>
+  );
+}
+```
+
 #### Types:
 
 ```ts
