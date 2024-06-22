@@ -18,6 +18,7 @@ async function initBrowser() {
 
 describe("utils", () => {
   afterEach(() => {
+    document.body.innerHTML = "";
     window._s = window._S = undefined;
     GlobalRegistrator.unregister();
   });
@@ -248,6 +249,7 @@ describe("utils", () => {
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
         transition: false,
+        shouldIgnoreNode: expect.any(Function),
       });
     });
 
@@ -294,6 +296,7 @@ describe("utils", () => {
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
         transition: true,
+        shouldIgnoreNode: expect.any(Function),
       });
       expect(mockTransitionFinished).toBeCalled();
     });
@@ -331,6 +334,7 @@ describe("utils", () => {
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
         transition: false,
+        shouldIgnoreNode: expect.any(Function),
       });
     });
 
@@ -367,6 +371,7 @@ describe("utils", () => {
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
         transition: false,
+        shouldIgnoreNode: expect.any(Function),
       });
     });
 
@@ -412,6 +417,7 @@ describe("utils", () => {
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
         transition: true,
+        shouldIgnoreNode: expect.any(Function),
       });
       expect(mockTransitionFinished).toBeCalled();
     });
@@ -668,6 +674,111 @@ describe("utils", () => {
       `),
       );
       expect(mockTransitionFinished).toBeCalled();
+    });
+
+    it('should ignore the node with id "S" and update the store with targetComponent', async () => {
+      const mockDiff = mock((...args: any) => {});
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+      const stream = new ReadableStream();
+      const res = new Response(stream, {
+        headers: {
+          "content-type": "text/html",
+          "X-Cid": "123",
+          "X-Mode": "reactivity",
+          "X-Type": "targetComponent",
+        },
+      });
+
+      await initBrowser();
+      window._s = new Map();
+
+      await resolveRPC(res, dataSet);
+
+      const options = mockDiff.mock.calls[0][2];
+      const nodeToIgnore = document.createElement("SCRIPT");
+      nodeToIgnore.id = "S";
+      nodeToIgnore.innerHTML = '[["foo", "bar"]]';
+
+      expect(options.shouldIgnoreNode(nodeToIgnore)).toBe(true);
+      expect(window._s.get("foo")).toBe("bar");
+    });
+
+    it('should ignore the node with id "S" and update the store with currentComponent', async () => {
+      const mockDiff = mock((...args: any) => {});
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+      const stream = new ReadableStream();
+      const res = new Response(stream, {
+        headers: {
+          "content-type": "text/html",
+          "X-Cid": "123",
+          "X-Mode": "reactivity",
+          "X-Type": "currentComponent",
+        },
+      });
+
+      await initBrowser();
+      window._s = new Map();
+
+      await resolveRPC(res, dataSet);
+
+      const options = mockDiff.mock.calls[0][2];
+      const nodeToIgnore = document.createElement("SCRIPT");
+      nodeToIgnore.id = "S";
+      nodeToIgnore.innerHTML = '[["foo", "bar"]]';
+
+      expect(options.shouldIgnoreNode(nodeToIgnore)).toBe(true);
+      expect(window._s.get("foo")).toBe("bar");
+    });
+
+    it('should ignore the node with id "S" and update the store with page', async () => {
+      const mockDiff = mock((...args: any) => {});
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+      const stream = new ReadableStream();
+      const res = new Response(stream, {
+        headers: {
+          "content-type": "text/html",
+          "X-Cid": "123",
+          "X-Mode": "reactivity",
+          "X-Type": "page",
+        },
+      });
+
+      await initBrowser();
+      window._s = new Map();
+
+      await resolveRPC(res, dataSet);
+
+      const options = mockDiff.mock.calls[0][2];
+      const nodeToIgnore = document.createElement("SCRIPT");
+      nodeToIgnore.id = "S";
+      nodeToIgnore.innerHTML = '[["foo", "bar"]]';
+
+      expect(options.shouldIgnoreNode(nodeToIgnore)).toBe(true);
+      expect(window._s.get("foo")).toBe("bar");
+    });
+
+    it('should NOT call "shouldIgnoreNode" returning a JSON response', async () => {
+      const mockDiff = mock((...args: any) => {});
+      mock.module("diff-dom-streaming", () => ({
+        default: (...args: any) => mockDiff(...args),
+      }));
+      const res = new Response("[]", {
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+
+      await initBrowser();
+      await resolveRPC(res, dataSet);
+
+      const options = mockDiff.mock.calls[0]?.[2];
+      expect(options?.shouldIgnoreNode).toBeUndefined();
     });
   });
 });

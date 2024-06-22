@@ -111,8 +111,7 @@ export default function extendStreamController({
 
       if (isFromRPC) {
         script = `<script type="application/json" id="S">${serializedStore}</script>`;
-      }
-      else if (areSignalsInjected && storeTransfered) {
+      } else if (areSignalsInjected && storeTransfered) {
         script = `<script>for(let [k, v] of ${serializedStore}){ _s?.set?.(k, v); _S.push([k, v])}</script>`;
       } else if (areSignalsInjected && !storeTransfered) {
         script = `<script>window._S=${serializedStore};for(let [k, v] of _S) _s?.set?.(k, v)</script>`;
