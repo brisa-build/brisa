@@ -1,5 +1,7 @@
 import type { ESTree } from "meriyah";
 
+const DECLARATORS = new Set(["VariableDeclarator", "FunctionDeclaration"]);
+
 export default function getVarDeclarationIdentifiers(node: ESTree.Node) {
   const identifiers = new Map<string, Set<string>>();
 
@@ -25,7 +27,7 @@ export default function getVarDeclarationIdentifiers(node: ESTree.Node) {
   }
 
   JSON.stringify(node, (k, v) => {
-    if (v?.type !== "VariableDeclarator") return v;
+    if (!DECLARATORS.has(v?.type)) return v;
 
     if (v.id.type === "ObjectPattern") {
       for (const property of v.id.properties) {

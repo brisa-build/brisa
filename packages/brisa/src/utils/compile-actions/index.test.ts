@@ -1965,73 +1965,354 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo("should work with destructuring and element generator", () => {
+    it("should work rerendering a component with onSubmit and function calls", () => {
       const code = `
-        const props = {
-          onClick: () => console.log('hello world'),
-          onInput: () => console.log('hello world'),
-        };
-        const getEl = (text) => <div
-          {...props}
-          data-action-onClick="a1_1"
-          data-action-onInput="a1_2"
-          data-action
-        >{text}</div>;
+      import { rerenderInAction } from "brisa/server";
 
-        export default function Component({text}) {
-          return getEl(text);
+      export default function CounterServer(
+        { value = 0 }: { value: number },
+      ) {
+
+        function increment(v: number) {
+          rerenderInAction({ type: "targetComponent", props: { value: v + 1 } });
         }
-        `;
+
+        function decrement(v: number) {
+          rerenderInAction({ type: "targetComponent", props: { value: v - 1 } });
+        }
+
+        return (
+          <div>
+            <h2>Server counter</h2>
+            <form data-action-onsubmit="a1_1" data-action onSubmit={e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter")!);
+              if (content === "-") decrement(+e.formData.get("counter")!);
+            }}>
+              <button>+</button>
+              <input name="counter" type="number" value={value}></input>
+              <button>-</button>
+            </form>
+          </div>
+        );
+      }`;
 
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction as __resolveAction} from "brisa/server";
+      import {resolveAction as __resolveAction} from "brisa/server";
+      import {rerenderInAction} from "brisa/server";
 
-        const props = {
-          onClick: () => console.log('hello world'),
-          onInput: () => console.log('hello world')
+      function CounterServer({value = 0}) {
+        function increment(v) {
+          rerenderInAction({type: "targetComponent",props: {value: v + 1}});
+        }
+
+        function decrement(v) {
+          rerenderInAction({type: "targetComponent",props: {value: v - 1}});
+        }
+
+        return jsxDEV("div", {
+          children: [jsxDEV("h2", {children: "Server counter"}, undefined, false, undefined, this), jsxDEV(
+            "form", {"data-action-onsubmit": "a1_1","data-action": true,
+             onSubmit: e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter"));
+              if (content === "-") decrement(+e.formData.get("counter"));
+            },
+            children: [jsxDEV("button", {children: "+"}, undefined, false, undefined, this), jsxDEV(
+              "input", {name: "counter",type: "number",value}, undefined, false, undefined, this), jsxDEV(
+                "button", {children: "-"}, undefined, false, undefined, this)]}, undefined, true, undefined, this)]}, undefined, true, undefined, this);
+        }
+    
+
+    export async function a1_1({value = 0}, req) {
+      try {
+        const __action = e => {
+          const content = e.currentTarget.innerHTML;
+          if (content === "+") req._p(increment(+req._p(e.formData.get("counter"))));
+          if (content === "-") req._p(decrement(+req._p(e.formData.get("counter"))));
         };
-        
-        function getEl(text) {return jsxDEV("div", {
-          ...props,
-          "data-action-onClick": "a1_1",
-          "data-action-onInput": "a1_2",
-          "data-action": true,
-          children: text}, undefined, false, undefined, this);}
-          
-        function Component({text}) {
-          return getEl(text);
+        function increment(v) {
+          rerenderInAction({type: "targetComponent",props: {value: v + 1}});
         }
 
-        export async function a1_1({text}, req) {
-          try {
-            const __action = props.onClick;
-            await __action(...req.store.get("__params:a1_1"));
-            await req._waitActionCallPromises("a1_1");
-          } catch (error) {
-            return __resolveAction({
-              req,
-              error,
-              actionId: "a1_1",
-              component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
-            }
+        function decrement(v) {
+          rerenderInAction({type: "targetComponent",props: {value: v - 1}});
+        }
+        await __action(...req.store.get("__params:a1_1"));
+        await req._waitActionCallPromises("a1_1");
+      } catch (error) {
+        return __resolveAction({
+          req,
+          error,
+          actionId: "a1_1",
+          component: __props => jsxDEV(CounterServer, {value, ...__props}, undefined, false, undefined, this)
+        });
+      }
+    }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should work rerendering a component with onSubmit and function calls with variables inside", () => {
+      const code = `
+      import { rerenderInAction } from "brisa/server";
+
+      export default function CounterServer(
+        { value = 0 }: { value: number },
+      ) {
+
+        function increment(v: number) {
+          const value = v + 1;
+          rerenderInAction({ type: "targetComponent", props: { value} });
         }
 
-        export async function a1_2({text}, req) {
-          try {
-            const __action = props.onInput;
-            await __action(...req.store.get("__params:a1_2"));
-            await req._waitActionCallPromises("a1_2");
-          } catch (error) {
-            return __resolveAction({
-              req,
-              error,
-              actionId: "a1_2",
-              component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
-            }
-          }
-        `);
+        function decrement(v: number) {
+          const value = v - 1;
+          rerenderInAction({ type: "targetComponent", props: { value } });
+        }
+
+        return (
+          <div>
+            <h2>Server counter</h2>
+            <form data-action-onsubmit="a1_1" data-action onSubmit={e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter")!);
+              if (content === "-") decrement(+e.formData.get("counter")!);
+            }}>
+              <button>+</button>
+              <input name="counter" type="number" value={value}></input>
+              <button>-</button>
+            </form>
+          </div>
+        );
+      }`;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+      import {resolveAction as __resolveAction} from "brisa/server";
+      import {rerenderInAction} from "brisa/server";
+
+      function CounterServer({value = 0}) {
+        function increment(v) {
+          const value = v + 1;
+          rerenderInAction({type: "targetComponent",props: {value}});
+        }
+
+        function decrement(v) {
+          const value = v - 1;
+          rerenderInAction({type: "targetComponent",props: {value}});
+        }
+
+        return jsxDEV("div", {
+          children: [jsxDEV("h2", {children: "Server counter"}, undefined, false, undefined, this), jsxDEV(
+            "form", {"data-action-onsubmit": "a1_1","data-action": true,
+             onSubmit: e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter"));
+              if (content === "-") decrement(+e.formData.get("counter"));
+            },
+            children: [jsxDEV("button", {children: "+"}, undefined, false, undefined, this), jsxDEV(
+              "input", {name: "counter",type: "number",value}, undefined, false, undefined, this), jsxDEV(
+                "button", {children: "-"}, undefined, false, undefined, this)]}, undefined, true, undefined, this)]}, undefined, true, undefined, this);
+        }
+    
+
+    export async function a1_1({value = 0}, req) {
+      try {
+        const __action = e => {
+          const content = e.currentTarget.innerHTML;
+          if (content === "+") req._p(increment(+req._p(e.formData.get("counter"))));
+          if (content === "-") req._p(decrement(+req._p(e.formData.get("counter"))));
+        };
+        function increment(v) {
+          const value = v + 1;
+          rerenderInAction({type: "targetComponent",props: {value}});
+        }
+
+        function decrement(v) {
+          const value = v - 1;
+          rerenderInAction({type: "targetComponent",props: {value}});
+        }
+        await __action(...req.store.get("__params:a1_1"));
+        await req._waitActionCallPromises("a1_1");
+      } catch (error) {
+        return __resolveAction({
+          req,
+          error,
+          actionId: "a1_1",
+          component: __props => jsxDEV(CounterServer, {value, ...__props}, undefined, false, undefined, this)
+        });
+      }
+    }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it("should work rerendering a component with onSubmit and arrow function calls", () => {
+      const code = `
+      import { rerenderInAction } from "brisa/server";
+
+      export default function CounterServer(
+        { value = 0 }: { value: number },
+      ) {
+
+        const increment = (v: number) => {
+          rerenderInAction({ type: "targetComponent", props: { value: v + 1 } });
+        }
+
+        const decrement = (v: number) => {
+          rerenderInAction({ type: "targetComponent", props: { value: v - 1 } });
+        }
+
+        return (
+          <div>
+            <h2>Server counter</h2>
+            <form data-action-onsubmit="a1_1" data-action onSubmit={e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter")!);
+              if (content === "-") decrement(+e.formData.get("counter")!);
+            }}>
+              <button>+</button>
+              <input name="counter" type="number" value={value}></input>
+              <button>-</button>
+            </form>
+          </div>
+        );
+      }`;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+      import {resolveAction as __resolveAction} from "brisa/server";
+      import {rerenderInAction} from "brisa/server";
+
+      function CounterServer({value = 0}) {
+        const increment = v => {
+          rerenderInAction({type: "targetComponent",props: {value: v + 1}});
+        };
+
+        const decrement = v => {
+          rerenderInAction({type: "targetComponent",props: {value: v - 1}});
+        };
+
+        return jsxDEV("div", {
+          children: [jsxDEV("h2", {children: "Server counter"}, undefined, false, undefined, this), jsxDEV("form"
+          , {"data-action-onsubmit": "a1_1","data-action": true,
+             onSubmit: e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter"));
+              if (content === "-") decrement(+e.formData.get("counter"));
+            },
+            children: [jsxDEV("button", {children: "+"}, undefined, false, undefined, this), jsxDEV(
+              "input", {name: "counter",type: "number",value}, undefined, false, undefined, this), jsxDEV(
+                "button", {children: "-"}, undefined, false, undefined, this)]}, undefined, true, undefined, this)]}, undefined, true, undefined, this)  
+        ;}
+    
+
+    export async function a1_1({value = 0}, req) {
+      try {
+        const __action = e => {
+          const content = e.currentTarget.innerHTML;
+          if (content === "+") req._p(increment(+req._p(e.formData.get("counter"))));
+          if (content === "-") req._p(decrement(+req._p(e.formData.get("counter"))));
+        };
+        const increment = v => {
+          rerenderInAction({type: "targetComponent",props: {value: v + 1}});
+        };
+
+        const decrement = v => {
+          rerenderInAction({type: "targetComponent",props: {value: v - 1}});
+        };
+        await __action(...req.store.get("__params:a1_1"));
+        await req._waitActionCallPromises("a1_1");
+      } catch (error) {
+        return __resolveAction({
+          req,
+          error,
+          actionId: "a1_1",
+          component: __props => jsxDEV(CounterServer, {value, ...__props}, undefined, false, undefined, this)
+        });
+      }
+    }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it.todo("should work with destructuring and element generator", () => {
+      const code = `
+        const props = {
+      onClick: () => console.log('hello world'),
+      onInput: () => console.log('hello world'),
+    };
+    const getEl = (text) => <div
+      { ...props }
+    data - action - onClick="a1_1"
+    data - action - onInput="a1_2"
+    data - action
+      > { text } < /div>;
+
+    export default function Component({ text }) {
+      return getEl(text);
+    }
+    `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+    import { resolveAction as __resolveAction } from "brisa/server";
+
+    const props = {
+      onClick: () => console.log('hello world'),
+      onInput: () => console.log('hello world')
+    };
+
+    function getEl(text) {
+      return jsxDEV("div", {
+        ...props,
+        "data-action-onClick": "a1_1",
+        "data-action-onInput": "a1_2",
+        "data-action": true,
+        children: text
+      }, undefined, false, undefined, this);
+    }
+
+    function Component({ text }) {
+      return getEl(text);
+    }
+
+    export async function a1_1({ text }, req) {
+      try {
+        const __action = props.onClick;
+        await __action(...req.store.get("__params:a1_1"));
+        await req._waitActionCallPromises("a1_1");
+      } catch (error) {
+        return __resolveAction({
+          req,
+          error,
+          actionId: "a1_1",
+          component: __props => jsxDEV(getEl, { text, ...__props }, undefined, false, undefined, this)
+        });
+      }
+    }
+
+    export async function a1_2({ text }, req) {
+      try {
+        const __action = props.onInput;
+        await __action(...req.store.get("__params:a1_2"));
+        await req._waitActionCallPromises("a1_2");
+      } catch (error) {
+        return __resolveAction({
+          req,
+          error,
+          actionId: "a1_2",
+          component: __props => jsxDEV(getEl, { text, ...__props }, undefined, false, undefined, this)
+        });
+      }
+    }
+    `);
 
       expect(output).toEqual(expected);
     });
@@ -2040,45 +2321,50 @@ describe("utils", () => {
       // TODO: element is returned as a component, when we implement component rendering we will have to
       // figure out how to fix this
       const code = `
-       const getEl = (text) => <div 
-          onClick={() => console.log('hello world')} 
-          data-action-onClick="a1_1" 
-          data-action
-        >{text}</div>;
+    const getEl = (text) => <div 
+          onClick={() => console.log('hello world')
+  } 
+          data - action - onClick="a1_1" 
+          data - action
+    > { text } < /div>;
       
-        export default function Component({text}) {
-          return getEl(text);
-        }
-      `;
+        export default function Component({ text }) {
+    return getEl(text);
+  }
+  `;
 
       const output = normalizeQuotes(transformToActionCode(code));
       const expected = normalizeQuotes(`
-          import {resolveAction as __resolveAction} from "brisa/server";
-          
-          function getEl(text) {return jsxDEV("div", {
-            onClick: () => console.log("hello world"),
-            "data-action-onClick": "a1_1",
-            "data-action": true,
-            children: text}, undefined, false, undefined, this);}
-            
-          function Component({text}) {
-            return getEl(text);
-          }
+  import { resolveAction as __resolveAction } from "brisa/server";
 
-          export async function a1_1({text}, req) {
-            try {
-              const __action = () => console.log("hello world");
-              await __action(...req.store.get("__params:a1_1"));
-              await req._waitActionCallPromises("a1_1");
-            } catch (error) {
-              return __resolveAction({
-                req,
-                error,
-                actionId: "a1_1",
-                component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
-              }
-            }
-      `);
+  function getEl(text) {
+    return jsxDEV("div", {
+      onClick: () => console.log("hello world"),
+      "data-action-onClick": "a1_1",
+      "data-action": true,
+      children: text
+    }, undefined, false, undefined, this);
+  }
+
+  function Component({ text }) {
+    return getEl(text);
+  }
+
+  export async function a1_1({ text }, req) {
+    try {
+      const __action = () => console.log("hello world");
+      await __action(...req.store.get("__params:a1_1"));
+      await req._waitActionCallPromises("a1_1");
+    } catch (error) {
+      return __resolveAction({
+        req,
+        error,
+        actionId: "a1_1",
+        component: __props => jsxDEV(getEl, { text, ...__props }, undefined, false, undefined, this)
+      });
+    }
+  }
+  `);
 
       expect(output).toEqual(expected);
     });
@@ -2089,61 +2375,68 @@ describe("utils", () => {
         // TODO: element is returned as a component, when we implement component rendering we will have to
         // figure out how to fix this
         const code = `
-       const getEl = (text) => <div 
-          onClick={() => console.log('hello world')} 
-          data-action-onClick="a1_1" 
-          onInput={() => console.log('hello world')} 
-          data-action-onInput="a1_2" 
-          data-action
-        >{text}</div>;
+  const getEl = (text) => <div 
+          onClick={() => console.log('hello world')
+} 
+          data - action - onClick="a1_1" 
+          onInput = {() => console.log('hello world')}
+  data - action - onInput="a1_2" 
+          data - action
+  > { text } < /div>;
       
-        export default function Component({text}) {
-          return getEl(text);
-        }
-      `;
+        export default function Component({ text }) {
+  return getEl(text);
+}
+`;
         const output = normalizeQuotes(transformToActionCode(code));
         const expected = normalizeQuotes(`
-          import {resolveAction as __resolveAction} from "brisa/server";
-          
-          function getEl(text) {return jsxDEV("div", {
-            onClick: () => console.log("hello world"),
-            "data-action-onClick": "a1_1",
-            onInput: () => console.log("hello world"),
-            "data-action-onInput": "a1_2",
-            "data-action": true,
-            children: text}, undefined, false, undefined, this);}
-            
-          function Component({text}) {
-            return getEl(text);
-          }
-          
-          export async function a1_1({text}, req) {
-            try {
-              const __action = () => console.log("hello world");
-              await __action(...req.store.get("__params:a1_1"));
-              await req._waitActionCallPromises("a1_1");
-            } catch (error) {
-              return __resolveAction({
-                req,
-                error,
-                actionId: "a1_1",
-                component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
-              }
-            }
-            
-          export async function a1_2({text}, req) {
-            try {const __action = () => console.log("hello world");
-            await __action(...req.store.get("__params:a1_2"));
-            await req._waitActionCallPromises("a1_2");
-          } catch (error) {
-            return __resolveAction({
-              req,
-              error,
-              actionId: "a1_2",
-              component: __props => jsxDEV(getEl, {text, ...__props}, undefined, false, undefined, this)});
-            }
-          }
-      `);
+import { resolveAction as __resolveAction } from "brisa/server";
+
+function getEl(text) {
+  return jsxDEV("div", {
+    onClick: () => console.log("hello world"),
+    "data-action-onClick": "a1_1",
+    onInput: () => console.log("hello world"),
+    "data-action-onInput": "a1_2",
+    "data-action": true,
+    children: text
+  }, undefined, false, undefined, this);
+}
+
+function Component({ text }) {
+  return getEl(text);
+}
+
+export async function a1_1({ text }, req) {
+  try {
+    const __action = () => console.log("hello world");
+    await __action(...req.store.get("__params:a1_1"));
+    await req._waitActionCallPromises("a1_1");
+  } catch (error) {
+    return __resolveAction({
+      req,
+      error,
+      actionId: "a1_1",
+      component: __props => jsxDEV(getEl, { text, ...__props }, undefined, false, undefined, this)
+    });
+  }
+}
+
+export async function a1_2({ text }, req) {
+  try {
+    const __action = () => console.log("hello world");
+    await __action(...req.store.get("__params:a1_2"));
+    await req._waitActionCallPromises("a1_2");
+  } catch (error) {
+    return __resolveAction({
+      req,
+      error,
+      actionId: "a1_2",
+      component: __props => jsxDEV(getEl, { text, ...__props }, undefined, false, undefined, this)
+    });
+  }
+}
+`);
 
         expect(output).toEqual(expected);
       },
@@ -2151,52 +2444,52 @@ describe("utils", () => {
 
     it.todo("should transform simple HOC with an action", () => {
       const code = `
-        export default async function AboutUs() {
-          return (
-            <Foo text="Hello" />
+export default async function AboutUs() {
+  return (
+    <Foo text= "Hello" />
           );
-        }
+}
 
-        const Foo = withAction(({ onClick }) => <button onClick={onClick}>Click me</button>);
+const Foo = withAction(({ onClick }) => <button onClick={ onClick } > Click me < /button>);
 
         function withAction(Component) {
-          return function WrappedComponent({ text }) {
-            return <Component onClick={() => console.log(text)} />
-          };
-        }
-      `;
+    return function WrappedComponent({ text }) {
+      return <Component onClick={ () => console.log(text) } />
+    };
+  }
+    `;
 
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-        import {resolveAction as __resolveAction} from 'brisa/server';
+        import { resolveAction as __resolveAction } from 'brisa/server';
 
-        function withAction(Component) {
-          return function WrappedComponent({text}) {
-            return jsxDEV(Component, {onClick: () => console.log(text)}, undefined, false, undefined, this);
-          };
-        }
+function withAction(Component) {
+  return function WrappedComponent({ text }) {
+    return jsxDEV(Component, { onClick: () => console.log(text) }, undefined, false, undefined, this);
+  };
+}
 
-        async function AboutUs() {
-          return jsxDEV(Foo, {text: "Hello"}, undefined, false, undefined, this);
-        }
+async function AboutUs() {
+  return jsxDEV(Foo, { text: "Hello" }, undefined, false, undefined, this);
+}
 
-        const Foo = withAction(({onClick}) => jsxDEV("button", {onClick, children: "Click me"}, undefined, false, undefined, this));
+const Foo = withAction(({ onClick }) => jsxDEV("button", { onClick, children: "Click me" }, undefined, false, undefined, this));
 
-        export async function a1_1({text}, req) {
-          try {
-            const __action = () => console.log(text);
-            await __action(...req.store.get('__params:a1_1'));
-            await req._waitActionCallPromises("a1_1");
-          } catch (error) {
-            return __resolveAction({
-              req,
-              error,
-              actionId: "a1_1",
-              component: __props => jsxDEV(AboutUs, {...__props}, undefined, false, undefined, this)
-            });
-          }
-        }`);
+export async function a1_1({ text }, req) {
+  try {
+    const __action = () => console.log(text);
+    await __action(...req.store.get('__params:a1_1'));
+    await req._waitActionCallPromises("a1_1");
+  } catch (error) {
+    return __resolveAction({
+      req,
+      error,
+      actionId: "a1_1",
+      component: __props => jsxDEV(AboutUs, { ...__props }, undefined, false, undefined, this)
+    });
+  }
+} `);
 
       expect(output).toEqual(expected);
     });
@@ -2205,38 +2498,38 @@ describe("utils", () => {
       "should work with an element with an action defined outside the Component",
       () => {
         const code = `
-        const el = <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>Click me</div>;
+const el = <div onClick={() => console.log('hello world')} data - action - onClick="a1_1" data - action > Click me < /div>;
 
-        export default function Component() {
-          return el;
-        }
-      `;
+export default function Component() {
+  return el;
+}
+`;
 
         const output = normalizeQuotes(transformToActionCode(code));
 
         const expected = normalizeQuotes(`
-        import {resolveAction as __resolveAction} from 'brisa/server';
+import { resolveAction as __resolveAction } from 'brisa/server';
 
-        const el = jsxDEV("div", {onClick: () => console.log('hello world'),"data-action-onClick": "a1_1","data-action": true,children: "Click me"}, undefined, false, undefined, this);
+const el = jsxDEV("div", { onClick: () => console.log('hello world'), "data-action-onClick": "a1_1", "data-action": true, children: "Click me" }, undefined, false, undefined, this);
 
-        function Component() {
-          return el;
-        }
+function Component() {
+  return el;
+}
 
-        export async function a1_1({}, req) {
-          try {
-            const __action = () => console.log('hello world');
-            await __action(...req.store.get('__params:a1_1'));
-            await req._waitActionCallPromises("a1_1");
-          } catch (error) {
-            return __resolveAction({
-              req,
-              error,
-              actionId: "a1_1",
-              component: __props => jsxDEV(Component, {...__props}, undefined, false, undefined, this)
-            });
-          }
-        }`);
+export async function a1_1({ }, req) {
+  try {
+    const __action = () => console.log('hello world');
+    await __action(...req.store.get('__params:a1_1'));
+    await req._waitActionCallPromises("a1_1");
+  } catch (error) {
+    return __resolveAction({
+      req,
+      error,
+      actionId: "a1_1",
+      component: __props => jsxDEV(Component, { ...__props }, undefined, false, undefined, this)
+    });
+  }
+} `);
 
         expect(output).toEqual(expected);
       },
