@@ -14,6 +14,13 @@ import path from "node:path";
 import crypto from "node:crypto";
 
 const FIXTURES = path.join(import.meta.dir, "src", "__fixtures__");
+const MDX_PATH = path.join(
+  import.meta.dir,
+  "out",
+  "cli",
+  "integrations",
+  "mdx.js",
+);
 const BUILD_PATH = path.join(import.meta.dir, "out", "cli", "build.js");
 const SERVE_PATH = path.join(
   import.meta.dir,
@@ -719,6 +726,46 @@ describe("Brisa CLI", () => {
       path.join(process.env.HOME!, ".bun", "bin", "bun"),
       [SERVE_PATH, "3000", "PROD"],
       prodOptions,
+    ]);
+  });
+
+  it('should "brisa add mdx" command integrate MDX', async () => {
+    process.argv = ["bun", "brisa", "add", "mdx"];
+
+    await main();
+
+    expect(mockSpawnSync).toHaveBeenCalledTimes(3);
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      "bun",
+      ["--version"],
+      { stdio: "ignore" },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      "bun",
+      ["i", "@mdx-js/esbuild@3.0.1"],
+      devOptions,
+    ]);
+    expect(mockSpawnSync.mock.calls[2]).toEqual([
+      "bun",
+      [MDX_PATH],
+      devOptions,
+    ]);
+  });
+
+  it('should "brisa add --help" command provide help', async () => {
+    process.argv = ["bun", "brisa", "add", "--help"];
+
+    await main();
+
+    expect(mockSpawnSync).toHaveBeenCalledTimes(1);
+    expect(mockLog.mock.calls).toEqual([
+      ["Integration not found"],
+      ["Usage: brisa add <integration>"],
+      ["Integrations:"],
+      [" mdx          Add mdx integration"],
+      [" tailwindcss  Add tailwindcss integration"],
+      ["Options:"],
+      [" --help       Show help"],
     ]);
   });
 });
