@@ -39,10 +39,10 @@ function log(type: "Error" | "Warning") {
   const { LOG_PREFIX } = getConstants();
   const LOG =
     LOG_PREFIX[
-    {
-      Error: "ERROR",
-      Warning: "WARN",
-    }[type] as keyof typeof LOG_PREFIX
+      {
+        Error: "ERROR",
+        Warning: "WARN",
+      }[type] as keyof typeof LOG_PREFIX
     ];
 
   return (messages: string[], footer?: string, stack?: string) => {
@@ -102,10 +102,21 @@ export function logBuildError(
   title: string,
   logs: (BuildMessage | ResolveMessage)[],
 ) {
-  const messages = [title, "", ...logs.flatMap((l) => {
-    const position = l.position ? `${boldLog('position')}: ${JSON.stringify(l.position, undefined, 2)}` : '';
-    return [`${boldLog('level')}: ${l.level}`, `${boldLog('message')}: ${l.message}`, `${boldLog('name')}: ${l.name}`, ...position.split('\n')]
-  })];
+  const messages = [
+    title,
+    "",
+    ...logs.flatMap((l) => {
+      const position = l.position
+        ? `${boldLog("position")}: ${JSON.stringify(l.position, undefined, 2)}`
+        : "";
+      return [
+        `${boldLog("level")}: ${l.level}`,
+        `${boldLog("message")}: ${l.message}`,
+        `${boldLog("name")}: ${l.name}`,
+        ...position.split("\n"),
+      ];
+    }),
+  ];
 
   const isJSXRuntimeError = messages.some((m) => m.includes("react/jsx"));
   const isMDXError = messages.some((m) => m.includes("mdx"));
@@ -124,13 +135,9 @@ export function logBuildError(
     messages.push(
       "Verify if the MDX plugin is correctly integrated in the brisa.config file",
     );
-    messages.push(
-      "Integrate MDX with the following command:",
-    );
+    messages.push("Integrate MDX with the following command:");
     messages.push("");
-    messages.push(
-      `> bunx brisa add mdx`,
-    );
+    messages.push(`> bunx brisa add mdx`);
   }
 
   messages.push("");
