@@ -5,6 +5,7 @@ import fs from "node:fs";
 import crypto from "node:crypto";
 
 const outPath = path.join(import.meta.dir, 'out');
+const mdxIntegrationPath = path.join(outPath, 'cli', 'integrations', 'mdx.js');
 const buildFilepath = path.join(outPath, 'cli', 'build.js');
 const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
 const MOBILE_OUTPUTS = new Set(["android", "ios"]);
@@ -34,13 +35,13 @@ export async function main() {
   // Check if is desktop app
   try {
     const config = await import(path.join(process.cwd(), "brisa.config.ts")).then(m => m.default);
-    const hasOutput = typeof config.output === "string" 
+    const hasOutput = typeof config.output === "string"
 
     if (hasOutput) {
       OUTPUT = config.output;
       IS_TAURI_APP = TAURI_OUTPUTS.has(OUTPUT);
     }
-  } catch (error) {}
+  } catch (error) { }
 
   try {
     // Check if 'bun' is available in the system
@@ -93,7 +94,7 @@ export async function main() {
       if (IS_TAURI_APP) {
         const devTauriCommand = ["tauri", "dev", "--port", PORT.toString()];
 
-        if(MOBILE_OUTPUTS.has(OUTPUT)) {
+        if (MOBILE_OUTPUTS.has(OUTPUT)) {
           devTauriCommand.splice(1, 0, OUTPUT)
         }
 
@@ -140,7 +141,7 @@ export async function main() {
       if (IS_TAURI_APP) {
         const tauriCommand = ["tauri", "build"];
 
-        if(MOBILE_OUTPUTS.has(OUTPUT)) {
+        if (MOBILE_OUTPUTS.has(OUTPUT)) {
           tauriCommand.splice(1, 0, OUTPUT)
         }
 
@@ -179,6 +180,28 @@ export async function main() {
       );
     }
 
+    // Add integrations like mdx, tailwindcss, etc
+    else if (process.argv[2] === "add") {
+      const integration = process.argv[3]?.toLowerCase();
+
+      if (integration === "mdx") {
+        console.log('Installing @mdx-js/esbuild...');
+        cp.spawnSync(BUN_EXEC, ["i", "@mdx-js/esbuild@3.0.1"], devOptions);
+        cp.spawnSync(BUN_EXEC, [mdxIntegrationPath], devOptions);
+      } else if (integration === "tailwindcss") {
+        console.log('TODO: Not implemented yet');
+      } else {
+        console.log("Integration not found");
+        console.log("Usage: brisa add <integration>");
+        console.log("Integrations:");
+        console.log(" mdx          Add mdx integration");
+        console.log(" tailwindcss  Add tailwindcss integration");
+        console.log("Options:");
+        console.log(" --help       Show help");
+        return process.exit(0);
+      }
+    }
+
     // Command: brisa --help
     else {
       console.log("Command not found");
@@ -209,11 +232,11 @@ export async function main() {
       cp.spawnSync(BUN_EXEC, ["i", "@tauri-apps/cli@2.0.0-beta.8"], options);
     }
 
-    if(existsTauri && isMobile) {
+    if (existsTauri && isMobile) {
       cp.spawnSync(BUNX_EXEC, ['tauri', OUTPUT, 'init'], options);
     }
 
-    if(existsTauri) return
+    if (existsTauri) return
 
     const name = packageJSON?.name ?? "my-app";
     const initTauriCommand = [
@@ -247,7 +270,7 @@ export async function main() {
       JSON.stringify(tauriConf, null, 2),
     );
 
-    if(isMobile) {
+    if (isMobile) {
       cp.spawnSync(BUNX_EXEC, ['tauri', OUTPUT, 'init'], options);
     }
   }
