@@ -6,6 +6,7 @@ import {
   NATIVE_FOLDER,
 } from "@/utils/client-build-plugin/constants";
 import isTestFile from "@/utils/is-test-file";
+import { getEntrypointsRouter } from "@/utils/get-entrypoints";
 
 const CONTEXT_PROVIDER = "context-provider";
 
@@ -17,11 +18,7 @@ export default async function getWebComponentsList(
 
   if (!fs.existsSync(webDir)) return {};
 
-  const webRouter = new Bun.FileSystemRouter({
-    style: "nextjs",
-    dir: webDir,
-  });
-
+  const webRouter = getEntrypointsRouter(webDir);
   const existingSelectors = new Set<string>();
   const entries = Object.entries(webRouter.routes);
 
