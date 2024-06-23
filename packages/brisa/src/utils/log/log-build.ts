@@ -39,10 +39,10 @@ function log(type: "Error" | "Warning") {
   const { LOG_PREFIX } = getConstants();
   const LOG =
     LOG_PREFIX[
-      {
-        Error: "ERROR",
-        Warning: "WARN",
-      }[type] as keyof typeof LOG_PREFIX
+    {
+      Error: "ERROR",
+      Warning: "WARN",
+    }[type] as keyof typeof LOG_PREFIX
     ];
 
   return (messages: string[], footer?: string, stack?: string) => {
@@ -102,14 +102,34 @@ export function logBuildError(
   title: string,
   logs: (BuildMessage | ResolveMessage)[],
 ) {
-  const messages = [title, "", ...logs.map((l) => l.message)];
+  const messages = [title, "", ...logs.flatMap((l) => {
+    const position = l.position ? `${boldLog('position')}: ${JSON.stringify(l.position, undefined, 2)}` : '';
+    return [`${boldLog('level')}: ${l.level}`, `${boldLog('message')}: ${l.message}`, `${boldLog('name')}: ${l.name}`, ...position.split('\n')]
+  })];
+
   const isJSXRuntimeError = messages.some((m) => m.includes("react/jsx"));
+  const isMDXError = messages.some((m) => m.includes("mdx"));
 
   if (isJSXRuntimeError) {
     messages.push("");
     messages.push("The error above is usually caused by the following:");
     messages.push(
       "Verify inside tsconfig.json the 'jsx' option set to 'react-jsx' and the 'jsxImportSource' option set to 'brisa'",
+    );
+  }
+
+  if (isMDXError) {
+    messages.push("");
+    messages.push("The error above is usually caused by the following:");
+    messages.push(
+      "Verify if the MDX plugin is correctly integrated in the brisa.config file",
+    );
+    messages.push(
+      "Integrate MDX with the following command:",
+    );
+    messages.push("");
+    messages.push(
+      `> bunx brisa add mdx`,
     );
   }
 
