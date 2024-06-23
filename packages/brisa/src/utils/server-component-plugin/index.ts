@@ -98,6 +98,7 @@ export default function serverComponentPlugin(
     const isJSX =
       value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
     const isActionsFlag = isServerOutput && value?._hasActions;
+    const isComponent = isUpperCaseChar(value?.arguments?.[0]?.name);
 
     // Register declarations and imports again to update the _hasActions flag
     // inside the declarations.
@@ -156,8 +157,21 @@ export default function serverComponentPlugin(
       const properties = value.arguments[1]?.properties ?? [];
       const spreadsIdentifiers = [];
 
-      for (let attributeAst of properties) {
+      for (let i = 0; i < properties.length; i++) {
+        const attributeAst = properties[i];
         const isAction = attributeAst?.key?.name?.startsWith("on");
+
+        // Change <div onClick={onClick} /> to <div onClick={(...args) => onClick(...args)} />
+        // to create then an action to allow rendering the target component
+        if (
+          !isComponent &&
+          isAction &&
+          isServerOutput &&
+          attributeAst.value?.type === "Identifier"
+        ) {
+          properties[i] =
+            transformActionIdentifierAttributeToArrow(attributeAst);
+        }
 
         // In case it is a SpreadElement, we have to note that we want to
         // verify later after looking at all the props the content of each
@@ -231,6 +245,19 @@ export default function serverComponentPlugin(
             const eventName = v.key.name;
 
             declarationHasActions = hasActions = true;
+
+            // Change const props = { onClick } to const props = { onClick: (...args) => onClick(...args) }
+            // to allow then destructuring on elements: <div {...props} /> + creating an action to allow
+            // rendering the target component
+            if (
+              !isComponent &&
+              v.value?.type === "Identifier" &&
+              !declarations.has(v.value.name)
+            ) {
+              v.value = transformActionIdentifierAttributeToArrow(v);
+              return v;
+            }
+
             actionProperties.push({
               type: "Property",
               key: {
@@ -481,6 +508,7 @@ function markActionsFlag({
 }
 
 function isUpperCaseChar(char: string) {
+  if (!char) return false;
   const code = char.charCodeAt(0);
   return code >= 65 && code <= 90;
 }
@@ -509,4 +537,55 @@ function markComponentHasActions(componentName: string, parent: any) {
       },
     },
   });
+}
+
+// For elements, we need to create an arrow function to enable the rerenderInAction to
+// re-render the target component. Therefore, for elements, we use this function to
+// convert the action identifier attribute into an arrow function, which is then used
+// to create the action.
+//
+// For components, we want to propagate the action directly (without creating a new one).
+// Therefore, we do not need to create an arrow function for components.
+function transformActionIdentifierAttributeToArrow(attribute: any) {
+  return {
+    type: "Property",
+    key: {
+      type: "Identifier",
+      name: attribute.key.name,
+    },
+    value: {
+      type: "ArrowFunctionExpression",
+      params: [
+        {
+          type: "RestElement",
+          argument: {
+            type: "Identifier",
+            name: "args",
+          },
+        },
+      ],
+      body: {
+        type: "CallExpression",
+        callee: {
+          type: "Identifier",
+          name: attribute.value.name,
+        },
+        arguments: [
+          {
+            type: "SpreadElement",
+            argument: {
+              type: "Identifier",
+              name: "args",
+            },
+          },
+        ],
+      },
+      async: false,
+      expression: true,
+    },
+    kind: "init",
+    computed: false,
+    method: false,
+    shorthand: false,
+  };
 }

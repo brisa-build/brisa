@@ -323,7 +323,7 @@ describe("utils", () => {
         }
 
         export function ServerComponent2({ onFoo }) {
-          return <div onClick={onFoo} data-action-onclick="a1_2" data-action />;
+          return <div onClick={(...args) => onFoo(...args)} data-action-onclick="a1_2" data-action />;
         }
 
         ServerComponent1._hasActions = true;
@@ -867,6 +867,170 @@ describe("utils", () => {
         toExpected(`
         export default function ServerComponent() {
           const props = { onClick: () => console.log('clicked') };
+          return <Component {...props} data-action-onclick="a1_1" data-action />;
+        }
+
+        ServerComponent._hasActions = true;
+      `),
+      );
+    });
+
+    it('should add the attribute "data-action-onclick" when event comes from props', () => {
+      const code = `
+        export default function ServerComponent({onClick}) {
+          return <div onClick={onClick} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent({onClick}) {
+          return <div onClick={(...args) => onClick(...args)} data-action-onclick="a1_1" data-action />;
+        }
+
+        ServerComponent._hasActions = true;
+      `),
+      );
+    });
+
+    // On Components we want to propagate the action (without the need to create it),
+    // meanwhile on elements we want to create the arrow function to allow the
+    // rerenderInAction to re-render the target component
+    it("should NOT create the arrow function when is a Component instead of element", () => {
+      const code = `
+        export default function ServerComponent({onClick}) {
+          return <Component onClick={onClick} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent({onClick}) {
+          return <Component onClick={onClick} data-action-onclick="a1_1" data-action />;
+        }
+
+        ServerComponent._hasActions = true;
+      `),
+      );
+    });
+
+    it('should add the attribute "data-action-onclick" when a server-component has destructuring props comming from props', () => {
+      const code = `
+        export default function ServerComponent({onClick}) {
+          const props = { onClick };
+          return <div {...props} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent({onClick}) {
+          const props = { onClick: (...args) => onClick(...args) };
+          return <div {...props} data-action-onclick="a1_1" data-action />;
+        }
+
+        ServerComponent._hasActions = true;
+      `),
+      );
+    });
+
+    // On Components we want to propagate the action (without the need to create it),
+    // meanwhile on elements we want to create the arrow function to allow the
+    // rerenderInAction to re-render the target component
+    it("should NOT create the arrow function using destructuring props comming from props in Component", () => {
+      const code = `
+        export default function ServerComponent({onClick}) {
+          const props = { onClick };
+          return <Component {...props} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent({onClick}) {
+          const props = { onClick };
+          return <Component {...props} data-action-onclick="a1_1" data-action />;
+        }
+
+        ServerComponent._hasActions = true;
+      `),
+      );
+    });
+
+    it('should add the attribute "data-action-onclick" when a server-component has destructuring props comming from props with key:value', () => {
+      const code = `
+        export default function ServerComponent({onClick}) {
+          const props = { onClick:onClick };
+          return <div {...props} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent({onClick}) {
+          const props = { onClick: (...args) => onClick(...args) };
+          return <div {...props} data-action-onclick="a1_1" data-action />;
+        }
+
+        ServerComponent._hasActions = true;
+      `),
+      );
+    });
+
+    it("should NOT create the arrow function when a server-component has destructuring props comming from props with key:value in a Component", () => {
+      const code = `
+        export default function ServerComponent({onClick}) {
+          const props = { onClick:onClick };
+          return <Component {...props} />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: "a1",
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent({onClick}) {
+          const props = { onClick:onClick };
           return <Component {...props} data-action-onclick="a1_1" data-action />;
         }
 
