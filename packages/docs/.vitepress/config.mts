@@ -271,6 +271,24 @@ export default defineConfig({
             ],
           },
           {
+            text: "🧩 Integrations",
+            collapsed: true,
+            items: [
+              {
+                text: "Tauri",
+                link: "/building-your-application/integrations/tauri",
+              },
+              {
+                text: "MDX",
+                link: "/building-your-application/integrations/mdx",
+              },
+              {
+                text: "Tailwind CSS",
+                link: "/building-your-application/integrations/tailwind-css",
+              },
+            ],
+          },
+          {
             text: "🚀 Deploying",
             collapsed: true,
             link: "/building-your-application/deploying/index",

@@ -108,7 +108,7 @@ describe("utils", () => {
       );
     });
 
-    it('should notify the level, message, name, and position of the error', () => {
+    it("should notify the level, message, name, and position of the error", () => {
       const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
 
       spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
@@ -156,7 +156,7 @@ describe("utils", () => {
       expect(output).toContain("4");
     });
 
-    it('should display a specific MDX error when a file with .mdx format has an error', () => {
+    it("should display a specific MDX error when a file with .mdx format has an error", () => {
       const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
 
       spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
