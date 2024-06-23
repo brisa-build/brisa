@@ -107,5 +107,82 @@ describe("utils", () => {
         "Verify inside tsconfig.json the 'jsx' option set to 'react-jsx' and the 'jsxImportSource' option set to 'brisa'",
       );
     });
+
+    it('should notify the level, message, name, and position of the error', () => {
+      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
+
+      spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
+
+      const logs = [
+        {
+          level: "error",
+          message: "Error message 1",
+          name: "Error name 1",
+          position: {
+            line: 1,
+            column: 2,
+          },
+        },
+        {
+          level: "error",
+          message: "Error message 2",
+          name: "Error name 2",
+          position: {
+            line: 3,
+            column: 4,
+          },
+        },
+      ];
+
+      logBuildError(
+        "Failed to compile",
+        logs as (BuildMessage | ResolveMessage)[],
+      );
+
+      const output = mockLog.mock.results.map((t) => t.value).join("\n");
+
+      expect(output).toContain("Failed to compile");
+      expect(output).toContain("Error message 1");
+      expect(output).toContain("Error name 1");
+      expect(output).toContain("line");
+      expect(output).toContain("1");
+      expect(output).toContain("column");
+      expect(output).toContain("2");
+      expect(output).toContain("Error message 2");
+      expect(output).toContain("Error name 2");
+      expect(output).toContain("line");
+      expect(output).toContain("3");
+      expect(output).toContain("column");
+      expect(output).toContain("4");
+    });
+
+    it('should display a specific MDX error when a file with .mdx format has an error', () => {
+      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
+
+      spyOn(console, "log").mockImplementation((f, s) => mockLog(f, s));
+
+      const logs = [
+        {
+          level: "error",
+          message: "mdx",
+          name: "Error name 1",
+          position: {
+            line: 1,
+            column: 2,
+          },
+        },
+      ];
+
+      logBuildError(
+        "Failed to compile",
+        logs as (BuildMessage | ResolveMessage)[],
+      );
+
+      const output = mockLog.mock.results.map((t) => t.value).join("\n");
+
+      expect(output).toContain("Failed to compile");
+      expect(output).toContain("Integrate MDX with the following command:");
+      expect(output).toContain("> bunx brisa add mdx");
+    });
   });
 });
