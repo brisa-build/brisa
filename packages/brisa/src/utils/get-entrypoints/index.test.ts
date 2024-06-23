@@ -9,6 +9,13 @@ const pagesDir = path.join(
   "__fixtures__",
   "pages",
 );
+const mdxPagesDir = path.join(
+  import.meta.dir,
+  "..",
+  "..",
+  "__fixtures__",
+  "mdx-pages",
+);
 
 describe("utils", () => {
   describe("getEntrypoints", () => {
@@ -36,6 +43,14 @@ describe("utils", () => {
     it("should not return files that end with '.test'", () => {
       const entrypoints = getEntrypoints(pagesDir);
       expect(entrypoints).not.toContain(path.join(pagesDir, "index.test.tsx"));
+    });
+
+    it("should allow mdx files as entrypoints", () => {
+      const entrypoints = getEntrypoints(mdxPagesDir);
+      const expected = ["index.mdx"].map((route) =>
+        path.join(mdxPagesDir, route),
+      );
+      expect(entrypoints).toEqual(expected);
     });
   });
 });

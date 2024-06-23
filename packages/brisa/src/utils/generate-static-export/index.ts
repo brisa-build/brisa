@@ -7,6 +7,7 @@ import { logWarning } from "@/utils/log/log-build";
 import type { FileSystemRouter, MatchedRoute } from "bun";
 import isTestFile from "@/utils/is-test-file";
 import get404ClientScript from "@/utils/not-found/client-script";
+import { getEntrypointsRouter } from "@/utils/get-entrypoints";
 
 const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = "http://localhost";
@@ -43,11 +44,7 @@ export default async function generateStaticExport(): Promise<
     outDir = path.join(outDir, basePath);
   }
 
-  const router = new Bun.FileSystemRouter({
-    style: "nextjs",
-    dir: path.join(BUILD_DIR, "pages"),
-  });
-
+  const router = getEntrypointsRouter(path.join(BUILD_DIR, "pages"));
   const routes = await formatRoutes(Object.keys(router.routes), router);
   const prerenderedRoutes = new Map<string, string[]>();
 

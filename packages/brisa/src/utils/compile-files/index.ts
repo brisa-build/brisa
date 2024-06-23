@@ -81,7 +81,7 @@ export default async function compileFiles() {
             let actionIdCount = 1;
 
             build.onLoad(
-              { filter: /\.(tsx|jsx)$/ },
+              { filter: /\.(tsx|jsx|mdx)$/ },
               async ({ path, loader }) => {
                 let code = await Bun.file(path).text();
 
