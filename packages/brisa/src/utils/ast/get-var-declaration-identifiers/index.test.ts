@@ -5,7 +5,7 @@ import type { ESTree } from "meriyah";
 describe("utils", () => {
   describe("ast", () => {
     describe("get-var-declaration-identifiers", () => {
-      it("should not return any identifier if the given AST is not a VariableDeclaration", () => {
+      it("should not return any identifier if the given AST is not a VariableDeclaration pr FunctionDeclarator", () => {
         const node = {
           type: "CallExpression",
           callee: { type: "Identifier", name: "a" },
@@ -148,6 +148,54 @@ describe("utils", () => {
           ["e", new Set()],
           ["f", new Set()],
           ["g", new Set(["e", "f"])],
+        ]);
+        expect(output).toEqual(expectedMap);
+      });
+
+      it("should return all identifiers from FunctionDeclaration", () => {
+        const node = {
+          type: "FunctionDeclaration",
+          id: { type: "Identifier", name: "a" },
+          params: [
+            { type: "Identifier", name: "b" },
+            { type: "Identifier", name: "c" },
+          ],
+          body: {
+            type: "BlockStatement",
+            body: [
+              {
+                type: "VariableDeclaration",
+                declarations: [
+                  {
+                    type: "VariableDeclarator",
+                    id: { type: "Identifier", name: "d" },
+                    init: { type: "Literal", value: 1 },
+                  },
+                  {
+                    type: "VariableDeclarator",
+                    id: { type: "Identifier", name: "e" },
+                    init: { type: "Literal", value: 2 },
+                  },
+                ],
+                kind: "const",
+              },
+              {
+                type: "ReturnStatement",
+                argument: {
+                  type: "BinaryExpression",
+                  left: { type: "Identifier", name: "d" },
+                  operator: "+",
+                  right: { type: "Identifier", name: "e" },
+                },
+              },
+            ],
+          },
+        };
+        const output = getVarDeclarationIdentifiers(node as ESTree.Node);
+        const expectedMap = new Map<string, Set<string>>([
+          ["a", new Set()],
+          ["d", new Set()],
+          ["e", new Set()],
         ]);
         expect(output).toEqual(expectedMap);
       });

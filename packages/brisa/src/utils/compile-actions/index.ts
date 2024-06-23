@@ -242,7 +242,7 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
             JSON.stringify(info.actionFnExpression!),
             function (key, value) {
               if (
-                value.type === "CallExpression" &&
+                value?.type === "CallExpression" &&
                 this?.type !== "AwaitExpression" &&
                 !FUNCTIONS_TO_IGNORE_AWAIT.has(value.callee?.object?.name) &&
                 !FUNCTIONS_TO_IGNORE_AWAIT.has(
