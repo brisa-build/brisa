@@ -2241,18 +2241,17 @@ describe("utils", () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo("should work with destructuring and element generator", () => {
+    it("should work with destructuring and element generator", () => {
       const code = `
         const props = {
       onClick: () => console.log('hello world'),
       onInput: () => console.log('hello world'),
     };
     const getEl = (text) => <div
-      { ...props }
-    data - action - onClick="a1_1"
-    data - action - onInput="a1_2"
-    data - action
-      > { text } < /div>;
+      {...props}
+      data-action-onClick="a1_1"
+      data-action-onInput="a1_2"
+      data-action>{text}</div>;
 
     export default function Component({ text }) {
       return getEl(text);
@@ -2262,7 +2261,7 @@ describe("utils", () => {
       const output = normalizeQuotes(transformToActionCode(code));
 
       const expected = normalizeQuotes(`
-    import { resolveAction as __resolveAction } from "brisa/server";
+    import {resolveAction as __resolveAction} from "brisa/server";
 
     const props = {
       onClick: () => console.log('hello world'),
@@ -2279,11 +2278,11 @@ describe("utils", () => {
       }, undefined, false, undefined, this);
     }
 
-    function Component({ text }) {
+    function Component({text}) {
       return getEl(text);
     }
 
-    export async function a1_1({ text }, req) {
+    export async function a1_1({text}, req) {
       try {
         const __action = props.onClick;
         await __action(...req.store.get("__params:a1_1"));
@@ -2293,12 +2292,12 @@ describe("utils", () => {
           req,
           error,
           actionId: "a1_1",
-          component: __props => jsxDEV(getEl, { text, ...__props }, undefined, false, undefined, this)
+          component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
         });
       }
     }
 
-    export async function a1_2({ text }, req) {
+    export async function a1_2({text}, req) {
       try {
         const __action = props.onInput;
         await __action(...req.store.get("__params:a1_2"));
@@ -2308,7 +2307,7 @@ describe("utils", () => {
           req,
           error,
           actionId: "a1_2",
-          component: __props => jsxDEV(getEl, { text, ...__props }, undefined, false, undefined, this)
+          component: __props => jsxDEV(Component, {text, ...__props}, undefined, false, undefined, this)
         });
       }
     }

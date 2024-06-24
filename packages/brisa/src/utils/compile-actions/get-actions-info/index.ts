@@ -27,12 +27,18 @@ const FN = new Set([
 
 export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
   const registeredActions = new Set<string>();
+  const fnCallsInsideComponents = new Map<string, any>();
   const actionInfo: ActionInfo[] = [];
 
   JSON.stringify(ast, (k, comp) => {
     if (FN.has(comp?.type)) {
       JSON.stringify(comp, function (k, curr) {
         if (
+          curr?.type === "CallExpression" &&
+          curr?.callee?.type === "Identifier"
+        ) {
+          fnCallsInsideComponents.set(curr?.callee?.name, comp);
+        } else if (
           curr?.type === "Property" &&
           curr?.key?.value?.startsWith?.("data-action-")
         ) {
@@ -129,6 +135,19 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
 
     return comp;
   });
+
+  // Replace the componentFnExpression with the real Component function in case
+  // to be element generators.
+  // Ex:
+  // const someElement = () => <div>...</div>;
+  // consumed in JSX like this: <div>{someElement()}</div>
+  for (const info of actionInfo) {
+    const name = (info.componentFnExpression as any)?.id?.name;
+
+    if (fnCallsInsideComponents.has(name)) {
+      info.componentFnExpression = fnCallsInsideComponents.get(name);
+    }
+  }
 
   return actionInfo;
 }
