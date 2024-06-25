@@ -5,13 +5,14 @@ const BRISA_REQUEST_CLASS = "brisa-request";
 const $document = document;
 const $window = window;
 const stringify = JSON.stringify;
+const method = "POST";
 const $Promise = Promise;
 let controller = new AbortController();
 let isReady = 0;
 
 const bodyWithStore = (args?: unknown[], isFormData?: boolean) => {
   // @ts-ignore
-  const xs = $window._s ? [..._s.Map.entries()] : $window._S ?? [];
+  const xs = $window._s ? [..._s.Map] : $window._S ?? [];
 
   if (isFormData) {
     const form = new FormData(
@@ -66,7 +67,7 @@ async function rpc(
 
   try {
     const res = await fetch(location.toString(), {
-      method: "POST",
+      method,
       signal: getAbortSignal(),
       headers: {
         "x-action": actionId,
@@ -130,7 +131,7 @@ function spaNavigation(event: any) {
       async handler() {
         // We do not validate res.ok because we also want to render 404 or 500 pages.
         const res = await fetch(event.destination.url, {
-          method: "POST",
+          method,
           signal: getAbortSignal(),
           body: bodyWithStore(),
         });
