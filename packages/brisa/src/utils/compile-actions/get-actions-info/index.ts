@@ -1,15 +1,16 @@
 import AST from "@/utils/ast";
+import { JSX_NAME } from "@/utils/client-build-plugin/constants";
 import type { ESTree } from "meriyah";
 
 export type ActionInfo = {
   actionId: string;
   actionIdentifierName?: string;
   actionFnExpression?:
-    | ESTree.ArrowFunctionExpression
-    | ESTree.FunctionExpression;
+  | ESTree.ArrowFunctionExpression
+  | ESTree.FunctionExpression;
   componentFnExpression?:
-    | ESTree.ArrowFunctionExpression
-    | ESTree.FunctionExpression;
+  | ESTree.ArrowFunctionExpression
+  | ESTree.FunctionExpression;
 };
 
 const { parseCodeToAST } = AST("tsx");
@@ -25,15 +26,25 @@ const FN = new Set([
   "ArrowFunctionExpression",
 ]);
 
+function isJSXDeclaration(declaration: any) {
+  return JSX_NAME.has(declaration?.init?.callee?.name)
+}
+
 export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
   const registeredActions = new Set<string>();
   const fnCallsInsideComponents = new Map<string, any>();
   const actionInfo: ActionInfo[] = [];
 
   JSON.stringify(ast, (k, comp) => {
-    if (FN.has(comp?.type)) {
+    const isElement = comp?.type === "VariableDeclaration" && comp?.declarations?.some(isJSXDeclaration);
+    const isComponent = FN.has(comp?.type);
+
+    if (isComponent || isElement) {
       JSON.stringify(comp, function (k, curr) {
-        if (
+        if (isComponent && curr?.type === "Identifier") {
+          return curr;
+        }
+        else if (
           curr?.type === "CallExpression" &&
           curr?.callee?.type === "Identifier"
         ) {
