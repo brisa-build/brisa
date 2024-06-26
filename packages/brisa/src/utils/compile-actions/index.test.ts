@@ -2523,7 +2523,7 @@ describe("utils", () => {
       },
     );
 
-    it.todo(
+    it(
       "should work with an element with multiple actions defined outside the Component",
       () => {
         const code = `
@@ -2546,7 +2546,7 @@ describe("utils", () => {
           onInput: () => console.log('hello world'),
           "data-action-onInput": "a1_2",
           "data-action": true,
-          children: "Click me"
+          children: " Click me "
         }, undefined, false, undefined, this);
 
         const el2 = jsxDEV("div", {
@@ -2555,7 +2555,7 @@ describe("utils", () => {
           onInput: () => console.log('hello world'),
           "data-action-onInput": "a1_4",
           "data-action": true,
-          children: "Click me"
+          children: " Click me "
         }, undefined, false, undefined, this);
 
         function Component() {
@@ -2578,9 +2578,53 @@ describe("utils", () => {
             });
           }
         }
-      `);
 
-        expect(output).toEqual(expected);
+        export async function a1_2({}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_2'));
+            await req._waitActionCallPromises("a1_2");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_2",
+              component: __props => jsxDEV(Component, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }
+
+        export async function a1_3({}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_3'));
+            await req._waitActionCallPromises("a1_3");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_3",
+              component: __props => jsxDEV(Component, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }
+
+        export async function a1_4({}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_4'));
+            await req._waitActionCallPromises("a1_4");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_4",
+              component: __props => jsxDEV(Component, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+        expect(output).toBe(expected);
       },
     );
   });
