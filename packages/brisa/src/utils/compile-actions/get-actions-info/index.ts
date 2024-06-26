@@ -6,11 +6,11 @@ export type ActionInfo = {
   actionId: string;
   actionIdentifierName?: string;
   actionFnExpression?:
-  | ESTree.ArrowFunctionExpression
-  | ESTree.FunctionExpression;
+    | ESTree.ArrowFunctionExpression
+    | ESTree.FunctionExpression;
   componentFnExpression?:
-  | ESTree.ArrowFunctionExpression
-  | ESTree.FunctionExpression;
+    | ESTree.ArrowFunctionExpression
+    | ESTree.FunctionExpression;
 };
 
 const { parseCodeToAST } = AST("tsx");
@@ -27,28 +27,50 @@ const FN = new Set([
 ]);
 
 function isJSXDeclaration(declaration: any) {
-  return JSX_NAME.has(declaration?.init?.callee?.name)
+  return JSX_NAME.has(declaration?.init?.callee?.name);
 }
 
 export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
   const registeredActions = new Set<string>();
   const fnCallsInsideComponents = new Map<string, any>();
   const actionInfo: ActionInfo[] = [];
+  const actionsFromElements: Map<string, ActionInfo[]> = new Map();
 
   JSON.stringify(ast, (k, comp) => {
-    const isElement = comp?.type === "VariableDeclaration" && comp?.declarations?.some(isJSXDeclaration);
+    const element = comp?.declarations?.find(isJSXDeclaration);
+    const isElement = comp?.type === "VariableDeclaration" && element;
     const isComponent = FN.has(comp?.type);
 
     if (isComponent || isElement) {
       JSON.stringify(comp, function (k, curr) {
-        if (isComponent && curr?.type === "Identifier") {
+        // When a Component use identifiers of outside elements with JSX, register the actions
+        // of the outside elements as well in the component.
+        if (
+          isComponent &&
+          curr?.type === "Identifier" &&
+          actionsFromElements.has(curr?.name)
+        ) {
+          const elementActions = actionsFromElements.get(
+            curr?.name,
+          ) as ActionInfo[];
+
+          for (const action of elementActions) {
+            actionInfo.push({ ...action, componentFnExpression: comp });
+          }
+
           return curr;
         }
+
+        // When a component use element generators (functions that return JSX elements),
+        // register it to replace the actionFnExpression with the real component function
+        // after the analysis.
         else if (
           curr?.type === "CallExpression" &&
           curr?.callee?.type === "Identifier"
         ) {
           fnCallsInsideComponents.set(curr?.callee?.name, comp);
+
+          // When an action is detected, register it when it is not registered yet.
         } else if (
           curr?.type === "Property" &&
           curr?.key?.value?.startsWith?.("data-action-")
@@ -133,13 +155,28 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           }
 
           registeredActions.add(actionId);
-          actionInfo.push({
-            actionId,
-            componentFnExpression: comp,
-            actionFnExpression,
-            actionIdentifierName,
-          });
+
+          if (isElement) {
+            const elementActions =
+              actionsFromElements.get(element.id.name) ?? [];
+            actionsFromElements.set(element.id.name, [
+              ...elementActions,
+              {
+                actionId,
+                actionIdentifierName,
+                actionFnExpression,
+              },
+            ]);
+          } else {
+            actionInfo.push({
+              actionId,
+              componentFnExpression: comp,
+              actionFnExpression,
+              actionIdentifierName,
+            });
+          }
         }
+
         return curr;
       });
     }

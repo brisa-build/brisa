@@ -2523,10 +2523,8 @@ describe("utils", () => {
       },
     );
 
-    it(
-      "should work with an element with multiple actions defined outside the Component",
-      () => {
-        const code = `
+    it("should work with some elements with multiple actions defined outside the Component", () => {
+      const code = `
         const el = <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" onInput={() => console.log('hello world')} data-action-onInput="a1_2" data-action> Click me </div>;
         const el2 = <div onClick={() => console.log('hello world')} data-action-onClick="a1_3" onInput={() => console.log('hello world')} data-action-onInput="a1_4" data-action> Click me </div>;
 
@@ -2535,9 +2533,9 @@ describe("utils", () => {
         }
         `;
 
-        const output = normalizeQuotes(transformToActionCode(code));
+      const output = normalizeQuotes(transformToActionCode(code));
 
-        const expected = normalizeQuotes(`
+      const expected = normalizeQuotes(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         const el = jsxDEV("div", {
@@ -2624,8 +2622,75 @@ describe("utils", () => {
           }
         }`);
 
-        expect(output).toBe(expected);
-      },
-    );
+      expect(output).toBe(expected);
+    });
+
+    it("should work with an element with multiple actions defined outside different Components", () => {
+      const code = `
+        const el = <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" onInput={() => console.log('hello world')} data-action-onInput="a1_2" data-action> Click me </div>;
+
+        export default function Component() {
+          return <div>Hello World</div>;
+        }
+
+        export const ComponentWithAction = () => el;
+        `;
+
+      const output = normalizeQuotes(transformToActionCode(code));
+
+      const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        const el = jsxDEV("div", {
+          onClick: () => console.log('hello world'),
+          "data-action-onClick": "a1_1",
+          onInput: () => console.log('hello world'),
+          "data-action-onInput": "a1_2",
+          "data-action": true,
+          children: " Click me "
+        }, undefined, false, undefined, this);
+
+       function Component() {
+          return jsxDEV("div", {
+            children: "Hello World"
+          }, undefined, false, undefined, this);
+        }
+
+        function ComponentWithAction() {
+          return el;
+        }
+
+        export async function a1_1({}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: __props => jsxDEV(ComponentWithAction, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }
+
+        export async function a1_2({}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_2'));
+            await req._waitActionCallPromises("a1_2");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_2",
+              component: __props => jsxDEV(ComponentWithAction, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toBe(expected);
+    });
   });
 });
