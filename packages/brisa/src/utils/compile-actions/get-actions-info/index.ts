@@ -6,11 +6,11 @@ export type ActionInfo = {
   actionId: string;
   actionIdentifierName?: string;
   actionFnExpression?:
-    | ESTree.ArrowFunctionExpression
-    | ESTree.FunctionExpression;
+  | ESTree.ArrowFunctionExpression
+  | ESTree.FunctionExpression;
   componentFnExpression?:
-    | ESTree.ArrowFunctionExpression
-    | ESTree.FunctionExpression;
+  | ESTree.ArrowFunctionExpression
+  | ESTree.FunctionExpression;
 };
 
 const { parseCodeToAST } = AST("tsx");
@@ -46,8 +46,8 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
         const isElementIdentifier =
           curr?.type === "Identifier" && actionsFromElements.has(curr?.name);
 
-        // When a Component use identifiers of outside elements with JSX, register the actions
-        // of the outside elements as well in the component.
+        // When a Component use identifiers of outside elements with actions, register 
+        // the actions of the outside elements as well in the component.
         if (isComponent && isElementIdentifier) {
           const elementActions = actionsFromElements.get(
             curr?.name,
@@ -60,8 +60,8 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           return curr;
         }
 
-        // When a Element use identifiers of outside elements with JSX, we need to propagate
-        // the registry to the element
+        // When a Element use identifiers of outside elements with actions, we need 
+        // to propagate the registry to the element
         else if (isElement && isElementIdentifier) {
           const elementActions = actionsFromElements.get(
             curr?.name,
