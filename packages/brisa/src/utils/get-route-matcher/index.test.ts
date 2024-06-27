@@ -82,5 +82,25 @@ describe("utils", () => {
       );
       expect(route).toBe(null);
     });
+
+    it("should not remove the name when the locale is similar and is not in the URL", () => {
+      const { match } = getRouteMatcher(PAGES_DIR, [], "so");
+      const { route } = match(
+        extendRequestContext({
+          originalRequest: new Request("https://example.com/somepage"),
+        }),
+      );
+      expect(route).not.toBe(null);
+    });
+
+    it("should not remove the name when the locale is similar to the end of the pathname and is not in the URL", () => {
+      const { match } = getRouteMatcher(PAGES_DIR, [], "ge");
+      const { route } = match(
+        extendRequestContext({
+          originalRequest: new Request("https://example.com/somepage"),
+        }),
+      );
+      expect(route).not.toBe(null);
+    });
   });
 });
