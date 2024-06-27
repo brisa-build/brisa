@@ -43,13 +43,12 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
 
     if (isComponent || isElement) {
       JSON.stringify(comp, function (k, curr) {
+        const isElementIdentifier =
+          curr?.type === "Identifier" && actionsFromElements.has(curr?.name);
+
         // When a Component use identifiers of outside elements with JSX, register the actions
         // of the outside elements as well in the component.
-        if (
-          isComponent &&
-          curr?.type === "Identifier" &&
-          actionsFromElements.has(curr?.name)
-        ) {
+        if (isComponent && isElementIdentifier) {
           const elementActions = actionsFromElements.get(
             curr?.name,
           ) as ActionInfo[];
@@ -59,6 +58,15 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           }
 
           return curr;
+        }
+
+        // When a Element use identifiers of outside elements with JSX, we need to propagate
+        // the registry to the element
+        else if (isElement && isElementIdentifier) {
+          const elementActions = actionsFromElements.get(
+            curr?.name,
+          ) as ActionInfo[];
+          actionsFromElements.set(element.id.name, elementActions);
         }
 
         // When a component use element generators (functions that return JSX elements),
