@@ -1,16 +1,14 @@
 import type { MatchedRoute } from "bun";
 import type { RequestContext, RouterType } from "@/types";
 import isTestFile from "@/utils/is-test-file";
+import { getEntrypointsRouter } from "@/utils/get-entrypoints";
 
 export default function getRouteMatcher(
   dir: string,
   reservedPathnames: string[] = [],
   locale?: string,
 ): RouterType {
-  const router = new Bun.FileSystemRouter({
-    style: "nextjs",
-    dir,
-  });
+  const router = getEntrypointsRouter(dir);
   const reservedPathnamesSet = new Set(reservedPathnames);
   const routeMatcher = (req: RequestContext) => {
     const url = new URL(req.finalURL);
