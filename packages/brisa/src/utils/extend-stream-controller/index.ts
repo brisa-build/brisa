@@ -188,17 +188,14 @@ export default function extendStreamController({
       }
     },
     suspensePromise(promise: Promise<void>) {
-      suspensePromises.push(promise);
-      Promise.all([finishDocument.promise, promise]).then(() =>
+      suspensePromises.push(Promise.all([finishDocument.promise, promise]).then(() =>
         this.flushAndUnsupenseAllReady(),
-      );
+      ));
     },
     async waitSuspensedPromises() {
       if (suspensePromises.length === 0) return;
       finishDocument.resolve();
       await Promise.all(suspensePromises);
-      this.flushAndUnsupenseAllReady();
-      return;
     },
     nextSuspenseIndex() {
       return suspensePromises.length + 1;
