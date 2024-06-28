@@ -2658,6 +2658,67 @@ describe("utils", () => {
       expect(output).toBe(expected);
     });
 
+    it.todo(
+      "should work mixing elements with element generatos and components",
+      () => {
+        const code = `
+        const generator = () => <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action> Click me </div>;
+        const el = generator();
+
+        export function Component() {
+          return <div>no actions</div>;
+        }
+
+        export function ComponentWithAction() {
+          return el;
+        }
+      `;
+
+        const output = normalizeQuotes(transformToActionCode(code));
+
+        const expected = normalizeQuotes(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function generator() {
+          return jsxDEV("div", {
+            onClick: () => console.log('hello world'),
+            "data-action-onClick": "a1_1",
+            "data-action": true,
+            children: " Click me "
+          }, undefined, false, undefined, this);
+        }
+
+        const el = generator();
+
+        function Component() {
+          return jsxDEV("div", {
+            children: "no actions"
+          }, undefined, false, undefined, this);
+        }
+
+        function ComponentWithAction() {
+          return el;
+        }
+
+        export async function a1_1({}, req) {
+          try {
+            const __action = () => console.log('hello world');
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: __props => jsxDEV(ComponentWithAction, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+        expect(output).toBe(expected);
+      },
+    );
+
     it.todo("should transform simple HOC with an action", () => {
       const code = `
       export default async function AboutUs() {
