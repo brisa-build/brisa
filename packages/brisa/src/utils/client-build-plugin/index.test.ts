@@ -1429,7 +1429,7 @@ describe("utils", () => {
         const input = `
           export default function MyComponent({ foo, ...rest }, {derived}) {
             const user = derived(() => rest.user ?? { name: 'No user'});
-            return <div>{user.name}</div>
+            return <div>{user.value.name}</div>
           }
         `;
 

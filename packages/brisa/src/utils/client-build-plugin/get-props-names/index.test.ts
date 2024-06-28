@@ -394,6 +394,33 @@ describe("utils", () => {
         expect(renamedOutput).toEqual(expected);
         expect(defaultProps).toEqual({});
       });
+
+      it('should take "value" as prop name', () => {
+        const code = `
+        export default function Component(props, { state }) {
+          const inputs = state(props.value ?? []);
+          
+          return (
+            <>
+              {inputs.value.map(input => (<div key={input}>{input}</div>))}
+            </>
+          )
+        }
+      `;
+        const ast = parseCodeToAST(code);
+        const input = getWebComponentAst(ast)[0] as ESTree.FunctionDeclaration;
+        const propsFromExport = getPropNamesFromExport(ast);
+
+        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+          propsFromExport,
+        );
+        const expected = ["value"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
+        expect(defaultProps).toBeEmpty();
+      });
     });
   });
 });

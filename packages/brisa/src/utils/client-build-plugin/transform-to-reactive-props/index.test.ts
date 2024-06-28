@@ -631,6 +631,35 @@ describe("utils", () => {
         expect(out.props).toEqual(["foo", "bar"]);
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
       });
+
+      it("should not transform a prop converted to state", () => {
+        const code = `
+        export default function Component(props, { state }) {
+          const inputs = state(props.value ?? ['foo']);
+          
+          return (
+            <div>
+              {inputs.value.map(input => (<div key={input}>{input}</div>))}
+            </div>
+          )
+        }
+      `;
+
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+        export default function Component(props, {state}) {
+          const inputs = state(props.value.value ?? ['foo']);
+          return jsxDEV('div', {children: inputs.value.map(input => jsxDEV("div", {children: input}, input, false, undefined, this))}, undefined, false, undefined, this);
+        }
+      `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["value"]);
+        expect(out.vars).toEqual(new Set(["value", "inputs", "props"]));
+      });
     });
   });
 });
