@@ -130,6 +130,7 @@ export function transformComponentToReactiveProps(
   const declaration = component?.declarations?.[0];
   const params = declaration?.init?.params ?? component?.params ?? [];
   const componentBody = component?.body ?? declaration?.init.body;
+  const transformedProps = new Set<string>();
 
   // Remove props from component params
   for (let propParam of params[0]?.properties ?? []) {
@@ -162,6 +163,11 @@ export function transformComponentToReactiveProps(
       // We don't want this:
       //  const { foo: a.value, bar: b.value } = props.value
       if (this?.type === "VariableDeclarator" && this.id === value) {
+        // Fix: https://github.com/brisa-build/brisa/issues/275
+        if (this.init?.type === "CallExpression" && value.name) {
+          transformedProps.add(value.name);
+        }
+
         return JSON.parse(JSON.stringify(value), (key, value) => {
           return value?.isSignal ? value.object : value;
         });
@@ -173,6 +179,7 @@ export function transformComponentToReactiveProps(
       if (
         value?.type === "Identifier" &&
         propsNamesAndRenamesSet.has(value?.name) &&
+        !transformedProps.has(this?.object?.name) &&
         !isPropFromObjectExpression &&
         !value?.name?.startsWith("on")
       ) {

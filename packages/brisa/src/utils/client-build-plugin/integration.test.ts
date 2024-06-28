@@ -2934,7 +2934,7 @@ describe("integration", () => {
       const code = `
       export default function MyComponent({ foo, ...rest }, {derived}) {
         const user = derived(() => rest.user ?? { name: 'No user'});
-        return <div>{user.name}</div>
+        return <div>{user.value.name}</div>
       }`;
 
       defineBrisaWebComponent(code, "src/web-components/test-component.tsx");
@@ -5159,6 +5159,33 @@ describe("integration", () => {
       ) as HTMLDivElement;
 
       expect(bar?.innerHTML).toBe("Bar");
+    });
+
+    it("should not transform to .value iterating a props.value state", async () => {
+      const code = `
+        export default function Component(props, { state }) {
+          const inputs = state(props.value ?? ['foo']);
+          
+          return (
+            <>
+              {inputs.value.map(input => (<div key={input}>{input}</div>))}
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = `<iterating-value value="['foo', 'bar']" />`;
+      defineBrisaWebComponent(code, "src/web-components/iterating-value.tsx");
+
+      await Bun.sleep(0);
+
+      const webComponent = document.querySelector(
+        "iterating-value",
+      ) as HTMLElement;
+
+      expect(webComponent?.shadowRoot?.innerHTML).toBe(
+        `<div key="foo">foo</div><div key="bar">bar</div>`,
+      );
     });
 
     // TODO: This test should work after this happydom issue about assignedSlot
