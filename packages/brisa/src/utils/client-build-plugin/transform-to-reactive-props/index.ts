@@ -157,31 +157,16 @@ export function transformComponentToReactiveProps(
   }
 
   function isExistingPropName(field: any) {
+    if (!field) return false;
     let result = false;
 
     JSON.stringify(field, (k, v) => {
-      if (v?.type === "Identifier" && registeredProps.has(v?.name)) {
-        result = true;
-      }
-      return result ? null : v;
+      if (result) return null;
+      result ||= v?.type === "Identifier" && registeredProps.has(v?.name);
+      return v;
     });
 
     return result;
-  }
-
-  function isObjectPatternProp(value: any) {
-    const type = value?.id?.type ?? value?.type;
-    const properties = value?.id?.properties ?? value?.properties;
-    return type === "ObjectPattern" && properties.some?.(isExistingPropName);
-  }
-
-  function isSomeItemPropName(v: any) {
-    return (
-      isExistingPropName(v) ||
-      v?.some?.(isExistingPropName) ||
-      v?.some?.(isObjectPatternProp) ||
-      isObjectPatternProp(v)
-    );
   }
 
   // _skip fix when there are variable declarations in
@@ -207,8 +192,8 @@ export function transformComponentToReactiveProps(
     }
 
     if (
-      isSomeItemPropName(value?.declarations) ||
-      value?.params?.some?.(isSomeItemPropName)
+      isExistingPropName(value?.declarations) ||
+      isExistingPropName(value?.params)
     ) {
       this._skip = true;
       value._skip = true;
