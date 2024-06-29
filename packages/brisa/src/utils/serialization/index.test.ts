@@ -50,5 +50,18 @@ describe("utils", () => {
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual({ foo: 'bar"""baz' });
     });
+
+    it("should serialize and deserialize entries with empty strings as value", () => {
+      const map = new Map<string, string>();
+      map.set("foo", "");
+      map.set("bar", "");
+      const entries = [...map];
+
+      const serialized = serialize(entries);
+      expect(serialized).toBe("[['foo',''],['bar','']]");
+
+      const deserialized = deserialize(serialized);
+      expect(deserialized).toEqual(entries);
+    });
   });
 });
