@@ -156,10 +156,17 @@ export function transformComponentToReactiveProps(
     };
   }
 
-  function isExistingPropName(v: any) {
-    const { type, name } =
-      v?.id ?? v?.value?.left ?? v?.value ?? v?.left ?? v ?? {};
-    return type === "Identifier" && registeredProps.has(name);
+  function isExistingPropName(field: any) {
+    let result = false;
+
+    JSON.stringify(field, (k, v) => {
+      if (v?.type === "Identifier" && registeredProps.has(v?.name)) {
+        result = true;
+      }
+      return result ? null : v;
+    });
+
+    return result;
   }
 
   function isObjectPatternProp(value: any) {
