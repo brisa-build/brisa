@@ -2158,6 +2158,156 @@ describe("utils", () => {
         expect(out.props).toEqual(["someFoo"]);
         expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
       });
+
+      it('should "foo" prop and creating a renamed foo with nested destructuring variable not have conflicts', () => {
+        const code = `
+          export default function Component({ foo }, { state }) {
+            const example = state(foo);
+
+            function onClick() {
+              const {baz: {bar: {foo}}} = {};
+              console.log(foo);
+            }
+
+            return <div onClick={() => {}}>{example.value}</div>;
+          }
+      `;
+
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component({foo}, {state}) {
+            const example = state(foo.value);
+
+            function onClick() {
+              const {baz: {bar: {foo}}} = {};
+              console.log(foo);
+            }
+
+            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
+          }
+      `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["foo"]);
+        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
+      });
+
+      it("should props.foo and creating a renamed foo with nested destructuring variable not have conflicts", () => {
+        const code = `
+          export default function Component(props, { state }) {
+            const example = state(props.foo);
+  
+            function onClick() {
+              const {baz: {bar: {foo}}} = {};
+              console.log(foo);
+            }
+  
+            return <div onClick={() => {}}>{example.value}</div>;
+          }
+      `;
+
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component(props, {state}) {
+            const example = state(props.foo.value);
+  
+            function onClick() {
+              const {baz: {bar: {foo}}} = {};
+              console.log(foo);
+            }
+  
+            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
+          }
+      `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["foo"]);
+        expect(out.vars).toEqual(
+          new Set(["foo", "example", "props", "console"]),
+        );
+      });
+
+      it("should renamed foo prop and creating a renamed foo with nested destructuring variable not have conflicts", () => {
+        const code = `
+          export default function Component(props, { state }) {
+            const foo = props.someFoo;
+            const example = state(foo);
+  
+            function onClick() {
+              const {baz: {bar: {foo}}} = {};
+              console.log(foo);
+            }
+  
+            return <div onClick={() => {}}>{example.value}</div>;
+          }
+      `;
+
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component(props, {state}) {
+            const foo = props.someFoo.value;
+            const example = state(foo);
+  
+            function onClick() {
+              const {baz: {bar: {foo}}} = {};
+              console.log(foo);
+            }
+  
+            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
+          }
+      `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["someFoo"]);
+        expect(out.vars).toEqual(
+          new Set(["someFoo", "foo", "props", "example", "console"]),
+        );
+      });
+
+      it("should renamed foo prop during destructuring and creating a renamed foo with nested destucturing variable not have conflicts", () => {
+        const code = `
+          export default function Component({ someFoo: foo }, { state }) {
+            const example = state(foo);
+  
+            function onClick() {
+              const {baz: {bar: {foo}}} = {};
+              console.log(foo);
+            }
+  
+            return <div onClick={() => {}}>{example.value}</div>;
+          }
+      `;
+
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component({someFoo: foo}, {state}) {
+            const example = state(foo.value);
+  
+            function onClick() {
+              const {baz: {bar: {foo}}} = {};
+              console.log(foo);
+            }
+  
+            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
+          }
+      `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["someFoo"]);
+        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
+      });
     });
   });
 });
