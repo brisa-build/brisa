@@ -122,6 +122,7 @@ export function transformComponentToReactiveProps(
     ...renamedPropsNames,
     ...propNamesFromExport,
   ]);
+  const registeredProps = new Set<string>();
   const allVariableNames = new Set([...propsNames, ...componentVariableNames]);
   const defaultPropsEntries = Object.entries(defaultPropsValues);
 
@@ -155,56 +156,112 @@ export function transformComponentToReactiveProps(
     };
   }
 
-  const newComponentBody = JSON.parse(
-    JSON.stringify(componentBody),
-    function (key, value) {
-      // Avoid adding .value in:
-      //  const { foo: a, bar: b } = props
-      // We don't want this:
-      //  const { foo: a.value, bar: b.value } = props.value
-      if (this?.type === "VariableDeclarator" && this.id === value) {
-        // Fix: https://github.com/brisa-build/brisa/issues/275
-        if (this.init?.type === "CallExpression" && value.name) {
-          transformedProps.add(value.name);
-        }
+  function isExistingPropName(v: any) {
+    const { type, name } = v?.id ?? v?.value?.left ?? v?.value ?? v ?? {};
+    return type === "Identifier" && registeredProps.has(name);
+  }
 
-        return JSON.parse(JSON.stringify(value), (key, value) => {
-          return value?.isSignal ? value.object : value;
-        });
-      }
+  function isObjectPatternProp(value: any) {
+    const type = value?.id?.type ?? value?.type;
+    const properties = value?.id?.properties ?? value?.properties;
+    return type === "ObjectPattern" && properties.some?.(isExistingPropName);
+  }
 
-      const isPropFromObjectExpression =
-        this?.type === "Property" && this?.key === value;
+  function isSomeItemPropName(v: any) {
+    return (
+      isExistingPropName(v) ||
+      v?.some?.(isExistingPropName) ||
+      v?.some?.(isObjectPatternProp) ||
+      isObjectPatternProp(v)
+    );
+  }
 
-      if (
-        value?.type === "Identifier" &&
-        propsNamesAndRenamesSet.has(value?.name) &&
-        !transformedProps.has(this?.object?.name) &&
-        !isPropFromObjectExpression &&
-        !value?.name?.startsWith("on")
-      ) {
-        // allow: console.log({ propName })
-        // transforming to: console.log({ propName: propName.value })
-        if (this?.type === "Property") this.shorthand = false;
-
-        // add signal, transforming:
-        //  <div>{propName}</div>
-        // to:
-        //  <div>{propName.value}</div>
-        return {
-          type: "MemberExpression",
-          object: value,
-          property: {
-            type: "Identifier",
-            name: "value",
-          },
-          computed: false,
-          isSignal: true,
-        };
-      }
-
+  // _skip fix when there are variable declarations in
+  // different scope with the same name as the prop in
+  // the component body.
+  // Issue: https://github.com/brisa-build/brisa/issues/284
+  function traverseAToB(this: any, key: string, value: any) {
+    if (value === "Identifier" && propsNamesAndRenamesSet.has(this.name)) {
+      registeredProps.add(this.name);
       return value;
-    },
+    }
+
+    if (this._skip && typeof value === "object" && value !== null) {
+      value._skip = true;
+      return value;
+    }
+
+    if (
+      value?.type !== "VariableDeclaration" &&
+      value?.type !== "FunctionDeclaration"
+    ) {
+      return value;
+    }
+
+    if (
+      isSomeItemPropName(value?.declarations) ||
+      value?.params?.some?.(isSomeItemPropName)
+    ) {
+      this._skip = true;
+      value._skip = true;
+    }
+
+    return value;
+  }
+
+  function traverseB2A(this: any, key: string, value: any) {
+    if (this?.type === "VariableDeclarator" && this.id === value) {
+      // Fix: https://github.com/brisa-build/brisa/issues/275
+      if (this.init?.type === "CallExpression" && value.name) {
+        transformedProps.add(value.name);
+      }
+
+      return JSON.parse(JSON.stringify(value), (key, value) => {
+        return value?.isSignal ? value.object : value;
+      });
+    }
+
+    // Avoid adding .value in:
+    //  const { foo: a, bar: b } = props
+    // We don't want this:
+    //  const { foo: a.value, bar: b.value } = props.value
+    const isPropFromObjectExpression =
+      this?.type === "Property" && this?.key === value;
+
+    if (
+      value?.type === "Identifier" &&
+      !value?._skip &&
+      propsNamesAndRenamesSet.has(value?.name) &&
+      !transformedProps.has(this?.object?.name) &&
+      !isPropFromObjectExpression &&
+      !value?.name?.startsWith("on")
+    ) {
+      // allow: console.log({ propName })
+      // transforming to: console.log({ propName: propName.value })
+      if (this?.type === "Property") this.shorthand = false;
+
+      // add signal, transforming:
+      //  <div>{propName}</div>
+      // to:
+      //  <div>{propName.value}</div>
+      return {
+        type: "MemberExpression",
+        object: value,
+        property: {
+          type: "Identifier",
+          name: "value",
+        },
+        computed: false,
+        isSignal: true,
+      };
+    }
+
+    return value;
+  }
+
+  const newComponentBody = JSON.parse(
+    JSON.stringify(componentBody, traverseAToB),
+    traverseB2A,
   );
 
   const newComponent = declaration
