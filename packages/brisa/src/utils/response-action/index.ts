@@ -32,7 +32,7 @@ export default async function responseAction(req: RequestContext) {
     },
   };
 
-  const params = formData
+  let params = formData
     ? [
         {
           isTrusted: true,
@@ -59,7 +59,7 @@ export default async function responseAction(req: RequestContext) {
     "detail" in params[0] &&
     params[0]._wc;
 
-  if (isWebComponentEvent) params[0] = params[0].detail;
+  if (isWebComponentEvent) params = params[0].detail;
 
   // Transfer client store to server store
   transferClientStoreToServer();

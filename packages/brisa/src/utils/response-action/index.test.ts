@@ -285,9 +285,12 @@ describe("utils", () => {
                 defaultPrevented: true,
                 eventPhase: 0,
                 _wc: true,
-                detail: {
-                  foo: "bar",
-                },
+                detail: [
+                  {
+                    foo: "bar",
+                  },
+                  "bar",
+                ],
               },
             ],
           }),
@@ -296,7 +299,7 @@ describe("utils", () => {
 
       await responseAction(req);
 
-      expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }]);
+      expect(req.store.get("__params:a1_1")).toEqual([{ foo: "bar" }, "bar"]);
     });
 
     it("should return as props the action dependencies", async () => {
