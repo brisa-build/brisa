@@ -141,15 +141,15 @@ export default function Homepage() {
   fs.writeFileSync(
     "src/components/counter-server.tsx",
     `import type { RequestContext } from "brisa";
-import { rerenderInAction } from "brisa/server";
+import { rerenderInAction, RenderInitiator } from "brisa/server";
 
 export default function CounterServer(
   { initialValue = 0 }: { initialValue: number },
-  { store, method }: RequestContext,
+  { store, method, renderInitiator }: RequestContext,
 ) {
-  const isDuringActionRerender = method === "POST";
-
-  if (!isDuringActionRerender) store.set("count", initialValue);
+  if (renderInitiator === RenderInitiator.INITIAL_REQUEST) {
+    store.set("count", initialValue);
+  }
 
   store.transferToClient(["count"]);
 
