@@ -63,5 +63,36 @@ describe("utils", () => {
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual(entries);
     });
+
+    it("should serialize and deserialize entries with null as value", () => {
+      const map = new Map<string, null>();
+      map.set("foo", null);
+      map.set("bar", null);
+      const entries = [...map];
+
+      const serialized = serialize(entries);
+      expect(serialized).toBe("[['foo',null],['bar',null]]");
+
+      const deserialized = deserialize(serialized);
+      expect(deserialized).toEqual(entries);
+    });
+
+    // For now is converted to "null" by JSON.stringify, it would be nice to fix
+    // this case: https://github.com/brisa-build/brisa/issues/279
+    it.todo(
+      "should serialize and deserialize entries with undefined as value",
+      () => {
+        const map = new Map<string, undefined>();
+        map.set("foo", undefined);
+        map.set("bar", undefined);
+        const entries = [...map];
+
+        const serialized = serialize(entries);
+        expect(serialized).toBe("[['foo'],['bar']]");
+
+        const deserialized = deserialize(serialized);
+        expect(deserialized).toEqual(entries);
+      },
+    );
   });
 });

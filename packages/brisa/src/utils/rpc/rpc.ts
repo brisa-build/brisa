@@ -1,10 +1,10 @@
 import { registerActions } from "@/utils/rpc/register-actions";
+import { stringifyAndCleanEvent } from "@/utils/rpc/serialize-and-clean-event";
 
 const INDICATOR = "indicator";
 const BRISA_REQUEST_CLASS = "brisa-request";
 const $document = document;
 const $window = window;
-const stringify = JSON.stringify;
 const method = "POST";
 const $Promise = Promise;
 let controller = new AbortController();
@@ -18,11 +18,11 @@ const bodyWithStore = (args?: unknown[], isFormData?: boolean) => {
     const form = new FormData(
       (args![0] as SubmitEvent).target as HTMLFormElement,
     );
-    form.append("x-s", stringify(xs));
+    form.append("x-s", stringifyAndCleanEvent(xs));
     return form;
   }
 
-  return stringify({ "x-s": xs, args }, serialize);
+  return stringifyAndCleanEvent({ "x-s": xs, args });
 };
 
 function loadRPCResolver() {
@@ -95,23 +95,6 @@ async function rpc(
     }
     store?.set(indicator, false);
   }
-}
-
-/**
- * Serialize function used to convert events to JSON.
- */
-function serialize(k: string, v: unknown) {
-  const isInstanceOf = (Instance: any) => v instanceof Instance;
-  const isNode = isInstanceOf(Node);
-
-  if (isInstanceOf(Event) || (isNode && k.match(/target/i))) {
-    const ev: Record<string, any> = {};
-    for (let field in v as any) ev[field] = (v as any)[field];
-    if (isInstanceOf(CustomEvent)) ev._wc = true;
-    return ev;
-  }
-
-  if (v != null && v !== "" && !isNode && !isInstanceOf(Window)) return v;
 }
 
 function spaNavigation(event: any) {
