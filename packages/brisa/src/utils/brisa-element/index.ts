@@ -60,6 +60,8 @@ export default function brisaElement(
   const isObject = (o: unknown) => typeof o === "object";
   const isReactiveArray = (a: any) => a?.some?.(isObject);
   const arr = Array.from;
+  const isCustomEvent = (e: unknown): e is CustomEvent =>
+    e instanceof CustomEvent;
   const isFunction = (fn: unknown) => typeof fn === "function";
   const isAttributeAnEvent = (key: string) => key.startsWith("on");
   const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
@@ -211,7 +213,7 @@ export default function brisaElement(
             el.addEventListener(lowercase(attribute.slice(2)), (e) =>
               (attrValue as (detail: unknown) => EventListener).apply(
                 null,
-                e instanceof CustomEvent ? e.detail : [e],
+                isCustomEvent(e) ? e.detail : [e],
               ),
             );
           } else if (isIndicator || (!isEvent && isFunction(attrValue))) {
@@ -415,7 +417,7 @@ export default function brisaElement(
     e(attribute: string) {
       return (...args: any) => {
         const ev = new CustomEvent(lowercase(attribute.slice(2)), {
-          detail: args?.[0] instanceof CustomEvent ? args[0].detail : args,
+          detail: isCustomEvent(args?.[0]) ? args[0].detail : args,
         });
         this.dispatchEvent(ev);
       };
