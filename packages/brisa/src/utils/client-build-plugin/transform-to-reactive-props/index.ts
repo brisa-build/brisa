@@ -170,6 +170,7 @@ export function transformComponentToReactiveProps(
   function isSomeItemPropName(v: any) {
     return (
       isExistingPropName(v) ||
+      isExistingPropName(v?.left) ||
       v?.some?.(isExistingPropName) ||
       v?.some?.(isObjectPatternProp) ||
       isObjectPatternProp(v)
