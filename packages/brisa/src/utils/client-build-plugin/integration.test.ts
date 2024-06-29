@@ -5244,7 +5244,7 @@ describe("integration", () => {
       expect(inputComponent?.shadowRoot?.innerHTML).toBe('<input value="foo">');
     });
 
-    it("should work variable value from e.currentTarget", () => {
+    it("should work variable value from e.currentTarget without issues with props", () => {
       const code = `
       export default function Component(props, { state }) {
         const inputs = state(props.value ?? []);
@@ -5268,7 +5268,7 @@ describe("integration", () => {
                     class={\`w-full rounded-r-none \${(props.inputClass ?? '').trim()}\`}
                     onInput={(e) => {
                       const { value } = e.currentTarget;
-                      inputs.value[i] = value;
+                      inputs.value = input.value.with(i, value);
                     }}
                   />
                   <button class="rounded-l-none">
@@ -5304,7 +5304,7 @@ describe("integration", () => {
       expect(inputComponent?.shadowRoot?.innerHTML).toBe('<input value="bar">');
     });
 
-    it("should work variable value from e.target", () => {
+    it("should work variable value from e.target without issues with props", () => {
       const code = `
       export default function Component(props, { state }) {
         const inputs = state(props.value ?? []);
@@ -5328,7 +5328,125 @@ describe("integration", () => {
                     class={\`w-full rounded-r-none \${(props.inputClass ?? '').trim()}\`}
                     onInput={(e) => {
                       const { value } = e.target;
-                      inputs.value[i] = value;
+                      inputs.value = input.value.with(i, value);
+                    }}
+                  />
+                  <button class="rounded-l-none">
+                    X
+                  </button>
+                </div>
+              </>
+            ))}
+            <div class="flex justify-end">
+              <button>{props.addButtonText}</button>
+            </div>
+          </div>
+        );
+      }
+      `;
+
+      document.body.innerHTML = `<input-component value="['foo']" />`;
+
+      defineBrisaWebComponent(code, "src/web-components/input-component.tsx");
+
+      const inputComponent = document.querySelector(
+        "input-component",
+      ) as HTMLElement;
+
+      const input = inputComponent?.shadowRoot?.querySelector(
+        "input",
+      ) as HTMLInputElement;
+
+      input.value = "bar";
+      input.dispatchEvent(new Event("input"));
+
+      expect(input.value).toBe("foo");
+      expect(inputComponent?.shadowRoot?.innerHTML).toBe('<input value="bar">');
+    });
+
+    it("should work consuming e.currentTarget.value without issues with props", () => {
+      const code = `
+      export default function Component(props, { state }) {
+        const inputs = state(props.value ?? []);
+        return (
+          <div class="flex flex-col gap-2">
+            {inputs.value.map((input, i) => (
+              <>
+                {props.title ? (
+                  <label class="block mb-1 text-sm" for={\`\${props.id ?? props.name}.\${i}\`}>
+                    {props.title} {i + 1}
+                  </label>
+                ) : null}
+                <div class="flex flex-row">
+                  <input
+                    {...props}
+                    id={\`\${props.id ?? props.name}.\${i}\`}
+                    name={\`\${props.name}.\${i}\`}
+                    title={\`\${props.title} (\${i + 1})\`}
+                    placeholder={props.placeholder}
+                    value={input ?? ''}
+                    class={\`w-full rounded-r-none \${(props.inputClass ?? '').trim()}\`}
+                    onInput={(e) => {
+                      inputs.value = input.value.with(i, e.currentTarget.value);
+                    }}
+                  />
+                  <button class="rounded-l-none">
+                    X
+                  </button>
+                </div>
+              </>
+            ))}
+            <div class="flex justify-end">
+              <button>{props.addButtonText}</button>
+            </div>
+          </div>
+        );
+      }
+      `;
+
+      document.body.innerHTML = `<input-component value="['foo']" />`;
+
+      defineBrisaWebComponent(code, "src/web-components/input-component.tsx");
+
+      const inputComponent = document.querySelector(
+        "input-component",
+      ) as HTMLElement;
+
+      const input = inputComponent?.shadowRoot?.querySelector(
+        "input",
+      ) as HTMLInputElement;
+
+      input.value = "bar";
+      input.dispatchEvent(new Event("input"));
+
+      expect(input.value).toBe("foo");
+      expect(inputComponent?.shadowRoot?.innerHTML).toBe('<input value="bar">');
+    });
+
+    it("should work consuming e.target.value without issues with props", () => {
+      const code = `
+      export default function Component(props, { state }) {
+        const inputs = state(props.value ?? []);
+        return (
+          <div class="flex flex-col gap-2">
+            {inputs.value.map((input, i) => (
+              <>
+                {props.title ? (
+                  <label class="block mb-1 text-sm" for={\`\${props.id ?? props.name}.\${i}\`}>
+                    {props.title} {i + 1}
+                  </label>
+                ) : null}
+                <div class="flex flex-row">
+                  <input
+                    {...props}
+                    id={\`\${props.id ?? props.name}.\${i}\`}
+                    name={\`\${props.name}.\${i}\`}
+                    title={\`\${props.title} (\${i + 1})\`}
+                    placeholder={props.placeholder}
+                    value={input ?? ''}
+                    class={\`w-full rounded-r-none \${(props.inputClass ?? '').trim()}\`}
+                    onInput={(e) => {
+                      inputs.value = input.value.with(i, e.target.value);
                     }}
                   />
                   <button class="rounded-l-none">
