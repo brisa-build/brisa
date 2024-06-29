@@ -157,7 +157,8 @@ export function transformComponentToReactiveProps(
   }
 
   function isExistingPropName(v: any) {
-    const { type, name } = v?.id ?? v?.value?.left ?? v?.value ?? v ?? {};
+    const { type, name } =
+      v?.id ?? v?.value?.left ?? v?.value ?? v?.left ?? v ?? {};
     return type === "Identifier" && registeredProps.has(name);
   }
 
@@ -170,7 +171,6 @@ export function transformComponentToReactiveProps(
   function isSomeItemPropName(v: any) {
     return (
       isExistingPropName(v) ||
-      isExistingPropName(v?.left) ||
       v?.some?.(isExistingPropName) ||
       v?.some?.(isObjectPatternProp) ||
       isObjectPatternProp(v)
