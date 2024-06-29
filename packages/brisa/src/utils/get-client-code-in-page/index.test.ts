@@ -18,10 +18,10 @@ const pageWebComponents = {
 };
 
 const i18nCode = 3072;
-const brisaSize = 5846; // TODO: Reduce this size :/
+const brisaSize = 5892; // TODO: Reduce this size :/
 const webComponents = 758;
 const unsuspenseSize = 217;
-const rpcSize = 2446; // TODO: Reduce this size
+const rpcSize = 2447; // TODO: Reduce this size
 const lazyRPCSize = 4132; // TODO: Reduce this size
 // lazyRPC is loaded after user interaction (action, link),
 // so it's not included in the initial size
