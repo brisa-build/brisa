@@ -209,8 +209,9 @@ export default function brisaElement(
 
           if (isEvent) {
             el.addEventListener(lowercase(attribute.slice(2)), (e) =>
-              (attrValue as (detail: unknown) => EventListener)(
-                e instanceof CustomEvent ? e.detail : e,
+              (attrValue as (detail: unknown) => EventListener).apply(
+                null,
+                e instanceof CustomEvent ? e.detail : [e],
               ),
             );
           } else if (isIndicator || (!isEvent && isFunction(attrValue))) {
@@ -412,9 +413,9 @@ export default function brisaElement(
 
     // Handle events
     e(attribute: string) {
-      return (e: any) => {
+      return (...args: any) => {
         const ev = new CustomEvent(lowercase(attribute.slice(2)), {
-          detail: e?.detail ?? e,
+          detail: args?.[0] instanceof CustomEvent ? args[0].detail : args,
         });
         this.dispatchEvent(ev);
       };

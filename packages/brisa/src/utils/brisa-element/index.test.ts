@@ -542,6 +542,144 @@ describe("utils", () => {
       expect(onClickMock.mock.calls[0].at(0) as unknown as string).toBe("TEST");
     });
 
+    // https://github.com/brisa-build/brisa/issues/286
+    it("should trigger events in different web-components with different params", () => {
+      const onClickMock = mock(() => {});
+
+      function Parent() {
+        return ["first-component", { onClickMe: onClickMock }, "click me"];
+      }
+
+      function FirstComponent({ onClickMe, children }: any) {
+        return ["second-component", { onClickMe }, children];
+      }
+
+      function SecondComponent({ onClickMe, children }: any) {
+        return [
+          "button",
+          { onClick: () => onClickMe("TEST", "TEST2") },
+          children,
+        ];
+      }
+
+      customElements.define(
+        "second-component",
+        brisaElement(SecondComponent, ["onClickMe"]),
+      );
+
+      customElements.define(
+        "first-component",
+        brisaElement(FirstComponent, ["onClickMe"]),
+      );
+
+      customElements.define("parent-component", brisaElement(Parent));
+
+      document.body.innerHTML = "<parent-component />";
+
+      const parentComponent = document.querySelector(
+        "parent-component",
+      ) as HTMLElement;
+
+      const firstComponent = parentComponent?.shadowRoot?.querySelector(
+        "first-component",
+      ) as HTMLElement;
+
+      const secondComponent = firstComponent?.shadowRoot?.querySelector(
+        "second-component",
+      ) as HTMLElement;
+
+      expect(parentComponent?.shadowRoot?.innerHTML).toBe(
+        "<first-component>click me</first-component>",
+      );
+
+      expect(firstComponent?.shadowRoot?.innerHTML).toBe(
+        "<second-component><slot></slot></second-component>",
+      );
+
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe(
+        "<button><slot></slot></button>",
+      );
+
+      const button = secondComponent?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      button.click();
+
+      expect(onClickMock).toHaveBeenCalledWith("TEST", "TEST2");
+    });
+
+    // https://github.com/brisa-build/brisa/issues/285
+    it("should trigger dblClickEvent in different web-components with different params and different types", () => {
+      const onDblClickMock = mock(() => {});
+
+      function Parent() {
+        return [
+          "first-component",
+          { onDblClickMe: onDblClickMock },
+          "click me",
+        ];
+      }
+
+      function FirstComponent({ onDblClickMe, children }: any) {
+        return ["second-component", { onDblClickMe }, children];
+      }
+
+      function SecondComponent({ onDblClickMe, children }: any) {
+        return [
+          "button",
+          { onDblClick: () => onDblClickMe("TEST", "TEST2") },
+          children,
+        ];
+      }
+
+      customElements.define(
+        "second-component",
+        brisaElement(SecondComponent, ["onDblClickMe"]),
+      );
+
+      customElements.define(
+        "first-component",
+        brisaElement(FirstComponent, ["onDblClickMe"]),
+      );
+
+      customElements.define("parent-component", brisaElement(Parent));
+
+      document.body.innerHTML = "<parent-component />";
+
+      const parentComponent = document.querySelector(
+        "parent-component",
+      ) as HTMLElement;
+
+      const firstComponent = parentComponent?.shadowRoot?.querySelector(
+        "first-component",
+      ) as HTMLElement;
+
+      const secondComponent = firstComponent?.shadowRoot?.querySelector(
+        "second-component",
+      ) as HTMLElement;
+
+      expect(parentComponent?.shadowRoot?.innerHTML).toBe(
+        "<first-component>click me</first-component>",
+      );
+
+      expect(firstComponent?.shadowRoot?.innerHTML).toBe(
+        "<second-component><slot></slot></second-component>",
+      );
+
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe(
+        "<button><slot></slot></button>",
+      );
+
+      const button = secondComponent?.shadowRoot?.querySelector(
+        "button",
+      ) as HTMLButtonElement;
+
+      button.dispatchEvent(new Event("dblclick"));
+
+      expect(onDblClickMock).toHaveBeenCalledWith("TEST", "TEST2");
+    });
+
     it("should display a color selector component", () => {
       type Props = { color: { value: string } };
       function ColorSelector({ color }: Props) {
