@@ -267,7 +267,7 @@ return <div>{t("hello-world")}</div>;
 
 For more details, refer to the [i18n](/building-your-application/routing/internationalization) documentation.
 
-## `self`
+## `self`
 
 `self: HTMLElement`
 

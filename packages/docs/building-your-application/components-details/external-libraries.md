@@ -2,7 +2,7 @@
 description: How to use external libraries in Brisa components
 ---
 
-# External libraries
+# External Libraries
 
 When working on a Brisa project, you may encounter scenarios where you need to integrate external libraries. This documentation outlines the process of installing and using external libraries in different contexts within your project: standalone libraries, server components, and web components.
 
@@ -28,7 +28,7 @@ import myLibrary from "<library-name>";
 
 This addition emphasizes the versatility of standalone libraries, making it clear that developers can utilize them in various parts of their project, depending on the specific needs of each component type.
 
-## Server Components
+## Server Components Dependencies
 
 ### Import and Usage
 
@@ -45,7 +45,7 @@ export default function MyPage() {
 
 While both server components and web components can leverage external libraries, the key distinction lies in how they are used. In server components, the integration is more straightforward, as you can directly import and use the libraries within JSX.
 
-## Web Components
+## Web Components Dependencies
 
 ### Import and Usage
 
