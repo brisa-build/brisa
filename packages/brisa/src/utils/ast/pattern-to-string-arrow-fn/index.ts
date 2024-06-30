@@ -38,17 +38,19 @@ export default function patternToStringArrowFn(
         continue;
       }
 
+      const last = acc.at(-1) === "." ? acc.slice(0, -1) : acc;
+
       // Element is an ObjectPattern or ArrayPattern
       if (PATTERNS.has(element?.type)) {
         result.push(
-          ...patternToStringArrowFn(element, options, acc + `[${i}].`),
+          ...patternToStringArrowFn(element, options, last + `[${i}].`),
         );
         continue;
       }
 
       // Transform Element from Array to an arrow fn
       const suffix = acc ? `[${i}]` : element?.name;
-      result.push("() => " + acc + suffix);
+      result.push("() => " + last + suffix);
     }
 
     return result;
@@ -61,8 +63,11 @@ export default function patternToStringArrowFn(
       const suffix = prop?.value?.right
         ? ` ?? ${prop?.value?.right?.value}`
         : "";
-      const dot = prop?.value?.type === "ArrayPattern" ? "" : ".";
+
+      const isArrayPattern = prop?.value?.type === "ArrayPattern";
+      const dot = isArrayPattern ? "" : ".";
       const newAcc = acc + prop?.key?.name + dot + suffix;
+
       result.push(...patternToStringArrowFn(prop?.value, options, newAcc));
       continue;
     }
@@ -77,6 +82,7 @@ export default function patternToStringArrowFn(
       const rest = prop?.argument?.name;
       const content = acc.replace(/\.$/, "");
       let common;
+      let commonLength;
       let items: string[] = [];
 
       for (let i = result.length - 1; i >= 0; i--) {
@@ -84,21 +90,23 @@ export default function patternToStringArrowFn(
 
         if (!common) {
           common = splitted.slice(0, -1);
+          commonLength = common.length;
           items.unshift(splitted.at(-1)!);
           continue;
         }
 
-        if (common.join() !== splitted.slice(0, -1).join()) {
+        const size = commonLength! - splitted.length;
+
+        if (common.join() !== splitted.slice(0, size).join()) {
           break;
         }
 
-        items.unshift(splitted.at(-1)!);
+        items.unshift(splitted.at(size)!);
       }
 
+      const variables = items.join(", ");
       result.push(
-        `() => { let {${items.join(
-          ", ",
-        )}, ...${rest}} = ${content}; return ${rest}}`,
+        `() => { let {${variables}, ...${rest}} = ${content}; return ${rest}}`,
       );
       continue;
     }
