@@ -2,7 +2,6 @@ type Options = {
   skipFirstLevel?: boolean;
 };
 
-const CONTENT_REGEX = /^\(\) =>(.*)\.$/;
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 
 /**
@@ -29,21 +28,27 @@ export default function patternToStringArrowFn(
     for (let i = 0; i < pattern.elements.length; i++) {
       const element = pattern.elements[i];
 
+      // Skip first level
+      if (options.skipFirstLevel && !acc) continue;
+
+      // Transform RestElement from Array to an arrow fn
       if (element?.type === "RestElement") {
-        if (options.skipFirstLevel && !acc) continue;
         const suffix = acc ? `.slice(${i})` : element?.argument?.name;
         result.push("() => " + acc + suffix);
         continue;
       }
 
-      if (!PATTERNS.has(element?.type)) {
-        if (options.skipFirstLevel && !acc) continue;
-        const suffix = acc ? `[${i}]` : element?.name;
-        result.push("() => " + acc + suffix);
+      // Element is an ObjectPattern or ArrayPattern
+      if (PATTERNS.has(element?.type)) {
+        result.push(
+          ...patternToStringArrowFn(element, options, acc + `[${i}].`),
+        );
         continue;
       }
 
-      result.push(...patternToStringArrowFn(element, options, acc + `[${i}].`));
+      // Transform Element from Array to an arrow fn
+      const suffix = acc ? `[${i}]` : element?.name;
+      result.push("() => " + acc + suffix);
     }
 
     return result;
@@ -51,33 +56,38 @@ export default function patternToStringArrowFn(
 
   // ObjectPattern
   for (let prop of pattern.properties) {
-    if (!PATTERNS.has(prop?.value?.type)) {
-      if (options.skipFirstLevel && !acc) continue;
-
-      // Transform
-      //    from: { a: { b: { c, ...rest } } }
-      //    to: () => { let { c, ...rest } = a.b; return rest;}
-      if (prop?.type === "RestElement" && acc) {
-        const rest = prop?.argument?.name;
-        const content = acc.replace(/\.$/, "");
-        const last: string = result.at(-1)?.split(/\.|\[/)?.at(-1) ?? "";
-
-        result.push(
-          `() => { let {${last}, ...${rest}} = ${content}; return ${rest}}`,
-        );
-        continue;
-      }
-
-      let suffix = prop?.value?.right ? ` ?? ${prop?.value?.right?.value}` : "";
-      const name = prop?.key?.name ?? prop?.value?.name ?? prop?.argument?.name;
-      result.push("() => " + acc + name + suffix);
+    // Property is an ObjectPattern or ArrayPattern
+    if (PATTERNS.has(prop?.value?.type)) {
+      const suffix = prop?.value?.right
+        ? ` ?? ${prop?.value?.right?.value}`
+        : "";
+      const dot = prop?.value?.type === "ArrayPattern" ? "" : ".";
+      const newAcc = acc + prop?.key?.name + dot + suffix;
+      result.push(...patternToStringArrowFn(prop?.value, options, newAcc));
       continue;
     }
 
-    const suffix = prop?.value?.right ? ` ?? ${prop?.value?.right?.value}` : "";
-    const dot = prop?.value?.type === "ArrayPattern" ? "" : ".";
-    const newAcc = acc + prop?.key?.name + dot + suffix;
-    result.push(...patternToStringArrowFn(prop?.value, options, newAcc));
+    // Skip first level
+    if (options.skipFirstLevel && !acc) continue;
+
+    // Transform RestElement from Object to an arrow fn
+    //    from: { a: { b: { c, ...rest } } }
+    //    to: () => { let { c, ...rest } = a.b; return rest;}
+    if (prop?.type === "RestElement" && acc) {
+      const rest = prop?.argument?.name;
+      const content = acc.replace(/\.$/, "");
+      const last: string = result.at(-1)?.split(/\.|\[/)?.at(-1) ?? "";
+
+      result.push(
+        `() => { let {${last}, ...${rest}} = ${content}; return ${rest}}`,
+      );
+      continue;
+    }
+
+    // Transform Property from Object to an arrow fn
+    let suffix = prop?.value?.right ? ` ?? ${prop?.value?.right?.value}` : "";
+    const name = prop?.key?.name ?? prop?.value?.name ?? prop?.argument?.name;
+    result.push("() => " + acc + name + suffix);
   }
 
   return result;
