@@ -2,6 +2,7 @@ type Options = {
   skipFirstLevel?: boolean;
 };
 
+const CONTENT_REGEX = /^\(\) =>(.*)\.$/;
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 
 /**
@@ -23,6 +24,7 @@ export default function patternToStringArrowFn(
 ): string[] {
   const result = [];
 
+  // ArrayPattern
   if (pattern.elements) {
     for (let i = 0; i < pattern.elements.length; i++) {
       const element = pattern.elements[i];
@@ -47,9 +49,25 @@ export default function patternToStringArrowFn(
     return result;
   }
 
+  // ObjectPattern
   for (let prop of pattern.properties) {
     if (!PATTERNS.has(prop?.value?.type)) {
       if (options.skipFirstLevel && !acc) continue;
+
+      // Transform
+      //    from: { a: { b: { c, ...rest } } }
+      //    to: () => { let { c, ...rest } = a.b; return rest;}
+      if (prop?.type === "RestElement" && acc) {
+        const rest = prop?.argument?.name;
+        const content = acc.replace(/\.$/, "");
+        const last: string = result.at(-1)?.split(/\.|\[/)?.at(-1) ?? "";
+
+        result.push(
+          `() => { let {${last}, ...${rest}} = ${content}; return ${rest}}`,
+        );
+        continue;
+      }
+
       let suffix = prop?.value?.right ? ` ?? ${prop?.value?.right?.value}` : "";
       const name = prop?.key?.name ?? prop?.value?.name ?? prop?.argument?.name;
       result.push("() => " + acc + name + suffix);
