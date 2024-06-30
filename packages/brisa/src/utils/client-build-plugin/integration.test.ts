@@ -5188,6 +5188,40 @@ describe("integration", () => {
       );
     });
 
+    it("should not transform to nested.value iterating a props.value state", async () => {
+      const code = `
+        export default function Component(props, { state }) {
+          const inputs = state(props.value ?? ['foo']);
+          const signal = { foo: { bar: inputs } }
+          
+          return (
+            <>
+              {signal.foo.bar.inputs.value.map(input => (<div key={input}>{input}</div>))}
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = `<nested-iterating-value value="['foo', 'bar']" />`;
+      const compiledCode = defineBrisaWebComponent(
+        code,
+        "src/web-components/nested-iterating-value.tsx",
+      );
+
+      // should not add value.value.map
+      expect(compiledCode).toContain("signal.foo.bar.inputs.value.map(");
+
+      await Bun.sleep(0);
+
+      const webComponent = document.querySelector(
+        "nested-iterating-value",
+      ) as HTMLElement;
+
+      expect(webComponent?.shadowRoot?.innerHTML).toBe(
+        `<div key="foo">foo</div><div key="bar">bar</div>`,
+      );
+    });
+
     it("should work e.target.value", () => {
       const code = `
         export default function Component({}, { state }) {

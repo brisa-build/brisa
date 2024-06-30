@@ -4,6 +4,26 @@ import { normalizeQuotes } from "@/helpers";
 import AST from "@/utils/ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
+const VARS = [
+  'const foo = "bar";',
+  "const {foo} = {};",
+  "const {bar: foo} = {};",
+  'const {bar: foo = "bar"} = {};',
+  "const {foo, ...rest} = {};",
+  "const {bart: bar, foot: foo} = {};",
+  "const {bar: {baz: {foo}}} = {};",
+  'const {bar: {baz: {foo = "bar"}}} = {};',
+];
+const PARAMS = [
+  "foo",
+  "{foo}",
+  "{bar: foo}",
+  '{bar: foo = "bar"}',
+  "{foo, ...rest}",
+  "{bart: bar, foot: foo}",
+  "{bar: {baz: {foo}}}",
+  '{bar: {baz: {foo = "bar"}}}',
+];
 
 describe("utils", () => {
   describe("client-build-plugin", () => {
@@ -661,13 +681,15 @@ describe("utils", () => {
         expect(out.vars).toEqual(new Set(["value", "inputs", "props"]));
       });
 
-      it('should "foo" prop and creating a foo variable not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
-            const example = state(foo);
+      it.each(VARS)(
+        "should not conflict between props.foo and %s variable",
+        (varType) => {
+          const code = `
+          export default function Component(props, { state }) {
+            const example = state(props.foo);
 
             function onClick() {
-              const foo = 'bar';
+              ${varType}
               console.log(foo);
             }
 
@@ -675,151 +697,174 @@ describe("utils", () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
+          export default function Component(props, {state}) {
+            const example = state(props.foo.value);
+
+            function onClick() {
+              ${varType}
+              console.log(foo);
+            }
+
+            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
+          }
+      `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
+
+      it.each(PARAMS)(
+        "should not conflict between props.foo and %s param",
+        (param) => {
+          const code = `
+          export default function Component(props, { state }) {
+            const example = state(props.foo);
+
+            function onClick(${param}) {
+              console.log(foo);
+            }
+
+            return <div onClick={() => {}}>{example.value}</div>;
+          }
+      `;
+
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+          const expectedCode = normalizeQuotes(`
+          export default function Component(props, {state}) {
+            const example = state(props.foo.value);
+
+            function onClick(${param}) {
+              console.log(foo);
+            }
+
+            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
+          }
+      `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
+
+      it.each(VARS)(
+        "should not conflict between destructuring props.foo and %s variable",
+        (varType) => {
+          const code = `
+          export default function Component({...props}, { state }) {
+            const example = state(props.foo);
+
+            function onClick() {
+              ${varType}
+              console.log(foo);
+            }
+
+            return <div onClick={() => {}}>{example.value}</div>;
+          }
+      `;
+
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+          const expectedCode = normalizeQuotes(`
+          export default function Component({...props}, {state}) {
+            const example = state(props.foo.value);
+
+            function onClick() {
+              ${varType}
+              console.log(foo);
+            }
+
+            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
+          }
+      `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
+
+      it.each(PARAMS)(
+        "should not conflict between destructuring props.foo and %s param",
+        (param) => {
+          const code = `
+          export default function Component({...props}, { state }) {
+            const example = state(props.foo);
+
+            function onClick(${param}) {
+              console.log(foo);
+            }
+
+            return <div onClick={() => {}}>{example.value}</div>;
+          }
+      `;
+
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+          const expectedCode = normalizeQuotes(`
+          export default function Component({...props}, {state}) {
+            const example = state(props.foo.value);
+
+            function onClick(${param}) {
+              console.log(foo);
+            }
+
+            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
+          }
+      `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
+
+      it.each(VARS)(
+        "should not conflict between {foo} props and %s variable",
+        (varType) => {
+          const code = `
+          export default function Component({foo}, { state }) {
+            const example = state(foo);
+
+            function onClick() {
+              ${varType}
+              console.log(foo);
+            }
+
+            return <div onClick={() => {}}>{example.value}</div>;
+          }
+      `;
+
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+          const expectedCode = normalizeQuotes(`
           export default function Component({foo}, {state}) {
             const example = state(foo.value);
 
             function onClick() {
-              const foo = 'bar';
+              ${varType}
               console.log(foo);
             }
 
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a foo variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick() {
-              const foo = 'bar';
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick() {
-              const foo = 'bar';
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a foo variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick() {
-              const foo = 'bar';
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick() {
-              const foo = 'bar';
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo variable not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick() {
-              const foo = 'bar';
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick() {
-              const foo = 'bar';
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "example", "foo", "console"]),
-        );
-      });
-
-      it('should "foo" prop and creating a foo destructuring variable not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
+      it.each(PARAMS)(
+        "should not conflict between {foo} props and %s param",
+        (param) => {
+          const code = `
+          export default function Component({foo}, { state }) {
             const example = state(foo);
 
-            function onClick() {
-              const {foo} = {foo: 'bar'};
+            function onClick(${param}) {
               console.log(foo);
             }
 
@@ -827,149 +872,34 @@ describe("utils", () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component({foo}, {state}) {
             const example = state(foo.value);
 
-            function onClick() {
-              const {foo} = {foo: 'bar'};
+            function onClick(${param}) {
               console.log(foo);
             }
 
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a foo destructuring variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick() {
-              const {foo} = {foo: 'bar'};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick() {
-              const {foo} = {foo: 'bar'};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a foo destructuring variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick() {
-              const {foo} = {foo: 'bar'};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick() {
-              const {foo} = {foo: 'bar'};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo destructuring variable not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick() {
-              const {foo} = {foo: 'bar'};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick() {
-              const {foo} = {foo: 'bar'};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a foo destructuring renamed variable not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
+      it.each(VARS)(
+        'should not conflict between {foo="bar"} props and %s variable',
+        (varType) => {
+          const code = `
+          export default function Component({foo="bar"}, { state }) {
             const example = state(foo);
 
             function onClick() {
-              const {bar: foo} = {bar: 'bar'};
+              ${varType}
               console.log(foo);
             }
 
@@ -977,148 +907,35 @@ describe("utils", () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
+          const expectedCode = normalizeQuotes(`
+          export default function Component({foo}, {state, effect}) {
+            effect(() => foo.value ??= "bar");
             const example = state(foo.value);
 
             function onClick() {
-              const {bar: foo} = {bar: 'bar'};
+              ${varType}
               console.log(foo);
             }
 
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a foo destructuring renamed variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick() {
-              const {bar:foo} = {bar: 'bar'};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick() {
-              const {bar: foo} = {bar: 'bar'};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a foo destructuring renamed variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick() {
-              const {bar: foo} = {bar: 'bar'};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick() {
-              const {bar: foo} = {bar: 'bar'};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo destructuring renamed variable not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick() {
-              const {bar: foo} = {bar: 'bar'};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick() {
-              const {bar: foo} = {bar: 'bar'};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a foo param not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
+      it.each(PARAMS)(
+        'should not conflict between {foo="bar"} props and %s param',
+        (param) => {
+          const code = `
+          export default function Component({foo="bar"}, { state }) {
             const example = state(foo);
 
-            function onClick(foo) {
+            function onClick(${param}) {
               console.log(foo);
             }
 
@@ -1126,602 +943,35 @@ describe("utils", () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
+          const expectedCode = normalizeQuotes(`
+          export default function Component({foo}, {state, effect}) {
+            effect(() => foo.value ??= "bar");
             const example = state(foo.value);
 
-            function onClick(foo) {
+            function onClick(${param}) {
               console.log(foo);
             }
 
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a foo param not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick(foo) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick(foo) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a foo param not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick(foo) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick(foo) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo param not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick(foo) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick(foo) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo destructuring param not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick({foo}) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick({foo}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a foo destructuring renamed param not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
-            const example = state(foo);
-
-            function onClick({foo}) {
-              console.log(foo);
-            }
-
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
-            const example = state(foo.value);
-
-            function onClick({foo}) {
-              console.log(foo);
-            }
-
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a foo destructuring renamed param not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick({bar: foo}) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick({bar: foo}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a foo destructuring renamed param not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick({bar: foo}) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick({bar: foo}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo destructuring renamed param not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick({bar: foo}) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick({bar: foo}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a foo destructuring default value in param not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
-            const example = state(foo);
-
-            function onClick({foo = 'bar'}) {
-              console.log(foo);
-            }
-
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
-            const example = state(foo.value);
-
-            function onClick({foo = 'bar'}) {
-              console.log(foo);
-            }
-
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a foo destructuring default value param not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick({foo = 'bar'}) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick({foo = 'bar'}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a foo destructuring default value param not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick({foo = 'bar'}) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick({foo = 'bar'}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo destructuring default value param not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick({foo = 'bar'}) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick({foo = 'bar'}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a foo default value in param not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
-            const example = state(foo);
-
-            function onClick(foo = 'bar') {
-              console.log(foo);
-            }
-
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
-            const example = state(foo.value);
-
-            function onClick(foo = 'bar') {
-              console.log(foo);
-            }
-
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a foo default value param not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick(foo = 'bar') {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick(foo = 'bar') {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a foo default value param not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick(foo = 'bar') {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick(foo = 'bar') {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo default value param not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick(foo = 'bar') {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick(foo = 'bar') {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a foo default value variable not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
+
+      it.each(VARS)(
+        "should not conflict between {foot: foo} props and %s variable",
+        (varType) => {
+          const code = `
+          export default function Component({foot: foo}, { state }) {
             const example = state(foo);
 
             function onClick() {
-              const {foo = "bar"} = {};
+              ${varType}
               console.log(foo);
             }
 
@@ -1729,149 +979,69 @@ describe("utils", () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
+          const expectedCode = normalizeQuotes(`
+          export default function Component({foot: foo}, {state}) {
             const example = state(foo.value);
 
             function onClick() {
-              const {foo = "bar"} = {};
+              ${varType}
               console.log(foo);
             }
 
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
+      it.each(PARAMS)(
+        "should not conflict between {foot: foo} props and %s param",
+        (param) => {
+          const code = `
+          export default function Component({foot: foo}, { state }) {
+            const example = state(foo);
 
-      it("should props.foo and creating a foo default value variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick() {
-              const {foo = "bar"} = {};
+            function onClick(${param}) {
               console.log(foo);
             }
-  
+
             return <div onClick={() => {}}>{example.value}</div>;
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick() {
-              const {foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a foo default value variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick() {
-              const {foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick() {
-              const {foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a foo default value variable not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick() {
-              const {foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
+          const expectedCode = normalizeQuotes(`
+          export default function Component({foot: foo}, {state}) {
             const example = state(foo.value);
-  
-            function onClick() {
-              const {foo = "bar"} = {};
+
+            function onClick(${param}) {
               console.log(foo);
             }
-  
+
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a renamed foo with default value variable not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
+      it.each(VARS)(
+        "should not conflict between {foot: {foo}} props and %s variable",
+        (varType) => {
+          const code = `
+          export default function Component({foot: {foo}}, { state }) {
             const example = state(foo);
 
             function onClick() {
-              const {bar: foo = "bar"} = {};
+              ${varType}
               console.log(foo);
             }
 
@@ -1879,149 +1049,34 @@ describe("utils", () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
+          const expectedCode = normalizeQuotes(`
+          export default function Component({foot: {foo}}, {state}) {
             const example = state(foo.value);
 
             function onClick() {
-              const {bar: foo = "bar"} = {};
+              ${varType}
               console.log(foo);
             }
 
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a renamed foo with default value variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick() {
-              const {bar: foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick() {
-              const {bar: foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a renamed foo with default value variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick() {
-              const {bar: foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick() {
-              const {bar: foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a renamed foo with default value variable not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick() {
-              const {bar: foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick() {
-              const {bar: foo = "bar"} = {};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a renamed foo with default value variable not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
+      it.each(PARAMS)(
+        "should not conflict between {foot: {foo}} props and %s param",
+        (param) => {
+          const code = `
+          export default function Component({foot: {foo}}, { state }) {
             const example = state(foo);
 
-            function onClick() {
-              const {bar: foo = "bar"} = {};
+            function onClick(${param}) {
               console.log(foo);
             }
 
@@ -2029,285 +1084,98 @@ describe("utils", () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
+          const expectedCode = normalizeQuotes(`
+          export default function Component({foot: {foo}}, {state}) {
             const example = state(foo.value);
 
-            function onClick() {
-              const {bar: foo = "bar"} = {};
+            function onClick(${param}) {
               console.log(foo);
             }
 
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a renamed foo with default value param not have conflicts", () => {
-        const code = `
+      it.each(VARS)(
+        "should not conflict between renamed props in a var and %s variable",
+        (varType) => {
+          const code = `
           export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick({bar: foo = "bar"}) {
+            const foo = props.bar;
+            const example = state(foo);
+
+            function onClick() {
+              ${varType}
               console.log(foo);
             }
-  
+
             return <div onClick={() => {}}>{example.value}</div>;
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick({bar: foo = "bar"}) {
+            const foo = props.bar.value;
+            const example = state(foo);
+
+            function onClick() {
+              ${varType}
               console.log(foo);
             }
-  
+
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a renamed foo with default value param not have conflicts", () => {
-        const code = `
+      it.each(PARAMS)(
+        "should not conflict between {renamed props in a var and %s param",
+        (param) => {
+          const code = `
           export default function Component(props, { state }) {
-            const foo = props.someFoo;
+            const foo = props.bar;
             const example = state(foo);
-  
-            function onClick({bar: foo = "bar"}) {
+
+            function onClick(${param}) {
               console.log(foo);
             }
-  
+
             return <div onClick={() => {}}>{example.value}</div>;
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick({bar: foo = "bar"}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a renamed foo with default value param not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick({bar: foo = "bar"}) {
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick({bar: foo = "bar"}) {
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
-
-      it('should "foo" prop and creating a renamed foo with nested destructuring variable not have conflicts', () => {
-        const code = `
-          export default function Component({ foo }, { state }) {
+            const foo = props.bar.value;
             const example = state(foo);
 
-            function onClick() {
-              const {baz: {bar: {foo}}} = {};
-              console.log(foo);
-            }
-
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state}) {
-            const example = state(foo.value);
-
-            function onClick() {
-              const {baz: {bar: {foo}}} = {};
+            function onClick(${param}) {
               console.log(foo);
             }
 
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "example", "console"]));
-      });
-
-      it("should props.foo and creating a renamed foo with nested destructuring variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const example = state(props.foo);
-  
-            function onClick() {
-              const {baz: {bar: {foo}}} = {};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const example = state(props.foo.value);
-  
-            function onClick() {
-              const {baz: {bar: {foo}}} = {};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["foo"]);
-        expect(out.vars).toEqual(
-          new Set(["foo", "example", "props", "console"]),
-        );
-      });
-
-      it("should renamed foo prop and creating a renamed foo with nested destructuring variable not have conflicts", () => {
-        const code = `
-          export default function Component(props, { state }) {
-            const foo = props.someFoo;
-            const example = state(foo);
-  
-            function onClick() {
-              const {baz: {bar: {foo}}} = {};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component(props, {state}) {
-            const foo = props.someFoo.value;
-            const example = state(foo);
-  
-            function onClick() {
-              const {baz: {bar: {foo}}} = {};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(
-          new Set(["someFoo", "foo", "props", "example", "console"]),
-        );
-      });
-
-      it("should renamed foo prop during destructuring and creating a renamed foo with nested destucturing variable not have conflicts", () => {
-        const code = `
-          export default function Component({ someFoo: foo }, { state }) {
-            const example = state(foo);
-  
-            function onClick() {
-              const {baz: {bar: {foo}}} = {};
-              console.log(foo);
-            }
-  
-            return <div onClick={() => {}}>{example.value}</div>;
-          }
-      `;
-
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-
-        const expectedCode = normalizeQuotes(`
-          export default function Component({someFoo: foo}, {state}) {
-            const example = state(foo.value);
-  
-            function onClick() {
-              const {baz: {bar: {foo}}} = {};
-              console.log(foo);
-            }
-  
-            return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
-          }
-      `);
-
-        expect(outputCode).toBe(expectedCode);
-        expect(out.props).toEqual(["someFoo"]);
-        expect(out.vars).toEqual(new Set(["someFoo", "example", "console"]));
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
     });
   });
 });
