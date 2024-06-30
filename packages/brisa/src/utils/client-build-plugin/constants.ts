@@ -74,3 +74,10 @@ export const TRANSLATE_CORE_IMPORT = {
     value: "brisa",
   },
 } as ESTree.ImportDeclaration;
+
+export const FN = new Set([
+  "ArrowFunctionExpression",
+  "FunctionExpression",
+  "FunctionDeclaration",
+  "ArrowFunctionExpression",
+]);

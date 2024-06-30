@@ -7,6 +7,7 @@ import getPropsNames, {
 import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-ast";
 import manageWebContextField from "@/utils/client-build-plugin/manage-web-context-field";
 import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
+import { FN } from "@/utils/client-build-plugin/constants";
 
 type Prop = (ESTree.MemberExpression | ESTree.Identifier) & {
   isSignal?: true;
@@ -156,12 +157,12 @@ export function transformComponentToReactiveProps(
     };
   }
 
-  function isExistingPropName(field: any) {
+  function isExistingPropName(field: any, stopValues?: Set<any>) {
     if (!field) return false;
     let result = false;
 
     JSON.stringify(field, (k, v) => {
-      if (result) return null;
+      if (result || stopValues?.has(v?.type)) return null;
       result ||= v?.type === "Identifier" && registeredProps.has(v?.name);
       return v;
     });
@@ -192,7 +193,7 @@ export function transformComponentToReactiveProps(
     }
 
     if (
-      isExistingPropName(value?.declarations) ||
+      isExistingPropName(value?.declarations, FN) ||
       isExistingPropName(value?.params)
     ) {
       this._skip = true;
