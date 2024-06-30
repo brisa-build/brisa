@@ -26,6 +26,11 @@ const BATTERY_OF_TESTS: any = [
     ["() => w.x[0]", "() => w.x.slice(1)", "() => w.y.z"],
     options1,
   ],
+  [
+    "{ w: { x: [[b], ...foo], y: { z } } }",
+    ["() => w.x[0][0]", "() => w.x.slice(1)", "() => w.y.z"],
+    options1,
+  ],
 
   // Rest in nested level object
   [
@@ -46,6 +51,16 @@ const BATTERY_OF_TESTS: any = [
       "() => w.x.a",
       "() => w.x.b",
       "() => { let {y, z, a, b, ...foo} = w.x; return foo}",
+      "() => w.t",
+    ],
+    options1,
+  ],
+  [
+    "{ w: { x: [{ y: { f }, z, ...foo }], t } }",
+    [
+      "() => w.x[0].y.f",
+      "() => w.x[0].z",
+      "() => { let {y, z, ...foo} = w.x[0]; return foo}",
       "() => w.t",
     ],
     options1,
@@ -88,6 +103,11 @@ const BATTERY_OF_TESTS_SKIP_LEVEL_1: any = [
     ["() => w.x[0]", "() => w.x.slice(1)", "() => w.y.z"],
     options2,
   ],
+  [
+    "{ w: { x: [[b], ...foo], y: { z } } }",
+    ["() => w.x[0][0]", "() => w.x.slice(1)", "() => w.y.z"],
+    options2,
+  ],
 
   // Rest in nested level object
   [
@@ -108,6 +128,16 @@ const BATTERY_OF_TESTS_SKIP_LEVEL_1: any = [
       "() => w.x.a",
       "() => w.x.b",
       "() => { let {y, z, a, b, ...foo} = w.x; return foo}",
+      "() => w.t",
+    ],
+    options2,
+  ],
+  [
+    "{ w: { x: [{ y: { f }, z, ...foo }], t } }",
+    [
+      "() => w.x[0].y.f",
+      "() => w.x[0].z",
+      "() => { let {y, z, ...foo} = w.x[0]; return foo}",
       "() => w.t",
     ],
     options2,
