@@ -28,8 +28,16 @@ const BATTERY_OF_TESTS: any = [
   ],
 
   // Rest in nested level object
-  // ['{ w: { x: { y, ...foo } } }', ['w.x.y', 'w.x.TODO'], options1],
-  // ['{ w: { x: { y, ...foo }, z } }', ['w.x.y', 'w.x.TODO', 'w.z'], options1],
+  [
+    "{ w: { x: { y, ...foo } } }",
+    ["() => w.x.y", "() => { let {y, ...foo} = w.x; return foo}"],
+    options1,
+  ],
+  [
+    "{ w: { x: { y, ...foo }, z } }",
+    ["() => w.x.y", "() => { let {y, ...foo} = w.x; return foo}", "() => w.z"],
+    options1,
+  ],
 
   // Default values
   [
@@ -70,8 +78,16 @@ const BATTERY_OF_TESTS_SKIP_LEVEL_1: any = [
   ],
 
   // Rest in nested level object
-  // ['{ w: { x: { y, ...foo } } }', ['w.x.y', 'w.x.TODO'], options2],
-  // ['{ w: { x: { y, ...foo }, z } }', ['w.x.y', 'w.x.TODO', 'w.z'], options2],
+  [
+    "{ w: { x: { y, ...foo } } }",
+    ["() => w.x.y", "() => { let {y, ...foo} = w.x; return foo}"],
+    options2,
+  ],
+  [
+    "{ w: { x: { y, ...foo }, z } }",
+    ["() => w.x.y", "() => { let {y, ...foo} = w.x; return foo}", "() => w.z"],
+    options2,
+  ],
 
   // Default values
   ["{ a = 1, b = 2, c = 3 }", [], options2],
