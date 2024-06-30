@@ -76,10 +76,29 @@ export default function patternToStringArrowFn(
     if (prop?.type === "RestElement" && acc) {
       const rest = prop?.argument?.name;
       const content = acc.replace(/\.$/, "");
-      const last: string = result.at(-1)?.split(/\.|\[/)?.at(-1) ?? "";
+      let common;
+      let items: string[] = [];
+
+      for (let i = result.length - 1; i >= 0; i--) {
+        const splitted = result[i]?.split(/\.|\[/);
+
+        if (!common) {
+          common = splitted.slice(0, -1);
+          items.unshift(splitted.at(-1)!);
+          continue;
+        }
+
+        if (common.join() !== splitted.slice(0, -1).join()) {
+          break;
+        }
+
+        items.unshift(splitted.at(-1)!);
+      }
 
       result.push(
-        `() => { let {${last}, ...${rest}} = ${content}; return ${rest}}`,
+        `() => { let {${items.join(
+          ", ",
+        )}, ...${rest}} = ${content}; return ${rest}}`,
       );
       continue;
     }

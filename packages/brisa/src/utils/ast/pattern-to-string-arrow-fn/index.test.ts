@@ -38,6 +38,18 @@ const BATTERY_OF_TESTS: any = [
     ["() => w.x.y", "() => { let {y, ...foo} = w.x; return foo}", "() => w.z"],
     options1,
   ],
+  [
+    "{ w: { x: { y, z, a, b, ...foo }, t } }",
+    [
+      "() => w.x.y",
+      "() => w.x.z",
+      "() => w.x.a",
+      "() => w.x.b",
+      "() => { let {y, z, a, b, ...foo} = w.x; return foo}",
+      "() => w.t",
+    ],
+    options1,
+  ],
 
   // Default values
   [
@@ -86,6 +98,18 @@ const BATTERY_OF_TESTS_SKIP_LEVEL_1: any = [
   [
     "{ w: { x: { y, ...foo }, z } }",
     ["() => w.x.y", "() => { let {y, ...foo} = w.x; return foo}", "() => w.z"],
+    options2,
+  ],
+  [
+    "{ w: { x: { y, z, a, b, ...foo }, t } }",
+    [
+      "() => w.x.y",
+      "() => w.x.z",
+      "() => w.x.a",
+      "() => w.x.b",
+      "() => { let {y, z, a, b, ...foo} = w.x; return foo}",
+      "() => w.t",
+    ],
     options2,
   ],
 
