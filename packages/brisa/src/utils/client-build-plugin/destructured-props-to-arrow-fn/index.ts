@@ -96,8 +96,22 @@ export default function destructuredPropsToArrowFn(
       continue;
     }
 
+    /* ####################################################################
+       #####       Transform Property with default object/array       ######
+       #####       value in top level                                 ######
+       ####################################################################*/
+    if (hasDefaultObjectValue && !acc) {
+      const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
+      const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
+      let newAcc = updatedAcc + name + dotValue;
+
+      newAcc = `(${newAcc + defaultValue.fallbackText})`;
+      result.push(...destructuredPropsToArrowFn(value.left, newAcc));
+      continue;
+    }
+
     // Skip first level
-    if (!acc && !hasDefaultObjectValue) continue;
+    if (!acc) continue;
 
     /*
        ####################################################################
