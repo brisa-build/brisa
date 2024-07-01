@@ -35,6 +35,7 @@ export default function destructuredPropsToArrowFn(
       const element = pattern.elements[i];
       const right = element?.right;
       const defaultValue = getDefaultValue(right);
+      const name = element?.argument?.name;
 
       // Skip first level
       if (!acc) continue;
@@ -43,7 +44,7 @@ export default function destructuredPropsToArrowFn(
          #####     Transform RestElement from Array to an arrow fn     ######
          ####################################################################*/
       if (element?.type === "RestElement") {
-        const suffix = acc ? `.slice(${i})` : element?.argument?.name;
+        const suffix = acc ? `.slice(${i})` : name;
         result.push("() => " + acc + suffix);
         continue;
       }
@@ -72,28 +73,31 @@ export default function destructuredPropsToArrowFn(
   for (let prop of pattern?.properties ?? []) {
     const value = prop?.value;
     const right = prop?.value?.right;
+    const type = prop?.value?.type;
     const defaultValue = getDefaultValue(right);
+    const hasDefaultObjectValue =
+      !defaultValue.isLiteral && defaultValue.fallbackText;
+    const dotValue = acc ? "" : ".value";
 
     /* ####################################################################
        #####     Transform ObjectPattern or ArrayPattern property    ######
        ####################################################################*/
-    if (PATTERNS.has(prop?.value?.type)) {
-      const isArrayPattern = prop?.value?.type === "ArrayPattern";
+    if (PATTERNS.has(type)) {
+      const isArrayPattern = type === "ArrayPattern";
       const dot = isArrayPattern ? "" : ".";
       const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
-      const dotValue = acc ? "" : ".value";
       const { fallbackText } = getDefaultValue(inputPattern?.right, name);
       let newAcc = updatedAcc + name + dotValue;
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
       newAcc += dot + defaultValue.fallbackText;
-      result.push(...destructuredPropsToArrowFn(prop?.value, newAcc));
+      result.push(...destructuredPropsToArrowFn(value, newAcc));
       continue;
     }
 
     // Skip first level
-    if (!acc) continue;
+    if (!acc && !hasDefaultObjectValue) continue;
 
     /*
        ####################################################################
@@ -142,7 +146,7 @@ export default function destructuredPropsToArrowFn(
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
     let name = prop?.key?.name ?? value?.name ?? prop?.argument?.name;
-    result.push("() => " + acc + name + defaultValue.fallbackText);
+    result.push("() => " + acc + name + dotValue + defaultValue.fallbackText);
   }
 
   return result;
