@@ -144,12 +144,26 @@ const BATTERY_TESTS: any = [
     ["() => b.value.c ?? a.value", "() => b.value.d ?? 2"],
   ],
   [
+    "{ a: foo, b: { c = foo, d = 2 } }",
+    ["() => b.value.c ?? foo.value", "() => b.value.d ?? 2"],
+  ],
+  [
     "{ a: { b: { c = z, d = y } }, y, z }",
     ["() => a.value.b.c ?? z.value", "() => a.value.b.d ?? y.value"],
   ],
   [
     "{ a: { b: { c = d, d = 5 } } }",
     ["() => a.value.b.c ?? d.value", "() => a.value.b.d ?? 5"],
+  ],
+
+  // Default values from external identifiers (show not add the .value)
+  [
+    "{ a: { b: { c = foo, d = 5 } } }",
+    ["() => a.value.b.c ?? foo", "() => a.value.b.d ?? 5"],
+  ],
+  [
+    "{ a: { b: { c = foo(), d = 5 } } }",
+    ["() => a.value.b.c ?? foo()", "() => a.value.b.d ?? 5"],
   ],
 ] as const;
 
