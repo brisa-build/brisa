@@ -52,7 +52,10 @@ export default function patternToStringArrowFn(
       }
 
       // Transform Element from Array to an arrow fn
-      const suffix = acc ? `[${i}]` : element?.name;
+      const defaultValue = element?.right
+        ? ` ?? ${element?.right?.value}`
+        : "";
+      const suffix = acc ? `[${i}]${defaultValue}` : element?.name + defaultValue;
       result.push("() => " + last + suffix);
     }
 
