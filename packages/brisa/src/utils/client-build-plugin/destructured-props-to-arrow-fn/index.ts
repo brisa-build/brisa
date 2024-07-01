@@ -27,6 +27,7 @@ export default function destructuredPropsToArrowFn(
   if (pattern.elements) {
     for (let i = 0; i < pattern.elements.length; i++) {
       const element = pattern.elements[i];
+      const right = element?.right;
 
       // Skip first level
       if (!acc) continue;
@@ -53,8 +54,9 @@ export default function destructuredPropsToArrowFn(
       /* #####################################################################
         #####        Transform Element from Array to an arrow fn        ######
         ####################################################################*/
-      const defaultValue = element?.right ? ` ?? ${element?.right?.value}` : "";
-      const suffix = `[${i}]${defaultValue}`;
+      const defaultValue = right ? generateCodeFromAST(right) : null;
+      const fallback = defaultValue ? ` ?? ${defaultValue}` : "";
+      const suffix = `[${i}]${fallback}`;
       result.push("() => " + last + suffix);
     }
 
@@ -65,6 +67,7 @@ export default function destructuredPropsToArrowFn(
   for (let prop of pattern?.properties ?? []) {
     const value = prop?.value;
     const right = prop?.value?.right;
+    const defaultValue = right ? generateCodeFromAST(right) : null;
 
     /* ####################################################################
        #####     Transform ObjectPattern or ArrayPattern property    ######
@@ -132,23 +135,7 @@ export default function destructuredPropsToArrowFn(
     /* #############################################################
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
-    const fallbackObjInString =
-      value?.type === "AssignmentPattern" && right?.type !== "Literal"
-        ? generateCodeFromAST(right)
-        : null;
-
-    let defaultValue = fallbackObjInString ?? right?.value;
-
-    // Literal values arrives with original format (1, "1"...)
-    if (
-      !fallbackObjInString &&
-      defaultValue &&
-      typeof defaultValue === "string"
-    ) {
-      defaultValue = `"${defaultValue}"`;
-    }
-
-    let suffix = right ? ` ?? ${defaultValue}` : "";
+    let suffix = defaultValue ? ` ?? ${defaultValue}` : "";
     let name = prop?.key?.name ?? value?.name ?? prop?.argument?.name;
     result.push("() => " + acc + name + suffix);
   }
