@@ -37,6 +37,8 @@ export default function destructuredPropsToArrowFn(
       const defaultValue = getDefaultValue(right);
       const name = element?.argument?.name;
 
+      if (defaultValue.isIdentifier) console.log("ENTRAA 1");
+
       // Skip first level
       if (!acc) continue;
 
@@ -76,9 +78,11 @@ export default function destructuredPropsToArrowFn(
     const right = prop?.value?.right;
     const type = prop?.value?.type;
     const defaultValue = getDefaultValue(right);
+    const dotValueForDefault = defaultValue.isIdentifier ? ".value" : "";
+    const propDefaultText = defaultValue.fallbackText + dotValueForDefault;
+    const dotValue = acc ? "" : ".value";
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
-    const dotValue = acc ? "" : ".value";
 
     /* ####################################################################
        #####     Transform ObjectPattern or ArrayPattern property    ######
@@ -92,7 +96,7 @@ export default function destructuredPropsToArrowFn(
       let newAcc = updatedAcc + name + dotValue;
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
-      newAcc += dot + defaultValue.fallbackText;
+      newAcc += dot + propDefaultText;
       result.push(...destructuredPropsToArrowFn(value, newAcc));
       continue;
     }
@@ -106,7 +110,7 @@ export default function destructuredPropsToArrowFn(
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       let newAcc = updatedAcc + name + dotValue;
 
-      newAcc = `(${newAcc + defaultValue.fallbackText}).`;
+      newAcc = `(${newAcc + propDefaultText}).`;
       result.push(...destructuredPropsToArrowFn(value.left, newAcc));
       continue;
     }
@@ -161,7 +165,7 @@ export default function destructuredPropsToArrowFn(
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
     let name = prop?.key?.name ?? value?.name ?? prop?.argument?.name;
-    result.push("() => " + acc + name + dotValue + defaultValue.fallbackText);
+    result.push("() => " + acc + name + dotValue + propDefaultText);
   }
 
   return result;
@@ -171,10 +175,11 @@ function getDefaultValue(inputRight: any, name?: string) {
   const right = name
     ? inputRight?.properties?.find((p: any) => p.key?.name === name)?.value
     : inputRight;
-
-  const isLiteral = right?.type === "Literal";
   const text = right ? generateCodeFromAST(right) : null;
-  const fallbackText = text ? ` ?? ${text}` : "";
 
-  return { fallbackText, isLiteral };
+  return {
+    fallbackText: text ? ` ?? ${text}` : "",
+    isLiteral: right?.type === "Literal",
+    isIdentifier: right?.type === "Identifier",
+  };
 }
