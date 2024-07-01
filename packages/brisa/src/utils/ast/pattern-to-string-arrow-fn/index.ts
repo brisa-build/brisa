@@ -5,6 +5,7 @@ type Options = {
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 const DEFAULT_VALUE_REGEX = / \?\?.*$/;
 const SEPARATOR_REGEX = /\.|\[/;
+const DOT_END_REGEX = /\.$/;
 
 /**
  * Converts a pattern to a list of string arrow fn that can be used to access the
@@ -68,7 +69,9 @@ export default function patternToStringArrowFn(
 
       const isArrayPattern = prop?.value?.type === "ArrayPattern";
       const dot = isArrayPattern ? "" : ".";
-      const newAcc = acc + prop?.key?.name + dot + suffix;
+      const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
+      const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
+      const newAcc = updatedAcc + name + dot + suffix;
 
       result.push(...patternToStringArrowFn(prop?.value, options, newAcc));
       continue;
@@ -82,7 +85,7 @@ export default function patternToStringArrowFn(
     //    to: () => { let { c, ...rest } = a.b; return rest;}
     if (prop?.type === "RestElement" && acc) {
       const rest = prop?.argument?.name;
-      const content = acc.replace(/\.$/, "");
+      const content = acc.replace(DOT_END_REGEX, "");
       let common;
       let commonLength;
       let items: string[] = [];

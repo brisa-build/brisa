@@ -22,6 +22,11 @@ const BATTERY_OF_TESTS: any = [
     options1,
   ],
   [
+    "{ a: { 'b-c': [d, ...e] } }",
+    ['() => a["b-c"][0]', '() => a["b-c"].slice(1)'],
+    options1,
+  ],
+  [
     "{ w: { x: [b, ...foo], y: { z } } }",
     ["() => w.x[0]", "() => w.x.slice(1)", "() => w.y.z"],
     options1,
@@ -111,6 +116,11 @@ const BATTERY_OF_TESTS_SKIP_LEVEL_1: any = [
   [
     "{ w: { x: [b, ...foo] } }",
     ["() => w.x[0]", "() => w.x.slice(1)"],
+    options2,
+  ],
+  [
+    "{ a: { 'b-c': [d, ...e] } }",
+    ['() => a["b-c"][0]', '() => a["b-c"].slice(1)'],
     options2,
   ],
   [
