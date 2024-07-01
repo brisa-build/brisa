@@ -18,10 +18,16 @@ const { generateCodeFromAST } = AST("tsx");
  *         - () => f.value.g ?? "5"
  */
 export default function destructuredPropsToArrowFn(
-  pattern: any,
+  inputPattern: any,
   acc = "",
 ): string[] {
   const result = [];
+  let pattern = inputPattern;
+
+  // ##### AssignmentPattern (with default value in top level) #####
+  if (pattern?.type === "AssignmentPattern") {
+    pattern = pattern.left;
+  }
 
   // ##### ArrayPattern #####
   if (pattern.elements) {
@@ -77,9 +83,11 @@ export default function destructuredPropsToArrowFn(
       const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       const dotValue = acc ? "" : ".value";
-      const newAcc =
-        updatedAcc + name + dotValue + dot + defaultValue.fallbackText;
+      const { fallbackText } = getDefaultValue(inputPattern?.right);
+      let newAcc = updatedAcc + name + dotValue;
 
+      if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
+      newAcc += dot + defaultValue.fallbackText;
       result.push(...destructuredPropsToArrowFn(prop?.value, newAcc));
       continue;
     }

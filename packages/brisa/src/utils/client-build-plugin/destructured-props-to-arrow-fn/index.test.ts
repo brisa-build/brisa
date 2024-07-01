@@ -1,3 +1,4 @@
+import { normalizeQuotes } from "@/helpers";
 import AST from "@/utils/ast";
 import destructuredPropsToArrowFn from "@/utils/client-build-plugin/destructured-props-to-arrow-fn";
 import { describe, expect, it } from "bun:test";
@@ -78,10 +79,7 @@ const BATTERY_TESTS: any = [
   // Default values
   [
     "{ a = 1, b: { c, d } } = { c: 2, b: { c: 3, d: 4} }",
-    [
-      "() => (b.value ?? { c: 3, d: 4}).c",
-      "() => (b.value ?? { c: 3, d: 4}).d",
-    ],
+    ["() => (b.value ?? {c: 3, d: 4}).c", "() => (b.value ?? {c: 3, d: 4}).d"],
   ],
   [
     "{ a = 1, b: [c, d] } = { c: 2, b: [3, 4] }",
@@ -89,11 +87,11 @@ const BATTERY_TESTS: any = [
   ],
   [
     "{ a = 1, b: { c, d = { f: 2 } } }",
-    ["() => b.value.c", "() => b.value.d ?? {\n  f: 2\n}"],
+    ["() => b.value.c", "() => b.value.d ?? {f: 2}"],
   ],
   [
     "{ a = 1, b: { c, d = {f: 'test'} } }",
-    ["() => b.value.c", '() => b.value.d ?? {\n  f: "test"\n}'],
+    ["() => b.value.c", '() => b.value.d ?? {f: "test"}'],
   ],
   [
     "{ a = '1', b: { c, d } } = { c: '2', b: { c: '3', d: '4'} }",
@@ -147,7 +145,9 @@ describe("AST", () => {
         const pattern = ast.body[0].declarations[0].init.params[0];
         const result = destructuredPropsToArrowFn(pattern, options);
 
-        expect(result).toEqual(expected);
+        expect(result.map(normalizeQuotes)).toEqual(
+          expected.map(normalizeQuotes),
+        );
       });
     },
   );
