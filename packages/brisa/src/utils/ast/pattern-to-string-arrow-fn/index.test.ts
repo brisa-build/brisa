@@ -9,6 +9,7 @@ const BATTERY_OF_TESTS: any = [
   // Basic patterns
   ["[a, b, c]", ["() => a", "() => b", "() => c"], options1],
   ["{ b: { d: [foo] } }", ["() => b.d[0]"], options1],
+  ["{a, b: [b = 1, c = 2]}", ["() => a", "() => b[0] ?? 1", "() => b[1] ?? 2"], options1],
 
   // Rest in first object level is not transformed
   ["[...rest]", ["() => rest"]],
@@ -24,6 +25,11 @@ const BATTERY_OF_TESTS: any = [
   [
     "{ a: { 'b-c': [d, ...e] } }",
     ['() => a["b-c"][0]', '() => a["b-c"].slice(1)'],
+    options1,
+  ],
+  [
+    "{ a: { 1: [d, ...e] } }",
+    ['() => a["1"][0]', '() => a["1"].slice(1)'],
     options1,
   ],
   [
@@ -105,6 +111,7 @@ const options2 = { skipFirstLevel: true };
 const BATTERY_OF_TESTS_SKIP_LEVEL_1: any = [
   // Basic patterns
   ["{ b: { d: [foo] } }", ["() => b.d[0]"], options2],
+  ["{a, b: [b = 1, c = 2]}", ["() => b[0] ?? 1", "() => b[1] ?? 2"], options2],
 
   // Ignore first level
   ["[a, b, c]", [], options2],
@@ -121,6 +128,11 @@ const BATTERY_OF_TESTS_SKIP_LEVEL_1: any = [
   [
     "{ a: { 'b-c': [d, ...e] } }",
     ['() => a["b-c"][0]', '() => a["b-c"].slice(1)'],
+    options2,
+  ],
+  [
+    "{ a: { 1: [d, ...e] } }",
+    ['() => a["1"][0]', '() => a["1"].slice(1)'],
     options2,
   ],
   [
