@@ -45,9 +45,7 @@ export default function destructuredPropsToArrowFn(
 
       // Transform Element from Array to an arrow fn
       const defaultValue = element?.right ? ` ?? ${element?.right?.value}` : "";
-      const suffix = acc
-        ? `[${i}]${defaultValue}`
-        : element?.name + defaultValue;
+      const suffix = `[${i}]${defaultValue}`;
       result.push("() => " + last + suffix);
     }
 
@@ -66,7 +64,8 @@ export default function destructuredPropsToArrowFn(
       const dot = isArrayPattern ? "" : ".";
       const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
-      const newAcc = updatedAcc + name + dot + suffix;
+      const dotValue = acc ? "" : ".value";
+      const newAcc = updatedAcc + name + dotValue + dot + suffix;
 
       result.push(...destructuredPropsToArrowFn(prop?.value, newAcc));
       continue;
@@ -77,7 +76,7 @@ export default function destructuredPropsToArrowFn(
 
     // Transform RestElement from Object to an arrow fn
     //    from: { a: { b: { c, ...rest } } }
-    //    to: () => { let { c, ...rest } = a.b; return rest;}
+    //    to: () => { let { c, ...rest } = a.value.b; return rest;}
     if (prop?.type === "RestElement" && acc) {
       const rest = prop?.argument?.name;
       const content = acc.replace(DOT_END_REGEX, "");
@@ -122,7 +121,7 @@ export default function destructuredPropsToArrowFn(
     }
 
     let suffix = prop?.value?.right ? ` ?? ${defaultValue}` : "";
-    const name = prop?.key?.name ?? prop?.value?.name ?? prop?.argument?.name;
+    let name = prop?.key?.name ?? prop?.value?.name ?? prop?.argument?.name;
     result.push("() => " + acc + name + suffix);
   }
 

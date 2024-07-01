@@ -6,77 +6,93 @@ const { parseCodeToAST } = AST("tsx");
 
 const BATTERY_TESTS: any = [
   // Basic patterns
-  ["{ b: { d: [foo] } }", ["() => b.d[0]"]],
-  ["{a, b: [b = 1, c = 2]}", ["() => b[0] ?? 1", "() => b[1] ?? 2"]],
+  ["{ b: { d: [foo] } }", ["() => b.value.d[0]"]],
+  [
+    "{a, b: [b = 1, c = 2]}",
+    ["() => b.value[0] ?? 1", "() => b.value[1] ?? 2"],
+  ],
 
   // Ignore first level
   ["[a, b, c]", []],
   ["[...rest]", []],
   ["[foo, ...rest]", []],
   ["{ a, b, ...rest }", []],
+  ["{ a = 1, b = 2, c = 3 }", []],
 
   // Rest in nested level array
-  ["{ w: { x: [b, ...foo] } }", ["() => w.x[0]", "() => w.x.slice(1)"]],
+  [
+    "{ w: { x: [b, ...foo] } }",
+    ["() => w.value.x[0]", "() => w.value.x.slice(1)"],
+  ],
   [
     "{ a: { 'b-c': [d, ...e] } }",
-    ['() => a["b-c"][0]', '() => a["b-c"].slice(1)'],
+    ['() => a.value["b-c"][0]', '() => a.value["b-c"].slice(1)'],
   ],
-  ["{ a: { 1: [d, ...e] } }", ['() => a["1"][0]', '() => a["1"].slice(1)']],
+  [
+    "{ a: { 1: [d, ...e] } }",
+    ['() => a.value["1"][0]', '() => a.value["1"].slice(1)'],
+  ],
   [
     "{ w: { x: [b, ...foo], y: { z } } }",
-    ["() => w.x[0]", "() => w.x.slice(1)", "() => w.y.z"],
+    ["() => w.value.x[0]", "() => w.value.x.slice(1)", "() => w.value.y.z"],
   ],
   [
     "{ w: { x: [[b], ...foo], y: { z } } }",
-    ["() => w.x[0][0]", "() => w.x.slice(1)", "() => w.y.z"],
+    ["() => w.value.x[0][0]", "() => w.value.x.slice(1)", "() => w.value.y.z"],
   ],
 
   // Rest in nested level object
   [
     "{ w: { x: { y, ...foo } } }",
-    ["() => w.x.y", "() => { let {y, ...foo} = w.x; return foo}"],
+    ["() => w.value.x.y", "() => { let {y, ...foo} = w.value.x; return foo}"],
   ],
   [
     "{ w: { x: { y, ...foo }, z } }",
-    ["() => w.x.y", "() => { let {y, ...foo} = w.x; return foo}", "() => w.z"],
+    [
+      "() => w.value.x.y",
+      "() => { let {y, ...foo} = w.value.x; return foo}",
+      "() => w.value.z",
+    ],
   ],
   [
     "{ w: { x: { y, z, a, b, ...foo }, t } }",
     [
-      "() => w.x.y",
-      "() => w.x.z",
-      "() => w.x.a",
-      "() => w.x.b",
-      "() => { let {y, z, a, b, ...foo} = w.x; return foo}",
-      "() => w.t",
+      "() => w.value.x.y",
+      "() => w.value.x.z",
+      "() => w.value.x.a",
+      "() => w.value.x.b",
+      "() => { let {y, z, a, b, ...foo} = w.value.x; return foo}",
+      "() => w.value.t",
     ],
   ],
   [
     "{ w: { x: [{ y: { f }, z, ...foo }], t } }",
     [
-      "() => w.x[0].y.f",
-      "() => w.x[0].z",
-      "() => { let {y, z, ...foo} = w.x[0]; return foo}",
-      "() => w.t",
+      "() => w.value.x[0].y.f",
+      "() => w.value.x[0].z",
+      "() => { let {y, z, ...foo} = w.value.x[0]; return foo}",
+      "() => w.value.t",
     ],
   ],
 
   // Default values
-  ["{ a = 1, b = 2, c = 3 }", []],
-  ["{ a: { b = 1, c = 2 } }", ["() => a.b ?? 1", "() => a.c ?? 2"]],
-  ['{ a: { b = "1", c = "2" } }', ['() => a.b ?? "1"', '() => a.c ?? "2"']],
+  ["{ a: { b = 1, c = 2 } }", ["() => a.value.b ?? 1", "() => a.value.c ?? 2"]],
+  [
+    '{ a: { b = "1", c = "2" } }',
+    ['() => a.value.b ?? "1"', '() => a.value.c ?? "2"'],
+  ],
   [
     '{ a: [{ b: {c = "3" }}], d, f: { g = "5" }}',
-    ['() => a[0].b.c ?? "3"', '() => f.g ?? "5"'],
+    ['() => a.value[0].b.c ?? "3"', '() => f.value.g ?? "5"'],
   ],
-  ["{ w: { x: { y: { z = 1 } } } }", ["() => w.x.y.z ?? 1"]],
+  ["{ w: { x: { y: { z = 1 } } } }", ["() => w.value.x.y.z ?? 1"]],
   [
     "{ w: { x: [{ y: { f = 'bar' }, z = 'baz', ...foo }], t } }",
     [
-      `() => w.x[0].y.f ?? "bar"`,
-      `() => w.x[0].z ?? "baz"`,
-      "() => { let {y, z, ...foo} = w.x[0]; return foo}",
-      "() => w.t",
+      `() => w.value.x[0].y.f ?? "bar"`,
+      `() => w.value.x[0].z ?? "baz"`,
+      "() => { let {y, z, ...foo} = w.value.x[0]; return foo}",
+      "() => w.value.t",
     ],
   ],
 ] as const;
