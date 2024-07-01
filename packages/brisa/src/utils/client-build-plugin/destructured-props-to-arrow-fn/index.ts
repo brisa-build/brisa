@@ -25,6 +25,7 @@ export default function destructuredPropsToArrowFn(
   acc = "",
 ): Result {
   const result: Result = [];
+  const propsFirstLevel = [];
   let pattern = inputPattern;
 
   // ##### AssignmentPattern (with default value in top level) #####
@@ -42,7 +43,10 @@ export default function destructuredPropsToArrowFn(
         element?.argument?.name ?? element?.left?.name ?? element?.name;
 
       // Skip first level
-      if (!acc) continue;
+      if (!acc) {
+        propsFirstLevel.push(name);
+        continue;
+      }
 
       /* ####################################################################
          #####     Transform RestElement from Array to an arrow fn     ######
@@ -85,8 +89,11 @@ export default function destructuredPropsToArrowFn(
     const dotValueForDefault = defaultValue.isIdentifier ? ".value" : "";
     const propDefaultText = defaultValue.fallbackText + dotValueForDefault;
     const dotValue = acc ? "" : ".value";
+    const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
+
+    if (!acc) propsFirstLevel.push(name);
 
     /* ####################################################################
        #####     Transform ObjectPattern or ArrayPattern property    ######
@@ -94,7 +101,6 @@ export default function destructuredPropsToArrowFn(
     if (PATTERNS.has(type)) {
       const isArrayPattern = type === "ArrayPattern";
       const dot = isArrayPattern ? "" : ".";
-      const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       const { fallbackText } = getDefaultValue(inputPattern?.right, name);
       let newAcc = updatedAcc + prefix + name + dotValue;
@@ -110,7 +116,6 @@ export default function destructuredPropsToArrowFn(
        #####       value in top level                                 ######
        ####################################################################*/
     if (hasDefaultObjectValue && !acc) {
-      const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       let newAcc = updatedAcc + prefix + name + dotValue;
 
@@ -169,11 +174,41 @@ export default function destructuredPropsToArrowFn(
     /* #############################################################
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
-    let name = prop?.key?.name ?? value?.name ?? prop?.argument?.name;
     result.push({
       arrow: "() => " + acc + name + dotValue + propDefaultText,
-      name,
+      name: prop?.key?.name ?? value?.name ?? prop?.argument?.name,
     });
+  }
+
+  // ##### Remove .value from external identifiers default values #####
+  if (!acc) {
+    const allProps = new Set(propsFirstLevel);
+    const allVarsWithDotValue = new Set();
+
+    for (let i = 0; i < result.length; i++) {
+      const { arrow, name } = result[i];
+      allProps.add(name);
+      const matched = arrow.replaceAll("(", "").match(/\S*\.value/g);
+
+      for (let j = 0; matched && j < matched.length; j++) {
+        let varName = matched[j].replace(".value", "");
+        if (prefix) varName = varName.replace(prefix, "");
+        allVarsWithDotValue.add(varName);
+      }
+    }
+
+    // @ts-ignore Difference is already available in Bun but not in the types
+    const difference = allVarsWithDotValue.difference(allProps);
+
+    if (!difference.size) return result;
+
+    return result.map((r) => ({
+      name: r.name,
+      arrow: r.arrow.replace(
+        new RegExp(`(${Array.from(difference).join("|")})\\.value`, "g"),
+        "$1",
+      ),
+    }));
   }
 
   return result;

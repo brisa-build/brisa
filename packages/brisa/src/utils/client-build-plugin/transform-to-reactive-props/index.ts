@@ -26,6 +26,8 @@ type Result = {
   statics?: Statics;
 };
 
+const DESTRUCTURING_PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
+
 export default function transformToReactiveProps(ast: ESTree.Program): Result {
   const [component, defaultExportIndex, identifierDeclarationIndex] =
     getWebComponentAst(ast);
@@ -113,6 +115,10 @@ export function transformComponentToReactiveProps(
   component: any,
   propNamesFromExport: string[],
 ) {
+  // Order here matters, we need to fix reactivity on destructured props
+  // before getting the props names and variables.
+  fixReactivityOnDestructuredProps(component);
+
   const componentVariableNames = getComponentVariableNames(component);
   const [propsNames, renamedPropsNames, defaultPropsValues] = getPropsNames(
     component,
@@ -157,12 +163,12 @@ export function transformComponentToReactiveProps(
     };
   }
 
-  function isExistingPropName(field: any, stopValues?: Set<any>) {
+  function isExistingPropName(field: any, setToStop?: Set<string>) {
     if (!field) return false;
     let result = false;
 
     JSON.stringify(field, (k, v) => {
-      if (result || stopValues?.has(v?.type)) return null;
+      if (result || (v?.type && setToStop?.has(v.type))) return null;
       result ||= v?.type === "Identifier" && registeredProps.has(v?.name);
       return v;
     });
@@ -186,16 +192,15 @@ export function transformComponentToReactiveProps(
     }
 
     if (
-      value?.type !== "VariableDeclaration" &&
-      value?.type !== "FunctionDeclaration"
+      value?.type === "VariableDeclaration" &&
+      isExistingPropName(value?.declarations, FN)
     ) {
+      this._skip = true;
+      value._skip = true;
       return value;
     }
 
-    if (
-      isExistingPropName(value?.declarations, FN) ||
-      isExistingPropName(value?.params)
-    ) {
+    if (FN.has(value?.type) && isExistingPropName(value?.params)) {
       this._skip = true;
       value._skip = true;
     }
@@ -265,6 +270,56 @@ export function transformComponentToReactiveProps(
   return { component: newComponent, vars: allVariableNames, props: propsNames };
 }
 
+function getComponentBody(component: any) {
+  return (
+    component?.body?.body ??
+    component?.body ??
+    component?.declarations?.[0]?.init?.body?.body ??
+    component?.declarations?.[0]?.init?.body
+  );
+}
+
+function getComponentParams(component: any) {
+  const declaration = component?.declarations?.[0];
+  return declaration?.init?.params ?? component?.params ?? [];
+}
+
+function fixReactivityOnDestructuredProps(component: any) {
+  const componentBody = getComponentBody(component);
+  const params = getComponentParams(component);
+  const [props, webContextParams] = params ?? [];
+
+  if (props?.type !== "ObjectPattern") return;
+
+  const brisaParams = new Set<string>(
+    (webContextParams?.properties ?? []).map((p: any) => p.key.name),
+  );
+  let isAddedDerivedParam = false;
+
+  for (let prop of props.properties) {
+    if (!DESTRUCTURING_PATTERNS.has(prop.value?.type)) continue;
+    const name = prop.key.name;
+    const value = prop.value;
+
+    Object.assign(prop, {
+      value: {
+        type: "Identifier",
+        name: "_derived_" + name,
+      },
+      shortland: false,
+    });
+
+    if (!isAddedDerivedParam) {
+      isAddedDerivedParam = true;
+      manageWebContextField(
+        component,
+        generateUniqueVariableName("derived", brisaParams),
+        "derived",
+      );
+    }
+  }
+}
+
 // Set default props values inside component body
 function addDefaultPropsToBody(
   defaultPropsEntries: [string, ESTree.Literal, string?][],
@@ -272,11 +327,7 @@ function addDefaultPropsToBody(
   allVariableNames: Set<string>,
 ) {
   let isAddedDefaultProps = false;
-  const componentBody =
-    component?.body?.body ??
-    component?.body ??
-    component?.declarations?.[0]?.init?.body?.body ??
-    component?.declarations?.[0]?.init?.body;
+  const componentBody = getComponentBody(component);
 
   for (let [propName, propValue, usedOperator = "??"] of defaultPropsEntries) {
     const operator =
