@@ -37,8 +37,6 @@ export default function destructuredPropsToArrowFn(
       const defaultValue = getDefaultValue(right);
       const name = element?.argument?.name;
 
-      if (defaultValue.isIdentifier) console.log("ENTRAA 1");
-
       // Skip first level
       if (!acc) continue;
 
