@@ -104,7 +104,7 @@ const BATTERY_TESTS: any = [
     "{ a = 1, b: { c, ...rest } = { c: 2, d: 3 } }",
     [
       "() => (b.value ?? {c: 2,d: 3}).c",
-      "() => { let {c, ...rest} = b.value ?? { c: 2, d: 3 } return rest}",
+      "() => { let {c, ...rest} = (b.value ?? {c: 2,d: 3}); return rest}",
     ],
   ],
   [
@@ -115,7 +115,7 @@ const BATTERY_TESTS: any = [
     "{ a = 1, b: { c, ...rest } = { c: '2', d: '3' } }",
     [
       `() => (b.value ?? {c: '2',d: '3'}).c`,
-      "() => { let {c, ...rest} = b.value ?? {c: '2', d: '3'}; return rest}",
+      "() => { let {c, ...rest} = (b.value ?? {c: '2',d: '3'}); return rest}",
     ],
   ],
   ["{ a: { b = 1, c = 2 } }", ["() => a.value.b ?? 1", "() => a.value.c ?? 2"]],
