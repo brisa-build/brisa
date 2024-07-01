@@ -79,7 +79,7 @@ const BATTERY_TESTS: any = [
   // Default values
   [
     "{ a = 1, b: { c, d } } = { c: 2, b: { c: 3, d: 4} }",
-    ["() => (b.value ?? {c: 3, d: 4}).c", "() => (b.value ?? {c: 3, d: 4}).d"],
+    ["() => (b.value ?? {c: 3,d: 4}).c", "() => (b.value ?? {c: 3,d: 4}).d"],
   ],
   [
     "{ a = 1, b: [c, d] } = { c: 2, b: [3, 4] }",
@@ -96,8 +96,8 @@ const BATTERY_TESTS: any = [
   [
     "{ a = '1', b: { c, d } } = { c: '2', b: { c: '3', d: '4'} }",
     [
-      "() => (b.value ?? { c: '3', d: '4'}).c",
-      "() => (b.value ?? { c: '3', d: '4'}).d",
+      "() => (b.value ?? {c: '3',d: '4'}).c",
+      "() => (b.value ?? {c: '3',d: '4'}).d",
     ],
   ],
   [
