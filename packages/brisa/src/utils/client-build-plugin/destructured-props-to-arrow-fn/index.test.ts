@@ -84,8 +84,12 @@ const BATTERY_TESTS: any = [
     ],
   ],
   [
-    "{ a = 1, b: { c, d = { f: 2 } } }}",
-    ["() => b.value.c", "() => b.value.d ?? { f: 2 }"],
+    "{ a = 1, b: [c, d] } = { c: 2, b: [3, 4] }",
+    ["() => (b.value ?? [3, 4]).c", "() => (b.value ?? [3, 4]).d"],
+  ],
+  [
+    "{ a = 1, b: { c, d = { f: 2 } } }",
+    ["() => b.value.c", "() => b.value.d ?? {\n  f: 2\n}"],
   ],
   [
     "{ a = 1, b: { c, d = {f: 'test'} } }",
