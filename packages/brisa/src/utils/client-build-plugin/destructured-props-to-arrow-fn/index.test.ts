@@ -137,6 +137,20 @@ const BATTERY_TESTS: any = [
       "() => w.value.t",
     ],
   ],
+
+  // Default values from other params (using value from top level)
+  [
+    "{ a = 1, b: { c = a, d = 2 } }",
+    ["() => b.value.c ?? a.value", "() => b.value.d ?? 2"],
+  ],
+  [
+    "{ a: { b: { c = z, d = y } }, y, z }",
+    ["() => a.value.b.c ?? z.value", "() => a.value.b.d ?? y.value"],
+  ],
+  [
+    "{ a: { b: { c = d, d = 5 } } }",
+    ["() => a.value.b.c ?? d.value", "() => a.value.b.d ?? 5"],
+  ],
 ] as const;
 
 describe("AST", () => {
