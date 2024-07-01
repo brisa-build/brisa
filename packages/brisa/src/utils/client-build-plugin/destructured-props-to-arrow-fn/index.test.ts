@@ -109,10 +109,7 @@ const BATTERY_TESTS: any = [
   ],
   [
     "{ a = 1, b: [c, ...rest] = [2, 3] }",
-    [
-      "() => (b.value ?? [2, 3]).c",
-      "() => { let [c, ...rest] = b.value ?? [2,3] return rest}",
-    ],
+    ["() => (b.value ?? [2, 3])[0]", "() => (b.value ?? [2, 3]).slice(1)"],
   ],
   [
     "{ a = 1, b: { c, ...rest } = { c: '2', d: '3' } }",
