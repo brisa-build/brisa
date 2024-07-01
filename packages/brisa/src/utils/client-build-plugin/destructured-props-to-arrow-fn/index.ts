@@ -44,7 +44,8 @@ export default function destructuredPropsToArrowFn(
          #####     Transform RestElement from Array to an arrow fn     ######
          ####################################################################*/
       if (element?.type === "RestElement") {
-        const suffix = acc ? `.slice(${i})` : name;
+        const dot = acc.at(-1) === "." ? "" : ".";
+        const suffix = acc ? `${dot}slice(${i})` : name;
         result.push("() => " + acc + suffix);
         continue;
       }
@@ -105,7 +106,7 @@ export default function destructuredPropsToArrowFn(
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       let newAcc = updatedAcc + name + dotValue;
 
-      newAcc = `(${newAcc + defaultValue.fallbackText})`;
+      newAcc = `(${newAcc + defaultValue.fallbackText}).`;
       result.push(...destructuredPropsToArrowFn(value.left, newAcc));
       continue;
     }
