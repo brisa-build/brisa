@@ -1,7 +1,10 @@
+import AST from "@/utils/ast";
+
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 const DEFAULT_VALUE_REGEX = / \?\?.*$/;
 const SEPARATOR_REGEX = /\.|\[/;
 const DOT_END_REGEX = /\.$/;
+const { generateCodeFromAST } = AST("tsx");
 
 /**
  * Converts a pattern to a list of string arrow fn that can be used to access the
@@ -20,7 +23,7 @@ export default function destructuredPropsToArrowFn(
 ): string[] {
   const result = [];
 
-  // ArrayPattern
+  // ##### ArrayPattern #####
   if (pattern.elements) {
     for (let i = 0; i < pattern.elements.length; i++) {
       const element = pattern.elements[i];
@@ -28,7 +31,9 @@ export default function destructuredPropsToArrowFn(
       // Skip first level
       if (!acc) continue;
 
-      // Transform RestElement from Array to an arrow fn
+      /* ####################################################################
+         #####     Transform RestElement from Array to an arrow fn     ######
+         ####################################################################*/
       if (element?.type === "RestElement") {
         const suffix = acc ? `.slice(${i})` : element?.argument?.name;
         result.push("() => " + acc + suffix);
@@ -37,13 +42,17 @@ export default function destructuredPropsToArrowFn(
 
       const last = acc.at(-1) === "." ? acc.slice(0, -1) : acc;
 
-      // Element is an ObjectPattern or ArrayPattern
+      /* #####################################################################
+        #####      Transform ObjectPattern or ArrayPattern element      ######
+        ####################################################################*/
       if (PATTERNS.has(element?.type)) {
         result.push(...destructuredPropsToArrowFn(element, last + `[${i}].`));
         continue;
       }
 
-      // Transform Element from Array to an arrow fn
+      /* #####################################################################
+        #####        Transform Element from Array to an arrow fn        ######
+        ####################################################################*/
       const defaultValue = element?.right ? ` ?? ${element?.right?.value}` : "";
       const suffix = `[${i}]${defaultValue}`;
       result.push("() => " + last + suffix);
@@ -52,13 +61,16 @@ export default function destructuredPropsToArrowFn(
     return result;
   }
 
-  // ObjectPattern
-  for (let prop of pattern.properties) {
-    // Property is an ObjectPattern or ArrayPattern
+  // ##### ObjectPattern #####
+  for (let prop of pattern?.properties ?? []) {
+    const value = prop?.value;
+    const right = prop?.value?.right;
+
+    /* ####################################################################
+       #####     Transform ObjectPattern or ArrayPattern property    ######
+       ####################################################################*/
     if (PATTERNS.has(prop?.value?.type)) {
-      const suffix = prop?.value?.right
-        ? ` ?? ${prop?.value?.right?.value}`
-        : "";
+      const suffix = right ? ` ?? ${right?.value}` : "";
 
       const isArrayPattern = prop?.value?.type === "ArrayPattern";
       const dot = isArrayPattern ? "" : ".";
@@ -74,9 +86,14 @@ export default function destructuredPropsToArrowFn(
     // Skip first level
     if (!acc) continue;
 
-    // Transform RestElement from Object to an arrow fn
-    //    from: { a: { b: { c, ...rest } } }
-    //    to: () => { let { c, ...rest } = a.value.b; return rest;}
+    /*
+       ####################################################################
+       #####  Transform RestElement from Object to an arrow fn       ######
+       #####                                                         ######
+       #####  From:  from: { a: { b: { c, ...rest } } }              ######
+       #####  To: () => {let {c, ...rest} = a.value.b; return rest;} ######
+       ####################################################################
+    */
     if (prop?.type === "RestElement" && acc) {
       const rest = prop?.argument?.name;
       const content = acc.replace(DOT_END_REGEX, "");
@@ -112,16 +129,27 @@ export default function destructuredPropsToArrowFn(
       continue;
     }
 
-    // Transform Property from Object to an arrow fn
-    let defaultValue = prop?.value?.right?.value;
+    /* #############################################################
+       ####### Transform Property from Object to an arrow fn #######
+       #############################################################*/
+    const fallbackObjInString =
+      value?.type === "AssignmentPattern" && right?.type !== "Literal"
+        ? generateCodeFromAST(right)
+        : null;
+
+    let defaultValue = fallbackObjInString ?? right?.value;
 
     // Literal values arrives with original format (1, "1"...)
-    if (defaultValue && typeof defaultValue === "string") {
+    if (
+      !fallbackObjInString &&
+      defaultValue &&
+      typeof defaultValue === "string"
+    ) {
       defaultValue = `"${defaultValue}"`;
     }
 
-    let suffix = prop?.value?.right ? ` ?? ${defaultValue}` : "";
-    let name = prop?.key?.name ?? prop?.value?.name ?? prop?.argument?.name;
+    let suffix = right ? ` ?? ${defaultValue}` : "";
+    let name = prop?.key?.name ?? value?.name ?? prop?.argument?.name;
     result.push("() => " + acc + name + suffix);
   }
 
