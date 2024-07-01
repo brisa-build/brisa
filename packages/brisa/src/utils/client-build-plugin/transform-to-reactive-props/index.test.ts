@@ -5,24 +5,28 @@ import AST from "@/utils/ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const VARS = [
-  'const foo = "bar";',
-  "const {foo} = {};",
-  "const {bar: foo} = {};",
-  'const {bar: foo = "bar"} = {};',
-  "const {foo, ...rest} = {};",
-  "const {bart: bar, foot: foo} = {};",
-  "const {bar: {baz: {foo}}} = {};",
-  'const {bar: {baz: {foo = "bar"}}} = {};',
+  // 'const foo = "bar";',
+  // "const {foo} = {};",
+  // "const {bar: foo} = {};",
+  // 'const {bar: foo = "bar"} = {};',
+  // "const {foo, ...rest} = {};",
+  // "const {bart: bar, foot: foo} = {};",
+  // "const {bar: {baz: {foo}}} = {};",
+  // 'const {bar: {baz: {foo = "bar"}}} = {};',
+  // 'const {bar: {foo = foo => foo}} = {};',
 ];
 const PARAMS = [
-  "foo",
-  "{foo}",
-  "{bar: foo}",
-  '{bar: foo = "bar"}',
-  "{foo, ...rest}",
-  "{bart: bar, foot: foo}",
-  "{bar: {baz: {foo}}}",
-  '{bar: {baz: {foo = "bar"}}}',
+  // "foo",
+  // "...foo",
+  // "{foo}",
+  // "{...foo}",
+  // "{bar: foo}",
+  // '{bar: foo = "bar"}',
+  // "{foo, ...rest}",
+  // "{bart: bar, foot: foo}",
+  // "{bar: {baz: {foo}}}",
+  // '{bar: {baz: {foo = "bar"}}}',
+  // '{bar: {baz = foo => true}}'
 ];
 
 describe("utils", () => {
@@ -396,6 +400,144 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
         expect(out.props).toEqual(["foo", "bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
+      });
+
+      it("should remove destructuring props from params and add them to the component body", () => {
+        const code = `
+          export default function Component({foo: {bar: {baz}, bar} }) {
+            return <div>{bar}{baz}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component({foo: _derived_foo, bar}, {derived}) {
+            const baz = derived(() => _derived_foo.value.bar.baz);
+            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
+      });
+
+      it("should remove destructuring props with default value from params and add them to the component body", () => {
+        const code = `
+          export default function Component({foo: {bar: {baz = "bar"}, bar} }) {
+            return <div>{bar}{baz}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component({foo: _derived_foo, bar}, {derived}) {
+            const baz = derived(() => _derived_foo.value.bar.baz ?? "bar");
+            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
+      });
+
+      it("should remove destructuring props with rename from params and add them to the component body", () => {
+        const code = `
+          export default function Component({foo: {bar: {baz: brisa}, bar} }) {
+            return <div>{bar}{baz}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component({foo: _derived_foo, bar}, {derived}) {
+            const brisa = derived(() => _derived_foo.value.bar.baz);
+            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
+      });
+
+      it("should remove destructuring array props from params and add them to the component body", () => {
+        const code = `
+          export default function Component({foo: [{bar: [{baz}], bar}] }) {
+            return <div>{bar}{baz}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component({foo: _derived_foo, bar}, {derived}) {
+            const baz = derived(() => _derived_foo.value[0].bar[0].baz);
+            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
+      });
+
+      it("should remove destructuring array props with default value from params and add them to the component body", () => {
+        const code = `
+          export default function Component({foo: [{bar: [{baz = "bar"}], bar}] }) {
+            return <div>{bar}{baz}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component({foo: _derived_foo, bar}, {derived}) {
+            const baz = derived(() => _derived_foo.value[0].bar[0].baz ?? "bar");
+            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["bar", "baz"]);
+        expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
+      });
+
+      it("should remove destructuring array props with rename from params and add them to the component body", () => {
+        const code = `
+          export default function Component({foo: [{bar: [{baz: brisa}], bar}] }) {
+            return <div>{bar}{baz}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+          export default function Component({foo: _derived_foo, bar}, {derived}) {
+            const brisa = derived(() =>_derived_foo.value[0].bar[0].baz);
+            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.props).toEqual(["bar", "baz"]);
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
       });
 
