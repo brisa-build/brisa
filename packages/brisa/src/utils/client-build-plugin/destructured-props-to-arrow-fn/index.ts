@@ -83,7 +83,7 @@ export default function destructuredPropsToArrowFn(
       const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       const dotValue = acc ? "" : ".value";
-      const { fallbackText } = getDefaultValue(inputPattern?.right);
+      const { fallbackText } = getDefaultValue(inputPattern?.right, name);
       let newAcc = updatedAcc + name + dotValue;
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
@@ -148,7 +148,11 @@ export default function destructuredPropsToArrowFn(
   return result;
 }
 
-function getDefaultValue(right: any) {
+function getDefaultValue(inputRight: any, name?: string) {
+  const right = name
+    ? inputRight?.properties?.find((p: any) => p.key?.name === name)?.value
+    : inputRight;
+
   const isLiteral = right?.type === "Literal";
   const text = right ? generateCodeFromAST(right) : null;
   const fallbackText = text ? ` ?? ${text}` : "";
