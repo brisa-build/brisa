@@ -1,7 +1,3 @@
-type Options = {
-  skipFirstLevel?: boolean;
-};
-
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 const DEFAULT_VALUE_REGEX = / \?\?.*$/;
 const SEPARATOR_REGEX = /\.|\[/;
@@ -15,13 +11,11 @@ const DOT_END_REGEX = /\.$/;
  * input:
  *         - { a: [{ b: {c = "3" }}], d, f: { g = "5" }}
  * outputs:
- *         - () => a[0].b.c ?? "3"
- *         - () => d (only when skipFirstLevel is false)
- *         - () => f.g ?? "5"
+ *         - () => a.value.[0].b.c ?? "3"
+ *         - () => f.value.g ?? "5"
  */
-export default function patternToStringArrowFn(
+export default function destructuredPropsToArrowFn(
   pattern: any,
-  options: Options = {},
   acc = "",
 ): string[] {
   const result = [];
@@ -32,7 +26,7 @@ export default function patternToStringArrowFn(
       const element = pattern.elements[i];
 
       // Skip first level
-      if (options.skipFirstLevel && !acc) continue;
+      if (!acc) continue;
 
       // Transform RestElement from Array to an arrow fn
       if (element?.type === "RestElement") {
@@ -45,17 +39,15 @@ export default function patternToStringArrowFn(
 
       // Element is an ObjectPattern or ArrayPattern
       if (PATTERNS.has(element?.type)) {
-        result.push(
-          ...patternToStringArrowFn(element, options, last + `[${i}].`),
-        );
+        result.push(...destructuredPropsToArrowFn(element, last + `[${i}].`));
         continue;
       }
 
       // Transform Element from Array to an arrow fn
-      const defaultValue = element?.right
-        ? ` ?? ${element?.right?.value}`
-        : "";
-      const suffix = acc ? `[${i}]${defaultValue}` : element?.name + defaultValue;
+      const defaultValue = element?.right ? ` ?? ${element?.right?.value}` : "";
+      const suffix = acc
+        ? `[${i}]${defaultValue}`
+        : element?.name + defaultValue;
       result.push("() => " + last + suffix);
     }
 
@@ -76,12 +68,12 @@ export default function patternToStringArrowFn(
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       const newAcc = updatedAcc + name + dot + suffix;
 
-      result.push(...patternToStringArrowFn(prop?.value, options, newAcc));
+      result.push(...destructuredPropsToArrowFn(prop?.value, newAcc));
       continue;
     }
 
     // Skip first level
-    if (options.skipFirstLevel && !acc) continue;
+    if (!acc) continue;
 
     // Transform RestElement from Object to an arrow fn
     //    from: { a: { b: { c, ...rest } } }
