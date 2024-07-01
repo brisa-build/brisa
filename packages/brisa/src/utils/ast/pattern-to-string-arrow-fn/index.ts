@@ -3,6 +3,8 @@ type Options = {
 };
 
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
+const DEFAULT_VALUE_REGEX = / \?\?.*$/;
+const SEPARATOR_REGEX = /\.|\[/;
 
 /**
  * Converts a pattern to a list of string arrow fn that can be used to access the
@@ -86,7 +88,9 @@ export default function patternToStringArrowFn(
       let items: string[] = [];
 
       for (let i = result.length - 1; i >= 0; i--) {
-        const splitted = result[i]?.split(/\.|\[/);
+        const splitted = result[i]
+          ?.replace(DEFAULT_VALUE_REGEX, "")
+          ?.split(SEPARATOR_REGEX);
 
         if (!common) {
           common = splitted.slice(0, -1);
@@ -112,7 +116,14 @@ export default function patternToStringArrowFn(
     }
 
     // Transform Property from Object to an arrow fn
-    let suffix = prop?.value?.right ? ` ?? ${prop?.value?.right?.value}` : "";
+    let defaultValue = prop?.value?.right?.value;
+
+    // Literal values arrives with original format (1, "1"...)
+    if (defaultValue && typeof defaultValue === "string") {
+      defaultValue = `"${defaultValue}"`;
+    }
+
+    let suffix = prop?.value?.right ? ` ?? ${defaultValue}` : "";
     const name = prop?.key?.name ?? prop?.value?.name ?? prop?.argument?.name;
     result.push("() => " + acc + name + suffix);
   }

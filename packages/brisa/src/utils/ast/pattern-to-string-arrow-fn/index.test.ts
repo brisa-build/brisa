@@ -72,13 +72,28 @@ const BATTERY_OF_TESTS: any = [
     ["() => a ?? 1", "() => b ?? 2", "() => c ?? 3"],
     options1,
   ],
+  [
+    '{ a: { b = "1", c = "2" } }',
+    ['() => a.b ?? "1"', '() => a.c ?? "2"'],
+    options1,
+  ],
   ["{ a: { b = 1, c = 2 } }", ["() => a.b ?? 1", "() => a.c ?? 2"], options1],
   [
     '{ a: [{ b: {c = "3" }}], d, f: { g = "5" }}',
-    ["() => a[0].b.c ?? 3", "() => d", "() => f.g ?? 5"],
+    ['() => a[0].b.c ?? "3"', "() => d", '() => f.g ?? "5"'],
     options1,
   ],
   ["{ w: { x: { y: { z = 1 } } } }", ["() => w.x.y.z ?? 1"], options1],
+  [
+    "{ w: { x: [{ y: { f = 'bar' }, z = 'baz', ...foo }], t } }",
+    [
+      `() => w.x[0].y.f ?? "bar"`,
+      `() => w.x[0].z ?? "baz"`,
+      "() => { let {y, z, ...foo} = w.x[0]; return foo}",
+      "() => w.t",
+    ],
+    options1,
+  ],
 ] as const;
 
 const options2 = { skipFirstLevel: true };
@@ -147,11 +162,26 @@ const BATTERY_OF_TESTS_SKIP_LEVEL_1: any = [
   ["{ a = 1, b = 2, c = 3 }", [], options2],
   ["{ a: { b = 1, c = 2 } }", ["() => a.b ?? 1", "() => a.c ?? 2"], options2],
   [
+    '{ a: { b = "1", c = "2" } }',
+    ['() => a.b ?? "1"', '() => a.c ?? "2"'],
+    options2,
+  ],
+  [
     '{ a: [{ b: {c = "3" }}], d, f: { g = "5" }}',
-    ["() => a[0].b.c ?? 3", "() => f.g ?? 5"],
+    ['() => a[0].b.c ?? "3"', '() => f.g ?? "5"'],
     options2,
   ],
   ["{ w: { x: { y: { z = 1 } } } }", ["() => w.x.y.z ?? 1"], options2],
+  [
+    "{ w: { x: [{ y: { f = 'bar' }, z = 'baz', ...foo }], t } }",
+    [
+      `() => w.x[0].y.f ?? "bar"`,
+      `() => w.x[0].z ?? "baz"`,
+      "() => { let {y, z, ...foo} = w.x[0]; return foo}",
+      "() => w.t",
+    ],
+    options2,
+  ],
 ] as const;
 
 const ALL_BATERY_OF_TESTS = [
