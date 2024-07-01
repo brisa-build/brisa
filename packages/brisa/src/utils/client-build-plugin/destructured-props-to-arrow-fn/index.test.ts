@@ -76,6 +76,42 @@ const BATTERY_TESTS: any = [
   ],
 
   // Default values
+  [
+    "{ a = 1, b: { c, d } } = { c: 2, b: { c: 3, d: 4} }",
+    [
+      "() => (b.value ?? { c: 3, d: 4}).c",
+      "() => (b.value ?? { c: 3, d: 4}).d",
+    ],
+  ],
+  [
+    "{ a = 1, b: { c, d = { f: 2 } } }}",
+    ["() => b.value.c", "() => b.value.d ?? { f: 2 }"],
+  ],
+  [
+    "{ a = 1, b: { c, d = {f: 'test'} } }",
+    ["() => b.value.c", '() => b.value.d ?? {\n  f: "test"\n}'],
+  ],
+  [
+    "{ a = '1', b: { c, d } } = { c: '2', b: { c: '3', d: '4'} }",
+    [
+      "() => (b.value ?? { c: '3', d: '4'}).c",
+      "() => (b.value ?? { c: '3', d: '4'}).d",
+    ],
+  ],
+  [
+    "{ a = 1, b: { c, ...rest } = { c: 2, d: 3 } }",
+    [
+      "() => (b.value ?? { c: 2, d: 3 }).c",
+      "() => { let {c, ...rest} = b.value ?? { c: 2, d: 3 } return rest}",
+    ],
+  ],
+  [
+    "{ a = 1, b: { c, ...rest } = { c: '2', d: '3' } }",
+    [
+      `() => (b.value ?? {c: '2', d: '3'}).c ?? "2"`,
+      "() => { let {c, ...rest} = b.value ?? {c: '2', d: '3'}; return rest}",
+    ],
+  ],
   ["{ a: { b = 1, c = 2 } }", ["() => a.value.b ?? 1", "() => a.value.c ?? 2"]],
   [
     '{ a: { b = "1", c = "2" } }',
