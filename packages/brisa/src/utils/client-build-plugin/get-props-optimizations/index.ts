@@ -6,6 +6,7 @@ type Vars = {
 };
 
 const PROPS_IDENTIFIER = "__b_props__";
+const DOT_VALUE_TEXT = ".value";
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 const EXTRA_END_REGEX = /( \?\?.*|\);)$/;
 const BEFORE_ARROW_REGEX = /.*\(\) => /;
@@ -37,12 +38,12 @@ export default function getPropsOptimizations(
   const result: string[] = [];
   let pattern = inputPattern;
 
-  // ##### AssignmentPattern (with default value in top level) #####
+  // AssignmentPattern (with default value in top level)
   if (pattern?.type === "AssignmentPattern") {
     pattern = pattern.left;
   }
 
-  // ##### ArrayPattern #####
+  // ArrayPattern
   if (pattern.elements) {
     for (let i = 0; i < pattern.elements.length; i++) {
       const element = pattern.elements[i];
@@ -106,7 +107,7 @@ export default function getPropsOptimizations(
     return result;
   }
 
-  // ##### ObjectPattern #####
+  // ObjectPattern
   for (let prop of pattern?.properties ?? []) {
     const value = prop?.value;
     const right = value?.right;
@@ -118,9 +119,9 @@ export default function getPropsOptimizations(
       `["${value?.value ?? prop?.key?.value}"]`;
 
     const defaultValue = getDefaultValue(right);
-    const dotValueForDefault = defaultValue.isIdentifier ? ".value" : "";
+    const dotValueForDefault = defaultValue.isIdentifier ? DOT_VALUE_TEXT : "";
     const propDefaultText = defaultValue.fallbackText + dotValueForDefault;
-    const dotValue = acc ? "" : ".value";
+    const dotValue = acc ? "" : DOT_VALUE_TEXT;
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
 
@@ -242,21 +243,26 @@ export default function getPropsOptimizations(
     result.push(res);
   }
 
-  if (acc) return result.toSorted(sortByPropDependencies());
+  if (acc) return result;
 
+  /* ##################################################################
+     #####     Sort and clean the result (end of recursion)      ######
+     ##################################################################*/
+  const sortedResult = result.toSorted(sortByPropDependencies());
   const difference = vars.dotValueList.difference(vars.propsList);
 
-  if (!difference.size) return result.toSorted(sortByPropDependencies());
+  if (!difference.size) return sortedResult;
 
-  // ##### Remove .value from external identifiers default values #####
-  return result
-    .map((r) =>
-      r.replace(
-        new RegExp(`(${Array.from(difference).join("|")})\\.value`, "g"),
-        "$1",
+  // Remove .value from external identifiers default values
+  return sortedResult.map((r) =>
+    r.replace(
+      new RegExp(
+        `(${Array.from(difference).join("|")})\\${DOT_VALUE_TEXT}`,
+        "g",
       ),
-    )
-    .toSorted(sortByPropDependencies());
+      "$1",
+    ),
+  );
 }
 
 function getDefaultValue(inputRight: any, name?: string) {
@@ -295,7 +301,9 @@ function getDeps(code: string) {
   const matches = code
     .match(EXTRA_END_REGEX)?.[0]
     ?.match(PROP_DEPENDENCY_REGEX);
-  return new Set(matches?.filter(Boolean)?.map((d) => d.replace(".value", "")));
+  return new Set(
+    matches?.filter(Boolean)?.map((d) => d.replace(DOT_VALUE_TEXT, "")),
+  );
 }
 
 function sortByPropDependencies() {
