@@ -54,7 +54,7 @@ export default function destructuredPropsToArrowFn(
       vars.propsList.add(name);
 
       // Skip first level
-      if (!acc) continue;
+      if (!acc && !defaultValue.fallbackText) continue;
 
       /* ####################################################################
          #####     Transform RestElement from Array to an arrow fn     ######
@@ -138,13 +138,22 @@ export default function destructuredPropsToArrowFn(
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       let newAcc = updatedAcc + name + dotValue;
 
+      if (value.left?.type === "Identifier") {
+        return [
+          {
+            arrow: `() => ${addPrefix(newAcc + propDefaultText)}`,
+            name: value.left?.name,
+          },
+        ];
+      }
+
       newAcc = `(${newAcc + propDefaultText}).`;
       result.push(...destructuredPropsToArrowFn(value.left, newAcc, vars));
       continue;
     }
 
     // Skip first level
-    if (!acc) continue;
+    if (!acc && !propDefaultText) continue;
 
     /*
        ####################################################################
