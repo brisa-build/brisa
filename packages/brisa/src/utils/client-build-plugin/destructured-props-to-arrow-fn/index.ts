@@ -7,6 +7,7 @@ type Vars = {
   propsList: Set<string>;
 };
 
+const PROPS_IDENTIFIER = "__b_props__";
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 const DEFAULT_VALUE_REGEX = / \?\?.*$/;
 const SEPARATOR_REGEX = /\.|\[/;
@@ -21,12 +22,11 @@ const { generateCodeFromAST } = AST("tsx");
  * input:
  *         - { a: [{ b: {c = "3" }}], d, f: { g = "5" }}
  * outputs:
- *         - () => a.value.[0].b.c ?? "3"
- *         - () => f.value.g ?? "5"
+ *         - () => __b_props__.a.value.[0].b.c ?? "3"
+ *         - () => __b_props__.f.value.g ?? "5"
  */
 export default function destructuredPropsToArrowFn(
   inputPattern: any,
-  prefix = "",
   acc = "",
   vars: Vars = {
     dotValueList: new Set(),
@@ -62,7 +62,8 @@ export default function destructuredPropsToArrowFn(
       if (element?.type === "RestElement") {
         const dot = acc.at(-1) === "." ? "" : ".";
         const suffix = acc ? `${dot}slice(${i})` : name;
-        result.push({ arrow: "() => " + acc + suffix, name });
+
+        result.push({ arrow: `() => ${addPrefix(acc + suffix)}`, name });
         continue;
       }
 
@@ -73,7 +74,7 @@ export default function destructuredPropsToArrowFn(
         ####################################################################*/
       if (PATTERNS.has(element?.type)) {
         result.push(
-          ...destructuredPropsToArrowFn(element, "", last + `[${i}].`, vars),
+          ...destructuredPropsToArrowFn(element, last + `[${i}].`, vars),
         );
         continue;
       }
@@ -82,7 +83,7 @@ export default function destructuredPropsToArrowFn(
         #####        Transform Element from Array to an arrow fn        ######
         ####################################################################*/
       const suffix = `[${i}]${defaultValue.fallbackText}`;
-      result.push({ arrow: "() => " + last + suffix, name });
+      result.push({ arrow: "() => " + addPrefix(last + suffix), name });
     }
 
     return result;
@@ -121,11 +122,11 @@ export default function destructuredPropsToArrowFn(
       const dot = isArrayPattern ? "" : ".";
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       const { fallbackText } = getDefaultValue(inputPattern?.right, name);
-      let newAcc = updatedAcc + prefix + name + dotValue;
+      let newAcc = updatedAcc + name + dotValue;
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
       newAcc += dot + propDefaultText;
-      result.push(...destructuredPropsToArrowFn(value, "", newAcc, vars));
+      result.push(...destructuredPropsToArrowFn(value, newAcc, vars));
       continue;
     }
 
@@ -135,10 +136,10 @@ export default function destructuredPropsToArrowFn(
        ####################################################################*/
     if (hasDefaultObjectValue && !acc) {
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
-      let newAcc = updatedAcc + prefix + name + dotValue;
+      let newAcc = updatedAcc + name + dotValue;
 
       newAcc = `(${newAcc + propDefaultText}).`;
-      result.push(...destructuredPropsToArrowFn(value.left, "", newAcc, vars));
+      result.push(...destructuredPropsToArrowFn(value.left, newAcc, vars));
       continue;
     }
 
@@ -183,7 +184,9 @@ export default function destructuredPropsToArrowFn(
 
       const variables = items.join(", ");
       result.push({
-        arrow: `() => { let {${variables}, ...${rest}} = ${content}; return ${rest}}`,
+        arrow: `() => { let {${variables}, ...${rest}} = ${addPrefix(
+          content,
+        )}; return ${rest}}`,
         name: rest,
       });
       continue;
@@ -193,7 +196,7 @@ export default function destructuredPropsToArrowFn(
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
     result.push({
-      arrow: "() => " + acc + name + dotValue + propDefaultText,
+      arrow: `() => ${addPrefix(acc + name + dotValue + propDefaultText)}`,
       name,
     });
   }
@@ -226,4 +229,10 @@ function getDefaultValue(inputRight: any, name?: string) {
     isLiteral: right?.type === "Literal",
     isIdentifier: right?.type === "Identifier",
   };
+}
+
+function addPrefix(name: string): string {
+  let prefix = name.startsWith("[") ? PROPS_IDENTIFIER : PROPS_IDENTIFIER + ".";
+
+  return name.startsWith("(") ? "(" + prefix + name.slice(1) : prefix + name;
 }
