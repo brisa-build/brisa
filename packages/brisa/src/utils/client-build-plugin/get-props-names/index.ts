@@ -55,8 +55,12 @@ export default function getPropsNames(
     ];
   }
 
-  if (propsAst?.type === "Identifier") {
-    const identifier = propsAst.name;
+  if (
+    propsAst?.type === "Identifier" ||
+    (propsAst?.type === "AssignmentPattern" &&
+      propsAst.left.type === "Identifier")
+  ) {
+    const identifier = propsAst.name ?? propsAst.left.name;
     const res = getPropsNamesFromIdentifier(identifier, webComponentAst);
     return [
       unify(res[0], propNamesFromExport),
