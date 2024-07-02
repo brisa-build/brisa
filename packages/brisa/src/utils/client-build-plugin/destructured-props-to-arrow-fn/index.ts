@@ -23,6 +23,7 @@ export default function destructuredPropsToArrowFn(
   inputPattern: any,
   prefix = "",
   acc = "",
+  varsWithDotValue: string[] = [],
 ): Result {
   const result: Result = [];
   const propsFirstLevel = [];
@@ -65,7 +66,7 @@ export default function destructuredPropsToArrowFn(
         ####################################################################*/
       if (PATTERNS.has(element?.type)) {
         result.push(
-          ...destructuredPropsToArrowFn(element, "", last + `[${i}].`),
+          ...destructuredPropsToArrowFn(element, "", last + `[${i}].`, varsWithDotValue),
         );
         continue;
       }
@@ -93,7 +94,12 @@ export default function destructuredPropsToArrowFn(
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
 
-    if (!acc) propsFirstLevel.push(name);
+    if (!acc) {
+      propsFirstLevel.push(prop?.value?.name ?? name);
+    } else {
+      if (dotValue) varsWithDotValue.push(name);
+      if (dotValueForDefault) varsWithDotValue.push(right?.name);
+    }
 
     /* ####################################################################
        #####     Transform ObjectPattern or ArrayPattern property    ######
@@ -107,7 +113,7 @@ export default function destructuredPropsToArrowFn(
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
       newAcc += dot + propDefaultText;
-      result.push(...destructuredPropsToArrowFn(value, "", newAcc));
+      result.push(...destructuredPropsToArrowFn(value, "", newAcc, varsWithDotValue));
       continue;
     }
 
@@ -120,7 +126,7 @@ export default function destructuredPropsToArrowFn(
       let newAcc = updatedAcc + prefix + name + dotValue;
 
       newAcc = `(${newAcc + propDefaultText}).`;
-      result.push(...destructuredPropsToArrowFn(value.left, "", newAcc));
+      result.push(...destructuredPropsToArrowFn(value.left, "", newAcc, varsWithDotValue));
       continue;
     }
 
@@ -183,20 +189,7 @@ export default function destructuredPropsToArrowFn(
   // ##### Remove .value from external identifiers default values #####
   if (!acc) {
     const allProps = new Set(propsFirstLevel);
-    const allVarsWithDotValue = new Set();
-
-    for (let i = 0; i < result.length; i++) {
-      const { arrow, name } = result[i];
-      allProps.add(name);
-      const matched = arrow.replaceAll("(", "").match(/\S*\.value/g);
-
-      for (let j = 0; matched && j < matched.length; j++) {
-        let varName = matched[j].replace(".value", "");
-        if (prefix) varName = varName.replace(prefix, "");
-        allVarsWithDotValue.add(varName);
-      }
-    }
-
+    const allVarsWithDotValue = new Set(varsWithDotValue);
     // @ts-ignore Difference is already available in Bun but not in the types
     const difference = allVarsWithDotValue.difference(allProps);
 
