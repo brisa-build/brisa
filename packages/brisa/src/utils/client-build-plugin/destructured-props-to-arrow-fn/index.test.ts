@@ -12,13 +12,7 @@ const TESTS = [
     expected: [
       {
         name: "foo",
-        arrow: "() => b.value.d[0]",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "foo",
-        arrow: "() => _derived_b.value.d[0]",
+        arrow: "() => __b_props__.b.value.d[0]",
       },
     ],
   },
@@ -27,21 +21,20 @@ const TESTS = [
     expected: [
       {
         name: "b",
-        arrow: "() => b.value[0] ?? 1",
+        arrow: "() => __b_props__.b.value[0] ?? 1",
       },
       {
         name: "c",
-        arrow: "() => b.value[1] ?? 2",
+        arrow: "() => __b_props__.b.value[1] ?? 2",
       },
     ],
-    expectedWithPrefix: [
+  },
+  {
+    param: "{ 'a-b': { 'c-d': e } }",
+    expected: [
       {
-        name: "b",
-        arrow: "() => _derived_b.value[0] ?? 1",
-      },
-      {
-        name: "c",
-        arrow: "() => _derived_b.value[1] ?? 2",
+        name: "e",
+        arrow: "() => __b_props__['a-b'].value.e",
       },
     ],
   },
@@ -50,27 +43,22 @@ const TESTS = [
   {
     param: "[a, b, c]",
     expected: [],
-    expectedWithPrefix: [],
   },
   {
     param: "[...rest]",
     expected: [],
-    expectedWithPrefix: [],
   },
   {
     param: "[foo, ...rest]",
     expected: [],
-    expectedWithPrefix: [],
   },
   {
     param: "{ a, b, ...rest }",
     expected: [],
-    expectedWithPrefix: [],
   },
   {
     param: "{ a = 1, b = 2, c = 3 }",
     expected: [],
-    expectedWithPrefix: [],
   },
 
   // Rest in nested level array
@@ -79,21 +67,11 @@ const TESTS = [
     expected: [
       {
         name: "b",
-        arrow: "() => w.value.x[0]",
+        arrow: "() => __b_props__.w.value.x[0]",
       },
       {
         name: "foo",
-        arrow: "() => w.value.x.slice(1)",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "b",
-        arrow: "() => _derived_w.value.x[0]",
-      },
-      {
-        name: "foo",
-        arrow: "() => _derived_w.value.x.slice(1)",
+        arrow: "() => __b_props__.w.value.x.slice(1)",
       },
     ],
   },
@@ -102,21 +80,11 @@ const TESTS = [
     expected: [
       {
         name: "d",
-        arrow: "() => a.value['b-c'][0]",
+        arrow: "() => __b_props__.a.value['b-c'][0]",
       },
       {
         name: "e",
-        arrow: "() => a.value['b-c'].slice(1)",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "d",
-        arrow: "() => _derived_a.value['b-c'][0]",
-      },
-      {
-        name: "e",
-        arrow: "() => _derived_a.value['b-c'].slice(1)",
+        arrow: "() => __b_props__.a.value['b-c'].slice(1)",
       },
     ],
   },
@@ -125,21 +93,11 @@ const TESTS = [
     expected: [
       {
         name: "d",
-        arrow: "() => a.value['1'][0]",
+        arrow: "() => __b_props__.a.value['1'][0]",
       },
       {
         name: "e",
-        arrow: "() => a.value['1'].slice(1)",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "d",
-        arrow: "() => _derived_a.value['1'][0]",
-      },
-      {
-        name: "e",
-        arrow: "() => _derived_a.value['1'].slice(1)",
+        arrow: "() => __b_props__.a.value['1'].slice(1)",
       },
     ],
   },
@@ -148,29 +106,15 @@ const TESTS = [
     expected: [
       {
         name: "b",
-        arrow: "() => w.value.x[0]",
+        arrow: "() => __b_props__.w.value.x[0]",
       },
       {
         name: "foo",
-        arrow: "() => w.value.x.slice(1)",
+        arrow: "() => __b_props__.w.value.x.slice(1)",
       },
       {
         name: "z",
-        arrow: "() => w.value.y.z",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "b",
-        arrow: "() => _derived_w.value.x[0]",
-      },
-      {
-        name: "foo",
-        arrow: "() => _derived_w.value.x.slice(1)",
-      },
-      {
-        name: "z",
-        arrow: "() => _derived_w.value.y.z",
+        arrow: "() => __b_props__.w.value.y.z",
       },
     ],
   },
@@ -179,29 +123,15 @@ const TESTS = [
     expected: [
       {
         name: "b",
-        arrow: "() => w.value.x[0][0]",
+        arrow: "() => __b_props__.w.value.x[0][0]",
       },
       {
         name: "foo",
-        arrow: "() => w.value.x.slice(1)",
+        arrow: "() => __b_props__.w.value.x.slice(1)",
       },
       {
         name: "z",
-        arrow: "() => w.value.y.z",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "b",
-        arrow: "() => _derived_w.value.x[0][0]",
-      },
-      {
-        name: "foo",
-        arrow: "() => _derived_w.value.x.slice(1)",
-      },
-      {
-        name: "z",
-        arrow: "() => _derived_w.value.y.z",
+        arrow: "() => __b_props__.w.value.y.z",
       },
     ],
   },
@@ -212,21 +142,11 @@ const TESTS = [
     expected: [
       {
         name: "y",
-        arrow: "() => w.value.x.y",
+        arrow: "() => __b_props__.w.value.x.y",
       },
       {
         name: "foo",
-        arrow: "() => { let {y, ...foo} = w.value.x; return foo}",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "y",
-        arrow: "() => _derived_w.value.x.y",
-      },
-      {
-        name: "foo",
-        arrow: "() => { let {y, ...foo} = _derived_w.value.x; return foo}",
+        arrow: "() => { let {y, ...foo} = __b_props__.w.value.x; return foo}",
       },
     ],
   },
@@ -235,29 +155,15 @@ const TESTS = [
     expected: [
       {
         name: "y",
-        arrow: "() => w.value.x.y",
+        arrow: "() => __b_props__.w.value.x.y",
       },
       {
         name: "foo",
-        arrow: "() => { let {y, ...foo} = w.value.x; return foo}",
+        arrow: "() => { let {y, ...foo} = __b_props__.w.value.x; return foo}",
       },
       {
         name: "z",
-        arrow: "() => w.value.z",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "y",
-        arrow: "() => _derived_w.value.x.y",
-      },
-      {
-        name: "foo",
-        arrow: "() => { let {y, ...foo} = _derived_w.value.x; return foo}",
-      },
-      {
-        name: "z",
-        arrow: "() => _derived_w.value.z",
+        arrow: "() => __b_props__.w.value.z",
       },
     ],
   },
@@ -266,54 +172,28 @@ const TESTS = [
     expected: [
       {
         name: "y",
-        arrow: "() => w.value.x.y",
+        arrow: "() => __b_props__.w.value.x.y",
       },
       {
         name: "z",
-        arrow: "() => w.value.x.z",
+        arrow: "() => __b_props__.w.value.x.z",
       },
       {
         name: "a",
-        arrow: "() => w.value.x.a",
+        arrow: "() => __b_props__.w.value.x.a",
       },
       {
         name: "b",
-        arrow: "() => w.value.x.b",
-      },
-      {
-        name: "foo",
-        arrow: "() => { let {y, z, a, b, ...foo} = w.value.x; return foo}",
-      },
-      {
-        name: "t",
-        arrow: "() => w.value.t",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "y",
-        arrow: "() => _derived_w.value.x.y",
-      },
-      {
-        name: "z",
-        arrow: "() => _derived_w.value.x.z",
-      },
-      {
-        name: "a",
-        arrow: "() => _derived_w.value.x.a",
-      },
-      {
-        name: "b",
-        arrow: "() => _derived_w.value.x.b",
+        arrow: "() => __b_props__.w.value.x.b",
       },
       {
         name: "foo",
         arrow:
-          "() => { let {y, z, a, b, ...foo} = _derived_w.value.x; return foo}",
+          "() => { let {y, z, a, b, ...foo} = __b_props__.w.value.x; return foo}",
       },
       {
         name: "t",
-        arrow: "() => _derived_w.value.t",
+        arrow: "() => __b_props__.w.value.t",
       },
     ],
   },
@@ -322,38 +202,20 @@ const TESTS = [
     expected: [
       {
         name: "f",
-        arrow: "() => w.value.x[0].y.f",
+        arrow: "() => __b_props__.w.value.x[0].y.f",
       },
       {
         name: "z",
-        arrow: "() => w.value.x[0].z",
-      },
-      {
-        name: "foo",
-        arrow: "() => { let {y, z, ...foo} = w.value.x[0]; return foo}",
-      },
-      {
-        name: "t",
-        arrow: "() => w.value.t",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "f",
-        arrow: "() => _derived_w.value.x[0].y.f",
-      },
-      {
-        name: "z",
-        arrow: "() => _derived_w.value.x[0].z",
+        arrow: "() => __b_props__.w.value.x[0].z",
       },
       {
         name: "foo",
         arrow:
-          "() => { let {y, z, ...foo} = _derived_w.value.x[0]; return foo}",
+          "() => { let {y, z, ...foo} = __b_props__.w.value.x[0]; return foo}",
       },
       {
         name: "t",
-        arrow: "() => _derived_w.value.t",
+        arrow: "() => __b_props__.w.value.t",
       },
     ],
   },
@@ -364,21 +226,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => (b.value ?? {c: 3,d: 4}).c",
+        arrow: "() => (__b_props__.b.value ?? {c: 3,d: 4}).c",
       },
       {
         name: "d",
-        arrow: "() => (b.value ?? {c: 3,d: 4}).d",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => (_derived_b.value ?? {c: 3,d: 4}).c",
-      },
-      {
-        name: "d",
-        arrow: "() => (_derived_b.value ?? {c: 3,d: 4}).d",
+        arrow: "() => (__b_props__.b.value ?? {c: 3,d: 4}).d",
       },
     ],
   },
@@ -387,21 +239,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => (b.value ?? [3, 4])[0]",
+        arrow: "() => (__b_props__.b.value ?? [3, 4])[0]",
       },
       {
         name: "d",
-        arrow: "() => (b.value ?? [3, 4])[1]",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => (_derived_b.value ?? [3, 4])[0]",
-      },
-      {
-        name: "d",
-        arrow: "() => (_derived_b.value ?? [3, 4])[1]",
+        arrow: "() => (__b_props__.b.value ?? [3, 4])[1]",
       },
     ],
   },
@@ -410,21 +252,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => b.value.c",
+        arrow: "() => __b_props__.b.value.c",
       },
       {
         name: "d",
-        arrow: "() => b.value.d ?? {f: 2}",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_b.value.c",
-      },
-      {
-        name: "d",
-        arrow: "() => _derived_b.value.d ?? {f: 2}",
+        arrow: "() => __b_props__.b.value.d ?? {f: 2}",
       },
     ],
   },
@@ -433,21 +265,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => b.value.c",
+        arrow: "() => __b_props__.b.value.c",
       },
       {
         name: "d",
-        arrow: '() => b.value.d ?? {f: "test"}',
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_b.value.c",
-      },
-      {
-        name: "d",
-        arrow: '() => _derived_b.value.d ?? {f: "test"}',
+        arrow: '() => __b_props__.b.value.d ?? {f: "test"}',
       },
     ],
   },
@@ -456,21 +278,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => (b.value ?? {c: '3',d: '4'}).c",
+        arrow: "() => (__b_props__.b.value ?? {c: '3',d: '4'}).c",
       },
       {
         name: "d",
-        arrow: "() => (b.value ?? {c: '3',d: '4'}).d",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => (_derived_b.value ?? {c: '3',d: '4'}).c",
-      },
-      {
-        name: "d",
-        arrow: "() => (_derived_b.value ?? {c: '3',d: '4'}).d",
+        arrow: "() => (__b_props__.b.value ?? {c: '3',d: '4'}).d",
       },
     ],
   },
@@ -479,23 +291,12 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => (b.value ?? {c: 2,d: 3}).c",
+        arrow: "() => (__b_props__.b.value ?? {c: 2,d: 3}).c",
       },
       {
         name: "rest",
         arrow:
-          "() => { let {c, ...rest} = (b.value ?? {c: 2,d: 3}); return rest}",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => (_derived_b.value ?? {c: 2,d: 3}).c",
-      },
-      {
-        name: "rest",
-        arrow:
-          "() => { let {c, ...rest} = (_derived_b.value ?? {c: 2,d: 3}); return rest}",
+          "() => { let {c, ...rest} = (__b_props__.b.value ?? {c: 2,d: 3}); return rest}",
       },
     ],
   },
@@ -504,21 +305,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => (b.value ?? [2, 3])[0]",
+        arrow: "() => (__b_props__.b.value ?? [2, 3])[0]",
       },
       {
         name: "rest",
-        arrow: "() => (b.value ?? [2, 3]).slice(1)",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => (_derived_b.value ?? [2, 3])[0]",
-      },
-      {
-        name: "rest",
-        arrow: "() => (_derived_b.value ?? [2, 3]).slice(1)",
+        arrow: "() => (__b_props__.b.value ?? [2, 3]).slice(1)",
       },
     ],
   },
@@ -527,23 +318,12 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: `() => (b.value ?? {c: '2',d: '3'}).c`,
+        arrow: `() => (__b_props__.b.value ?? {c: '2',d: '3'}).c`,
       },
       {
         name: "rest",
         arrow:
-          "() => { let {c, ...rest} = (b.value ?? {c: '2',d: '3'}); return rest}",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: `() => (_derived_b.value ?? {c: '2',d: '3'}).c`,
-      },
-      {
-        name: "rest",
-        arrow:
-          "() => { let {c, ...rest} = (_derived_b.value ?? {c: '2',d: '3'}); return rest}",
+          "() => { let {c, ...rest} = (__b_props__.b.value ?? {c: '2',d: '3'}); return rest}",
       },
     ],
   },
@@ -552,21 +332,11 @@ const TESTS = [
     expected: [
       {
         name: "b",
-        arrow: "() => a.value.b ?? 1",
+        arrow: "() => __b_props__.a.value.b ?? 1",
       },
       {
         name: "c",
-        arrow: "() => a.value.c ?? 2",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "b",
-        arrow: "() => _derived_a.value.b ?? 1",
-      },
-      {
-        name: "c",
-        arrow: "() => _derived_a.value.c ?? 2",
+        arrow: "() => __b_props__.a.value.c ?? 2",
       },
     ],
   },
@@ -575,21 +345,11 @@ const TESTS = [
     expected: [
       {
         name: "b",
-        arrow: "() => a.value.b ?? '1'",
+        arrow: "() => __b_props__.a.value.b ?? '1'",
       },
       {
         name: "c",
-        arrow: "() => a.value.c ?? '2'",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "b",
-        arrow: "() => _derived_a.value.b ?? '1'",
-      },
-      {
-        name: "c",
-        arrow: "() => _derived_a.value.c ?? '2'",
+        arrow: "() => __b_props__.a.value.c ?? '2'",
       },
     ],
   },
@@ -598,21 +358,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => a.value[0].b.c ?? '3'",
+        arrow: "() => __b_props__.a.value[0].b.c ?? '3'",
       },
       {
         name: "g",
-        arrow: "() => f.value.g ?? '5'",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_a.value[0].b.c ?? '3'",
-      },
-      {
-        name: "g",
-        arrow: "() => _derived_f.value.g ?? '5'",
+        arrow: "() => __b_props__.f.value.g ?? '5'",
       },
     ],
   },
@@ -621,13 +371,7 @@ const TESTS = [
     expected: [
       {
         name: "z",
-        arrow: "() => w.value.x.y.z ?? 1",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "z",
-        arrow: "() => _derived_w.value.x.y.z ?? 1",
+        arrow: "() => __b_props__.w.value.x.y.z ?? 1",
       },
     ],
   },
@@ -636,38 +380,20 @@ const TESTS = [
     expected: [
       {
         name: "f",
-        arrow: `() => w.value.x[0].y.f ?? 'bar'`,
+        arrow: `() => __b_props__.w.value.x[0].y.f ?? 'bar'`,
       },
       {
         name: "z",
-        arrow: `() => w.value.x[0].z ?? 'baz'`,
-      },
-      {
-        name: "foo",
-        arrow: "() => { let {y, z, ...foo} = w.value.x[0]; return foo}",
-      },
-      {
-        name: "t",
-        arrow: "() => w.value.t",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "f",
-        arrow: `() => _derived_w.value.x[0].y.f ?? 'bar'`,
-      },
-      {
-        name: "z",
-        arrow: `() => _derived_w.value.x[0].z ?? 'baz'`,
+        arrow: `() => __b_props__.w.value.x[0].z ?? 'baz'`,
       },
       {
         name: "foo",
         arrow:
-          "() => { let {y, z, ...foo} = _derived_w.value.x[0]; return foo}",
+          "() => { let {y, z, ...foo} = __b_props__.w.value.x[0]; return foo}",
       },
       {
         name: "t",
-        arrow: "() => _derived_w.value.t",
+        arrow: "() => __b_props__.w.value.t",
       },
     ],
   },
@@ -678,21 +404,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => b.value.c ?? a.value",
+        arrow: "() => __b_props__.b.value.c ?? a.value",
       },
       {
         name: "d",
-        arrow: "() => b.value.d ?? 2",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_b.value.c ?? a.value",
-      },
-      {
-        name: "d",
-        arrow: "() => _derived_b.value.d ?? 2",
+        arrow: "() => __b_props__.b.value.d ?? 2",
       },
     ],
   },
@@ -701,21 +417,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => b.value.c ?? foo.value",
+        arrow: "() => __b_props__.b.value.c ?? foo.value",
       },
       {
         name: "d",
-        arrow: "() => b.value.d ?? 2",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_b.value.c ?? foo.value",
-      },
-      {
-        name: "d",
-        arrow: "() => _derived_b.value.d ?? 2",
+        arrow: "() => __b_props__.b.value.d ?? 2",
       },
     ],
   },
@@ -724,21 +430,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => a.value.b.c ?? z.value",
+        arrow: "() => __b_props__.a.value.b.c ?? z.value",
       },
       {
         name: "d",
-        arrow: "() => a.value.b.d ?? y.value",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_a.value.b.c ?? z.value",
-      },
-      {
-        name: "d",
-        arrow: "() => _derived_a.value.b.d ?? y.value",
+        arrow: "() => __b_props__.a.value.b.d ?? y.value",
       },
     ],
   },
@@ -747,21 +443,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => a.value.b.c ?? d.value",
+        arrow: "() => __b_props__.a.value.b.c ?? d.value",
       },
       {
         name: "d",
-        arrow: "() => a.value.b.d ?? 5",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_a.value.b.c ?? d.value",
-      },
-      {
-        name: "d",
-        arrow: "() => _derived_a.value.b.d ?? 5",
+        arrow: "() => __b_props__.a.value.b.d ?? 5",
       },
     ],
   },
@@ -772,21 +458,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => a.value.b.c ?? foo",
+        arrow: "() => __b_props__.a.value.b.c ?? foo",
       },
       {
         name: "d",
-        arrow: "() => a.value.b.d ?? 5",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_a.value.b.c ?? foo",
-      },
-      {
-        name: "d",
-        arrow: "() => _derived_a.value.b.d ?? 5",
+        arrow: "() => __b_props__.a.value.b.d ?? 5",
       },
     ],
   },
@@ -795,21 +471,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => a.value.b.c ?? foo()",
+        arrow: "() => __b_props__.a.value.b.c ?? foo()",
       },
       {
         name: "d",
-        arrow: "() => a.value.b.d ?? 5",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_a.value.b.c ?? foo()",
-      },
-      {
-        name: "d",
-        arrow: "() => _derived_a.value.b.d ?? 5",
+        arrow: "() => __b_props__.a.value.b.d ?? 5",
       },
     ],
   },
@@ -818,21 +484,11 @@ const TESTS = [
     expected: [
       {
         name: "c",
-        arrow: "() => a.value.b.c ?? t.value",
+        arrow: "() => __b_props__.a.value.b.c ?? t.value",
       },
       {
         name: "t",
-        arrow: "() => a.value.b.t ?? 5",
-      },
-    ],
-    expectedWithPrefix: [
-      {
-        name: "c",
-        arrow: "() => _derived_a.value.b.c ?? t.value",
-      },
-      {
-        name: "t",
-        arrow: "() => _derived_a.value.b.t ?? 5",
+        arrow: "() => __b_props__.a.value.b.t ?? 5",
       },
     ],
   },
@@ -842,41 +498,26 @@ const normalizeArrows = ({ arrow }: { arrow: string }) =>
   normalizeQuotes(arrow);
 
 describe("AST", () => {
-  describe.each(TESTS)(
-    "destructuredPropsToArrowFn",
-    ({ param, expected, expectedWithPrefix }) => {
-      const expectedArrows = expected.map(normalizeArrows);
-      const expectedWithPrefixArrows = expectedWithPrefix.map(normalizeArrows);
-      const expectedNames = expected.map((a) => a.name).join(", ");
+  describe.each(TESTS)("destructuredPropsToArrowFn", ({ param, expected }) => {
+    const expectedArrows = expected.map(normalizeArrows);
+    const expectedNames = expected.map((a) => a.name).join(", ");
 
-      it(`should transform ${param} to ${expectedArrows.join(", ")}`, () => {
-        const patternString = `function test(${param}){}`;
-        const ast = parseCodeToAST(patternString) as any;
-        const pattern = ast.body[0].declarations[0].init.params[0];
-        const result = destructuredPropsToArrowFn(pattern);
+    it(`should transform ${param} to ${expectedArrows.join(", ")}`, () => {
+      const patternString = `function test(${param}){}`;
+      const ast = parseCodeToAST(patternString) as any;
+      const pattern = ast.body[0].declarations[0].init.params[0];
+      const result = destructuredPropsToArrowFn(pattern);
 
-        expect(result.map(normalizeArrows)).toEqual(expectedArrows);
-      });
+      expect(result.map(normalizeArrows)).toEqual(expectedArrows);
+    });
 
-      it(`should extract these props "${expectedNames}" from: ${param}`, () => {
-        const patternString = `function test(${param}){}`;
-        const ast = parseCodeToAST(patternString) as any;
-        const pattern = ast.body[0].declarations[0].init.params[0];
-        const result = destructuredPropsToArrowFn(pattern);
+    it(`should extract these props "${expectedNames}" from: ${param}`, () => {
+      const patternString = `function test(${param}){}`;
+      const ast = parseCodeToAST(patternString) as any;
+      const pattern = ast.body[0].declarations[0].init.params[0];
+      const result = destructuredPropsToArrowFn(pattern);
 
-        expect(result.map((a) => a.name).join(", ")).toBe(expectedNames);
-      });
-
-      it(`should use prefix + transform ${param} to ${expectedWithPrefixArrows.join(
-        ", ",
-      )}`, () => {
-        const patternString = `function test(${param}){}`;
-        const ast = parseCodeToAST(patternString) as any;
-        const pattern = ast.body[0].declarations[0].init.params[0];
-        const result = destructuredPropsToArrowFn(pattern, "_derived_");
-
-        expect(result.map(normalizeArrows)).toEqual(expectedWithPrefixArrows);
-      });
-    },
-  );
+      expect(result.map((a) => a.name).join(", ")).toBe(expectedNames);
+    });
+  });
 });
