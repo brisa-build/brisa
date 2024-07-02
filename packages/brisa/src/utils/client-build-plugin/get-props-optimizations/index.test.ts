@@ -268,16 +268,16 @@ const TESTS = [
     param: "{ a = 1, b: { c = a, d = 2 } }",
     expected: [
       "const a = derived(() => __b_props__.a.value ?? 1);",
-      "const c = derived(() => __b_props__.b.value.c ?? a.value);",
       "const d = derived(() => __b_props__.b.value.d ?? 2);",
+      "const c = derived(() => __b_props__.b.value.c ?? a.value);",
     ],
   },
   {
     param: "{ a: foo = 1, b: { c = foo, d = 2 } }",
     expected: [
       "const foo = derived(() => __b_props__.foo.value ?? 1);",
-      "const c = derived(() => __b_props__.b.value.c ?? foo.value);",
       "const d = derived(() => __b_props__.b.value.d ?? 2);",
+      "const c = derived(() => __b_props__.b.value.c ?? foo.value);",
     ],
   },
   {
@@ -290,8 +290,8 @@ const TESTS = [
   {
     param: "{ a: { b: { c = d, d = 5 } } }",
     expected: [
-      "const c = derived(() => __b_props__.a.value.b.c ?? d.value);",
       "const d = derived(() => __b_props__.a.value.b.d ?? 5);",
+      "const c = derived(() => __b_props__.a.value.b.c ?? d.value);",
     ],
   },
 
@@ -299,8 +299,8 @@ const TESTS = [
   {
     param: "{ a: { b: { c = foo, d = 5 } } }",
     expected: [
-      "const c = derived(() => __b_props__.a.value.b.c ?? foo);",
       "const d = derived(() => __b_props__.a.value.b.d ?? 5);",
+      "const c = derived(() => __b_props__.a.value.b.c ?? foo);",
     ],
   },
   {
@@ -313,8 +313,8 @@ const TESTS = [
   {
     param: "{ a: { b: { c = t, d: t = 5 } } }",
     expected: [
-      "const c = derived(() => __b_props__.a.value.b.c ?? t.value);",
       "const t = derived(() => __b_props__.a.value.b.t ?? 5);",
+      "const c = derived(() => __b_props__.a.value.b.c ?? t.value);",
     ],
   },
 ];
