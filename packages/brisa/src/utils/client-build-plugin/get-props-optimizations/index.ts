@@ -10,6 +10,7 @@ const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 const EXTRA_END_REGEX = /( \?\?.*|\);)$/;
 const BEFORE_ARROW_REGEX = /.*\(\) => /;
 const SEPARATOR_REGEX = /\.|\[/;
+const PROP_DEPENDENCY_REGEX = /(\S*)\.value/g;
 const DOT_END_REGEX = /\.$/;
 const { generateCodeFromAST } = AST("tsx");
 
@@ -241,20 +242,21 @@ export default function getPropsOptimizations(
     result.push(res);
   }
 
-  if (acc) return result;
+  if (acc) return result.toSorted(sortByPropDependencies());
 
-  // @ts-ignore Difference is already available in Bun but not in the types
   const difference = vars.dotValueList.difference(vars.propsList);
 
-  if (!difference.size) return result;
+  if (!difference.size) return result.toSorted(sortByPropDependencies());
 
   // ##### Remove .value from external identifiers default values #####
-  return result.map((r) =>
-    r.replace(
-      new RegExp(`(${Array.from(difference).join("|")})\\.value`, "g"),
-      "$1",
-    ),
-  );
+  return result
+    .map((r) =>
+      r.replace(
+        new RegExp(`(${Array.from(difference).join("|")})\\.value`, "g"),
+        "$1",
+      ),
+    )
+    .toSorted(sortByPropDependencies());
 }
 
 function getDefaultValue(inputRight: any, name?: string) {
@@ -287,4 +289,40 @@ function getDerivedArrowFnString(
   return `const ${name} = ${derivedFnName}(() => ${
     openCurly + arrowContent + closeCurly
   });`;
+}
+
+function getDeps(code: string) {
+  const matches = code
+    .match(EXTRA_END_REGEX)?.[0]
+    ?.match(PROP_DEPENDENCY_REGEX);
+  return new Set(matches?.filter(Boolean)?.map((d) => d.replace(".value", "")));
+}
+
+function sortByPropDependencies() {
+  let depsSet = new Set<string>();
+
+  return (a: string, b: string) => {
+    const aDeps = getDeps(a);
+    const bDeps = getDeps(b);
+    const unionWithA = depsSet.union(aDeps);
+    const unionWithB = depsSet.union(bDeps);
+    let result = 0;
+
+    if (!bDeps.size && !aDeps.size) return result;
+
+    if (!aDeps.size) result = -1;
+    else if (!bDeps.size) result = 1;
+    else if (unionWithA.size === aDeps.size && unionWithB.size !== bDeps.size) {
+      result = 1;
+    } else if (
+      unionWithA.size !== aDeps.size &&
+      unionWithB.size === bDeps.size
+    ) {
+      result = -1;
+    }
+
+    depsSet = unionWithA.union(unionWithB);
+
+    return result;
+  };
 }
