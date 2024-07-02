@@ -139,12 +139,11 @@ export default function destructuredPropsToArrowFn(
       let newAcc = updatedAcc + name + dotValue;
 
       if (value.left?.type === "Identifier") {
-        return [
-          {
-            arrow: `() => ${addPrefix(newAcc + propDefaultText)}`,
-            name: value.left?.name,
-          },
-        ];
+        result.push({
+          arrow: `() => ${addPrefix(newAcc + propDefaultText)}`,
+          name: value.left?.name,
+        });
+        continue;
       }
 
       newAcc = `(${newAcc + propDefaultText}).`;
