@@ -2,6 +2,11 @@ import AST from "@/utils/ast";
 
 type Result = { arrow: string; name: string }[];
 
+type Vars = {
+  dotValueList: Set<string>;
+  propsList: Set<string>;
+};
+
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 const DEFAULT_VALUE_REGEX = / \?\?.*$/;
 const SEPARATOR_REGEX = /\.|\[/;
@@ -23,10 +28,12 @@ export default function destructuredPropsToArrowFn(
   inputPattern: any,
   prefix = "",
   acc = "",
-  varsWithDotValue: string[] = [],
+  vars: Vars = {
+    dotValueList: new Set(),
+    propsList: new Set(),
+  },
 ): Result {
   const result: Result = [];
-  const propsFirstLevel = [];
   let pattern = inputPattern;
 
   // ##### AssignmentPattern (with default value in top level) #####
@@ -43,11 +50,11 @@ export default function destructuredPropsToArrowFn(
       const name =
         element?.argument?.name ?? element?.left?.name ?? element?.name;
 
+      // Track existing prop name
+      vars.propsList.add(name);
+
       // Skip first level
-      if (!acc) {
-        propsFirstLevel.push(name);
-        continue;
-      }
+      if (!acc) continue;
 
       /* ####################################################################
          #####     Transform RestElement from Array to an arrow fn     ######
@@ -66,7 +73,7 @@ export default function destructuredPropsToArrowFn(
         ####################################################################*/
       if (PATTERNS.has(element?.type)) {
         result.push(
-          ...destructuredPropsToArrowFn(element, "", last + `[${i}].`, varsWithDotValue),
+          ...destructuredPropsToArrowFn(element, "", last + `[${i}].`, vars),
         );
         continue;
       }
@@ -94,11 +101,11 @@ export default function destructuredPropsToArrowFn(
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
 
-    if (!acc) {
-      propsFirstLevel.push(prop?.value?.name ?? name);
-    } else {
-      if (dotValue) varsWithDotValue.push(name);
-      if (dotValueForDefault) varsWithDotValue.push(right?.name);
+    // Track existing prop name + vars with .value (including default values)
+    vars.propsList.add(prop?.value?.name ?? name);
+    if (acc) {
+      if (dotValue) vars.dotValueList.add(name);
+      if (dotValueForDefault) vars.dotValueList.add(right?.name);
     }
 
     /* ####################################################################
@@ -113,7 +120,7 @@ export default function destructuredPropsToArrowFn(
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
       newAcc += dot + propDefaultText;
-      result.push(...destructuredPropsToArrowFn(value, "", newAcc, varsWithDotValue));
+      result.push(...destructuredPropsToArrowFn(value, "", newAcc, vars));
       continue;
     }
 
@@ -126,7 +133,7 @@ export default function destructuredPropsToArrowFn(
       let newAcc = updatedAcc + prefix + name + dotValue;
 
       newAcc = `(${newAcc + propDefaultText}).`;
-      result.push(...destructuredPropsToArrowFn(value.left, "", newAcc, varsWithDotValue));
+      result.push(...destructuredPropsToArrowFn(value.left, "", newAcc, vars));
       continue;
     }
 
@@ -186,25 +193,21 @@ export default function destructuredPropsToArrowFn(
     });
   }
 
+  if (acc) return result;
+
+  // @ts-ignore Difference is already available in Bun but not in the types
+  const difference = vars.dotValueList.difference(vars.propsList);
+
+  if (!difference.size) return result;
+
   // ##### Remove .value from external identifiers default values #####
-  if (!acc) {
-    const allProps = new Set(propsFirstLevel);
-    const allVarsWithDotValue = new Set(varsWithDotValue);
-    // @ts-ignore Difference is already available in Bun but not in the types
-    const difference = allVarsWithDotValue.difference(allProps);
-
-    if (!difference.size) return result;
-
-    return result.map((r) => ({
-      name: r.name,
-      arrow: r.arrow.replace(
-        new RegExp(`(${Array.from(difference).join("|")})\\.value`, "g"),
-        "$1",
-      ),
-    }));
-  }
-
-  return result;
+  return result.map((r) => ({
+    name: r.name,
+    arrow: r.arrow.replace(
+      new RegExp(`(${Array.from(difference).join("|")})\\.value`, "g"),
+      "$1",
+    ),
+  }));
 }
 
 function getDefaultValue(inputRight: any, name?: string) {
