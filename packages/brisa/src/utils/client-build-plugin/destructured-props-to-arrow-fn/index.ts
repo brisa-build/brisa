@@ -103,8 +103,16 @@ export default function destructuredPropsToArrowFn(
     const dotValueForDefault = defaultValue.isIdentifier ? ".value" : "";
     const propDefaultText = defaultValue.fallbackText + dotValueForDefault;
     const dotValue = acc ? "" : ".value";
+    const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
+
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
+
+    const nameWithPrefix = name.startsWith('["')
+      ? name.replace('["', `["${prefix}`)
+      : prefix + name;
+
+    let newAcc = updatedAcc + nameWithPrefix + dotValue;
 
     // Track existing prop name + vars with .value (including default values)
     vars.propsList.add(name);
@@ -119,9 +127,7 @@ export default function destructuredPropsToArrowFn(
     if (PATTERNS.has(type)) {
       const isArrayPattern = type === "ArrayPattern";
       const dot = isArrayPattern ? "" : ".";
-      const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       const { fallbackText } = getDefaultValue(inputPattern?.right, name);
-      let newAcc = updatedAcc + prefix + name + dotValue;
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
       newAcc += dot + propDefaultText;
@@ -134,9 +140,6 @@ export default function destructuredPropsToArrowFn(
        #####       value in top level                                 ######
        ####################################################################*/
     if (hasDefaultObjectValue && !acc) {
-      const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
-      let newAcc = updatedAcc + prefix + name + dotValue;
-
       newAcc = `(${newAcc + propDefaultText}).`;
       result.push(...destructuredPropsToArrowFn(value.left, "", newAcc, vars));
       continue;

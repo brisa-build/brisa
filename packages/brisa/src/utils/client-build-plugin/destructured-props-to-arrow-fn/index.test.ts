@@ -45,6 +45,21 @@ const TESTS = [
       },
     ],
   },
+  {
+    param: "{ 'a-b': { 'c-d': e } }",
+    expected: [
+      {
+        name: "e",
+        arrow: "() => ['a-b'].value.e",
+      },
+    ],
+    expectedWithPrefix: [
+      {
+        name: "e",
+        arrow: "() => ['_derived_a-b'].value.e",
+      },
+    ],
+  },
 
   // Ignore first level
   {
@@ -523,6 +538,29 @@ const TESTS = [
     ],
   },
   {
+    param: "{ a: [{ b: { c = 1 } }, ...rest] }",
+    expected: [
+      {
+        name: "c",
+        arrow: "() => a.value[0].b.c ?? 1",
+      },
+      {
+        name: "rest",
+        arrow: "() => a.value.slice(1)",
+      },
+    ],
+    expectedWithPrefix: [
+      {
+        name: "c",
+        arrow: "() => _derived_a.value[0].b.c ?? 1",
+      },
+      {
+        name: "rest",
+        arrow: "() => _derived_a.value.slice(1)",
+      },
+    ],
+  },
+  {
     param: "{ a = 1, b: { c, ...rest } = { c: '2', d: '3' } }",
     expected: [
       {
@@ -833,6 +871,29 @@ const TESTS = [
       {
         name: "t",
         arrow: "() => _derived_a.value.b.t ?? 5",
+      },
+    ],
+  },
+  {
+    param: "{ a: { b: { c = () => {}, d = someFunction() } } }",
+    expected: [
+      {
+        name: "c",
+        arrow: "() => a.value.b.c ?? () => {}",
+      },
+      {
+        name: "d",
+        arrow: "() => a.value.b.d ?? someFunction()",
+      },
+    ],
+    expectedWithPrefix: [
+      {
+        name: "c",
+        arrow: "() => _derived_a.value.b.c ?? () => {}",
+      },
+      {
+        name: "d",
+        arrow: "() => _derived_a.value.b.d ?? someFunction()",
       },
     ],
   },
