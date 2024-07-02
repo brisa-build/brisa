@@ -54,6 +54,20 @@ describe("utils", () => {
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
+      it("should return the props names if the props are an identifier with default props", () => {
+        const [input] = inputCode(`
+          export default function MyComponent(props = { name: 'foo' }) {
+            return <div>{props.name}</div>
+          }
+        `);
+        const [propNames, renamedOutput] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = ["name"];
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(expected);
+      });
       it("should return props names if the props are an identifier an are used in a conditional", () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
