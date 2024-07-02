@@ -48,7 +48,7 @@ export default function destructuredPropsToArrowFn(
       const right = element?.right;
       const defaultValue = getDefaultValue(right);
       const name =
-        element?.argument?.name ?? element?.left?.name ?? element?.name;
+        element?.left?.name ?? element?.argument?.name ?? element?.name;
 
       // Track existing prop name
       vars.propsList.add(name);
@@ -91,18 +91,23 @@ export default function destructuredPropsToArrowFn(
   // ##### ObjectPattern #####
   for (let prop of pattern?.properties ?? []) {
     const value = prop?.value;
-    const right = prop?.value?.right;
-    const type = prop?.value?.type;
+    const right = value?.right;
+    const type = value?.type;
+    const name =
+      value?.left?.name ??
+      value?.name ??
+      prop?.key?.name ??
+      `["${value?.value ?? prop?.key?.value}"]`;
+
     const defaultValue = getDefaultValue(right);
     const dotValueForDefault = defaultValue.isIdentifier ? ".value" : "";
     const propDefaultText = defaultValue.fallbackText + dotValueForDefault;
     const dotValue = acc ? "" : ".value";
-    const name = prop?.key?.name ?? `["${prop?.key?.value}"]`;
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
 
     // Track existing prop name + vars with .value (including default values)
-    vars.propsList.add(prop?.value?.name ?? name);
+    vars.propsList.add(name);
     if (acc) {
       if (dotValue) vars.dotValueList.add(name);
       if (dotValueForDefault) vars.dotValueList.add(right?.name);
@@ -189,7 +194,7 @@ export default function destructuredPropsToArrowFn(
        #############################################################*/
     result.push({
       arrow: "() => " + acc + name + dotValue + propDefaultText,
-      name: prop?.key?.name ?? value?.name ?? prop?.argument?.name,
+      name,
     });
   }
 

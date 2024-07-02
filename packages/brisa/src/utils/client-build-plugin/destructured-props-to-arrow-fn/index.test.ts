@@ -813,6 +813,29 @@ const TESTS = [
       },
     ],
   },
+  {
+    param: "{ a: { b: { c = t, d: t = 5 } } }",
+    expected: [
+      {
+        name: "c",
+        arrow: "() => a.value.b.c ?? t.value",
+      },
+      {
+        name: "t",
+        arrow: "() => a.value.b.t ?? 5",
+      },
+    ],
+    expectedWithPrefix: [
+      {
+        name: "c",
+        arrow: "() => _derived_a.value.b.c ?? t.value",
+      },
+      {
+        name: "t",
+        arrow: "() => _derived_a.value.b.t ?? 5",
+      },
+    ],
+  },
 ];
 
 const normalizeArrows = ({ arrow }: { arrow: string }) =>
