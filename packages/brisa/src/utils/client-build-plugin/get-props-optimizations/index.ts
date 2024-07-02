@@ -25,7 +25,7 @@ const { generateCodeFromAST } = AST("tsx");
  *         - () => __b_props__.a.value.[0].b.c ?? "3"
  *         - () => __b_props__.f.value.g ?? "5"
  */
-export default function destructuredPropsToArrowFn(
+export default function getPropsOptimizations(
   inputPattern: any,
   acc = "",
   vars: Vars = {
@@ -73,9 +73,7 @@ export default function destructuredPropsToArrowFn(
         #####      Transform ObjectPattern or ArrayPattern element      ######
         ####################################################################*/
       if (PATTERNS.has(element?.type)) {
-        result.push(
-          ...destructuredPropsToArrowFn(element, last + `[${i}].`, vars),
-        );
+        result.push(...getPropsOptimizations(element, last + `[${i}].`, vars));
         continue;
       }
 
@@ -126,7 +124,7 @@ export default function destructuredPropsToArrowFn(
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
       newAcc += dot + propDefaultText;
-      result.push(...destructuredPropsToArrowFn(value, newAcc, vars));
+      result.push(...getPropsOptimizations(value, newAcc, vars));
       continue;
     }
 
@@ -147,7 +145,7 @@ export default function destructuredPropsToArrowFn(
       }
 
       newAcc = `(${newAcc + propDefaultText}).`;
-      result.push(...destructuredPropsToArrowFn(value.left, newAcc, vars));
+      result.push(...getPropsOptimizations(value.left, newAcc, vars));
       continue;
     }
 

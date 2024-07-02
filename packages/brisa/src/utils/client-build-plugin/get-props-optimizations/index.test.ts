@@ -1,11 +1,25 @@
 import { normalizeQuotes } from "@/helpers";
 import AST from "@/utils/ast";
-import destructuredPropsToArrowFn from "@/utils/client-build-plugin/destructured-props-to-arrow-fn";
+import getPropsOptimizations from "@/utils/client-build-plugin/get-props-optimizations";
 import { describe, expect, it } from "bun:test";
 
 const { parseCodeToAST } = AST("tsx");
 
 const TESTS = [
+  // Should ignore identifier
+  {
+    param: "props",
+    expected: [],
+  },
+  {
+    param: "props = { foo: 'bar' }",
+    expected: [],
+  },
+  {
+    param: "props = { foo: 'bar', baz: { qux: 'quuz' } }",
+    expected: [],
+  },
+
   // Basic patterns
   {
     param: "{ b: { d: [foo] } }",
@@ -586,7 +600,7 @@ const normalizeArrows = ({ arrow }: { arrow: string }) =>
   normalizeQuotes(arrow);
 
 describe("AST", () => {
-  describe.each(TESTS)("destructuredPropsToArrowFn", ({ param, expected }) => {
+  describe.each(TESTS)("getPropsOptimizations", ({ param, expected }) => {
     const expectedArrows = expected.map(normalizeArrows);
     const expectedNames = expected.map((a) => a.name).join(", ");
 
@@ -594,7 +608,7 @@ describe("AST", () => {
       const patternString = `function test(${param}){}`;
       const ast = parseCodeToAST(patternString) as any;
       const pattern = ast.body[0].declarations[0].init.params[0];
-      const result = destructuredPropsToArrowFn(pattern);
+      const result = getPropsOptimizations(pattern);
 
       expect(result.map(normalizeArrows)).toEqual(expectedArrows);
     });
@@ -603,7 +617,7 @@ describe("AST", () => {
       const patternString = `function test(${param}){}`;
       const ast = parseCodeToAST(patternString) as any;
       const pattern = ast.body[0].declarations[0].init.params[0];
-      const result = destructuredPropsToArrowFn(pattern);
+      const result = getPropsOptimizations(pattern);
 
       expect(result.map((a) => a.name).join(", ")).toBe(expectedNames);
     });
