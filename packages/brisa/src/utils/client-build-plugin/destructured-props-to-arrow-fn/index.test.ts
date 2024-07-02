@@ -95,6 +95,19 @@ const TESTS = [
       },
     ],
   },
+  {
+    param: "{ a: b = { foo: 'bar' }, c: d = { baz: 'qux' } }",
+    expected: [
+      {
+        name: "b",
+        arrow: "() => __b_props__.b.value ?? {foo: 'bar'}",
+      },
+      {
+        name: "d",
+        arrow: "() => __b_props__.d.value ?? {baz: 'qux'}",
+      },
+    ],
+  },
 
   // Rest in nested level array
   {
