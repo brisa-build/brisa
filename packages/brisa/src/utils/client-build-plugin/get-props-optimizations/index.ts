@@ -1,7 +1,5 @@
 import AST from "@/utils/ast";
 
-type Result = { arrow: string; name: string }[];
-
 type Vars = {
   dotValueList: Set<string>;
   propsList: Set<string>;
@@ -9,7 +7,8 @@ type Vars = {
 
 const PROPS_IDENTIFIER = "__b_props__";
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
-const DEFAULT_VALUE_REGEX = / \?\?.*$/;
+const EXTRA_END_REGEX = /( \?\?.*|\);)$/;
+const BEFORE_ARROW_REGEX = /.*\(\) => /;
 const SEPARATOR_REGEX = /\.|\[/;
 const DOT_END_REGEX = /\.$/;
 const { generateCodeFromAST } = AST("tsx");
@@ -22,18 +21,19 @@ const { generateCodeFromAST } = AST("tsx");
  * input:
  *         - { a: [{ b: {c = "3" }}], d, f: { g = "5" }}
  * outputs:
- *         - () => __b_props__.a.value.[0].b.c ?? "3"
- *         - () => __b_props__.f.value.g ?? "5"
+ *         - const c = derived(() => __b_props__.a.value.[0].b.c ?? "3");
+ *         - const g = derived(() => __b_props__.f.value.g ?? "5");
  */
 export default function getPropsOptimizations(
   inputPattern: any,
+  derivedFnName: string,
   acc = "",
   vars: Vars = {
     dotValueList: new Set(),
     propsList: new Set(),
   },
-): Result {
-  const result: Result = [];
+): string[] {
+  const result: string[] = [];
   let pattern = inputPattern;
 
   // ##### AssignmentPattern (with default value in top level) #####
@@ -53,7 +53,7 @@ export default function getPropsOptimizations(
       // Track existing prop name
       vars.propsList.add(name);
 
-      // Skip first level
+      // Skip first level without default value
       if (!acc && !defaultValue.fallbackText) continue;
 
       /* ####################################################################
@@ -62,8 +62,13 @@ export default function getPropsOptimizations(
       if (element?.type === "RestElement") {
         const dot = acc.at(-1) === "." ? "" : ".";
         const suffix = acc ? `${dot}slice(${i})` : name;
+        const res = getDerivedArrowFnString(
+          name,
+          addPrefix(acc + suffix),
+          derivedFnName,
+        );
 
-        result.push({ arrow: `() => ${addPrefix(acc + suffix)}`, name });
+        result.push(res);
         continue;
       }
 
@@ -73,7 +78,14 @@ export default function getPropsOptimizations(
         #####      Transform ObjectPattern or ArrayPattern element      ######
         ####################################################################*/
       if (PATTERNS.has(element?.type)) {
-        result.push(...getPropsOptimizations(element, last + `[${i}].`, vars));
+        result.push(
+          ...getPropsOptimizations(
+            element,
+            derivedFnName,
+            last + `[${i}].`,
+            vars,
+          ),
+        );
         continue;
       }
 
@@ -81,7 +93,13 @@ export default function getPropsOptimizations(
         #####        Transform Element from Array to an arrow fn        ######
         ####################################################################*/
       const suffix = `[${i}]${defaultValue.fallbackText}`;
-      result.push({ arrow: "() => " + addPrefix(last + suffix), name });
+      const res = getDerivedArrowFnString(
+        name,
+        addPrefix(last + suffix),
+        derivedFnName,
+      );
+
+      result.push(res);
     }
 
     return result;
@@ -124,7 +142,7 @@ export default function getPropsOptimizations(
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
       newAcc += dot + propDefaultText;
-      result.push(...getPropsOptimizations(value, newAcc, vars));
+      result.push(...getPropsOptimizations(value, derivedFnName, newAcc, vars));
       continue;
     }
 
@@ -137,19 +155,24 @@ export default function getPropsOptimizations(
       let newAcc = updatedAcc + name + dotValue;
 
       if (value.left?.type === "Identifier") {
-        result.push({
-          arrow: `() => ${addPrefix(newAcc + propDefaultText)}`,
-          name: value.left?.name,
-        });
+        const res = getDerivedArrowFnString(
+          value.left?.name,
+          addPrefix(newAcc + propDefaultText),
+          derivedFnName,
+        );
+
+        result.push(res);
         continue;
       }
 
       newAcc = `(${newAcc + propDefaultText}).`;
-      result.push(...getPropsOptimizations(value.left, newAcc, vars));
+      result.push(
+        ...getPropsOptimizations(value.left, derivedFnName, newAcc, vars),
+      );
       continue;
     }
 
-    // Skip first level
+    // Skip first level without default value
     if (!acc && !propDefaultText) continue;
 
     /*
@@ -157,7 +180,11 @@ export default function getPropsOptimizations(
        #####  Transform RestElement from Object to an arrow fn       ######
        #####                                                         ######
        #####  From:  from: { a: { b: { c, ...rest } } }              ######
-       #####  To: () => {let {c, ...rest} = a.value.b; return rest;} ######
+       #####  To:                                                    ######
+       ######     const rest = derived(() => {                       ######
+       ######       let {c, ...rest} = a.value.b;                    ######
+       ######       return rest;                                     ######
+       ######     });                                                ######
        ####################################################################
     */
     if (prop?.type === "RestElement" && acc) {
@@ -168,8 +195,9 @@ export default function getPropsOptimizations(
       let items: string[] = [];
 
       for (let i = result.length - 1; i >= 0; i--) {
-        const splitted = result[i]?.arrow
-          ?.replace(DEFAULT_VALUE_REGEX, "")
+        const splitted = result[i]
+          ?.replace(EXTRA_END_REGEX, "")
+          ?.replace(BEFORE_ARROW_REGEX, "() => ")
           ?.split(SEPARATOR_REGEX);
 
         if (!common) {
@@ -189,22 +217,28 @@ export default function getPropsOptimizations(
       }
 
       const variables = items.join(", ");
-      result.push({
-        arrow: `() => { let {${variables}, ...${rest}} = ${addPrefix(
+      const res = getDerivedArrowFnString(
+        rest,
+        `let {${variables}, ...${rest}} = ${addPrefix(
           content,
-        )}; return ${rest}}`,
-        name: rest,
-      });
+        )}; return ${rest};`,
+        derivedFnName,
+        true,
+      );
+
+      result.push(res);
       continue;
     }
 
     /* #############################################################
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
-    result.push({
-      arrow: `() => ${addPrefix(acc + name + dotValue + propDefaultText)}`,
+    const res = getDerivedArrowFnString(
       name,
-    });
+      addPrefix(acc + name + dotValue + propDefaultText),
+      derivedFnName,
+    );
+    result.push(res);
   }
 
   if (acc) return result;
@@ -215,13 +249,12 @@ export default function getPropsOptimizations(
   if (!difference.size) return result;
 
   // ##### Remove .value from external identifiers default values #####
-  return result.map((r) => ({
-    name: r.name,
-    arrow: r.arrow.replace(
+  return result.map((r) =>
+    r.replace(
       new RegExp(`(${Array.from(difference).join("|")})\\.value`, "g"),
       "$1",
     ),
-  }));
+  );
 }
 
 function getDefaultValue(inputRight: any, name?: string) {
@@ -241,4 +274,17 @@ function addPrefix(name: string): string {
   let prefix = name.startsWith("[") ? PROPS_IDENTIFIER : PROPS_IDENTIFIER + ".";
 
   return name.startsWith("(") ? "(" + prefix + name.slice(1) : prefix + name;
+}
+
+function getDerivedArrowFnString(
+  name: string,
+  arrowContent: string,
+  derivedFnName: string,
+  curtyBraces = false,
+) {
+  const openCurly = curtyBraces ? "{" : "";
+  const closeCurly = curtyBraces ? "}" : "";
+  return `const ${name} = ${derivedFnName}(() => ${
+    openCurly + arrowContent + closeCurly
+  });`;
 }
