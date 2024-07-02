@@ -39,7 +39,7 @@ const TESTS = [
     ],
   },
 
-  // Ignore first level
+  // Ignore first level ONLY if not have default value
   {
     param: "[a, b, c]",
     expected: [],
@@ -58,7 +58,42 @@ const TESTS = [
   },
   {
     param: "{ a = 1, b = 2, c = 3 }",
-    expected: [],
+    expected: [
+      {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
+      {
+        name: "b",
+        arrow: "() => __b_props__.b.value ?? 2",
+      },
+      {
+        name: "c",
+        arrow: "() => __b_props__.c.value ?? 3",
+      },
+    ],
+  },
+  {
+    param: "{ a: b = 1, c: d = 2 }",
+    expected: [
+      {
+        name: "b",
+        arrow: "() => __b_props__.b.value ?? 1",
+      },
+      {
+        name: "d",
+        arrow: "() => __b_props__.d.value ?? 2",
+      },
+    ],
+  },
+  {
+    param: "{ a: b = { foo: 'bar' } }",
+    expected: [
+      {
+        name: "b",
+        arrow: "() => __b_props__.b.value ?? {foo: 'bar'}",
+      },
+    ],
   },
 
   // Rest in nested level array
@@ -225,6 +260,10 @@ const TESTS = [
     param: "{ a = 1, b: { c, d } } = { c: 2, b: { c: 3, d: 4} }",
     expected: [
       {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
+      {
         name: "c",
         arrow: "() => (__b_props__.b.value ?? {c: 3,d: 4}).c",
       },
@@ -237,6 +276,10 @@ const TESTS = [
   {
     param: "{ a = 1, b: [c, d] } = { c: 2, b: [3, 4] }",
     expected: [
+      {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
       {
         name: "c",
         arrow: "() => (__b_props__.b.value ?? [3, 4])[0]",
@@ -251,6 +294,10 @@ const TESTS = [
     param: "{ a = 1, b: { c, d = { f: 2 } } }",
     expected: [
       {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
+      {
         name: "c",
         arrow: "() => __b_props__.b.value.c",
       },
@@ -263,6 +310,10 @@ const TESTS = [
   {
     param: "{ a = 1, b: { c, d = {f: 'test'} } }",
     expected: [
+      {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
       {
         name: "c",
         arrow: "() => __b_props__.b.value.c",
@@ -277,6 +328,10 @@ const TESTS = [
     param: "{ a = '1', b: { c, d } } = { c: '2', b: { c: '3', d: '4'} }",
     expected: [
       {
+        name: "a",
+        arrow: '() => __b_props__.a.value ?? "1"',
+      },
+      {
         name: "c",
         arrow: "() => (__b_props__.b.value ?? {c: '3',d: '4'}).c",
       },
@@ -289,6 +344,10 @@ const TESTS = [
   {
     param: "{ a = 1, b: { c, ...rest } = { c: 2, d: 3 } }",
     expected: [
+      {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
       {
         name: "c",
         arrow: "() => (__b_props__.b.value ?? {c: 2,d: 3}).c",
@@ -304,6 +363,10 @@ const TESTS = [
     param: "{ a = 1, b: [c, ...rest] = [2, 3] }",
     expected: [
       {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
+      {
         name: "c",
         arrow: "() => (__b_props__.b.value ?? [2, 3])[0]",
       },
@@ -316,6 +379,10 @@ const TESTS = [
   {
     param: "{ a = 1, b: { c, ...rest } = { c: '2', d: '3' } }",
     expected: [
+      {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
       {
         name: "c",
         arrow: `() => (__b_props__.b.value ?? {c: '2',d: '3'}).c`,
@@ -403,6 +470,10 @@ const TESTS = [
     param: "{ a = 1, b: { c = a, d = 2 } }",
     expected: [
       {
+        name: "a",
+        arrow: "() => __b_props__.a.value ?? 1",
+      },
+      {
         name: "c",
         arrow: "() => __b_props__.b.value.c ?? a.value",
       },
@@ -413,8 +484,12 @@ const TESTS = [
     ],
   },
   {
-    param: "{ a: foo, b: { c = foo, d = 2 } }",
+    param: "{ a: foo = 1, b: { c = foo, d = 2 } }",
     expected: [
+      {
+        name: "foo",
+        arrow: "() => __b_props__.foo.value ?? 1",
+      },
       {
         name: "c",
         arrow: "() => __b_props__.b.value.c ?? foo.value",
