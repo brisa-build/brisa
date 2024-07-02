@@ -280,10 +280,10 @@ function getDerivedArrowFnString(
   name: string,
   arrowContent: string,
   derivedFnName: string,
-  curtyBraces = false,
+  curlyBraces = false,
 ) {
-  const openCurly = curtyBraces ? "{" : "";
-  const closeCurly = curtyBraces ? "}" : "";
+  const openCurly = curlyBraces ? "{" : "";
+  const closeCurly = curlyBraces ? "}" : "";
   return `const ${name} = ${derivedFnName}(() => ${
     openCurly + arrowContent + closeCurly
   });`;
