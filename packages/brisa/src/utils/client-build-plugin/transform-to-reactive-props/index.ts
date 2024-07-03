@@ -285,6 +285,7 @@ function getComponentParams(component: any) {
 }
 
 function fixReactivityOnDestructuredProps(component: any) {
+  return;
   const componentBody = getComponentBody(component);
   const params = getComponentParams(component);
   const [props, webContextParams] = params ?? [];
