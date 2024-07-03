@@ -31,6 +31,8 @@ const I18N_CONFIG = {
           content: "Array content",
         },
       ],
+      // This crashed the test suit before fixing this issue:
+      // https://github.com/brisa-build/brisa/issues/288
       admin: {
         providers: {
           table: {
@@ -66,6 +68,8 @@ const I18N_CONFIG = {
         },
       ],
     },
+    // This crashed the test suit before fixing this issue:
+    // https://github.com/brisa-build/brisa/issues/288
     admin: {
       providers: {
         table: {
