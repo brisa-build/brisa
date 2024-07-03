@@ -6,10 +6,6 @@ import { describe, expect, it } from "bun:test";
 const { parseCodeToAST } = AST("tsx");
 const DERIVED_FN_NAME = "derived";
 
-/**
- * TODO;
- * - Add top line with the extracted first-level props
- */
 const TESTS = [
   // Should ignore identifier at first level
   {
@@ -131,14 +127,14 @@ const TESTS = [
     param: "{ w: { x: { y, ...foo } } }",
     expected: [
       "const y = derived(() => __b_props__.w.value.x.y);",
-      "const foo = derived(() => {let {y, ...foo} = __b_props__.w.value.x; return foo;});",
+      "const foo = derived(() => (({y, ...foo}) => foo)(__b_props__.w.value.x));",
     ],
   },
   {
     param: "{ w: { x: { y, ...foo }, z } }",
     expected: [
       "const y = derived(() => __b_props__.w.value.x.y);",
-      "const foo = derived(() => {let {y, ...foo} = __b_props__.w.value.x; return foo;});",
+      "const foo = derived(() => (({y, ...foo}) => foo)(__b_props__.w.value.x));",
       "const z = derived(() => __b_props__.w.value.z);",
     ],
   },
@@ -149,7 +145,7 @@ const TESTS = [
       "const z = derived(() => __b_props__.w.value.x.z);",
       "const a = derived(() => __b_props__.w.value.x.a);",
       "const b = derived(() => __b_props__.w.value.x.b);",
-      "const foo = derived(() => {let {y, z, a, b, ...foo} = __b_props__.w.value.x; return foo;});",
+      "const foo = derived(() => (({y, z, a, b, ...foo}) => foo)(__b_props__.w.value.x));",
       "const t = derived(() => __b_props__.w.value.t);",
     ],
   },
@@ -158,7 +154,7 @@ const TESTS = [
     expected: [
       "const f = derived(() => __b_props__.w.value.x[0].y.f);",
       "const z = derived(() => __b_props__.w.value.x[0].z);",
-      "const foo = derived(() => {let {y, z, ...foo} = __b_props__.w.value.x[0]; return foo;});",
+      "const foo = derived(() => (({y, z, ...foo}) => foo)(__b_props__.w.value.x[0]));",
       "const t = derived(() => __b_props__.w.value.t);",
     ],
   },
@@ -209,7 +205,7 @@ const TESTS = [
     expected: [
       "const a = derived(() => __b_props__.a.value ?? 1);",
       "const c = derived(() => (__b_props__.b.value ?? {c: 2,d: 3}).c);",
-      "const rest = derived(() => {let {c, ...rest} = (__b_props__.b.value ?? {c: 2,d: 3}); return rest;});",
+      "const rest = derived(() => (({c, ...rest}) => rest)((__b_props__.b.value ?? {c: 2,d: 3})));",
     ],
   },
   {
@@ -225,12 +221,14 @@ const TESTS = [
     expected: [
       "const a = derived(() => __b_props__.a.value ?? 1);",
       "const c = derived(() => (__b_props__.b.value ?? {c: '2',d: '3'}).c);",
-      "const rest = derived(() => {let {c, ...rest} = (__b_props__.b.value ?? {c: '2',d: '3'}); return rest;});",
+      "const rest = derived(() => (({c, ...rest}) => rest)((__b_props__.b.value ?? {c: '2',d: '3'})));",
     ],
   },
   {
-    param: "{ a: { b = 1, c = 2 } }",
+    param: "{ a: { b = 1, c = 2 }, d, ...rest }",
     expected: [
+      "const {d} = __b_props__;",
+      "const rest = (({ a, d, ...rest }) => rest)(__b_props__);",
       "const b = derived(() => __b_props__.a.value.b ?? 1);",
       "const c = derived(() => __b_props__.a.value.c ?? 2);",
     ],
@@ -260,7 +258,7 @@ const TESTS = [
       "const {a} = __b_props__;",
       "const f = derived(() => __b_props__.w.value.x[0].y.f ?? 'bar');",
       "const z = derived(() => __b_props__.w.value.x[0].z ?? 'baz');",
-      "const foo = derived(() => {let {y, z, ...foo} = __b_props__.w.value.x[0]; return foo;});",
+      "const foo = derived(() => (({y, z, ...foo}) => foo)(__b_props__.w.value.x[0]));",
       "const t = derived(() => __b_props__.w.value.t);",
     ],
   },

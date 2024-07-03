@@ -230,11 +230,8 @@ export default function getPropsOptimizations(
       const variables = items.join(", ");
       const res = getDerivedArrowFnString(
         rest,
-        `let {${variables}, ...${rest}} = ${addPrefix(
-          content,
-        )}; return ${rest};`,
+        `(({${variables}, ...${rest}}) => ${rest})(${addPrefix(content)})`,
         derivedFnName,
-        true,
       );
 
       result.push(res);
@@ -301,13 +298,8 @@ function getDerivedArrowFnString(
   name: string,
   arrowContent: string,
   derivedFnName: string,
-  curlyBraces = false,
 ) {
-  const openCurly = curlyBraces ? "{" : "";
-  const closeCurly = curlyBraces ? "}" : "";
-  return `const ${name} = ${derivedFnName}(() => ${
-    openCurly + arrowContent + closeCurly
-  });`;
+  return `const ${name} = ${derivedFnName}(() => ${arrowContent});`;
 }
 
 function getDeps(code: string) {
