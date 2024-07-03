@@ -25,9 +25,15 @@ export default ({}, { onMount, cleanup, state }: WebContext) => {
 };
 ```
 
+
+> [!WARNING]
+>
+> If you run it on an [`effect`](/building-your-application/components-details/web-components.html#effects-effect-method), keep in mind that they run before it has been mounted and you will not yet have access to the element.
+
+
 If you need multi-refs for an array, you can do it this way:
 
-```tsx
+```tsx 7-9
 export default (
   { items = [] }: Props,
   { effect, state, derived }: WebContext,
@@ -56,9 +62,9 @@ export default (
 };
 ```
 
-> [!WARNING]
+> [!TIP]
 >
-> If you run it on an [`effect`](/building-your-application/components-details/web-components.html#effects-effect-method), keep in mind that they run before it has been mounted and you will not yet have access to the element.
+> Signals in Brisa, like `state()`, `derived()`, and `effect()` can be used without the rules of hooks. You can use them in any order and in any place in your component. This is why you can use `state()` inside a `derived()` function.
 
 ### Support
 
