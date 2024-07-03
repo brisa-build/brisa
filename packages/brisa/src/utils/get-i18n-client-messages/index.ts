@@ -98,9 +98,9 @@ function getListOfAllMessages(messages: Messages, prefix = "") {
 
     const parts = currentKey.split(".");
 
-    while (currentKey) {
-      keys.push(currentKey);
-      currentKey = currentKey.replace(parts.pop() ?? "", "").replace(/\.$/, "");
+    while (parts.length) {
+      keys.push(parts.join("."));
+      parts.pop();
     }
   }
 
