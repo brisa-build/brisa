@@ -21,6 +21,24 @@ const TESTS = [
     expected: [],
   },
 
+  // Ignore first level without nested levels or default values
+  {
+    param: "[a, b, c]",
+    expected: [],
+  },
+  {
+    param: "[...rest]",
+    expected: [],
+  },
+  {
+    param: "[foo, ...rest]",
+    expected: [],
+  },
+  {
+    param: "{ a, b, ...rest }",
+    expected: [],
+  },
+
   // Basic patterns
   {
     param: "{ b: { d: [foo] } }",
@@ -39,22 +57,22 @@ const TESTS = [
     expected: ["const e = derived(() => __b_props__['a-b'].value.e);"],
   },
 
-  // Ignore first level ONLY if not have default value (valid signal for top level)
+  // Valid cases on first level
   {
-    param: "[a, b, c]",
-    expected: [],
+    param: "{ a, b: { c }, ...rest }",
+    expected: [
+      "const {a} = __b_props__;",
+      "const rest = (({a, b, ...rest}) => rest)(__b_props__);",
+      "const c = derived(() => __b_props__.b.value.c);",
+    ],
   },
   {
-    param: "[...rest]",
-    expected: [],
-  },
-  {
-    param: "[foo, ...rest]",
-    expected: [],
-  },
-  {
-    param: "{ a, b, ...rest }",
-    expected: [],
+    param: "{ a, b = 1, ...rest }",
+    expected: [
+      "const {a} = __b_props__;",
+      "const rest = (({a, b, ...rest}) => rest)(__b_props__);",
+      "const b = derived(() => __b_props__.b.value ?? 1);",
+    ],
   },
   {
     param: "{ a = 1, b = 2, c = 3 }",
@@ -228,7 +246,7 @@ const TESTS = [
     param: "{ a: { b = 1, c = 2 }, d, ...rest }",
     expected: [
       "const {d} = __b_props__;",
-      "const rest = (({ a, d, ...rest }) => rest)(__b_props__);",
+      "const rest = (({a, d, ...rest}) => rest)(__b_props__);",
       "const b = derived(() => __b_props__.a.value.b ?? 1);",
       "const c = derived(() => __b_props__.a.value.c ?? 2);",
     ],
