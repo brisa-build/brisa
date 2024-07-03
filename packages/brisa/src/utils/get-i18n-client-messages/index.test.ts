@@ -31,6 +31,13 @@ const I18N_CONFIG = {
           content: "Array content",
         },
       ],
+      admin: {
+        providers: {
+          table: {
+            id: "ID",
+          },
+        },
+      },
     },
     "pt-BR": {
       hello: "Olá",
@@ -58,6 +65,13 @@ const I18N_CONFIG = {
           content: "Conteúdo do array",
         },
       ],
+    },
+    admin: {
+      providers: {
+        table: {
+          id: "ID",
+        },
+      },
     },
   },
 };
