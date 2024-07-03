@@ -36,8 +36,13 @@ export default function getPropsOptimizations(
   },
 ): string[] {
   const result: string[] = [];
-  const firstLevelVars: string[] = [];
   let pattern = inputPattern;
+
+  // from: { a: { b: { c = "3" }, b } }
+  // - firstLevelVars: { b }
+  // - firstLevelFields: { a, b }
+  const firstLevelVars: string[] = [];
+  const firstLevelFields: string[] = [];
 
   // AssignmentPattern (with default value in top level)
   if (pattern?.type === "AssignmentPattern") {
@@ -49,6 +54,7 @@ export default function getPropsOptimizations(
     for (let i = 0; i < pattern.elements.length; i++) {
       const element = pattern.elements[i];
       const right = element?.right;
+      const isRest = element?.type === "RestElement";
       const defaultValue = getDefaultValue(right);
       const name =
         element?.left?.name ?? element?.argument?.name ?? element?.name;
@@ -57,15 +63,18 @@ export default function getPropsOptimizations(
       vars.propsList.add(name);
 
       // Skip first level without default value
-      if (!acc && !defaultValue.fallbackText && name) {
-        firstLevelVars.push(name);
-        continue;
+      if (!acc) {
+        firstLevelFields.push(name);
+        if (!defaultValue.fallbackText) {
+          firstLevelVars.push(name);
+          continue;
+        }
       }
 
       /* ####################################################################
          #####     Transform RestElement from Array to an arrow fn     ######
          ####################################################################*/
-      if (element?.type === "RestElement") {
+      if (isRest) {
         const dot = acc.at(-1) === "." ? "" : ".";
         const suffix = acc ? `${dot}slice(${i})` : name;
         const res = getDerivedArrowFnString(
@@ -116,6 +125,7 @@ export default function getPropsOptimizations(
     const value = prop?.value;
     const right = value?.right;
     const type = value?.type;
+    const isRest = prop?.type === "RestElement";
     const name =
       value?.left?.name ??
       value?.name ??
@@ -134,6 +144,8 @@ export default function getPropsOptimizations(
     if (acc) {
       if (dotValue) vars.dotValueList.add(name);
       if (dotValueForDefault) vars.dotValueList.add(right?.name);
+    } else {
+      firstLevelFields.push(isRest ? `...${prop?.argument?.name}` : name);
     }
 
     /* ####################################################################
@@ -179,10 +191,8 @@ export default function getPropsOptimizations(
     }
 
     // Skip first level without default value
-    if (!acc && !propDefaultText && (prop?.argument?.name ?? name)) {
-      firstLevelVars.push(
-        prop?.argument?.name ? `...${prop.argument.name}` : name,
-      );
+    if (!acc && !propDefaultText) {
+      if (!isRest) firstLevelVars.push(name);
       continue;
     }
 
@@ -198,7 +208,7 @@ export default function getPropsOptimizations(
        ######     });                                                ######
        ####################################################################
     */
-    if (prop?.type === "RestElement" && acc) {
+    if (isRest && acc) {
       const rest = prop?.argument?.name;
       const content = acc.replace(DOT_END_REGEX, "");
       let common;
@@ -249,15 +259,24 @@ export default function getPropsOptimizations(
     result.push(res);
   }
 
-  if (acc) return result;
+  if (acc || !result.length) return result;
 
   /* ##################################################################
-     #####     Sort and clean the result (end of recursion)      ######
+     ##### Sort, complete and clean the result (end of recursion) #####
      ##################################################################*/
   const sortedResult = result.toSorted(sortByPropDependencies());
   const difference = vars.dotValueList.difference(vars.propsList);
 
-  if (sortedResult.length && firstLevelVars.length) {
+  if (firstLevelFields.at(-1)?.startsWith("...")) {
+    const rest = firstLevelFields.at(-1)?.replace("...", "");
+    sortedResult.unshift(
+      `const ${rest} = (({${firstLevelFields.join(
+        ", ",
+      )}}) => ${rest})(__b_props__);`,
+    );
+  }
+
+  if (firstLevelVars.length) {
     sortedResult.unshift(`const {${firstLevelVars.join(", ")}} = __b_props__;`);
   }
 
