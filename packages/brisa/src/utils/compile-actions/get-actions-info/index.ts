@@ -23,7 +23,6 @@ const FN = new Set([
   "ArrowFunctionExpression",
   "FunctionExpression",
   "FunctionDeclaration",
-  "ArrowFunctionExpression",
 ]);
 
 function isJSXDeclaration(declaration: any) {
