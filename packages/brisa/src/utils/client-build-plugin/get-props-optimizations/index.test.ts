@@ -8,7 +8,6 @@ const DERIVED_FN_NAME = "derived";
 
 /**
  * TODO;
- * - Change order of lines for dependencies
  * - Add top line with the extracted first-level props
  */
 const TESTS = [
@@ -34,6 +33,7 @@ const TESTS = [
   {
     param: "{a, b: [b = 1, c = 2]}",
     expected: [
+      "const {a} = __b_props__;",
       "const b = derived(() => __b_props__.b.value[0] ?? 1);",
       "const c = derived(() => __b_props__.b.value[1] ?? 2);",
     ],
@@ -245,6 +245,7 @@ const TESTS = [
   {
     param: '{ a: [{ b: {c = "3" }}], d, f: { g = "5" }}',
     expected: [
+      "const {d} = __b_props__;",
       "const c = derived(() => __b_props__.a.value[0].b.c ?? '3');",
       "const g = derived(() => __b_props__.f.value.g ?? '5');",
     ],
@@ -254,8 +255,9 @@ const TESTS = [
     expected: ["const z = derived(() => __b_props__.w.value.x.y.z ?? 1);"],
   },
   {
-    param: "{ w: { x: [{ y: { f = 'bar' }, z = 'baz', ...foo }], t } }",
+    param: "{ w: { x: [{ y: { f = 'bar' }, z = 'baz', ...foo }], t }, a }",
     expected: [
+      "const {a} = __b_props__;",
       "const f = derived(() => __b_props__.w.value.x[0].y.f ?? 'bar');",
       "const z = derived(() => __b_props__.w.value.x[0].z ?? 'baz');",
       "const foo = derived(() => {let {y, z, ...foo} = __b_props__.w.value.x[0]; return foo;});",
@@ -283,6 +285,7 @@ const TESTS = [
   {
     param: "{ a: { b: { c = z, d = y } }, y, z }",
     expected: [
+      "const {y, z} = __b_props__;",
       "const c = derived(() => __b_props__.a.value.b.c ?? z.value);",
       "const d = derived(() => __b_props__.a.value.b.d ?? y.value);",
     ],
