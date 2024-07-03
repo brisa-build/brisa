@@ -36,6 +36,7 @@ export default function getPropsOptimizations(
   },
 ): string[] {
   const result: string[] = [];
+  const firstLevelVars: string[] = [];
   let pattern = inputPattern;
 
   // AssignmentPattern (with default value in top level)
@@ -56,7 +57,10 @@ export default function getPropsOptimizations(
       vars.propsList.add(name);
 
       // Skip first level without default value
-      if (!acc && !defaultValue.fallbackText) continue;
+      if (!acc && !defaultValue.fallbackText && name) {
+        firstLevelVars.push(name);
+        continue;
+      }
 
       /* ####################################################################
          #####     Transform RestElement from Array to an arrow fn     ######
@@ -175,7 +179,12 @@ export default function getPropsOptimizations(
     }
 
     // Skip first level without default value
-    if (!acc && !propDefaultText) continue;
+    if (!acc && !propDefaultText && (prop?.argument?.name ?? name)) {
+      firstLevelVars.push(
+        prop?.argument?.name ? `...${prop.argument.name}` : name,
+      );
+      continue;
+    }
 
     /*
        ####################################################################
@@ -250,6 +259,10 @@ export default function getPropsOptimizations(
      ##################################################################*/
   const sortedResult = result.toSorted(sortByPropDependencies());
   const difference = vars.dotValueList.difference(vars.propsList);
+
+  if (sortedResult.length && firstLevelVars.length) {
+    sortedResult.unshift(`const {${firstLevelVars.join(", ")}} = __b_props__;`);
+  }
 
   if (!difference.size) return sortedResult;
 
