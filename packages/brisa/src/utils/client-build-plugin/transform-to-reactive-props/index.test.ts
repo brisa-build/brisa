@@ -391,9 +391,10 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          export default function Component({foo, bar, baz}, {effect}) {
-            effect(() => baz.value ??= 'baz');
-            effect(() => bar.value ??= 'bar');
+          export default function Component(__b_props__, {derived}) {
+            const {foo} = __b_props__;
+            const bar = derived(() => __b_props__.bar.value ?? 'bar');
+            const baz = derived(() => __b_props__.baz.value ?? 'baz');
             return jsxDEV("div", {children: [foo.value, bar.value, baz.value]}, undefined, true, undefined, this);
           }
         `);
@@ -415,8 +416,9 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          export default function Component({foo: _derived_foo, bar}, {derived}) {
-            const baz = derived(() => _derived_foo.value.bar.baz);
+          export default function Component(__b_props__, {derived}) {
+            const baz = derived(() => __b_props__.foo.value.bar.baz);
+            const bar = derived(() => __b_props__.foo.value.bar);
             return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
           }
         `);
@@ -438,8 +440,9 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          export default function Component({foo: _derived_foo, bar}, {derived}) {
-            const baz = derived(() => _derived_foo.value.bar.baz ?? "bar");
+          export default function Component(__b_props__, {derived}) {
+            const baz = derived(() => __b_props__.foo.value.bar.baz ?? "bar");
+            const bar = derived(() => __b_props__.foo.value.bar);
             return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
           }
         `);
@@ -461,8 +464,9 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          export default function Component({foo: _derived_foo, bar}, {derived}) {
-            const brisa = derived(() => _derived_foo.value.bar.baz);
+          export default function Component(__b_props__, {derived}) {
+            const brisa = derived(() => __b_props__.foo.value.bar.baz);
+            const bar = derived(() => __b_props__.foo.value.bar);
             return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
           }
         `);
@@ -484,8 +488,9 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          export default function Component({foo: _derived_foo, bar}, {derived}) {
-            const baz = derived(() => _derived_foo.value[0].bar[0].baz);
+          export default function Component(__b_props__, {derived}) {
+            const baz = derived(() => __b_props__.foo.value[0].bar[0].baz);
+            const bar = derived(() => __b_props__.foo.value[0].bar);
             return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
           }
         `);
@@ -507,8 +512,9 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          export default function Component({foo: _derived_foo, bar}, {derived}) {
-            const baz = derived(() => _derived_foo.value[0].bar[0].baz ?? "bar");
+          export default function Component(__b_props__, {derived}) {
+            const baz = derived(() => __b_props__.foo.value[0].bar[0].baz ?? "bar");
+            const bar = derived(() => __b_props__.foo.value[0].bar);
             return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
           }
         `);
@@ -521,7 +527,7 @@ describe("utils", () => {
       it("should remove destructuring array props with rename from params and add them to the component body", () => {
         const code = `
           export default function Component({foo: [{bar: [{baz: brisa}], bar}] }) {
-            return <div>{bar}{baz}</div>;
+            return <div>{bar}{brisa}</div>;
           }
         `;
         const ast = parseCodeToAST(code);
@@ -530,9 +536,10 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          export default function Component({foo: _derived_foo, bar}, {derived}) {
-            const brisa = derived(() =>_derived_foo.value[0].bar[0].baz);
-            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+          export default function Component(__b_props__, {derived}) {
+            const brisa = derived(() => __b_props__.foo.value[0].bar[0].baz);
+            const bar = derived(() => __b_props__.foo.value[0].bar);
+            return jsxDEV("div", {children: [bar.value, brisa.value]}, undefined, true, undefined, this);
           }
         `);
 
@@ -681,8 +688,8 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          let Component = function ({foo}, {effect}) {
-            effect(() => foo.value ??= 'foo');
+          let Component = function (__b_props__, {derived}) {
+            const foo = derived(() => __b_props__.foo.value ?? "foo");
             return foo.value;
           };
           
@@ -736,8 +743,8 @@ describe("utils", () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          async function Component({someTestProp}, {effect}) {
-            effect(() => someTestProp.value ??= 'foo');
+          async function Component(__b_props__, {derived}) {
+            const someTestProp = derived(() => __b_props__.someTestProp.value ?? 'foo');
             return someTestProp.value;
           }
 

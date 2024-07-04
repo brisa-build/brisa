@@ -8,10 +8,11 @@ import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-as
 import manageWebContextField from "@/utils/client-build-plugin/manage-web-context-field";
 import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
 import { FN } from "@/utils/client-build-plugin/constants";
+import getPropsOptimizations from "@/utils/client-build-plugin/get-props-optimizations";
+import AST from "@/utils/ast";
 
-type Prop = (ESTree.MemberExpression | ESTree.Identifier) & {
-  isSignal?: true;
-};
+const { parseCodeToAST } = AST("tsx");
+const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
 
 type Statics = {
   suspense?: Result;
@@ -25,8 +26,6 @@ type Result = {
   vars: Set<string>;
   statics?: Statics;
 };
-
-const DESTRUCTURING_PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 
 export default function transformToReactiveProps(ast: ESTree.Program): Result {
   const [component, defaultExportIndex, identifierDeclarationIndex] =
@@ -115,10 +114,6 @@ export function transformComponentToReactiveProps(
   component: any,
   propNamesFromExport: string[],
 ) {
-  // Order here matters, we need to fix reactivity on destructured props
-  // before getting the props names and variables.
-  fixReactivityOnDestructuredProps(component);
-
   const componentVariableNames = getComponentVariableNames(component);
   const [propsNames, renamedPropsNames, defaultPropsValues] = getPropsNames(
     component,
@@ -131,37 +126,12 @@ export function transformComponentToReactiveProps(
   ]);
   const registeredProps = new Set<string>();
   const allVariableNames = new Set([...propsNames, ...componentVariableNames]);
-  const defaultPropsEntries = Object.entries(defaultPropsValues);
-
-  addDefaultPropsToBody(defaultPropsEntries, component, allVariableNames);
-
   const declaration = component?.declarations?.[0];
-  const params = declaration?.init?.params ?? component?.params ?? [];
   const componentBody = component?.body ?? declaration?.init.body;
+
+  // TODO: Use this derivedProps to add the .value where these derived props are used
+  const derivedProps = addDerivedProps(component, allVariableNames);
   const transformedProps = new Set<string>();
-
-  // Remove props from component params
-  for (let propParam of params[0]?.properties ?? []) {
-    const propName =
-      propParam.value?.left?.name ??
-      propParam.value?.name ??
-      propParam.key?.name;
-
-    if (
-      propParam?.type !== "Property" ||
-      !propName ||
-      !propsNamesAndRenamesSet.has(propName) ||
-      !defaultPropsValues[propName] ||
-      propParam?.value?.right?.value !== defaultPropsValues[propName]?.value
-    ) {
-      continue;
-    }
-
-    propParam.value = {
-      type: "Identifier",
-      name: propName,
-    };
-  }
 
   function isExistingPropName(field: any, setToStop?: Set<string>) {
     if (!field) return false;
@@ -284,128 +254,40 @@ function getComponentParams(component: any) {
   return declaration?.init?.params ?? component?.params ?? [];
 }
 
-function fixReactivityOnDestructuredProps(component: any) {
-  return;
-  const componentBody = getComponentBody(component);
+function addDerivedProps(component: any, allVariableNames: Set<string>) {
   const params = getComponentParams(component);
-  const [props, webContextParams] = params ?? [];
-
-  if (props?.type !== "ObjectPattern") return;
-
-  const brisaParams = new Set<string>(
-    (webContextParams?.properties ?? []).map((p: any) => p.key.name),
+  const derivedName = generateUniqueVariableName("derived", allVariableNames);
+  const propsOptimizations = getPropsOptimizations(params[0], derivedName);
+  const propsOptimizationsAst = propsOptimizations.flatMap(
+    (c) => parseCodeToAST(c).body[0],
   );
-  let isAddedDerivedParam = false;
-
-  for (let prop of props.properties) {
-    if (!DESTRUCTURING_PATTERNS.has(prop.value?.type)) continue;
-    const name = prop.key.name;
-    const value = prop.value;
-
-    Object.assign(prop, {
-      value: {
-        type: "Identifier",
-        name: "_derived_" + name,
-      },
-      shortland: false,
-    });
-
-    if (!isAddedDerivedParam) {
-      isAddedDerivedParam = true;
-      manageWebContextField(
-        component,
-        generateUniqueVariableName("derived", brisaParams),
-        "derived",
-      );
-    }
-  }
-}
-
-// Set default props values inside component body
-function addDefaultPropsToBody(
-  defaultPropsEntries: [string, ESTree.Literal, string?][],
-  component: any,
-  allVariableNames: Set<string>,
-) {
-  let isAddedDefaultProps = false;
   const componentBody = getComponentBody(component);
 
-  for (let [propName, propValue, usedOperator = "??"] of defaultPropsEntries) {
-    const operator =
-      ((propValue as any)?.usedOperator ?? usedOperator) === "??"
-        ? "??="
-        : "||=";
+  if (!propsOptimizations.length) return [];
 
-    let identifier;
+  // The compiler will add an "derived" argument to the component
+  manageWebContextField(component, derivedName, "derived");
 
-    let prop: Prop = identifier
-      ? {
-          type: "MemberExpression",
-          object: {
-            type: "Identifier",
-            name: identifier,
-          },
-          property: {
-            type: "Identifier",
-            name: propName,
-          },
-          computed: false,
-        }
-      : {
-          type: "Identifier",
-          name: propName,
-        };
+  params[0] = {
+    type: "Identifier",
+    name: PROPS_OPTIMIZATION_IDENTIFIER,
+  };
 
-    const effectStatement = {
-      type: "ExpressionStatement",
-      isEffect: true,
-      expression: {
-        type: "CallExpression",
-        callee: {
-          type: "Identifier",
-          name: "effect",
+  if (Array.isArray(componentBody)) {
+    componentBody.unshift(...propsOptimizationsAst);
+  } else if (componentBody === component?.body) {
+    component.body = {
+      type: "BlockStatement",
+      body: [
+        ...propsOptimizationsAst,
+        {
+          type: "ReturnStatement",
+          argument: componentBody,
         },
-        arguments: [
-          {
-            type: "ArrowFunctionExpression",
-            params: [],
-            body: {
-              type: "AssignmentExpression",
-              left: prop,
-              operator,
-              right: propValue,
-            },
-            async: false,
-            expression: true,
-          },
-        ],
-      },
-    } as ESTree.ExpressionStatement;
-
-    if (Array.isArray(componentBody)) {
-      componentBody.unshift(effectStatement);
-    } else if (componentBody === component?.body) {
-      component.body = {
-        type: "BlockStatement",
-        body: [
-          effectStatement,
-          {
-            type: "ReturnStatement",
-            argument: componentBody,
-          },
-        ],
-      };
-    }
-
-    isAddedDefaultProps = true;
+      ],
+    };
   }
 
-  // The compiler will add an "effect" argument to the component
-  if (isAddedDefaultProps) {
-    manageWebContextField(
-      component,
-      generateUniqueVariableName("effect", allVariableNames),
-      "effect",
-    );
-  }
+  // Return the name of the derived props
+  return propsOptimizationsAst.map((node: any) => node.declarations[0].id.name);
 }
