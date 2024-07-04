@@ -114,6 +114,7 @@ export default function getPropsOptimizations(
       prop?.key?.name ??
       `["${value?.value ?? prop?.key?.value}"]`;
 
+    const keyName = prop?.key?.name ?? name;
     const defaultValue = getDefaultValue(right);
     const propDefaultText = defaultValue.fallbackText;
     const hasDefaultObjectValue =
@@ -226,7 +227,7 @@ export default function getPropsOptimizations(
        #############################################################*/
     const res = getDerivedArrowFnString(
       name,
-      addPrefix(acc + name + propDefaultText),
+      addPrefix(acc + keyName + propDefaultText),
       derivedFnName,
     );
     result.push(res);

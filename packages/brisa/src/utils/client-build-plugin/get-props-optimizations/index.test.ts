@@ -6,40 +6,7 @@ import { describe, expect, it } from "bun:test";
 const { parseCodeToAST } = AST("tsx");
 const DERIVED_FN_NAME = "derived";
 
-const TESTS = [
-  // Should ignore identifier at first level
-  {
-    param: "props",
-    expected: [],
-  },
-  {
-    param: "props = { foo: 'bar' }",
-    expected: [],
-  },
-  {
-    param: "props = { foo: 'bar', baz: { qux: 'quuz' } }",
-    expected: [],
-  },
-
-  // Ignore first level without nested levels or default values
-  {
-    param: "[a, b, c]",
-    expected: [],
-  },
-  {
-    param: "[...rest]",
-    expected: [],
-  },
-  {
-    param: "[foo, ...rest]",
-    expected: [],
-  },
-  {
-    param: "{ a, b, ...rest }",
-    expected: [],
-  },
-
-  // Basic patterns
+const BASIC_PATTERNS = [
   {
     param: "{ b: { d: [foo] } }",
     expected: ["const foo = derived(() => __b_props__.b.d[0]);"],
@@ -56,8 +23,59 @@ const TESTS = [
     param: "{ 'a-b': { 'c-d': e } }",
     expected: ["const e = derived(() => __b_props__['a-b'].e);"],
   },
+];
 
-  // Valid cases on first level
+const IGNORE_IDENTIFIER_FIRST_LEVEL = [
+  {
+    param: "props",
+    expected: [],
+  },
+  {
+    param: "props = { foo: 'bar' }",
+    expected: [],
+  },
+  {
+    param: "props = { foo: 'bar', baz: { qux: 'quuz' } }",
+    expected: [],
+  },
+  {
+    param: "{ foo: bar }",
+    expected: [],
+  },
+  {
+    param: "{ foo: bar, baz: qux }",
+    expected: [],
+  },
+  {
+    param: "{ foo: bar, baz: qux, quuz: corge }",
+    expected: [],
+  },
+  {
+    param: "{ foo: bar, baz: qux, quuz: corge, grault: garply }",
+    expected: [],
+  },
+];
+
+const IGNORE_FIRST_LEVEL_WITHOUT_NESTED_LEVELS_OR_DEFAULT_VALUES = [
+  {
+    param: "[a, b, c]",
+    expected: [],
+  },
+  {
+    param: "[...rest]",
+    expected: [],
+  },
+  {
+    param: "[foo, ...rest]",
+    expected: [],
+  },
+  {
+    param: "{ a, b, ...rest }",
+    expected: [],
+  },
+];
+
+const VALID_CASES_ON_FIRST_LEVEL = [
   {
     param: "{ a, b: { c }, ...rest }",
     expected: [
@@ -85,8 +103,8 @@ const TESTS = [
   {
     param: "{ a: b = 1, c: d = 2 }",
     expected: [
-      "const b = derived(() => __b_props__.b ?? 1);",
-      "const d = derived(() => __b_props__.d ?? 2);",
+      "const b = derived(() => __b_props__.a ?? 1);",
+      "const d = derived(() => __b_props__.c ?? 2);",
     ],
   },
   {
@@ -100,8 +118,9 @@ const TESTS = [
       "const d = derived(() => __b_props__.d ?? {baz: 'qux'});",
     ],
   },
+];
 
-  // Rest in nested level array
+const REST_IN_NESTED_LEVEL_ARRAY = [
   {
     param: "{ w: { x: [b, ...foo] } }",
     expected: [
@@ -139,8 +158,9 @@ const TESTS = [
       "const z = derived(() => __b_props__.w.y.z);",
     ],
   },
+];
 
-  // Rest in nested level object
+const REST_IN_NESTED_LEVEL_OBJECT = [
   {
     param: "{ w: { x: { y, ...foo } } }",
     expected: [
@@ -176,8 +196,9 @@ const TESTS = [
       "const t = derived(() => __b_props__.w.t);",
     ],
   },
+];
 
-  // Default values
+const WITH_DEFAULT_VALUES = [
   {
     param: "{ a = 1, b: { c, d } } = { c: 2, b: { c: 3, d: 4} }",
     expected: [
@@ -280,8 +301,9 @@ const TESTS = [
       "const t = derived(() => __b_props__.w.t);",
     ],
   },
+];
 
-  // Default values from other params (using value from top level)
+const WITH_DEFAULT_VALUES_FROM_OTHER_PROPS = [
   {
     param: "{ a = 1, b: { c = a, d = 2 } }",
     expected: [
@@ -293,7 +315,7 @@ const TESTS = [
   {
     param: "{ a: foo = 1, b: { c = foo, d = 2 } }",
     expected: [
-      "const foo = derived(() => __b_props__.foo ?? 1);",
+      "const foo = derived(() => __b_props__.a ?? 1);",
       "const d = derived(() => __b_props__.b.d ?? 2);",
       "const c = derived(() => __b_props__.b.c ?? foo);",
     ],
@@ -313,8 +335,9 @@ const TESTS = [
       "const c = derived(() => __b_props__.a.b.c ?? d);",
     ],
   },
+];
 
-  // Default values from external identifiers (show not add the )
+const WITH_DEFAULT_VALUES_FROM_EXTERNAL_IDENTIFIERS = [
   {
     param: "{ a: { b: { c = foo, d = 5 } } }",
     expected: [
@@ -332,14 +355,62 @@ const TESTS = [
   {
     param: "{ a: { b: { c = t, d: t = 5 } } }",
     expected: [
-      "const t = derived(() => __b_props__.a.b.t ?? 5);",
+      "const t = derived(() => __b_props__.a.b.d ?? 5);",
       "const c = derived(() => __b_props__.a.b.c ?? t);",
     ],
   },
 ];
 
+const WITH_RENAMED_PROPS_IN_NESTED_LEVEL = [
+  {
+    param: "{ foo: bar, bar: { baz: qux } }",
+    expected: [
+      "const {bar} = __b_props__;",
+      "const qux = derived(() => __b_props__.bar.baz);",
+    ],
+  },
+  {
+    param: "{ foo: bar, bar: [{ baz: qux }] }",
+    expected: [
+      "const {bar} = __b_props__;",
+      "const qux = derived(() => __b_props__.bar[0].baz);",
+    ],
+  },
+  {
+    param: "{ foo: { bar: baz } }",
+    expected: ["const baz = derived(() => __b_props__.foo.bar);"],
+  },
+  {
+    param: "{ foo: { bar: baz, qux: { quuz: corge }} }",
+    expected: [
+      "const baz = derived(() => __b_props__.foo.bar);",
+      "const corge = derived(() => __b_props__.foo.qux.quuz);",
+    ],
+  },
+  {
+    param: "{ foo: { bar: baz, qux: quuz, corge: grault, garply: waldo } }",
+    expected: [
+      "const baz = derived(() => __b_props__.foo.bar);",
+      "const quuz = derived(() => __b_props__.foo.qux);",
+      "const grault = derived(() => __b_props__.foo.corge);",
+      "const waldo = derived(() => __b_props__.foo.garply);",
+    ],
+  },
+];
+
 describe("AST", () => {
-  describe.each(TESTS)("getPropsOptimizations", ({ param, expected }) => {
+  describe.each([
+    ...BASIC_PATTERNS,
+    ...IGNORE_IDENTIFIER_FIRST_LEVEL,
+    ...IGNORE_FIRST_LEVEL_WITHOUT_NESTED_LEVELS_OR_DEFAULT_VALUES,
+    ...VALID_CASES_ON_FIRST_LEVEL,
+    ...REST_IN_NESTED_LEVEL_ARRAY,
+    ...REST_IN_NESTED_LEVEL_OBJECT,
+    ...WITH_DEFAULT_VALUES,
+    ...WITH_DEFAULT_VALUES_FROM_OTHER_PROPS,
+    ...WITH_DEFAULT_VALUES_FROM_EXTERNAL_IDENTIFIERS,
+    ...WITH_RENAMED_PROPS_IN_NESTED_LEVEL,
+  ])("getPropsOptimizations", ({ param, expected }) => {
     const expectedArrows = expected.map(normalizeQuotes);
 
     it(`should transform ${param} to ${expectedArrows.join(", ")}`, () => {
