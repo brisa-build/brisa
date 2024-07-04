@@ -21,7 +21,11 @@ const BASIC_PATTERNS = [
   },
   {
     param: "{ 'a-b': { 'c-d': e } }",
-    expected: ["const e = derived(() => __b_props__['a-b'].e);"],
+    expected: ["const e = derived(() => __b_props__['a-b']['c-d']);"],
+  },
+  {
+    param: "{ 1: { '2': e } }",
+    expected: ["const e = derived(() => __b_props__['1']['2']);"],
   },
 ];
 
@@ -365,14 +369,28 @@ const WITH_RENAMED_PROPS_IN_NESTED_LEVEL = [
   {
     param: "{ foo: bar, bar: { baz: qux } }",
     expected: [
-      "const {bar} = __b_props__;",
+      "const {foo:bar} = __b_props__;",
       "const qux = derived(() => __b_props__.bar.baz);",
+    ],
+  },
+  {
+    param: "{ 'foo-name': bar, bar: { 'baz-name': qux } }",
+    expected: [
+      "const {'foo-name':bar} = __b_props__;",
+      "const qux = derived(() => __b_props__.bar['baz-name']);",
+    ],
+  },
+  {
+    param: "{ 1: bar, bar: { 2: qux } }",
+    expected: [
+      "const {1:bar} = __b_props__;",
+      "const qux = derived(() => __b_props__.bar['2']);",
     ],
   },
   {
     param: "{ foo: bar, bar: [{ baz: qux }] }",
     expected: [
-      "const {bar} = __b_props__;",
+      "const {foo:bar} = __b_props__;",
       "const qux = derived(() => __b_props__.bar[0].baz);",
     ],
   },
