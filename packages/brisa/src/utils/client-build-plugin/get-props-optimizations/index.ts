@@ -290,7 +290,7 @@ function getDerivedArrowFnString(
   return `const ${name} = ${derivedFnName}(() => ${arrowContent});`;
 }
 
-function getDeps(code: string) {
+function getPropDependency(code: string) {
   const dep = code.match(DEP_REGEX)?.[1];
   return dep ? new Set([dep]) : new Set();
 }
@@ -299,8 +299,8 @@ function sortByPropDependencies() {
   let depsSet = new Set<string>();
 
   return (a: string, b: string) => {
-    const aDeps = getDeps(a);
-    const bDeps = getDeps(b);
+    const aDeps = getPropDependency(a);
+    const bDeps = getPropDependency(b);
     const unionWithA = depsSet.union(aDeps);
     const unionWithB = depsSet.union(bDeps);
     let result = 0;
