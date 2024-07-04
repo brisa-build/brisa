@@ -114,14 +114,19 @@ export default function getPropsOptimizations(
       prop?.key?.name ??
       `["${value?.value ?? prop?.key?.value}"]`;
 
-    const keyName = prop?.key?.name ?? name;
+    const keyName = prop?.key?.name ?? prop?.key?.value ?? name;
+    const isKeyLiteral = prop?.key?.type === "Literal";
+    const isKeyStringLiteral = isKeyLiteral && typeof keyName === "string";
+    const quotes = isKeyStringLiteral ? `"` : "";
+    const isRenamed = name !== keyName;
+    const field = isRenamed ? `${quotes}${keyName}${quotes}:${name}` : name;
     const defaultValue = getDefaultValue(right);
     const propDefaultText = defaultValue.fallbackText;
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
 
     if (!acc) {
-      firstLevelFields.push(isRest ? `...${prop?.argument?.name}` : name);
+      firstLevelFields.push(isRest ? `...${prop?.argument?.name}` : field);
     }
 
     /* ####################################################################
@@ -166,7 +171,7 @@ export default function getPropsOptimizations(
 
     // Skip first level without default value
     if (!acc && !propDefaultText) {
-      if (!isRest) firstLevelVars.push(name);
+      if (!isRest) firstLevelVars.push(field);
       continue;
     }
 
@@ -225,9 +230,11 @@ export default function getPropsOptimizations(
     /* #############################################################
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
+    const consumingKeyText = isKeyLiteral ? `["${keyName}"]` : keyName;
+    const formattedAcc = isKeyLiteral ? acc.replace(DOT_END_REGEX, "") : acc;
     const res = getDerivedArrowFnString(
       name,
-      addPrefix(acc + keyName + propDefaultText),
+      addPrefix(formattedAcc + consumingKeyText + propDefaultText),
       derivedFnName,
     );
     result.push(res);
