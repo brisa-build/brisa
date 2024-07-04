@@ -1,17 +1,11 @@
 import AST from "@/utils/ast";
 
-type Vars = {
-  dotValueList: Set<string>;
-  propsList: Set<string>;
-};
-
 const PROPS_IDENTIFIER = "__b_props__";
-const DOT_VALUE_TEXT = ".value";
 const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
 const EXTRA_END_REGEX = /( \?\?.*|\);)$/;
+const DEP_REGEX = /\?\? ([a-z|A-Z|_]*)\)\;$/;
 const BEFORE_ARROW_REGEX = /.*\(\) => /;
 const SEPARATOR_REGEX = /\.|\[/;
-const PROP_DEPENDENCY_REGEX = /(\S*)\.value/g;
 const DOT_END_REGEX = /\.$/;
 const { generateCodeFromAST } = AST("tsx");
 
@@ -23,17 +17,13 @@ const { generateCodeFromAST } = AST("tsx");
  * input:
  *         - { a: [{ b: {c = "3" }}], d, f: { g = "5" }}
  * outputs:
- *         - const c = derived(() => __b_props__.a.value.[0].b.c ?? "3");
- *         - const g = derived(() => __b_props__.f.value.g ?? "5");
+ *         - const c = derived(() => __b_props__.a[0].b.c ?? "3");
+ *         - const g = derived(() => __b_props__.fg ?? "5");
  */
 export default function getPropsOptimizations(
   inputPattern: any,
   derivedFnName: string,
   acc = "",
-  vars: Vars = {
-    dotValueList: new Set(),
-    propsList: new Set(),
-  },
 ): string[] {
   const result: string[] = [];
   let pattern = inputPattern;
@@ -58,9 +48,6 @@ export default function getPropsOptimizations(
       const defaultValue = getDefaultValue(right);
       const name =
         element?.left?.name ?? element?.argument?.name ?? element?.name;
-
-      // Track existing prop name
-      vars.propsList.add(name);
 
       // Skip first level without default value
       if (!acc) {
@@ -94,12 +81,7 @@ export default function getPropsOptimizations(
         ####################################################################*/
       if (PATTERNS.has(element?.type)) {
         result.push(
-          ...getPropsOptimizations(
-            element,
-            derivedFnName,
-            last + `[${i}].`,
-            vars,
-          ),
+          ...getPropsOptimizations(element, derivedFnName, last + `[${i}].`),
         );
         continue;
       }
@@ -133,18 +115,11 @@ export default function getPropsOptimizations(
       `["${value?.value ?? prop?.key?.value}"]`;
 
     const defaultValue = getDefaultValue(right);
-    const dotValueForDefault = defaultValue.isIdentifier ? DOT_VALUE_TEXT : "";
-    const propDefaultText = defaultValue.fallbackText + dotValueForDefault;
-    const dotValue = acc ? "" : DOT_VALUE_TEXT;
+    const propDefaultText = defaultValue.fallbackText;
     const hasDefaultObjectValue =
       !defaultValue.isLiteral && defaultValue.fallbackText;
 
-    // Track existing prop name + vars with .value (including default values)
-    vars.propsList.add(name);
-    if (acc) {
-      if (dotValue) vars.dotValueList.add(name);
-      if (dotValueForDefault) vars.dotValueList.add(right?.name);
-    } else {
+    if (!acc) {
       firstLevelFields.push(isRest ? `...${prop?.argument?.name}` : name);
     }
 
@@ -156,11 +131,11 @@ export default function getPropsOptimizations(
       const dot = isArrayPattern ? "" : ".";
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       const { fallbackText } = getDefaultValue(inputPattern?.right, name);
-      let newAcc = updatedAcc + name + dotValue;
+      let newAcc = updatedAcc + name;
 
       if (!acc && fallbackText) newAcc = `(${newAcc + fallbackText})`;
       newAcc += dot + propDefaultText;
-      result.push(...getPropsOptimizations(value, derivedFnName, newAcc, vars));
+      result.push(...getPropsOptimizations(value, derivedFnName, newAcc));
       continue;
     }
 
@@ -170,7 +145,7 @@ export default function getPropsOptimizations(
        ####################################################################*/
     if (hasDefaultObjectValue && !acc) {
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
-      let newAcc = updatedAcc + name + dotValue;
+      let newAcc = updatedAcc + name;
 
       if (value.left?.type === "Identifier") {
         const res = getDerivedArrowFnString(
@@ -184,9 +159,7 @@ export default function getPropsOptimizations(
       }
 
       newAcc = `(${newAcc + propDefaultText}).`;
-      result.push(
-        ...getPropsOptimizations(value.left, derivedFnName, newAcc, vars),
-      );
+      result.push(...getPropsOptimizations(value.left, derivedFnName, newAcc));
       continue;
     }
 
@@ -253,7 +226,7 @@ export default function getPropsOptimizations(
        #############################################################*/
     const res = getDerivedArrowFnString(
       name,
-      addPrefix(acc + name + dotValue + propDefaultText),
+      addPrefix(acc + name + propDefaultText),
       derivedFnName,
     );
     result.push(res);
@@ -265,7 +238,6 @@ export default function getPropsOptimizations(
      ##### Sort, complete and clean the result (end of recursion) #####
      ##################################################################*/
   const sortedResult = result.toSorted(sortByPropDependencies());
-  const difference = vars.dotValueList.difference(vars.propsList);
 
   if (firstLevelFields.at(-1)?.startsWith("...")) {
     const rest = firstLevelFields.at(-1)?.replace("...", "");
@@ -280,18 +252,7 @@ export default function getPropsOptimizations(
     sortedResult.unshift(`const {${firstLevelVars.join(", ")}} = __b_props__;`);
   }
 
-  if (!difference.size) return sortedResult;
-
-  // Remove .value from external identifiers default values
-  return sortedResult.map((r) =>
-    r.replace(
-      new RegExp(
-        `(${Array.from(difference).join("|")})\\${DOT_VALUE_TEXT}`,
-        "g",
-      ),
-      "$1",
-    ),
-  );
+  return sortedResult;
 }
 
 function getDefaultValue(inputRight: any, name?: string) {
@@ -322,12 +283,8 @@ function getDerivedArrowFnString(
 }
 
 function getDeps(code: string) {
-  const matches = code
-    .match(EXTRA_END_REGEX)?.[0]
-    ?.match(PROP_DEPENDENCY_REGEX);
-  return new Set(
-    matches?.filter(Boolean)?.map((d) => d.replace(DOT_VALUE_TEXT, "")),
-  );
+  const dep = code.match(DEP_REGEX)?.[1];
+  return dep ? new Set([dep]) : new Set();
 }
 
 function sortByPropDependencies() {
