@@ -7,7 +7,6 @@ import getPropsNames, {
 import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-ast";
 import manageWebContextField from "@/utils/client-build-plugin/manage-web-context-field";
 import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
-import { FN } from "@/utils/client-build-plugin/constants";
 import getPropsOptimizations from "@/utils/client-build-plugin/get-props-optimizations";
 import AST from "@/utils/ast";
 
@@ -124,59 +123,24 @@ export function transformComponentToReactiveProps(
     ...renamedPropsNames,
     ...propNamesFromExport,
   ]);
-  const registeredProps = new Set<string>();
   const allVariableNames = new Set([...propsNames, ...componentVariableNames]);
   const declaration = component?.declarations?.[0];
   const componentBody = component?.body ?? declaration?.init.body;
-
-  // TODO: Use this derivedProps to add the .value where these derived props are used
-  const derivedProps = addDerivedProps(component, allVariableNames);
   const transformedProps = new Set<string>();
+  const params = getComponentParams(component);
+  const derivedName = generateUniqueVariableName("derived", allVariableNames);
+  const derivedPropsInfo = getDerivedProps(component, derivedName, allVariableNames);
 
-  function isExistingPropName(field: any, setToStop?: Set<string>) {
-    if (!field) return false;
-    let result = false;
-
-    JSON.stringify(field, (k, v) => {
-      if (result || (v?.type && setToStop?.has(v.type))) return null;
-      result ||= v?.type === "Identifier" && registeredProps.has(v?.name);
-      return v;
-    });
-
-    return result;
+  if (derivedPropsInfo.propsOptimizationsAst.length) {
+    manageWebContextField(component, derivedName, "derived");
   }
 
-  // _skip fix when there are variable declarations in
-  // different scope with the same name as the prop in
-  // the component body.
-  // Issue: https://github.com/brisa-build/brisa/issues/284
-  function traverseAToB(this: any, key: string, value: any) {
-    if (value === "Identifier" && propsNamesAndRenamesSet.has(this.name)) {
-      registeredProps.add(this.name);
-      return value;
-    }
-
-    if (this._skip && typeof value === "object" && value !== null) {
-      value._skip = true;
-      return value;
-    }
-
-    if (
-      value?.type === "VariableDeclaration" &&
-      isExistingPropName(value?.declarations, FN)
-    ) {
-      this._skip = true;
-      value._skip = true;
-      return value;
-    }
-
-    if (FN.has(value?.type) && isExistingPropName(value?.params)) {
-      this._skip = true;
-      value._skip = true;
-    }
-
-    return value;
-  }
+  injectDerivedProps({
+    componentBody: componentBody,
+    componentParams: params,
+    derivedName,
+    optimizationASTLines: derivedPropsInfo.propsOptimizationsAst,
+  });
 
   function traverseB2A(this: any, key: string, value: any) {
     if (this?.type === "VariableDeclarator" && this.id === value) {
@@ -229,7 +193,7 @@ export function transformComponentToReactiveProps(
   }
 
   const newComponentBody = JSON.parse(
-    JSON.stringify(componentBody, traverseAToB),
+    JSON.stringify(componentBody),
     traverseB2A,
   );
 
@@ -240,54 +204,38 @@ export function transformComponentToReactiveProps(
   return { component: newComponent, vars: allVariableNames, props: propsNames };
 }
 
-function getComponentBody(component: any) {
-  return (
-    component?.body?.body ??
-    component?.body ??
-    component?.declarations?.[0]?.init?.body?.body ??
-    component?.declarations?.[0]?.init?.body
-  );
-}
-
 function getComponentParams(component: any) {
   const declaration = component?.declarations?.[0];
   return declaration?.init?.params ?? component?.params ?? [];
 }
 
-function addDerivedProps(component: any, allVariableNames: Set<string>) {
+function getDerivedProps(component: any, derivedName: string, allVariableNames: Set<string>) {
   const params = getComponentParams(component);
-  const derivedName = generateUniqueVariableName("derived", allVariableNames);
   const propsOptimizations = getPropsOptimizations(params[0], derivedName);
   const propsOptimizationsAst = propsOptimizations.flatMap(
     (c) => parseCodeToAST(c).body[0],
   );
-  const componentBody = getComponentBody(component);
 
-  if (!propsOptimizations.length) return [];
+  const propNames = propsOptimizationsAst.map((node: any) => node.declarations[0].id.name);
 
-  // The compiler will add an "derived" argument to the component
-  manageWebContextField(component, derivedName, "derived");
+  return { propsOptimizationsAst, propNames, derivedName };
+}
 
-  params[0] = {
+function injectDerivedProps({ componentBody, componentParams, optimizationASTLines }: {
+  componentBody: any;
+  componentParams: any;
+  derivedName: string;
+  optimizationASTLines: any[];
+}) {
+  if (optimizationASTLines.length === 0) return;
+
+  componentParams[0] = {
     type: "Identifier",
     name: PROPS_OPTIMIZATION_IDENTIFIER,
   };
 
-  if (Array.isArray(componentBody)) {
-    componentBody.unshift(...propsOptimizationsAst);
-  } else if (componentBody === component?.body) {
-    component.body = {
-      type: "BlockStatement",
-      body: [
-        ...propsOptimizationsAst,
-        {
-          type: "ReturnStatement",
-          argument: componentBody,
-        },
-      ],
-    };
-  }
-
-  // Return the name of the derived props
-  return propsOptimizationsAst.map((node: any) => node.declarations[0].id.name);
+  componentBody.body = [
+    ...optimizationASTLines,
+    ...componentBody.body,
+  ];
 }

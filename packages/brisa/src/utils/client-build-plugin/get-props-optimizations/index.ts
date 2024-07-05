@@ -40,7 +40,7 @@ export default function getPropsOptimizations(
   }
 
   // ArrayPattern
-  if (pattern.elements) {
+  if (pattern?.elements) {
     for (let i = 0; i < pattern.elements.length; i++) {
       const element = pattern.elements[i];
       const right = element?.right;
