@@ -16,14 +16,13 @@ describe("utils", () => {
             return <div>foo</div>
           }
         `);
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected: string[] = [];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual([]);
-        expect(defaultProps).toEqual({});
       });
       it("should return the props names if the props are an object", () => {
         const [input] = inputCode(`
@@ -31,14 +30,13 @@ describe("utils", () => {
             return <div>foo</div>
           }
         `);
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
       it("should return the props names if the props are an identifier", () => {
         const [input] = inputCode(`
@@ -75,14 +73,13 @@ describe("utils", () => {
             return <div>test</div>
           }
         `);
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
       it("should return props names if the props are an identifier an are used in a function", () => {
         const [input] = inputCode(`
@@ -91,14 +88,13 @@ describe("utils", () => {
             return <div>test</div>
           }
         `);
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
       it("should return the unique props names if the props are an identifier an are used in different places", () => {
         const [input] = inputCode(`
@@ -107,14 +103,13 @@ describe("utils", () => {
             return <div>{props.name}</div>
           }
         `);
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
       it("should return props names if the props are destructured", () => {
         const [input] = inputCode(`
@@ -139,14 +134,13 @@ describe("utils", () => {
             return <div>{name}</div>
           }
         `);
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it("should return props names used different tecniques", () => {
@@ -157,14 +151,13 @@ describe("utils", () => {
             return <div>{props.cat}</div>
           }
         `);
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog", "cat"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it("should return props names without influence of other variables outside the component", () => {
@@ -179,14 +172,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog", "cat"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it("should not return props names named children as object statement", () => {
@@ -201,14 +193,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it("should not return props names named children", () => {
@@ -223,14 +214,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name", "dog"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it("should return the default props values in assignment pattern", () => {
@@ -240,18 +230,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
-        const expectedDefaultProps: ESTree.Literal = {
-          type: "Literal",
-          value: "foo",
-        };
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({ name: expectedDefaultProps });
       });
 
       it("should return the renamed props if is renamed inside the arguments", () => {
@@ -261,19 +246,14 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
         const expectedRenamed = ["renamedName"];
-        const expectedDefaultProps: ESTree.Literal = {
-          type: "Literal",
-          value: "foo",
-        };
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expectedRenamed);
-        expect(defaultProps).toEqual({ renamedName: expectedDefaultProps });
       });
 
       it("should NOT return the renamed name when lose the reactivity without a derived", () => {
@@ -284,14 +264,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it("should NOT return the renamed name when lose the reactivity without a derived from props object", () => {
@@ -302,14 +281,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it("should NOT return the renamed name when lose the reactivity without a derived from default props", () => {
@@ -320,14 +298,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["name"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it("should return the prop name when a new rest variable is declared and used to consume props", () => {
@@ -339,7 +316,7 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
@@ -347,7 +324,6 @@ describe("utils", () => {
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expectedRenamed);
-        expect(defaultProps).toEqual({});
       });
 
       it('should extend the props defined via "export const props = []" to the props names', () => {
@@ -361,7 +337,7 @@ describe("utils", () => {
         const input = getWebComponentAst(ast)[0] as ESTree.FunctionDeclaration;
         const propsFromExport = getPropNamesFromExport(ast);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
@@ -369,7 +345,6 @@ describe("utils", () => {
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       // baz is not a renamed prop, stops reactivity to get this calculation
@@ -381,14 +356,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it('should not return the renamed name using a logical expression that is not for default props using "props"', () => {
@@ -399,14 +373,13 @@ describe("utils", () => {
           }
         `);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
         const expected = ["foo", "bar"];
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toEqual({});
       });
 
       it('should take "value" as prop name', () => {
@@ -425,7 +398,7 @@ describe("utils", () => {
         const input = getWebComponentAst(ast)[0] as ESTree.FunctionDeclaration;
         const propsFromExport = getPropNamesFromExport(ast);
 
-        const [propNames, renamedOutput, defaultProps] = getPropsNames(
+        const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
@@ -433,7 +406,6 @@ describe("utils", () => {
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
-        expect(defaultProps).toBeEmpty();
       });
     });
   });
