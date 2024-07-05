@@ -58,7 +58,7 @@ export default function clientBuildPlugin(
   const astWithDirectExport = transformToDirectExport(ast);
   const out = transformToReactiveProps(astWithDirectExport);
   const reactiveAst = transformToReactiveArrays(out.ast, path);
-  const propsSet = new Set(out.props);
+  const observedAttributesSet = new Set(out.observedAttributes);
   let [componentBranch, exportIndex, identifierIndex] =
     getWebComponentAst(reactiveAst);
 
@@ -73,8 +73,8 @@ export default function clientBuildPlugin(
     };
   }
 
-  for (const { props = [] } of Object.values(out.statics ?? {})) {
-    for (const prop of props) propsSet.add(prop);
+  for (const { observedAttributes = [] } of Object.values(out.statics ?? {})) {
+    for (const prop of observedAttributes) observedAttributesSet.add(prop);
   }
 
   componentBranch = mergeEarlyReturnsInOne(
@@ -95,7 +95,7 @@ export default function clientBuildPlugin(
 
   const [importDeclaration, brisaElement, componentAst] = defineBrisaElement(
     componentBranch,
-    Array.from(propsSet),
+    Array.from(observedAttributesSet),
     out.componentName,
   );
 
