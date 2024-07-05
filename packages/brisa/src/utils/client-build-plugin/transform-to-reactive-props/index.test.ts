@@ -113,7 +113,7 @@ describe("utils", () => {
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz", "console"]));
       });
 
-      it("should transform all props from destructured props with spread", () => {
+      it("should transform all props from destructured props with rest", () => {
         const code = `
           export default function Component({ foo, ...rest }) {
             console.log(foo);
@@ -430,8 +430,8 @@ describe("utils", () => {
 
       it("should remove destructuring props with default value from params and add them to the component body", () => {
         const code = `
-          export default function Component({foo: {bar: {baz = "bar"}, bar} }) {
-            return <div>{bar}{baz}</div>;
+          export default function Component({foo: {bar: {baz = "bar"}, quux} }) {
+            return <div>{quux}{baz}</div>;
           }
         `;
         const ast = parseCodeToAST(code);
@@ -442,14 +442,14 @@ describe("utils", () => {
         const expectedCode = normalizeQuotes(`
           export default function Component(__b_props__, {derived}) {
             const baz = derived(() => __b_props__.foo.value.bar.baz ?? "bar");
-            const bar = derived(() => __b_props__.foo.value.bar);
-            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+            const quux = derived(() => __b_props__.foo.value.quux);
+            return jsxDEV("div", {children: [quux.value, baz.value]}, undefined, true, undefined, this);
           }
         `);
 
         expect(outputCode).toBe(expectedCode);
         expect(out.props).toEqual(["bar", "baz"]);
-        expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
+        expect(out.vars).toEqual(new Set(["foo", "quux", "baz"]));
       });
 
       it("should remove destructuring props with rename from params and add them to the component body", () => {
