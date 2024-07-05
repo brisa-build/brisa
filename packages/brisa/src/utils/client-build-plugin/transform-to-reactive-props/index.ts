@@ -9,6 +9,7 @@ import manageWebContextField from "@/utils/client-build-plugin/manage-web-contex
 import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
 import getPropsOptimizations from "@/utils/client-build-plugin/get-props-optimizations";
 import AST from "@/utils/ast";
+import { getInitialMemberExpression } from "@/utils/ast/get-initial-member-expression";
 
 const { parseCodeToAST } = AST("tsx");
 const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
@@ -120,31 +121,15 @@ export function transformComponentToReactiveProps(
   propNamesFromExport: string[],
 ) {
   const componentVariableNames = getComponentVariableNames(component);
-  const [observedAttributes, renamedPropsNames] = getPropsNames(
-    component,
-    propNamesFromExport,
-  );
-  let allVariableNames = new Set([
-    ...observedAttributes,
-    ...componentVariableNames,
-  ]);
   const declaration = component?.declarations?.[0];
   const componentBody = component?.body ?? declaration?.init.body;
   const transformedProps = new Set<string>();
   const params = getComponentParams(component);
-  const derivedName = generateUniqueVariableName("derived", allVariableNames);
+  const derivedName = generateUniqueVariableName(
+    "derived",
+    new Set(componentVariableNames),
+  );
   const derivedPropsInfo = getDerivedProps(component, derivedName);
-  const propsNamesAndRenamesSet = new Set([
-    ...observedAttributes,
-    ...renamedPropsNames,
-    ...propNamesFromExport,
-    ...derivedPropsInfo.propNames,
-  ]);
-
-  allVariableNames = new Set([
-    ...allVariableNames,
-    ...derivedPropsInfo.propNames,
-  ]);
 
   if (derivedPropsInfo.propsOptimizationsAst.length) {
     manageWebContextField(component, derivedName, "derived");
@@ -156,6 +141,23 @@ export function transformComponentToReactiveProps(
     derivedName,
     optimizationASTLines: derivedPropsInfo.propsOptimizationsAst,
   });
+
+  const [observedAttributes, renamedPropsNames] = getPropsNames(
+    component,
+    propNamesFromExport,
+  );
+  const allVariableNames = new Set([
+    ...observedAttributes,
+    ...componentVariableNames,
+    ...derivedPropsInfo.propNames,
+  ]);
+
+  const propsNamesAndRenamesSet = new Set([
+    ...observedAttributes,
+    ...renamedPropsNames,
+    ...propNamesFromExport,
+    ...derivedPropsInfo.propNames,
+  ]);
 
   function traverseB2A(this: any, key: string, value: any) {
     if (this?.type === "VariableDeclarator" && this.id === value) {
@@ -174,7 +176,7 @@ export function transformComponentToReactiveProps(
       isIdentifier && this?.type === "MemberExpression";
 
     if (isIdentifierInsideMemberExpression) {
-      const memberExpression = firstMemberExpression(this);
+      const memberExpression = getInitialMemberExpression(this);
       const isOptimizationIdentifier =
         memberExpression.object.name === PROPS_OPTIMIZATION_IDENTIFIER;
 
@@ -274,12 +276,4 @@ function injectDerivedProps({
   };
 
   componentBody.body = [...optimizationASTLines, ...componentBody.body];
-}
-
-function firstMemberExpression(memberExpression: any) {
-  if (memberExpression?.object?.type === "MemberExpression") {
-    return firstMemberExpression(memberExpression.object);
-  }
-
-  return memberExpression;
 }
