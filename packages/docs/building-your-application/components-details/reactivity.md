@@ -62,6 +62,10 @@ export default function Counter({}, { state }: WebContext) {
 }
 ```
 
+> [!TIP]
+>
+> To update the value of a signal, you need to provoke a setter to the `value` property. For example: `user.value = { username: 'Aral' };`. If you try to update the inner properties of the signal directly, the reactivity will not work, because doing `user.value.username = 'Aral'` will trigger a getter (`user.value.username`) and not a setter.
+
 ## Are signals readonly?
 
 Yes, the signals are readonly. This means that you can't mutate them directly. You have to use the `.value` clause to mutate them.
