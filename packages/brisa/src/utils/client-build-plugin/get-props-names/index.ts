@@ -7,13 +7,12 @@ const CHILDREN = "children";
 export default function getPropsNames(
   webComponentAst: any,
   propNamesFromExport: string[] = [],
-): [string[], string[], Record<string, ESTree.Literal>] {
+): [string[], string[]] {
   const propsAst =
     webComponentAst?.params?.[0] ??
     webComponentAst?.declarations?.[0]?.init?.params?.[0];
   const propNames = [];
   const renamedPropNames = [];
-  let defaultPropsValues: Record<string, ESTree.Literal> = {};
 
   if (propsAst?.type === "ObjectPattern") {
     for (const prop of propsAst.properties as any[]) {
@@ -25,7 +24,6 @@ export default function getPropsNames(
 
         propNames.push(...names);
         renamedPropNames.push(...renamedNames);
-        defaultPropsValues = { ...defaultPropsValues, ...defaultProps };
         continue;
       }
 
@@ -38,10 +36,6 @@ export default function getPropsNames(
 
       renamedPropNames.push(renamedPropName);
       propNames.push(name);
-
-      if (prop.value?.type === "AssignmentPattern") {
-        defaultPropsValues[renamedPropName] = prop.value.right;
-      }
     }
 
     const [, renames] = getPropsNamesFromIdentifier("", webComponentAst);
@@ -51,7 +45,6 @@ export default function getPropsNames(
     return [
       unify(propNames, propNamesFromExport),
       unify(renamedPropNames, propNamesFromExport),
-      defaultPropsValues,
     ];
   }
 
@@ -65,11 +58,10 @@ export default function getPropsNames(
     return [
       unify(res[0], propNamesFromExport),
       unify(res[1], propNamesFromExport),
-      res[2],
     ];
   }
 
-  return [propNamesFromExport, propNamesFromExport, {}];
+  return [propNamesFromExport, propNamesFromExport];
 }
 
 function getPropsNamesFromIdentifier(
@@ -152,10 +144,7 @@ export function getPropNamesFromStatics(ast: ESTree.Program) {
   const [componentBrach] = getWebComponentAst(ast);
   const componentName = componentBrach?.id?.name!;
   const propNamesFromExport = getPropNamesFromExport(ast);
-  const propNamesStaticMap = new Map<
-    string,
-    [string[], string[], Record<string, ESTree.Literal>]
-  >();
+  const propNamesStaticMap = new Map<string, [string[], string[]]>();
 
   mapComponentStatics(ast, componentName, (staticValue, staticName) => {
     const res = getPropsNames(staticValue, propNamesFromExport);
