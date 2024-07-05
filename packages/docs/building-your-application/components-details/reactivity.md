@@ -62,13 +62,22 @@ export default function Counter({}, { state }: WebContext) {
 }
 ```
 
+## Are signals readonly?
+
+Only the props signals are readonly, otherwise are writable. However, you can't mutate them directly. You have to use the `.value` clause to mutate them setting a new value. For example:
+
+```tsx
+count.value = 10; // ✅
+count = 10; // ❌
+
+user.value = { username: "Aral" }; // ✅
+user = { username: "Aral" }; // ❌
+user.value.username = "Aral"; // ❌
+```
+
 > [!TIP]
 >
 > To update the value of a signal, you need to provoke a setter to the `value` property. For example: `user.value = { username: 'Aral' };`. If you try to update the inner properties of the signal directly, the reactivity will not work, because doing `user.value.username = 'Aral'` will trigger a getter (`user.value.username`) and not a setter.
-
-## Are signals readonly?
-
-Yes, the signals are readonly. This means that you can't mutate them directly. You have to use the `.value` clause to mutate them.
 
 ## Are props reactive?
 
