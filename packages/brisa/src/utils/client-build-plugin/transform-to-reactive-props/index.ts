@@ -120,8 +120,10 @@ export function transformComponentToReactiveProps(
   propNamesFromExport: string[],
 ) {
   const componentVariableNames = getComponentVariableNames(component);
-  const [observedAttributes, renamedPropsNames, defaultPropsValues] =
-    getPropsNames(component, propNamesFromExport);
+  const [observedAttributes, renamedPropsNames] = getPropsNames(
+    component,
+    propNamesFromExport,
+  );
   let allVariableNames = new Set([
     ...observedAttributes,
     ...componentVariableNames,
@@ -131,11 +133,7 @@ export function transformComponentToReactiveProps(
   const transformedProps = new Set<string>();
   const params = getComponentParams(component);
   const derivedName = generateUniqueVariableName("derived", allVariableNames);
-  const derivedPropsInfo = getDerivedProps(
-    component,
-    derivedName,
-    allVariableNames,
-  );
+  const derivedPropsInfo = getDerivedProps(component, derivedName);
   const propsNamesAndRenamesSet = new Set([
     ...observedAttributes,
     ...renamedPropsNames,
@@ -244,11 +242,7 @@ function getComponentParams(component: any) {
   return declaration?.init?.params ?? component?.params ?? [];
 }
 
-function getDerivedProps(
-  component: any,
-  derivedName: string,
-  allVariableNames: Set<string>,
-) {
+function getDerivedProps(component: any, derivedName: string) {
   const params = getComponentParams(component);
   const propsOptimizations = getPropsOptimizations(params[0], derivedName);
   const propsOptimizationsAst = propsOptimizations.flatMap(
