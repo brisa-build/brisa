@@ -25,11 +25,9 @@ export default ({}, { onMount, cleanup, state }: WebContext) => {
 };
 ```
 
-
 > [!WARNING]
 >
 > If you run it on an [`effect`](/building-your-application/components-details/web-components.html#effects-effect-method), keep in mind that they run before it has been mounted and you will not yet have access to the element.
-
 
 If you need multi-refs for an array, you can do it this way:
 
