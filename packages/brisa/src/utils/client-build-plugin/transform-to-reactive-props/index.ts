@@ -9,6 +9,7 @@ import manageWebContextField from "@/utils/client-build-plugin/manage-web-contex
 import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
 import getPropsOptimizations from "@/utils/client-build-plugin/get-props-optimizations";
 import AST from "@/utils/ast";
+import { JSX_NAME } from "@/utils/client-build-plugin/constants";
 
 const { parseCodeToAST } = AST("tsx");
 const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
@@ -118,11 +119,6 @@ export function transformComponentToReactiveProps(
     component,
     propNamesFromExport,
   );
-  const propsNamesAndRenamesSet = new Set([
-    ...propsNames,
-    ...renamedPropsNames,
-    ...propNamesFromExport,
-  ]);
   const allVariableNames = new Set([...propsNames, ...componentVariableNames]);
   const declaration = component?.declarations?.[0];
   const componentBody = component?.body ?? declaration?.init.body;
@@ -130,6 +126,12 @@ export function transformComponentToReactiveProps(
   const params = getComponentParams(component);
   const derivedName = generateUniqueVariableName("derived", allVariableNames);
   const derivedPropsInfo = getDerivedProps(component, derivedName, allVariableNames);
+  const propsNamesAndRenamesSet = new Set([
+    ...propsNames,
+    ...renamedPropsNames,
+    ...propNamesFromExport,
+    ...derivedPropsInfo.propNames
+  ]);
 
   if (derivedPropsInfo.propsOptimizationsAst.length) {
     manageWebContextField(component, derivedName, "derived");
