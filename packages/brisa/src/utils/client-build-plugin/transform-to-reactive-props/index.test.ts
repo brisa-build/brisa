@@ -428,6 +428,27 @@ describe("utils", () => {
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
       });
 
+      it("should remove destructuring with default values and add the optimizations", () => {
+        const code = `export default function Foo({ foo: { bar: { baz = "bar" } = {}, quux } = {} } = {}) {
+          return <div>{quux}{baz}</div>
+        }`;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode =
+          normalizeQuotes(`export default function Foo(__b_props__, {derived}) {
+          const baz = derived(() => (__b_props__.foo.value ?? {}).bar.baz ?? "bar");
+          const quux = derived(() => (__b_props__.foo.value ?? {}).quux);
+          return jsxDEV("div", {children: [quux.value, baz.value]}, undefined, true, undefined, this);
+        }`);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.vars).toEqual(new Set(["foo", "quux", "baz"]));
+      });
+
       it("should remove destructuring props with default value from params and add them to the component body", () => {
         const code = `
           export default function Component({foo: {bar: {baz = "bar"}, quux} }) {
