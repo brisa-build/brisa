@@ -32,7 +32,13 @@ export default function transformToReactiveProps(ast: ESTree.Program): Result {
   const defaultComponentName = "Component";
 
   if (!component)
-    return { ast, componentName: "", observedAttributes: [], vars: new Set(), statics: {} };
+    return {
+      ast,
+      componentName: "",
+      observedAttributes: [],
+      vars: new Set(),
+      statics: {},
+    };
 
   const propsFromExport = getPropNamesFromExport(ast);
   const statics: Statics = {};
@@ -114,25 +120,33 @@ export function transformComponentToReactiveProps(
   propNamesFromExport: string[],
 ) {
   const componentVariableNames = getComponentVariableNames(component);
-  const [observedAttributes, renamedPropsNames, defaultPropsValues] = getPropsNames(
-    component,
-    propNamesFromExport,
-  );
-  let allVariableNames = new Set([...observedAttributes, ...componentVariableNames]);
+  const [observedAttributes, renamedPropsNames, defaultPropsValues] =
+    getPropsNames(component, propNamesFromExport);
+  let allVariableNames = new Set([
+    ...observedAttributes,
+    ...componentVariableNames,
+  ]);
   const declaration = component?.declarations?.[0];
   const componentBody = component?.body ?? declaration?.init.body;
   const transformedProps = new Set<string>();
   const params = getComponentParams(component);
   const derivedName = generateUniqueVariableName("derived", allVariableNames);
-  const derivedPropsInfo = getDerivedProps(component, derivedName, allVariableNames);
+  const derivedPropsInfo = getDerivedProps(
+    component,
+    derivedName,
+    allVariableNames,
+  );
   const propsNamesAndRenamesSet = new Set([
     ...observedAttributes,
     ...renamedPropsNames,
     ...propNamesFromExport,
-    ...derivedPropsInfo.propNames
+    ...derivedPropsInfo.propNames,
   ]);
 
-  allVariableNames = new Set([...allVariableNames, ...derivedPropsInfo.propNames]);
+  allVariableNames = new Set([
+    ...allVariableNames,
+    ...derivedPropsInfo.propNames,
+  ]);
 
   if (derivedPropsInfo.propsOptimizationsAst.length) {
     manageWebContextField(component, derivedName, "derived");
@@ -158,11 +172,13 @@ export function transformComponentToReactiveProps(
     }
 
     const isIdentifier = value?.type === "Identifier";
-    const isIdentifierInsideMemberExpression = isIdentifier && this?.type === "MemberExpression";
+    const isIdentifierInsideMemberExpression =
+      isIdentifier && this?.type === "MemberExpression";
 
     if (isIdentifierInsideMemberExpression) {
       const memberExpression = firstMemberExpression(this);
-      const isOptimizationIdentifier = memberExpression.object.name === PROPS_OPTIMIZATION_IDENTIFIER;
+      const isOptimizationIdentifier =
+        memberExpression.object.name === PROPS_OPTIMIZATION_IDENTIFIER;
 
       if (isOptimizationIdentifier && memberExpression.property !== value) {
         return value;
@@ -216,7 +232,11 @@ export function transformComponentToReactiveProps(
     ? { ...declaration?.init, body: newComponentBody }
     : newComponentBody;
 
-  return { component: newComponent, vars: allVariableNames, observedAttributes };
+  return {
+    component: newComponent,
+    vars: allVariableNames,
+    observedAttributes,
+  };
 }
 
 function getComponentParams(component: any) {
@@ -224,19 +244,29 @@ function getComponentParams(component: any) {
   return declaration?.init?.params ?? component?.params ?? [];
 }
 
-function getDerivedProps(component: any, derivedName: string, allVariableNames: Set<string>) {
+function getDerivedProps(
+  component: any,
+  derivedName: string,
+  allVariableNames: Set<string>,
+) {
   const params = getComponentParams(component);
   const propsOptimizations = getPropsOptimizations(params[0], derivedName);
   const propsOptimizationsAst = propsOptimizations.flatMap(
     (c) => parseCodeToAST(c).body[0],
   );
 
-  const propNames = propsOptimizationsAst.map((node: any) => node.declarations[0].id.name);
+  const propNames = propsOptimizationsAst.map(
+    (node: any) => node.declarations[0].id.name,
+  );
 
   return { propsOptimizationsAst, propNames, derivedName };
 }
 
-function injectDerivedProps({ componentBody, componentParams, optimizationASTLines }: {
+function injectDerivedProps({
+  componentBody,
+  componentParams,
+  optimizationASTLines,
+}: {
   componentBody: any;
   componentParams: any;
   derivedName: string;
@@ -249,10 +279,7 @@ function injectDerivedProps({ componentBody, componentParams, optimizationASTLin
     name: PROPS_OPTIMIZATION_IDENTIFIER,
   };
 
-  componentBody.body = [
-    ...optimizationASTLines,
-    ...componentBody.body,
-  ];
+  componentBody.body = [...optimizationASTLines, ...componentBody.body];
 }
 
 function firstMemberExpression(memberExpression: any) {

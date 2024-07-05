@@ -305,6 +305,13 @@ const WITH_DEFAULT_VALUES = [
       "const t = derived(() => __b_props__.w.t);",
     ],
   },
+  {
+    param: `{ foo: { bar: { baz = "bar" } = {}, quux } = {} } = {}`,
+    expected: [
+      "const baz = derived(() => (__b_props__.foo ?? {}).bar.baz ?? 'bar');",
+      "const quux = derived(() => (__b_props__.foo ?? {}).quux);",
+    ],
+  },
 ];
 
 const WITH_DEFAULT_VALUES_FROM_OTHER_PROPS = [
