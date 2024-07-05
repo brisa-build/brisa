@@ -108,13 +108,7 @@ export default function getPropsOptimizations(
     const right = value?.right;
     const type = value?.type;
     const isRest = prop?.type === "RestElement";
-    const name =
-      value?.left?.name ??
-      value?.name ??
-      prop?.key?.name ??
-      `["${value?.value ?? prop?.key?.value}"]`;
-
-    const keyName = prop?.key?.name ?? prop?.key?.value ?? name;
+    const { name, keyName } = getPropertyNames(prop);
     const isKeyLiteral = prop?.key?.type === "Literal";
     const isKeyStringLiteral = isKeyLiteral && typeof keyName === "string";
     const quotes = isKeyStringLiteral ? `"` : "";
@@ -227,6 +221,19 @@ export default function getPropsOptimizations(
       continue;
     }
 
+    /* ####################################################################
+        #####    Transform ObjectPattern property with default value   ######
+        ####################################################################*/
+    if (
+      value?.type === "AssignmentPattern" &&
+      value?.left?.type === "ObjectPattern"
+    ) {
+      result.push(
+        ...getPropsOptimizations(value.left, derivedFnName, acc + name + "."),
+      );
+      continue;
+    }
+
     /* #############################################################
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
@@ -322,4 +329,16 @@ function sortByPropDependencies() {
 
     return result;
   };
+}
+
+function getPropertyNames(prop: any) {
+  let name =
+    prop?.value?.left?.name ??
+    prop?.value?.name ??
+    prop?.key?.name ??
+    `["${prop?.value?.value ?? prop?.key?.value}"]`;
+
+  const keyName = prop?.key?.name ?? prop?.key?.value ?? name;
+
+  return { name, keyName };
 }
