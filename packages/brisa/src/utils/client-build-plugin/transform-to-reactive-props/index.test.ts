@@ -455,7 +455,7 @@ describe("utils", () => {
       it("should remove destructuring props with rename from params and add them to the component body", () => {
         const code = `
           export default function Component({foo: {bar: {baz: brisa}, bar} }) {
-            return <div>{bar}{baz}</div>;
+            return <div>{bar}{brisa}</div>;
           }
         `;
         const ast = parseCodeToAST(code);
@@ -467,7 +467,7 @@ describe("utils", () => {
           export default function Component(__b_props__, {derived}) {
             const brisa = derived(() => __b_props__.foo.value.bar.baz);
             const bar = derived(() => __b_props__.foo.value.bar);
-            return jsxDEV("div", {children: [bar.value, baz.value]}, undefined, true, undefined, this);
+            return jsxDEV("div", {children: [bar.value, brisa.value]}, undefined, true, undefined, this);
           }
         `);
 
