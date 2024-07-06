@@ -5,28 +5,28 @@ import AST from "@/utils/ast";
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const VARS = [
-  // 'const foo = "bar";',
-  // "const {foo} = {};",
-  // "const {bar: foo} = {};",
-  // 'const {bar: foo = "bar"} = {};',
-  // "const {foo, ...rest} = {};",
-  // "const {bart: bar, foot: foo} = {};",
-  // "const {bar: {baz: {foo}}} = {};",
-  // 'const {bar: {baz: {foo = "bar"}}} = {};',
-  // 'const {bar: {foo = foo => foo}} = {};',
+  'const foo = "bar";',
+  "const {foo} = {};",
+  "const {bar: foo} = {};",
+  'const {bar: foo = "bar"} = {};',
+  "const {foo, ...rest} = {};",
+  "const {bart: bar, foot: foo} = {};",
+  "const {bar: {baz: {foo}}} = {};",
+  'const {bar: {baz: {foo = "bar"}}} = {};',
+  "const {bar: {foo = foo => foo}} = {};",
 ];
 const PARAMS = [
-  // "foo",
-  // "...foo",
-  // "{foo}",
-  // "{...foo}",
-  // "{bar: foo}",
-  // '{bar: foo = "bar"}',
-  // "{foo, ...rest}",
-  // "{bart: bar, foot: foo}",
-  // "{bar: {baz: {foo}}}",
-  // '{bar: {baz: {foo = "bar"}}}',
-  // '{bar: {baz = foo => true}}'
+  "foo",
+  "...foo",
+  "{foo}",
+  "{...foo}",
+  "{bar: foo}",
+  '{bar: foo = "bar"}',
+  "{foo, ...rest}",
+  "{bart: bar, foot: foo}",
+  "{bar: {baz: {foo}}}",
+  '{bar: {baz: {foo = "bar"}}}',
+  "{bar: {baz = foo => true}}",
 ];
 
 describe("utils", () => {
@@ -1082,8 +1082,8 @@ describe("utils", () => {
           const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
           const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state, effect}) {
-            effect(() => foo.value ??= "bar");
+          export default function Component(__b_props__, {state, derived}) {
+            const foo = derived(() => __b_props__.foo.value ?? "bar");
             const example = state(foo.value);
 
             function onClick() {
@@ -1118,8 +1118,8 @@ describe("utils", () => {
           const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
           const expectedCode = normalizeQuotes(`
-          export default function Component({foo}, {state, effect}) {
-            effect(() => foo.value ??= "bar");
+          export default function Component(__b_props__, {state, derived}) {
+            const foo = derived(() => __b_props__.foo.value ?? "bar");
             const example = state(foo.value);
 
             function onClick(${param}) {
@@ -1224,7 +1224,8 @@ describe("utils", () => {
           const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
           const expectedCode = normalizeQuotes(`
-          export default function Component({foot: {foo}}, {state}) {
+          export default function Component(__b_props__, {state, derived}) {
+            const foo = derived(() => __b_props__.foot.value.foo);
             const example = state(foo.value);
 
             function onClick() {
@@ -1259,7 +1260,8 @@ describe("utils", () => {
           const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
           const expectedCode = normalizeQuotes(`
-          export default function Component({foot: {foo}}, {state}) {
+          export default function Component(__b_props__, {state, derived}) {
+            const foo = derived(() => __b_props__.foot.value.foo);
             const example = state(foo.value);
 
             function onClick(${param}) {
