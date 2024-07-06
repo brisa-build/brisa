@@ -6,6 +6,7 @@ const EXTRA_END_REGEX = /( \?\?.*|\);)$/;
 const DEP_REGEX = /\?\? ([a-z|A-Z|_]*)\)\;$/;
 const BEFORE_ARROW_REGEX = /.*\(\) => /;
 const SEPARATOR_REGEX = /\.|\[/;
+const OPEN_PARENTHESIS_REGEX = /^\(*/;
 const DOT_END_REGEX = /\.$/;
 const { generateCodeFromAST } = AST("tsx");
 
@@ -140,10 +141,10 @@ export default function getPropsOptimizations(
     }
 
     /* ####################################################################
-       #####       Transform Property with default object/array       ######
-       #####       value in top level                                 ######
+       #####       Transform Property with default                   ######
+       #####       object/array value                                ######
        ####################################################################*/
-    if (hasDefaultObjectValue && !acc) {
+    if (hasDefaultObjectValue) {
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
       let newAcc = updatedAcc + name;
 
@@ -159,6 +160,8 @@ export default function getPropsOptimizations(
       }
 
       newAcc = `(${newAcc + propDefaultText}).`;
+      console.log("ACC:", newAcc);
+
       result.push(...getPropsOptimizations(value.left, derivedFnName, newAcc));
       continue;
     }
@@ -284,9 +287,12 @@ function getDefaultValue(inputRight: any, name?: string) {
 }
 
 function addPrefix(name: string): string {
+  const openParenthesis = name.match(OPEN_PARENTHESIS_REGEX)?.[0];
   let prefix = name.startsWith("[") ? PROPS_IDENTIFIER : PROPS_IDENTIFIER + ".";
 
-  return name.startsWith("(") ? "(" + prefix + name.slice(1) : prefix + name;
+  return openParenthesis
+    ? openParenthesis + prefix + name.replace(openParenthesis, "")
+    : prefix + name;
 }
 
 function getDerivedArrowFnString(
