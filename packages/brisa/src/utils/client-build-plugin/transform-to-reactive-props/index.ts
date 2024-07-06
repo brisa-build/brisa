@@ -13,6 +13,7 @@ import { getInitialMemberExpression } from "@/utils/ast/get-initial-member-expre
 
 const { parseCodeToAST } = AST("tsx");
 const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
+const DERIVED_NAME = "derived";
 
 type Statics = {
   suspense?: Result;
@@ -126,13 +127,13 @@ export function transformComponentToReactiveProps(
   const transformedProps = new Set<string>();
   const params = getComponentParams(component);
   const derivedName = generateUniqueVariableName(
-    "derived",
+    DERIVED_NAME,
     new Set(componentVariableNames),
   );
   const derivedPropsInfo = getDerivedProps(component, derivedName);
 
   if (derivedPropsInfo.propsOptimizationsAst.length) {
-    manageWebContextField(component, derivedName, "derived");
+    manageWebContextField(component, derivedName, DERIVED_NAME);
   }
 
   injectDerivedProps({
@@ -175,6 +176,9 @@ export function transformComponentToReactiveProps(
     const isIdentifierInsideMemberExpression =
       isIdentifier && this?.type === "MemberExpression";
 
+    // Avoid adding .value in props that are already optimized
+    // and are not in the initial member expression
+    // TODO: Support more cases, like: someVar.propName
     if (isIdentifierInsideMemberExpression) {
       const memberExpression = getInitialMemberExpression(this);
       const isOptimizationIdentifier =
@@ -202,7 +206,9 @@ export function transformComponentToReactiveProps(
     ) {
       // allow: console.log({ propName })
       // transforming to: console.log({ propName: propName.value })
-      if (this?.type === "Property") this.shorthand = false;
+      if (this?.type === "Property") {
+        this.shorthand = false;
+      }
 
       // add signal, transforming:
       //  <div>{propName}</div>
