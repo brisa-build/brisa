@@ -392,7 +392,7 @@ describe("utils", () => {
 
         const expectedCode = normalizeQuotes(`
           export default function Component(__b_props__, {derived}) {
-            const {foo} = __b_props__;
+            const {foo: foo} = __b_props__;
             const bar = derived(() => __b_props__.bar.value ?? 'bar');
             const baz = derived(() => __b_props__.baz.value ?? 'baz');
             return jsxDEV("div", {children: [foo.value, bar.value, baz.value]}, undefined, true, undefined, this);
@@ -439,8 +439,8 @@ describe("utils", () => {
 
         const expectedCode =
           normalizeQuotes(`export default function Foo(__b_props__, {derived}) {
-          const baz = derived(() => ((__b_props__.foo.value ?? {}).bar ?? {}).baz ?? "bar");
-          const quux = derived(() => (__b_props__.foo.value ?? {}).quux);
+          const baz = derived(() => ((__b_props__.foo.value ?? ({})).bar ?? ({})).baz ?? "bar");
+          const quux = derived(() => (__b_props__.foo.value ?? ({})).quux);
           return jsxDEV("div", {children: [quux.value, baz.value]}, undefined, true, undefined, this);
         }`);
 
