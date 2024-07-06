@@ -126,6 +126,7 @@ export function transformComponentToReactiveProps(
   const componentBody = component?.body ?? declaration?.init.body;
   const transformedProps = new Set<string>();
   const params = getComponentParams(component);
+  const propsIdentifierName = params[0]?.name;
   const registeredProps = new Set<string>();
   const derivedName = generateUniqueVariableName(
     DERIVED_NAME,
@@ -184,7 +185,7 @@ export function transformComponentToReactiveProps(
     let skipper = false;
 
     JSON.stringify(
-      value?.declarations?.map((d) => d.id) ?? value?.params,
+      value?.declarations?.map((d: any) => d.id) ?? value?.params,
       (_, v) => {
         if (v?.type === "Identifier" && registeredProps.has(v.name)) {
           skipper = true;
@@ -194,7 +195,10 @@ export function transformComponentToReactiveProps(
       },
     );
 
-    if (skipper) this._skip = value._skip = true;
+    if (skipper) {
+      if (this !== componentBody.body) this._skip = true;
+      value._skip = true;
+    }
 
     return value;
   }
