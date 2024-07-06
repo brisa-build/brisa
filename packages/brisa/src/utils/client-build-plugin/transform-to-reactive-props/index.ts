@@ -251,15 +251,17 @@ function getComponentParams(component: any) {
 }
 
 function getDerivedProps(component: any, derivedName: string) {
+  const propNames = [];
   const params = getComponentParams(component);
   const propsOptimizations = getPropsOptimizations(params[0], derivedName);
   const propsOptimizationsAst = propsOptimizations.flatMap(
     (c) => parseCodeToAST(c).body[0],
   );
 
-  const propNames = propsOptimizationsAst.map(
-    (node: any) => node.declarations[0].id.name,
-  );
+  for (const node of propsOptimizationsAst) {
+    const name = (node as any).declarations[0].id.name;
+    if (name) propNames.push(name);
+  }
 
   return { propsOptimizationsAst, propNames, derivedName };
 }
