@@ -126,6 +126,7 @@ export function transformComponentToReactiveProps(
   const componentBody = component?.body ?? declaration?.init.body;
   const transformedProps = new Set<string>();
   const params = getComponentParams(component);
+  const registeredProps = new Set<string>();
   const derivedName = generateUniqueVariableName(
     DERIVED_NAME,
     new Set(componentVariableNames),
@@ -159,6 +160,44 @@ export function transformComponentToReactiveProps(
     ...propNamesFromExport,
     ...derivedPropsInfo.propNames,
   ]);
+
+  function traverseA2B(this: any, key: string, value: any) {
+    if (value === "Identifier" && propsNamesAndRenamesSet.has(this.name)) {
+      registeredProps.add(this.name);
+      return value;
+    }
+
+    if (this._skip && typeof value === "object" && value !== null) {
+      value._skip = this._skip;
+      return value;
+    }
+
+    if (
+      value?.type !== "VariableDeclaration" &&
+      value?.type !== "FunctionDeclaration"
+    ) {
+      return value;
+    }
+
+    if (!registeredProps.size) return value;
+
+    let skipper = false;
+
+    JSON.stringify(
+      value?.declarations?.map((d) => d.id) ?? value?.params,
+      (_, v) => {
+        if (v?.type === "Identifier" && registeredProps.has(v.name)) {
+          skipper = true;
+          return null;
+        }
+        return v;
+      },
+    );
+
+    if (skipper) this._skip = value._skip = true;
+
+    return value;
+  }
 
   function traverseB2A(this: any, key: string, value: any) {
     if (this?.type === "VariableDeclarator" && this.id === value) {
@@ -230,7 +269,7 @@ export function transformComponentToReactiveProps(
   }
 
   const newComponentBody = JSON.parse(
-    JSON.stringify(componentBody),
+    JSON.stringify(componentBody, traverseA2B),
     traverseB2A,
   );
 
