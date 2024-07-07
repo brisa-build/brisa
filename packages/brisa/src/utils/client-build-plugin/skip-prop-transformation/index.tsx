@@ -26,18 +26,12 @@ export default function skipPropTransformation(
           skipArray.push(declaration?.id.name);
         }
 
-        // Skip object pattern properties
-        if (declaration?.id?.type === "ObjectPattern") {
-          const names = getAllObjectPatternNamesRecursive(declaration?.id);
-
-          for (const name of names) {
-            if (propsNamesAndRenamesSet.has(name)) skipArray.push(name);
-          }
-        }
-
-        // Skip array pattern elements
-        if (declaration?.id?.type === "ArrayPattern") {
-          const names = getAllArrayPatternNamesRecursive(declaration?.id);
+        // Skip object or array pattern properties
+        if (
+          declaration?.id?.type === "ObjectPattern" ||
+          declaration?.id?.type === "ArrayPattern"
+        ) {
+          const names = getAllPatternNamesRecursive(declaration.id);
 
           for (const name of names) {
             if (propsNamesAndRenamesSet.has(name)) skipArray.push(name);
@@ -73,40 +67,27 @@ export default function skipPropTransformation(
   };
 }
 
-function getAllObjectPatternNamesRecursive(
-  objectPattern: any,
-  names = new Set<string>(),
-) {
-  if (objectPattern?.type !== "ObjectPattern") return names;
+function getAllPatternNamesRecursive(pattern: any, names = new Set<string>()) {
+  const isObjectPattern = pattern?.type === "ObjectPattern";
 
-  for (const prop of objectPattern.properties) {
-    if (prop.type === "RestElement") {
-      names.add(prop.argument.name);
-    } else if (prop.value.type === "ObjectPattern") {
-      getAllObjectPatternNamesRecursive(prop.value, names);
-    } else {
-      names.add(prop.value.name);
-    }
+  if (!isObjectPattern && pattern?.type !== "ArrayPattern") {
+    return names;
   }
 
-  return names;
-}
+  const iterable = isObjectPattern ? pattern.properties : pattern.elements;
 
-function getAllArrayPatternNamesRecursive(
-  arrayPattern: any,
-  names = new Set<string>(),
-) {
-  if (arrayPattern?.type !== "ArrayPattern") return names;
+  for (const item of iterable) {
+    const element = isObjectPattern ? item.value : item;
 
-  for (const element of arrayPattern.elements) {
     if (element === null) {
       continue;
-    } else if (element.type === "RestElement") {
-      names.add(element.argument.name);
-    } else if (element.type === "ArrayPattern") {
-      getAllArrayPatternNamesRecursive(element, names);
-    } else if (element.type === "ObjectPattern") {
-      getAllObjectPatternNamesRecursive(element, names);
+    } else if (item.type === "RestElement") {
+      names.add(item.argument.name);
+    } else if (
+      element.type === "ObjectPattern" ||
+      element.type === "ArrayPattern"
+    ) {
+      getAllPatternNamesRecursive(element, names);
     } else {
       names.add(element.name);
     }
