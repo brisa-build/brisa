@@ -262,7 +262,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      ["i", "@tauri-apps/cli@2.0.0-beta.23"],
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
       devOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
@@ -317,7 +317,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      ["i", "@tauri-apps/cli@2.0.0-beta.23"],
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
       devOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
@@ -434,7 +434,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      ["i", "@tauri-apps/cli@2.0.0-beta.23"],
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
       prodOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
@@ -512,7 +512,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      ["i", "@tauri-apps/cli@2.0.0-beta.23"],
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
       prodOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
@@ -590,7 +590,7 @@ describe("Brisa CLI", () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       "bun",
-      ["i", "@tauri-apps/cli@2.0.0-beta.23"],
+      ["i", "@tauri-apps/cli@2.0.0-beta.8"],
       prodOptions,
     ]);
     expect(mockSpawnSync.mock.calls[2]).toEqual([
