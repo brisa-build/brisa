@@ -34,6 +34,15 @@ export default function skipPropTransformation(
             if (propsNamesAndRenamesSet.has(name)) skipArray.push(name);
           }
         }
+
+        // Skip array pattern elements
+        if (declaration?.id?.type === "ArrayPattern") {
+          const names = getAllArrayPatternNamesRecursive(declaration?.id);
+
+          for (const name of names) {
+            if (propsNamesAndRenamesSet.has(name)) skipArray.push(name);
+          }
+        }
       }
 
       if (skipArray.length) {
@@ -77,6 +86,29 @@ function getAllObjectPatternNamesRecursive(
       getAllObjectPatternNamesRecursive(prop.value, names);
     } else {
       names.add(prop.value.name);
+    }
+  }
+
+  return names;
+}
+
+function getAllArrayPatternNamesRecursive(
+  arrayPattern: any,
+  names = new Set<string>(),
+) {
+  if (arrayPattern?.type !== "ArrayPattern") return names;
+
+  for (const element of arrayPattern.elements) {
+    if (element === null) {
+      continue;
+    } else if (element.type === "RestElement") {
+      names.add(element.argument.name);
+    } else if (element.type === "ArrayPattern") {
+      getAllArrayPatternNamesRecursive(element, names);
+    } else if (element.type === "ObjectPattern") {
+      getAllObjectPatternNamesRecursive(element, names);
+    } else {
+      names.add(element.name);
     }
   }
 
