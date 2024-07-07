@@ -7,15 +7,8 @@ export default function skipPropTransformation(
       return value;
     }
 
-    if (
-      value?.type !== "VariableDeclaration" &&
-      value?.type !== "FunctionDeclaration"
-    ) {
-      return value;
-    }
-
-    if (value?.type === "VariableDeclaration") {
-      const skipArray = value?._skip ?? [];
+    if (value?.type === "VariableDeclaration" && Array.isArray(this)) {
+      const skipArray = value?._skip?.slice() ?? [];
 
       for (const declaration of value.declarations) {
         if (
@@ -23,7 +16,14 @@ export default function skipPropTransformation(
           propsNamesAndRenamesSet.has(declaration?.id?.name)
         ) {
           skipArray.push(declaration?.id.name);
-          declaration.id._skip = skipArray;
+        }
+      }
+
+      if (skipArray.length) {
+        const index = this.findIndex((v: any) => v === value);
+        // Update next siblings to skip
+        for (let i = index + 1; i < this.length; i++) {
+          this[i]._skip = skipArray;
         }
       }
     }
