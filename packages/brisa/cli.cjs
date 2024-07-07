@@ -229,7 +229,7 @@ export async function main() {
 
     if (!packageJSON?.dependencies?.["@tauri-apps/cli"]) {
       console.log("Installing @tauri-apps/cli...");
-      cp.spawnSync(BUN_EXEC, ["i", "@tauri-apps/cli@2.0.0-beta.8"], options);
+      cp.spawnSync(BUN_EXEC, ["i", "@tauri-apps/cli@2.0.0-beta.23"], options);
     }
 
     if (existsTauri && isMobile) {
