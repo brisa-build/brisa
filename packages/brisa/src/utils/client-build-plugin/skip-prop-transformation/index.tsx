@@ -1,3 +1,5 @@
+import { FN } from "@/utils/client-build-plugin/constants";
+
 export default function skipPropTransformation(
   propsNamesAndRenamesSet: Set<string>,
 ) {
@@ -11,6 +13,7 @@ export default function skipPropTransformation(
       value._skip = this._skip.slice();
     }
 
+    // Variable declaration
     if (value?.type === "VariableDeclaration" && Array.isArray(this)) {
       const skipArray = value?._skip?.slice() ?? [];
 
@@ -39,6 +42,21 @@ export default function skipPropTransformation(
         for (let i = index + 1; i < this.length; i++) {
           this[i]._skip = skipArray;
         }
+      }
+    }
+
+    // Function parameters and skip on the fn body
+    if (FN.has(value?.type)) {
+      const skipArray = value?._skip?.slice() ?? [];
+
+      for (const param of value.params) {
+        if (propsNamesAndRenamesSet.has(param.name)) {
+          skipArray.push(param.name);
+        }
+      }
+
+      if (skipArray.length) {
+        value.body._skip = skipArray;
       }
     }
 
