@@ -54,7 +54,7 @@ function getAllObjectPatternNamesRecursive(
 
   for (const prop of objectPattern.properties) {
     if (prop.type === "RestElement") {
-      getAllObjectPatternNamesRecursive(prop.argument, names);
+      names.add(prop.argument.name);
     } else if (prop.value.type === "ObjectPattern") {
       getAllObjectPatternNamesRecursive(prop.value, names);
     } else {
