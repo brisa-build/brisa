@@ -1,3 +1,4 @@
+import { normalizeQuotes } from "@/helpers";
 import AST from "@/utils/ast";
 import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-ast";
 import skipPropTransformation from "@/utils/client-build-plugin/skip-prop-transformation";
@@ -58,6 +59,38 @@ describe("client-build-plugin/skip-prop-transformation", () => {
 
     expect(getOutputCodeLines(out, "baz")).toEqual(["console.log(baz);"]);
   });
+
+  it("should skip inside nested scopes", () => {
+    const code = `
+      export default function Component({foo}) {
+        function onClick() {
+          const foo = 1;
+          const test = () => {
+            const bar = 2;
+            console.log(bar);
+          }
+          console.log(foo);
+        }
+        return <div onClick={onClick}>{foo}</div>;
+      }
+    `;
+    const props = new Set(["foo", "bar"]);
+    const out = applySkipTest(code, props);
+
+    expect(getOutputCodeLines(out, "foo")).toEqual([
+      // Inner scope:
+      "const bar = 2;",
+      "console.log(bar);",
+      // Outer scope:
+      "const test = () => {const bar = 2;console.log(bar);};",
+      "console.log(foo);",
+    ]);
+
+    expect(getOutputCodeLines(out, "bar")).toEqual([
+      // Inner scope:
+      "console.log(bar);",
+    ]);
+  });
 });
 
 function applySkipTest(inputCode: string, props: Set<string>) {
@@ -77,13 +110,13 @@ function getOutputCodeLines(out: string, byProp: string) {
     if (
       value?.type !== "Identifier" &&
       value?.type !== "VariableDeclarator" &&
-      value?._skip?.includes(byProp) &&
-      Array.isArray(this)
+      Array.isArray(this) &&
+      value?._skip?.includes(byProp)
     ) {
       skipped.push(value);
     }
     return value;
   }
 
-  return skipped.map((node) => generateCodeFromAST(node));
+  return skipped.map((node) => normalizeQuotes(generateCodeFromAST(node)));
 }
