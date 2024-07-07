@@ -126,6 +126,40 @@ describe("client-build-plugin/skip-prop-transformation", () => {
     expect(getOutputCodeLines(out, "baz")).toEqual(["console.log(baz);"]);
   });
 
+  it("should skip all the rest of the scope with nested destructured variables with the same name as prop", () => {
+    const code = `
+      export default function Component({foo}) {
+        function onClick() {
+          const {foo: {bar}} = 1;
+          console.log(bar);
+          const {bar: {baz}} = 2;
+          console.log(baz);
+          const {baz: {foo}} = 3;
+          console.log(foo);
+        }
+        return <div onClick={onClick}>{foo}</div>;
+      }
+    `;
+    const props = new Set(["foo", "bar", "baz"]);
+    const out = applySkipTest(code, props);
+
+    expect(getOutputCodeLines(out, "bar")).toEqual([
+      "console.log(bar);",
+      "const {bar: {baz}} = 2;",
+      "console.log(baz);",
+      "const {baz: {foo}} = 3;",
+      "console.log(foo);",
+    ]);
+
+    expect(getOutputCodeLines(out, "baz")).toEqual([
+      "console.log(baz);",
+      "const {baz: {foo}} = 3;",
+      "console.log(foo);",
+    ]);
+
+    expect(getOutputCodeLines(out, "foo")).toEqual(["console.log(foo);"]);
+  });
+
   it("should skip variables inside nested scopes", () => {
     const code = `
       export default function Component({foo}) {
@@ -187,6 +221,41 @@ describe("client-build-plugin/skip-prop-transformation", () => {
     expect(getOutputCodeLines(out, "bar")).toEqual([
       // Inner scope:
       "console.log(bar);",
+    ]);
+  });
+
+  it("should skip variables inside nested destructured variables with the same name as prop", () => {
+    const code = `
+      export default function Component({foo}) {
+        function onClick() {
+          const {foo: {bar}} = 1;
+          const test = () => {
+            const {bar: {baz}} = 2;
+            console.log(baz);
+          }
+          console.log(bar);
+        }
+        return <div onClick={onClick}>{foo}</div>;
+      }
+    `;
+    const props = new Set(["foo", "bar", "baz"]);
+    const out = applySkipTest(code, props);
+
+    expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+
+    expect(getOutputCodeLines(out, "bar")).toEqual([
+      // Inner scope:
+      "const {bar: {baz}} = 2;",
+      "console.log(baz);",
+
+      // Outer scope:
+      "const test = () => {const {bar: {baz}} = 2;console.log(baz);};",
+      "console.log(bar);",
+    ]);
+
+    expect(getOutputCodeLines(out, "baz")).toEqual([
+      // Inner scope:
+      "console.log(baz);",
     ]);
   });
 });
