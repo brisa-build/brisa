@@ -3,8 +3,7 @@ export default function skipPropTransformation(
 ) {
   return function traverseA2B(this: any, key: string, value: any) {
     if (this._skip && typeof value === "object" && value !== null) {
-      value._skip = this._skip;
-      return value;
+      if (!value._skip) value._skip = this._skip.slice();
     }
 
     if (value?.type === "VariableDeclaration" && Array.isArray(this)) {
