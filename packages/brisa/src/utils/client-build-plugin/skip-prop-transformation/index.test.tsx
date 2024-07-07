@@ -24,6 +24,23 @@ describe("client-build-plugin/skip-prop-transformation", () => {
     expect(lines).toEqual(["console.log(foo);"]);
   });
 
+  it("should skip scopes with destructured variables with the same name as prop", () => {
+    const code = `
+      export default function Component({foo}) {
+        function onClick() {
+          const {foo} = 1;
+          console.log(foo);
+        }
+        return <div onClick={onClick}>{foo}</div>;
+      }
+    `;
+    const props = new Set(["foo"]);
+    const out = applySkipTest(code, props);
+    const lines = getOutputCodeLines(out, "foo");
+
+    expect(lines).toEqual(["console.log(foo);"]);
+  });
+
   it("should skip all the rest of the scope with variables with the same name as prop", () => {
     const code = `
       export default function Component({foo}) {
@@ -40,8 +57,6 @@ describe("client-build-plugin/skip-prop-transformation", () => {
     `;
     const props = new Set(["foo", "bar", "baz"]);
     const out = applySkipTest(code, props);
-
-    console.log(out);
 
     expect(getOutputCodeLines(out, "foo")).toEqual([
       "console.log(foo);",
