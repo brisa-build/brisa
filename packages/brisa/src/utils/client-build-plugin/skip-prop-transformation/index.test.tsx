@@ -741,6 +741,98 @@ describe("client-build-plugin/skip-prop-transformation", () => {
     });
   });
 
+  describe("FunctionDeclaration rest parameter", () => {
+    it("should skip function declarations with rest parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick(...foo) {
+            console.log(foo);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+
+      expect(lines).toEqual([
+        // Params onClick fn
+        "foo",
+
+        // Inner scope:
+        "console.log(foo);",
+      ]);
+    });
+
+    it("should skip all the rest of the function declaration with rest parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick(...foo) {
+            console.log(foo);
+            console.log(foo);
+            console.log(foo);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const expected = [
+        // Params onClick fn
+        "foo",
+
+        // Inner scope:
+        "console.log(foo);",
+        "console.log(foo);",
+        "console.log(foo);",
+      ];
+
+      expect(getOutputCodeLines(out, "foo")).toEqual(expected);
+    });
+
+    it("should skip variables inside nested function declarations with rest parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick(...foo) {
+            const test = (...bar) => {
+              console.log(bar);
+            }
+            console.log(foo);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toEqual([
+        // Param onClick fn
+        "foo",
+
+        // Param test fn
+        "bar",
+
+        // Inner scope:
+        "console.log(bar);",
+
+        // Outer scope:
+        "const test = (...bar) => {console.log(bar);};",
+        "console.log(foo);",
+      ]);
+
+      expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Param onClick fn
+        "foo",
+
+        // Param test fn
+        "bar",
+
+        // Inner scope:
+        "console.log(bar);",
+      ]);
+    });
+  });
+
   describe("FunctionDeclaration destructured parameters", () => {
     it("should skip function expressions with destructured parameters with the same name as prop", () => {
       const code = `
