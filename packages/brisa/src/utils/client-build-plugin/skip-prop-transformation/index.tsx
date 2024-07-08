@@ -78,6 +78,16 @@ export default function skipPropTransformation(
           param._force_skip = true;
         }
 
+        // Skip rest parameter
+        else if (
+          param?.type === "RestElement" &&
+          param.argument?.type === "Identifier" &&
+          propsNamesAndRenamesSet.has(param.argument.name)
+        ) {
+          skipArray.push(param.argument.name);
+          param.argument._force_skip = true;
+        }
+
         // Skip object or array pattern properties
         else if (
           param?.type === "ObjectPattern" ||
