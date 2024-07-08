@@ -45,10 +45,12 @@ export default function skipPropTransformation(
           declaration?.id?.type === "ObjectPattern" ||
           declaration?.id?.type === "ArrayPattern"
         ) {
-          const names = getAllPatternNames(declaration.id);
+          const identifiers = getAllPatternNames(declaration.id);
 
-          for (const name of names) {
-            if (propsNamesAndRenamesSet.has(name)) skipArray.push(name);
+          for (const identifier of identifiers) {
+            if (propsNamesAndRenamesSet.has(identifier.name)) {
+              skipArray.push(identifier.name);
+            }
           }
         }
       }
@@ -81,10 +83,13 @@ export default function skipPropTransformation(
           param?.type === "ObjectPattern" ||
           param?.type === "ArrayPattern"
         ) {
-          const names = getAllPatternNames(param);
+          const identifiers = getAllPatternNames(param);
 
-          for (const name of names) {
-            if (propsNamesAndRenamesSet.has(name)) skipArray.push(name);
+          for (const identifier of identifiers) {
+            if (propsNamesAndRenamesSet.has(identifier.name)) {
+              Object.assign(identifier, { _force_skip: true });
+              skipArray.push(identifier.name);
+            }
           }
         }
       }
