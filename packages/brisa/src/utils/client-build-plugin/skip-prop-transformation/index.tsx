@@ -2,6 +2,8 @@ import getAllPatternNames from "@/utils/ast/get-all-pattern-names";
 import getSortedKeysMemberExpression from "@/utils/ast/get-sorted-keys-member-expression";
 import { FN } from "@/utils/client-build-plugin/constants";
 
+const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
+
 export default function skipPropTransformation(
   propsNamesAndRenamesSet: Set<string>,
 ) {
@@ -90,9 +92,22 @@ export default function skipPropTransformation(
       const keys = getSortedKeysMemberExpression(value);
       let forceSkip = false;
 
-      for (const key of keys) {
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+
         if (forceSkip) key._force_skip = true;
-        else if (propsNamesAndRenamesSet.has(key.name)) {
+
+        const isPropName = propsNamesAndRenamesSet.has(key.name);
+
+        if (i === 0) {
+          if (isPropName || key.name === PROPS_OPTIMIZATION_IDENTIFIER) {
+            forceSkip = isPropName;
+            continue;
+          } else {
+            forceSkip = true;
+            key._force_skip = true;
+          }
+        } else if (isPropName) {
           forceSkip = true;
         }
       }

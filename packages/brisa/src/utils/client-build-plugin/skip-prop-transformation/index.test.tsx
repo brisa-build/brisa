@@ -5,6 +5,7 @@ import skipPropTransformation from "@/utils/client-build-plugin/skip-prop-transf
 import { describe, expect, it } from "bun:test";
 
 const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
+const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
 
 describe("client-build-plugin/skip-prop-transformation", () => {
   describe("VariableDeclaration", () => {
@@ -1634,7 +1635,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
   });
 
   describe("MemberExpression", () => {
-    it('should avoid rest of member expression after first "foo" property', () => {
+    it("should skip after the prop name", () => {
       const code = `
         export default function Component({foo}) {
           const onClick = () => {
@@ -1642,6 +1643,73 @@ describe("client-build-plugin/skip-prop-transformation", () => {
             console.log(foo.baz.quux);
           }
           return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+      const linesBar = getOutputCodeLines(out, "bar");
+      const linesBaz = getOutputCodeLines(out, "baz");
+      const expected = [
+        // bar.baz.quux
+        "bar",
+        "baz",
+        "quux",
+        // baz.quux
+        "baz",
+        "quux",
+      ];
+
+      expect(lines).toEqual(expected);
+      expect(linesBar).toEqual(expected);
+      expect(linesBaz).toEqual(expected);
+    });
+
+    it("should skip all with no prop identifier", () => {
+      const code = `
+        export default function Component() {
+          const onClick = () => {
+            console.log(invalid.foo.bar.baz.quux);
+            console.log(invalid.foo.baz.quux);
+          }
+          return <div onClick={onClick}>{invalid.foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+      const linesBar = getOutputCodeLines(out, "bar");
+      const linesBaz = getOutputCodeLines(out, "baz");
+      const expected = [
+        // invalid.foo.bar.baz.quux
+        "invalid",
+        "foo",
+        "bar",
+        "baz",
+        "quux",
+        // invalid.foo.baz.quux
+        "invalid",
+        "foo",
+        "baz",
+        "quux",
+        // invalid.foo
+        "invalid",
+        "foo",
+      ];
+
+      expect(lines).toEqual(expected);
+      expect(linesBar).toEqual(expected);
+      expect(linesBaz).toEqual(expected);
+    });
+
+    it("should skip after PROPS_OPTIMIZATION_IDENTIFIER + prop name", () => {
+      const code = `
+        export default function Component(${PROPS_OPTIMIZATION_IDENTIFIER}) {
+          const onClick = () => {
+            console.log(${PROPS_OPTIMIZATION_IDENTIFIER}.foo.bar.baz.quux);
+            console.log(${PROPS_OPTIMIZATION_IDENTIFIER}.foo.baz.quux);
+          }
+          return <div onClick={onClick}>{${PROPS_OPTIMIZATION_IDENTIFIER}.foo}</div>;
         }
       `;
       const props = new Set(["foo"]);
@@ -1701,7 +1769,13 @@ function getOutputCodeLines(out: string, byProp: string) {
       skipped.push(value);
     }
 
-    if (value?.type === "Identifier" && value?._force_skip) {
+    if (
+      value?.type === "Identifier" &&
+      value?._force_skip &&
+      // Avoid console.log to improve the tests readability
+      value?.name !== "console" &&
+      value?.name !== "log"
+    ) {
       skipped.push(value);
     }
     return value;
