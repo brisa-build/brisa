@@ -104,6 +104,8 @@ function getAllPatternNamesRecursive(pattern: any, names = new Set<string>()) {
       element.type === "ArrayPattern"
     ) {
       getAllPatternNamesRecursive(element, names);
+    } else if (element.type === "AssignmentPattern") {
+      names.add(element.left.name);
     } else {
       names.add(element.name);
     }
