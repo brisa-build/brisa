@@ -1,17 +1,22 @@
 import getAllPatternNames from "@/utils/ast/get-all-pattern-names";
+import getSortedKeysMemberExpression from "@/utils/ast/get-sorted-keys-member-expression";
 import { FN } from "@/utils/client-build-plugin/constants";
 
 export default function skipPropTransformation(
   propsNamesAndRenamesSet: Set<string>,
 ) {
   return function traverseA2B(this: any, key: string, value: any) {
-    if (
-      !value._skip &&
-      this._skip &&
-      typeof value === "object" &&
-      value !== null
-    ) {
+    const isObject = typeof value === "object" && value !== null;
+
+    // Skip array of properties
+    if (isObject && !value._skip && this._skip) {
       value._skip = this._skip.slice();
+    }
+
+    // Force skip (for all properties)
+    if (isObject && !value?._force_skip && this._force_skip) {
+      value._force_skip = true;
+      return value;
     }
 
     // Variable declaration
@@ -50,7 +55,7 @@ export default function skipPropTransformation(
     }
 
     // Function parameters and skip on the fn body
-    if (FN.has(value?.type)) {
+    else if (FN.has(value?.type)) {
       const skipArray = value?._skip?.slice() ?? [];
 
       for (const param of value.params) {
@@ -77,6 +82,19 @@ export default function skipPropTransformation(
 
       if (skipArray.length) {
         value.body._skip = skipArray;
+      }
+    }
+
+    // Member expression
+    else if (value?.type === "MemberExpression") {
+      const keys = getSortedKeysMemberExpression(value);
+      let forceSkip = false;
+
+      for (const key of keys) {
+        if (forceSkip) key._force_skip = true;
+        else if (propsNamesAndRenamesSet.has(key.name)) {
+          forceSkip = true;
+        }
       }
     }
 
