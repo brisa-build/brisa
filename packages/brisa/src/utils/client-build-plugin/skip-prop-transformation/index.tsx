@@ -53,8 +53,20 @@ export default function skipPropTransformation(
       const skipArray = value?._skip?.slice() ?? [];
 
       for (const param of value.params) {
-        if (propsNamesAndRenamesSet.has(param.name)) {
+        if (
+          param?.type === "Identifier" &&
+          propsNamesAndRenamesSet.has(param.name)
+        ) {
           skipArray.push(param.name);
+        } else if (
+          param?.type === "ObjectPattern" ||
+          param?.type === "ArrayPattern"
+        ) {
+          const names = getAllPatternNamesRecursive(param);
+
+          for (const name of names) {
+            if (propsNamesAndRenamesSet.has(name)) skipArray.push(name);
+          }
         }
       }
 
