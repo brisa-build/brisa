@@ -49,6 +49,7 @@ export default function skipPropTransformation(
 
           for (const identifier of identifiers) {
             if (propsNamesAndRenamesSet.has(identifier.name)) {
+              Object.assign(identifier, { _force_skip: true });
               skipArray.push(identifier.name);
             }
           }
