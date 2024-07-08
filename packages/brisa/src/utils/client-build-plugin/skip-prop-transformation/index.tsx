@@ -8,15 +8,15 @@ export default function skipPropTransformation(
   return function traverseA2B(this: any, key: string, value: any) {
     const isObject = typeof value === "object" && value !== null;
 
-    // Skip array of properties
-    if (isObject && !value._skip && this._skip) {
-      value._skip = this._skip.slice();
-    }
-
     // Force skip (for all properties)
     if (isObject && !value?._force_skip && this._force_skip) {
       value._force_skip = true;
       return value;
+    }
+
+    // Skip array of properties
+    else if (isObject && !value._skip && this._skip) {
+      value._skip = this._skip.slice();
     }
 
     // Variable declaration
