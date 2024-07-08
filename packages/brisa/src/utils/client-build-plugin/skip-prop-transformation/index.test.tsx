@@ -843,6 +843,154 @@ describe("client-build-plugin/skip-prop-transformation", () => {
     });
   });
 
+  describe("FunctionDeclaration destructured parameters with renames", () => {
+    it("should skip function expressions with destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick({foo: bar}){
+            console.log(bar)
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual(["console.log(bar);"]);
+    });
+
+    it("should skip all the rest of the function expression with destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick({foo: bar, bar: baz, baz: quux}) {
+            console.log(bar);
+            console.log(baz);
+            console.log(quux);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz", "quux"]);
+      const out = applySkipTest(code, props);
+      const expected = [
+        "console.log(bar);",
+        "console.log(baz);",
+        "console.log(quux);",
+      ];
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual(expected);
+      expect(getOutputCodeLines(out, "baz")).toEqual(expected);
+      expect(getOutputCodeLines(out, "quux")).toEqual(expected);
+    });
+
+    it("should skip variables inside nested function expressions with destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick({foo: bar}) {
+            const test = ({bar: baz}) => {
+              console.log(baz);
+            }
+            console.log(bar);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Inner scope:
+        "console.log(baz);",
+
+        // Outer scope:
+        "const test = ({bar: baz}) => {console.log(baz);};",
+        "console.log(bar);",
+      ]);
+
+      expect(getOutputCodeLines(out, "baz")).toEqual([
+        // Inner scope:
+        "console.log(baz);",
+      ]);
+    });
+  });
+
+  describe("FunctionDeclaration nested destructured parameters with renames and default values", () => {
+    it("should skip function expressions with nested destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick({foo: {bar = 1}}){
+            console.log(bar)
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual(["console.log(bar);"]);
+    });
+
+    it("should skip all the rest of the function expression with nested destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick({foo: {bar = 1, baz = {}, quux = []}}) {
+            console.log(bar);
+            console.log(baz);
+            console.log(quux);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz", "quux"]);
+      const out = applySkipTest(code, props);
+      const expected = [
+        "console.log(bar);",
+        "console.log(baz);",
+        "console.log(quux);",
+      ];
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual(expected);
+      expect(getOutputCodeLines(out, "baz")).toEqual(expected);
+      expect(getOutputCodeLines(out, "quux")).toEqual(expected);
+    });
+
+    it("should skip variables inside nested function expressions with nested destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick({foo: {bar = 1}}) {
+            const test = ({bar: {baz = "2"}}) => {
+              console.log(baz);
+            }
+            console.log(bar);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Inner scope:
+        "console.log(baz);",
+
+        // Outer scope:
+        'const test = ({bar: {baz = "2"}}) => {console.log(baz);};',
+        "console.log(bar);",
+      ]);
+
+      expect(getOutputCodeLines(out, "baz")).toEqual([
+        // Inner scope:
+        "console.log(baz);",
+      ]);
+    });
+  });
+
   describe("FunctionDeclaration with ArrayPattern", () => {
     it("should skip function expressions with array patterns with the same name as prop", () => {
       const code = `
@@ -1193,6 +1341,144 @@ describe("client-build-plugin/skip-prop-transformation", () => {
 
         // Outer scope:
         "const test = ({bar: {baz}}) => {console.log(baz);};",
+        "console.log(bar);",
+      ]);
+
+      expect(getOutputCodeLines(out, "baz")).toEqual(["console.log(baz);"]);
+    });
+  });
+
+  describe("ArrowFunctionExpression destructured parameters with renames", () => {
+    it("should skip arrow function expressions with destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ({foo: bar}) => console.log(bar);
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual(["console.log(bar)"]);
+    });
+
+    it("should skip all the rest of the arrow function expression with destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ({foo: bar, bar: baz, baz: quux}) => {
+            console.log(bar);
+            console.log(baz);
+            console.log(quux);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz", "quux"]);
+      const out = applySkipTest(code, props);
+      const expected = [
+        "console.log(bar);",
+        "console.log(baz);",
+        "console.log(quux);",
+      ];
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual(expected);
+      expect(getOutputCodeLines(out, "baz")).toEqual(expected);
+      expect(getOutputCodeLines(out, "quux")).toEqual(expected);
+    });
+
+    it("should skip variables inside nested arrow function expressions with destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ({foo: bar}) => {
+            const test = ({bar: baz}) => {
+              console.log(baz);
+            }
+            console.log(bar);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Inner scope:
+        "console.log(baz);",
+
+        // Outer scope:
+        "const test = ({bar: baz}) => {console.log(baz);};",
+        "console.log(bar);",
+      ]);
+
+      expect(getOutputCodeLines(out, "baz")).toEqual(["console.log(baz);"]);
+    });
+  });
+
+  describe("ArrowFunctionExpression nested destructured parameters with renames and default values", () => {
+    it("should skip arrow function expressions with nested destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ({foo: {bar = 1}}) => console.log(bar);
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual(["console.log(bar)"]);
+    });
+
+    it("should skip all the rest of the arrow function expression with nested destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ({foo: {bar = 1, baz = {}, quux = []}}) => {
+            console.log(bar);
+            console.log(baz);
+            console.log(quux);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz", "quux"]);
+      const out = applySkipTest(code, props);
+      const expected = [
+        "console.log(bar);",
+        "console.log(baz);",
+        "console.log(quux);",
+      ];
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual(expected);
+      expect(getOutputCodeLines(out, "baz")).toEqual(expected);
+      expect(getOutputCodeLines(out, "quux")).toEqual(expected);
+    });
+
+    it("should skip variables inside nested arrow function expressions with nested destructured parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ({foo: {bar = 1}}) => {
+            const test = ({bar: {baz = "2"}}) => {
+              console.log(baz);
+            }
+            console.log(bar);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toBeEmpty();
+      expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Inner scope:
+        "console.log(baz);",
+
+        // Outer scope:
+        `const test = ({bar: {baz = "2"}}) => {console.log(baz);};`,
         "console.log(bar);",
       ]);
 
