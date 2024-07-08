@@ -699,6 +699,76 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       ]);
     });
   });
+
+  describe("ArrowFunctionExpression parameters", () => {
+    it("should skip arrow function expressions with parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = (foo) => console.log(foo);
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+
+      expect(lines).toEqual(["console.log(foo)"]);
+    });
+
+    it("should skip all the rest of the arrow function expression with parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = (foo, bar, baz) => {
+            console.log(foo);
+            console.log(bar);
+            console.log(baz);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz"]);
+      const out = applySkipTest(code, props);
+      const expected = [
+        "console.log(foo);",
+        "console.log(bar);",
+        "console.log(baz);",
+      ];
+
+      expect(getOutputCodeLines(out, "foo")).toEqual(expected);
+      expect(getOutputCodeLines(out, "bar")).toEqual(expected);
+      expect(getOutputCodeLines(out, "baz")).toEqual(expected);
+    });
+
+    it("should skip variables inside nested arrow function expressions with parameters with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = (foo) => {
+            const test = (bar) => {
+              console.log(bar);
+            }
+            console.log(foo);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toEqual([
+        // Inner scope:
+        "console.log(bar);",
+
+        // Outer scope:
+        "const test = bar => {console.log(bar);};",
+        "console.log(foo);",
+      ]);
+
+      expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Inner scope:
+        "console.log(bar);",
+      ]);
+    });
+  });
 });
 
 const AVOIDED_TYPES = new Set([
@@ -723,9 +793,13 @@ function getOutputCodeLines(out: string, byProp: string) {
   JSON.parse(out, displaySkippedParts);
 
   function displaySkippedParts(this: any, key: string, value: any) {
+    const isArrowWithoutBlockStatement =
+      this?.type === "ArrowFunctionExpression" &&
+      value?.type !== "BlockStatement";
+
     if (
+      (isArrowWithoutBlockStatement || Array.isArray(this)) &&
       !AVOIDED_TYPES.has(value?.type) &&
-      Array.isArray(this) &&
       value?._skip?.includes(byProp)
     ) {
       skipped.push(value);
