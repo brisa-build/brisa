@@ -1,11 +1,13 @@
+import type { ESTree } from "meriyah";
+
 export default function getAllPatternNames(
   pattern: any,
-  names = new Set<string>(),
+  namesIdentifiers = new Set<ESTree.Identifier>(),
 ) {
   const isObjectPattern = pattern?.type === "ObjectPattern";
 
   if (!isObjectPattern && pattern?.type !== "ArrayPattern") {
-    return names;
+    return namesIdentifiers;
   }
 
   const iterable = isObjectPattern ? pattern.properties : pattern.elements;
@@ -16,18 +18,18 @@ export default function getAllPatternNames(
     if (element === null) {
       continue;
     } else if (item.type === "RestElement") {
-      names.add(item.argument.name);
+      namesIdentifiers.add(item.argument);
     } else if (
       element.type === "ObjectPattern" ||
       element.type === "ArrayPattern"
     ) {
-      getAllPatternNames(element, names);
+      getAllPatternNames(element, namesIdentifiers);
     } else if (element.type === "AssignmentPattern") {
-      names.add(element.left.name);
+      namesIdentifiers.add(element.left);
     } else {
-      names.add(element.name);
+      namesIdentifiers.add(element);
     }
   }
 
-  return names;
+  return namesIdentifiers;
 }
