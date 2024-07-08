@@ -27,7 +27,7 @@ export default function skipPropTransformation(
         }
 
         // Skip object or array pattern properties
-        if (
+        else if (
           declaration?.id?.type === "ObjectPattern" ||
           declaration?.id?.type === "ArrayPattern"
         ) {
@@ -53,12 +53,16 @@ export default function skipPropTransformation(
       const skipArray = value?._skip?.slice() ?? [];
 
       for (const param of value.params) {
+        // Skip function parameters
         if (
           param?.type === "Identifier" &&
           propsNamesAndRenamesSet.has(param.name)
         ) {
           skipArray.push(param.name);
-        } else if (
+        }
+
+        // Skip object or array pattern properties
+        else if (
           param?.type === "ObjectPattern" ||
           param?.type === "ArrayPattern"
         ) {
