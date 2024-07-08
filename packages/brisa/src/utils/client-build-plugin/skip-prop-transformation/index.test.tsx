@@ -8,6 +8,23 @@ const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
 const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
 
 describe("client-build-plugin/skip-prop-transformation", () => {
+  describe("VariableDeclaration in component body", () => {
+    it("should not skip anything in same level of component body", () => {
+      const code = `
+        export default function Component(__b_props__, {derived}) {
+            const foo = derived(() => __b_props__.foo);
+            console.log(foo);
+            return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+
+      expect(lines).toBeEmpty();
+    });
+  });
+
   describe("VariableDeclaration", () => {
     it("should skip scopes with variables with the same name as prop", () => {
       const code = `
@@ -643,7 +660,12 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       const out = applySkipTest(code, props);
       const lines = getOutputCodeLines(out, "foo");
 
-      expect(lines).toEqual(["console.log(foo);"]);
+      expect(lines).toEqual([
+        // Params onClick fn
+        "foo",
+        // Inner scope:
+        "console.log(foo);",
+      ]);
     });
 
     it("should skip all the rest of the function declaration with parameters with the same name as prop", () => {
@@ -660,6 +682,12 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       const props = new Set(["foo", "bar", "baz"]);
       const out = applySkipTest(code, props);
       const expected = [
+        // Params onClick fn
+        "foo",
+        "bar",
+        "baz",
+
+        // Inner scope:
         "console.log(foo);",
         "console.log(bar);",
         "console.log(baz);",
@@ -686,6 +714,12 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       const out = applySkipTest(code, props);
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
+        // Param onClick fn
+        "foo",
+
+        // Param test fn
+        "bar",
+
         // Inner scope:
         "console.log(bar);",
 
@@ -695,6 +729,12 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       ]);
 
       expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Param onClick fn
+        "foo",
+
+        // Param test fn
+        "bar",
+
         // Inner scope:
         "console.log(bar);",
       ]);
@@ -1155,7 +1195,12 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       const out = applySkipTest(code, props);
       const lines = getOutputCodeLines(out, "foo");
 
-      expect(lines).toEqual(["console.log(foo)"]);
+      expect(lines).toEqual([
+        // Param onClick fn
+        "foo",
+        // Inner scope:
+        "console.log(foo)",
+      ]);
     });
 
     it("should skip all the rest of the arrow function expression with parameters with the same name as prop", () => {
@@ -1172,6 +1217,12 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       const props = new Set(["foo", "bar", "baz"]);
       const out = applySkipTest(code, props);
       const expected = [
+        // Param onClick fn
+        "foo",
+        "bar",
+        "baz",
+
+        // Inner scope:
         "console.log(foo);",
         "console.log(bar);",
         "console.log(baz);",
@@ -1198,6 +1249,12 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       const out = applySkipTest(code, props);
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
+        // Param onClick fn
+        "foo",
+
+        // Param test fn
+        "bar",
+
         // Inner scope:
         "console.log(bar);",
 
@@ -1207,6 +1264,12 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       ]);
 
       expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Param onClick fn
+        "foo",
+
+        // Param test fn
+        "bar",
+
         // Inner scope:
         "console.log(bar);",
       ]);
@@ -1906,7 +1969,10 @@ function applySkipTest(inputCode: string, props: Set<string>) {
   const [component] = getWebComponentAst(ast);
   const declaration = (component as any)?.declarations?.[0];
   const componentBody = component?.body ?? declaration?.init.body;
-  return JSON.stringify(componentBody, skipPropTransformation(props, "props"));
+  return JSON.stringify(
+    componentBody,
+    skipPropTransformation(componentBody, props, "props"),
+  );
 }
 
 function getOutputCodeLines(out: string, byProp: string) {

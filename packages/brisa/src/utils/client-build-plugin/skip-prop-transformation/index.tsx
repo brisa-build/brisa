@@ -5,6 +5,7 @@ import { FN } from "@/utils/client-build-plugin/constants";
 const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
 
 export default function skipPropTransformation(
+  componentBody: any,
   propsNamesAndRenamesSet: Set<string>,
   propsIdentifier: string,
 ) {
@@ -23,7 +24,11 @@ export default function skipPropTransformation(
     }
 
     // Variable declaration
-    if (value?.type === "VariableDeclaration" && Array.isArray(this)) {
+    if (
+      value?.type === "VariableDeclaration" &&
+      Array.isArray(this) &&
+      this !== componentBody.body
+    ) {
       const skipArray = value?._skip?.slice() ?? [];
 
       for (const declaration of value.declarations) {
@@ -68,6 +73,7 @@ export default function skipPropTransformation(
           propsNamesAndRenamesSet.has(param.name)
         ) {
           skipArray.push(param.name);
+          param._force_skip = true;
         }
 
         // Skip object or array pattern properties
