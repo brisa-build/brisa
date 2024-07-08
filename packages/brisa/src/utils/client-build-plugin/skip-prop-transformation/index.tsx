@@ -6,6 +6,7 @@ const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
 
 export default function skipPropTransformation(
   propsNamesAndRenamesSet: Set<string>,
+  propsIdentifier: string,
 ) {
   return function traverseA2B(this: any, key: string, value: any) {
     const isObject = typeof value === "object" && value !== null;
@@ -100,7 +101,11 @@ export default function skipPropTransformation(
         const isPropName = propsNamesAndRenamesSet.has(key.name);
 
         if (i === 0) {
-          if (isPropName || key.name === PROPS_OPTIMIZATION_IDENTIFIER) {
+          if (
+            isPropName ||
+            key.name === PROPS_OPTIMIZATION_IDENTIFIER ||
+            (propsIdentifier && key.name === propsIdentifier)
+          ) {
             forceSkip = isPropName;
             continue;
           } else {
