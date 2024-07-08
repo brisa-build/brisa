@@ -26,7 +26,7 @@ const PARAMS = [
   "{bart: bar, foot: foo}",
   "{bar: {baz: {foo}}}",
   '{bar: {baz: {foo = "bar"}}}',
-  "{bar: {baz = foo => true}}",
+  "{bar: {foo = baz => true}}",
 ];
 
 describe("utils", () => {
