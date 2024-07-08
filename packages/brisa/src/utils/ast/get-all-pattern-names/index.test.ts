@@ -24,7 +24,18 @@ describe("AST", () => {
 
       const names = getAllPatternNames(pattern);
 
-      expect(names).toEqual(new Set(["b", "d"]));
+      expect(names).toEqual(
+        new Set([
+          {
+            type: "Identifier",
+            name: "b",
+          },
+          {
+            type: "Identifier",
+            name: "d",
+          },
+        ]),
+      );
     });
 
     it("should return all pattern names from a simple array pattern", () => {
@@ -40,7 +51,26 @@ describe("AST", () => {
 
       const names = getAllPatternNames(pattern);
 
-      expect(names).toEqual(new Set(["a", "b", "c", "d"]));
+      expect(names).toEqual(
+        new Set([
+          {
+            type: "Identifier",
+            name: "a",
+          },
+          {
+            type: "Identifier",
+            name: "b",
+          },
+          {
+            type: "Identifier",
+            name: "c",
+          },
+          {
+            type: "Identifier",
+            name: "d",
+          },
+        ]),
+      );
     });
 
     it("should return all pattern names from a nested object pattern", () => {
@@ -74,7 +104,18 @@ describe("AST", () => {
 
       const names = getAllPatternNames(pattern);
 
-      expect(names).toEqual(new Set(["c", "e"]));
+      expect(names).toEqual(
+        new Set([
+          {
+            type: "Identifier",
+            name: "c",
+          },
+          {
+            type: "Identifier",
+            name: "e",
+          },
+        ]),
+      );
     });
 
     it("should return all pattern names from a nested array pattern", () => {
@@ -95,7 +136,26 @@ describe("AST", () => {
 
       const names = getAllPatternNames(pattern);
 
-      expect(names).toEqual(new Set(["a", "b", "c", "d"]));
+      expect(names).toEqual(
+        new Set([
+          {
+            type: "Identifier",
+            name: "a",
+          },
+          {
+            type: "Identifier",
+            name: "b",
+          },
+          {
+            type: "Identifier",
+            name: "c",
+          },
+          {
+            type: "Identifier",
+            name: "d",
+          },
+        ]),
+      );
     });
 
     it("should return all pattern names from a nested object and array pattern", () => {
@@ -119,7 +179,18 @@ describe("AST", () => {
 
       const names = getAllPatternNames(pattern);
 
-      expect(names).toEqual(new Set(["b", "c"]));
+      expect(names).toEqual(
+        new Set([
+          {
+            type: "Identifier",
+            name: "b",
+          },
+          {
+            type: "Identifier",
+            name: "c",
+          },
+        ]),
+      );
     });
 
     it("should return all pattern names from a nested array and object pattern", () => {
@@ -144,7 +215,22 @@ describe("AST", () => {
 
       const names = getAllPatternNames(pattern);
 
-      expect(names).toEqual(new Set(["a", "c", "d"]));
+      expect(names).toEqual(
+        new Set([
+          {
+            type: "Identifier",
+            name: "a",
+          },
+          {
+            type: "Identifier",
+            name: "c",
+          },
+          {
+            type: "Identifier",
+            name: "d",
+          },
+        ]),
+      );
     });
 
     it("should work with assignment patterns", () => {
@@ -166,7 +252,14 @@ describe("AST", () => {
 
       const names = getAllPatternNames(pattern);
 
-      expect(names).toEqual(new Set(["b"]));
+      expect(names).toEqual(
+        new Set([
+          {
+            type: "Identifier",
+            name: "b",
+          },
+        ]),
+      );
     });
   });
 });
