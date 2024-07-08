@@ -1731,6 +1731,35 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       expect(linesBar).toEqual(expected);
       expect(linesBaz).toEqual(expected);
     });
+    it("should skip after the props identifier ('props') + prop name", () => {
+      const code = `
+        export default function Component(props) {
+          const onClick = () => {
+            console.log(props.foo.bar.baz.quux);
+            console.log(props.foo.baz.quux);
+          }
+          return <div onClick={onClick}>{props.foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+      const linesBar = getOutputCodeLines(out, "bar");
+      const linesBaz = getOutputCodeLines(out, "baz");
+      const expected = [
+        // bar.baz.quux
+        "bar",
+        "baz",
+        "quux",
+        // baz.quux
+        "baz",
+        "quux",
+      ];
+
+      expect(lines).toEqual(expected);
+      expect(linesBar).toEqual(expected);
+      expect(linesBaz).toEqual(expected);
+    });
   });
 });
 
@@ -1748,7 +1777,7 @@ function applySkipTest(inputCode: string, props: Set<string>) {
   const [component] = getWebComponentAst(ast);
   const declaration = (component as any)?.declarations?.[0];
   const componentBody = component?.body ?? declaration?.init.body;
-  return JSON.stringify(componentBody, skipPropTransformation(props));
+  return JSON.stringify(componentBody, skipPropTransformation(props, "props"));
 }
 
 function getOutputCodeLines(out: string, byProp: string) {
