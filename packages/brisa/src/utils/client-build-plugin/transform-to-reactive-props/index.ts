@@ -9,7 +9,7 @@ import manageWebContextField from "@/utils/client-build-plugin/manage-web-contex
 import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
 import getPropsOptimizations from "@/utils/client-build-plugin/get-props-optimizations";
 import AST from "@/utils/ast";
-import { getInitialMemberExpression } from "@/utils/ast/get-initial-member-expression";
+import skipPropTransformation from "@/utils/client-build-plugin/skip-prop-transformation";
 
 const { parseCodeToAST } = AST("tsx");
 const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
@@ -124,10 +124,8 @@ export function transformComponentToReactiveProps(
   const componentVariableNames = getComponentVariableNames(component);
   const declaration = component?.declarations?.[0];
   const componentBody = component?.body ?? declaration?.init.body;
-  const transformedProps = new Set<string>();
   const params = getComponentParams(component);
-  const propsIdentifierName = params[0]?.name;
-  const registeredProps = new Set<string>();
+  const propsIdentifierName = getPropsIdentifierName(params[0]);
   const derivedName = generateUniqueVariableName(
     DERIVED_NAME,
     new Set(componentVariableNames),
@@ -139,7 +137,7 @@ export function transformComponentToReactiveProps(
   }
 
   injectDerivedProps({
-    componentBody: componentBody,
+    componentBody,
     componentParams: params,
     derivedName,
     optimizationASTLines: derivedPropsInfo.propsOptimizationsAst,
@@ -162,74 +160,17 @@ export function transformComponentToReactiveProps(
     ...derivedPropsInfo.propNames,
   ]);
 
-  function traverseA2B(this: any, key: string, value: any) {
-    if (value === "Identifier" && propsNamesAndRenamesSet.has(this.name)) {
-      registeredProps.add(this.name);
-      return value;
-    }
-
-    if (this._skip && typeof value === "object" && value !== null) {
-      value._skip = this._skip;
-      return value;
-    }
-
-    if (
-      value?.type !== "VariableDeclaration" &&
-      value?.type !== "FunctionDeclaration"
-    ) {
-      return value;
-    }
-
-    if (!registeredProps.size) return value;
-
-    let skipper = false;
-
-    JSON.stringify(
-      value?.declarations?.map((d: any) => d.id) ?? value?.params,
-      (_, v) => {
-        if (v?.type === "Identifier" && registeredProps.has(v.name)) {
-          skipper = true;
-          return null;
-        }
-        return v;
-      },
-    );
-
-    if (skipper) {
-      if (this !== componentBody.body) this._skip = true;
-      value._skip = true;
-    }
-
-    return value;
-  }
+  const traverseA2B = skipPropTransformation(
+    componentBody,
+    propsNamesAndRenamesSet,
+    propsIdentifierName,
+  );
 
   function traverseB2A(this: any, key: string, value: any) {
     if (this?.type === "VariableDeclarator" && this.id === value) {
-      // Fix: https://github.com/brisa-build/brisa/issues/275
-      if (this.init?.type === "CallExpression" && value.name) {
-        transformedProps.add(value.name);
-      }
-
       return JSON.parse(JSON.stringify(value), (key, value) => {
         return value?.isSignal ? value.object : value;
       });
-    }
-
-    const isIdentifier = value?.type === "Identifier";
-    const isIdentifierInsideMemberExpression =
-      isIdentifier && this?.type === "MemberExpression";
-
-    // Avoid adding .value in props that are already optimized
-    // and are not in the initial member expression
-    // TODO: Support more cases, like: someVar.propName
-    if (isIdentifierInsideMemberExpression) {
-      const memberExpression = getInitialMemberExpression(this);
-      const isOptimizationIdentifier =
-        memberExpression.object.name === PROPS_OPTIMIZATION_IDENTIFIER;
-
-      if (isOptimizationIdentifier && memberExpression.property !== value) {
-        return value;
-      }
     }
 
     // Avoid adding .value in:
@@ -240,12 +181,12 @@ export function transformComponentToReactiveProps(
       this?.type === "Property" && this?.key === value;
 
     if (
-      isIdentifier &&
-      !value?._skip &&
-      propsNamesAndRenamesSet.has(value?.name) &&
-      !transformedProps.has(this?.object?.name) &&
+      value?.type === "Identifier" &&
+      !value?._force_skip &&
       !isPropFromObjectExpression &&
-      !value?.name?.startsWith("on")
+      propsNamesAndRenamesSet.has(value?.name) &&
+      !value?.name?.startsWith("on") &&
+      !value?._skip?.includes(value?.name)
     ) {
       // allow: console.log({ propName })
       // transforming to: console.log({ propName: propName.value })
@@ -286,6 +227,14 @@ export function transformComponentToReactiveProps(
     vars: allVariableNames,
     observedAttributes,
   };
+}
+
+function getPropsIdentifierName(props: any) {
+  if (props?.name) return props.name;
+  // Rest props
+  if (props?.type === "ObjectPattern") {
+    return props.properties.at(-1)?.argument?.name;
+  }
 }
 
 function getComponentParams(component: any) {
