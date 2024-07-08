@@ -1761,6 +1761,135 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       expect(linesBaz).toEqual(expected);
     });
   });
+
+  describe("MemberExpression with default values in multiple levels", () => {
+    it("should skip after the prop name", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = () => {
+            console.log(((foo ?? {}).bar || {}).baz.quux);
+            console.log(((foo ?? {}).baz || {}).quux);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+      const linesBar = getOutputCodeLines(out, "bar");
+      const linesBaz = getOutputCodeLines(out, "baz");
+      const expected = [
+        // bar.baz.quux
+        "bar",
+        "baz",
+        "quux",
+        // baz.quux
+        "baz",
+        "quux",
+      ];
+
+      expect(lines).toEqual(expected);
+      expect(linesBar).toEqual(expected);
+      expect(linesBaz).toEqual(expected);
+    });
+
+    it("should skip all with no prop identifier", () => {
+      const code = `
+        export default function Component() {
+          const onClick = () => {
+            console.log((((invalid.foo ?? {}).bar || {}).baz ?? {}).quux);
+            console.log(((invalid.foo ?? {}).baz || {}).quux);
+          }
+          return <div onClick={onClick}>{invalid.foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+      const linesBar = getOutputCodeLines(out, "bar");
+      const linesBaz = getOutputCodeLines(out, "baz");
+      const expected = [
+        // invalid.foo.bar.baz.quux
+        "invalid",
+        "foo",
+        "bar",
+        "baz",
+        "quux",
+        // invalid.foo.baz.quux
+        "invalid",
+        "foo",
+        "baz",
+        "quux",
+        // invalid.foo
+        "invalid",
+        "foo",
+      ];
+
+      expect(lines).toEqual(expected);
+      expect(linesBar).toEqual(expected);
+      expect(linesBaz).toEqual(expected);
+    });
+
+    it("should skip after PROPS_OPTIMIZATION_IDENTIFIER + prop name", () => {
+      const code = `
+        export default function Component(${PROPS_OPTIMIZATION_IDENTIFIER}) {
+          const onClick = () => {
+            console.log((((${PROPS_OPTIMIZATION_IDENTIFIER}.foo ?? {}).bar || {}).baz ?? {}).quux);
+            console.log(((${PROPS_OPTIMIZATION_IDENTIFIER}.foo ?? {}).baz || {}).quux);
+          }
+          return <div onClick={onClick}>{${PROPS_OPTIMIZATION_IDENTIFIER}.foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+      const linesBar = getOutputCodeLines(out, "bar");
+      const linesBaz = getOutputCodeLines(out, "baz");
+      const expected = [
+        // bar.baz.quux
+        "bar",
+        "baz",
+        "quux",
+        // baz.quux
+        "baz",
+        "quux",
+      ];
+
+      expect(lines).toEqual(expected);
+      expect(linesBar).toEqual(expected);
+      expect(linesBaz).toEqual(expected);
+    });
+
+    it("should skip after the props identifier ('props') + prop name", () => {
+      const code = `
+        export default function Component(props) {
+          const onClick = () => {
+            console.log(((props.foo ?? {}).bar || {}).baz.quux);
+            console.log(((props.foo ?? {}).baz || {}).quux);
+          }
+          return <div onClick={onClick}>{props.foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+      const linesBar = getOutputCodeLines(out, "bar");
+      const linesBaz = getOutputCodeLines(out, "baz");
+      const expected = [
+        // bar.baz.quux
+        "bar",
+        "baz",
+        "quux",
+        // baz.quux
+        "baz",
+        "quux",
+      ];
+
+      expect(lines).toEqual(expected);
+      expect(linesBar).toEqual(expected);
+      expect(linesBaz).toEqual(expected);
+    });
+  });
 });
 
 const AVOIDED_TYPES = new Set([
