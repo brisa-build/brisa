@@ -1632,6 +1632,38 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       ]);
     });
   });
+
+  describe("MemberExpression", () => {
+    it('should avoid rest of member expression after first "foo" property', () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = () => {
+            console.log(foo.bar.baz.quux);
+            console.log(foo.baz.quux);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+      const linesBar = getOutputCodeLines(out, "bar");
+      const linesBaz = getOutputCodeLines(out, "baz");
+      const expected = [
+        // bar.baz.quux
+        "bar",
+        "baz",
+        "quux",
+        // baz.quux
+        "baz",
+        "quux",
+      ];
+
+      expect(lines).toEqual(expected);
+      expect(linesBar).toEqual(expected);
+      expect(linesBaz).toEqual(expected);
+    });
+  });
 });
 
 const AVOIDED_TYPES = new Set([
@@ -1666,6 +1698,10 @@ function getOutputCodeLines(out: string, byProp: string) {
       !AVOIDED_TYPES.has(value?.type) &&
       value?._skip?.includes(byProp)
     ) {
+      skipped.push(value);
+    }
+
+    if (value?.type === "Identifier" && value?._force_skip) {
       skipped.push(value);
     }
     return value;
