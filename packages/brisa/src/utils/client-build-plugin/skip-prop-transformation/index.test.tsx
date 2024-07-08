@@ -843,6 +843,78 @@ describe("client-build-plugin/skip-prop-transformation", () => {
     });
   });
 
+  describe("FunctionDeclaration with ArrayPattern", () => {
+    it("should skip function expressions with array patterns with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick([foo]){
+            console.log(foo)
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+
+      expect(lines).toEqual(["console.log(foo);"]);
+    });
+
+    it("should skip all the rest of the function expression with array patterns with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick([foo, bar, baz]) {
+            console.log(foo);
+            console.log(bar);
+            console.log(baz);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz"]);
+      const out = applySkipTest(code, props);
+      const expected = [
+        "console.log(foo);",
+        "console.log(bar);",
+        "console.log(baz);",
+      ];
+
+      expect(getOutputCodeLines(out, "foo")).toEqual(expected);
+      expect(getOutputCodeLines(out, "bar")).toEqual(expected);
+      expect(getOutputCodeLines(out, "baz")).toEqual(expected);
+    });
+
+    it("should skip variables inside nested function expressions with array patterns with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          function onClick([foo]) {
+            const test = ([bar]) => {
+              console.log(bar);
+            }
+            console.log(foo);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toEqual([
+        // Inner scope:
+        "console.log(bar);",
+
+        // Outer scope:
+        "const test = ([bar]) => {console.log(bar);};",
+        "console.log(foo);",
+      ]);
+
+      expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Inner scope:
+        "console.log(bar);",
+      ]);
+    });
+  });
+
   describe("FunctionDeclaration with RestElement", () => {
     it("should skip function declarations with rest elements with the same name as prop", () => {
       const code = `
@@ -1128,6 +1200,76 @@ describe("client-build-plugin/skip-prop-transformation", () => {
     });
   });
 
+  describe("ArrowFunctionExpression with ArrayPattern", () => {
+    it("should skip arrow function expressions with array patterns with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ([foo]) => console.log(foo);
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "foo");
+
+      expect(lines).toEqual(["console.log(foo)"]);
+    });
+
+    it("should skip all the rest of the arrow function expression with array patterns with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ([foo, bar, baz]) => {
+            console.log(foo);
+            console.log(bar);
+            console.log(baz);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar", "baz"]);
+      const out = applySkipTest(code, props);
+      const expected = [
+        "console.log(foo);",
+        "console.log(bar);",
+        "console.log(baz);",
+      ];
+
+      expect(getOutputCodeLines(out, "foo")).toEqual(expected);
+      expect(getOutputCodeLines(out, "bar")).toEqual(expected);
+      expect(getOutputCodeLines(out, "baz")).toEqual(expected);
+    });
+
+    it("should skip variables inside nested arrow function expressions with array patterns with the same name as prop", () => {
+      const code = `
+        export default function Component({foo}) {
+          const onClick = ([foo]) => {
+            const test = ([bar]) => {
+              console.log(bar);
+            }
+            console.log(foo);
+          }
+          return <div onClick={onClick}>{foo}</div>;
+        }
+      `;
+      const props = new Set(["foo", "bar"]);
+      const out = applySkipTest(code, props);
+
+      expect(getOutputCodeLines(out, "foo")).toEqual([
+        // Inner scope:
+        "console.log(bar);",
+
+        // Outer scope:
+        "const test = ([bar]) => {console.log(bar);};",
+        "console.log(foo);",
+      ]);
+
+      expect(getOutputCodeLines(out, "bar")).toEqual([
+        // Inner scope:
+        "console.log(bar);",
+      ]);
+    });
+  });
+
   describe("ArrowFunctionExpression with RestElement", () => {
     it("should skip arrow function expressions with rest elements with the same name as prop", () => {
       const code = `
@@ -1212,6 +1354,7 @@ const AVOIDED_TYPES = new Set([
   "Property",
   "RestElement",
   "ObjectPattern",
+  "ArrayPattern",
 ]);
 
 function applySkipTest(inputCode: string, props: Set<string>) {
