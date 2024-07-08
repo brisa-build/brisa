@@ -137,7 +137,7 @@ export function transformComponentToReactiveProps(
   }
 
   injectDerivedProps({
-    componentBody,
+    component,
     componentParams: params,
     derivedName,
     optimizationASTLines: derivedPropsInfo.propsOptimizationsAst,
@@ -259,11 +259,11 @@ function getDerivedProps(component: any, derivedName: string) {
 }
 
 function injectDerivedProps({
-  componentBody,
+  component,
   componentParams,
   optimizationASTLines,
 }: {
-  componentBody: any;
+  component: any;
   componentParams: any;
   derivedName: string;
   optimizationASTLines: any[];
@@ -275,5 +275,21 @@ function injectDerivedProps({
     name: PROPS_OPTIMIZATION_IDENTIFIER,
   };
 
-  componentBody.body = [...optimizationASTLines, ...componentBody.body];
+  if (component.body?.type === "BlockStatement") {
+    component.body.body = [...optimizationASTLines, ...component.body.body];
+  } else if (
+    component.declarations?.[0]?.init?.body?.type === "BlockStatement"
+  ) {
+    component.declarations[0].init.body.body = [
+      ...optimizationASTLines,
+      ...component.declarations[0].init.body.body,
+    ];
+  } else if (
+    component.declarations?.[0]?.init?.type === "ArrowFunctionExpression"
+  ) {
+    component.declarations[0].init.body = {
+      type: "BlockStatement",
+      body: [...optimizationASTLines, component.declarations[0].init.body],
+    };
+  }
 }
