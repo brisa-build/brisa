@@ -107,7 +107,6 @@ export default function skipPropTransformation(
             (propsIdentifier && key.name === propsIdentifier)
           ) {
             forceSkip = isPropName;
-            continue;
           } else {
             forceSkip = true;
             key._force_skip = true;
