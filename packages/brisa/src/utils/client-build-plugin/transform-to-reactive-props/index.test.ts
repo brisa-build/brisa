@@ -910,6 +910,22 @@ describe("utils", () => {
         expect(out.vars).toEqual(new Set(["inputs", "props"]));
       });
 
+      it("should add optimizations in arrow function without block statement", () => {
+        const code = `export default ({ name = "Aral" }) => <div>{name}</div>;`;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const expectedCode = normalizeQuotes(`
+          export default (__b_props__, {derived}) => {
+            const name = derived(() => __b_props__.name.value ?? "Aral");
+            
+            return jsxDEV("div", {children: name.value}, undefined, false, undefined, this);
+          };
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
+
       it.each(VARS)(
         "should not conflict between props.foo and %s variable",
         (varType) => {
