@@ -167,12 +167,6 @@ export function transformComponentToReactiveProps(
   );
 
   function traverseB2A(this: any, key: string, value: any) {
-    if (this?.type === "VariableDeclarator" && this.id === value) {
-      return JSON.parse(JSON.stringify(value), (key, value) => {
-        return value?.isSignal ? value.object : value;
-      });
-    }
-
     // Avoid adding .value in:
     //  const { foo: a, bar: b } = props
     // We don't want this:
