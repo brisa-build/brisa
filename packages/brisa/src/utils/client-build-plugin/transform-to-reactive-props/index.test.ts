@@ -878,7 +878,7 @@ describe("utils", () => {
 
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toEqual(["foo"]);
-        expect(out.vars).toEqual(new Set(["foo", "props"]));
+        expect(out.vars).toEqual(new Set(["foo", "props", "console"]));
       });
 
       it("should not transform a derived prop that is not an optimization", () => {
