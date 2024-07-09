@@ -124,7 +124,6 @@ export function transformComponentToReactiveProps(
   const componentVariableNames = getComponentVariableNames(component);
   const firstLevelVars = getFistLevelVariables(component);
   const declaration = component?.declarations?.[0];
-  const componentBody = component?.body ?? declaration?.init.body;
   const params = getComponentParams(component);
   const propsIdentifierName = getPropsIdentifierName(params[0]);
   const derivedName = generateUniqueVariableName(
@@ -137,6 +136,7 @@ export function transformComponentToReactiveProps(
     manageWebContextField(component, derivedName, DERIVED_NAME);
   }
 
+  // This method mutates the component
   injectDerivedProps({
     component,
     componentParams: params,
@@ -144,6 +144,8 @@ export function transformComponentToReactiveProps(
     optimizationASTLines: derivedPropsInfo.propsOptimizationsAst,
   });
 
+  // Recover the component body after the mutation
+  const componentBody = component?.body ?? declaration?.init.body;
   const [observedAttributes, renamedPropsNames] = getPropsNames(
     component,
     propNamesFromExport,
@@ -273,26 +275,29 @@ function injectDerivedProps({
 }) {
   if (optimizationASTLines.length === 0) return;
 
+  const componentBody =
+    component?.body?.body ??
+    component?.body ??
+    component?.declarations?.[0]?.init?.body?.body ??
+    component?.declarations?.[0]?.init?.body;
+
   componentParams[0] = {
     type: "Identifier",
     name: PROPS_OPTIMIZATION_IDENTIFIER,
   };
 
-  if (component.body?.type === "BlockStatement") {
-    component.body.body = [...optimizationASTLines, ...component.body.body];
-  } else if (
-    component.declarations?.[0]?.init?.body?.type === "BlockStatement"
-  ) {
-    component.declarations[0].init.body.body = [
-      ...optimizationASTLines,
-      ...component.declarations[0].init.body.body,
-    ];
-  } else if (
-    component.declarations?.[0]?.init?.type === "ArrowFunctionExpression"
-  ) {
-    component.declarations[0].init.body = {
+  if (Array.isArray(componentBody)) {
+    componentBody.unshift(...optimizationASTLines);
+  } else if (componentBody === component?.body) {
+    component.body = {
       type: "BlockStatement",
-      body: [...optimizationASTLines, component.declarations[0].init.body],
+      body: [
+        ...optimizationASTLines,
+        {
+          type: "ReturnStatement",
+          argument: componentBody,
+        },
+      ],
     };
   }
 }
