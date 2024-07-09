@@ -99,6 +99,65 @@ export default function Counter({ initialValue = 0 }, { state }: WebContext) {
 }
 ```
 
+In Brisa we are doing optimizations in build-time to allow you to declare props inside the component arguments without losing reactivity. For example `username` and `displayName` are reactive in the following component:
+
+```tsx
+export default function Counter({ user: { username, displayName } }) {
+  return (
+    <>
+      <span> Username: {username} </span>
+      <span> Display Name: {displayName} </span>
+    </>
+  );
+}
+```
+
+An alternative way to do it outside the component arguments is consuming directly the signal inside the JSX:
+
+```tsx
+export default function Counter({ user }) {
+  return (
+    <>
+      <span> Username: {user.username} </span>
+      <span> Display Name: {user.displayName} </span>
+    </>
+  );
+}
+```
+
+However, this way is not recommended because it breaks the reactivity:
+
+```tsx
+export default function Counter({ user }) {
+  const { username, displayName } = user;
+
+  return (
+    <>
+      <span> Username: {username} </span>
+      <span> Display Name: {displayName} </span>
+    </>
+  );
+}
+```
+
+For derived props, you can use the [`derived`](/api-reference/components/web-context#derived) method:
+
+```tsx
+export default function Counter({ user }, { derived }: WebContext) {
+  const username = derived(() => user.username.toUpperCase());
+  const displayName = derived(() => user.displayName.toUpperCase());
+
+  return (
+    <>
+      <span> Username: {username.value} </span>
+      <span> Display Name: {displayName.value} </span>
+    </>
+  );
+}
+```
+
+In the last example, `username` and `displayName` are derived signals from the `user` prop signal to display the username and display name in uppercase.
+
 ## Can I create a signal from a signal?
 
 Yes, you can create a signal from a signal using the [`derived`](/building-your-application/components-details/web-components#derived-state-and-props-derived-method) method. This method is useful to create a signal that depends on other signals.

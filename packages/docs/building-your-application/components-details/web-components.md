@@ -107,7 +107,7 @@ The properties are signals but can be used directly without using the `.value`, 
 
 > [!TIP]
 >
-> **Good to know**: Since props are signals, consume them directly or use [`derived`](#derived-state-and-props-derived-method) method. Doing so breaks the reactivity:
+> **Good to know**: Since props are signals, consume them directly or use [`derived`](#derived-state-and-props-derived-method) method. Doing so breaks the [reactivity](/building-your-application/components-details/reactivity#reactivity):
 >
 > ```tsx
 > export default function UserImages({ urls }, { derived }) {
@@ -117,6 +117,29 @@ The properties are signals but can be used directly without using the `.value`, 
 >   const reactiveFirstImage = derived(() => urls[0]);
 > }
 > ```
+>
+> In Brisa we are doing optimizations in build-time to avoid losing the reactivity of the props declared on the parameters. So the last example can be solved without the `derived` method with these props declaration:
+>
+> ```tsx
+> export default function UserImages({ urls: [firstImage] }) {
+>   // firstImage is reactive
+> }
+> ```
+>
+> However, it is important to know that if you declare a variable with the prop, it will not be reactive.
+
+> [!CAUTION]
+>
+> Avoid spreading props without specify the prop field:
+>
+> ```tsx
+> export default function UserImages(props) {
+>   // ❌ Brisa can't know what is the prop field to observe
+>   return <img {...props} />;
+> }
+> ```
+>
+> This is not related with reacitivity, but for web components Brisa needs to specify the [`observedAttributes`](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
 
 ### Step 1: Pass props to the child component
 
