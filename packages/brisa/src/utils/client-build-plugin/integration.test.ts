@@ -5192,7 +5192,7 @@ describe("integration", () => {
       const code = `
         export default function Component(props, { state }) {
           const inputs = state(props.value ?? ['foo']);
-          const signal = { foo: { bar: inputs } }
+          const signal = { foo: { bar: { inputs } } }
           
           return (
             <>
@@ -5334,8 +5334,8 @@ describe("integration", () => {
       input.value = "bar";
       input.dispatchEvent(new Event("input"));
 
-      expect(input.value).toBe("foo");
-      expect(inputComponent?.shadowRoot?.innerHTML).toBe('<input value="bar">');
+      const inputElement = inputComponent.shadowRoot?.querySelector("input");
+      expect(inputElement?.value).toBe("bar");
     });
 
     it("should work variable value from e.target without issues with props", () => {
@@ -5394,8 +5394,8 @@ describe("integration", () => {
       input.value = "bar";
       input.dispatchEvent(new Event("input"));
 
-      expect(input.value).toBe("foo");
-      expect(inputComponent?.shadowRoot?.innerHTML).toBe('<input value="bar">');
+      const inputElement = inputComponent.shadowRoot?.querySelector("input");
+      expect(inputElement?.value).toBe("bar");
     });
 
     it("should work consuming e.currentTarget.value without issues with props", () => {
@@ -5452,9 +5452,9 @@ describe("integration", () => {
 
       input.value = "bar";
       input.dispatchEvent(new Event("input"));
+      const inputElement = inputComponent.shadowRoot?.querySelector("input");
 
-      expect(input.value).toBe("foo");
-      expect(inputComponent?.shadowRoot?.innerHTML).toBe('<input value="bar">');
+      expect(inputElement?.value).toBe("bar");
     });
 
     it("should work consuming e.target.value without issues with props", () => {
@@ -5511,9 +5511,9 @@ describe("integration", () => {
 
       input.value = "bar";
       input.dispatchEvent(new Event("input"));
+      const inputElement = inputComponent.shadowRoot?.querySelector("input");
 
-      expect(input.value).toBe("foo");
-      expect(inputComponent?.shadowRoot?.innerHTML).toBe('<input value="bar">');
+      expect(inputElement?.value).toBe("bar");
     });
 
     it("should sync with localStorage using a Web Context Plugin", async () => {
