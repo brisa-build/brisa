@@ -942,8 +942,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          function MyComponent({foo}, {effect}) {
-            effect(r => foo.value ??= 'bar');
+          function MyComponent(__b_props__, {derived}) {
+            const foo = derived(() => __b_props__.foo.value ?? 'bar');
             const someVar = 'test';
             return ['div', {}, () => foo.value];
           }
@@ -971,8 +971,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          function Component({foo}, {effect}) {
-            effect(r => foo.value ??= 'bar');
+          function Component(__b_props__, {derived}) {
+            const foo = derived(() => __b_props__.foo.value ?? 'bar');
             const someVar = 'test';
             return ['div', {}, () => foo.value];
           }
@@ -1000,8 +1000,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          function Component({foo}, {effect}) {
-            effect(r => foo.value ??= 'bar');
+          function Component(__b_props__, {derived}) {
+            const foo = derived(() => __b_props__.foo.value ?? 'bar');
             const someVar = 'test';
             return ['div', {}, () => foo.value];
           }
@@ -1029,8 +1029,8 @@ describe("utils", () => {
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
 
-          function Component({foo: renamedFoo}, {effect}) {
-            effect(r => renamedFoo.value ??= 'bar');
+          function Component(__b_props__, {derived}) {
+            const renamedFoo = derived(() => __b_props__.foo.value ?? 'bar');
             const someVar = 'test';
             return ['div', {}, () => renamedFoo.value];
           }
