@@ -855,7 +855,7 @@ describe("utils", () => {
         const code = `
         export default function Component(props, { derived }) {
           const foo = derived(() => props.foo ?? ['foo']);
-          console.log('Signal:', foo); // should not transform this
+          console.log('Signal:', foo, [foo], ...foo); // should not transform this
           return (
             <div>
               {foo.value}
@@ -871,7 +871,7 @@ describe("utils", () => {
         const expectedCode = normalizeQuotes(`
         export default function Component(props, {derived}) {
           const foo = derived(() => props.foo.value ?? ['foo']);
-          console.log('Signal:', foo);
+          console.log('Signal:', foo, [foo], ...foo);
           return jsxDEV('div', {children: foo.value}, undefined, false, undefined, this);
         }
       `);
