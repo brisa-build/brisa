@@ -23,6 +23,13 @@ export default function skipPropTransformation(
       value._skip = this._skip.slice();
     }
 
+    // Skip "const {foo} = props.bar;" -> "const {foo: foo.value} = props.bar.value;" (we don't want this)
+    // Instead, we want: "const {foo} = props.bar;" -> "const {foo} = props.bar.value;"
+    if (this?.type === "VariableDeclarator" && this.id === value) {
+      value._force_skip = true;
+      return value;
+    }
+
     // Variable declaration
     if (
       value?.type === "VariableDeclaration" &&
@@ -124,7 +131,7 @@ export default function skipPropTransformation(
 
         if (i === 0) {
           if (
-            isPropName ||
+            (isPropName && !propsIdentifier) ||
             key.name === PROPS_OPTIMIZATION_IDENTIFIER ||
             (propsIdentifier && key.name === propsIdentifier)
           ) {
