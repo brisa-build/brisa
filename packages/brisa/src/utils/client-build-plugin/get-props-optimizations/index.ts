@@ -146,7 +146,7 @@ export default function getPropsOptimizations(
        ####################################################################*/
     if (hasDefaultObjectValue) {
       const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
-      let newAcc = updatedAcc + name;
+      let newAcc = updatedAcc + keyName;
 
       if (value.left?.type === "Identifier") {
         const res = getDerivedArrowFnString(
@@ -160,7 +160,6 @@ export default function getPropsOptimizations(
       }
 
       newAcc = `(${newAcc + propDefaultText}).`;
-      console.log("ACC:", newAcc);
 
       result.push(...getPropsOptimizations(value.left, derivedFnName, newAcc));
       continue;

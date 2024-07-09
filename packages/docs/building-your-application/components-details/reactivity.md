@@ -102,7 +102,9 @@ export default function Counter({ initialValue = 0 }, { state }: WebContext) {
 In Brisa we are doing optimizations in build-time to allow you to declare props inside the component arguments without losing reactivity. For example `username` and `displayName` are reactive in the following component:
 
 ```tsx
-export default function Counter({ user: { username, displayName } }) {
+export default function UserCard({
+  user: { username, displayName } = { username: "Unknown" },
+}) {
   return (
     <>
       <span> Username: {username} </span>
@@ -115,10 +117,10 @@ export default function Counter({ user: { username, displayName } }) {
 An alternative way to do it outside the component arguments is consuming directly the signal inside the JSX:
 
 ```tsx
-export default function Counter({ user }) {
+export default function UserCard({ user }) {
   return (
     <>
-      <span> Username: {user.username} </span>
+      <span> Username: {user.username ?? "Unknown"} </span>
       <span> Display Name: {user.displayName} </span>
     </>
   );
