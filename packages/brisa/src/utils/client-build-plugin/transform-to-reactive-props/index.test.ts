@@ -392,7 +392,7 @@ describe("utils", () => {
 
         const expectedCode = normalizeQuotes(`
           export default function Component(__b_props__, {derived}) {
-            const {foo: foo} = __b_props__;
+            const {foo} = __b_props__;
             const bar = derived(() => __b_props__.bar.value ?? 'bar');
             const baz = derived(() => __b_props__.baz.value ?? 'baz');
             return jsxDEV("div", {children: [foo.value, bar.value, baz.value]}, undefined, true, undefined, this);
@@ -849,6 +849,65 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toEqual(["value"]);
         expect(out.vars).toEqual(new Set(["value", "inputs", "props"]));
+      });
+
+      it("should not transform a derived prop identifier that is not an optimization", () => {
+        const code = `
+        export default function Component(props, { derived }) {
+          const foo = derived(() => props.foo ?? ['foo']);
+          console.log('Signal:', foo); // should not transform this
+          return (
+            <div>
+              {foo.value}
+            </div>
+          )
+        }
+      `;
+
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+        export default function Component(props, {derived}) {
+          const foo = derived(() => props.foo.value ?? ['foo']);
+          console.log('Signal:', foo);
+          return jsxDEV('div', {children: foo.value}, undefined, false, undefined, this);
+        }
+      `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.vars).toEqual(new Set(["foo", "props"]));
+      });
+
+      it("should not transform a derived prop that is not an optimization", () => {
+        const code = `
+        export default function Component(props, { derived }) {
+          const inputs = derived(() => props.inputs ?? ['foo']);
+          
+          return (
+            <div>
+              {inputs.value.map(input => (<div key={input}>{input}</div>))}
+            </div>
+          )
+        }
+      `;
+
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeQuotes(`
+        export default function Component(props, {derived}) {
+          const inputs = derived(() => props.inputs.value ?? ['foo']);
+          return jsxDEV('div', {children: inputs.value.map(input => jsxDEV("div", {children: input}, input, false, undefined, this))}, undefined, false, undefined, this);
+        }
+      `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.observedAttributes).toEqual(["inputs"]);
+        expect(out.vars).toEqual(new Set(["inputs", "props"]));
       });
 
       it.each(VARS)(
