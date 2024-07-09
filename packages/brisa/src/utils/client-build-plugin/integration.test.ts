@@ -5572,6 +5572,33 @@ describe("integration", () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe("<div>bar</div>");
     });
 
+    it("should optimize props with rename and assigment", () => {
+      const code = `
+      export default function ExampleComponent({baz, bar: foo = baz }) {  
+        if(!foo) return 'No foo...'
+      
+        return <div>{foo}</div>
+      }`;
+
+      document.body.innerHTML = `<example-component />`;
+
+      defineBrisaWebComponent(code, "src/web-components/example-component.tsx");
+
+      const example = document.querySelector(
+        "example-component",
+      ) as HTMLElement;
+
+      expect(example?.shadowRoot?.innerHTML).toBe("No foo...");
+
+      example.setAttribute("baz", "BAZ");
+
+      expect(example?.shadowRoot?.innerHTML).toBe("<div>BAZ</div>");
+
+      example.setAttribute("bar", "BAR");
+
+      expect(example?.shadowRoot?.innerHTML).toBe("<div>BAR</div>");
+    });
+
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583
     it.todo(
