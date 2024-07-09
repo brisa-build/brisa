@@ -122,6 +122,7 @@ export function transformComponentToReactiveProps(
   propNamesFromExport: string[],
 ) {
   const componentVariableNames = getComponentVariableNames(component);
+  const firstLevelVars = getFistLevelVariables(component);
   const declaration = component?.declarations?.[0];
   const componentBody = component?.body ?? declaration?.init.body;
   const params = getComponentParams(component);
@@ -167,24 +168,32 @@ export function transformComponentToReactiveProps(
   );
 
   function traverseB2A(this: any, key: string, value: any) {
+    const isProperty = this?.type === "Property";
+
     // Avoid adding .value in:
     //  const { foo: a, bar: b } = props
     // We don't want this:
     //  const { foo: a.value, bar: b.value } = props.value
-    const isPropFromObjectExpression =
-      this?.type === "Property" && this?.key === value;
+    const isPropFromObjectExpression = isProperty && this?.key === value;
+
+    // Avoid adding .value if there is a variable "const foo = props.foo"
+    const isMemberExpressionProperty =
+      this?.property === value && this?.type === "MemberExpression";
+    const isInitialVariable =
+      !isMemberExpressionProperty && firstLevelVars.has(value?.name);
 
     if (
       value?.type === "Identifier" &&
       !value?._force_skip &&
       !isPropFromObjectExpression &&
+      !isInitialVariable &&
       propsNamesAndRenamesSet.has(value?.name) &&
       !value?.name?.startsWith("on") &&
       !value?._skip?.includes(value?.name)
     ) {
       // allow: console.log({ propName })
       // transforming to: console.log({ propName: propName.value })
-      if (this?.type === "Property") {
+      if (isProperty) {
         this.shorthand = false;
       }
 
@@ -286,4 +295,22 @@ function injectDerivedProps({
       body: [...optimizationASTLines, component.declarations[0].init.body],
     };
   }
+}
+
+function getFistLevelVariables(component: any) {
+  const body =
+    component.body?.body ?? component.declarations?.[0]?.init?.body?.body;
+  const vars = new Set();
+
+  if (!Array.isArray(body)) return vars;
+
+  for (const node of body) {
+    if (node?.type !== "VariableDeclaration") continue;
+
+    for (const declaration of node.declarations) {
+      if (declaration?.id?.name) vars.add(declaration.id.name);
+    }
+  }
+
+  return vars;
 }
