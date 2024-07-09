@@ -113,13 +113,13 @@ const VALID_CASES_ON_FIRST_LEVEL = [
   },
   {
     param: "{ a: b = { foo: 'bar' } }",
-    expected: ["const b = derived(() => __b_props__.b ?? {foo: 'bar'});"],
+    expected: ["const b = derived(() => __b_props__.a ?? {foo: 'bar'});"],
   },
   {
     param: "{ a: b = { foo: 'bar' }, c: d = { baz: 'qux' } }",
     expected: [
-      "const b = derived(() => __b_props__.b ?? {foo: 'bar'});",
-      "const d = derived(() => __b_props__.d ?? {baz: 'qux'});",
+      "const b = derived(() => __b_props__.a ?? {foo: 'bar'});",
+      "const d = derived(() => __b_props__.c ?? {baz: 'qux'});",
     ],
   },
 ];
@@ -321,6 +321,13 @@ const WITH_DEFAULT_VALUES_FROM_OTHER_PROPS = [
       "const a = derived(() => __b_props__.a ?? 1);",
       "const d = derived(() => __b_props__.b.d ?? 2);",
       "const c = derived(() => __b_props__.b.c ?? a);",
+    ],
+  },
+  {
+    param: "{baz, bar: foo = baz}",
+    expected: [
+      "const {baz} = __b_props__;",
+      "const foo = derived(() => __b_props__.bar ?? baz);",
     ],
   },
   {

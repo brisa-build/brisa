@@ -264,10 +264,12 @@ function getDerivedProps(component: any, derivedName: string) {
 }
 
 function getComponentBody(component: any) {
-  return component?.body?.body ??
+  return (
+    component?.body?.body ??
     component?.body ??
     component?.declarations?.[0]?.init?.body?.body ??
-    component?.declarations?.[0]?.init?.body;
+    component?.declarations?.[0]?.init?.body
+  );
 }
 
 function injectDerivedProps({
