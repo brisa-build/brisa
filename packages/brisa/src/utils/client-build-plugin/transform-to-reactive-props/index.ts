@@ -263,6 +263,13 @@ function getDerivedProps(component: any, derivedName: string) {
   return { propsOptimizationsAst, propNames, derivedName };
 }
 
+function getComponentBody(component: any) {
+  return component?.body?.body ??
+    component?.body ??
+    component?.declarations?.[0]?.init?.body?.body ??
+    component?.declarations?.[0]?.init?.body;
+}
+
 function injectDerivedProps({
   component,
   componentParams,
@@ -275,11 +282,7 @@ function injectDerivedProps({
 }) {
   if (optimizationASTLines.length === 0) return;
 
-  const componentBody =
-    component?.body?.body ??
-    component?.body ??
-    component?.declarations?.[0]?.init?.body?.body ??
-    component?.declarations?.[0]?.init?.body;
+  const componentBody = getComponentBody(component);
 
   componentParams[0] = {
     type: "Identifier",
@@ -303,13 +306,12 @@ function injectDerivedProps({
 }
 
 function getFistLevelVariables(component: any) {
-  const body =
-    component.body?.body ?? component.declarations?.[0]?.init?.body?.body;
+  const componentBody = getComponentBody(component);
   const vars = new Set();
 
-  if (!Array.isArray(body)) return vars;
+  if (!Array.isArray(componentBody)) return vars;
 
-  for (const node of body) {
+  for (const node of componentBody) {
     if (node?.type !== "VariableDeclaration") continue;
 
     for (const declaration of node.declarations) {
