@@ -277,7 +277,3 @@ When implementing webhook endpoints, it's essential to consider security measure
 - **Rate Limiting**: Implement rate limiting to prevent abuse or excessive usage of webhook endpoints.
 
 By implementing these security measures, you can ensure the reliability and integrity of your webhook-based integrations in Brisa.
-
-## Edge API Routes
-
-TODO
