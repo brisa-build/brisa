@@ -77,7 +77,7 @@ export default function UncontrolledFormServer() {
 }
 ```
 
-Adds 0 bytes of JS client. Only the Brisa RPC client is needed which is ~800 bytes.
+Adds 0 bytes of JS client. Only the Brisa RPC client is needed which is ~2kB.
 
 ### Web component _(not recomended 👎)_
 
