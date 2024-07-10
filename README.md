@@ -48,7 +48,7 @@
 - ⚛️ ・ **Everything you need**: JSX, TS, server/web components, server actions, optimistic updates, SSR, streaming, suspense, signals, websockets, middleware, layouts...
 - 🚀 ・ **Speed**: Brisa is designed to start, build, test, deploy, and run fast.
 - 🌍 ・ **i18n support**: text translation and routing carrying only the translations you consume.
-- 📦 ・ **Tiny**: 0B by default, 800 B when you use server actions (RPC size), and 3kb when you need web components.
+- 📦 ・ **Tiny**: 0B by default, 2kB when you use server actions (RPC size), and 3kb when you need web components.
 - 📲 ・ **Change the output**: You can change your web from server to static, to desktop, android, or ios app with just one configuration command.
 
 ## Getting Started
