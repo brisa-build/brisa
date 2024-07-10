@@ -28,7 +28,7 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
 
   process.chdir(PROJECT_NAME);
 
-  const BRISA_VERSION = "0.0.104";
+  const BRISA_VERSION = "0.0.105";
 
   console.log("\n🛠️  Installing brisa...\n");
 
