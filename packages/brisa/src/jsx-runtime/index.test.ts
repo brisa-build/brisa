@@ -26,5 +26,14 @@ describe("utils", () => {
         },
       });
     });
+
+    it('should append the "key" attribute to the props', () => {
+      const node = jsx("div", { id: "test", children: "Hello World" }, "key");
+
+      expect(node).toEqual({
+        type: "div",
+        props: { id: "test", children: "Hello World", key: "key" },
+      });
+    });
   });
 });

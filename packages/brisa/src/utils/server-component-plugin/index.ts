@@ -28,9 +28,12 @@ const FN_DECLARATIONS = new Set([
 export const workaroundText = `
 const Fragment = props => props.children;
 
-function jsxDEV(type, props){ return { type, props }};
-function jsx(type, props){ return { type, props }};
-function jsxs(type, props){ return { type, props }};
+function jsx(type, props, key) {
+  Object.assign(props, { key });
+  return { type, props }
+}
+const jsxDEV = jsx;
+const jsxs = jsx;
 
 Fragment.__isFragment = true;
 `;

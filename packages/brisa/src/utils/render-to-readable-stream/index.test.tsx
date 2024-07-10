@@ -3494,5 +3494,22 @@ describe("utils", () => {
         ),
       );
     });
+
+    it('should render the "key" attribute on a list of elements', async () => {
+      const List = () => (
+        <>
+          <div key="1">foo</div>
+          <div key="2">bar</div>
+          <div key="3">baz</div>
+        </>
+      );
+
+      const stream = renderToReadableStream(<List />, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        `<div key="1">foo</div><div key="2">bar</div><div key="3">baz</div>`,
+      );
+    });
   });
 });
