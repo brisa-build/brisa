@@ -10,12 +10,15 @@ type Error = {
 };
 
 const ERROR_STORE_KEY = "__BRISA_ERRORS__";
+const modelPromise = window.ai?.createTextSession?.();
 
 export default function ErrorDialog(
   {},
   { store, css, effect, state, cleanup, derived }: WebContext,
 ) {
   const displayDialog = state(true);
+  const loadingAIResponse = state(false);
+  const aiResponse = state("");
   const errors = derived(() => store.get<Error[]>(ERROR_STORE_KEY) ?? []);
   const numErrors = derived(() => errors.value?.length ?? 0);
   const currentIndex = state(0);
@@ -35,6 +38,28 @@ export default function ErrorDialog(
       currentIndex.value < numErrors.value - 1
     ) {
       currentIndex.value += 1;
+    }
+  }
+
+  async function explainMeError() {
+    try {
+      const promptMsg =
+        "Explain this JS error: " +
+        JSON.stringify(errors.value[currentIndex.value]);
+      loadingAIResponse.value = true;
+      aiResponse.value = "";
+      const model = await modelPromise;
+      const promise = model.prompt(promptMsg);
+      const sleep = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
+      aiResponse.value = await Promise.race([
+        promise,
+        sleep(5000).then(() => "AI response timed out"),
+      ]);
+      loadingAIResponse.value = false;
+    } catch (e) {
+      aiResponse.value = "Failed to generate AI fix proposal";
+      loadingAIResponse.value = false;
     }
   }
 
@@ -65,6 +90,7 @@ export default function ErrorDialog(
 
     window.addEventListener("keydown", onKeydown);
     document.body.style.overflow = "hidden";
+    aiResponse.value = "";
 
     cleanup(() => window.removeEventListener("keydown", onKeydown));
     cleanup(() => {
@@ -88,7 +114,8 @@ export default function ErrorDialog(
       box-sizing: border-box;
     }
 
-    nav button {
+    nav button,
+    .ask-ai {
       background-color: rgba(255, 85, 85, 0.1);
       color: #f44336;
       width: 24px;
@@ -284,6 +311,24 @@ export default function ErrorDialog(
         ))}
         {printStack(errors.value[currentIndex.value].stack)}
         {renderDocumentation(errors.value[currentIndex.value])}
+        {modelPromise && (
+          <>
+            <button
+              disabled={loadingAIResponse.value}
+              class="ask-ai"
+              style={{ width: "auto" }}
+              onClick={explainMeError}
+            >
+              ✨{" "}
+              {loadingAIResponse.value
+                ? "Generating..."
+                : "Generate AI fix proposal"}
+            </button>
+          </>
+        )}
+        {aiResponse.value && (
+          <p style={{ color: "#8d3939" }}>{aiResponse.value}</p>
+        )}
         <button class="close-dialog" onClick={onClose}>
           Close
         </button>
