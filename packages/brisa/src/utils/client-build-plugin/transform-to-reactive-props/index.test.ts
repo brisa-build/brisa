@@ -926,6 +926,28 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
       });
 
+      it("should not transform external variables with same name as props using props identifier", () => {
+        const code = `
+          const foo = 'foo';
+          export default function Component(props) {
+            console.log(foo);
+            return <div>{props.foo}</div>;
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const expectedCode = normalizeQuotes(`
+          const foo = 'foo';
+          export default function Component(props) {
+            console.log(foo);
+            return jsxDEV("div", {children: props.foo.value}, undefined, false, undefined, this);
+          }
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+      });
+
       it.each(VARS)(
         "should not conflict between props.foo and %s variable",
         (varType) => {
