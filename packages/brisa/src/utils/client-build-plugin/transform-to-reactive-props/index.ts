@@ -23,7 +23,7 @@ type Statics = {
 type Result = {
   ast: ESTree.Program;
   componentName: string;
-  observedAttributes: string[];
+  observedAttributes: Set<string>;
   vars: Set<string>;
   statics?: Statics;
 };
@@ -37,7 +37,7 @@ export default function transformToReactiveProps(ast: ESTree.Program): Result {
     return {
       ast,
       componentName: "",
-      observedAttributes: [],
+      observedAttributes: new Set(),
       vars: new Set(),
       statics: {},
     };

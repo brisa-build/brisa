@@ -73,7 +73,9 @@ export default function clientBuildPlugin(
     };
   }
 
-  for (const { observedAttributes = [] } of Object.values(out.statics ?? {})) {
+  for (const { observedAttributes = new Set<string>() } of Object.values(
+    out.statics ?? {},
+  )) {
     for (const prop of observedAttributes) observedAttributesSet.add(prop);
   }
 
@@ -95,7 +97,7 @@ export default function clientBuildPlugin(
 
   const [importDeclaration, brisaElement, componentAst] = defineBrisaElement(
     componentBranch,
-    Array.from(observedAttributesSet),
+    observedAttributesSet,
     out.componentName,
   );
 
