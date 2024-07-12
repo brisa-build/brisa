@@ -32,7 +32,9 @@ export default function skipPropTransformation(
       !value?._insideMemberExpression &&
       value?.name &&
       propsIdentifier &&
-      !standaloneProps.has(value.name)
+      value.name !== PROPS_OPTIMIZATION_IDENTIFIER &&
+      !standaloneProps.has(value.name) &&
+      propsNamesAndRenamesSet.has(value.name)
     ) {
       value._force_skip = true;
       return value;
