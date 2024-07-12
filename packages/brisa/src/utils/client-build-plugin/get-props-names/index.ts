@@ -2,12 +2,14 @@ import { ESTree } from "meriyah";
 import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-ast";
 import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
 
+type PropSet = Set<string>;
+
 const CHILDREN = "children";
 
 export default function getPropsNames(
   webComponentAst: any,
   propNamesFromExport: string[] = [],
-): [string[], string[], string[]] {
+): [PropSet, PropSet, PropSet] {
   const propsAst =
     webComponentAst?.params?.[0] ??
     webComponentAst?.declarations?.[0]?.init?.params?.[0];
@@ -50,7 +52,7 @@ export default function getPropsNames(
     return [
       unify(propNames, propNamesFromExport),
       unify(renamedPropNames, propNamesFromExport),
-      standaloneProps,
+      new Set(standaloneProps),
     ];
   }
 
@@ -68,13 +70,15 @@ export default function getPropsNames(
     ];
   }
 
-  return [propNamesFromExport, propNamesFromExport, []];
+  const propNamesFromExportSet = new Set(propNamesFromExport);
+
+  return [propNamesFromExportSet, propNamesFromExportSet, new Set()];
 }
 
 function getPropsNamesFromIdentifier(
   identifier: string,
   ast: any,
-): [string[], string[], string[]] {
+): [PropSet, PropSet, PropSet] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
   const standaloneProps = new Set<string>([]);
@@ -138,7 +142,7 @@ function getPropsNamesFromIdentifier(
     return value;
   });
 
-  return [[...propsNames], [...renamedPropsNames], [...standaloneProps]];
+  return [propsNames, renamedPropsNames, standaloneProps];
 }
 
 export function getPropNamesFromExport(ast: ESTree.Program) {
@@ -160,7 +164,7 @@ export function getPropNamesFromStatics(ast: ESTree.Program) {
   const [componentBrach] = getWebComponentAst(ast);
   const componentName = componentBrach?.id?.name!;
   const propNamesFromExport = getPropNamesFromExport(ast);
-  const propNamesStaticMap = new Map<string, [string[], string[], string[]]>();
+  const propNamesStaticMap = new Map<string, [PropSet, PropSet, PropSet]>();
 
   mapComponentStatics(ast, componentName, (staticValue, staticName) => {
     const res = getPropsNames(staticValue, propNamesFromExport);
@@ -171,7 +175,6 @@ export function getPropNamesFromStatics(ast: ESTree.Program) {
   return propNamesStaticMap;
 }
 
-function unify(arr1: string[], arr2: string[]) {
-  const set = new Set([...arr1, ...arr2]);
-  return [...set];
+function unify(arr1: string[] | PropSet, arr2: string[] | PropSet) {
+  return new Set([...arr1, ...arr2]);
 }

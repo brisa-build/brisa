@@ -8,10 +8,8 @@ export default function skipPropTransformation(
   componentBody: any,
   propsNamesAndRenamesSet: Set<string>,
   propsIdentifier: string,
-  standaloneProps: string[] = [],
+  standaloneProps = new Set<string>(),
 ) {
-  const standalonePropsSet = new Set(standaloneProps);
-
   return function traverseA2B(this: any, key: string, value: any) {
     const isObject = typeof value === "object" && value !== null;
 
@@ -34,7 +32,7 @@ export default function skipPropTransformation(
       !value?._insideMemberExpression &&
       value?.name &&
       propsIdentifier &&
-      !standalonePropsSet.has(value.name)
+      !standaloneProps.has(value.name)
     ) {
       value._force_skip = true;
       return value;
