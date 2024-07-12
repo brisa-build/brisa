@@ -61,7 +61,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(
           new Set(["foo", "bar", "baz", "console", "props"]),
         );
@@ -86,7 +86,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz", "console"]));
       });
 
@@ -109,7 +109,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz", "console"]));
       });
 
@@ -132,7 +132,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(
           new Set(["foo", "bar", "baz", "console", "rest"]),
         );
@@ -151,7 +151,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "console", "props"]));
       });
 
@@ -169,7 +169,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz", "rest"]));
       });
 
@@ -198,7 +198,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(
           new Set([
             "foo",
@@ -241,7 +241,7 @@ describe("utils", () => {
           }`);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual([]);
+        expect(out.observedAttributes).toBeEmpty();
         expect(out.vars).toEqual(
           new Set([
             "stateFoo",
@@ -282,7 +282,7 @@ describe("utils", () => {
         }`);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual([]);
+        expect(out.observedAttributes).toBeEmpty();
         expect(out.vars).toEqual(
           new Set([
             "stateFoo",
@@ -316,7 +316,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(
           new Set(["foo", "bar", "baz", "props", "console"]),
         );
@@ -351,7 +351,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(
           new Set(["foo", "bar", "baz", "console", "props"]),
         );
@@ -375,7 +375,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar"]));
         expect(out.vars).toEqual(new Set(["foo", "bar"]));
       });
 
@@ -400,7 +400,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar", "baz"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar", "baz"]));
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
       });
 
@@ -424,7 +424,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
       });
 
@@ -445,7 +445,7 @@ describe("utils", () => {
         }`);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "quux", "baz"]));
       });
 
@@ -469,7 +469,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "quux", "baz"]));
       });
 
@@ -493,7 +493,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "bar", "brisa"]));
       });
 
@@ -517,7 +517,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
       });
 
@@ -541,7 +541,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "baz", "bar"]));
       });
 
@@ -565,7 +565,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "brisa", "bar"]));
       });
 
@@ -587,7 +587,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual([]);
+        expect(out.observedAttributes).toBeEmpty();
         expect(out.vars).toEqual(new Set());
       });
 
@@ -609,7 +609,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar"]));
         expect(out.vars).toEqual(new Set(["foo", "bar"]));
       });
 
@@ -632,7 +632,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo"]));
       });
 
@@ -655,7 +655,9 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["onClick", "onClickSpan"]);
+        expect(out.observedAttributes).toEqual(
+          new Set(["onClick", "onClickSpan"]),
+        );
         expect(out.vars).toEqual(
           new Set(["onClick", "onClickSpan", "props", "rest"]),
         );
@@ -690,7 +692,7 @@ describe("utils", () => {
           `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["error", "warning"]);
+        expect(out.observedAttributes).toEqual(new Set(["error", "warning"]));
         expect(out.vars).toEqual(new Set(["error", "warning"]));
       });
 
@@ -718,7 +720,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "Component"]));
       });
 
@@ -745,7 +747,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo"]));
       });
 
@@ -773,7 +775,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["someTestProp"]);
+        expect(out.observedAttributes).toEqual(new Set(["someTestProp"]));
         expect(out.vars).toEqual(new Set(["someTestProp"]));
       });
 
@@ -796,7 +798,7 @@ describe("utils", () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         // adding default props inside a derived is not considered as default props
         expect(out.vars).toEqual(new Set(["foo", "bar"]));
       });
@@ -818,7 +820,7 @@ describe("utils", () => {
         }`);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo", "bar"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo", "bar"]));
         expect(out.vars).toEqual(new Set(["foo", "bar", "baz"]));
       });
 
@@ -847,7 +849,7 @@ describe("utils", () => {
       `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["value"]);
+        expect(out.observedAttributes).toEqual(new Set(["value"]));
         expect(out.vars).toEqual(new Set(["value", "inputs", "props"]));
       });
 
@@ -877,7 +879,7 @@ describe("utils", () => {
       `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["foo"]);
+        expect(out.observedAttributes).toEqual(new Set(["foo"]));
         expect(out.vars).toEqual(new Set(["foo", "props", "console"]));
       });
 
@@ -906,7 +908,7 @@ describe("utils", () => {
       `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(["inputs"]);
+        expect(out.observedAttributes).toEqual(new Set(["inputs"]));
         expect(out.vars).toEqual(new Set(["inputs", "props"]));
       });
 

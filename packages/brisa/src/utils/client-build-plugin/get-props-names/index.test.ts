@@ -19,10 +19,9 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected: string[] = [];
 
-        expect(propNames).toEqual(expected);
-        expect(renamedOutput).toEqual([]);
+        expect(propNames).toBeEmpty();
+        expect(renamedOutput).toBeEmpty();
       });
       it("should return the props names if the props are an object", () => {
         const [input] = inputCode(`
@@ -33,7 +32,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["foo", "bar"];
+        const expected = new Set(["foo", "bar"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -47,7 +46,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -61,7 +60,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -76,7 +75,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -91,7 +90,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -106,7 +105,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -121,7 +120,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -137,7 +136,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -154,7 +153,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name", "dog", "cat"];
+        const expected = new Set(["name", "dog", "cat"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -175,7 +174,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name", "dog", "cat"];
+        const expected = new Set(["name", "dog", "cat"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -196,7 +195,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name", "dog"];
+        const expected = new Set(["name", "dog"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -217,7 +216,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name", "dog"];
+        const expected = new Set(["name", "dog"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -233,7 +232,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -249,8 +248,8 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
-        const expectedRenamed = ["renamedName"];
+        const expected = new Set(["name"]);
+        const expectedRenamed = new Set(["renamedName"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expectedRenamed);
@@ -267,7 +266,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -284,7 +283,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -301,7 +300,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["name"];
+        const expected = new Set(["name"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -319,8 +318,8 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["foo", "bar"];
-        const expectedRenamed = ["foo", "bar"];
+        const expected = new Set(["foo", "bar"]);
+        const expectedRenamed = new Set(["foo", "bar"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expectedRenamed);
@@ -341,7 +340,7 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = ["foo", "bar", "baz"];
+        const expected = new Set(["foo", "bar", "baz"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -359,7 +358,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["foo", "bar"];
+        const expected = new Set(["foo", "bar"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -376,7 +375,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = ["foo", "bar"];
+        const expected = new Set(["foo", "bar"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -402,7 +401,7 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = ["value"];
+        const expected = new Set(["value"]);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -422,7 +421,7 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = ["foo", "bar"];
+        const expected = new Set(["foo", "bar"]);
 
         expect(propNames).toEqual(expected);
       });
@@ -441,9 +440,8 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected: string[] = [];
 
-        expect(propNames).toEqual(expected);
+        expect(propNames).toBeEmpty();
       });
 
       it("should return array as 3th argument if there are one standalone props names inside fn body", () => {
@@ -461,7 +459,7 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected: string[] = ["foo"];
+        const expected = new Set(["foo"]);
 
         expect(propNames).toEqual(expected);
       });
@@ -480,7 +478,7 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = ["foo", "renamedBar"];
+        const expected = new Set(["foo", "renamedBar"]);
 
         expect(propNames).toEqual(expected);
       });
