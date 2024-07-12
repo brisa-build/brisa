@@ -2399,6 +2399,27 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       expect(linesBaz).toEqual(expected);
     });
   });
+
+  describe("Other cases", () => {
+    it('should skip "state" method when the props.state is used', () => {
+      const code = `
+        export default function Component(props, {state}) {
+          const foo = state();
+
+          function onClick() {
+            console.log(props.state);
+          }
+
+          return null;
+        }
+      `;
+      const props = new Set(["state"]);
+      const out = applySkipTest(code, props);
+      const lines = getOutputCodeLines(out, "state");
+
+      expect(lines).toEqual(["foo", "state"]);
+    });
+  });
 });
 
 const AVOIDED_TYPES = new Set([
