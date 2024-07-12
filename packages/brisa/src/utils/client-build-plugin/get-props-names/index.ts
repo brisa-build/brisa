@@ -7,23 +7,23 @@ const CHILDREN = "children";
 export default function getPropsNames(
   webComponentAst: any,
   propNamesFromExport: string[] = [],
-): [string[], string[]] {
+): [string[], string[], string[]] {
   const propsAst =
     webComponentAst?.params?.[0] ??
     webComponentAst?.declarations?.[0]?.init?.params?.[0];
   const propNames = [];
   const renamedPropNames = [];
+  const standaloneProps = [];
 
   if (propsAst?.type === "ObjectPattern") {
     for (const prop of propsAst.properties as any[]) {
       if (prop.type === "RestElement") {
-        const [names, renamedNames, defaultProps] = getPropsNamesFromIdentifier(
-          prop.argument.name,
-          webComponentAst,
-        );
+        const [names, renamedNames, standaloneNames] =
+          getPropsNamesFromIdentifier(prop.argument.name, webComponentAst);
 
         propNames.push(...names);
         renamedPropNames.push(...renamedNames);
+        standaloneProps.push(...standaloneNames);
         continue;
       }
 
@@ -36,15 +36,21 @@ export default function getPropsNames(
 
       renamedPropNames.push(renamedPropName);
       propNames.push(name);
+      standaloneProps.push(renamedPropName);
     }
 
-    const [, renames] = getPropsNamesFromIdentifier("", webComponentAst);
+    const [, renames, standaloneNames] = getPropsNamesFromIdentifier(
+      "",
+      webComponentAst,
+    );
 
     renamedPropNames.push(...renames);
+    standaloneProps.push(...standaloneNames);
 
     return [
       unify(propNames, propNamesFromExport),
       unify(renamedPropNames, propNamesFromExport),
+      standaloneProps,
     ];
   }
 
@@ -58,18 +64,20 @@ export default function getPropsNames(
     return [
       unify(res[0], propNamesFromExport),
       unify(res[1], propNamesFromExport),
+      res[2],
     ];
   }
 
-  return [propNamesFromExport, propNamesFromExport];
+  return [propNamesFromExport, propNamesFromExport, []];
 }
 
 function getPropsNamesFromIdentifier(
   identifier: string,
   ast: any,
-): [string[], string[], Record<string, ESTree.Literal>] {
+): [string[], string[], string[]] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
+  const standaloneProps = new Set<string>([]);
   const identifiers = new Set<string>([identifier]);
 
   JSON.stringify(ast, (key, value) => {
@@ -95,16 +103,23 @@ function getPropsNamesFromIdentifier(
       identifiers.has(value?.init?.name)
     ) {
       for (const prop of value.id.properties) {
-        // spread props like: const { name, ...rest } = props
-        if (prop?.key?.name && prop.key.name !== CHILDREN) {
-          propsNames.add(prop.key.name);
-        }
+        const isProp = prop?.key?.name && prop.key.name !== CHILDREN;
+        const isRest = prop?.type === "RestElement";
+        const isRenamed = prop?.value?.name;
+
+        // destructured props like: const { name, ...rest } = props
+        if (isProp) propsNames.add(prop.key.name);
+
         // add as identifier the rest props like: const { ...rest } = props
-        if (prop?.type === "RestElement") {
-          identifiers.add(prop.argument.name);
-        }
+        if (isRest) identifiers.add(prop.argument.name);
+
         // renamed props like: const { name: renamedName } = props
-        if (prop?.value?.name) renamedPropsNames.add(prop.value.name);
+        if (isRenamed) renamedPropsNames.add(prop.value.name);
+
+        // standalone props like: const { name } = props
+        if (isProp && !isRenamed) standaloneProps.add(prop.key.name);
+        else if (isRest && !isRenamed) standaloneProps.add(prop.argument.name);
+        else if (isRenamed) standaloneProps.add(prop.value.name);
       }
     }
 
@@ -117,12 +132,13 @@ function getPropsNamesFromIdentifier(
     ) {
       propsNames.add(value?.init?.property?.name);
       renamedPropsNames.add(value?.init?.property?.name);
+      standaloneProps.add(value?.init?.property?.name);
     }
 
     return value;
   });
 
-  return [[...propsNames], [...renamedPropsNames], {}];
+  return [[...propsNames], [...renamedPropsNames], [...standaloneProps]];
 }
 
 export function getPropNamesFromExport(ast: ESTree.Program) {
@@ -144,7 +160,7 @@ export function getPropNamesFromStatics(ast: ESTree.Program) {
   const [componentBrach] = getWebComponentAst(ast);
   const componentName = componentBrach?.id?.name!;
   const propNamesFromExport = getPropNamesFromExport(ast);
-  const propNamesStaticMap = new Map<string, [string[], string[]]>();
+  const propNamesStaticMap = new Map<string, [string[], string[], string[]]>();
 
   mapComponentStatics(ast, componentName, (staticValue, staticName) => {
     const res = getPropsNames(staticValue, propNamesFromExport);

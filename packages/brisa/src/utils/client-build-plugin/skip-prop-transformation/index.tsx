@@ -8,7 +8,10 @@ export default function skipPropTransformation(
   componentBody: any,
   propsNamesAndRenamesSet: Set<string>,
   propsIdentifier: string,
+  standaloneProps: string[] = [],
 ) {
+  const standalonePropsSet = new Set(standaloneProps);
+
   return function traverseA2B(this: any, key: string, value: any) {
     const isObject = typeof value === "object" && value !== null;
 
@@ -23,15 +26,29 @@ export default function skipPropTransformation(
       value._skip = this._skip.slice();
     }
 
+    // Skip first identifier with same name as props (using propsIdentifier),
+    // to avoid conflicts with external variables with the same name
+    // Example: "console.log(foo, props.foo);" -> "console.log(foo, props.foo.value);"
+    if (
+      value?.type === "Identifier" &&
+      !value?._insideMemberExpression &&
+      value?.name &&
+      propsIdentifier &&
+      !standalonePropsSet.has(value.name)
+    ) {
+      value._force_skip = true;
+      return value;
+    }
+
     // Skip "const {foo} = p.bar;" -> "const {foo: foo.value} = p.bar.value;"
     // Instead, we want: "const {foo} = p.bar;" -> "const {foo} = p.bar.value;"
-    if (this?.type === "VariableDeclarator" && this.id === value) {
+    else if (this?.type === "VariableDeclarator" && this.id === value) {
       value._force_skip = true;
       return value;
     }
 
     // Variable declaration
-    if (
+    else if (
       value?.type === "VariableDeclaration" &&
       Array.isArray(this) &&
       this !== componentBody.body
@@ -140,8 +157,9 @@ export default function skipPropTransformation(
             forceSkip = true;
             key._force_skip = true;
           }
-        } else if (isPropName) {
-          forceSkip = true;
+        } else {
+          if (isPropName) forceSkip = true;
+          key._insideMemberExpression = true;
         }
       }
     }
