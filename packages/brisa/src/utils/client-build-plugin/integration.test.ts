@@ -5599,6 +5599,38 @@ describe("integration", () => {
       expect(example?.shadowRoot?.innerHTML).toBe("<div>BAR</div>");
     });
 
+    it("should props.state work without conflict with state", () => {
+      const code = `
+        export default function FooComponent(props, { self, state }) {
+          const foo = state('foo')
+
+          return (
+            <div onClick={() => foo.value = props.state}>
+              {foo.value}
+              {props.state}
+            </div>
+          );
+        }
+      `;
+      document.body.innerHTML = `<foo-component state="bar" />`;
+
+      defineBrisaWebComponent(code, "src/web-components/foo-component.tsx");
+
+      const fooComponent = document.querySelector(
+        "foo-component",
+      ) as HTMLElement;
+
+      expect(fooComponent?.shadowRoot?.innerHTML).toBe("<div>foobar</div>");
+
+      fooComponent.setAttribute("state", "baz");
+
+      expect(fooComponent?.shadowRoot?.innerHTML).toBe("<div>foobaz</div>");
+
+      fooComponent.click();
+
+      expect(fooComponent?.shadowRoot?.innerHTML).toBe("<div>bazbaz</div>");
+    });
+
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583
     it.todo(
