@@ -407,6 +407,83 @@ describe("utils", () => {
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
+
+      it("should return as 3th argument the standalone props names from function params", () => {
+        const code = `
+          export default function Component({ foo, bar }) {
+            return <div>{foo} {bar}</div>
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const input = getWebComponentAst(ast)[0] as ESTree.FunctionDeclaration;
+        const propsFromExport = getPropNamesFromExport(ast);
+
+        const [, , propNames] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+          propsFromExport,
+        );
+        const expected = ["foo", "bar"];
+
+        expect(propNames).toEqual(expected);
+      });
+
+      it("should return empty array as 3th argument if there are no standalone props names from function params", () => {
+        const code = `
+          export default function Component(props) {
+            return <div>{props.foo} {props.bar}</div>
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const input = getWebComponentAst(ast)[0] as ESTree.FunctionDeclaration;
+        const propsFromExport = getPropNamesFromExport(ast);
+
+        const [, , propNames] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+          propsFromExport,
+        );
+        const expected: string[] = [];
+
+        expect(propNames).toEqual(expected);
+      });
+
+      it("should return array as 3th argument if there are one standalone props names inside fn body", () => {
+        const code = `
+          export default function Component(props) {
+            const foo = props.foo;
+            return <div>{props.foo} {props.bar}</div>
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const input = getWebComponentAst(ast)[0] as ESTree.FunctionDeclaration;
+        const propsFromExport = getPropNamesFromExport(ast);
+
+        const [, , propNames] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+          propsFromExport,
+        );
+        const expected: string[] = ["foo"];
+
+        expect(propNames).toEqual(expected);
+      });
+
+      it("should 3th argument work with renamed props", () => {
+        const code = `
+          export default function Component({ foo, bar: renamedBar }) {
+            return <div>{foo} {renamedBar}</div>
+          }
+        `;
+        const ast = parseCodeToAST(code);
+        const input = getWebComponentAst(ast)[0] as ESTree.FunctionDeclaration;
+        const propsFromExport = getPropNamesFromExport(ast);
+
+        const [, , propNames] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+          propsFromExport,
+        );
+        const expected = ["foo", "renamedBar"];
+
+        expect(propNames).toEqual(expected);
+      });
     });
   });
 });
