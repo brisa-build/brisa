@@ -146,10 +146,8 @@ export function transformComponentToReactiveProps(
 
   // Recover the component body after the mutation
   const componentBody = component?.body ?? declaration?.init.body;
-  const [observedAttributes, renamedPropsNames] = getPropsNames(
-    component,
-    propNamesFromExport,
-  );
+  const [observedAttributes, renamedPropsNames, destructuredProps] =
+    getPropsNames(component, propNamesFromExport);
   const allVariableNames = new Set([
     ...observedAttributes,
     ...componentVariableNames,
@@ -167,6 +165,7 @@ export function transformComponentToReactiveProps(
     componentBody,
     propsNamesAndRenamesSet,
     propsIdentifierName,
+    destructuredProps,
   );
 
   function traverseB2A(this: any, key: string, value: any) {

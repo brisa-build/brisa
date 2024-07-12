@@ -5599,7 +5599,7 @@ describe("integration", () => {
       expect(example?.shadowRoot?.innerHTML).toBe("<div>BAR</div>");
     });
 
-    it("should props.state work without conflict with state", () => {
+    it("should props.state work without conflict with state", async () => {
       const code = `
         export default function FooComponent(props, { self, state }) {
           const foo = state('foo')
@@ -5626,9 +5626,42 @@ describe("integration", () => {
 
       expect(fooComponent?.shadowRoot?.innerHTML).toBe("<div>foobaz</div>");
 
-      fooComponent.click();
+      const div = fooComponent?.shadowRoot?.querySelector(
+        "div",
+      ) as HTMLDivElement;
+
+      div.click();
+
+      await Bun.sleep(0);
 
       expect(fooComponent?.shadowRoot?.innerHTML).toBe("<div>bazbaz</div>");
+    });
+
+    it("should props.foo work without conflict with external foo variable", () => {
+      const code = `
+        let foo = 'foo'
+        export default function FooComponent(props) {
+          return (
+            <div>
+              {foo}
+              {props.foo}
+            </div>
+          );
+        }
+      `;
+      document.body.innerHTML = `<foo-component foo="bar" />`;
+
+      defineBrisaWebComponent(code, "src/web-components/foo-component.tsx");
+
+      const fooComponent = document.querySelector(
+        "foo-component",
+      ) as HTMLElement;
+
+      expect(fooComponent?.shadowRoot?.innerHTML).toBe("<div>foobar</div>");
+
+      fooComponent.setAttribute("foo", "baz");
+
+      expect(fooComponent?.shadowRoot?.innerHTML).toBe("<div>foobaz</div>");
     });
 
     // TODO: This test should work after this happydom issue about assignedSlot
