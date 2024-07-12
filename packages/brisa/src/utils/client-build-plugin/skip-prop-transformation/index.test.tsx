@@ -18,7 +18,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
       const varIdentifiers = ["foo"];
 
@@ -38,7 +38,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
 
       expect(lines).toEqual(["foo", "console.log(foo);"]);
@@ -59,7 +59,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "bar", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -103,7 +103,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -136,7 +136,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
       const varIdentifiers = ["foo", "foo"];
 
@@ -157,7 +157,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const fooIdentifiers = ["foo", "foo"];
       const barIdentifiers = ["bar", "bar"];
       const bazIdentifiers = ["baz", "baz"];
@@ -204,7 +204,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "foo", "bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -237,7 +237,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
 
       expect(lines).toEqual(["foo", "console.log(foo);"]);
@@ -258,7 +258,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "bar", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -302,7 +302,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -336,7 +336,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(varIdentifiers);
@@ -361,7 +361,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const barIdentifiers = ["foo", "bar", "bar"];
       const bazIdentifiers = ["bar", "baz", "baz"];
       const fooIdentifiers = ["baz", "foo", "foo"];
@@ -409,7 +409,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "bar", "bar", "bar", "baz", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(varIdentifiers);
@@ -445,7 +445,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(varIdentifiers);
@@ -470,7 +470,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["bar", "baz", "foo"];
 
       expect(getOutputCodeLines(out, "bar")).toEqual([
@@ -525,7 +525,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["bar", "bar", "baz", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(varIdentifiers);
@@ -560,7 +560,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "foo", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -588,7 +588,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["bar", "baz", "foo"];
 
       expect(getOutputCodeLines(out, "bar")).toEqual([
@@ -631,7 +631,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "foo", "bar", "bar", "bar", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -676,7 +676,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const varIdentifiers = ["foo", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -704,7 +704,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
 
       expect(getOutputCodeLines(out, "bar")).toEqual([
         "bar",
@@ -752,7 +752,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
       `;
 
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedVarIdentifiers = ["foo", "bar", "bar", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -796,7 +796,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
 
       expect(lines).toEqual([
@@ -819,7 +819,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expected = [
         // Params onClick fn
         "foo",
@@ -850,7 +850,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
         // Param onClick fn
@@ -891,7 +891,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
 
       expect(lines).toEqual([
@@ -915,7 +915,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expected = [
         // Params onClick fn
         "foo",
@@ -942,7 +942,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
         // Param onClick fn
@@ -983,7 +983,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
       const expectedParams = ["foo", "foo"];
 
@@ -1002,7 +1002,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["foo", "foo", "bar", "bar", "baz", "baz"];
       const expected = [
         ...expectedParams,
@@ -1029,7 +1029,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["foo", "foo", "bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -1061,7 +1061,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1083,7 +1083,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1108,7 +1108,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar", "baz", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1143,7 +1143,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1165,7 +1165,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz", "quux"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "baz", "quux"];
       const expected = [
         ...expectedParams,
@@ -1193,7 +1193,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1226,7 +1226,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1248,7 +1248,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz", "quux"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar", "baz", "baz", "quux", "quux"];
       const expected = [
         ...expectedParams,
@@ -1276,7 +1276,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar", "baz", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1309,7 +1309,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
 
       expect(lines).toEqual(["foo", "console.log(foo);"]);
@@ -1327,7 +1327,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expected = [
         // Params onClick fn
         "foo",
@@ -1358,7 +1358,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["foo", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -1390,7 +1390,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["foo", "foo", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -1415,7 +1415,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1440,7 +1440,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["foo", "foo", "bar", "bar", "bar", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -1480,7 +1480,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
 
       expect(lines).toEqual([
@@ -1503,7 +1503,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expected = [
         // Param onClick fn
         "foo",
@@ -1534,7 +1534,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
         // Param onClick fn
@@ -1573,7 +1573,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
       const expectedParams = ["foo", "foo"];
 
@@ -1592,7 +1592,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expected = [
         // Params onClick fn
         "foo",
@@ -1626,7 +1626,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["foo", "foo", "bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
@@ -1658,7 +1658,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1680,7 +1680,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1705,7 +1705,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "bar", "baz", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1735,7 +1735,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
 
       expect(getOutputCodeLines(out, "foo")).toEqual(["bar"]);
       expect(getOutputCodeLines(out, "bar")).toEqual([
@@ -1756,7 +1756,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz", "quux"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "baz", "quux"];
       const expected = [
         ...expectedParams,
@@ -1784,7 +1784,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = ["bar", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(expectedParams);
@@ -1815,7 +1815,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const fnParams = ["bar", "bar"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(fnParams);
@@ -1837,7 +1837,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz", "quux"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expectedParams = [
         // onClick fn params
         "bar",
@@ -1875,7 +1875,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const paramUsedsFn = ["bar", "bar", "baz", "baz"];
 
       expect(getOutputCodeLines(out, "foo")).toEqual(paramUsedsFn);
@@ -1905,7 +1905,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const lines = getOutputCodeLines(out, "foo");
 
       expect(lines).toEqual(["foo", "console.log(foo)"]);
@@ -1923,7 +1923,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
       const expected = [
         // Param onClick fn
         "foo",
@@ -1954,7 +1954,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
         // Param onClick fn
@@ -1993,7 +1993,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
         // Params Component
@@ -2027,7 +2027,7 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar"]);
-      const out = applySkipTest(code, props);
+      const out = applySkipTest(code, props, "", new Set(["foo"]));
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
         // Param onClick fn
@@ -2056,7 +2056,8 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         }
       `;
       const props = new Set(["foo", "bar", "baz"]);
-      const out = applySkipTest(code, props);
+      const standalonProps = new Set(["foo"]);
+      const out = applySkipTest(code, props, "", standalonProps);
 
       expect(getOutputCodeLines(out, "foo")).toEqual([
         // Component param fn:
@@ -2142,6 +2143,8 @@ describe("client-build-plugin/skip-prop-transformation", () => {
         "bar",
         "baz",
         "quux",
+        // JSX
+        "foo",
       ]);
     });
     it("should skip after the prop name", () => {
@@ -2435,6 +2438,7 @@ function applySkipTest(
   inputCode: string,
   props: Set<string>,
   propsIdentifier: string = "props",
+  standaloneProps: Set<string> = new Set(),
 ) {
   const ast = parseCodeToAST(inputCode);
   const [component] = getWebComponentAst(ast);
@@ -2442,7 +2446,12 @@ function applySkipTest(
   const componentBody = component?.body ?? declaration?.init.body;
   return JSON.stringify(
     componentBody,
-    skipPropTransformation(componentBody, props, propsIdentifier),
+    skipPropTransformation(
+      componentBody,
+      props,
+      propsIdentifier,
+      standaloneProps,
+    ),
   );
 }
 
@@ -2464,15 +2473,21 @@ function getOutputCodeLines(out: string, byProp: string) {
       skipped.push(value);
     }
 
+    const AVOIDED_NAMES_FOR_READABILITY = new Set([
+      "console",
+      "log",
+      "test",
+      "onClick",
+      "jsxDEV",
+      "children",
+      "undefined",
+    ]);
+
     if (
       value?.type === "Identifier" &&
       value?._force_skip &&
       // Avoid console.log to improve the tests readability
-      value?.name !== "console" &&
-      value?.name !== "log" &&
-      // Avoid test and onClick to improve the tests readability
-      value?.name !== "test" &&
-      value?.name !== "onClick"
+      !AVOIDED_NAMES_FOR_READABILITY.has(value?.name)
     ) {
       skipped.push(value);
     }
