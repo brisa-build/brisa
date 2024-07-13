@@ -164,6 +164,7 @@ export default defineConfig({
           {
             text: "💅 Styling",
             collapsed: true,
+            link: "/building-your-application/styling/index",
             items: [
               {
                 text: "Global styles",
