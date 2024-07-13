@@ -166,8 +166,32 @@ export default defineConfig({
             collapsed: true,
             items: [
               {
-                text: "WIP",
-                link: "/wip",
+                text: "Global styles",
+                link: "/building-your-application/styling/global-styles",
+              },
+              {
+                text: "CSS Modules",
+                link: "/building-your-application/styling/css-modules",
+              },
+              {
+                text: "CSS Template literal",
+                link: "/building-your-application/styling/css-template-literal",
+              },
+              {
+                text: "CSS inlined in JSX",
+                link: "/building-your-application/styling/css-inlined-in-jsx",
+              },
+              {
+                text: "Tailwind CSS",
+                link: "/building-your-application/styling/tailwind-css",
+              },
+              {
+                text: "Styling Web Components",
+                link: "/building-your-application/styling/web-components",
+              },
+              {
+                text: "Styling Server Components",
+                link: "/building-your-application/styling/server-components",
               },
             ],
           },
