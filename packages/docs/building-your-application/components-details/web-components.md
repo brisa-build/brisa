@@ -366,6 +366,12 @@ export default function ColorSVG({}: any, { state }: WebContext) {
 }
 ```
 
+> [!NOTE]
+>
+> **Good to know**: Brisa internally uses [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent) to communicate between Web Components. It is also used for communication between Web Components and Server Components via [Server Actions](/building-your-application/data-fetching/server-actions#server-actions).
+>
+> All event listeners are automatically added and cleaned up by Brisa.
+
 ### DOM events
 
 As web components are DOM elements, they also automatically have their own events. You can capture an `onClick` of any Web Component without the need to implement it inside:
