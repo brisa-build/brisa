@@ -93,7 +93,11 @@ export default function transformToReactiveArrays(
         continue;
       }
 
-      if (prop?.type === "SpreadElement" && !IS_SERVE_PROCESS && !logsPerFile.has(path)) {
+      if (
+        prop?.type === "SpreadElement" &&
+        !IS_SERVE_PROCESS &&
+        !logsPerFile.has(path)
+      ) {
         const warnMessages = [
           `You can't use spread props inside web-components JSX.`,
           `This can cause the lost of reactivity.`,

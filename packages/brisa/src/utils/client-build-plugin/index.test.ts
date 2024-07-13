@@ -11,7 +11,7 @@ describe("utils", () => {
     afterEach(() => {
       logsPerFile.clear();
       delete globalThis.mockConstants;
-    })
+    });
     describe("without transformation", () => {
       it("should not transform if is inside _native folder", () => {
         const input = `
@@ -349,7 +349,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => { });
+        mockLog.mockImplementation(() => {});
 
         const input = `
             function Test(props) {
@@ -1460,7 +1460,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => { });
+        mockLog.mockImplementation(() => {});
 
         const input = `
           export default function MyComponent(props) {
@@ -1510,10 +1510,10 @@ describe("utils", () => {
         ]);
       });
 
-      it('should log warning spread props inside JSX once per file', () => {
+      it("should log warning spread props inside JSX once per file", () => {
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => { });
+        mockLog.mockImplementation(() => {});
 
         const input = `
           export default function MyComponent(props) {
@@ -1538,13 +1538,16 @@ describe("utils", () => {
         mockLog.mockRestore();
         expect(output).toBe(expected);
         expect(logs.length).toBe(numLogsEachTime);
-      })
+      });
 
-      it('should NOT log warning spread props inside JSX when IS_SERVE_PROCESS is tru (hot-reloading)', () => {
-        globalThis.mockConstants = { ...getConstants(), IS_SERVE_PROCESS: true };
+      it("should NOT log warning spread props inside JSX when IS_SERVE_PROCESS is tru (hot-reloading)", () => {
+        globalThis.mockConstants = {
+          ...getConstants(),
+          IS_SERVE_PROCESS: true,
+        };
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => { });
+        mockLog.mockImplementation(() => {});
 
         const input = `
           export default function MyComponent(props) {
