@@ -7,11 +7,13 @@ import {
 import wrapWithArrowFn from "@/utils/client-build-plugin/wrap-with-arrow-fn";
 import { logError, logWarning } from "@/utils/log/log-build";
 
+export const logsPerFile = new Set<string | undefined>();
+
 export default function transformToReactiveArrays(
   ast: ESTree.Program,
   path?: string,
 ) {
-  const { BOOLEANS_IN_HTML } = getConstants();
+  const { BOOLEANS_IN_HTML, IS_SERVE_PROCESS } = getConstants();
 
   function traverseAToB(key: string, value: any) {
     // css`color: ${someVar.value};` -> css`color: ${() => someVar.value};`
@@ -91,7 +93,7 @@ export default function transformToReactiveArrays(
         continue;
       }
 
-      if (prop?.type === "SpreadElement") {
+      if (prop?.type === "SpreadElement" && !IS_SERVE_PROCESS && !logsPerFile.has(path)) {
         const warnMessages = [
           `You can't use spread props inside web-components JSX.`,
           `This can cause the lost of reactivity.`,
@@ -103,6 +105,7 @@ export default function transformToReactiveArrays(
           warnMessages,
           "Docs: https://brisa.build/building-your-application/components-details/web-components",
         );
+        logsPerFile.add(path);
       }
 
       // <div open={true} /> -> <div open />

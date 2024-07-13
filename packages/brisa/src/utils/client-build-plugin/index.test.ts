@@ -1,12 +1,17 @@
-import { describe, expect, it, spyOn } from "bun:test";
+import { describe, expect, it, spyOn, afterEach } from "bun:test";
 import clientBuildPlugin from ".";
 import { getConstants } from "@/constants";
 import { boldLog } from "@/utils/log/log-color";
+import { logsPerFile } from "@/utils/client-build-plugin/transform-to-reactive-arrays";
 
 const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
 
 describe("utils", () => {
   describe("client-build-plugin", () => {
+    afterEach(() => {
+      logsPerFile.clear();
+      delete globalThis.mockConstants;
+    })
     describe("without transformation", () => {
       it("should not transform if is inside _native folder", () => {
         const input = `
@@ -344,7 +349,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => {});
+        mockLog.mockImplementation(() => { });
 
         const input = `
             function Test(props) {
@@ -1455,7 +1460,7 @@ describe("utils", () => {
         const { LOG_PREFIX } = getConstants();
         const mockLog = spyOn(console, "log");
 
-        mockLog.mockImplementation(() => {});
+        mockLog.mockImplementation(() => { });
 
         const input = `
           export default function MyComponent(props) {
@@ -1503,6 +1508,69 @@ describe("utils", () => {
           LOG_PREFIX.WARN,
           `Docs: https://brisa.build/building-your-application/components-details/web-components`,
         ]);
+      });
+
+      it('should log warning spread props inside JSX once per file', () => {
+        const mockLog = spyOn(console, "log");
+
+        mockLog.mockImplementation(() => { });
+
+        const input = `
+          export default function MyComponent(props) {
+            return <div {...props}><span {...props}></span></div>
+          }
+        `;
+        const output = toInline(
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+        );
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          function MyComponent(props) {
+            return ['div', {...props}, ['span', {...props}, '']];
+          }
+
+          export default brisaElement(MyComponent);
+        `);
+        const logs = mockLog.mock.calls.slice(0);
+        const numLogsEachTime = 7;
+
+        mockLog.mockRestore();
+        expect(output).toBe(expected);
+        expect(logs.length).toBe(numLogsEachTime);
+      })
+
+      it('should NOT log warning spread props inside JSX when IS_SERVE_PROCESS is tru (hot-reloading)', () => {
+        globalThis.mockConstants = { ...getConstants(), IS_SERVE_PROCESS: true };
+        const mockLog = spyOn(console, "log");
+
+        mockLog.mockImplementation(() => { });
+
+        const input = `
+          export default function MyComponent(props) {
+            return <div {...props}>Example</div>
+          }
+        `;
+
+        const output = toInline(
+          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+        );
+
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+
+          function MyComponent(props) {
+            return ['div', {...props}, 'Example'];
+          }
+
+          export default brisaElement(MyComponent);
+        `);
+
+        const logs = mockLog.mock.calls.slice(0);
+        mockLog.mockRestore();
+
+        expect(output).toBe(expected);
+        expect(logs.length).toBe(0);
       });
     });
   });
