@@ -3003,7 +3003,7 @@ declare global {
       TargetedEvent<Target, PictureInPictureEvent>;
 
     export type EventHandler<E extends TargetedEvent> = {
-      bivarianceHack(event: E): void | Promise<void>;
+      bivarianceHack(event: E): unknown;
     }["bivarianceHack"];
 
     export type AnimationEventHandler<Target extends EventTarget> =
@@ -8471,6 +8471,9 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Attr/prefix)
        */
       prefix?: string | undefined;
+
+      // Meta Attributes
+      property?: string | undefined;
 
       // Microdata Attributes
 
