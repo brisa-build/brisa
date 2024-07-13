@@ -15,6 +15,16 @@ Brisa provides a different ways to style your web components, including:
 
 Web components by default encapsulate their styles inside their shadow DOM, the downside of this is that you can't style them from the outside, so global styles won't affect them. In Brisa, we adopted by default the global style sheets to the shadow DOM, in this way works more like others frameworks like React or Vue and you don't need to worry about this.
 
+To apply global styles, you need to import the CSS file in the **`src/layout.tsx`** file:
+
+```tsx
+import "./global.css";
+```
+
+> [!NOTE]
+>
+> For more information about global styles, check the [Global Styles](/building-your-application/styling/global-styles) page.
+
 However, if you want to disable the automatic adopted global style sheets, you can do it by resetting the [`adoptedStyleSheets`](https://developer.mozilla.org/en-US/docs/Web/API/Document/adoptedStyleSheets) property:
 
 ```tsx
@@ -38,16 +48,6 @@ export default function MyWebComponent({}, { effect, self, css }: WebContext) {
   return <div>Hello World</div>;
 }
 ```
-
-To apply global styles, you need to import the CSS file in the **`src/layout.tsx`** file:
-
-```tsx
-import "./global.css";
-```
-
-> [!NOTE]
->
-> For more information about global styles, check the [Global Styles](/building-your-application/styling/global-styles) page.
 
 ## CSS Template String
 
