@@ -14,7 +14,7 @@ const modelPromise = window.ai?.createTextSession?.();
 
 export default function ErrorDialog(
   {},
-  { store, css, effect, state, cleanup, derived }: WebContext,
+  { store, css, effect, state, cleanup, derived, self }: WebContext,
 ) {
   const displayDialog = state(true);
   const loadingAIResponse = state(false);
@@ -22,6 +22,10 @@ export default function ErrorDialog(
   const errors = derived(() => store.get<Error[]>(ERROR_STORE_KEY) ?? []);
   const numErrors = derived(() => errors.value?.length ?? 0);
   const currentIndex = state(0);
+
+  effect(() => {
+    self!.shadowRoot!.adoptedStyleSheets = [];
+  });
 
   function onClose() {
     displayDialog.value = false;
