@@ -36,9 +36,9 @@
     "validate-urls": "bun run scripts/validate-urls.ts",
     "www:dev": "bun run --cwd packages/www dev"
   },
-  "packageManager": "bun@1.1.18",
+  "packageManager": "bun@1.1.20",
   "engines": {
-    "bun": ">= 1.1.18",
+    "bun": ">= 1.1.20",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
