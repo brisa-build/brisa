@@ -7,10 +7,10 @@ description: Learn how to style your web components in Brisa
 
 Brisa provides a different ways to style your web components, including:
 
-- **Global Styles in Web Components**: By default, Brisa adopts the global style sheets to the shadow DOM, so you don't need to worry about this.
-- **CSS Template String**: A powerful way to create reactive styles to signals within web components.
-- **CSS Modules**: You can import CSS files directly into your web components. It's useful to separate styles into different files.
-- **CSS inlined in JSX**: You can use the `style` attribute to apply styles directly to the HTML element.
+- [**Global Styles in Web Components**](#global-styles-in-web-components): By default, Brisa adopts the global style sheets to the shadow DOM, so you don't need to worry about this.
+- [**CSS Template String**](#css-template-string): A powerful way to create reactive styles to signals within web components.
+- [**CSS Modules**](#css-modules): You can import CSS files directly into your web components. It's useful to separate styles into different files.
+- [**CSS inlined in JSX**](#css-inlined-in-jsx): You can use the `style` attribute to apply styles directly to the HTML element.
 
 ## Global Styles in Web Components
 
