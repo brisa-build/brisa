@@ -36,6 +36,18 @@ By default, without the [`renderMode`](/api-reference/extended-html-attributes/r
 
 Although it is a DOM diff it works with incremental rendering, that is to say, that if the following page uses suspense, when processing the diff with HTML streaming the suspense mode continues working.
 
+> [!TIP]
+>
+> The `reactivity` updates only the content of the page that has changed, keeping the rest of the page intact. This is useful for maintaining the state of the web components that are still visible.
+
+> [!NOTE]
+>
+> **Good to know**:
+>
+> With `reactivity` render mode (like SPA), we prioritizes the **preservation of `<body>` attributes** during the HTML diffing process. This design choice grants developers greater control over runtime modifications, such as themes, fonts, and other display properties managed through `BODY` tag attributes.
+>
+> Many of these decisions are actions performed by users at runtime. It would be disruptive if a user changed the theme of the page, only for that change to be lost upon navigation.
+
 ## Navigation with transition
 
 There are times when we want to make transition animations between one page and another. To achieve this we can use the [`renderMode`](/api-reference/extended-html-attributes/renderMode) attribute of `<a>` to specify that this navigation uses the [View Transition AP](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API).
