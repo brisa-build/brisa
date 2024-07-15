@@ -274,7 +274,7 @@ export async function transformToWebComponents({
   }
 
   return {
-    code: await outputs[0].text(),
+    code: "(() => {" + (await outputs[0].text()) + "})();",
     size: outputs[0].size,
     useI18n,
     i18nKeys,
