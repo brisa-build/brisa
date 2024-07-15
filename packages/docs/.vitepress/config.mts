@@ -225,6 +225,10 @@ export default defineConfig({
                 link: "/building-your-application/configuring/trailing-slash",
               },
               {
+                text: "Asset compression",
+                link: "/building-your-application/configuring/asset-compression",
+              },
+              {
                 text: "Asset prefix",
                 link: "/building-your-application/configuring/asset-prefix",
               },
