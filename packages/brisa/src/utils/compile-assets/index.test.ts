@@ -37,6 +37,9 @@ describe("compileAssets", () => {
       SRC_DIR,
       ASSETS_DIR,
       IS_PRODUCTION: true,
+      CONFIG: {
+        assetCompression: true,
+      },
     };
   });
 
@@ -73,6 +76,14 @@ describe("compileAssets", () => {
 
   it("should not compress fixtures assets in development", async () => {
     globalThis.mockConstants!.IS_PRODUCTION = false;
+    await compileAssets();
+    expect(fs.readdirSync(path.join(BUILD_DIR, "public")).toSorted()).toEqual(
+      ["favicon.ico", "some-dir"].toSorted(),
+    );
+  });
+
+  it("should not compress fixtures assets if assetCompression is false", async () => {
+    globalThis.mockConstants!.CONFIG!.assetCompression = false;
     await compileAssets();
     expect(fs.readdirSync(path.join(BUILD_DIR, "public")).toSorted()).toEqual(
       ["favicon.ico", "some-dir"].toSorted(),
