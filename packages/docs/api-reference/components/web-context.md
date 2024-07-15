@@ -420,20 +420,6 @@ export default function SearchResult({}, { params }: WebContext) {
 }
 ```
 
-Types:
-
-**web-context.d.ts**
-
-```ts
-import "brisa";
-
-declare module "brisa" {
-  interface WebContext {
-    params: Signal<{ [k: string]: string }>;
-  }
-}
-```
-
 > [!NOTE]
 >
 > Ultimately, we believe that the **JavaScript community** will contribute more refined signals than these examples. We encourage developers to share their signals with the community to enhance the Brisa ecosystem.
@@ -455,6 +441,11 @@ declare module "brisa" {
     store: BaseWebContext["store"] & {
       sync: (key: string, storage?: "localStorage" | "sessionStorage") => void;
     };
+
+    /**
+     * Reactive URL params
+     */
+    params: Signal<{ [k: string]: string }>;
   }
 }
 ```
