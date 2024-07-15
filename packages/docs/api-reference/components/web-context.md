@@ -420,6 +420,10 @@ export default function SearchResult({}, { params }: WebContext) {
 }
 ```
 
+> [!TIP]
+>
+> A web component in the layout is not unmounted after SPA navigation. Therefore, we need the `params` signal to be reactive and update the component when the URL changes.
+
 > [!NOTE]
 >
 > Ultimately, we believe that the **JavaScript community** will contribute more refined signals than these examples. We encourage developers to share their signals with the community to enhance the Brisa ecosystem.
