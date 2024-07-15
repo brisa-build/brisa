@@ -703,9 +703,9 @@ export type JSXElement =
   | Primitives
   | JSXElement[]
   | {
-    type: Type;
-    props: Props;
-  };
+      type: Type;
+      props: Props;
+    };
 
 export interface ComponentType extends JSXComponent {
   error: (
@@ -728,14 +728,14 @@ export type JSXComponent<
 
 export type ExtendPluginOptions =
   | {
-    dev: boolean;
-    isServer: true;
-  }
+      dev: boolean;
+      isServer: true;
+    }
   | {
-    dev: boolean;
-    isServer: false;
-    entrypoint: string;
-  };
+      dev: boolean;
+      isServer: false;
+      entrypoint: string;
+    };
 
 export type ExtendPlugins = (
   plugins: BunPlugin[],
@@ -894,9 +894,9 @@ export type Configuration = {
    * using a CDN.
    *
    * **CAUTION**: This feature increases the build time.
-   * 
+   *
    * Docs:
-   * 
+   *
    * - [How to use `assetCompression`](https://brisa.build/building-your-application/configuring/asset-compression)
    */
   assetCompression?: boolean;
@@ -948,7 +948,8 @@ type RouterType = {
   reservedRoutes: Record<string, MatchedRoute | null>;
 };
 
-type RemovePlural<Key extends string> = Key extends `${infer Prefix}${| "_zero"
+type RemovePlural<Key extends string> = Key extends `${infer Prefix}${
+  | "_zero"
   | "_one"
   | "_two"
   | "_few"
@@ -960,15 +961,15 @@ type RemovePlural<Key extends string> = Key extends `${infer Prefix}${| "_zero"
 
 type Join<S1, S2> = S1 extends string
   ? S2 extends string
-  ? `${S1}.${S2}`
-  : never
+    ? `${S1}.${S2}`
+    : never
   : never;
 
 export type Paths<T> = RemovePlural<
   {
     [K in Extract<keyof T, string>]: T[K] extends Record<string, unknown>
-    ? Join<K, Paths<T[K]>>
-    : K;
+      ? Join<K, Paths<T[K]>>
+      : K;
   }[Extract<keyof T, string>]
 >;
 
@@ -1277,19 +1278,19 @@ declare global {
     export type WebComponentAttributes<T extends (...args: any[]) => any> = {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
-        // The "indicate" attribute is used to control the processing state of the web-component action.
-        [K in keyof Parameters<T>[0]as K extends `on${infer Rest}`
+      // The "indicate" attribute is used to control the processing state of the web-component action.
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}`
         ? `indicate${Rest}`
         : never]?: IndicatorSignal | undefined;
-      } & {
-        // The "debounce" attribute is used to debounce the web-component action.
-        [K in keyof Parameters<T>[0]as K extends `on${infer Rest}`
+    } & {
+      // The "debounce" attribute is used to debounce the web-component action.
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}`
         ? `debounce${Rest}`
         : never]?: number | undefined;
-      } & {
-        children?: JSXElement;
-        skipSSR?: boolean;
-      } & HTMLAttributes<HTMLElement>;
+    } & {
+      children?: JSXElement;
+      skipSSR?: boolean;
+    } & HTMLAttributes<HTMLElement>;
 
     export interface CSSProperties extends CSS.Properties<string | number> {
       /**
@@ -1394,13 +1395,13 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-current)
        */
       "aria-current"?:
-      | boolean
-      | "page"
-      | "step"
-      | "location"
-      | "date"
-      | "time"
-      | undefined;
+        | boolean
+        | "page"
+        | "step"
+        | "location"
+        | "date"
+        | "time"
+        | undefined;
       /**
        * Identifies the element (or elements) that describes the object.
        * @see aria-labelledby
@@ -1457,13 +1458,13 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup)
        */
       "aria-haspopup"?:
-      | boolean
-      | "menu"
-      | "listbox"
-      | "tree"
-      | "grid"
-      | "dialog"
-      | undefined;
+        | boolean
+        | "menu"
+        | "listbox"
+        | "tree"
+        | "grid"
+        | "dialog"
+        | undefined;
       /**
        * Indicates whether the element is exposed to an accessibility API.
        * @see aria-disabled.
@@ -1578,17 +1579,17 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-relevant)
        */
       "aria-relevant"?:
-      | "additions"
-      | "additions removals"
-      | "additions text"
-      | "all"
-      | "removals"
-      | "removals additions"
-      | "removals text"
-      | "text"
-      | "text additions"
-      | "text removals"
-      | undefined;
+        | "additions"
+        | "additions removals"
+        | "additions text"
+        | "all"
+        | "removals"
+        | "removals additions"
+        | "removals text"
+        | "text"
+        | "text additions"
+        | "text removals"
+        | undefined;
       /**
        * Indicates that user input is required on the element before a form may be submitted.
        *
@@ -1797,35 +1798,35 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/alignment-baseline)
        */
       alignmentBaseline?:
-      | "auto"
-      | "baseline"
-      | "before-edge"
-      | "text-before-edge"
-      | "middle"
-      | "central"
-      | "after-edge"
-      | "text-after-edge"
-      | "ideographic"
-      | "alphabetic"
-      | "hanging"
-      | "mathematical"
-      | "inherit"
-      | undefined;
+        | "auto"
+        | "baseline"
+        | "before-edge"
+        | "text-before-edge"
+        | "middle"
+        | "central"
+        | "after-edge"
+        | "text-after-edge"
+        | "ideographic"
+        | "alphabetic"
+        | "hanging"
+        | "mathematical"
+        | "inherit"
+        | undefined;
       "alignment-baseline"?:
-      | "auto"
-      | "baseline"
-      | "before-edge"
-      | "text-before-edge"
-      | "middle"
-      | "central"
-      | "after-edge"
-      | "text-after-edge"
-      | "ideographic"
-      | "alphabetic"
-      | "hanging"
-      | "mathematical"
-      | "inherit"
-      | undefined;
+        | "auto"
+        | "baseline"
+        | "before-edge"
+        | "text-before-edge"
+        | "middle"
+        | "central"
+        | "after-edge"
+        | "text-after-edge"
+        | "ideographic"
+        | "alphabetic"
+        | "hanging"
+        | "mathematical"
+        | "inherit"
+        | undefined;
       /**
        * The attributeName attribute defines the name of the attribute to be changed.
        *
@@ -1926,22 +1927,22 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
        */
       colorInterpolationFilters?:
-      | "auto"
-      | "sRGB"
-      | "linearRGB"
-      | "inherit"
-      | undefined;
+        | "auto"
+        | "sRGB"
+        | "linearRGB"
+        | "inherit"
+        | undefined;
       /**
        * The color-interpolation-filters attribute specifies the color space for imaging operations performed via filter effects.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
        */
       "color-interpolation-filters"?:
-      | "auto"
-      | "sRGB"
-      | "linearRGB"
-      | "inherit"
-      | undefined;
+        | "auto"
+        | "sRGB"
+        | "linearRGB"
+        | "inherit"
+        | undefined;
       /**
        * The cursor attribute specifies the mouse cursor displayed when the mouse pointer is over an element.
        *
@@ -7411,8 +7412,8 @@ declare global {
 
     export interface HTMLAttributes<RefType extends EventTarget = EventTarget>
       extends DOMAttributes<RefType>,
-      AriaAttributes,
-      BrisaAttributes {
+        AriaAttributes,
+        BrisaAttributes {
       // Standard HTML Attributes
 
       /**
@@ -7711,14 +7712,14 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/enterkeyhint)
        */
       enterkeyhint?:
-      | "enter"
-      | "done"
-      | "go"
-      | "next"
-      | "previous"
-      | "search"
-      | "send"
-      | undefined;
+        | "enter"
+        | "done"
+        | "go"
+        | "next"
+        | "previous"
+        | "search"
+        | "send"
+        | undefined;
       /**
        * The `elementTiming` attribute is used to indicate that an element is flagged for tracking by PerformanceObserver objects using the "element" type.
        *
@@ -8133,15 +8134,15 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#referrerpolicy)
        */
       referrerpolicy?:
-      | "no-referrer"
-      | "no-referrer-when-downgrade"
-      | "origin"
-      | "origin-when-cross-origin"
-      | "same-origin"
-      | "strict-origin"
-      | "strict-origin-when-cross-origin"
-      | "unsafe-url"
-      | undefined;
+        | "no-referrer"
+        | "no-referrer-when-downgrade"
+        | "origin"
+        | "origin-when-cross-origin"
+        | "same-origin"
+        | "strict-origin"
+        | "strict-origin-when-cross-origin"
+        | "unsafe-url"
+        | undefined;
       /**
        * The `rel` attribute is a string attribute that is present on various elements, such as `<a>` and `<link>`, to specify the relationship between the current document and the linked resource.
        *
@@ -8445,26 +8446,26 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
        */
       autocapitalize?:
-      | "off"
-      | "none"
-      | "on"
-      | "sentences"
-      | "words"
-      | "characters"
-      | undefined;
+        | "off"
+        | "none"
+        | "on"
+        | "sentences"
+        | "words"
+        | "characters"
+        | undefined;
       /**
        * The `allowCapitalize` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the capitalization behavior of the input.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
        */
       autoCapitalize?:
-      | "off"
-      | "none"
-      | "on"
-      | "sentences"
-      | "words"
-      | "characters"
-      | undefined;
+        | "off"
+        | "none"
+        | "on"
+        | "sentences"
+        | "words"
+        | "characters"
+        | undefined;
       /**
        * The `disablePictureInPicture` attribute is a boolean attribute that is present on the `<video>` and `<iframe>` elements to specify that the user should not be able to enter picture-in-picture mode.
        *
@@ -9903,6 +9904,6 @@ export interface BrisaTestMatchers {
 }
 
 declare module "bun:test" {
-  interface Matchers<T> extends BrisaTestMatchers { }
-  interface AsymmetricMatchers<T> extends BrisaTestMatchers { }
+  interface Matchers<T> extends BrisaTestMatchers {}
+  interface AsymmetricMatchers<T> extends BrisaTestMatchers {}
 }
