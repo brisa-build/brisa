@@ -31,7 +31,17 @@ The folder is also useful for `robots.txt`, `favicon.ico`, Google Site Verificat
 
 ## Compression applied to static assets
 
-Brisa automatically compresses static assets in the `public` folder using Brotli and Gzip. This is done at build time, so the server doesn't need to compress the files on the fly.
+Brisa by default don't compresses static assets in the `public` folder using Brotli and Gzip. But you can activate this feature by setting the [`assetCompression`](/building-your-application/configuring/asset-compression) configuration to `true` in the `brisa.config.ts` file.
+
+```ts filename="brisa.config.ts"
+import type { Configuration } from "brisa";
+
+export default {
+  assetCompression: true,
+} satisfies Configuration;
+```
+
+This is done at build time, so the server doesn't need to compress the files on the fly and can serve the compressed files directly to the browser.
 
 When a browser requests a file, it sends an `Accept-Encoding` header to tell the server which compression algorithms it supports. The server then sends the file compressed with the best algorithm supported by the browser.
 
@@ -45,4 +55,4 @@ Brotli is a newer compression algorithm developed by Google that can reduce file
 
 > [!CAUTION]
 >
-> Compression is only applied in production mode.
+> Compression is only applied in production mode when `assetCompression` is set to `true`. In development mode, files are served uncompressed to make debugging easier.
