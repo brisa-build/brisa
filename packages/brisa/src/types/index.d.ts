@@ -877,6 +877,25 @@ export type Configuration = {
    * - [How to use `output`](https://brisa.build/building-your-application/configuring/output)
    */
   output?: "static" | "server" | "desktop" | "android" | "ios";
+
+  /**
+   * Description:
+   *
+   * The `assetCompression` config property is used to enable asset compression (GZIP + Brotli).
+   *
+   * The default value is `false`.
+   *
+   * This compression is applied to all assets inside the `public` folder.
+   * This includes images, fonts, and other files. It is useful to improve
+   * the performance of your application when instead of using a CDN you are
+   * serving the assets from your server.
+   *
+   * **CAUTION**: Probably you don't need to enable this feature if you are
+   * using a CDN.
+   *
+   * **CAUTION**: This feature increases the build time.
+   */
+  assetCompression?: boolean;
 };
 
 export interface I18nDictionary {
