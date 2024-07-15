@@ -179,6 +179,10 @@ export default function DoubleCounter({}, { state, derived }: WebContext) {
 }
 ```
 
+In this example, `double` is a signal that depends on `count`. When `count` changes, `double` will automatically update.
+
+If you want to create a custom signal inside the `WebContext` to re-use it in multiple components, you can use [expand the `WebContext`](/api-reference/components/web-context#expanding-the-webcontext).
+
 ## Can I use signals in the server?
 
 No directly. The signals are reactive and they are used in the client-side. However, action-signals concept exists and you can use the server [`store`](/building-your-application/components-details/server-components#store-store-method) method and transfer some store fields to the client-side and reactively update them on a server action.

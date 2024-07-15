@@ -293,6 +293,24 @@ The `WebContext` in Brisa is intentionally designed to be extensible, providing 
 
 To add plugins, you must add them in the `webContextPlugins` named export of the `/src/web-components/_integrations.(ts|tsx|js|jsx)` file.
 
+**Params**:
+
+Receives the preceding `WebContext`. Plugins are executed sequentially; if it is the initial plugin, it will contain the original `WebContext`, whereas for subsequent plugins, it will incorporate the `WebContext` modified by the preceding plugin.
+
+**Return**:
+
+The output will be the `WebContext` extended by the functionalities implemented in your plugin.
+
+> [!CAUTION]
+>
+> It is imperative to consistently return the remaining context properties to prevent potential disruptions in web-component functionality.
+
+> [!CAUTION]
+>
+> Note that the `WebContext` is utilized in server-side rendering (SSR) as well. Take this into consideration, as certain extensions may not be suitable for server-side usage. Therefore, it is recommended to employ `typeof window === 'undefined'` to determine if the code is running on the server.
+
+### Example: Tab Synchronization
+
 **src/web-components/\_integrations.tsx:**
 
 ```tsx
@@ -351,23 +369,74 @@ export default async function WebComponent({ }, { store }: WebContext) {
 
 The approach to synchronizing tabs can be implemented in various ways: using web sockets, monitoring tab focus, or utilizing storage events, as demonstrated in this example. From Brisa's perspective, implementing specific signals for such scenarios might be too project-specific. Therefore, we offer the flexibility to extend these signals and access web component core extras for greater control.
 
-Ultimately, we believe that the JavaScript community will contribute more refined signals than this example of tab synchronization.
+### Example: Reactive URL Params
 
-**Params**:
+This is another example to have `params` of the `url` reactive, working with SPA navigation, for example for filtering a list of items using the URL query parameters as state:
 
-Receives the preceding `WebContext`. Plugins are executed sequentially; if it is the initial plugin, it will contain the original `WebContext`, whereas for subsequent plugins, it will incorporate the `WebContext` modified by the preceding plugin.
+**src/web-components/\_integrations.tsx**
 
-**Return**:
+```tsx
+import type { WebContext, WebContextPlugin } from "brisa";
 
-The output will be the `WebContext` extended by the functionalities implemented in your plugin.
+function paramsPlugin(ctx: WebContext) {
+  Object.assign(ctx, {
+    get params() {
+      let params = ctx.state<{ [k: string]: string }>();
 
-> [!CAUTION]
+      ctx.effect(() => {
+        params.value = Object.fromEntries(
+          new URLSearchParams(window.location.search).entries(),
+        );
+
+        const navigate = (e: any) => {
+          params.value = Object.fromEntries(
+            new URL(e.destination.url).searchParams.entries(),
+          );
+        };
+
+        window.navigation?.addEventListener("navigate", navigate);
+        ctx.cleanup(
+          () => window.navigation?.removeEventListener("navigate", navigate),
+        );
+      });
+
+      return params;
+    },
+  });
+
+  return ctx;
+}
+
+export const webContextPlugins: WebContextPlugin[] = [paramsPlugin];
+```
+
+Usage:
+
+```tsx
+import type { WebContext } from "brisa";
+
+export default function SearchResult({}, { params }: WebContext) {
+  return <div>{params.value?.q}</div>;
+}
+```
+
+Types:
+
+**web-context.d.ts**
+
+```ts
+import "brisa";
+
+declare module "brisa" {
+  interface WebContext {
+    params: Signal<{ [k: string]: string }>;
+  }
+}
+```
+
+> [!NOTE]
 >
-> It is imperative to consistently return the remaining context properties to prevent potential disruptions in web-component functionality.
-
-> [!CAUTION]
->
-> Note that the `WebContext` is utilized in server-side rendering (SSR) as well. Take this into consideration, as certain extensions may not be suitable for server-side usage. Therefore, it is recommended to employ `typeof window === 'undefined'` to determine if the code is running on the server.
+> Ultimately, we believe that the **JavaScript community** will contribute more refined signals than these examples. We encourage developers to share their signals with the community to enhance the Brisa ecosystem.
 
 ### TypeScript
 
