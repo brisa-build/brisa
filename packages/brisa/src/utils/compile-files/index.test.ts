@@ -101,6 +101,7 @@ describe("utils", () => {
         BUILD_DIR,
         CONFIG: {
           ...constants.CONFIG,
+          assetCompression: true,
           extendPlugins: (plugins, options) => {
             mockExtendPlugins(plugins, options);
             return plugins;
