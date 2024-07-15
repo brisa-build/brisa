@@ -35,7 +35,7 @@ export default async function WebComponent() {
 
 In the same way, you can fetch data in the [`middleware`](/building-your-application/routing/middleware), [`layout`](/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/building-your-application/routing/suspense-and-streaming), etc, and share the data with the rest of the application.
 
-### Suspense phase
+## Suspense phase
 
 Each component (server-component and web-component) allows an extension to add a [`suspense` component](/building-your-application/routing/suspense-and-streaming) to it, which is the fallback that will be displayed while the component loads.
 
@@ -47,7 +47,7 @@ SomeComponent.suspense = ({}, { i18n }) => {
 
 Suspense is useful during HTML streaming, while the server loads the data the suspense content is displayed, and once the server loads the data, during streaming the suspense is changed to the real content, all this without the client having to make any request to the server.
 
-### Async generators
+## Async generators
 
 async generators are also supported if you want to stream every item in a list for example:
 
@@ -67,7 +67,7 @@ return <List />;
 
 And the HTML is resolved via streaming.
 
-### Share server-server data between components
+## Share server-server data between components
 
 To share data across all parts of the server ([`middleware`](/building-your-application/routing/middleware), [`layout`](/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
 
@@ -148,7 +148,7 @@ The `RequestContext` is an extension of the [Request](https://developer.mozilla.
 >
 > If your data is utilized in multiple locations, and you wish to display the suspense at the lowest-level component while making only one request, we recommend passing down the [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) and resolving it in all child components that utilize this data.
 
-### Share web-web data between components
+## Share web-web data between components
 
 To share data across all web components there are also the same two ways:
 
@@ -232,7 +232,7 @@ We recommend that whenever possible you add the data to the `store`. And use the
 
 The reason is that the **Context API is more expensive** and it creates a DOM element (`context-provider`).
 
-#### Re-fetch data in web components
+### Re-fetch data in web components
 
 [Web-components](/building-your-application/components-details/web-components) are reactive, and although they are only rendered once when the component is mounted, an [`effect`](/building-your-application/components-details/web-components#effects-effect-method) can be used to do a `re-fetch` whenever a signal (prop, state, store, context...) changes.
 
@@ -258,7 +258,7 @@ An `effect` can be `async/await` without any problems.
 
 In this example, every time the `foo` prop signal inside the `effect` changes, the effect will be executed again. When updating the store, all web-components that reactively consumed this store entry will be updated with the new data.
 
-### Share server-web data between components
+## Share server-web data between components
 
 To share data across all parts of the server and web there are two ways:
 

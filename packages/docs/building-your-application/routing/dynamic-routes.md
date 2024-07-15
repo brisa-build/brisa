@@ -56,3 +56,19 @@ The difference between **catch-all** and **optional catch-all** segments is that
 | `pages/shop/[[...slug]].js` | `/shop/a`     | `{ slug: ['a'] }`           |
 | `pages/shop/[[...slug]].js` | `/shop/a/b`   | `{ slug: ['a', 'b'] }`      |
 | `pages/shop/[[...slug]].js` | `/shop/a/b/c` | `{ slug: ['a', 'b', 'c'] }` |
+
+## Prerender pages to convert dynamic to static routes
+
+When you have a dynamic route that you want to prerender to a static route, you can use the [`prerender`](/building-your-application/configuring/static-pages#prerender-dynamic-routes) function.
+
+```tsx
+export function prerender({ route }) {
+  return [{ slug: 'a' }, { slug: 'b' }],
+}
+
+export default function BlogPost(props, { route }) {
+  return <p>Post: {route.query.slug}</p>;
+}
+```
+
+This will create two static pages: `/blog/a` and `/blog/b`. The rest of the dynamic routes will be handled at runtime.
