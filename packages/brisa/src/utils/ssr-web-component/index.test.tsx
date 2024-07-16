@@ -661,5 +661,46 @@ describe("utils", () => {
         "hello world",
       );
     });
+
+    it('should work "self.shadowRoot.adoptedStyleSheets = []" in SSR', async () => {
+      const Component = ({}, { self }: WebContext) => {
+        self.shadowRoot!.adoptedStyleSheets = [];
+        return <div>hello world</div>;
+      };
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.__skipGlobalCSS).toBe(true);
+    });
+
+    it('should __skipGlobalCSS be false whithout "self.shadowRoot.adoptedStyleSheets = []"', async () => {
+      const Component = ({}, { self }: WebContext) => {
+        return <div>hello world</div>;
+      };
+      const selector = "my-component";
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe("template");
+      expect(output.props.children[0].props.shadowrootmode).toBe("open");
+      expect(output.props.children[0].props.__skipGlobalCSS).toBe(false);
+    });
   });
 });

@@ -13,7 +13,13 @@ import {
 import renderToReadableStream from ".";
 import { getConstants } from "@/constants";
 import { normalizeQuotes, toInline } from "@/helpers";
-import type { ComponentType, I18n, RequestContext, Translate } from "@/types";
+import type {
+  ComponentType,
+  I18n,
+  RequestContext,
+  Translate,
+  WebContext,
+} from "@/types";
 import createContext from "@/utils/create-context";
 import navigate from "@/utils/navigate";
 import dangerHTML from "@/utils/danger-html";
@@ -3537,6 +3543,41 @@ describe("utils", () => {
               <test>
                 <template shadowrootmode="open">
                   <link rel="stylesheet" href="test.css"></link>
+                  <div>test</div>
+                </template>
+              </test>
+            </body>
+          </html>`),
+      );
+    });
+
+    it("should NOT add a global style inside the declarative shadow DOM with 'self.shadowRoot.adoptedStyleSheets = []'", async () => {
+      const Component = ({}, { self }: WebContext) => {
+        self.shadowRoot!.adoptedStyleSheets = [];
+        return <div>test</div>;
+      };
+
+      const stream = renderToReadableStream(
+        <html>
+          <head>
+            <link rel="stylesheet" href="test.css"></link>
+          </head>
+          <body>
+            <SSRWebComponent Component={Component} selector="test" />
+          </body>
+        </html>,
+        testOptions,
+      );
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(normalizeQuotes(result)).toBe(
+        normalizeQuotes(`<html>
+            <head>
+              <link rel="stylesheet" href="test.css"></link>
+            </head>
+            <body>
+              <test>
+                <template shadowrootmode="open">
                   <div>test</div>
                 </template>
               </test>

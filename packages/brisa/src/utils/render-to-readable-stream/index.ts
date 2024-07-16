@@ -337,7 +337,11 @@ async function enqueueDuringRendering(
     }
 
     // Add global styles inside Declarative Shadow DOM of Web Components
-    else if (type === "template" && props.shadowrootmode === "open") {
+    else if (
+      type === "template" &&
+      props.shadowrootmode === "open" &&
+      !props.__skipGlobalCSS
+    ) {
       controller.enqueue(controller.styleSheetsChunks.join(""), suspenseId);
     }
 
