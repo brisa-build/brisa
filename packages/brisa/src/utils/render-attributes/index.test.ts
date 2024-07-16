@@ -1434,5 +1434,21 @@ describe("utils", () => {
 
       expect(attributes).toBe(` data-action`);
     });
+
+    it("should ignore __skipGlobalCSS attribute", () => {
+      const request = extendRequestContext({
+        originalRequest: new Request("https://example.com"),
+      });
+
+      const attributes = renderAttributes({
+        elementProps: {
+          __skipGlobalCSS: true,
+        },
+        request,
+        type: "div",
+      });
+
+      expect(attributes).toBe("");
+    });
   });
 });
