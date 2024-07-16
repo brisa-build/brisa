@@ -1,4 +1,5 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, mock } from "bun:test";
 import type { IndicatorSignal } from "@/types";
 
@@ -27,7 +28,7 @@ describe("signals", () => {
     const initValue = 0;
     const updatedValue = 435;
     const count = state(initValue);
-    const mockEffect = mock<(val?: number) => void>(() => {});
+    const mockEffect = mock<(val?: number) => void>(() => { });
 
     effect(() => {
       mockEffect(count.value);
@@ -46,7 +47,7 @@ describe("signals", () => {
     const count = state(0);
     const username = state("Anonymous");
     const mockEffect = mock<(count?: number, username?: string) => void>(
-      () => {},
+      () => { },
     );
     const updatedCount = 435;
     const updatedUsername = "Aral";
@@ -76,8 +77,8 @@ describe("signals", () => {
     const { state, effect, cleanup, reset } = signals();
     const count = state(0);
 
-    const mockEffect = mock<(count?: number) => void>(() => {});
-    const mockCleanup = mock<() => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => { });
+    const mockCleanup = mock<() => void>(() => { });
 
     effect((r: any) => {
       mockEffect(count.value);
@@ -95,7 +96,7 @@ describe("signals", () => {
   });
 
   it('should be possible to initialize an state with "undefined"', () => {
-    const mockEffect = mock<(count: number | undefined) => void>(() => {});
+    const mockEffect = mock<(count: number | undefined) => void>(() => { });
     const { state, effect, reset } = signals();
     const count = state<number | undefined>(undefined);
     expect(count.value).not.toBeDefined();
@@ -117,7 +118,7 @@ describe("signals", () => {
   it("should work async/await inside an effect", async () => {
     const { state, effect, reset } = signals();
     const count = state(42);
-    const mockEffect = mock<(count?: number) => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => { });
 
     effect(async () => {
       await Promise.resolve();
@@ -160,7 +161,7 @@ describe("signals", () => {
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
-      () => {},
+      () => { },
     );
 
     effect((r) => {
@@ -191,7 +192,7 @@ describe("signals", () => {
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
-      () => {},
+      () => { },
     );
 
     effect((r) => {
@@ -222,7 +223,7 @@ describe("signals", () => {
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
-      () => {},
+      () => { },
     );
 
     effect((r) => {
@@ -252,7 +253,7 @@ describe("signals", () => {
     const a = state<number>(0);
     const b = state<string>("x");
     const mockEffect = mock<(name: string, value: string | number) => void>(
-      () => {},
+      () => { },
     );
 
     effect((r) => {
@@ -297,7 +298,7 @@ describe("signals", () => {
       lastSeen = count.value!;
     });
 
-    effect(() => {});
+    effect(() => { });
 
     await delay;
     expect(lastSeen).toBe(0);
@@ -337,7 +338,7 @@ describe("signals", () => {
   it('should remove all effects with "reset" method', () => {
     const { state, effect, reset } = signals();
     const count = state<number>(0);
-    const mockEffect = mock<(count?: number) => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => { });
 
     effect(() => {
       mockEffect(count.value);
@@ -360,8 +361,8 @@ describe("signals", () => {
   it('should remove all cleanups with "reset" method', () => {
     const { state, effect, cleanup, reset } = signals();
     const count = state<number>(0);
-    const mockEffect = mock<(count?: number) => void>(() => {});
-    const mockCleanup = mock<() => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => { });
+    const mockCleanup = mock<() => void>(() => { });
 
     effect((r: any) => {
       mockEffect(count.value);
@@ -391,7 +392,7 @@ describe("signals", () => {
     const { store, effect, reset } = signals();
     const { store: store2, reset: reset2 } = signals();
 
-    const mockEffect = mock<(count?: number) => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => { });
     store.set("count", 0);
 
     expect(store.get<number>("count")).toBe(0);
@@ -426,7 +427,7 @@ describe("signals", () => {
 
   it("should store.has be reactive", () => {
     const { store, effect, reset } = signals();
-    const mockEffect = mock<(has: boolean) => void>(() => {});
+    const mockEffect = mock<(has: boolean) => void>(() => { });
 
     store.set("count", 0);
 
@@ -460,7 +461,7 @@ describe("signals", () => {
   it("should work store with derived", () => {
     const { store, derived, effect, reset } = signals();
     const { store: store2 } = signals();
-    const mockEffect = mock<(count?: number) => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => { });
 
     store.set("count", 0);
     const double = derived<number>(() => store.get<number>("count") * 2);
@@ -497,7 +498,7 @@ describe("signals", () => {
 
   it("should work reactive store delete method", () => {
     const { store, effect, reset } = signals();
-    const mockEffect = mock<(count?: number) => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => { });
 
     store.set("count", 0);
 
@@ -520,7 +521,7 @@ describe("signals", () => {
 
   it('should work the "indicate" method', () => {
     const { indicate, store, effect, reset } = signals();
-    const mockEffect = mock<(isPending: boolean) => void>(() => {});
+    const mockEffect = mock<(isPending: boolean) => void>(() => { });
     const actionPending = indicate("increment");
 
     effect(() => {
@@ -538,7 +539,7 @@ describe("signals", () => {
   it('should work the error in "indicate" method', () => {
     const { indicate, store, effect, reset } = signals();
     const mockEffect = mock<(error: IndicatorSignal["error"]["value"]) => void>(
-      () => {},
+      () => { },
     );
     const indicator = indicate("increment");
 
@@ -608,7 +609,7 @@ describe("signals", () => {
   it("should only call the effect when the state value is different", () => {
     const { state, effect, reset } = signals();
     const count = state<number>(0);
-    const mockEffect = mock<(count?: number) => void>(() => {});
+    const mockEffect = mock<(count?: number) => void>(() => { });
 
     effect(() => {
       mockEffect(count.value);
@@ -632,7 +633,7 @@ describe("signals", () => {
 
   it("should an effect react to different states", () => {
     const { state, effect, reset } = signals();
-    const mockEffect = mock<(value: string) => void>(() => {});
+    const mockEffect = mock<(value: string) => void>(() => { });
     const show = state(false);
     const foo = state(true);
 
@@ -667,5 +668,27 @@ describe("signals", () => {
 
     expect((window as any).sub).toBeDefined();
     expect((window as any).sub).toBe(firstSubscriptions);
+  });
+
+  it("should not reset the store executing again the module (useful to keep the same store on SPA navigation)", async () => {
+    const signal = signals();
+
+    signal.store.set("bar", "FOO!");
+
+    const text = await Bun.file(
+      path.join(import.meta.dirname, "index.ts"),
+    ).text();
+    const transpiler = new Bun.Transpiler({ loader: "ts" });
+    const jsCode = await transpiler.transform(text);
+    const blob = new Blob([jsCode], { type: "application/javascript" });
+    const url = URL.createObjectURL(blob);
+
+    // This will re-execute the module, and the window._s should keep the same store
+    const { store } = (await import(url)).default();
+
+    store.set("foo", "BAR!");
+
+    expect(window._s.get("foo")).toBe("BAR!");
+    expect(window._s.get("bar")).toBe("FOO!");
   });
 });
