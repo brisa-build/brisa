@@ -336,6 +336,11 @@ async function enqueueDuringRendering(
       }
     }
 
+    // Add global styles inside Declarative Shadow DOM of Web Components
+    else if (type === "template" && props.shadowrootmode === "open") {
+      controller.enqueue(controller.styleSheetsChunks.join(""), suspenseId);
+    }
+
     // Node Content
     await enqueueChildren(
       props.children,
@@ -365,6 +370,17 @@ async function enqueueDuringRendering(
           suspenseId,
         );
       }
+    }
+
+    // StyleSheets: save to use it inside Declarative Shadow DOM of Web Components
+    else if (
+      type === "link" &&
+      props.rel === "stylesheet" &&
+      controller.insideHeadTag
+    ) {
+      controller.styleSheetsChunks.push(
+        `<link rel="stylesheet" href="${props.href}"></link>`,
+      );
     }
 
     // Close body tag

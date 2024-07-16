@@ -3511,5 +3511,38 @@ describe("utils", () => {
         `<div key="1">foo</div><div key="2">bar</div><div key="3">baz</div>`,
       );
     });
+
+    it("should add a global style inside the declarative shadow DOM", async () => {
+      const Component = () => <div>test</div>;
+
+      const stream = renderToReadableStream(
+        <html>
+          <head>
+            <link rel="stylesheet" href="test.css"></link>
+          </head>
+          <body>
+            <SSRWebComponent Component={Component} selector="test" />
+          </body>
+        </html>,
+        testOptions,
+      );
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(normalizeQuotes(result)).toBe(
+        normalizeQuotes(`<html>
+            <head>
+              <link rel="stylesheet" href="test.css"></link>
+            </head>
+            <body>
+              <test>
+                <template shadowrootmode="open">
+                  <link rel="stylesheet" href="test.css"></link>
+                  <div>test</div>
+                </template>
+              </test>
+            </body>
+          </html>`),
+      );
+    });
   });
 });
