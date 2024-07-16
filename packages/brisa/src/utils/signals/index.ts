@@ -19,7 +19,9 @@ const INDICATE_PREFIX = "__ind:";
 const ORIGINAL_PREFIX = "__o:";
 
 const $window = window as any;
-const globalStore = ($window._s = { Map: new Map($window._S) } as Record<
+
+// Create a store object only once (keeping SPA behavior)
+const globalStore = ($window._s ??= { Map: new Map($window._S) } as Record<
   string,
   any
 >);
