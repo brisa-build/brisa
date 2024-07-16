@@ -30,6 +30,7 @@ export type Controller = {
   hasUnsuspense: boolean;
   areSignalsInjected: boolean;
   hasActionRPC: boolean;
+  styleSheetsChunks: string[];
 };
 
 type SuspensedState = {
@@ -58,6 +59,7 @@ export default function extendStreamController({
   const suspensePromises: Promise<void>[] = [];
   const finishDocument = Promise.withResolvers<void>();
   const suspensedMap = new Map<number, SuspensedState>();
+  const styleSheetsChunks: string[] = [];
   const getSuspensedState = (id: number) =>
     suspensedMap.get(id) ?? { chunk: "", openTags: 0, closeTags: 0 };
 
@@ -66,6 +68,7 @@ export default function extendStreamController({
 
   return {
     head,
+    styleSheetsChunks,
     hasHeadTag: false,
     insideHeadTag: false,
     hasUnsuspense: false,
