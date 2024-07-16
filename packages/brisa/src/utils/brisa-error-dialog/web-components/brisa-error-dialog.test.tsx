@@ -38,6 +38,7 @@ describe("utils", () => {
     await runWebComponents();
   });
   afterEach(() => {
+    window._s?.Map?.clear?.();
     GlobalRegistrator.unregister();
     globalThis.mockConstants = undefined;
     jest.restoreAllMocks();
