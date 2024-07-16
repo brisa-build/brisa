@@ -283,7 +283,11 @@ self.addEventListener("click", () => {
 
 > [!CAUTION]
 >
-> It is necessary to watch when to use it, it does not exist during SSR.
+> It is important to exercise caution when directly manipulating the DOM element using the `self` property. This approach can lead to potential issues, such as conflicts with the reactive nature of Brisa components. Therefore, it is recommended to use this property judiciously and only when necessary.
+
+> [!NOTE]
+>
+> It is an empty object during SSR to use it in some specific cases like [reseting `shadowRoot.adoptedStyleSheets`](/building-your-application/styling/web-components#global-styles-in-web-components). Normally it is better to use it inside an [`effect`](#effect) to ensure that is executed only in the client-side.
 
 ## Expanding the WebContext
 
