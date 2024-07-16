@@ -13,7 +13,11 @@ import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
 import isAnAction from "@/utils/is-an-action";
 import { addBasePathToStringURL } from "@/utils/base-path";
 
-const PROPS_TO_IGNORE = new Set(["children", "__isWebComponent"]);
+const PROPS_TO_IGNORE = new Set([
+  "children",
+  "__isWebComponent",
+  "__skipGlobalCSS",
+]);
 const VALUES_TYPE_TO_IGNORE = new Set(["function", "undefined"]);
 const fakeOrigin = "http://localhost";
 

@@ -615,7 +615,7 @@ export interface BaseWebContext {
    *
    * - [How to use `self`](https://brisa.build/api-reference/components/web-context#self)
    */
-  self?: HTMLElement;
+  self: HTMLElement;
 }
 
 /**

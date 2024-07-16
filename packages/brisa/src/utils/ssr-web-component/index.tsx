@@ -2,6 +2,7 @@ import { toInline } from "@/helpers";
 import { Fragment } from "@/jsx-runtime";
 import { type RequestContext } from "@/types";
 import { getConstants } from "@/constants";
+import { sha } from "bun";
 
 export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
   "AVOID_DECLARATIVE_SHADOW_DOM",
@@ -21,6 +22,7 @@ export default async function SSRWebComponent(
 ) {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
+  const self = { shadowRoot: {} } as any;
   let style = "";
   let Selector = selector;
 
@@ -29,6 +31,7 @@ export default async function SSRWebComponent(
 
   const webContext = {
     store,
+    self,
     state: (value: unknown) => ({ value }),
     effect: voidFn,
     onMount: voidFn,
@@ -73,7 +76,11 @@ export default async function SSRWebComponent(
   return (
     <Selector {...props} __isWebComponent>
       {showContent && (
-        <template shadowrootmode="open">
+        // @ts-ignore
+        <template
+          shadowrootmode="open"
+          __skipGlobalCSS={self.shadowRoot.adoptedStyleSheets?.length === 0}
+        >
           {content}
           {style.length > 0 && <style>{toInline(style)}</style>}
         </template>

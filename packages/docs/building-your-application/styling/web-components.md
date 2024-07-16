@@ -31,10 +31,9 @@ However, if you want to disable the automatic adopted global style sheets, you c
 ```tsx
 import type { WebContext } from "brisa";
 
-export default function MyWebComponent({}, { effect, self, css }: WebContext) {
-  effect(() => {
-    self.shadowRoot.adoptedStyleSheets = [];
-  });
+export default function MyWebComponent({}, { self, css }: WebContext) {
+  // Turn off the automatic adopted global style sheets (also work in SSR)
+  self.shadowRoot.adoptedStyleSheets = [];
 
   // It only applies this encapsulated style:
   css`
@@ -49,6 +48,10 @@ export default function MyWebComponent({}, { effect, self, css }: WebContext) {
   return <div>Hello World</div>;
 }
 ```
+
+> [!TIP]
+>
+> You can use the `self` object to access the shadow DOM and manipulate it directly. During SSR, the `self` object is an object with an empty `shadowRoot`, but when you add an empty array on `adoptedStyleSheets` property, it will disable the automatic adopted global style sheets on [Declarative Shadow DOM](https://developer.chrome.com/docs/css-ui/declarative-shadow-dom) too.
 
 ## CSS Template String
 
