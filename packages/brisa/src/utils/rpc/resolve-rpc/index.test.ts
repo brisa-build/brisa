@@ -200,7 +200,7 @@ describe("utils", () => {
 
     it("should call e.target.reset() if receive the X-Reset header", async () => {
       const formEvent = {
-        target: { reset: mock(() => {}) },
+        target: { reset: mock(() => { }) },
       };
 
       const res = new Response("[]", {
@@ -216,7 +216,7 @@ describe("utils", () => {
     });
 
     it('should not do transition with X-Mode header as "reactivity"', async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -254,8 +254,8 @@ describe("utils", () => {
     });
 
     it('should do transition with X-Mode header as "transition"', async () => {
-      const mockDiff = mock((...args: any) => {});
-      const mockTransitionFinished = mock(() => {});
+      const mockDiff = mock((...args: any) => { });
+      const mockTransitionFinished = mock(() => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -302,7 +302,7 @@ describe("utils", () => {
     });
 
     it('should not do transition with second param as renderMode as "reactivity"', async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -339,7 +339,7 @@ describe("utils", () => {
     });
 
     it("should not do transition without renderMode neither X-Mode header", async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -376,8 +376,8 @@ describe("utils", () => {
     });
 
     it('should do transition with second param as renderMode as "transition"', async () => {
-      const mockDiff = mock((...args: any) => {});
-      const mockTransitionFinished = mock(() => {});
+      const mockDiff = mock((...args: any) => { });
+      const mockTransitionFinished = mock(() => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -423,7 +423,7 @@ describe("utils", () => {
     });
 
     it("should render currentComponent with reactivity using the comments wrappers (cid)", async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -482,8 +482,8 @@ describe("utils", () => {
     });
 
     it("should render currentComponent with transition using the comments wrappers (cid)", async () => {
-      const mockDiff = mock((...args: any) => {});
-      const mockTransitionFinished = mock(() => {});
+      const mockDiff = mock((...args: any) => { });
+      const mockTransitionFinished = mock(() => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -550,7 +550,7 @@ describe("utils", () => {
     });
 
     it("should render targetComponent with reactivity using the comments wrappers (cid)", async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -609,8 +609,8 @@ describe("utils", () => {
     });
 
     it("should render targetComponent with transition using the comments wrappers (cid)", async () => {
-      const mockDiff = mock((...args: any) => {});
-      const mockTransitionFinished = mock(() => {});
+      const mockDiff = mock((...args: any) => { });
+      const mockTransitionFinished = mock(() => { });
 
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
@@ -677,7 +677,7 @@ describe("utils", () => {
     });
 
     it('should ignore the node with id "S" and update the store with targetComponent', async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
       }));
@@ -692,7 +692,7 @@ describe("utils", () => {
       });
 
       await initBrowser();
-      window._s = new Map();
+      window._s = newStore();
 
       await resolveRPC(res, dataSet);
 
@@ -706,7 +706,7 @@ describe("utils", () => {
     });
 
     it('should ignore the node with id "S" and update the store with currentComponent', async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
       }));
@@ -721,7 +721,7 @@ describe("utils", () => {
       });
 
       await initBrowser();
-      window._s = new Map();
+      window._s = newStore();
 
       await resolveRPC(res, dataSet);
 
@@ -735,7 +735,7 @@ describe("utils", () => {
     });
 
     it('should ignore the node with id "S" and update the store with page', async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
       }));
@@ -750,7 +750,7 @@ describe("utils", () => {
       });
 
       await initBrowser();
-      window._s = new Map();
+      window._s = newStore();
 
       await resolveRPC(res, dataSet);
 
@@ -764,7 +764,7 @@ describe("utils", () => {
     });
 
     it('should NOT call "shouldIgnoreNode" returning a JSON response', async () => {
-      const mockDiff = mock((...args: any) => {});
+      const mockDiff = mock((...args: any) => { });
       mock.module("diff-dom-streaming", () => ({
         default: (...args: any) => mockDiff(...args),
       }));
@@ -782,3 +782,13 @@ describe("utils", () => {
     });
   });
 });
+
+function newStore() {
+  const store = new Map();
+  return {
+    get: (key: string) => store.get(key),
+    set: (key: string, value: any) => store.set(key, value),
+    delete: (key: string) => store.delete(key),
+    Map: store,
+  }
+}
