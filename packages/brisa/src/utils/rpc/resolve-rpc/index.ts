@@ -24,10 +24,14 @@ async function resolveRPC(
   function updateStore(entries: [string, any][]) {
     // Store WITHOUT web components signals
     if (!store) $window._S = entries;
-    // Store WITH web components signals
+    // Store WITH web components signals, so we need to notify the subscribers
+    // to keep the reactivity
     else {
-      for (const [key, value] of entries) {
-        store.set(key, value);
+      const map = new Map(entries);
+      const keys = new Set([...store.Map.keys(), ...map.keys()]);
+      for (const key of keys) {
+        if (map.has(key)) store.set(key, map.get(key));
+        else store.delete(key);
       }
     }
   }
@@ -53,23 +57,23 @@ async function resolveRPC(
 
     const newDocument = isRerenderOfComponent
       ? new ReadableStream({
-          async start(controller) {
-            const html = document.documentElement.outerHTML;
-            controller.enqueue(
-              encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
-            );
-            const reader = res.body!.getReader();
-            while (true) {
-              const { value, done } = await reader.read();
-              if (done) break;
-              controller.enqueue(value);
-            }
-            controller.enqueue(
-              encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
-            );
-            controller.close();
-          },
-        })
+        async start(controller) {
+          const html = document.documentElement.outerHTML;
+          controller.enqueue(
+            encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
+          );
+          const reader = res.body!.getReader();
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            controller.enqueue(value);
+          }
+          controller.enqueue(
+            encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
+          );
+          controller.close();
+        },
+      })
       : res.body;
 
     await diff(document, newDocument!.getReader(), {
