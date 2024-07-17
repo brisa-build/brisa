@@ -18,7 +18,7 @@ export default function AST(loader: JavaScriptLoader = "tsx") {
       return parseScript(transpiler.transformSync(code), {
         jsx: true,
         module: true,
-        next: true
+        next: true,
       });
     },
     generateCodeFromAST(ast: ESTree.Program) {
