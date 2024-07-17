@@ -22,11 +22,9 @@ async function resolveRPC(
   const isRerenderOfComponent = type?.includes("C");
 
   function updateStore(entries: [string, any][]) {
-    // Store WITHOUT web components signals
-    if (!store) $window._S = entries;
     // Store WITH web components signals, so we need to notify the subscribers
     // to keep the reactivity
-    else {
+    if (store) {
       const map = new Map(entries);
 
       // Clean up old entries from the store
@@ -37,6 +35,9 @@ async function resolveRPC(
       // Update store with new entries
       for (const [key, value] of map) store.set(key, value);
     }
+
+    // Store WITHOUT web components signals
+    else $window._S = entries;
   }
 
   // Reset form from the server action
