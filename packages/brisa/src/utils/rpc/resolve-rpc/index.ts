@@ -28,11 +28,14 @@ async function resolveRPC(
     // to keep the reactivity
     else {
       const map = new Map(entries);
-      const keys = new Set([...store.Map.keys(), ...map.keys()]);
-      for (const key of keys) {
-        if (map.has(key)) store.set(key, map.get(key));
-        else store.delete(key);
+
+      // Clean up old entries from the store
+      for (const key of store.Map.keys()) {
+        if (!map.has(key)) store.delete(key);
       }
+
+      // Update store with new entries
+      for (const [key, value] of map) store.set(key, value);
     }
   }
 
@@ -57,23 +60,23 @@ async function resolveRPC(
 
     const newDocument = isRerenderOfComponent
       ? new ReadableStream({
-        async start(controller) {
-          const html = document.documentElement.outerHTML;
-          controller.enqueue(
-            encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
-          );
-          const reader = res.body!.getReader();
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            controller.enqueue(value);
-          }
-          controller.enqueue(
-            encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
-          );
-          controller.close();
-        },
-      })
+          async start(controller) {
+            const html = document.documentElement.outerHTML;
+            controller.enqueue(
+              encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
+            );
+            const reader = res.body!.getReader();
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              controller.enqueue(value);
+            }
+            controller.enqueue(
+              encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
+            );
+            controller.close();
+          },
+        })
       : res.body;
 
     await diff(document, newDocument!.getReader(), {
