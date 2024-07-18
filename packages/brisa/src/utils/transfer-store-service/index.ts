@@ -31,6 +31,8 @@ export default async function transferStoreService(req: RequestContext) {
           let storeValue = value;
           let encrypt = false;
 
+          if (key.startsWith("context:")) continue;
+
           if (
             typeof value === "string" &&
             (value.startsWith(ENCRYPT_PREFIX) ||
