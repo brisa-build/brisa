@@ -1,5 +1,5 @@
 ---
-description: Learn how to containerize a Brisa application with Docker
+Description: Learn how to containerize a Brisa application with Docker
 ---
 
 # Docker
@@ -10,12 +10,12 @@ description: Learn how to containerize a Brisa application with Docker
 
 [Docker](https://www.docker.com/) is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies.
 
-To _containerize_ our application, we define a `Dockerfile`. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and starts the application.
+To _containerize_ our application, we define a `Dockerfile`. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application.
 
 ```Dockerfile
 # Adjust BUN_VERSION as desired
 ARG BUN_VERSION=1.1.20
-FROM oven/bun:${BUN_VERSION}-slim as base
+FROM oven/bun:${BUN_VERSION}-slim AS base
 
 # Brisa app lives here
 WORKDIR /app
@@ -23,8 +23,8 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV="production"
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
+# Throw-away build stage to reduce the size of the final image
+FROM base AS build
 
 # Install node modules
 COPY --link bun.lockb package.json ./
@@ -47,7 +47,7 @@ EXPOSE 3000
 CMD [ "bun", "run", "start" ]
 ```
 
-Now that you have your docker image, let's look at `.dockerignore` which has the same syntax as `.gitignore`, here you need to specify the files/directories that must not go in any stage of the docker build. An example for a ignore file is:
+Now that you have your docker image, let's look at `.dockerignore` which has the same syntax as `.gitignore`; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is:
 
 ```.dockerignore
 .vscode
@@ -56,7 +56,21 @@ node_modules
 build
 ```
 
-We'll now use `docker build` to convert this `Dockerfile` into a Docker image, is a self-contained template containing all the dependencies and configuration required to run the application.
+If you want to be more strict, you can also invert the `.dockerignore` and use it as an allowed file. An example of how this would work is:
+
+```.dockerignore
+# Ignore all files from your repo
+*
+
+# Allow specific files or folders
+!bun.lockb
+!package.json
+!src
+```
+
+Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE.
+
+We'll now use `docker build` to convert this `Dockerfile` into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform.
 
 ```sh
 docker build -t my-app .
@@ -87,3 +101,166 @@ To stop the container, we'll use `docker stop <container-id>`. If you can't find
 > [!NOTE]
 >
 > That's it! Refer to the [Docker documentation](https://docs.docker.com/) for more advanced usage.
+
+## Containerize a Brisa application with Docker when using a monorepo with turborepo
+
+Next, it will be an extension of the above. Let's start with an example of a monorepo Dockerfile:
+
+```Dockerfile
+ARG BUN_VERSION=1.1.20
+FROM oven/bun:${BUN_VERSION}-slim AS base
+WORKDIR /app
+
+# Run a Docker container as root is not a good idea, so let's prepare for using a non privileged user.
+ENV USERNAME=bun
+ENV USER_GROUP=bun
+
+# We can take advantage of updating the base image.
+RUN apt-get -y update
+
+FROM base AS prepare
+
+COPY --link . .
+
+# We will be assuming that your app inside the monorepo is called @example/brisa-app
+RUN bun --filter='@example/brisa-app' install --frozen-lockfile --production
+RUN bun run build --filter @example/brisa-app
+
+# copy production dependencies and source code into the final image
+FROM base
+
+COPY --link . .
+
+# Copy node_modules
+COPY --from=prepare /app/node_modules node_modules
+
+# Copy the built folder
+COPY --from=prepare /app/apps/brisa-app/build apps/brisa-app/build
+
+# Giving to the copied files proper execution permissions
+RUN chown ${USERNAME}:${USER_GROUP} -R .
+
+ENV NODE_ENV=production
+
+# run the app
+EXPOSE 3000/tcp
+
+# Running a non-root container
+USER ${USERNAME}:${USER_GROUP}
+ENTRYPOINT [ "bun", "run", "start", "--filter", "@example/brisa-app" ]
+```
+
+Okay, easy. Copy and paste and ... does not work! 🥹
+
+Working with monorepos takes a bit longer to warm up than with a mono repo. We will have to configure Turborepo to make it work. [Turborepo documentation]([localhost:300](https://turbo.build/repo/docs)).
+
+We'll need to install Turborepo to the root of the project, or if you prefer, you can install it globally (We do not recommend installing anything globally because, at some point, your team will have version conflicts, which will be very time-consuming to find out. Because "It works on my machine!" 😎)
+
+```package.json
+...
+"dependencies": {
+ "turbo": "2.0.7"
+},
+...
+```
+
+Also, we will have to add a turbo.json file for telling Turborepo what commands it needs to listen to.
+
+```turbo.json
+{
+ "$schema": "https://turbo.build/schema.json",
+ "tasks": {
+ "build": {},
+ "start": {},
+ }
+}
+```
+
+Finally, amend the .dockerfile to make sure it adds the new necessary files.
+
+```.dockerfile
+*
+
+# ROOT
+!turbo.json
+!bun.lockb
+!package.json
+
+# APPS
+## Example
+!apps/example/package.json
+!apps/example/turbo.json
+!apps/example/tsconfig.json
+!apps/example/bunfig.toml # Optional, only if you run tests on the Dockerfile
+!apps/example/brisa.config.ts
+!apps/example/src/*
+```
+
+We've summarized an example of running Brisa on Dockerfile if you are using a monorepo with Turborepo.
+
+## Advanced topics
+
+## My docker image is too big
+
+At Brisa, we love to optimize. In the previous Dockerfiles, we copied all node_modules, but most of the dependencies are already on the bundle, and we don't need it anymore.
+
+Let us give you a Dockerfile example with more optimizations on the Dockerfile.
+
+```Dockerfile
+ARG BUN_VERSION=1.1.20
+FROM oven/bun:${BUN_VERSION}-slim AS base
+WORKDIR /app
+
+# Run a Docker container as root is not a good idea, so let's prepare for using a non privileged user.
+ENV USERNAME=bun
+ENV USER_GROUP=bun
+
+# We can take advantage of updating the base image.
+RUN apt-get -y update
+
+FROM base AS prepare
+
+COPY --link . .
+
+# We will be assuming that your app inside the monorepo is called @example/brisa-app
+RUN bun --filter='@example/brisa-app' install --frozen-lockfile --production
+RUN bun run build --filter @example/brisa-app
+
+# copy production dependencies and source code into the final image
+FROM base
+
+COPY --link . .
+
+# Copy node_modules - DO NOT COPY THE WHOLE FOLDER; IT COULD BE HUGE !!!!
+# COPY --from=prepare /app/node_modules node_modules
+
+# Instead, copy only what you really need. In brisa, you will need to copy anything imported on brisa.config.ts and turbo in a monorepo scenario.
+# Turbo
+COPY --from=prepare /app/node_modules/.bin/turbo node_modules/.bin/turbo
+COPY --from=prepare /app/node_modules/turbo node_modules/turbo
+# This binary will change depending on the OS you are running your app.
+COPY --from=prepare /app/node_modules/turbo-linux-64 node_modules/turbo-linux-64
+
+# Brisa
+COPY --from=prepare /app/node_modules/.bin/brisa node_modules/.bin/brisa
+COPY --from=prepare /app/node_modules/brisa node_modules/brisa
+
+# Other libs imported on brisa.config.ts, if you are using other libs, there is no need to add any other lib.
+
+# Copy the built folder
+COPY --from=prepare /app/apps/brisa-app/build apps/brisa-app/build
+
+# Giving to the copied files proper execution permissions
+RUN chown ${USERNAME}:${USER_GROUP} -R .
+
+ENV NODE_ENV=production
+
+# run the app
+EXPOSE 3000/tcp
+
+# Running a non-root container
+USER ${USERNAME}:${USER_GROUP}
+ENTRYPOINT [ "bun", "run", "start", "--filter", "@example/brisa-app" ]
+```
+
+That's it for now. Feel free to come say hi or ask more questions on Brisa's Discord.
