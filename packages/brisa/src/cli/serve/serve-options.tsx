@@ -287,11 +287,12 @@ export async function getServeOptions() {
 
   function serveAsset(path: string, req: RequestContext) {
     const encoding = req.headers.get("accept-encoding") || "";
+    const isCompressionEnable = IS_PRODUCTION && CONFIG.assetCompression;
     let compressionFormat = "";
 
-    if (IS_PRODUCTION && encoding.includes("br")) {
+    if (isCompressionEnable && encoding.includes("br")) {
       compressionFormat = "br";
-    } else if (IS_PRODUCTION && encoding.includes("gzip")) {
+    } else if (isCompressionEnable && encoding.includes("gzip")) {
       compressionFormat = "gz";
     }
 
