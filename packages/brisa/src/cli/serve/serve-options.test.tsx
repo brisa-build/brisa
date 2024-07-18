@@ -894,6 +894,10 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        assetCompression: true,
+      },
     };
     const textDecoder = new TextDecoder("utf-8");
     const req = new Request(
@@ -920,6 +924,41 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
   });
 
   it("should not return in DEVELOPMENT an asset in gzip", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: false,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        assetCompression: true,
+      },
+    };
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          "accept-encoding": "gzip",
+        },
+      },
+    );
+    const response = await testRequest(req);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-encoding")).toBe(null);
+    expect(response.headers.get("vary")).toBe(null);
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8",
+    );
+  });
+
+  it("should not return in PRODUCTION an asset in zip when CONFIG.assetCompression is false", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        assetCompression: false,
+      },
+    };
     const req = new Request(
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
@@ -942,6 +981,10 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        assetCompression: true,
+      },
     };
     const textDecoder = new TextDecoder("utf-8");
     const req = new Request(
@@ -968,6 +1011,41 @@ describe.each(BASE_PATHS)("CLI: serve %s", (basePath) => {
   });
 
   it("should not return in DEVELOPMENT an asset in brotli", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: false,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        assetCompression: true,
+      },
+    };
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          "accept-encoding": "br",
+        },
+      },
+    );
+    const response = await testRequest(req);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-encoding")).toBe(null);
+    expect(response.headers.get("vary")).toBe(null);
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8",
+    );
+  });
+
+  it("should not return in PRODUCTION an asset in brotli when CONFIG.assetCompression is false", async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        assetCompression: false,
+      },
+    };
     const req = new Request(
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
