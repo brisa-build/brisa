@@ -4,7 +4,7 @@ Description: Learn how to containerize a Brisa application with Docker
 
 # Docker
 
-## Containerize a Brisa application with Docker
+## Containerize with Docker
 
 > This guide assumes you already have [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed.
 
@@ -49,7 +49,9 @@ CMD [ "bun", "run", "start" ]
 
 Now that you have your docker image, let's look at `.dockerignore` which has the same syntax as `.gitignore`; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is:
 
-```.dockerignore
+**dockerignore**:
+
+```dockerfile
 .vscode
 node_modules
 .DS_Store
@@ -58,7 +60,9 @@ build
 
 If you want to be more strict, you can also invert the `.dockerignore` and use it as an allowed file. An example of how this would work is:
 
-```.dockerignore
+**dockerignore**:
+
+```dockerfile
 # Ignore all files from your repo
 *
 
@@ -68,7 +72,7 @@ If you want to be more strict, you can also invert the `.dockerignore` and use i
 !src
 ```
 
-Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE.
+Making the `.dockerignore` an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE.
 
 We'll now use `docker build` to convert this `Dockerfile` into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform.
 
@@ -102,9 +106,9 @@ To stop the container, we'll use `docker stop <container-id>`. If you can't find
 >
 > That's it! Refer to the [Docker documentation](https://docs.docker.com/) for more advanced usage.
 
-## Containerize a Brisa application with Docker when using a monorepo with turborepo
+## Containerize Monorepo with Docker + Turborepo
 
-Next, it will be an extension of the above. Let's start with an example of a monorepo Dockerfile:
+Next, it will be an extension of the above. Let's start with an example of a monorepo `Dockerfile`:
 
 ```Dockerfile
 ARG BUN_VERSION=1.1.20
@@ -150,35 +154,47 @@ USER ${USERNAME}:${USER_GROUP}
 ENTRYPOINT [ "bun", "run", "start", "--filter", "@example/brisa-app" ]
 ```
 
-Okay, easy. Copy and paste and ... does not work! 🥹
+Simply copying and pasting does not work as expected.
 
-Working with monorepos takes a bit longer to warm up than with a mono repo. We will have to configure Turborepo to make it work. [Turborepo documentation]([localhost:300](https://turbo.build/repo/docs)).
+Working with monorepos requires more initial setup time compared to a single repository. It is necessary to configure tools like Turborepo to ensure proper functionality.
 
-We'll need to install Turborepo to the root of the project, or if you prefer, you can install it globally (We do not recommend installing anything globally because, at some point, your team will have version conflicts, which will be very time-consuming to find out. Because "It works on my machine!" 😎)
+> [!NOTE]
+>
+> Check the [Turborepo documentation](https://turbo.build/repo/docs) for more information.
 
-```package.json
-...
+We'll need to install Turborepo in the root of the project. Alternatively, you can install it globally, although we do not recommend this approach. Installing tools globally can lead to version conflicts within your team, which can be time-consuming to resolve. (This often results in the familiar refrain, "It works on my machine!" 😎).
+
+In our documentation, we use Turborepo as an example, but there are other options available for managing monorepos.
+
+**package.json**:
+
+```json
+// ...
 "dependencies": {
  "turbo": "2.0.7"
 },
-...
+// ...
 ```
 
 Also, we will have to add a turbo.json file for telling Turborepo what commands it needs to listen to.
 
-```turbo.json
+**turbo.json**:
+
+```json
 {
- "$schema": "https://turbo.build/schema.json",
- "tasks": {
- "build": {},
- "start": {},
- }
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {},
+    "start": {}
+  }
 }
 ```
 
 Finally, amend the .dockerfile to make sure it adds the new necessary files.
 
-```.dockerfile
+**.dockerfile**:
+
+```dockerfile
 *
 
 # ROOT
@@ -200,13 +216,15 @@ We've summarized an example of running Brisa on Dockerfile if you are using a mo
 
 ## Advanced topics
 
-## My docker image is too big
+### My docker image is too big
 
 At Brisa, we love to optimize. In the previous Dockerfiles, we copied all node_modules, but most of the dependencies are already on the bundle, and we don't need it anymore.
 
 Let us give you a Dockerfile example with more optimizations on the Dockerfile.
 
-```Dockerfile
+**Dockerfile**:
+
+```dockerfile
 ARG BUN_VERSION=1.1.20
 FROM oven/bun:${BUN_VERSION}-slim AS base
 WORKDIR /app
@@ -263,4 +281,4 @@ USER ${USERNAME}:${USER_GROUP}
 ENTRYPOINT [ "bun", "run", "start", "--filter", "@example/brisa-app" ]
 ```
 
-That's it for now. Feel free to come say hi or ask more questions on Brisa's Discord.
+That's all for now. Feel free to reach out or ask more questions on [Brisa's Discord](https://discord.com/invite/MsE9RN3FU4).
