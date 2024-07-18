@@ -4,7 +4,10 @@ import path from "node:path";
 import fs from "node:fs";
 import crypto from "node:crypto";
 
-const outPath = path.join(import.meta.dir, 'out');
+const outPath = path.join(import.meta.dir, 'out')
+  // There are some cases where the CLI is executed from the node_modules/.bin folder
+  .replace(`node_modules${path.sep}.bin`, `node_modules${path.sep}brisa`);
+
 const mdxIntegrationPath = path.join(outPath, 'cli', 'integrations', 'mdx.js');
 const buildFilepath = path.join(outPath, 'cli', 'build.js');
 const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
