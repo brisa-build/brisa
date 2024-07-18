@@ -25,17 +25,8 @@ async function resolveRPC(
     // Store WITH web components signals, so we need to notify the subscribers
     // to keep the reactivity
     if (store) {
-      const map = new Map(entries);
-
-      // Clean up old entries from the store
-      for (const key of store.Map.keys()) {
-        if (!map.has(key)) store.delete(key);
-      }
-
-      // Update store with new entries
-      for (const [key, value] of map) store.set(key, value);
+      for (const [key, value] of entries) store.set(key, value);
     }
-
     // Store WITHOUT web components signals
     else $window._S = entries;
   }
