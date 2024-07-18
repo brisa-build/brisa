@@ -23,16 +23,17 @@ export default function ClientContextProvider(
     window._pid = pId;
   }
 
+  const contextId = `context:${cId}:${pId}`;
+
   effect(() => {
-    self!.setAttribute("cid", cId);
-    self!.setAttribute("pid", pId + "");
-    store.set(`context:${cId}:${pId}`, value ?? context?.defaultValue);
+    self.setAttribute("cid", cId);
+    self.setAttribute("pid", pId + "");
+    store.set(contextId, value ?? context?.defaultValue);
   });
 
-  // Remove without reactivity
   cleanup(() => {
-    store.Map.delete(cId);
-  });
+    store.delete(contextId);
+  })
 
   return children;
 }
