@@ -46,13 +46,8 @@ export default function extendRequestContext({
     keys: string[],
     options?: TransferOptions,
   ) => {
-    const shouldEncrypt = options?.encrypt ?? false;
-    const store = originalRequest.store;
-    const webStore = originalRequest.webStore;
-
     for (let key of keys) {
-      const value = store.get(key);
-      webStore.set(key, shouldEncrypt ? encrypt(value) : value);
+      originalRequest.webStore.set(key, options);
     }
   };
 

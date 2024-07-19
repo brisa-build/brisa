@@ -3,6 +3,7 @@ import { logTable, logError, logBuildError } from "./log-build";
 import { getConstants } from "@/constants";
 import extendRequestContext from "@/utils/extend-request-context";
 import type { RequestContext } from "@/types";
+import { getTransferedServerStoreToClient } from "@/utils/transfer-store-service";
 
 describe("utils", () => {
   describe("logTable", () => {
@@ -52,7 +53,7 @@ describe("utils", () => {
       logError({ messages, docTitle, docLink, req, stack });
 
       const output = mockLog.mock.results.map((t) => t.value).join("\n");
-      const store = (req as any).webStore as RequestContext["store"];
+      const store = getTransferedServerStoreToClient(req);
 
       expect(output).toContain("Error message 1");
       expect(output).toContain("Error message 2");
