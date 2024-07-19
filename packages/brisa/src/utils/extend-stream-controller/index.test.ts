@@ -286,8 +286,29 @@ describe("extendStreamController", () => {
       originalRequest: new Request("http://localhost"),
     });
 
-    // @ts-ignore
-    req.webStore.set("test", "test");
+    req.store.set("test", "test");
+    req.store.transferToClient(["test"]);
+
+    const controller = extendStreamController({
+      controller: mockController,
+      request: req,
+    });
+    controller.transferStoreToClient();
+
+    expect(mockController.enqueue.mock.calls).toEqual([
+      [`<script>window._S=[["test","test"]]</script>`],
+    ]);
+  });
+
+  it("should transferStoreToClient can be declared before the setter", () => {
+    const req = extendRequestContext({
+      originalRequest: new Request("http://localhost"),
+    });
+
+    // First the transfer
+    req.store.transferToClient(["test"]);
+    // After the set
+    req.store.set("test", "test");
 
     const controller = extendStreamController({
       controller: mockController,
@@ -307,8 +328,8 @@ describe("extendStreamController", () => {
       }),
     });
 
-    // @ts-ignore
-    req.webStore.set("test", "test");
+    req.store.set("test", "test");
+    req.store.transferToClient(["test"]);
 
     const controller = extendStreamController({
       controller: mockController,
@@ -330,8 +351,8 @@ describe("extendStreamController", () => {
 
     req.renderInitiator = RenderInitiator.SPA_NAVIGATION;
 
-    // @ts-ignore
-    req.webStore.set("test", "test");
+    req.store.set("test", "test");
+    req.store.transferToClient(["test"]);
 
     const controller = extendStreamController({
       controller: mockController,
@@ -351,8 +372,8 @@ describe("extendStreamController", () => {
 
     req.renderInitiator = RenderInitiator.SERVER_ACTION;
 
-    // @ts-ignore
-    req.webStore.set("test", "test");
+    req.store.set("test", "test");
+    req.store.transferToClient(["test"]);
 
     const controller = extendStreamController({
       controller: mockController,
@@ -370,8 +391,8 @@ describe("extendStreamController", () => {
       originalRequest: new Request("http://localhost"),
     });
 
-    // @ts-ignore
-    req.webStore.set("some", "foo");
+    req.store.set("some", "foo");
+    req.store.transferToClient(["some"]);
 
     const controller = extendStreamController({
       controller: mockController,
@@ -379,8 +400,8 @@ describe("extendStreamController", () => {
     });
     controller.transferStoreToClient();
 
-    // @ts-ignore
-    req.webStore.set("another", "bar");
+    req.store.set("another", "bar");
+    req.store.transferToClient(["another"]);
 
     controller.transferStoreToClient();
 
@@ -395,8 +416,8 @@ describe("extendStreamController", () => {
       originalRequest: new Request("http://localhost"),
     });
 
-    // @ts-ignore
-    req.webStore.set("some", "foo");
+    req.store.set("some", "foo");
+    req.store.transferToClient(["some"]);
 
     const controller = extendStreamController({
       controller: mockController,
@@ -405,8 +426,8 @@ describe("extendStreamController", () => {
     controller.transferStoreToClient();
 
     controller.areSignalsInjected = true;
-    // @ts-ignore
-    req.webStore.set("another", "bar");
+    req.store.set("another", "bar");
+    req.store.transferToClient(["another"]);
 
     controller.transferStoreToClient();
 
@@ -423,8 +444,8 @@ describe("extendStreamController", () => {
       originalRequest: new Request("http://localhost"),
     });
 
-    // @ts-ignore
-    req.webStore.set("some", "foo");
+    req.store.set("some", "foo");
+    req.store.transferToClient(["some"]);
 
     const controller = extendStreamController({
       controller: mockController,

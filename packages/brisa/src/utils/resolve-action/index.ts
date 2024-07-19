@@ -8,6 +8,7 @@ import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
 import { getNavigateMode, isNavigateThrowable } from "@/utils/navigate/utils";
 import renderToReadableStream from "@/utils/render-to-readable-stream";
 import getPageComponentWithHeaders from "@/utils/get-page-component-with-headers";
+import { getTransferedServerStoreToClient } from "@/utils/transfer-store-service";
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -150,7 +151,7 @@ export default async function resolveAction({
 }
 
 export function resolveStore(req: RequestContext) {
-  return JSON.stringify([...(req as any).webStore]);
+  return JSON.stringify([...getTransferedServerStoreToClient(req)]);
 }
 
 function extractComponentId(dependencies: Dependencies, actionId: string) {

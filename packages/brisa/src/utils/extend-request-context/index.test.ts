@@ -8,6 +8,7 @@ import { type RequestContext } from "@/types";
 import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX } from "@/utils/crypto";
 import { toInline } from "@/helpers";
 import { RenderInitiator } from "@/core/server";
+import { getTransferedServerStoreToClient } from "@/utils/transfer-store-service";
 
 describe("brisa core", () => {
   afterEach(() => {
@@ -83,8 +84,8 @@ describe("brisa core", () => {
       requestContext.store.set("foo", "bar");
       requestContext.store.transferToClient(["foo"], { encrypt: true });
 
-      // @ts-ignore
-      const value = requestContext.webStore.get("foo");
+      const transferedStore = getTransferedServerStoreToClient(requestContext);
+      const value = transferedStore.get("foo");
 
       expect(value).not.toBe("bar");
       expect(value).toBeTypeOf("string");
@@ -104,8 +105,8 @@ describe("brisa core", () => {
       requestContext.store.set("foo", { bar: "baz" });
       requestContext.store.transferToClient(["foo"], { encrypt: true });
 
-      // @ts-ignore
-      const value = requestContext.webStore.get("foo");
+      const transferedStore = getTransferedServerStoreToClient(requestContext);
+      const value = transferedStore.get("foo");
 
       expect(value).not.toBe("bar");
       expect(value).toBeTypeOf("string");
@@ -231,8 +232,9 @@ describe("brisa core", () => {
       requestContext.store.set("foo", "bar");
       requestContext.store.set("baz", "qux");
       requestContext.store.transferToClient(["foo"]);
-      expect((requestContext as any).webStore.get("foo")).toBe("bar");
-      expect((requestContext as any).webStore.get("baz")).toBe(undefined);
+      const transferedStore = getTransferedServerStoreToClient(requestContext);
+      expect(transferedStore.get("foo")).toBe("bar");
+      expect(transferedStore.get("baz")).toBe(undefined);
     });
 
     it("should add the indicate function", () => {

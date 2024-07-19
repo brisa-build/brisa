@@ -1,5 +1,6 @@
 import { RenderInitiator } from "@/public-constants";
 import type { ComponentType, RequestContext } from "@/types";
+import { getTransferedServerStoreToClient } from "@/utils/transfer-store-service";
 
 export type ChunksOptions = {
   chunk: string;
@@ -101,7 +102,7 @@ export default function extendStreamController({
       ids.add(id);
     },
     transferStoreToClient(suspenseId?: number) {
-      const store = (request as any).webStore as Map<string, any>;
+      const store = getTransferedServerStoreToClient(request);
       const areSignalsInjected = this.areSignalsInjected;
 
       if (store.size === 0) return;
@@ -126,7 +127,7 @@ export default function extendStreamController({
 
       this.enqueue(script, suspenseId);
 
-      store.clear();
+      (request as any).webStore.clear();
       storeTransfered = true;
     },
     hasId(id) {

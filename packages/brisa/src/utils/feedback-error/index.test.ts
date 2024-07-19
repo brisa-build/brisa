@@ -1,6 +1,7 @@
 import { describe, spyOn, expect, it, beforeEach, afterEach } from "bun:test";
 import feedbackError from ".";
 import extendRequestContext from "@/utils/extend-request-context";
+import { getTransferedServerStoreToClient } from "@/utils/transfer-store-service";
 
 let logSpy: ReturnType<typeof spyOn>;
 
@@ -34,7 +35,8 @@ describe("feedbackError", () => {
     feedbackError(error, req);
     expect(logSpy).toHaveBeenCalled();
 
-    const storeErrors = (req as any).webStore.get("__BRISA_ERRORS__");
+    const webStore = getTransferedServerStoreToClient(req);
+    const storeErrors = webStore.get("__BRISA_ERRORS__");
     expect(storeErrors).toHaveLength(1);
     expect(storeErrors[0].title).toBe("ERR_DLOPEN_FAILED");
   });
