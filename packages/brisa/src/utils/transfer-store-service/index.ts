@@ -3,6 +3,7 @@ import {
   ENCRYPT_NONTEXT_PREFIX,
   ENCRYPT_PREFIX,
   decrypt,
+  encrypt,
 } from "@/utils/crypto";
 import { logError } from "@/utils/log/log-build";
 
@@ -57,4 +58,17 @@ export default async function transferStoreService(req: RequestContext) {
       }
     },
   };
+}
+
+export function getTransferedServerStoreToClient(request: RequestContext) {
+  const store = new Map();
+  const webStore = (request as any).webStore as Map<string, any>;
+
+  for (const key of webStore.keys()) {
+    const shouldEncrypt = webStore.get(key)?.encrypt ?? false;
+    const value = request.store.get(key);
+    store.set(key, shouldEncrypt ? encrypt(value) : value);
+  }
+
+  return store;
 }
