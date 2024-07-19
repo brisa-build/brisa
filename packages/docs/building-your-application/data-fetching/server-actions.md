@@ -388,6 +388,14 @@ function handleEvent() {
 }
 ```
 
+### Is mandatory to use `rerenderInAction` on server actions?
+
+No, it depends on the type of communication you want. If you want:
+
+- Communicate with the web components only: You **don't need** to use `rerenderInAction`, you can use the [`store` as action signal](#store-as-action-signal) instead.
+- Communicate with the server components: You need to use `rerenderInAction`.
+- Communicate with the server components and web components: You need to use `rerenderInAction` and the web components will react to the changes to their attributes.
+
 ## `navigate`
 
 If you would like to navigate the user to a different route after the completion of a Server Action, you can use [`navigate`](/api-reference/functions/navigate) API. `navigate` needs to be called outside of the `try/catch` block:
