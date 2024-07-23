@@ -20,7 +20,7 @@ import ServerComponent from "@/components/server-component";
 
 It is a way for your server components to have only server code.
 
-You can be 100% sure that all the code here runs ONLY on the server. All events that are captured in the Server Components are [Server Actions](/building-your-application/data-fetching/server-actions), therefore they are executed on the server without needing JS code on the client:
+You can be 100% sure that all the code here runs ONLY on the server. All events that are captured in the Server Components are [Server Actions](/building-your-application/data-management/server-actions), therefore they are executed on the server without needing JS code on the client:
 
 ```tsx
 <ServerComponent onClick={e => console.log('This console.log is on the server', e)} />
@@ -119,7 +119,7 @@ export default function UserImages({ urls = [], width = 300, height = 300 }) {
 
 ### `key` property
 
-Each child in a list should have a unique "`key`" prop. Keys tell Brisa which array item each component corresponds to, so that it can match them up later after the execution of a [`server action`](/building-your-application/data-fetching/server-actions) that does a [`rerenderInAction`](/api-reference/server-apis/rerenderInAction). This becomes important if your array items can move (e.g. due to sorting), get inserted, or get deleted. A well-chosen key helps Brisa infer what exactly has happened, and make the correct updates to the DOM tree after the server action execution.
+Each child in a list should have a unique "`key`" prop. Keys tell Brisa which array item each component corresponds to, so that it can match them up later after the execution of a [`server action`](/building-your-application/data-management/server-actions) that does a [`rerenderInAction`](/api-reference/server-apis/rerenderInAction). This becomes important if your array items can move (e.g. due to sorting), get inserted, or get deleted. A well-chosen key helps Brisa infer what exactly has happened, and make the correct updates to the DOM tree after the server action execution.
 
 ```tsx
 export default function List({ people }) {
@@ -235,7 +235,7 @@ export default function Example() {
 
 > [!NOTE]
 >
-> For more information about Server Actions, read the [documentation about Server Actions](/building-your-application/data-fetching/server-actions).
+> For more information about Server Actions, read the [documentation about Server Actions](/building-your-application/data-management/server-actions).
 
 ## Store (`store` method)
 
