@@ -19,7 +19,7 @@ DB_USER=myuser
 DB_PASS=mypassword
 ```
 
-This loads `process.env.DB_HOST`, `process.env.DB_USER`, and `process.env.DB_PASS` into the Bun environment automatically allowing you to use them in [Brisa data fetching methods](/building-your-application/data-fetching/fetching), [middleware](/building-your-application/routing/middleware) and [API routes](/building-your-application/routing/api-routes).
+This loads `process.env.DB_HOST`, `process.env.DB_USER`, and `process.env.DB_PASS` into the Bun environment automatically allowing you to use them in [Brisa data fetching methods](/building-your-application/data-management/fetching), [middleware](/building-your-application/routing/middleware) and [API routes](/building-your-application/routing/api-routes).
 
 For example, using middleware:
 

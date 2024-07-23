@@ -61,7 +61,7 @@ This approach advocates for consolidating all data access within a dedicated DAL
 
 ## Protecting Server Actions
 
-It is important to treat [Server Actions](/building-your-application/data-fetching/server-actions) with the same security considerations as public-facing API endpoints. Verifying user authorization for each action is crucial. Implement checks within Server Actions to determine user permissions, such as restricting certain actions to admin users.
+It is important to treat [Server Actions](/building-your-application/data-management/server-actions) with the same security considerations as public-facing API endpoints. Verifying user authorization for each action is crucial. Implement checks within Server Actions to determine user permissions, such as restricting certain actions to admin users.
 
 In the example below, we check the user's role before allowing the action to proceed:
 

@@ -368,7 +368,7 @@ export default function ColorSVG({}: any, { state }: WebContext) {
 
 > [!NOTE]
 >
-> **Good to know**: Brisa internally uses [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent) to communicate between Web Components. It is also used for communication between Web Components and Server Components via [Server Actions](/building-your-application/data-fetching/server-actions#server-actions).
+> **Good to know**: Brisa internally uses [`CustomEvent`](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent) to communicate between Web Components. It is also used for communication between Web Components and Server Components via [Server Actions](/building-your-application/data-management/server-actions#server-actions).
 >
 > All event listeners are automatically added and cleaned up by Brisa.
 

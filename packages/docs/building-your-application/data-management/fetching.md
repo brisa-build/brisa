@@ -361,4 +361,4 @@ The Context API by default shares server-web data unless we pass the `serverOnly
 
 > [!NOTE]
 >
-> You can [encrypt store data](/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
+> You can [encrypt store data](/building-your-application/data-management/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
