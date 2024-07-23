@@ -148,16 +148,16 @@ export default defineConfig({
             ],
           },
           {
-            text: "📒 Data fetching",
+            text: "📒 Data management",
             collapsed: true,
             items: [
               {
                 text: "Fetching data",
-                link: "/building-your-application/data-fetching/fetching",
+                link: "/building-your-application/data-management/fetching",
               },
               {
-                text: "Server actions",
-                link: "/building-your-application/data-fetching/server-actions",
+                text: "Server actions (mutations)",
+                link: "/building-your-application/data-management/server-actions",
               },
             ],
           },
