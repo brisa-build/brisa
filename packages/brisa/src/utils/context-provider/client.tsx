@@ -13,10 +13,12 @@ type Props = {
 
 export default function ClientContextProvider(
   { children, context, value, pid, cid }: Props,
-  { effect, self, store, cleanup }: WebContext,
+  { effect, self, store, cleanup, onMount }: WebContext,
 ) {
   const cId = cid ?? context?.id;
   let pId = pid;
+  let mounted = false;
+  let cleanAfterMount = false;
 
   if (!pId) {
     pId = (window._pid ?? -1) + 1;
@@ -32,8 +34,14 @@ export default function ClientContextProvider(
   });
 
   cleanup(() => {
-    store.delete(contextId);
-  })
+    if (mounted) store.delete(contextId);
+    else cleanAfterMount = true;
+  });
+
+  onMount(() => {
+    mounted = true;
+    if (cleanAfterMount) store.delete(contextId);
+  });
 
   return children;
 }

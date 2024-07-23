@@ -344,14 +344,12 @@ export default function brisaElement(
           },
           // Context
           useContext<T>(context: BrisaContext<T>) {
-            const pId = getProviderId(self, context.id);
-
-            if (pId) {
-              const id = `${CONTEXT}:${context.id}:${pId}`;
-              return renderSignals.derived(() => renderSignals.store.get(id));
-            }
-
-            return renderSignals.state(context.defaultValue);
+            return renderSignals.derived(() => {
+              const pId = getProviderId(self, context.id);
+              return pId
+                ? renderSignals.store.get(`${CONTEXT}:${context.id}:${pId}`)
+                : context.defaultValue;
+            });
           },
           // Handle CSS
           css(template: TemplateStringsArray, ...values: any[]) {

@@ -812,5 +812,30 @@ describe("utils", () => {
         [["onClick", "a1_2"]],
       ]);
     });
+
+    it("should clear the context store", async () => {
+      const xs = [
+        ["context:0:1:0", "foo"],
+        ["context:0:1:1", "bar"],
+        ["foo", "bar"],
+      ];
+      const req = extendRequestContext({
+        originalRequest: new Request(PAGE, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-action": "a1_1",
+          },
+          body: JSON.stringify({
+            "x-s": xs,
+            args: [],
+          }),
+        }),
+      });
+
+      const res = await responseAction(req);
+
+      expect(await res.text()).toBe(JSON.stringify([["foo", "bar"]]));
+    });
   });
 });
