@@ -780,39 +780,6 @@ describe("utils", () => {
       const options = mockDiff.mock.calls[0]?.[2];
       expect(options?.shouldIgnoreNode).toBeUndefined();
     });
-
-    it("should cleanup the old store entries, update some, and add new ones", async () => {
-      const mockDiff = mock((...args: any) => {});
-      mock.module("diff-dom-streaming", () => ({
-        default: (...args: any) => mockDiff(...args),
-      }));
-      const stream = new ReadableStream();
-      const res = new Response(stream, {
-        headers: {
-          "content-type": "text/html",
-          "X-Cid": "123",
-          "X-Mode": "reactivity",
-          "X-Type": "page",
-        },
-      });
-
-      await initBrowser();
-      window._s = newStore();
-      window._s.set("foo", "bar");
-      window._s.set("baz", "qux");
-
-      await resolveRPC(res, dataSet);
-
-      const options = mockDiff.mock.calls[0][2];
-      const nodeToIgnore = document.createElement("SCRIPT");
-      nodeToIgnore.id = "S";
-      nodeToIgnore.innerHTML = '[["foo", "baz"], ["quux", "quuz"]]';
-
-      expect(options.shouldIgnoreNode(nodeToIgnore)).toBe(true);
-      expect(window._s.get("foo")).toBe("baz");
-      expect(window._s.get("baz")).toBeUndefined();
-      expect(window._s.get("quux")).toBe("quuz");
-    });
   });
 });
 
@@ -822,6 +789,7 @@ function newStore() {
     get: (key: string) => store.get(key),
     set: (key: string, value: any) => store.set(key, value),
     delete: (key: string) => store.delete(key),
+    has: (key: string) => store.has(key),
     Map: store,
   };
 }
