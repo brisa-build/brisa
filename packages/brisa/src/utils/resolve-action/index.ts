@@ -124,7 +124,7 @@ export default async function resolveAction({
   const componentId = extractComponentId(dependencies, actionId);
   // @ts-ignore
   const props = error[Symbol.for("props")] ?? {};
-  const actionValue = Object.assign(() => { }, {
+  const actionValue = Object.assign(() => {}, {
     actionId,
     actions: dependencies,
     cid: componentId,

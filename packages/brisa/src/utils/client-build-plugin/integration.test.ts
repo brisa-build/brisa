@@ -4240,7 +4240,7 @@ describe("integration", () => {
 
         export default function Component({}, { useContext }) {
           const context = useContext(Context)
-          return <div>{context.value.foo}</div>
+          return <div>{context.value?.foo}</div>
         }
       `;
 
@@ -4273,7 +4273,7 @@ describe("integration", () => {
 
         export default function ChildComponent({}, { useContext }) {
           const context = useContext(Context)
-          return <div>{context.value.foo}</div>
+          return <div>{context.value?.foo}</div>
         }
       `;
 
@@ -4308,7 +4308,7 @@ describe("integration", () => {
 
         export default function ChildComponent({}, { useContext }) {
           const context = useContext(Context)
-          return <div>{context.value.foo}</div>
+          return <div>{context.value?.foo}</div>
         }
       `;
       const parentCode = `
@@ -4374,7 +4374,7 @@ describe("integration", () => {
         export default function ChildComponent({}, { useContext }) {
           const context = useContext(Context)
           const context2 = useContext(Context2)
-          return <div>{context.value.foo || context2.value.bar} </div>
+          return <div>{context.value?.foo || context2.value?.bar} </div>
         }
       `;
       const parentCode = `
@@ -4445,7 +4445,7 @@ describe("integration", () => {
         export default function ChildComponent({}, { useContext }) {
           const context = useContext(Context)
           const context2 = useContext(Context2)
-          return <div>{context.value.foo} - {context2.value.bar} </div>
+          return <div>{context.value?.foo} - {context2.value?.bar} </div>
         }
       `;
       const parentCode = `
