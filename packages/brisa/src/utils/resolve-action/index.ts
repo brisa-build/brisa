@@ -78,7 +78,7 @@ export default async function resolveAction({
       ],
       docTitle: "Documentation about Server actions",
       docLink:
-        "https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions",
+        "https://brisa.build/building-your-application/data-management/server-actions#props-in-server-actions",
       req,
     });
 
@@ -124,7 +124,7 @@ export default async function resolveAction({
   const componentId = extractComponentId(dependencies, actionId);
   // @ts-ignore
   const props = error[Symbol.for("props")] ?? {};
-  const actionValue = Object.assign(() => {}, {
+  const actionValue = Object.assign(() => { }, {
     actionId,
     actions: dependencies,
     cid: componentId,

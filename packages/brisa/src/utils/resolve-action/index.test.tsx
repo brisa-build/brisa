@@ -116,8 +116,8 @@ describe("utils", () => {
     it("should log an error trying to rerender a invalid page", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", renderMode: "reactivity" }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({ type: "page", renderMode: "reactivity" }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
@@ -140,11 +140,11 @@ describe("utils", () => {
     it("should log an error trying to rerender a invalid page using type 'component'", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({
-            type: "targetComponent",
-            renderMode: "reactivity",
-          }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({
+          type: "targetComponent",
+          renderMode: "reactivity",
+        }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
@@ -169,8 +169,8 @@ describe("utils", () => {
     it("should rerender the page with reactivity without declarative shadow DOM", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", renderMode: "reactivity" }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({ type: "page", renderMode: "reactivity" }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
@@ -200,8 +200,8 @@ describe("utils", () => {
     it("should rerender the page with reactivity with declarative shadow DOM if is called without JS", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", renderMode: "reactivity" }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({ type: "page", renderMode: "reactivity" }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
@@ -225,8 +225,8 @@ describe("utils", () => {
     it("should rerender the page with reactivity and store", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", renderMode: "reactivity" }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({ type: "page", renderMode: "reactivity" }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
@@ -252,8 +252,8 @@ describe("utils", () => {
     it("should rerender the page with transition", async () => {
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({ type: "page", renderMode: "transition" }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({ type: "page", renderMode: "transition" }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
@@ -294,7 +294,7 @@ describe("utils", () => {
         "Please note that for security reasons Brisa does not automatically",
       );
       expect(logs).toContain(
-        "Documentation about Server actions: https://brisa.build/building-your-application/data-fetching/server-actions#props-in-server-actions",
+        "Documentation about Server actions: https://brisa.build/building-your-application/data-management/server-actions#props-in-server-actions",
       );
     });
 
@@ -304,11 +304,11 @@ describe("utils", () => {
       }
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({
-            type: "targetComponent",
-            renderMode: "transition",
-          }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({
+          type: "targetComponent",
+          renderMode: "transition",
+        }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
@@ -342,11 +342,11 @@ describe("utils", () => {
       req._originalActionId = "a1_1";
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({
-            type: "targetComponent",
-            renderMode: "transition",
-          }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({
+          type: "targetComponent",
+          renderMode: "transition",
+        }) +
+        SUFFIX_MESSAGE,
       );
 
       error.name = "rerender";
@@ -367,11 +367,11 @@ describe("utils", () => {
       req._originalActionId = "a1_1";
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({
-            type: "targetComponent",
-            renderMode: "transition",
-          }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({
+          type: "targetComponent",
+          renderMode: "transition",
+        }) +
+        SUFFIX_MESSAGE,
       );
 
       error.name = "rerender";
@@ -408,11 +408,11 @@ describe("utils", () => {
       req._originalActionId = "a1_1";
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({
-            type: "currentComponent",
-            renderMode: "transition",
-          }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({
+          type: "currentComponent",
+          renderMode: "transition",
+        }) +
+        SUFFIX_MESSAGE,
       );
 
       error.name = "rerender";
@@ -453,11 +453,11 @@ describe("utils", () => {
       }
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({
-            type: "targetComponent",
-            renderMode: "transition",
-          }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({
+          type: "targetComponent",
+          renderMode: "transition",
+        }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 
@@ -490,11 +490,11 @@ describe("utils", () => {
 
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({
-            type: "targetComponent",
-            renderMode: "transition",
-          }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({
+          type: "targetComponent",
+          renderMode: "transition",
+        }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
       // @ts-ignore
@@ -525,11 +525,11 @@ describe("utils", () => {
       req._originalActionId = "a1_1";
       const error = new Error(
         PREFIX_MESSAGE +
-          JSON.stringify({
-            type: "targetComponent",
-            renderMode: "transition",
-          }) +
-          SUFFIX_MESSAGE,
+        JSON.stringify({
+          type: "targetComponent",
+          renderMode: "transition",
+        }) +
+        SUFFIX_MESSAGE,
       );
       error.name = "rerender";
 

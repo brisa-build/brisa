@@ -87,7 +87,7 @@ export default async function SomeComponent({}, request: RequestContext) {
 
 This allows access to these values from the web component store.
 
-This setup also enables subsequent [server actions](/building-your-application/data-fetching/server-actions) to access the same `store`, as the communication flows through the client:
+This setup also enables subsequent [server actions](/building-your-application/data-management/server-actions) to access the same `store`, as the communication flows through the client:
 
 `server render` → `client` → `server action` → `client`
 
@@ -95,7 +95,7 @@ It is a way to modify in a reactive way from a server action the web components 
 
 > [!NOTE]
 >
-> You can [encrypt store data](/building-your-application/data-fetching/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
+> You can [encrypt store data](/building-your-application/data-management/server-actions#transfer-sensitive-data) if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.
 
 ## `useContext`
 
