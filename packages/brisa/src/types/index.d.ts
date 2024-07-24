@@ -2,7 +2,6 @@
 /// <reference lib="esnext" />
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
-/// <reference lib="bun-types" />
 
 import type { IntrinsicCustomElements } from '@/../build/_brisa/types';
 import type { BunPlugin, MatchedRoute, ServerWebSocket, TLSOptions } from 'bun';
