@@ -1294,11 +1294,7 @@ declare global {
 
     export interface CSSProperties extends CSS.Properties<string | number> {
       /**
-       * Description:
-       *
-       * Using CSS custom properties (variables)
-       *
-       * Custom properties (sometimes referred to as CSS variables or cascading variables) are entities defined by CSS authors that represent specific values to be reused throughout a document. They are set using the `@property` at-rule or by custom property syntax (e.g., --primary-color: blue;). Custom properties are accessed using the CSS var() function (e.g., color: var(--primary-color);).
+       * CSS custom properties (variables)
        */
       [key: `--${string}`]: string | number;
     }
