@@ -180,7 +180,7 @@ describe('utils', () => {
       const t = translateCore('en', config);
 
       expect(typeof t).toBe('function');
-      expect(t('emptyKey')).toBe('emptyKey');
+      expect(t<string>('emptyKey')).toBe('emptyKey');
     });
 
     it('should work with different interpolation preffix and suffix', () => {

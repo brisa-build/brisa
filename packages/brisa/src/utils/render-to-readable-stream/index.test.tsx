@@ -2702,7 +2702,7 @@ describe('utils', () => {
 
     it('should render [object Object] in case of rendering an object', async () => {
       const Component = () => {
-        const object = {};
+        const object = {} as any;
         return <div>{object}</div>;
       };
 
@@ -3155,6 +3155,7 @@ describe('utils', () => {
     it('should display the name of the functional component in the error', async () => {
       function SomeTestComponent() {
         throw new Error('test');
+        return null;
       }
 
       const stream = renderToReadableStream(

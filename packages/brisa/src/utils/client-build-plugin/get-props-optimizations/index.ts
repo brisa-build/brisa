@@ -313,7 +313,9 @@ function sortByPropDependencies() {
   return (a: string, b: string) => {
     const aDeps = getPropDependency(a);
     const bDeps = getPropDependency(b);
+    // @ts-ignore note: union exists but not in the types
     const unionWithA = depsSet.union(aDeps);
+    // @ts-ignore note: union exists but not in the types
     const unionWithB = depsSet.union(bDeps);
     let result = 0;
 
