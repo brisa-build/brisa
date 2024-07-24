@@ -1,7 +1,7 @@
 import { gzipSync, type BuildArtifact } from "bun";
 import { brotliCompressSync } from "node:zlib";
 import fs from "node:fs";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 
 import { getConstants } from "@/constants";
 import byteSizeToString from "@/utils/byte-size-to-string";
@@ -149,8 +149,8 @@ export default async function compileFiles() {
       success: false,
       logs: [
         { message: "Error compiling web components" } as
-          | BuildMessage
-          | ResolveMessage,
+        | BuildMessage
+        | ResolveMessage,
       ],
       pagesSize,
     };
@@ -270,17 +270,17 @@ async function compileClientCodePage(
   const layoutWebComponents = webComponentsPerEntrypoint[layoutBuildPath];
   const layoutCode = layoutBuildPath
     ? await getClientCodeInPage({
-        pagePath: layoutBuildPath,
-        allWebComponents,
-        pageWebComponents: layoutWebComponents,
-        integrationsPath,
-      })
+      pagePath: layoutBuildPath,
+      allWebComponents,
+      pageWebComponents: layoutWebComponents,
+      integrationsPath,
+    })
     : null;
 
   for (const page of pages) {
     const route = page.path.replace(BUILD_DIR, "");
     const pagePath = page.path;
-    const isPage = route.startsWith("/pages/");
+    const isPage = route.startsWith(sep + "pages" + sep);
     const clientPagePath = pagePath.replace("pages", "pages-client");
     let pageWebComponents = webComponentsPerEntrypoint[pagePath];
 
@@ -401,11 +401,11 @@ async function compileClientCodePage(
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
   ${Object.entries(allWebComponents)
-    .map(
-      ([name, location]) =>
-        `'${name}': JSX.WebComponentAttributes<typeof import("${location}").default>;`,
-    )
-    .join("\n")}
+      .map(
+        ([name, location]) =>
+          `'${name}': JSX.WebComponentAttributes<typeof import("${location}").default>;`,
+      )
+      .join("\n")}
 }`;
 
   Bun.write(join(internalPath, "types.ts"), intrinsicCustomElements);
