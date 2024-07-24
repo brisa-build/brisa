@@ -9,7 +9,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 1. Ensure you are doing the PR to the canary branch.
 2. Write the failing tests about the issue / feature you are working on.
-3. Update the README.md with details of changes to the interface.
+3. Update the docs with details of changes to the interface.
 4. You may merge the Pull Request in once you have the approval of at least one maintainer, or if you
    do not have permission to do that, you may request the maintainer to merge it for you.
 
