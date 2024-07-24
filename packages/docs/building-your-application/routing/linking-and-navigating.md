@@ -129,6 +129,10 @@ By default it is already native in these cases:
 - Using another origin ex: `<a href="https://example.com">`.
 - Using the `download` attribute, ex: `<a href="/some-file.pdf" download>`.
 
+> [!NOTE]
+>
+> Modifying the [**`history`**](https://developer.mozilla.org/en-US/docs/Web/API/History) Web API always acts as `native` navigation, bypassing `reactivity` and `transition` modes.
+
 ## Navigation to dynamic paths
 
 You can also use interpolation to create the path, which comes in handy for [dynamic route segments](/building-your-application/routing/dynamic-routes). For example, to show a list of posts which have been passed to the component as a prop:
