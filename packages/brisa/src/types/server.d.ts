@@ -1,4 +1,4 @@
-import type { ServeOptions } from "bun";
+import type { ServeOptions } from 'bun';
 
 export type Options = {
   request: Request | RequestContext;
@@ -7,16 +7,16 @@ export type Options = {
   applySuspense?: boolean;
 };
 
-type RenderMode = "reactivity" | "transition";
+type RenderMode = 'reactivity' | 'transition';
 
 export type RerenderInActionProps<T> =
   | {
-      type?: "currentComponent" | "targetComponent";
+      type?: 'currentComponent' | 'targetComponent';
       renderMode?: RenderMode;
       props?: T;
     }
   | {
-      type?: "page";
+      type?: 'page';
       renderMode?: RenderMode;
     };
 
@@ -47,7 +47,7 @@ export function renderToReadableStream(
  * await renderToString(<Component {...props} />, new Request('http://localhost'));
  * ```
  */
-export async function renderToString(
+export function renderToString(
   element: JSX.Element,
   options: { request?: Request; applySuspense?: boolean } = {},
 ): Promise<string>;
@@ -118,12 +118,12 @@ export function rerenderInAction<PropsType>(
  *
  * - [How to use `getServeOptions`](https://brisa.build/building-your-application/configuring/custom-server)
  */
-export async function getServeOptions(): Promise<ServeOptions>;
+export function getServeOptions(): Promise<ServeOptions>;
 
 export interface RenderInitiatorType {
-  readonly INITIAL_REQUEST: "INITIAL_REQUEST";
-  readonly SPA_NAVIGATION: "SPA_NAVIGATION";
-  readonly SERVER_ACTION: "SERVER_ACTION";
+  readonly INITIAL_REQUEST: 'INITIAL_REQUEST';
+  readonly SPA_NAVIGATION: 'SPA_NAVIGATION';
+  readonly SERVER_ACTION: 'SERVER_ACTION';
 }
 
 export const RenderInitiator: RenderInitiatorType;

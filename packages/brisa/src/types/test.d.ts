@@ -1,4 +1,4 @@
-import type { ReactiveMap } from "brisa";
+import type { ReactiveMap } from 'brisa';
 
 /**
  *  render - Brisa Test API
@@ -15,7 +15,7 @@ import type { ReactiveMap } from "brisa";
  *
  * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#render)
  */
-export async function render(
+export function render(
   /**
    * The element to render, can be a JSX element, a string or a Response object.
    *
@@ -78,7 +78,7 @@ export async function render(
  *
  * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#serveroute)
  */
-export async function serveRoute(route: string): Promise<Response>;
+export function serveRoute(route: string): Promise<Response>;
 
 /**
  * waitFor - Brisa Test API
@@ -97,7 +97,7 @@ export async function serveRoute(route: string): Promise<Response>;
  *
  * - [Brisa docs](https://brisa.build/building-your-application/testing/test-api#waitfor)
  */
-export async function waitFor(
+export function waitFor(
   fn: () => unknown,
   maxMilliseconds: number,
 ): Promise<void>;

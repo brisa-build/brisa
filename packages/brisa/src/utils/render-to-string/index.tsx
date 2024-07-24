@@ -1,7 +1,8 @@
 import renderToReadableStream from '@/utils/render-to-readable-stream';
+import type { JSXNode } from '@/types';
 
 export default async function renderToString(
-  element: JSX.Element,
+  element: JSXNode,
   {
     request = new Request('http://localhost'),
     applySuspense = false,

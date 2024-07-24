@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import type { ComponentType, Props, RequestContext } from '@/types';
+import type { ComponentType, JSXNode, Props, RequestContext } from '@/types';
 import extendStreamController, {
   type Controller,
 } from '@/utils/extend-stream-controller';
@@ -32,7 +32,7 @@ const ALLOWED_PRIMARIES = new Set(['string', 'number']);
 const NO_INDEX = '<meta name="robots" content="noindex" />';
 
 export default function renderToReadableStream(
-  element: JSX.Element,
+  element: JSXNode,
   {
     request,
     head,
@@ -130,7 +130,7 @@ export default function renderToReadableStream(
 }
 
 async function enqueueDuringRendering(
-  element: JSX.Element,
+  element: JSXNode,
   request: RequestContext,
   controller: Controller,
   suspenseId?: number,
