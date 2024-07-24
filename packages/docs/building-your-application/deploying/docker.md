@@ -14,7 +14,7 @@ To _containerize_ our application, we define a `Dockerfile`. This file contains 
 
 ```Dockerfile
 # Adjust BUN_VERSION as desired
-ARG BUN_VERSION=1.1.20
+ARG BUN_VERSION=1.1.21
 FROM oven/bun:${BUN_VERSION}-slim AS base
 
 # Brisa app lives here
