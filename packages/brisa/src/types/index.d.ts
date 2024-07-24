@@ -697,16 +697,6 @@ export type Primitives = string | number | boolean | undefined | null;
 
 export type Type = string | number | ComponentType;
 
-// export type JSXNode = JSXElement;
-
-// export type JSXElement =
-//   | Primitives
-//   | JSXElement[]
-//   | {
-//       type: Type;
-//       props: Props;
-//     };
-
 export interface ComponentType<
   T extends Record<string, unknown> = Record<string, unknown>,
 > extends JSXComponent<T> {
@@ -1262,6 +1252,7 @@ declare global {
     type Element =
       | Primitives
       | JSX.Element[]
+      | AsyncGenerator
       | {
           type: Type;
           props: Props;
@@ -1269,6 +1260,7 @@ declare global {
       | Promise<
           | Primitives
           | JSX.Element[]
+          | AsyncGenerator
           | {
               type: Type;
               props: Props;
