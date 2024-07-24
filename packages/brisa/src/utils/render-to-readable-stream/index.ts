@@ -473,11 +473,7 @@ async function enqueueComponent(
   suspenseId?: number,
   isSlottedPosition = false,
 ): Promise<void> {
-  const componentValue = (await getValueOfComponent(
-    component,
-    props,
-    request,
-  )) as JSX.Element;
+  const componentValue = await getValueOfComponent(component, props, request);
 
   injectCSS(controller, request, suspenseId);
 
@@ -592,7 +588,7 @@ function isComponent(type: unknown): boolean {
   return typeof type === 'function';
 }
 
-async function getValueOfComponent(
+function getValueOfComponent(
   componentFn: ComponentType,
   props: Props,
   request: RequestContext,
