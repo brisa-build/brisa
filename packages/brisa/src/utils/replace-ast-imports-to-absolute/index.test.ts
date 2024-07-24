@@ -1,15 +1,15 @@
-import { describe, it, expect, spyOn } from "bun:test";
-import AST from "@/utils/ast";
-import { join } from "node:path";
-import replaceAstImportsToAbsolute from ".";
-import { normalizeQuotes } from "@/helpers";
+import { describe, it, expect, spyOn } from 'bun:test';
+import AST from '@/utils/ast';
+import { join } from 'node:path';
+import replaceAstImportsToAbsolute from '.';
+import { normalizeQuotes } from '@/helpers';
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const utilsDir = join(import.meta.dir, "..");
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
+const utilsDir = join(import.meta.dir, '..');
 
-describe("utils", () => {
-  describe("replace-ast-imports-to-absolute", () => {
-    it("should transform relative imports to absolute", async () => {
+describe('utils', () => {
+  describe('replace-ast-imports-to-absolute', () => {
+    it('should transform relative imports to absolute', async () => {
       const code = `
         import createPortal from "@/utils/create-portal";
         import dangerHTML from "@/utils/danger-html";
@@ -21,10 +21,7 @@ describe("utils", () => {
       `;
 
       const ast = parseCodeToAST(code);
-      const modifiedAst = await replaceAstImportsToAbsolute(
-        ast,
-        import.meta.url,
-      );
+      const modifiedAst = await replaceAstImportsToAbsolute(ast, import.meta.url);
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
         import createPortal from "${utilsDir}/create-portal/index.ts";
@@ -51,10 +48,7 @@ describe("utils", () => {
       `;
 
       const ast = parseCodeToAST(code);
-      const modifiedAst = await replaceAstImportsToAbsolute(
-        ast,
-        import.meta.url,
-      );
+      const modifiedAst = await replaceAstImportsToAbsolute(ast, import.meta.url);
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
         const createPortal = require("${utilsDir}/create-portal/index.ts");
@@ -69,7 +63,7 @@ describe("utils", () => {
       expect(result).toEqual(expected);
     });
 
-    it("should transform dynamic imports to absolute", async () => {
+    it('should transform dynamic imports to absolute', async () => {
       const code = `
         import("@/utils/create-portal");
         import("@/utils/danger-html");
@@ -79,10 +73,7 @@ describe("utils", () => {
       `;
 
       const ast = parseCodeToAST(code);
-      const modifiedAst = await replaceAstImportsToAbsolute(
-        ast,
-        import.meta.url,
-      );
+      const modifiedAst = await replaceAstImportsToAbsolute(ast, import.meta.url);
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
         import("${utilsDir}/create-portal/index.ts");
@@ -95,25 +86,20 @@ describe("utils", () => {
       expect(result).toEqual(expected);
     });
 
-    it("should log an error when the path is not found", async () => {
-      const mockLogError = spyOn(console, "log");
+    it('should log an error when the path is not found', async () => {
+      const mockLogError = spyOn(console, 'log');
       const code = `
         import("@/foo/unknown");
       `;
 
       const ast = parseCodeToAST(code);
-      const modifiedAst = await replaceAstImportsToAbsolute(
-        ast,
-        import.meta.url,
-      );
+      const modifiedAst = await replaceAstImportsToAbsolute(ast, import.meta.url);
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
         import("@/foo/unknown");
       `);
 
-      expect(mockLogError.mock.calls.toString()).toContain(
-        "Error resolving import path:",
-      );
+      expect(mockLogError.mock.calls.toString()).toContain('Error resolving import path:');
       expect(mockLogError.mock.calls.toString()).toContain(
         `Cannot find module "@/foo/unknown" from "file://${utilsDir}/replace-ast-imports-to-absolute/index.test.ts`,
       );

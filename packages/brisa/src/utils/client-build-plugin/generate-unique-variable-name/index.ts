@@ -4,7 +4,7 @@ export default function generateUniqueVariableName(
 ): string {
   let uniqueName = baseName;
   while (existingNames.has(uniqueName)) {
-    uniqueName += "$";
+    uniqueName += '$';
   }
   return uniqueName;
 }

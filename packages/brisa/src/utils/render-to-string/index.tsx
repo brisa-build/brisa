@@ -1,9 +1,9 @@
-import renderToReadableStream from "@/utils/render-to-readable-stream";
+import renderToReadableStream from '@/utils/render-to-readable-stream';
 
 export default async function renderToString(
   element: JSX.Element,
   {
-    request = new Request("http://localhost"),
+    request = new Request('http://localhost'),
     applySuspense = false,
   }: { request?: Request; applySuspense?: boolean } = {},
 ): Promise<string> {

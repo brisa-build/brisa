@@ -1,4 +1,4 @@
-import type { WebContext } from "@/types";
+import type { WebContext } from '@/types';
 
 type Props = {
   children: unknown;
@@ -28,8 +28,8 @@ export default function ClientContextProvider(
   const contextId = `context:${cId}:${pId}`;
 
   effect(() => {
-    self.setAttribute("cid", cId);
-    self.setAttribute("pid", pId + "");
+    self.setAttribute('cid', cId);
+    self.setAttribute('pid', pId + '');
     store.set(contextId, value ?? context?.defaultValue);
   });
 

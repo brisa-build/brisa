@@ -1,15 +1,15 @@
-import { describe, expect, it } from "bun:test";
-import { ESTree } from "meriyah";
-import getWebComponentAst from ".";
-import { normalizeQuotes } from "@/helpers";
-import AST from "@/utils/ast";
+import { describe, expect, it } from 'bun:test';
+import type { ESTree } from 'meriyah';
+import getWebComponentAst from '.';
+import { normalizeQuotes } from '@/helpers';
+import AST from '@/utils/ast';
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
-describe("utils", () => {
-  describe("client-build-plugin", () => {
-    describe("get-web-component-ast", () => {
-      it("should not return the web component if there are no default export", () => {
+describe('utils', () => {
+  describe('client-build-plugin', () => {
+    describe('get-web-component-ast', () => {
+      it('should not return the web component if there are no default export', () => {
         const input = parseCodeToAST(`
           export function MyComponent() {
             return <div>foo</div>
@@ -19,7 +19,7 @@ describe("utils", () => {
         expect(ast).toEqual(null);
         expect(index).not.toBeDefined();
       });
-      it("should return the web component subtree", () => {
+      it('should return the web component subtree', () => {
         const input = parseCodeToAST(`
           const anotherContent = true;
 
@@ -28,9 +28,7 @@ describe("utils", () => {
           }
         `);
         const [ast, index] = getWebComponentAst(input);
-        const output = normalizeQuotes(
-          generateCodeFromAST(ast as unknown as ESTree.Program),
-        );
+        const output = normalizeQuotes(generateCodeFromAST(ast as unknown as ESTree.Program));
         const expected = normalizeQuotes(`
           function MyComponent() {
             return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
@@ -40,7 +38,7 @@ describe("utils", () => {
         expect(index).toBe(1);
       });
 
-      it("should return the web component subtree when the default export is from a variable", () => {
+      it('should return the web component subtree when the default export is from a variable', () => {
         const input = parseCodeToAST(`
           const anotherContent = true;
 
@@ -63,7 +61,7 @@ describe("utils", () => {
         expect(index).toBe(2);
       });
 
-      it("should return the async web component subtree when the default export is from a variable", () => {
+      it('should return the async web component subtree when the default export is from a variable', () => {
         const input = parseCodeToAST(`
           const anotherContent = true;
 
@@ -86,7 +84,7 @@ describe("utils", () => {
         expect(index).toBe(2);
       });
 
-      it("should return the web component subtree when the component is an arrow function", () => {
+      it('should return the web component subtree when the component is an arrow function', () => {
         const input = parseCodeToAST(`
           const anotherContent = true;
 
@@ -103,7 +101,7 @@ describe("utils", () => {
         expect(index).toBe(1);
       });
 
-      it("should return the web component subtree when the component is an arrow function with props", () => {
+      it('should return the web component subtree when the component is an arrow function with props', () => {
         const input = parseCodeToAST(`
           const anotherContent = true;
 
@@ -121,7 +119,7 @@ describe("utils", () => {
         expect(index).toBe(1);
       });
 
-      it("should return the web component subtree when the component is an arrow function and the default export is from a variable", () => {
+      it('should return the web component subtree when the component is an arrow function and the default export is from a variable', () => {
         const input = parseCodeToAST(`
           const anotherContent = true;
 
@@ -140,7 +138,7 @@ describe("utils", () => {
         expect(index).toBe(2);
       });
 
-      it("should return the web component subtree when the component is an async arrow function and the default export is from a variable", () => {
+      it('should return the web component subtree when the component is an async arrow function and the default export is from a variable', () => {
         const input = parseCodeToAST(`
           const anotherContent = true;
 

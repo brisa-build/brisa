@@ -1,21 +1,18 @@
-import { ESTree } from "meriyah";
+import type { ESTree } from 'meriyah';
 
-export default function replaceExportDefault(
-  ast: ESTree.Program,
-  name: string,
-) {
+export default function replaceExportDefault(ast: ESTree.Program, name: string) {
   return {
     ...ast,
     body: ast.body.map((node) => {
-      if (node.type === "ExportDefaultDeclaration") {
+      if (node.type === 'ExportDefaultDeclaration') {
         return {
-          type: "VariableDeclaration",
-          kind: "const",
+          type: 'VariableDeclaration',
+          kind: 'const',
           declarations: [
             {
-              type: "VariableDeclarator",
+              type: 'VariableDeclarator',
               id: {
-                type: "Identifier",
+                type: 'Identifier',
                 name,
               },
               init: node.declaration,

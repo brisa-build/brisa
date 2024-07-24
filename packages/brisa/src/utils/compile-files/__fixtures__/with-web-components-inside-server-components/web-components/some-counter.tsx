@@ -1,4 +1,4 @@
-import type { WebContext } from "brisa";
+import type { WebContext } from 'brisa';
 
 export default function SomeCounter({}, { state }: WebContext) {
   const count = state(0);

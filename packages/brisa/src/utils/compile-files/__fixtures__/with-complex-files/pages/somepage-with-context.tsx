@@ -1,6 +1,6 @@
-import { createContext } from "@/core";
+import { createContext } from '@/core';
 
-const context = createContext("foo");
+const context = createContext('foo');
 
 export default async function SomePage() {
   return (

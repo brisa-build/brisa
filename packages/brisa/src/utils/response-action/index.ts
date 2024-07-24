@@ -1,31 +1,29 @@
-import { join } from "node:path";
-import { getConstants } from "@/constants";
-import type { RequestContext } from "@/types";
-import { deserialize } from "@/utils/serialization";
-import transferStoreService from "@/utils/transfer-store-service";
-import { resolveStore } from "@/utils/resolve-action";
-import { logError } from "@/utils/log/log-build";
+import { join } from 'node:path';
+import { getConstants } from '@/constants';
+import type { RequestContext } from '@/types';
+import { deserialize } from '@/utils/serialization';
+import transferStoreService from '@/utils/transfer-store-service';
+import { resolveStore } from '@/utils/resolve-action';
+import { logError } from '@/utils/log/log-build';
 
-const DEPENDENCIES = Symbol.for("DEPENDENCIES");
+const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 
 export default async function responseAction(req: RequestContext) {
-  const { transferClientStoreToServer, formData, body } =
-    await transferStoreService(req);
+  const { transferClientStoreToServer, formData, body } = await transferStoreService(req);
   const { BUILD_DIR } = getConstants();
   const url = new URL(req.url);
-  const action =
-    req.headers.get("x-action") ?? url.searchParams.get("_aid") ?? "";
-  const actionsHeaderValue = req.headers.get("x-actions") ?? "[]";
-  const actionFile = action.split("_").at(0);
-  const actionModule = await import(join(BUILD_DIR, "actions", actionFile!));
+  const action = req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';
+  const actionsHeaderValue = req.headers.get('x-actions') ?? '[]';
+  const actionFile = action.split('_').at(0);
+  const actionModule = await import(join(BUILD_DIR, 'actions', actionFile!));
   let resetForm = false;
 
   const target = {
     action: req.url,
-    autocomplete: "on",
-    enctype: "multipart/form-data",
-    encoding: "multipart/form-data",
-    method: "post",
+    autocomplete: 'on',
+    enctype: 'multipart/form-data',
+    encoding: 'multipart/form-data',
+    method: 'post',
     elements: {},
     reset: () => {
       resetForm = true;
@@ -48,15 +46,15 @@ export default async function responseAction(req: RequestContext) {
           srcElement: null,
           target,
           timeStamp: 0,
-          type: "formdata",
+          type: 'formdata',
         },
       ]
     : body?.args ?? [];
 
   const isWebComponentEvent =
-    typeof params[0] === "object" &&
-    "isTrusted" in params[0] &&
-    "detail" in params[0] &&
+    typeof params[0] === 'object' &&
+    'isTrusted' in params[0] &&
+    'detail' in params[0] &&
     params[0]._wc;
 
   if (isWebComponentEvent) params = params[0].detail;
@@ -86,15 +84,15 @@ export default async function responseAction(req: RequestContext) {
 
     for (const [eventName, actionId] of actions) {
       nextProps[eventName] = async (...params: unknown[]) => {
-        let { promise, resolve, reject } = Promise.withResolvers();
+        const { promise, resolve, reject } = Promise.withResolvers();
 
         actionCallPromises.push([actionId, promise]);
 
-        const file = actionId.split("_").at(0);
+        const file = actionId.split('_').at(0);
         const actionDependency =
           file === actionFile
             ? actionModule[actionId]
-            : (await import(join(BUILD_DIR, "actions", file!)))[actionId];
+            : (await import(join(BUILD_DIR, 'actions', file!)))[actionId];
 
         req.store.set(`__params:${actionId}`, params);
 
@@ -121,15 +119,15 @@ export default async function responseAction(req: RequestContext) {
         `The action ${action} was not found.`,
         `Don't worry, it's not your fault. Probably a bug in Brisa.`,
       ],
-      docTitle: "Please report it",
-      docLink: "https://github.com/brisa-build/brisa/issues/new",
+      docTitle: 'Please report it',
+      docLink: 'https://github.com/brisa-build/brisa/issues/new',
       req,
     });
 
     return new Response(resolveStore(req), {
       status: 404,
       headers: {
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
     });
   }
@@ -144,7 +142,7 @@ export default async function responseAction(req: RequestContext) {
   // @ts-ignore - req._p should not be a public type
   req._p = (promise: Promise<unknown>) => {
     if (promise instanceof Promise) {
-      actionCallPromises.push(["", promise]);
+      actionCallPromises.push(['', promise]);
     }
     return promise;
   };
@@ -158,9 +156,7 @@ export default async function responseAction(req: RequestContext) {
     );
 
     return Promise.all(
-      actionCallPromises
-        .slice(currentPromiseIndex + 1)
-        .map(([, promise]) => promise),
+      actionCallPromises.slice(currentPromiseIndex + 1).map(([, promise]) => promise),
     );
   };
 
@@ -181,14 +177,13 @@ export default async function responseAction(req: RequestContext) {
   if (!(response instanceof Response)) {
     response = new Response(resolveStore(req), {
       headers: {
-        "content-type": "application/json",
+        'content-type': 'application/json',
       },
     });
   }
 
   const module = req.route ? await import(req.route.filePath) : {};
-  const pageResponseHeaders =
-    (await module.responseHeaders?.(req, response.status)) ?? {};
+  const pageResponseHeaders = (await module.responseHeaders?.(req, response.status)) ?? {};
 
   // Transfer page response headers
   for (const [key, value] of Object.entries(pageResponseHeaders)) {
@@ -197,7 +192,7 @@ export default async function responseAction(req: RequestContext) {
 
   // Reset form after use e.target.reset() in server action
   if (resetForm) {
-    response.headers.set("X-Reset", "1");
+    response.headers.set('X-Reset', '1');
   }
 
   return response;

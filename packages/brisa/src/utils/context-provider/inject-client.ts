@@ -1,19 +1,19 @@
-import path from "node:path";
-import clientBuildPlugin from "@/utils/client-build-plugin";
-import { logBuildError } from "@/utils/log/log-build";
+import path from 'node:path';
+import clientBuildPlugin from '@/utils/client-build-plugin';
+import { logBuildError } from '@/utils/log/log-build';
 
 // Should be used via macro
 export async function injectClientContextProviderCode() {
-  const pathname = path.join(import.meta.dir, "client.tsx");
-  const internalComponentId = "__BRISA_CLIENT__contextProvider";
+  const pathname = path.join(import.meta.dir, 'client.tsx');
+  const internalComponentId = '__BRISA_CLIENT__contextProvider';
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [pathname],
-    target: "browser",
-    external: ["brisa"],
+    target: 'browser',
+    external: ['brisa'],
     plugins: [
       {
-        name: "context-provider-transformer",
+        name: 'context-provider-transformer',
         setup(build) {
           build.onLoad({ filter: /.*/ }, async ({ path, loader }) => ({
             contents: clientBuildPlugin(
@@ -30,8 +30,8 @@ export async function injectClientContextProviderCode() {
   });
 
   if (!success) {
-    logBuildError("Failed to compile client context provider", logs);
+    logBuildError('Failed to compile client context provider', logs);
   }
 
-  return (await outputs?.[0]?.text?.()) ?? "";
+  return (await outputs?.[0]?.text?.()) ?? '';
 }

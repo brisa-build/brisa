@@ -1,16 +1,16 @@
 #!/usr/bin/env bun
 
-const fs = require("node:fs");
-const path = require("node:path");
-const { execSync } = require("node:child_process");
-const readline = require("node:readline");
+const fs = require('node:fs');
+const path = require('node:path');
+const { execSync } = require('node:child_process');
+const readline = require('node:readline');
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-rl.question("Enter project name: ", (PROJECT_NAME) => {
+rl.question('Enter project name: ', (PROJECT_NAME) => {
   rl.close();
 
   console.log(`Creating project ${PROJECT_NAME}`);
@@ -28,62 +28,62 @@ rl.question("Enter project name: ", (PROJECT_NAME) => {
 
   process.chdir(PROJECT_NAME);
 
-  const BRISA_VERSION = "0.0.122";
+  const BRISA_VERSION = '0.0.122';
 
-  console.log("\n🛠️  Installing brisa...\n");
+  console.log('\n🛠️  Installing brisa...\n');
 
   const packageJsonContent = {
     name: PROJECT_NAME,
-    module: "src/pages/index.tsx",
-    type: "module",
+    module: 'src/pages/index.tsx',
+    type: 'module',
     scripts: {
-      dev: "brisa dev",
-      "dev:debug": "brisa dev --debug",
-      build: "brisa build",
-      start: "brisa start",
+      dev: 'brisa dev',
+      'dev:debug': 'brisa dev --debug',
+      build: 'brisa build',
+      start: 'brisa start',
     },
     dependencies: {
       brisa: BRISA_VERSION,
     },
     devDependencies: {
-      "@types/bun": "latest",
+      '@types/bun': 'latest',
     },
     peerDependencies: {
-      typescript: "latest",
+      typescript: 'latest',
     },
   };
 
-  fs.writeFileSync("package.json", JSON.stringify(packageJsonContent, null, 2));
+  fs.writeFileSync('package.json', JSON.stringify(packageJsonContent, null, 2));
 
   const tsConfigContent = {
     compilerOptions: {
-      baseUrl: "./src",
-      lib: ["dom", "dom.iterable", "esnext"],
-      module: "esnext",
-      target: "esnext",
-      moduleResolution: "bundler",
-      moduleDetection: "force",
+      baseUrl: './src',
+      lib: ['dom', 'dom.iterable', 'esnext'],
+      module: 'esnext',
+      target: 'esnext',
+      moduleResolution: 'bundler',
+      moduleDetection: 'force',
       allowImportingTsExtensions: true,
       noEmit: true,
       composite: true,
       strict: true,
       downlevelIteration: true,
       skipLibCheck: true,
-      jsx: "react-jsx",
-      jsxImportSource: "brisa",
+      jsx: 'react-jsx',
+      jsxImportSource: 'brisa',
       allowSyntheticDefaultImports: true,
       forceConsistentCasingInFileNames: true,
       allowJs: true,
       verbatimModuleSyntax: true,
       noFallthroughCasesInSwitch: true,
-      types: ["brisa"],
+      types: ['brisa'],
       paths: {
-        "@/*": ["*"],
+        '@/*': ['*'],
       },
     },
   };
 
-  fs.writeFileSync("tsconfig.json", JSON.stringify(tsConfigContent, null, 2));
+  fs.writeFileSync('tsconfig.json', JSON.stringify(tsConfigContent, null, 2));
 
   const readmeContent = `# ${PROJECT_NAME}
 
@@ -117,14 +117,14 @@ bun start
 
 `;
 
-  fs.writeFileSync("README.md", readmeContent);
+  fs.writeFileSync('README.md', readmeContent);
 
-  fs.mkdirSync("src");
-  fs.mkdirSync("src/pages");
-  fs.mkdirSync("src/web-components");
-  fs.mkdirSync("src/components");
+  fs.mkdirSync('src');
+  fs.mkdirSync('src/pages');
+  fs.mkdirSync('src/web-components');
+  fs.mkdirSync('src/components');
   fs.writeFileSync(
-    "src/pages/index.tsx",
+    'src/pages/index.tsx',
     `import CounterServer from "@/components/counter-server";
 
 export default function Homepage() {
@@ -139,7 +139,7 @@ export default function Homepage() {
   );
 
   fs.writeFileSync(
-    "src/components/counter-server.tsx",
+    'src/components/counter-server.tsx',
     `import type { RequestContext } from "brisa";
 import { rerenderInAction, RenderInitiator } from "brisa/server";
 
@@ -175,7 +175,7 @@ export default function CounterServer(
   );
 
   fs.writeFileSync(
-    "src/pages/index.test.tsx",
+    'src/pages/index.test.tsx',
     `import { render } from "brisa/test"
 import { describe, expect, it } from "bun:test"
 import Home from '.'
@@ -189,7 +189,7 @@ describe("Index", () => {
   );
 
   fs.writeFileSync(
-    "src/web-components/counter-client.tsx",
+    'src/web-components/counter-client.tsx',
     `import type { WebContext } from "brisa";
 
 export default function Counter(
@@ -209,14 +209,14 @@ export default function Counter(
 }`,
   );
 
-  fs.writeFileSync("bunfig.toml", '[test]\npreload = "brisa/test"');
+  fs.writeFileSync('bunfig.toml', '[test]\npreload = "brisa/test"');
 
-  fs.writeFileSync(".gitignore", "build\nnode_modules\nout\n");
+  fs.writeFileSync('.gitignore', 'build\nnode_modules\nout\n');
 
-  execSync("bun install");
+  execSync('bun install');
 
-  process.chdir("..");
+  process.chdir('..');
 
-  console.log("\n✨ Project created successfully\n");
+  console.log('\n✨ Project created successfully\n');
   console.log(`📀 Run: cd ${PROJECT_NAME} && bun dev`);
 });

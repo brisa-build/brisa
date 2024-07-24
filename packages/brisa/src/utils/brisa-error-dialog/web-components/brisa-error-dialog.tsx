@@ -1,5 +1,5 @@
-import type { WebContext } from "@/types";
-import { isNavigateThrowable } from "@/utils/navigate/utils";
+import type { WebContext } from '@/types';
+import { isNavigateThrowable } from '@/utils/navigate/utils';
 
 type Error = {
   title: string;
@@ -9,7 +9,7 @@ type Error = {
   docTitle?: string;
 };
 
-const ERROR_STORE_KEY = "__BRISA_ERRORS__";
+const ERROR_STORE_KEY = '__BRISA_ERRORS__';
 const modelPromise = window.ai?.createTextSession?.();
 
 export default function ErrorDialog(
@@ -18,7 +18,7 @@ export default function ErrorDialog(
 ) {
   const displayDialog = state(true);
   const loadingAIResponse = state(false);
-  const aiResponse = state("");
+  const aiResponse = state('');
   const errors = derived(() => store.get<Error[]>(ERROR_STORE_KEY) ?? []);
   const numErrors = derived(() => errors.value?.length ?? 0);
   const currentIndex = state(0);
@@ -32,15 +32,12 @@ export default function ErrorDialog(
   }
 
   function onKeydown(e: KeyboardEvent) {
-    if (e.key === "Escape" || e.key === "Enter") {
+    if (e.key === 'Escape' || e.key === 'Enter') {
       e.preventDefault();
       onClose();
-    } else if (e.key === "ArrowLeft" && currentIndex.value > 0) {
+    } else if (e.key === 'ArrowLeft' && currentIndex.value > 0) {
       currentIndex.value -= 1;
-    } else if (
-      e.key === "ArrowRight" &&
-      currentIndex.value < numErrors.value - 1
-    ) {
+    } else if (e.key === 'ArrowRight' && currentIndex.value < numErrors.value - 1) {
       currentIndex.value += 1;
     }
   }
@@ -48,21 +45,19 @@ export default function ErrorDialog(
   async function explainMeError() {
     try {
       const promptMsg =
-        "Explain this JS error: " +
-        JSON.stringify(errors.value[currentIndex.value]);
+        'Explain this JS error: ' + JSON.stringify(errors.value[currentIndex.value]);
       loadingAIResponse.value = true;
-      aiResponse.value = "";
+      aiResponse.value = '';
       const model = await modelPromise;
       const promise = model.prompt(promptMsg);
-      const sleep = (ms: number) =>
-        new Promise((resolve) => setTimeout(resolve, ms));
+      const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
       aiResponse.value = await Promise.race([
         promise,
-        sleep(5000).then(() => "AI response timed out"),
+        sleep(5000).then(() => 'AI response timed out'),
       ]);
       loadingAIResponse.value = false;
     } catch (e) {
-      aiResponse.value = "Failed to generate AI fix proposal";
+      aiResponse.value = 'Failed to generate AI fix proposal';
       loadingAIResponse.value = false;
     }
   }
@@ -75,13 +70,13 @@ export default function ErrorDialog(
   });
 
   effect(() => {
-    window.addEventListener("error", (e) => {
+    window.addEventListener('error', (e) => {
       if (isNavigateThrowable(e.error)) return;
       displayDialog.value = true;
-      store.set("__BRISA_ERRORS__", [
-        ...(store.get<Error[]>("__BRISA_ERRORS__") ?? []),
+      store.set('__BRISA_ERRORS__', [
+        ...(store.get<Error[]>('__BRISA_ERRORS__') ?? []),
         {
-          title: "Uncaught Error",
+          title: 'Uncaught Error',
           details: [e.error.message],
           stack: e.error?.stack,
         },
@@ -92,13 +87,13 @@ export default function ErrorDialog(
   effect(() => {
     if (!numErrors.value || !displayDialog.value) return;
 
-    window.addEventListener("keydown", onKeydown);
-    document.body.style.overflow = "hidden";
-    aiResponse.value = "";
+    window.addEventListener('keydown', onKeydown);
+    document.body.style.overflow = 'hidden';
+    aiResponse.value = '';
 
-    cleanup(() => window.removeEventListener("keydown", onKeydown));
+    cleanup(() => window.removeEventListener('keydown', onKeydown));
     cleanup(() => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto';
     });
   });
 
@@ -229,10 +224,7 @@ export default function ErrorDialog(
 
   if (!displayDialog.value) {
     return (
-      <button
-        class="brisa-error-notification"
-        onClick={() => (displayDialog.value = true)}
-      >
+      <button class="brisa-error-notification" onClick={() => (displayDialog.value = true)}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -266,11 +258,7 @@ export default function ErrorDialog(
                   type="button"
                   disabled={currentIndex.value === 0}
                 >
-                  <svg
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <title>previous</title>
                     <path
                       d="M6.99996 1.16666L1.16663 6.99999L6.99996 12.8333M12.8333 6.99999H1.99996H12.8333Z"
@@ -286,11 +274,7 @@ export default function ErrorDialog(
                   type="button"
                   disabled={currentIndex.value + 1 === numErrors.value}
                 >
-                  <svg
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <title>next</title>
                     <path
                       d="M6.99996 1.16666L12.8333 6.99999L6.99996 12.8333M1.16663 6.99999H12H1.16663Z"
@@ -320,19 +304,14 @@ export default function ErrorDialog(
             <button
               disabled={loadingAIResponse.value}
               class="ask-ai"
-              style={{ width: "auto" }}
+              style={{ width: 'auto' }}
               onClick={explainMeError}
             >
-              ✨{" "}
-              {loadingAIResponse.value
-                ? "Generating..."
-                : "Generate AI fix proposal"}
+              ✨ {loadingAIResponse.value ? 'Generating...' : 'Generate AI fix proposal'}
             </button>
           </>
         )}
-        {aiResponse.value && (
-          <p style={{ color: "#8d3939" }}>{aiResponse.value}</p>
-        )}
+        {aiResponse.value && <p style={{ color: '#8d3939' }}>{aiResponse.value}</p>}
         <button class="close-dialog" onClick={onClose}>
           Close
         </button>
@@ -345,8 +324,8 @@ function renderDocumentation({ docTitle, docLink }: Error) {
   if (!docLink) return null;
 
   return (
-    <a href={docLink} target="_blank">
-      📄 {docTitle ?? "Documentation"}
+    <a href={docLink} target="_blank" rel="noreferrer">
+      📄 {docTitle ?? 'Documentation'}
     </a>
   );
 }
@@ -380,19 +359,19 @@ function printStack(stack?: string) {
 
   function injectStackLinks(stack: string) {
     const fileLinks: string[] = [];
-    const stackLines = stack.split("\n");
+    const stackLines = stack.split('\n');
     let result = stack;
 
     for (const line of stackLines) {
-      const parts = line.split(" ");
+      const parts = line.split(' ');
       for (const part of parts) {
         if (
-          part.includes("/") ||
-          part.includes("\\") ||
-          part.startsWith("http") ||
-          part.startsWith("file")
+          part.includes('/') ||
+          part.includes('\\') ||
+          part.startsWith('http') ||
+          part.startsWith('file')
         ) {
-          fileLinks.push(part.replace(/[()]/g, ""));
+          fileLinks.push(part.replace(/[()]/g, ''));
         }
       }
     }
@@ -400,23 +379,20 @@ function printStack(stack?: string) {
     for (const link of fileLinks) {
       const pathname = URL.canParse(link) ? new URL(link).pathname : link;
 
-      let [file, line, column] = pathname.split(":");
+      const [file, line, column] = pathname.split(':');
       const finalUrl = `/__brisa_dev_file__?file=${encodeURIComponent(
         file,
       )}&line=${line}&column=${column}`;
-      result = result.replace(
-        link,
-        `<a href="javascript:void(0);" ping="${finalUrl}">${link}</a>`,
-      );
+      result = result.replace(link, `<a href="javascript:void(0);" ping="${finalUrl}">${link}</a>`);
     }
 
     return result;
   }
 
   return (
-    <pre style={{ whiteSpace: "normal", wordWrap: "break-word" }}>
+    <pre style={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
       {{
-        type: "HTML",
+        type: 'HTML',
         props: {
           html: injectStackLinks(stack),
         },

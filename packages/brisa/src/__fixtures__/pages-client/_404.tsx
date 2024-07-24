@@ -1,1 +1,1 @@
-alert("404 client code");
+alert('404 client code');

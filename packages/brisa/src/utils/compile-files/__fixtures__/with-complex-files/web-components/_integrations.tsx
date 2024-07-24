@@ -1,3 +1,3 @@
 export default {
-  "foo-component": "../lib/foo",
+  'foo-component': '../lib/foo',
 };

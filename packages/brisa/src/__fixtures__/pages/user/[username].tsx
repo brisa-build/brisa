@@ -3,5 +3,5 @@ export default function User() {
 }
 
 export function prerender() {
-  return [{ username: "testUserName" }];
+  return [{ username: 'testUserName' }];
 }

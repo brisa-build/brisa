@@ -1,4 +1,4 @@
-import path from "node:path";
+import path from 'node:path';
 
 export default function getImportableFilepath(filename: string, dir: string) {
   try {

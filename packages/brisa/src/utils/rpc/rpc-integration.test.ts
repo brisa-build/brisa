@@ -1,28 +1,20 @@
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  spyOn,
-  mock,
-} from "bun:test";
-import { injectRPCCode, injectRPCLazyCode } from "." with { type: "macro" };
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { serialize } from "../serialization";
+import { describe, it, expect, beforeEach, afterEach, spyOn, mock } from 'bun:test';
+import { injectRPCCode, injectRPCLazyCode } from '.' with { type: 'macro' };
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
+import { serialize } from '../serialization';
 
 const rpcCode = injectRPCCode() as unknown as string;
 const lazyRPCCode = injectRPCLazyCode() as unknown as string;
-const INDICATOR_ID = "__ind:action";
+const INDICATOR_ID = '__ind:action';
 const requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 0);
 let mockFetch: ReturnType<typeof spyOn>;
 
 async function simulateRPC({
-  elementName = "button",
-  eventName = "click",
+  elementName = 'button',
+  eventName = 'click',
   debounceMs = 0,
   slowRequest = false,
-  navigateTo = "",
+  navigateTo = '',
   useIndicator = false,
   fails = false,
   failsThrowingAnError = false,
@@ -32,11 +24,11 @@ async function simulateRPC({
   const el = document.createElement(elementName);
 
   // Simulate a button with a data-action-onClick attribute
-  el.setAttribute(`data-action-on${eventName}`, "a1_1");
-  el.setAttribute("data-action", "true");
+  el.setAttribute(`data-action-on${eventName}`, 'a1_1');
+  el.setAttribute('data-action', 'true');
 
   if (dataActions?.length) {
-    el.setAttribute("data-actions", serialize(dataActions));
+    el.setAttribute('data-actions', serialize(dataActions));
   }
 
   if (debounceMs) {
@@ -44,7 +36,7 @@ async function simulateRPC({
   }
 
   if (useIndicator) {
-    el.setAttribute("indicator", `['${INDICATOR_ID}']`);
+    el.setAttribute('indicator', `['${INDICATOR_ID}']`);
     el.setAttribute(`indicate${eventName}`, `${INDICATOR_ID}`);
   }
 
@@ -55,26 +47,26 @@ async function simulateRPC({
   eval(rpcCode);
 
   // Simulate the document to be loaded to stop registering the actions
-  document.dispatchEvent(new Event("DOMContentLoaded"));
+  document.dispatchEvent(new Event('DOMContentLoaded'));
   await Bun.sleep(0);
 
   // Simulate some actions after the RPC code is loaded and executed
   callbackAfterRPC();
 
-  let headers = new Headers();
+  const headers = new Headers();
 
   if (navigateTo) {
-    headers.set("X-Navigate", navigateTo);
+    headers.set('X-Navigate', navigateTo);
   }
 
   // Mock fetch with the actions
-  mockFetch = spyOn(window, "fetch").mockImplementation(async () => {
+  mockFetch = spyOn(window, 'fetch').mockImplementation(async () => {
     if (slowRequest) await Bun.sleep(0);
-    if (failsThrowingAnError) throw new Error("Some throwable error");
+    if (failsThrowingAnError) throw new Error('Some throwable error');
     return {
       headers,
       ok: fails ? false : true,
-      text: async () => "Some error",
+      text: async () => 'Some error',
       body: {
         getReader: () => ({ read: async () => ({ done: true }) }),
       },
@@ -82,9 +74,7 @@ async function simulateRPC({
   });
 
   // Simulate the event
-  el.dispatchEvent(
-    eventName === "custom" ? new CustomEvent(eventName) : new Event(eventName),
-  );
+  el.dispatchEvent(eventName === 'custom' ? new CustomEvent(eventName) : new Event(eventName));
 
   // Wait the fetch to be processed
   await Bun.sleep(0);
@@ -92,7 +82,7 @@ async function simulateRPC({
   return mockFetch;
 }
 
-describe("utils", () => {
+describe('utils', () => {
   beforeEach(() => {
     GlobalRegistrator.register();
     window.requestAnimationFrame = requestAnimationFrame;
@@ -104,17 +94,17 @@ describe("utils", () => {
     globalThis.requestAnimationFrame = requestAnimationFrame;
   });
 
-  describe("rpc", () => {
-    it("should redirect to 404", async () => {
-      await simulateRPC({ navigateTo: "http://localhost/?_not-found=1" });
+  describe('rpc', () => {
+    it('should redirect to 404', async () => {
+      await simulateRPC({ navigateTo: 'http://localhost/?_not-found=1' });
       // Simulate the script to be loaded
-      document.head.querySelector("script")?.dispatchEvent(new Event("load"));
+      document.head.querySelector('script')?.dispatchEvent(new Event('load'));
       await Bun.sleep(0);
-      expect(location.toString()).toBe("http://localhost/?_not-found=1");
+      expect(location.toString()).toBe('http://localhost/?_not-found=1');
     });
 
     it('should "fetch" receive a signal', async () => {
-      await simulateRPC({ navigateTo: "http://localhost/some-page" });
+      await simulateRPC({ navigateTo: 'http://localhost/some-page' });
 
       const signal = mockFetch.mock.calls[0][1].signal;
 
@@ -126,7 +116,7 @@ describe("utils", () => {
       const mockFetch = await simulateRPC();
 
       expect(mockFetch.mock.calls[0][0]).toBe(location.toString());
-      expect(mockFetch.mock.calls[0][1]?.method).toBe("POST");
+      expect(mockFetch.mock.calls[0][1]?.method).toBe('POST');
 
       const {
         args: [{ timeStamp, eventPhase, ...event }],
@@ -138,7 +128,7 @@ describe("utils", () => {
         CAPTURING_PHASE: 1,
         AT_TARGET: 2,
         BUBBLING_PHASE: 3,
-        type: "click",
+        type: 'click',
         bubbles: false,
         cancelable: false,
         composed: false,
@@ -146,10 +136,10 @@ describe("utils", () => {
     });
 
     it('should debounce the "rpc" function with debounceClick attribute', async () => {
-      const mockTimeout = spyOn(window, "setTimeout");
+      const mockTimeout = spyOn(window, 'setTimeout');
       const mockFetch = await simulateRPC({
         debounceMs: 100,
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
       });
 
       expect(mockTimeout).toHaveBeenCalled();
@@ -158,33 +148,33 @@ describe("utils", () => {
       expect(mockTimeout.mock.calls[1][1]).toBe(100);
     });
 
-    it("should send FormData when the event is onSubmit in a form", async () => {
+    it('should send FormData when the event is onSubmit in a form', async () => {
       const mockFetch = await simulateRPC({
-        elementName: "form",
-        eventName: "submit",
-        navigateTo: "http://localhost/some-page",
+        elementName: 'form',
+        eventName: 'submit',
+        navigateTo: 'http://localhost/some-page',
       });
 
       const form = mockFetch.mock.calls[0][1]?.body as FormData;
       expect(form).toBeInstanceOf(FormData);
     });
 
-    it("should send FormData with the store", async () => {
-      window._S = [["a", "b"]];
+    it('should send FormData with the store', async () => {
+      window._S = [['a', 'b']];
       const mockFetch = await simulateRPC({
-        elementName: "form",
-        eventName: "submit",
-        navigateTo: "http://localhost/some-page",
+        elementName: 'form',
+        eventName: 'submit',
+        navigateTo: 'http://localhost/some-page',
       });
 
       const form = mockFetch.mock.calls[0][1]?.body as FormData;
-      expect(form.get("x-s")).toEqual(JSON.stringify([["a", "b"]]));
+      expect(form.get('x-s')).toEqual(JSON.stringify([['a', 'b']]));
     });
 
-    it("should send custom event serialized with _wc property", async () => {
+    it('should send custom event serialized with _wc property', async () => {
       const mockFetch = await simulateRPC({
-        eventName: "custom",
-        navigateTo: "http://localhost/some-page",
+        eventName: 'custom',
+        navigateTo: 'http://localhost/some-page',
       });
 
       const {
@@ -195,20 +185,17 @@ describe("utils", () => {
 
     it('should send the "x-action" header with the actionId', async () => {
       const mockFetch = await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
       });
 
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
-        string,
-        string
-      >;
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
 
-      expect(headers["x-action"]).toBe("a1_1");
-      expect(headers["x-actions"]).toBeEmpty();
+      expect(headers['x-action']).toBe('a1_1');
+      expect(headers['x-actions']).toBeEmpty();
     });
 
-    it("should send the store in the response", async () => {
-      window._S = [["a", "b"]];
+    it('should send the store in the response', async () => {
+      window._S = [['a', 'b']];
 
       window._s = {
         Map: new Map(window._S),
@@ -216,47 +203,41 @@ describe("utils", () => {
         set: (key: string, value: any) => window._s.Map.set(key, value),
       };
 
-      window._s.set("c", "d");
+      window._s.set('c', 'd');
 
       const mockFetch = await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
       });
 
       const body = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
-        string,
-        string
-      >;
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
 
-      expect(headers["x-action"]).toBe("a1_1");
-      expect(body["x-s"]).toEqual([
-        ["a", "b"],
-        ["c", "d"],
+      expect(headers['x-action']).toBe('a1_1');
+      expect(body['x-s']).toEqual([
+        ['a', 'b'],
+        ['c', 'd'],
       ]);
-      expect(headers["x-actions"]).toBeEmpty();
+      expect(headers['x-actions']).toBeEmpty();
     });
 
     it('should send the "x-s" param with the serialized store if only are transferred store', async () => {
       window._s = undefined;
-      window._S = [["c", "d"]];
+      window._S = [['c', 'd']];
 
       const mockFetch = await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
       });
       const body = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
-        string,
-        string
-      >;
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
 
-      expect(headers["x-action"]).toBe("a1_1");
-      expect(body["x-s"]).toEqual([["c", "d"]]);
-      expect(headers["x-actions"]).toBeEmpty();
+      expect(headers['x-action']).toBe('a1_1');
+      expect(body['x-s']).toEqual([['c', 'd']]);
+      expect(headers['x-actions']).toBeEmpty();
     });
 
     it('should add and remove the class "brisa-request" meanwhile the request is being processed and then success', async () => {
       await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
         useIndicator: true,
         slowRequest: true,
         debounceMs: 1,
@@ -264,11 +245,11 @@ describe("utils", () => {
 
       const element = document.body.firstChild as HTMLElement;
 
-      expect(element.classList.contains("brisa-request")).toBeTrue();
+      expect(element.classList.contains('brisa-request')).toBeTrue();
       // Simulate the script to be loaded
-      document.head.querySelector("script")?.dispatchEvent(new Event("load"));
+      document.head.querySelector('script')?.dispatchEvent(new Event('load'));
       await Bun.sleep(1);
-      expect(element.classList.contains("brisa-request")).toBeFalse();
+      expect(element.classList.contains('brisa-request')).toBeFalse();
     });
 
     it('should add and remove the class "brisa-request" meanwhile the request is being processed and then fail req.ok === false', async () => {
@@ -279,7 +260,7 @@ describe("utils", () => {
       };
 
       await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
         useIndicator: true,
         slowRequest: true,
         fails: true,
@@ -288,12 +269,12 @@ describe("utils", () => {
 
       const element = document.body.firstChild as HTMLElement;
 
-      expect(element.classList.contains("brisa-request")).toBeTrue();
+      expect(element.classList.contains('brisa-request')).toBeTrue();
       await Bun.sleep(1);
-      expect(element.classList.contains("brisa-request")).toBeFalse();
+      expect(element.classList.contains('brisa-request')).toBeFalse();
 
-      const errorMessage = window._s.get("e" + INDICATOR_ID);
-      expect(errorMessage).toBe("Some error");
+      const errorMessage = window._s.get('e' + INDICATOR_ID);
+      expect(errorMessage).toBe('Some error');
     });
 
     it('should add and remove the class "brisa-request" meanwhile the request is being processed and then fail throwing an error', async () => {
@@ -304,7 +285,7 @@ describe("utils", () => {
       };
 
       await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
         useIndicator: true,
         slowRequest: true,
         failsThrowingAnError: true,
@@ -313,14 +294,14 @@ describe("utils", () => {
 
       const element = document.body.firstChild as HTMLElement;
 
-      expect(element.classList.contains("brisa-request")).toBeTrue();
+      expect(element.classList.contains('brisa-request')).toBeTrue();
       await Bun.sleep(1);
-      expect(element.classList.contains("brisa-request")).toBeFalse();
-      const errorMessage = window._s.get("e" + INDICATOR_ID);
-      expect(errorMessage).toEqual("Some throwable error");
+      expect(element.classList.contains('brisa-request')).toBeFalse();
+      const errorMessage = window._s.get('e' + INDICATOR_ID);
+      expect(errorMessage).toEqual('Some throwable error');
     });
 
-    it("should communicate with store to the indicator store key", async () => {
+    it('should communicate with store to the indicator store key', async () => {
       window._s = {
         Map: new Map(),
         get: (key: string) => window._s.Map.get(key),
@@ -330,7 +311,7 @@ describe("utils", () => {
       expect(window._s.get(INDICATOR_ID)).toBeEmpty();
 
       await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
         useIndicator: true,
         slowRequest: true,
         debounceMs: 1,
@@ -338,40 +319,34 @@ describe("utils", () => {
 
       expect(window._s.get(INDICATOR_ID)).toBeTrue();
       // Simulate the script to be loaded
-      document.head.querySelector("script")?.dispatchEvent(new Event("load"));
+      document.head.querySelector('script')?.dispatchEvent(new Event('load'));
       await Bun.sleep(1);
       expect(window._s.get(INDICATOR_ID)).toBeFalse();
     });
 
-    it("should add the x-actions header with the serialized actions dependencies ids", async () => {
+    it('should add the x-actions header with the serialized actions dependencies ids', async () => {
       const mockFetch = await simulateRPC({
-        navigateTo: "http://localhost/some-page",
-        dataActions: [["onClick", "a1_2"]],
+        navigateTo: 'http://localhost/some-page',
+        dataActions: [['onClick', 'a1_2']],
       });
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
-        string,
-        string
-      >;
-      expect(headers["x-action"]).toBe("a1_1");
-      expect(headers["x-actions"]).toBe("[['onClick','a1_2']]");
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
+      expect(headers['x-action']).toBe('a1_1');
+      expect(headers['x-actions']).toBe("[['onClick','a1_2']]");
     });
 
-    it("should not add the x-actions header when no data-actions", async () => {
+    it('should not add the x-actions header when no data-actions', async () => {
       const mockFetch = await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
         dataActions: [],
       });
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
-        string,
-        string
-      >;
-      expect(headers["x-action"]).toBe("a1_1");
-      expect(headers["x-actions"]).toBeEmpty();
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
+      expect(headers['x-action']).toBe('a1_1');
+      expect(headers['x-actions']).toBeEmpty();
     });
 
     it('should register actions after server action doing a rerender with "data-action" attribute', async () => {
       await simulateRPC({
-        navigateTo: "http://localhost/some-page",
+        navigateTo: 'http://localhost/some-page',
         callbackAfterRPC: () => {
           document.body.innerHTML = `<button data-action-onclick="a1_1" data-action></button>`;
           expect(document.body.innerHTML).toBe(
@@ -380,13 +355,11 @@ describe("utils", () => {
         },
       });
 
-      expect(document.body.innerHTML).toBe(
-        `<button data-action-onclick="a1_1"></button>`,
-      );
+      expect(document.body.innerHTML).toBe(`<button data-action-onclick="a1_1"></button>`);
     });
   });
 
-  describe("SPA Navigation", () => {
+  describe('SPA Navigation', () => {
     const mockNavigationIntercept = mock((handler: () => {}) => {});
     async function simulateSPANavigation(
       url: string,
@@ -396,14 +369,14 @@ describe("utils", () => {
       }: { downloadRequest?: string | null; hashChange?: boolean } = {},
     ) {
       const origin = `http://localhost`;
-      let canIntercept = new URL(url).origin === origin;
+      const canIntercept = new URL(url).origin === origin;
       let fn: any;
 
       // Initial page (with same origin)
       location.href = origin;
       window.navigation = {
         addEventListener: (eventName: string, callback: any) => {
-          if (eventName === "navigate") fn = callback;
+          if (eventName === 'navigate') fn = callback;
         },
       };
 
@@ -436,178 +409,176 @@ describe("utils", () => {
       window._xm = null;
     });
 
-    it("should not work SPA navigation with different origin", async () => {
-      await simulateSPANavigation("http://test.com/some-page");
+    it('should not work SPA navigation with different origin', async () => {
+      await simulateSPANavigation('http://test.com/some-page');
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
-    it("should not work SPA navigation with same origin but hashChange is true", async () => {
-      await simulateSPANavigation("http://localhost/some-page", {
+    it('should not work SPA navigation with same origin but hashChange is true', async () => {
+      await simulateSPANavigation('http://localhost/some-page', {
         hashChange: true,
       });
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it('should not work SPA navigation with window._xm === "native"', async () => {
-      window._xm = "native";
-      await simulateSPANavigation("http://localhost/some-page");
+      window._xm = 'native';
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with 'download' attribute", async () => {
-      await simulateSPANavigation("http://localhost/some-page", {
-        downloadRequest: "name-of-file",
+      await simulateSPANavigation('http://localhost/some-page', {
+        downloadRequest: 'name-of-file',
       });
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with 'download' attribute as empty string", async () => {
-      await simulateSPANavigation("http://localhost/some-page", {
-        downloadRequest: "",
+      await simulateSPANavigation('http://localhost/some-page', {
+        downloadRequest: '',
       });
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with renderMode='native'", async () => {
-      document.activeElement?.setAttribute("renderMode", "native");
-      await simulateSPANavigation("http://localhost/some-page");
+      document.activeElement?.setAttribute('renderMode', 'native');
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should not work SPA navigation with some custom element with renderMode='native'", async () => {
-      const page = "http://localhost/some-page";
+      const page = 'http://localhost/some-page';
       customElements.define(
-        "custom-element",
+        'custom-element',
         class extends HTMLElement {
           constructor() {
             super();
-            const shadowRoot = this.attachShadow({ mode: "open" });
+            const shadowRoot = this.attachShadow({ mode: 'open' });
             shadowRoot.innerHTML = `<a href="${page}" renderMode="native">Click me</a>`;
           }
         },
       );
 
       document.body.innerHTML = `<custom-element></custom-element>`;
-      const customElement = document.querySelector("custom-element");
+      const customElement = document.querySelector('custom-element');
       // focus to the hyperlink to activate the document.activeElement.shadowRoot.activeElement
-      customElement?.shadowRoot?.querySelector("a")?.focus();
+      customElement?.shadowRoot?.querySelector('a')?.focus();
 
       await simulateSPANavigation(page);
       expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it("should work SPA navigation with renderMode='reactivity'", async () => {
-      document.activeElement?.setAttribute("rendermode", "reactivity");
-      await simulateSPANavigation("http://localhost/some-page");
+      document.activeElement?.setAttribute('rendermode', 'reactivity');
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it('should work SPA navigation with window._xm === "reactivity"', async () => {
-      window._xm = "reactivity";
-      await simulateSPANavigation("http://localhost/some-page");
+      window._xm = 'reactivity';
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it("should work SPA navigation with some custom element with renderMode='reactivity'", async () => {
-      const page = "http://localhost/some-page";
+      const page = 'http://localhost/some-page';
       customElements.define(
-        "custom-element",
+        'custom-element',
         class extends HTMLElement {
           constructor() {
             super();
-            const shadowRoot = this.attachShadow({ mode: "open" });
+            const shadowRoot = this.attachShadow({ mode: 'open' });
             shadowRoot.innerHTML = `<a href="${page}" renderMode="reactivity">Click me</a>`;
           }
         },
       );
 
       document.body.innerHTML = `<custom-element></custom-element>`;
-      const customElement = document.querySelector("custom-element");
+      const customElement = document.querySelector('custom-element');
       // focus to the hyperlink to activate the document.activeElement.shadowRoot.activeElement
-      customElement?.shadowRoot?.querySelector("a")?.focus();
+      customElement?.shadowRoot?.querySelector('a')?.focus();
 
       await simulateSPANavigation(page);
       expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it("should work SPA navigation with renderMode='transition'", async () => {
-      document.activeElement?.setAttribute("rendermode", "transition");
-      await simulateSPANavigation("http://localhost/some-page");
+      document.activeElement?.setAttribute('rendermode', 'transition');
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it('should work SPA navigation with window._xm === "transition"', async () => {
-      window._xm = "transition";
-      await simulateSPANavigation("http://localhost/some-page");
+      window._xm = 'transition';
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
     it("should work SPA navigation with some custom element with renderMode='transition'", async () => {
-      const page = "http://localhost/some-page";
+      const page = 'http://localhost/some-page';
       customElements.define(
-        "custom-element",
+        'custom-element',
         class extends HTMLElement {
           constructor() {
             super();
-            const shadowRoot = this.attachShadow({ mode: "open" });
+            const shadowRoot = this.attachShadow({ mode: 'open' });
             shadowRoot.innerHTML = `<a href="${page}" renderMode="transition">Click me</a>`;
           }
         },
       );
 
       document.body.innerHTML = `<custom-element></custom-element>`;
-      const customElement = document.querySelector("custom-element");
+      const customElement = document.querySelector('custom-element');
       // focus to the hyperlink to activate the document.activeElement.shadowRoot.activeElement
-      customElement?.shadowRoot?.querySelector("a")?.focus();
+      customElement?.shadowRoot?.querySelector('a')?.focus();
 
       await simulateSPANavigation(page);
       expect(mockNavigationIntercept).toHaveBeenCalled();
     });
 
-    it("should work SPA navigation", async () => {
-      await simulateSPANavigation("http://localhost/some-page");
+    it('should work SPA navigation', async () => {
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).toHaveBeenCalled();
-      expect(location.href).toBe("http://localhost/some-page");
+      expect(location.href).toBe('http://localhost/some-page');
     });
 
-    it("should work window._xm be cleaned after each execution", async () => {
-      window._xm = "reactivity";
-      await simulateSPANavigation("http://localhost/some-page");
+    it('should work window._xm be cleaned after each execution', async () => {
+      window._xm = 'reactivity';
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).toHaveBeenCalled();
       expect(window._xm).toBeNull();
     });
 
-    it("should add x-s (store body param) during SPA navigation", async () => {
-      window._S = [["a", "b"]];
+    it('should add x-s (store body param) during SPA navigation', async () => {
+      window._S = [['a', 'b']];
       const res = new Response('<div id="some-id"></div>', {
-        headers: { "content-type": "text/html" },
+        headers: { 'content-type': 'text/html' },
       });
-      mockFetch = spyOn(window, "fetch").mockImplementation(async () => res);
-      await simulateSPANavigation("http://localhost/some-page");
+      mockFetch = spyOn(window, 'fetch').mockImplementation(async () => res);
+      await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).toHaveBeenCalled();
       const handler = mockNavigationIntercept.mock.calls[0][0];
       await handler();
       expect(mockFetch).toHaveBeenCalled();
-      expect(JSON.parse(mockFetch.mock.calls[0][1].body)["x-s"]).toEqual([
-        ["a", "b"],
-      ]);
+      expect(JSON.parse(mockFetch.mock.calls[0][1].body)['x-s']).toEqual([['a', 'b']]);
     });
 
     it('should register actions after SPA navigation with "data-action" attribute', async () => {
-      await simulateSPANavigation("http://localhost/some-page");
+      await simulateSPANavigation('http://localhost/some-page');
 
-      const res = new Response("<div data-action></div>", {
-        headers: { "content-type": "text/html" },
+      const res = new Response('<div data-action></div>', {
+        headers: { 'content-type': 'text/html' },
       });
 
-      mockFetch = spyOn(window, "fetch").mockImplementation(async () => res);
+      mockFetch = spyOn(window, 'fetch').mockImplementation(async () => res);
       const handler = mockNavigationIntercept.mock.calls[0][0];
       await handler();
 
-      expect(location.href).toBe("http://localhost/some-page");
+      expect(location.href).toBe('http://localhost/some-page');
 
       // Should remove data-action attribute after register the action
-      expect(document.body.querySelector("[data-action]")).toBeNull();
+      expect(document.body.querySelector('[data-action]')).toBeNull();
     });
   });
 });

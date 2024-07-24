@@ -1,7 +1,7 @@
-import type { ESTree } from "meriyah";
+import type { ESTree } from 'meriyah';
 
-const SPECIFIERS = new Set(["ImportDefaultSpecifier", "ImportSpecifier"]);
-const AVOIDED_DEPENDENCIES = new Set(["brisa", "brisa/server", "brisa/client"]);
+const SPECIFIERS = new Set(['ImportDefaultSpecifier', 'ImportSpecifier']);
+const AVOIDED_DEPENDENCIES = new Set(['brisa', 'brisa/server', 'brisa/client']);
 
 export default function getDependenciesList(
   ast: ESTree.Program,
@@ -10,14 +10,14 @@ export default function getDependenciesList(
 ) {
   const dependenciesMap = new Set<string>(initialValue);
 
-  for (let importAst of ast.body) {
-    if (importAst.type !== "ImportDeclaration") continue;
+  for (const importAst of ast.body) {
+    if (importAst.type !== 'ImportDeclaration') continue;
 
     const dependencyPath = resolve(importAst.source.value as string, path);
 
     if (!dependencyPath) continue;
 
-    for (let specifier of importAst.specifiers) {
+    for (const specifier of importAst.specifiers) {
       if (!SPECIFIERS.has(specifier.type)) break;
       dependenciesMap.add(dependencyPath);
     }

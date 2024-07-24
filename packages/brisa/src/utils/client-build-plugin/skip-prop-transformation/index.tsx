@@ -1,8 +1,8 @@
-import getAllPatternNames from "@/utils/ast/get-all-pattern-names";
-import getSortedKeysMemberExpression from "@/utils/ast/get-sorted-keys-member-expression";
-import { FN } from "@/utils/client-build-plugin/constants";
+import getAllPatternNames from '@/utils/ast/get-all-pattern-names';
+import getSortedKeysMemberExpression from '@/utils/ast/get-sorted-keys-member-expression';
+import { FN } from '@/utils/client-build-plugin/constants';
 
-const PROPS_OPTIMIZATION_IDENTIFIER = "__b_props__";
+const PROPS_OPTIMIZATION_IDENTIFIER = '__b_props__';
 
 export default function skipPropTransformation(
   componentBody: any,
@@ -11,7 +11,7 @@ export default function skipPropTransformation(
   standaloneProps = new Set<string>(),
 ) {
   return function traverseA2B(this: any, key: string, value: any) {
-    const isObject = typeof value === "object" && value !== null;
+    const isObject = typeof value === 'object' && value !== null;
 
     // Force skip (for all properties)
     if (isObject && !value?._force_skip && this._force_skip) {
@@ -28,7 +28,7 @@ export default function skipPropTransformation(
     // to avoid conflicts with external variables with the same name
     // Example: "console.log(foo, props.foo);" -> "console.log(foo, props.foo.value);"
     if (
-      value?.type === "Identifier" &&
+      value?.type === 'Identifier' &&
       !value?._insideMemberExpression &&
       value?.name &&
       propsIdentifier &&
@@ -42,14 +42,14 @@ export default function skipPropTransformation(
 
     // Skip "const {foo} = p.bar;" -> "const {foo: foo.value} = p.bar.value;"
     // Instead, we want: "const {foo} = p.bar;" -> "const {foo} = p.bar.value;"
-    else if (this?.type === "VariableDeclarator" && this.id === value) {
+    else if (this?.type === 'VariableDeclarator' && this.id === value) {
       value._force_skip = true;
       return value;
     }
 
     // Variable declaration
     else if (
-      value?.type === "VariableDeclaration" &&
+      value?.type === 'VariableDeclaration' &&
       Array.isArray(this) &&
       this !== componentBody.body
     ) {
@@ -58,7 +58,7 @@ export default function skipPropTransformation(
       for (const declaration of value.declarations) {
         // Skip variable declarations
         if (
-          declaration?.id?.type === "Identifier" &&
+          declaration?.id?.type === 'Identifier' &&
           propsNamesAndRenamesSet.has(declaration?.id?.name)
         ) {
           skipArray.push(declaration?.id.name);
@@ -66,8 +66,8 @@ export default function skipPropTransformation(
 
         // Skip object or array pattern properties
         else if (
-          declaration?.id?.type === "ObjectPattern" ||
-          declaration?.id?.type === "ArrayPattern"
+          declaration?.id?.type === 'ObjectPattern' ||
+          declaration?.id?.type === 'ArrayPattern'
         ) {
           const identifiers = getAllPatternNames(declaration.id);
 
@@ -95,18 +95,15 @@ export default function skipPropTransformation(
 
       for (const param of value.params) {
         // Skip function parameters
-        if (
-          param?.type === "Identifier" &&
-          propsNamesAndRenamesSet.has(param.name)
-        ) {
+        if (param?.type === 'Identifier' && propsNamesAndRenamesSet.has(param.name)) {
           skipArray.push(param.name);
           param._force_skip = true;
         }
 
         // Skip rest parameter
         else if (
-          param?.type === "RestElement" &&
-          param.argument?.type === "Identifier" &&
+          param?.type === 'RestElement' &&
+          param.argument?.type === 'Identifier' &&
           propsNamesAndRenamesSet.has(param.argument.name)
         ) {
           skipArray.push(param.argument.name);
@@ -114,10 +111,7 @@ export default function skipPropTransformation(
         }
 
         // Skip object or array pattern properties
-        else if (
-          param?.type === "ObjectPattern" ||
-          param?.type === "ArrayPattern"
-        ) {
+        else if (param?.type === 'ObjectPattern' || param?.type === 'ArrayPattern') {
           const identifiers = getAllPatternNames(param);
 
           for (const identifier of identifiers) {
@@ -135,7 +129,7 @@ export default function skipPropTransformation(
     }
 
     // Member expression
-    else if (value?.type === "MemberExpression") {
+    else if (value?.type === 'MemberExpression') {
       const keys = getSortedKeysMemberExpression(value);
       let forceSkip = false;
 

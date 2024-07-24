@@ -1,15 +1,15 @@
-import { describe, expect, it } from "bun:test";
-import mapComponentStatics from ".";
-import { normalizeQuotes } from "@/helpers";
-import AST from "@/utils/ast";
+import { describe, expect, it } from 'bun:test';
+import mapComponentStatics from '.';
+import { normalizeQuotes } from '@/helpers';
+import AST from '@/utils/ast';
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 const toOutput = (ast: any) => normalizeQuotes(generateCodeFromAST(ast));
 
-describe("utils", () => {
-  describe("client-build-plugin", () => {
-    describe("map-component-statics", () => {
-      it("should be possible to map statics using arrow functions", () => {
+describe('utils', () => {
+  describe('client-build-plugin', () => {
+    describe('map-component-statics', () => {
+      it('should be possible to map statics using arrow functions', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           Component.error = () => <div>Error</div>
@@ -17,9 +17,9 @@ describe("utils", () => {
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "Literal",
+              type: 'Literal',
               value: name,
             };
             return value;
@@ -35,7 +35,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to map statics using functions", () => {
+      it('should be possible to map statics using functions', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           Component.error = function () {return 'Error'}
@@ -43,14 +43,14 @@ describe("utils", () => {
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "BlockStatement",
+              type: 'BlockStatement',
               body: [
                 {
-                  type: "ReturnStatement",
+                  type: 'ReturnStatement',
                   argument: {
-                    type: "Literal",
+                    type: 'Literal',
                     value: name,
                   },
                 },
@@ -69,7 +69,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to map statics using functions identifiers", () => {
+      it('should be possible to map statics using functions identifiers', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           function Error() {return 'Error'}
@@ -79,14 +79,14 @@ describe("utils", () => {
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "BlockStatement",
+              type: 'BlockStatement',
               body: [
                 {
-                  type: "ReturnStatement",
+                  type: 'ReturnStatement',
                   argument: {
-                    type: "Literal",
+                    type: 'Literal',
                     value: name,
                   },
                 },
@@ -106,7 +106,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to map statics using arrow functions identifiers", () => {
+      it('should be possible to map statics using arrow functions identifiers', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           const Error = () => 'Error'
@@ -116,9 +116,9 @@ describe("utils", () => {
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "Literal",
+              type: 'Literal',
               value: name,
             };
             return value;
@@ -136,7 +136,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to map statics using arrow functions identifiers via Object.assign", () => {
+      it('should be possible to map statics using arrow functions identifiers via Object.assign', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           const Error = () => 'Error'
@@ -145,9 +145,9 @@ describe("utils", () => {
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "Literal",
+              type: 'Literal',
               value: name,
             };
             return value;
@@ -164,7 +164,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to map statics using functions identifiers via Object.assign", () => {
+      it('should be possible to map statics using functions identifiers via Object.assign', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           function Error() {return 'Error'}
@@ -173,14 +173,14 @@ describe("utils", () => {
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "BlockStatement",
+              type: 'BlockStatement',
               body: [
                 {
-                  type: "ReturnStatement",
+                  type: 'ReturnStatement',
                   argument: {
-                    type: "Literal",
+                    type: 'Literal',
                     value: name,
                   },
                 },
@@ -199,21 +199,21 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to map statics using functions via Object.assign", () => {
+      it('should be possible to map statics using functions via Object.assign', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           Object.assign(Component, { error: function () {return 'Error'}, suspense: function () {return 'Suspense'} })
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "BlockStatement",
+              type: 'BlockStatement',
               body: [
                 {
-                  type: "ReturnStatement",
+                  type: 'ReturnStatement',
                   argument: {
-                    type: "Literal",
+                    type: 'Literal',
                     value: name,
                   },
                 },
@@ -231,16 +231,16 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to map statics using arrow functions via Object.assign", () => {
+      it('should be possible to map statics using arrow functions via Object.assign', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           Object.assign(Component, { error: () => 'Error', suspense: () => 'Suspense' })
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "Literal",
+              type: 'Literal',
               value: name,
             };
             return value;
@@ -255,21 +255,21 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to map statics using methods via Object.assign", () => {
+      it('should be possible to map statics using methods via Object.assign', () => {
         const ast = parseCodeToAST(`
           export default function Component() { return 'Hello' }
           Object.assign(Component, { error() {return 'Error'}, suspense() {return 'Suspense'} })
         `);
 
         const output = toOutput(
-          mapComponentStatics(ast, "Component", (value: any, name) => {
+          mapComponentStatics(ast, 'Component', (value: any, name) => {
             value.body = {
-              type: "BlockStatement",
+              type: 'BlockStatement',
               body: [
                 {
-                  type: "ReturnStatement",
+                  type: 'ReturnStatement',
                   argument: {
-                    type: "Literal",
+                    type: 'Literal',
                     value: name,
                   },
                 },

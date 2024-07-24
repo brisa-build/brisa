@@ -1,12 +1,12 @@
-import { describe, it, expect } from "bun:test";
-import AST from "@/utils/ast";
-import analyzeServerAst from ".";
+import { describe, it, expect } from 'bun:test';
+import AST from '@/utils/ast';
+import analyzeServerAst from '.';
 
-const { parseCodeToAST } = AST("tsx");
+const { parseCodeToAST } = AST('tsx');
 
-describe("utils", () => {
-  describe("analyze-server-ast", () => {
-    it("should not detect suspense", () => {
+describe('utils', () => {
+  describe('analyze-server-ast', () => {
+    it('should not detect suspense', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <div>hello</div>
@@ -21,7 +21,7 @@ describe("utils", () => {
       expect(res.useSuspense).toBeFalse();
       expect(res.useHyperlink).toBeFalse();
     });
-    it("should detect suspense", () => {
+    it('should detect suspense', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <div>hello</div>
@@ -39,7 +39,7 @@ describe("utils", () => {
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should detect web components", () => {
+    it('should detect web components', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <my-component>hello</my-component>
@@ -49,20 +49,20 @@ describe("utils", () => {
       `);
 
       const res = analyzeServerAst(ast, {
-        "my-component": "my-component.js",
-        "another-component": "another-component.js",
+        'my-component': 'my-component.js',
+        'another-component': 'another-component.js',
       });
 
       expect(res.useContextProvider).toBeFalse();
       expect(res.useSuspense).toBeTrue();
       expect(res.useActions).toBeFalse();
       expect(res.webComponents).toEqual({
-        "my-component": "my-component.js",
+        'my-component': 'my-component.js',
       });
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should detect web components inside suspense", () => {
+    it('should detect web components inside suspense', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <div>hello</div>
@@ -72,20 +72,20 @@ describe("utils", () => {
       `);
 
       const res = analyzeServerAst(ast, {
-        "my-component": "my-component.js",
-        "another-component": "another-component.js",
+        'my-component': 'my-component.js',
+        'another-component': 'another-component.js',
       });
 
       expect(res.useContextProvider).toBeFalse();
       expect(res.useSuspense).toBeTrue();
       expect(res.useActions).toBeFalse();
       expect(res.webComponents).toEqual({
-        "another-component": "another-component.js",
+        'another-component': 'another-component.js',
       });
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should not detect context-provider when serverOnly", () => {
+    it('should not detect context-provider when serverOnly', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <context-provider serverOnly={true}>hello</context-provider>
@@ -101,7 +101,7 @@ describe("utils", () => {
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should detect context-provider", () => {
+    it('should detect context-provider', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <context-provider>hello</context-provider>
@@ -117,7 +117,7 @@ describe("utils", () => {
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should detect actions when is used the attribute data-action", () => {
+    it('should detect actions when is used the attribute data-action', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <div data-action="action">hello</div>
@@ -133,7 +133,7 @@ describe("utils", () => {
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should detect hyperlink with relative path", () => {
+    it('should detect hyperlink with relative path', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <a href="/hello">hello</a>
@@ -149,7 +149,7 @@ describe("utils", () => {
       expect(res.useHyperlink).toBeTrue();
     });
 
-    it("should not detect hyperlink with absolute path", () => {
+    it('should not detect hyperlink with absolute path', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <a href="https://someweb.com/hello">hello</a>
@@ -165,7 +165,7 @@ describe("utils", () => {
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should not detect hyperlink with target=_blank", () => {
+    it('should not detect hyperlink with target=_blank', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return <a href="/hello" target="_blank">hello</a>
@@ -181,7 +181,7 @@ describe("utils", () => {
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should not detect hyperlink if there are a lot of links without relative path on same tab", () => {
+    it('should not detect hyperlink if there are a lot of links without relative path on same tab', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return (
@@ -204,7 +204,7 @@ describe("utils", () => {
       expect(res.useHyperlink).toBeFalse();
     });
 
-    it("should detect hyperlink if there are a lot of links and one of them is relative path", () => {
+    it('should detect hyperlink if there are a lot of links and one of them is relative path', () => {
       const ast = parseCodeToAST(`
         export default function Component() {
           return (

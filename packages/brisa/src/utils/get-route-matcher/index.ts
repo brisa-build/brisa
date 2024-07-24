@@ -1,6 +1,6 @@
-import type { MatchedRoute } from "bun";
-import type { RequestContext, RouterType } from "@/types";
-import isTestFile from "@/utils/is-test-file";
+import type { MatchedRoute } from 'bun';
+import type { RequestContext, RouterType } from '@/types';
+import isTestFile from '@/utils/is-test-file';
 
 export default function getRouteMatcher(
   dir: string,
@@ -8,7 +8,7 @@ export default function getRouteMatcher(
   locale?: string,
 ): RouterType {
   const router = new Bun.FileSystemRouter({
-    style: "nextjs",
+    style: 'nextjs',
     dir,
   });
   const reservedPathnamesSet = new Set(reservedPathnames);
@@ -16,22 +16,22 @@ export default function getRouteMatcher(
     const url = new URL(req.finalURL);
 
     if (locale) {
-      url.pathname = url.pathname.replace(new RegExp(`/${locale}(/|$)`), "");
+      url.pathname = url.pathname.replace(new RegExp(`/${locale}(/|$)`), '');
     }
 
     const route = router.match(url.toString());
 
     if (
       isTestFile(route?.name) ||
-      url.pathname.endsWith("/index") ||
-      url.pathname.endsWith("\\index")
+      url.pathname.endsWith('/index') ||
+      url.pathname.endsWith('\\index')
     ) {
       return { route: null, isReservedPathname: false };
     }
 
     return {
       route,
-      isReservedPathname: reservedPathnamesSet.has(route?.pathname ?? ""),
+      isReservedPathname: reservedPathnamesSet.has(route?.pathname ?? ''),
     };
   };
 

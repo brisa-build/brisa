@@ -3,5 +3,5 @@ export default function Pokemon() {
 }
 
 export function prerender() {
-  return [{ slug: "charizard" }, { slug: "pikachu" }];
+  return [{ slug: 'charizard' }, { slug: 'pikachu' }];
 }

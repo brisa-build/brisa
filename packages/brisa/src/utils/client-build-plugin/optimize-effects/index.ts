@@ -1,4 +1,4 @@
-import { ESTree } from "meriyah";
+import type { ESTree } from 'meriyah';
 
 type EffectNode = ESTree.CallExpression & { effectDeps: string[] };
 type WebContextDetails = {
@@ -6,21 +6,11 @@ type WebContextDetails = {
   cleanupName: string;
   identifier?: string;
 };
-type Properties = (
-  | ESTree.Property
-  | ESTree.RestElement
-  | ESTree.CallExpression["callee"]
-)[];
+type Properties = (ESTree.Property | ESTree.RestElement | ESTree.CallExpression['callee'])[];
 
-const DECLARATION_NODE_TYPES = new Set([
-  "FunctionDeclaration",
-  "VariableDeclarator",
-]);
+const DECLARATION_NODE_TYPES = new Set(['FunctionDeclaration', 'VariableDeclarator']);
 
-const EFFECT_EXECUTION_TYPES = new Set([
-  "CallExpression",
-  "FunctionDeclaration",
-]);
+const EFFECT_EXECUTION_TYPES = new Set(['CallExpression', 'FunctionDeclaration']);
 
 /**
  * Optimizes effects doing 3 things:
@@ -54,17 +44,17 @@ export default function optimizeEffects(
   if (!webContextAst) return componentBranch;
 
   const webContextDetails: WebContextDetails = {
-    effectName: "effect",
-    cleanupName: "cleanup",
+    effectName: 'effect',
+    cleanupName: 'cleanup',
   };
 
   const { assignRNameToNode, getRNameFromIdentifier, getEffectIdentifier } =
     getSubEffectManager(allVariableNames);
 
-  if (webContextAst.type === "ObjectPattern") {
+  if (webContextAst.type === 'ObjectPattern') {
     const modified = setWebContextProperties(webContextAst.properties);
     if (!modified) return componentBranch;
-  } else if (webContextAst.type === "Identifier") {
+  } else if (webContextAst.type === 'Identifier') {
     webContextDetails.identifier = webContextAst.name;
   }
 
@@ -94,8 +84,8 @@ export default function optimizeEffects(
   // the effect to finish (is a promise).
   function traverseA2B(this: any, key: string, node: any) {
     if (
-      node?.type === "VariableDeclaration" &&
-      node?.declarations[0]?.id?.type === "ObjectPattern" &&
+      node?.type === 'VariableDeclaration' &&
+      node?.declarations[0]?.id?.type === 'ObjectPattern' &&
       webContextDetails.identifier === node?.declarations[0]?.init?.name
     ) {
       setWebContextProperties(node?.declarations[0]?.id?.properties);
@@ -115,14 +105,10 @@ export default function optimizeEffects(
   // add the effectDeps to the effect function.
   // ex: effect(someFn); function someFn(r) {} // adding 'r' as dependency
   function traverseAgainA2B(this: any, key: string, node: any) {
-    if (
-      DECLARATION_NODE_TYPES.has(node?.type) &&
-      node?.id?.name === getEffectIdentifier()
-    ) {
+    if (DECLARATION_NODE_TYPES.has(node?.type) && node?.id?.name === getEffectIdentifier()) {
       return JSON.parse(
         JSON.stringify(node, (k, v) => {
-          if (v?.constructor === Object)
-            v.effectDeps = [getRNameFromIdentifier(node?.id?.name)];
+          if (v?.constructor === Object) v.effectDeps = [getRNameFromIdentifier(node?.id?.name)];
           return v;
         }),
       );
@@ -136,10 +122,7 @@ export default function optimizeEffects(
   //   ex: effect((r) => effect(r1 => {})) --> effect((r) => effect(r(r1 => {})));
   // - add 'r.id' as second parameter to cleanups used inside effects
   function traverseB2A(this: any, key: string, node: any) {
-    if (
-      DECLARATION_NODE_TYPES.has(node?.type) &&
-      node?.id?.name === getEffectIdentifier()
-    ) {
+    if (DECLARATION_NODE_TYPES.has(node?.type) && node?.id?.name === getEffectIdentifier()) {
       return transformInnerEffect(node, this);
     }
 
@@ -172,26 +155,22 @@ export default function optimizeEffects(
 
     const parser = (key: string, innerVal: any) => {
       if (!EFFECT_EXECUTION_TYPES.has(innerVal?.type)) return innerVal;
-      if (
-        innerVal?.callee?.property?.name &&
-        innerVal?.callee?.object?.name !== effectIdentifier
-      ) {
+      if (innerVal?.callee?.property?.name && innerVal?.callee?.object?.name !== effectIdentifier) {
         return innerVal;
       }
 
-      const innerName =
-        innerVal?.callee?.name ?? innerVal?.callee?.property?.name;
+      const innerName = innerVal?.callee?.name ?? innerVal?.callee?.property?.name;
 
       if (innerName !== webContextDetails.cleanupName) return innerVal;
 
       // Add 'r.id' as second parameter to cleanups used inside effects
       const arg = {
-        type: "MemberExpression",
+        type: 'MemberExpression',
         object: {
-          type: "Identifier",
+          type: 'Identifier',
           name: innerVal.effectDeps?.[0] ?? rName,
         },
-        property: { type: "Identifier", name: "id" },
+        property: { type: 'Identifier', name: 'id' },
         computed: false,
       };
 
@@ -202,7 +181,7 @@ export default function optimizeEffects(
     };
 
     const rName = effect.effectDeps?.[0];
-    const param = { type: "Identifier", name: rName };
+    const param = { type: 'Identifier', name: rName };
     const modifiedEffect = JSON.parse(JSON.stringify(effect), parser);
 
     if (modifiedEffect.params) {
@@ -216,7 +195,7 @@ export default function optimizeEffects(
     if (needsToAwait) {
       const eff = wrapEffectWithDependencies(modifiedEffect, parent, true);
       return {
-        type: "AwaitExpression",
+        type: 'AwaitExpression',
         argument: {
           ...eff,
           arguments: [
@@ -241,16 +220,16 @@ export default function optimizeEffects(
   function setWebContextProperties(properties: Properties) {
     let setted = false;
 
-    for (let property of properties) {
+    for (const property of properties) {
       const { key, value, type } = property;
 
-      if (type === "RestElement") {
+      if (type === 'RestElement') {
         webContextDetails.identifier = (property as any).argument.name;
         setted = true;
         continue;
       }
 
-      if (key.type !== "Identifier" || value.type !== "Identifier") continue;
+      if (key.type !== 'Identifier' || value.type !== 'Identifier') continue;
       if (key.name === webContextDetails.effectName) {
         webContextDetails.effectName = value.name;
         setted = true;
@@ -275,10 +254,10 @@ export default function optimizeEffects(
  * propagateEffectDeps(value, parent);
  */
 function propagateEffectDeps(node: EffectNode, parent: EffectNode) {
-  if (typeof node !== "object" || node === null || node.effectDeps) return;
+  if (typeof node !== 'object' || node === null || node.effectDeps) return;
 
   if (Array.isArray(node)) {
-    for (let item of node) propagateEffectDeps(item, parent);
+    for (const item of node) propagateEffectDeps(item, parent);
     return;
   }
 
@@ -298,24 +277,19 @@ function propagateEffectDeps(node: EffectNode, parent: EffectNode) {
  * @example
  * const wrappedEffect = wrapEffectWithDependencies(effect, parent);
  */
-function wrapEffectWithDependencies(
-  effect: EffectNode,
-  parent: EffectNode,
-  async = false,
-) {
+function wrapEffectWithDependencies(effect: EffectNode, parent: EffectNode, async = false) {
   const deps = parent.effectDeps ?? [];
   let newEffectNode: EffectNode = effect;
 
   for (const depName of deps) {
-    const innerFn = (newEffectNode.arguments?.[0] ??
-      newEffectNode) as EffectNode;
+    const innerFn = (newEffectNode.arguments?.[0] ?? newEffectNode) as EffectNode;
 
     if (depName === innerFn?.callee?.name) continue;
 
     const callStatement: EffectNode = {
-      type: "CallExpression",
+      type: 'CallExpression',
       callee: {
-        type: "Identifier",
+        type: 'Identifier',
         name: depName,
       },
       arguments: [{ ...innerFn, async } as ESTree.CallExpression],
@@ -348,14 +322,11 @@ function getRNameGenerator(allVariableNames: Set<string>) {
   let count = 0;
 
   return () => {
-    let defaultName = `r${count ? count : ""}`;
+    let defaultName = `r${count ? count : ''}`;
 
     // Update the name if it's already taken adding a '$' at the end
-    while (
-      registeredRNames.has(defaultName) ||
-      allVariableNames.has(defaultName)
-    ) {
-      defaultName += "$";
+    while (registeredRNames.has(defaultName) || allVariableNames.has(defaultName)) {
+      defaultName += '$';
     }
 
     registeredRNames.add(defaultName);
@@ -390,30 +361,22 @@ function getSubEffectManager(allVariableNames: Set<string>) {
   let effectIdentifier: string | undefined;
 
   return {
-    getRNameFromIdentifier: (identifier: string) =>
-      identifierRName.get(identifier),
+    getRNameFromIdentifier: (identifier: string) => identifierRName.get(identifier),
     getEffectIdentifier: () => effectIdentifier,
-    assignRNameToNode: (
-      node: any,
-      { takenName, parent }: { takenName?: string; parent: any },
-    ) => {
+    assignRNameToNode: (node: any, { takenName, parent }: { takenName?: string; parent: any }) => {
       const args = node?.arguments?.[0] ?? {};
 
-      let rName =
+      const rName =
         takenName ??
         node?.init?.params?.[0]?.name ??
         args.params?.[0]?.name ??
         generateUniqueRName();
 
       node.effectDeps = Array.from(
-        new Set([
-          rName,
-          ...(parent?.effectDeps ?? []),
-          ...(node?.effectDeps ?? []),
-        ]),
+        new Set([rName, ...(parent?.effectDeps ?? []), ...(node?.effectDeps ?? [])]),
       );
 
-      if (args.type === "Identifier") {
+      if (args.type === 'Identifier') {
         effectIdentifier = args.name;
         identifierRName.set(args.name, rName);
       }

@@ -1,20 +1,21 @@
-import { rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-import { getConstants } from "@/constants";
-import AST from "@/utils/ast";
-import {
-  injectRPCCode,
-  injectRPCLazyCode,
-} from "@/utils/rpc" with { type: "macro" };
-import { injectUnsuspenseCode } from "@/utils/inject-unsuspense-code" with { type: "macro" };
-import { injectClientContextProviderCode } from "@/utils/context-provider/inject-client" with { type: "macro" };
-import { injectBrisaDialogErrorCode } from "@/utils/brisa-error-dialog/inject-code" with { type: "macro" };
-import clientBuildPlugin from "@/utils/client-build-plugin";
-import createContextPlugin from "@/utils/create-context/create-context-plugin";
-import snakeToCamelCase from "@/utils/snake-to-camelcase";
-import analyzeServerAst from "@/utils/analyze-server-ast";
-import { logBuildError } from "@/utils/log/log-build";
+import { getConstants } from '@/constants';
+import AST from '@/utils/ast';
+import { injectRPCCode, injectRPCLazyCode } from '@/utils/rpc' with { type: 'macro' };
+import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with { type: 'macro' };
+import { injectClientContextProviderCode } from '@/utils/context-provider/inject-client' with {
+  type: 'macro',
+};
+import { injectBrisaDialogErrorCode } from '@/utils/brisa-error-dialog/inject-code' with {
+  type: 'macro',
+};
+import clientBuildPlugin from '@/utils/client-build-plugin';
+import createContextPlugin from '@/utils/create-context/create-context-plugin';
+import snakeToCamelCase from '@/utils/snake-to-camelcase';
+import analyzeServerAst from '@/utils/analyze-server-ast';
+import { logBuildError } from '@/utils/log/log-build';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
@@ -31,17 +32,15 @@ type ClientCodeInPageProps = {
   layoutHasContextProvider?: boolean;
 };
 
-const ASTUtil = AST("tsx");
+const ASTUtil = AST('tsx');
 const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
 const rpcCode = injectRPCCode() as unknown as string;
 const RPCLazyCode = injectRPCLazyCode() as unknown as string;
-const ENV_VAR_PREFIX = "BRISA_PUBLIC_";
-const DIRECT_IMPORT = "import:";
+const ENV_VAR_PREFIX = 'BRISA_PUBLIC_';
+const DIRECT_IMPORT = 'import:';
 
 async function getAstFromPath(path: string) {
-  return ASTUtil.parseCodeToAST(
-    path.startsWith(DIRECT_IMPORT) ? "" : await Bun.file(path).text(),
-  );
+  return ASTUtil.parseCodeToAST(path.startsWith(DIRECT_IMPORT) ? '' : await Bun.file(path).text());
 }
 
 export default async function getClientCodeInPage({
@@ -52,12 +51,15 @@ export default async function getClientCodeInPage({
   layoutHasContextProvider,
 }: ClientCodeInPageProps) {
   let size = 0;
-  let code = "";
+  let code = '';
 
   const ast = await getAstFromPath(pagePath);
 
-  let { useSuspense, useContextProvider, useActions, useHyperlink } =
-    analyzeServerAst(ast, allWebComponents, layoutHasContextProvider);
+  let { useSuspense, useContextProvider, useActions, useHyperlink } = analyzeServerAst(
+    ast,
+    allWebComponents,
+    layoutHasContextProvider,
+  );
 
   // Web components inside web components
   const nestedComponents = await Promise.all(
@@ -73,9 +75,9 @@ export default async function getClientCodeInPage({
     Object.assign(pageWebComponents, item.webComponents);
   }
 
-  const unsuspense = useSuspense ? unsuspenseScriptCode : "";
-  const rpc = useActions || useHyperlink ? rpcCode : "";
-  const lazyRPC = useActions || useHyperlink ? RPCLazyCode : "";
+  const unsuspense = useSuspense ? unsuspenseScriptCode : '';
+  const rpc = useActions || useHyperlink ? rpcCode : '';
+  const lazyRPC = useActions || useHyperlink ? RPCLazyCode : '';
 
   size += unsuspense.length;
   size += rpc.length;
@@ -122,18 +124,11 @@ export async function transformToWebComponents({
   integrationsPath,
   pagePath,
 }: TransformOptions) {
-  const {
-    SRC_DIR,
-    BUILD_DIR,
-    CONFIG,
-    LOG_PREFIX,
-    IS_DEVELOPMENT,
-    IS_PRODUCTION,
-    VERSION_HASH,
-  } = getConstants();
+  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_DEVELOPMENT, IS_PRODUCTION, VERSION_HASH } =
+    getConstants();
 
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
-  const internalDir = join(BUILD_DIR, "_brisa");
+  const internalDir = join(BUILD_DIR, '_brisa');
   const webEntrypoint = join(internalDir, `temp-${VERSION_HASH}.ts`);
   let useI18n = false;
   let i18nKeys = new Set<string>();
@@ -143,10 +138,10 @@ export async function transformToWebComponents({
   let imports = entries
     .map(([name, path]) =>
       path.startsWith(DIRECT_IMPORT)
-        ? `import "${path.replace(DIRECT_IMPORT, "")}";`
+        ? `import "${path.replace(DIRECT_IMPORT, '')}";`
         : `import ${snakeToCamelCase(name)} from "${path}";`,
     )
-    .join("\n");
+    .join('\n');
 
   // Add web context plugins import only if there is a web context plugin
   if (integrationsPath) {
@@ -158,36 +153,34 @@ export async function transformToWebComponents({
   }
 
   const defineElement =
-    "const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);";
+    'const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);';
 
   const customElementKeys = entries
     .filter(([_, path]) => !path.startsWith(DIRECT_IMPORT))
     .map(([k]) => k);
 
   if (useContextProvider) {
-    customElementKeys.unshift("context-provider");
+    customElementKeys.unshift('context-provider');
   }
 
   if (IS_DEVELOPMENT) {
-    customElementKeys.unshift("brisa-error-dialog");
+    customElementKeys.unshift('brisa-error-dialog');
   }
 
   const customElementsDefinitions = customElementKeys
     .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`)
-    .join("\n");
+    .join('\n');
 
-  let code = "";
+  let code = '';
 
   if (useContextProvider) {
-    const contextProviderCode =
-      injectClientContextProviderCode() as unknown as string;
+    const contextProviderCode = injectClientContextProviderCode() as unknown as string;
     code += contextProviderCode;
   }
 
   // IS_DEVELOPMENT to avoid PROD and TEST environments
   if (IS_DEVELOPMENT) {
-    const brisaDialogErrorCode =
-      injectBrisaDialogErrorCode() as unknown as string;
+    const brisaDialogErrorCode = injectBrisaDialogErrorCode() as unknown as string;
     code += brisaDialogErrorCode;
   }
 
@@ -195,7 +188,7 @@ export async function transformToWebComponents({
 
   // Inject web context plugins to window to be used inside web components
   if (useWebContextPlugins) {
-    code += "window._P=webContextPlugins;\n";
+    code += 'window._P=webContextPlugins;\n';
   }
 
   code += `${defineElement}\n${customElementsDefinitions};`;
@@ -206,7 +199,7 @@ export async function transformToWebComponents({
 
   for (const envKey in Bun.env) {
     if (envKey.startsWith(ENV_VAR_PREFIX)) {
-      envVar[`process.env.${envKey}`] = Bun.env[envKey] ?? "";
+      envVar[`process.env.${envKey}`] = Bun.env[envKey] ?? '';
     }
   }
 
@@ -215,7 +208,7 @@ export async function transformToWebComponents({
     root: SRC_DIR,
     // TODO: format: "iife" when Bun support it
     // https://bun.sh/docs/bundler#format
-    target: "browser",
+    target: 'browser',
     minify: IS_PRODUCTION,
     define: {
       __DEV__: (!IS_PRODUCTION).toString(),
@@ -226,13 +219,13 @@ export async function transformToWebComponents({
     plugins: extendPlugins(
       [
         {
-          name: "client-build-plugin",
+          name: 'client-build-plugin',
           setup(build) {
             build.onLoad(
               {
                 filter: new RegExp(
                   `(.*/src/web-components/(?!_integrations).*\\.(tsx|jsx|js|ts)|${webComponentsPath.join(
-                    "|",
+                    '|',
                   )})$`,
                 ),
               },
@@ -269,12 +262,12 @@ export async function transformToWebComponents({
   await rm(webEntrypoint);
 
   if (!success) {
-    logBuildError("Failed to compile web components", logs);
+    logBuildError('Failed to compile web components', logs);
     return null;
   }
 
   return {
-    code: "(() => {" + (await outputs[0].text()) + "})();",
+    code: '(() => {' + (await outputs[0].text()) + '})();',
     size: outputs[0].size,
     useI18n,
     i18nKeys,

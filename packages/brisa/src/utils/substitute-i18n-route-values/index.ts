@@ -1,4 +1,4 @@
-import constants from "@/constants";
+import constants from '@/constants';
 
 const { REGEX } = constants;
 
@@ -12,13 +12,13 @@ const { REGEX } = constants;
  * - /usuario/john/configuracion
  */
 export default function substituteI18nRouteValues(route: string, href: string) {
-  const url = new URL(href, "http://localhost");
+  const url = new URL(href, 'http://localhost');
   const paramsAndHash = url.search + url.hash;
 
   if (!route.match(REGEX.DYNAMIC)?.length) return route + paramsAndHash;
 
-  const pathnameParts = url.pathname.split("/");
-  const routeParts = route.split("/");
+  const pathnameParts = url.pathname.split('/');
+  const routeParts = route.split('/');
 
   const routePartsReplaced = routeParts.map((routePart, index) => {
     const isCatchAllRoute = REGEX.CATCH_ALL.test(routePart);
@@ -32,11 +32,11 @@ export default function substituteI18nRouteValues(route: string, href: string) {
     if (!pathnamePart) return routePart;
 
     if (isCatchAllRoute || isRestRoute) {
-      return pathnameParts.slice(index).join("/");
+      return pathnameParts.slice(index).join('/');
     }
 
     return pathnamePart;
   });
 
-  return routePartsReplaced.join("/") + paramsAndHash;
+  return routePartsReplaced.join('/') + paramsAndHash;
 }

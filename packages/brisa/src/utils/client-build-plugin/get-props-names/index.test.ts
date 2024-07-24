@@ -1,16 +1,16 @@
-import { describe, expect, it } from "bun:test";
-import { ESTree } from "meriyah";
-import getPropsNames, { getPropNamesFromExport } from ".";
-import AST from "@/utils/ast";
-import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-ast";
+import { describe, expect, it } from 'bun:test';
+import type { ESTree } from 'meriyah';
+import getPropsNames, { getPropNamesFromExport } from '.';
+import AST from '@/utils/ast';
+import getWebComponentAst from '@/utils/client-build-plugin/get-web-component-ast';
 
-const { parseCodeToAST } = AST("tsx");
+const { parseCodeToAST } = AST('tsx');
 const inputCode = (code: string) => getWebComponentAst(parseCodeToAST(code));
 
-describe("utils", () => {
-  describe("client-build-plugin", () => {
-    describe("getPropsNames", () => {
-      it("should return an empty array if there is no props", () => {
+describe('utils', () => {
+  describe('client-build-plugin', () => {
+    describe('getPropsNames', () => {
+      it('should return an empty array if there is no props', () => {
         const [input] = inputCode(`
           export default function MyComponent() {
             return <div>foo</div>
@@ -23,7 +23,7 @@ describe("utils", () => {
         expect(propNames).toBeEmpty();
         expect(renamedOutput).toBeEmpty();
       });
-      it("should return the props names if the props are an object", () => {
+      it('should return the props names if the props are an object', () => {
         const [input] = inputCode(`
           export default function MyComponent({ foo, bar }) {
             return <div>foo</div>
@@ -32,12 +32,12 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["foo", "bar"]);
+        const expected = new Set(['foo', 'bar']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
-      it("should return the props names if the props are an identifier", () => {
+      it('should return the props names if the props are an identifier', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             return <div>{props.name}</div>
@@ -46,12 +46,12 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
-      it("should return the props names if the props are an identifier with default props", () => {
+      it('should return the props names if the props are an identifier with default props', () => {
         const [input] = inputCode(`
           export default function MyComponent(props = { name: 'foo' }) {
             return <div>{props.name}</div>
@@ -60,12 +60,12 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
-      it("should return props names if the props are an identifier an are used in a conditional", () => {
+      it('should return props names if the props are an identifier an are used in a conditional', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             if(props.name) console.log('Hello test');
@@ -75,12 +75,12 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
-      it("should return props names if the props are an identifier an are used in a function", () => {
+      it('should return props names if the props are an identifier an are used in a function', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             console.log(props.name);
@@ -90,12 +90,12 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
-      it("should return the unique props names if the props are an identifier an are used in different places", () => {
+      it('should return the unique props names if the props are an identifier an are used in different places', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             if(props.name) console.log(props.name);
@@ -105,12 +105,12 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
-      it("should return props names if the props are destructured", () => {
+      it('should return props names if the props are destructured', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             const { name } = props;
@@ -120,13 +120,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should return props names used with desctructuring and spread", () => {
+      it('should return props names used with desctructuring and spread', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             const { name, ...rest } = props;
@@ -136,13 +136,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should return props names used different tecniques", () => {
+      it('should return props names used different tecniques', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             const { name, ...rest } = props;
@@ -153,13 +153,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name", "dog", "cat"]);
+        const expected = new Set(['name', 'dog', 'cat']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should return props names without influence of other variables outside the component", () => {
+      it('should return props names without influence of other variables outside the component', () => {
         const [input] = inputCode(`
           function AnotherComponent(props) {
             return props.anotherComponentProp;
@@ -174,13 +174,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name", "dog", "cat"]);
+        const expected = new Set(['name', 'dog', 'cat']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should not return props names named children as object statement", () => {
+      it('should not return props names named children as object statement', () => {
         const [input] = inputCode(`
           function AnotherComponent(props) {
             return props.anotherComponentProp;
@@ -195,13 +195,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name", "dog"]);
+        const expected = new Set(['name', 'dog']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should not return props names named children", () => {
+      it('should not return props names named children', () => {
         const [input] = inputCode(`
           function AnotherComponent(props) {
             return props.anotherComponentProp;
@@ -216,13 +216,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name", "dog"]);
+        const expected = new Set(['name', 'dog']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should return the default props values in assignment pattern", () => {
+      it('should return the default props values in assignment pattern', () => {
         const [input] = inputCode(`
           export default function MyComponent({ name = 'foo' }) {
             return <div>{name}</div>
@@ -232,13 +232,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should return the renamed props if is renamed inside the arguments", () => {
+      it('should return the renamed props if is renamed inside the arguments', () => {
         const [input] = inputCode(`
           export default function MyComponent({ name: renamedName = 'foo' }) {
             return <div>{renamedName}</div>
@@ -248,14 +248,14 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
-        const expectedRenamed = new Set(["renamedName"]);
+        const expected = new Set(['name']);
+        const expectedRenamed = new Set(['renamedName']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expectedRenamed);
       });
 
-      it("should NOT return the renamed name when lose the reactivity without a derived", () => {
+      it('should NOT return the renamed name when lose the reactivity without a derived', () => {
         const [input] = inputCode(`
           export default function MyComponent({ name }) {
             const notDerivedName = name;
@@ -266,13 +266,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should NOT return the renamed name when lose the reactivity without a derived from props object", () => {
+      it('should NOT return the renamed name when lose the reactivity without a derived from props object', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             const notDerivedName = props.name;
@@ -283,13 +283,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should NOT return the renamed name when lose the reactivity without a derived from default props", () => {
+      it('should NOT return the renamed name when lose the reactivity without a derived from default props', () => {
         const [input] = inputCode(`
           export default function MyComponent({ name }) {
             const notDerivedName = name ?? 'foo';
@@ -300,13 +300,13 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["name"]);
+        const expected = new Set(['name']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should return the prop name when a new rest variable is declared and used to consume props", () => {
+      it('should return the prop name when a new rest variable is declared and used to consume props', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
             const { foo, ...rest } = props;
@@ -318,8 +318,8 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["foo", "bar"]);
-        const expectedRenamed = new Set(["foo", "bar"]);
+        const expected = new Set(['foo', 'bar']);
+        const expectedRenamed = new Set(['foo', 'bar']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expectedRenamed);
@@ -340,14 +340,14 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = new Set(["foo", "bar", "baz"]);
+        const expected = new Set(['foo', 'bar', 'baz']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
       // baz is not a renamed prop, stops reactivity to get this calculation
-      it("should not return the renamed name using a logical expression that is not for default props using destructuring", () => {
+      it('should not return the renamed name using a logical expression that is not for default props using destructuring', () => {
         const [input] = inputCode(`
           export default function MyComponent({ foo, bar }) {
             const baz = foo && bar;
@@ -358,7 +358,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["foo", "bar"]);
+        const expected = new Set(['foo', 'bar']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -375,7 +375,7 @@ describe("utils", () => {
         const [propNames, renamedOutput] = getPropsNames(
           input as unknown as ESTree.FunctionDeclaration,
         );
-        const expected = new Set(["foo", "bar"]);
+        const expected = new Set(['foo', 'bar']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
@@ -401,13 +401,13 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = new Set(["value"]);
+        const expected = new Set(['value']);
 
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
 
-      it("should return as 3th argument the standalone props names from function params", () => {
+      it('should return as 3th argument the standalone props names from function params', () => {
         const code = `
           export default function Component({ foo, bar }) {
             return <div>{foo} {bar}</div>
@@ -421,12 +421,12 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = new Set(["foo", "bar"]);
+        const expected = new Set(['foo', 'bar']);
 
         expect(propNames).toEqual(expected);
       });
 
-      it("should return empty array as 3th argument if there are no standalone props names from function params", () => {
+      it('should return empty array as 3th argument if there are no standalone props names from function params', () => {
         const code = `
           export default function Component(props) {
             return <div>{props.foo} {props.bar}</div>
@@ -444,7 +444,7 @@ describe("utils", () => {
         expect(propNames).toBeEmpty();
       });
 
-      it("should return array as 3th argument if there are one standalone props names inside fn body", () => {
+      it('should return array as 3th argument if there are one standalone props names inside fn body', () => {
         const code = `
           export default function Component(props) {
             const foo = props.foo;
@@ -459,12 +459,12 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = new Set(["foo"]);
+        const expected = new Set(['foo']);
 
         expect(propNames).toEqual(expected);
       });
 
-      it("should 3th argument work with renamed props", () => {
+      it('should 3th argument work with renamed props', () => {
         const code = `
           export default function Component({ foo, bar: renamedBar }) {
             return <div>{foo} {renamedBar}</div>
@@ -478,7 +478,7 @@ describe("utils", () => {
           input as unknown as ESTree.FunctionDeclaration,
           propsFromExport,
         );
-        const expected = new Set(["foo", "renamedBar"]);
+        const expected = new Set(['foo', 'renamedBar']);
 
         expect(propNames).toEqual(expected);
       });

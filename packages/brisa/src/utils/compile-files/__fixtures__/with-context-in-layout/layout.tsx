@@ -1,4 +1,4 @@
-import { Ctx } from "./context";
+import { Ctx } from './context';
 
 export default function Layout({ children }: { children: JSX.Element }) {
   return (

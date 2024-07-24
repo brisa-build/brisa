@@ -1,24 +1,16 @@
-import { getConstants } from "@/constants";
+import { getConstants } from '@/constants';
 
 export function addBasePathToStringURL(url: string) {
-  return processURLBasePath(
-    url,
-    (pathname, basePath) => `${basePath}${pathname}`,
-  );
+  return processURLBasePath(url, (pathname, basePath) => `${basePath}${pathname}`);
 }
 
 export function removeBasePathFromStringURL(url: string) {
-  return processURLBasePath(url, (pathname, basePath) =>
-    pathname.replace(basePath, ""),
-  );
+  return processURLBasePath(url, (pathname, basePath) => pathname.replace(basePath, ''));
 }
 
-function processURLBasePath(
-  url: string,
-  operate: (pathname: string, basePath: string) => string,
-) {
+function processURLBasePath(url: string, operate: (pathname: string, basePath: string) => string) {
   const { CONFIG } = getConstants();
-  const basePath = CONFIG.basePath || "";
+  const basePath = CONFIG.basePath || '';
   let finalUrl;
 
   if (!basePath) return url;
@@ -32,7 +24,7 @@ function processURLBasePath(
   }
 
   // Remove trailing slash if the original url doesn't have it
-  if (!url.endsWith("/") && finalUrl.endsWith("/")) {
+  if (!url.endsWith('/') && finalUrl.endsWith('/')) {
     return finalUrl.slice(0, -1);
   }
 

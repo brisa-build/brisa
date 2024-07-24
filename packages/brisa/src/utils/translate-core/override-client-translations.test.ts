@@ -1,135 +1,125 @@
-import { it, describe, expect } from "bun:test";
-import overrideClientTranslations from "./override-client-translations";
+import { it, describe, expect } from 'bun:test';
+import overrideClientTranslations from './override-client-translations';
 
-describe("utils", () => {
-  describe("translate-core", () => {
-    describe("override-client-translations", () => {
-      it("should not override if client messages is empty", () => {
+describe('utils', () => {
+  describe('translate-core', () => {
+    describe('override-client-translations', () => {
+      it('should not override if client messages is empty', () => {
         const clientMessages = {};
         const overrideMessages = {
-          a: "aa",
-          b: "bb",
-          c: "cc",
+          a: 'aa',
+          b: 'bb',
+          c: 'cc',
         };
-        expect(
-          overrideClientTranslations(clientMessages, overrideMessages),
-        ).toEqual({});
+        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({});
       });
 
-      it("should only override these fields that exists in client messages", () => {
+      it('should only override these fields that exists in client messages', () => {
         const clientMessages = {
-          a: "a",
-          b: "b",
-          c: "c",
+          a: 'a',
+          b: 'b',
+          c: 'c',
         };
         const overrideMessages = {
-          a: "aa",
-          b: "bb",
-          c: "cc",
-          d: "dd",
+          a: 'aa',
+          b: 'bb',
+          c: 'cc',
+          d: 'dd',
         };
-        expect(
-          overrideClientTranslations(clientMessages, overrideMessages),
-        ).toEqual({
-          a: "aa",
-          b: "bb",
-          c: "cc",
+        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({
+          a: 'aa',
+          b: 'bb',
+          c: 'cc',
         });
       });
 
-      it("should override very nested fields, but only if they exists in client messages", () => {
+      it('should override very nested fields, but only if they exists in client messages', () => {
         const clientMessages = {
-          a: "a",
-          b: "b",
-          c: "c",
+          a: 'a',
+          b: 'b',
+          c: 'c',
           d: {
-            e: "e",
-            f: "f",
+            e: 'e',
+            f: 'f',
             g: {
-              h: "h",
-              i: "i",
+              h: 'h',
+              i: 'i',
             },
           },
         };
         const overrideMessages = {
-          a: "aa",
-          b: "bb",
-          c: "cc",
+          a: 'aa',
+          b: 'bb',
+          c: 'cc',
           d: {
-            e: "ee",
-            f: "ff",
+            e: 'ee',
+            f: 'ff',
             g: {
-              h: "hh",
-              i: "ii",
-              j: "jj",
+              h: 'hh',
+              i: 'ii',
+              j: 'jj',
             },
           },
         };
-        expect(
-          overrideClientTranslations(clientMessages, overrideMessages),
-        ).toEqual({
-          a: "aa",
-          b: "bb",
-          c: "cc",
+        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({
+          a: 'aa',
+          b: 'bb',
+          c: 'cc',
           d: {
-            e: "ee",
-            f: "ff",
+            e: 'ee',
+            f: 'ff',
             g: {
-              h: "hh",
-              i: "ii",
+              h: 'hh',
+              i: 'ii',
             },
           },
         });
       });
-      it("should override array fields", () => {
+      it('should override array fields', () => {
         const clientMessages = {
-          a: "a",
-          b: "b",
-          c: "c",
-          d: ["e", "f", "g"],
+          a: 'a',
+          b: 'b',
+          c: 'c',
+          d: ['e', 'f', 'g'],
         };
         const overrideMessages = {
-          a: "aa",
-          b: "bb",
-          c: "cc",
-          d: ["ee", "ff", "gg"],
+          a: 'aa',
+          b: 'bb',
+          c: 'cc',
+          d: ['ee', 'ff', 'gg'],
         };
-        expect(
-          overrideClientTranslations(clientMessages, overrideMessages),
-        ).toEqual({
-          a: "aa",
-          b: "bb",
-          c: "cc",
-          d: ["ee", "ff", "gg"],
+        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({
+          a: 'aa',
+          b: 'bb',
+          c: 'cc',
+          d: ['ee', 'ff', 'gg'],
         });
       });
 
-      it("should override array inside nested object fields", () => {
+      it('should override array inside nested object fields', () => {
         const clientMessages = {
-          a: "a",
-          b: "b",
-          c: "c",
+          a: 'a',
+          b: 'b',
+          c: 'c',
           d: {
-            e: "e",
-            f: "f",
-            g: ["h", "i"],
+            e: 'e',
+            f: 'f',
+            g: ['h', 'i'],
           },
         };
         const overrideMessages = {
           d: {
-            g: ["hh", "ii"],
+            g: ['hh', 'ii'],
           },
         };
-        expect(
-          overrideClientTranslations(clientMessages, overrideMessages),
-        ).toEqual({
-          a: "a",
-          b: "b",
-          c: "c",
+        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({
+          a: 'a',
+          b: 'b',
+          c: 'c',
           d: {
-            e: "e",
-            f: "f",
-            g: ["hh", "ii"],
+            e: 'e',
+            f: 'f',
+            g: ['hh', 'ii'],
           },
         });
       });

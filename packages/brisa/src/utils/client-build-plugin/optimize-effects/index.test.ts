@@ -1,36 +1,32 @@
-import { describe, expect, it } from "bun:test";
-import { ESTree } from "meriyah";
-import optimizeEffects from ".";
-import { normalizeQuotes } from "@/helpers";
-import AST from "@/utils/ast";
-import getWebComponentAst from "../get-web-component-ast";
+import { describe, expect, it } from 'bun:test';
+import type { ESTree } from 'meriyah';
+import optimizeEffects from '.';
+import { normalizeQuotes } from '@/helpers';
+import AST from '@/utils/ast';
+import getWebComponentAst from '../get-web-component-ast';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutput = (code: string) => {
   const reactiveAst = parseCodeToAST(code);
   const [componentBranch, index] = getWebComponentAst(reactiveAst);
-  const outputComponentAst = optimizeEffects(
-    componentBranch as ESTree.FunctionDeclaration,
-  );
+  const outputComponentAst = optimizeEffects(componentBranch as ESTree.FunctionDeclaration);
 
   (reactiveAst.body[index as number] as any).declaration = outputComponentAst;
 
   return normalizeQuotes(generateCodeFromAST(reactiveAst));
 };
 
-describe("utils", () => {
-  describe("client-build-plugin", () => {
-    describe("optimize-effects", () => {
-      it("should not do any transformation if not the effect in webContext", () => {
+describe('utils', () => {
+  describe('client-build-plugin', () => {
+    describe('optimize-effects', () => {
+      it('should not do any transformation if not the effect in webContext', () => {
         const input = `export default ({ }, { h }: any) => ['div', {}, 'test'];`;
-        const expected = normalizeQuotes(
-          `export default ({}, {h}) => ['div', {}, 'test'];`,
-        );
+        const expected = normalizeQuotes(`export default ({}, {h}) => ['div', {}, 'test'];`);
         const output = toOutput(input);
 
         expect(output).toEqual(expected);
       });
-      it("should not do any transformation if the not effect in webContext identifier", () => {
+      it('should not do any transformation if the not effect in webContext identifier', () => {
         const input = `export default ({ }, props: any) => {
           const { h } = props;
           return ['div', {}, 'test'];
@@ -175,7 +171,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work if the function of the effect is not an arrow function", () => {
+      it('should work if the function of the effect is not an arrow function', () => {
         const input = `
           export default function Component({ propName }, { effect, cleanup }) {
             effect(function () {
@@ -207,7 +203,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work if the function of the cleanup is not an arrow function", () => {
+      it('should work if the function of the cleanup is not an arrow function', () => {
         const input = `
           export default function Component({ propName }, { effect, cleanup }) {
             effect(() => {
@@ -239,7 +235,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work if the function of the cleanup is in a variable", () => {
+      it('should work if the function of the cleanup is in a variable', () => {
         const input = `
           export default function Component({ propName }, { effect, cleanup }) {
             const clean = () => console.log("Hello world");
@@ -275,7 +271,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work if the function of the effect is in a variable", () => {
+      it('should work if the function of the effect is in a variable', () => {
         const input = `
           export default function Component({ propName }, { effect, cleanup }) {
             const fn = () => {
@@ -311,7 +307,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work with very nested effects and cleanups", () => {
+      it('should work with very nested effects and cleanups', () => {
         const input = `
           export default function Component({ propName }, { effect, cleanup }) {
             effect(() => {
@@ -657,7 +653,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should await the effect if it returns a promise", () => {
+      it('should await the effect if it returns a promise', () => {
         const input = `
           export default function Component({ propName }, { effect }) {
             effect(async () => {
@@ -685,7 +681,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should await the effect if it returns a promise from an arrow function component", () => {
+      it('should await the effect if it returns a promise from an arrow function component', () => {
         const input = `
           export default ({ propName }, { effect }) => {
             effect(async () => {
@@ -713,7 +709,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should await all effect and subeffects only when one of them returns a promise", () => {
+      it('should await all effect and subeffects only when one of them returns a promise', () => {
         const input = `
           export default function Component({ propName }, { effect }) {
             effect(() => {

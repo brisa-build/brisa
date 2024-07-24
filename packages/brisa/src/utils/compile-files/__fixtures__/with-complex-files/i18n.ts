@@ -1,12 +1,12 @@
 export default {
-  defaultLocale: "en",
-  locales: ["en", "fr"],
+  defaultLocale: 'en',
+  locales: ['en', 'fr'],
   messages: {
     en: {
-      "hello-world": "Hello world!",
+      'hello-world': 'Hello world!',
     },
     fr: {
-      "hello-world": "Bonjour le monde !",
+      'hello-world': 'Bonjour le monde !',
     },
   },
 };
