@@ -1,12 +1,10 @@
-import { toInline } from "@/helpers";
-import { Fragment } from "@/jsx-runtime";
-import { type RequestContext } from "@/types";
-import { getConstants } from "@/constants";
-import { sha } from "bun";
+import { toInline } from '@/helpers';
+import { Fragment } from '@/jsx-runtime';
+import type { RequestContext } from '@/types';
+import { getConstants } from '@/constants';
+import { sha } from 'bun';
 
-export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
-  "AVOID_DECLARATIVE_SHADOW_DOM",
-);
+export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for('AVOID_DECLARATIVE_SHADOW_DOM');
 
 type Props = {
   Component: any;
@@ -23,8 +21,8 @@ export default async function SSRWebComponent(
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
   const self = { shadowRoot: {} } as any;
-  let style = "";
-  let Selector = selector;
+  let style = '';
+  const Selector = selector;
 
   // @ts-ignore
   store.setOptimistic = voidFn;
@@ -44,7 +42,7 @@ export default async function SSRWebComponent(
     css: (template: TemplateStringsArray, ...values: string[]) => {
       style += String.raw(
         template,
-        ...values.map((v: unknown) => (typeof v === "function" ? v() : v)),
+        ...values.map((v: unknown) => (typeof v === 'function' ? v() : v)),
       );
     },
   } as unknown as RequestContext;
@@ -58,15 +56,12 @@ export default async function SSRWebComponent(
 
   if (showContent) {
     try {
-      content = await (typeof Component.suspense === "function"
+      content = await (typeof Component.suspense === 'function'
         ? Component.suspense(componentProps, webContext)
         : Component(componentProps, webContext));
     } catch (error) {
       if (Component.error) {
-        content = await Component.error(
-          { ...componentProps, error },
-          webContext,
-        );
+        content = await Component.error({ ...componentProps, error }, webContext);
       } else {
         throw error;
       }

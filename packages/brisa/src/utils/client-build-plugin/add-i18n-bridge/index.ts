@@ -1,9 +1,9 @@
-import constants from "@/constants";
-import AST from "@/utils/ast";
-import { TRANSLATE_CORE_IMPORT } from "@/utils/client-build-plugin/constants";
-import type { ESTree } from "meriyah";
+import constants from '@/constants';
+import AST from '@/utils/ast';
+import { TRANSLATE_CORE_IMPORT } from '@/utils/client-build-plugin/constants';
+import type { ESTree } from 'meriyah';
 
-const { parseCodeToAST } = AST("tsx");
+const { parseCodeToAST } = AST('tsx');
 
 type I18nBridgeConfig = {
   usei18nKeysLogic: boolean;
@@ -11,7 +11,7 @@ type I18nBridgeConfig = {
   i18nAdded: boolean;
 };
 
-const i18nKeysLogic = (configText = "i18nConfig") => `
+const i18nKeysLogic = (configText = 'i18nConfig') => `
   get t() {
     return translateCore(this.locale, { ...${configText}, messages: this.messages })
   },
@@ -42,14 +42,12 @@ export default function addI18nBridge(
     window.i18n = {
       ...i18nConfig,
       get locale(){ return document.documentElement.lang },
-      ${usei18nKeysLogic ? i18nKeysLogic() : ""}
+      ${usei18nKeysLogic ? i18nKeysLogic() : ''}
     }
   `);
 
   if (usei18nKeysLogic && i18nAdded && !isTranslateCoreAdded) {
-    const newAst = parseCodeToAST(
-      `Object.assign(window.i18n, {${i18nKeysLogic(i18nConfig)}})`,
-    );
+    const newAst = parseCodeToAST(`Object.assign(window.i18n, {${i18nKeysLogic(i18nConfig)}})`);
     body = [TRANSLATE_CORE_IMPORT, ...ast.body, ...newAst.body];
   } else if (usei18nKeysLogic) {
     body = [TRANSLATE_CORE_IMPORT, ...ast.body, ...bridgeAst.body];

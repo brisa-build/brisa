@@ -1,8 +1,8 @@
-import { getConstants } from "@/constants";
-import AST from "@/utils/ast";
-import replaceAstImportsToAbsolute from "@/utils/replace-ast-imports-to-absolute";
-import { logWarning } from "@/utils/log/log-build";
-import getDependenciesList from "@/utils/ast/get-dependencies-list";
+import { getConstants } from '@/constants';
+import AST from '@/utils/ast';
+import replaceAstImportsToAbsolute from '@/utils/replace-ast-imports-to-absolute';
+import { logWarning } from '@/utils/log/log-build';
+import getDependenciesList from '@/utils/ast/get-dependencies-list';
 
 type ServerComponentPluginOptions = {
   allWebComponents: Record<string, string>;
@@ -10,18 +10,12 @@ type ServerComponentPluginOptions = {
   path: string;
 };
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const JSX_NAME = new Set(["jsx", "jsxDEV", "jsxs"]);
-const DIRECT_IMPORT = "import:";
-const WEB_COMPONENT_REGEX = new RegExp(".*/web-components/.*");
-const FN_EXPRESSIONS = new Set([
-  "ArrowFunctionExpression",
-  "FunctionExpression",
-]);
-const FN_DECLARATIONS = new Set([
-  "ArrowFunctionExpression",
-  "FunctionDeclaration",
-]);
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
+const JSX_NAME = new Set(['jsx', 'jsxDEV', 'jsxs']);
+const DIRECT_IMPORT = 'import:';
+const WEB_COMPONENT_REGEX = /.*\/web-components\/.*/;
+const FN_EXPRESSIONS = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
+const FN_DECLARATIONS = new Set(['ArrowFunctionExpression', 'FunctionDeclaration']);
 
 // TODO: Remove this workaround when this issue will be fixed:
 // https://github.com/oven-sh/bun/issues/7499
@@ -44,7 +38,7 @@ export default function serverComponentPlugin(
 ) {
   const { IS_PRODUCTION, CONFIG } = getConstants();
   const ast = parseCodeToAST(code);
-  const isServerOutput = CONFIG.output === "server";
+  const isServerOutput = CONFIG.output === 'server';
   const analyzeAction = isServerOutput || !IS_PRODUCTION;
   const isWebComponent = WEB_COMPONENT_REGEX.test(path);
   const detectedWebComponents: Record<string, string> = {};
@@ -66,20 +60,17 @@ export default function serverComponentPlugin(
    * inside and in this way we will be able to register these actions.
    */
   function registerDeclarationsAndImports(this: any, key: string, value: any) {
-    if (value?.type === "VariableDeclarator" && value?.init) {
+    if (value?.type === 'VariableDeclarator' && value?.init) {
       declarations.set(value.id.name, value.init);
-    } else if (
-      value?.type === "AssignmentExpression" &&
-      value?.left?.type === "Identifier"
-    ) {
+    } else if (value?.type === 'AssignmentExpression' && value?.left?.type === 'Identifier') {
       declarations.set(value.left.name, value.right);
-    } else if (value?.type === "FunctionDeclaration") {
+    } else if (value?.type === 'FunctionDeclaration') {
       declarations.set(value.id.name, value);
     }
 
     // Register imports
-    if (value?.type === "ImportDeclaration") {
-      for (let specifier of value.specifiers) {
+    if (value?.type === 'ImportDeclaration') {
+      for (const specifier of value.specifiers) {
         imports.add(specifier.local.name);
       }
     }
@@ -98,8 +89,7 @@ export default function serverComponentPlugin(
    *   to know which file to call to execute the action.
    */
   function traverseB2A(this: any, key: string, value: any) {
-    const isJSX =
-      value?.type === "CallExpression" && JSX_NAME.has(value?.callee?.name);
+    const isJSX = value?.type === 'CallExpression' && JSX_NAME.has(value?.callee?.name);
     const isActionsFlag = isServerOutput && value?._hasActions;
     const isComponent = isUpperCaseChar(value?.arguments?.[0]?.name);
 
@@ -110,7 +100,7 @@ export default function serverComponentPlugin(
     registerDeclarationsAndImports.call(this, key, value);
 
     // Mark that the identifier has actions after using declaration with actions
-    if (value?.type === "Identifier" && declarations.has(value.name)) {
+    if (value?.type === 'Identifier' && declarations.has(value.name)) {
       const declaration = declarations.get(value.name);
       if (declaration?._hasActions) {
         value._hasActions = true;
@@ -122,16 +112,9 @@ export default function serverComponentPlugin(
     // should have its own flag.
     if (isJSX && value?._actionPropagation) delete value._hasActions;
 
-    if (
-      isActionsFlag &&
-      value?.type === "VariableDeclaration" &&
-      Array.isArray(this)
-    ) {
+    if (isActionsFlag && value?.type === 'VariableDeclaration' && Array.isArray(this)) {
       for (let declaration of value.declarations) {
-        if (
-          declaration._hasActions &&
-          FN_EXPRESSIONS.has(declaration.init?.type)
-        ) {
+        if (declaration._hasActions && FN_EXPRESSIONS.has(declaration.init?.type)) {
           declaration = markActionsFlag({
             value,
             declaration,
@@ -162,7 +145,7 @@ export default function serverComponentPlugin(
 
       for (let i = 0; i < properties.length; i++) {
         const attributeAst = properties[i];
-        const isAction = attributeAst?.key?.name?.startsWith("on");
+        const isAction = attributeAst?.key?.name?.startsWith('on');
 
         // Change <div onClick={onClick} /> to <div onClick={(...args) => onClick(...args)} />
         // to create then an action to allow rendering the target component
@@ -170,10 +153,9 @@ export default function serverComponentPlugin(
           !isComponent &&
           isAction &&
           isServerOutput &&
-          attributeAst.value?.type === "Identifier"
+          attributeAst.value?.type === 'Identifier'
         ) {
-          properties[i] =
-            transformActionIdentifierAttributeToArrow(attributeAst);
+          properties[i] = transformActionIdentifierAttributeToArrow(attributeAst);
         }
 
         // In case it is a SpreadElement, we have to note that we want to
@@ -189,7 +171,7 @@ export default function serverComponentPlugin(
         // 2. The spread comes from another file with an import. We believe
         //    that this is a remote case. For now it is not supported.
         //
-        if (isServerOutput && attributeAst?.type === "SpreadElement") {
+        if (isServerOutput && attributeAst?.type === 'SpreadElement') {
           const identifier = attributeAst.argument?.name;
 
           if (identifier) {
@@ -214,16 +196,16 @@ export default function serverComponentPlugin(
 
         if (isAction && isServerOutput) {
           actionProperties.push({
-            type: "Property",
+            type: 'Property',
             key: {
-              type: "Literal",
+              type: 'Literal',
               value: `data-action-${attributeAst?.key?.name?.toLowerCase()}`,
             },
             value: {
-              type: "Literal",
+              type: 'Literal',
               value: `${fileID}_${actionIdCount++}`,
             },
-            kind: "init",
+            kind: 'init',
             computed: false,
             method: false,
             shorthand: false,
@@ -233,7 +215,7 @@ export default function serverComponentPlugin(
 
       // If there are spread elements, we have to look at each one to see if
       // they have actions and add them.
-      for (let identifierName of spreadsIdentifiers) {
+      for (const identifierName of spreadsIdentifiers) {
         const declaration = declarations.get(identifierName);
         let declarationHasActions = false;
 
@@ -241,8 +223,8 @@ export default function serverComponentPlugin(
 
         JSON.stringify(declaration, (k, v) => {
           if (
-            v?.type === "Property" &&
-            v?.key?.name?.startsWith("on") &&
+            v?.type === 'Property' &&
+            v?.key?.name?.startsWith('on') &&
             isUpperCaseChar(v?.key?.name[2])
           ) {
             const eventName = v.key.name;
@@ -252,26 +234,22 @@ export default function serverComponentPlugin(
             // Change const props = { onClick } to const props = { onClick: (...args) => onClick(...args) }
             // to allow then destructuring on elements: <div {...props} /> + creating an action to allow
             // rendering the target component
-            if (
-              !isComponent &&
-              v.value?.type === "Identifier" &&
-              !declarations.has(v.value.name)
-            ) {
+            if (!isComponent && v.value?.type === 'Identifier' && !declarations.has(v.value.name)) {
               v.value = transformActionIdentifierAttributeToArrow(v);
               return v;
             }
 
             actionProperties.push({
-              type: "Property",
+              type: 'Property',
               key: {
-                type: "Literal",
+                type: 'Literal',
                 value: `data-action-${eventName.toLowerCase()}`,
               },
               value: {
-                type: "Literal",
+                type: 'Literal',
                 value: `${fileID}_${actionIdCount++}`,
               },
-              kind: "init",
+              kind: 'init',
               computed: false,
               method: false,
               shorthand: false,
@@ -285,32 +263,28 @@ export default function serverComponentPlugin(
 
       if (actionProperties.length) {
         const dataActionProperty = {
-          type: "Property",
+          type: 'Property',
           key: {
-            type: "Literal",
-            value: "data-action",
+            type: 'Literal',
+            value: 'data-action',
           },
           value: {
-            type: "Literal",
+            type: 'Literal',
             value: true,
           },
-          kind: "init",
+          kind: 'init',
           computed: false,
           method: false,
           shorthand: false,
         };
 
-        value.arguments[1].properties = [
-          ...properties,
-          ...actionProperties,
-          dataActionProperty,
-        ];
+        value.arguments[1].properties = [...properties, ...actionProperties, dataActionProperty];
       }
     }
 
     if (
       isJSX &&
-      value?.arguments?.[0]?.type === "Literal" &&
+      value?.arguments?.[0]?.type === 'Literal' &&
       allWebComponents[value?.arguments?.[0]?.value]
     ) {
       const selector = value?.arguments?.[0]?.value;
@@ -319,16 +293,15 @@ export default function serverComponentPlugin(
       detectedWebComponents[selector] = componentPath;
 
       // Avoid transformation if it is a native web-component
-      if (selector?.startsWith("native-")) return value;
+      if (selector?.startsWith('native-')) return value;
 
       // Avoid transformation if it has the "skipSSR" attribute
       if (
         value?.arguments?.[1]?.properties?.some(
-          (prop: any) =>
-            prop?.key?.name === "skipSSR" && prop?.value?.value !== false,
+          (prop: any) => prop?.key?.name === 'skipSSR' && prop?.value?.value !== false,
         )
       ) {
-        webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ""));
+        webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ''));
         return value;
       }
 
@@ -340,43 +313,43 @@ export default function serverComponentPlugin(
 
       if (ComponentName) usedWebComponents.set(componentPath, ComponentName);
       else {
-        webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ""));
+        webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ''));
         return value;
       }
 
       value.arguments[0] = {
-        type: "Identifier",
-        name: "_Brisa_SSRWebComponent",
+        type: 'Identifier',
+        name: '_Brisa_SSRWebComponent',
       };
       value.arguments[1] = {
-        type: "ObjectExpression",
+        type: 'ObjectExpression',
         properties: [
           {
-            type: "Property",
+            type: 'Property',
             key: {
-              type: "Identifier",
-              name: "Component",
+              type: 'Identifier',
+              name: 'Component',
             },
             value: {
-              type: "Identifier",
+              type: 'Identifier',
               name: ComponentName,
             },
-            kind: "init",
+            kind: 'init',
             computed: false,
             method: false,
             shorthand: false,
           },
           {
-            type: "Property",
+            type: 'Property',
             key: {
-              type: "Identifier",
-              name: "selector",
+              type: 'Identifier',
+              name: 'selector',
             },
             value: {
-              type: "Literal",
+              type: 'Literal',
               value: selector,
             },
-            kind: "init",
+            kind: 'init',
             computed: false,
             method: false,
             shorthand: false,
@@ -393,25 +366,22 @@ export default function serverComponentPlugin(
     return value;
   }
 
-  let modifiedAst = JSON.parse(
-    JSON.stringify(ast, registerDeclarationsAndImports),
-    traverseB2A,
-  );
+  let modifiedAst = JSON.parse(JSON.stringify(ast, registerDeclarationsAndImports), traverseB2A);
 
   if (!isServerOutput && hasActions) {
     logWarning([
       `Actions are not supported with the "output": "${CONFIG.output}" option.`,
-      "",
+      '',
       `The warn arises in: ${path}`,
-      "",
-      "This limitation is due to the requirement of a server infrastructure for the proper functioning",
-      "of server actions.",
-      "",
+      '',
+      'This limitation is due to the requirement of a server infrastructure for the proper functioning',
+      'of server actions.',
+      '',
       'To resolve this, ensure that the "output" option is set to "server" when using server actions.',
-      "",
-      "Feel free to reach out if you have any further questions or encounter challenges during this process.",
-      "",
-      "Documentation: https://brisa.build/building-your-application/data-management/server-actions#server-actions",
+      '',
+      'Feel free to reach out if you have any further questions or encounter challenges during this process.',
+      '',
+      'Documentation: https://brisa.build/building-your-application/data-management/server-actions#server-actions',
     ]);
     hasActions = false;
   } else if (hasActions) {
@@ -421,29 +391,29 @@ export default function serverComponentPlugin(
   // Add imports of web-components used for SSR
   modifiedAst.body.unshift(
     ...Array.from(usedWebComponents.entries()).map(([path, name]) => ({
-      type: "ImportDeclaration",
+      type: 'ImportDeclaration',
       specifiers: [
         {
-          type: "ImportDefaultSpecifier",
-          local: { type: "Identifier", name },
+          type: 'ImportDefaultSpecifier',
+          local: { type: 'Identifier', name },
         },
       ],
-      source: { type: "Literal", value: path },
+      source: { type: 'Literal', value: path },
     })),
   );
 
   // Add: import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server"
   if (usedWebComponents.size) {
     modifiedAst.body.unshift({
-      type: "ImportDeclaration",
+      type: 'ImportDeclaration',
       specifiers: [
         {
-          type: "ImportSpecifier",
-          imported: { type: "Identifier", name: "SSRWebComponent" },
-          local: { type: "Identifier", name: "_Brisa_SSRWebComponent" },
+          type: 'ImportSpecifier',
+          imported: { type: 'Identifier', name: 'SSRWebComponent' },
+          local: { type: 'Identifier', name: '_Brisa_SSRWebComponent' },
         },
       ],
-      source: { type: "Literal", value: "brisa/server" },
+      source: { type: 'Literal', value: 'brisa/server' },
     });
   }
 
@@ -451,21 +421,11 @@ export default function serverComponentPlugin(
     code: generateCodeFromAST(modifiedAst) + workaroundText,
     detectedWebComponents,
     hasActions,
-    dependencies: getDependenciesList(
-      modifiedAst,
-      path,
-      webComponentsWithoutSSR,
-    ),
+    dependencies: getDependenciesList(modifiedAst, path, webComponentsWithoutSSR),
   };
 }
 
-function markActionsFlag({
-  value,
-  declaration,
-  parent,
-  declarations,
-  imports,
-}: any) {
+function markActionsFlag({ value, declaration, parent, declarations, imports }: any) {
   // Stop the propagation of the _hasActions property to the parent
   value._hasActions = false;
 
@@ -476,7 +436,7 @@ function markActionsFlag({
 
   // In case it is not the name of the function, we have to create a new one
   let count = 1;
-  let name = "Component";
+  let name = 'Component';
 
   while (declarations.has(name) || imports.has(name)) {
     name = `Component${count++}`;
@@ -484,29 +444,29 @@ function markActionsFlag({
 
   markComponentHasActions(name, parent);
 
-  if (value?.type === "ExportDefaultDeclaration") {
+  if (value?.type === 'ExportDefaultDeclaration') {
     parent.push({
-      type: "ExportDefaultDeclaration",
+      type: 'ExportDefaultDeclaration',
       declaration: {
-        type: "Identifier",
+        type: 'Identifier',
         name,
       },
     });
   }
 
   return {
-    type: "VariableDeclaration",
+    type: 'VariableDeclaration',
     declarations: [
       {
-        type: "VariableDeclarator",
+        type: 'VariableDeclarator',
         init: declaration,
         id: {
-          type: "Identifier",
+          type: 'Identifier',
           name,
         },
       },
     ],
-    kind: "const",
+    kind: 'const',
   };
 }
 
@@ -518,24 +478,24 @@ function isUpperCaseChar(char: string) {
 
 function markComponentHasActions(componentName: string, parent: any) {
   parent.push({
-    type: "ExpressionStatement",
+    type: 'ExpressionStatement',
     expression: {
-      type: "AssignmentExpression",
+      type: 'AssignmentExpression',
       left: {
-        type: "MemberExpression",
+        type: 'MemberExpression',
         object: {
-          type: "Identifier",
+          type: 'Identifier',
           name: componentName,
         },
         computed: false,
         property: {
-          type: "Identifier",
-          name: "_hasActions",
+          type: 'Identifier',
+          name: '_hasActions',
         },
       },
-      operator: "=",
+      operator: '=',
       right: {
-        type: "Literal",
+        type: 'Literal',
         value: true,
       },
     },
@@ -551,34 +511,34 @@ function markComponentHasActions(componentName: string, parent: any) {
 // Therefore, we do not need to create an arrow function for components.
 function transformActionIdentifierAttributeToArrow(attribute: any) {
   return {
-    type: "Property",
+    type: 'Property',
     key: {
-      type: "Identifier",
+      type: 'Identifier',
       name: attribute.key.name,
     },
     value: {
-      type: "ArrowFunctionExpression",
+      type: 'ArrowFunctionExpression',
       params: [
         {
-          type: "RestElement",
+          type: 'RestElement',
           argument: {
-            type: "Identifier",
-            name: "args",
+            type: 'Identifier',
+            name: 'args',
           },
         },
       ],
       body: {
-        type: "CallExpression",
+        type: 'CallExpression',
         callee: {
-          type: "Identifier",
+          type: 'Identifier',
           name: attribute.value.name,
         },
         arguments: [
           {
-            type: "SpreadElement",
+            type: 'SpreadElement',
             argument: {
-              type: "Identifier",
-              name: "args",
+              type: 'Identifier',
+              name: 'args',
             },
           },
         ],
@@ -586,7 +546,7 @@ function transformActionIdentifierAttributeToArrow(attribute: any) {
       async: false,
       expression: true,
     },
-    kind: "init",
+    kind: 'init',
     computed: false,
     method: false,
     shorthand: false,

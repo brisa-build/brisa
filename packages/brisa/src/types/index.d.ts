@@ -3,11 +3,11 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import { IntrinsicCustomElements } from "@/../build/_brisa/types";
-import { BunPlugin, MatchedRoute, ServerWebSocket, TLSOptions } from "bun";
-import * as CSS from "csstype";
+import type { IntrinsicCustomElements } from '@/../build/_brisa/types';
+import type { BunPlugin, MatchedRoute, ServerWebSocket, TLSOptions } from 'bun';
+import type * as CSS from 'csstype';
 
-declare module "bun" {
+declare module 'bun' {
   interface Env {
     /**
      * Description:
@@ -279,7 +279,7 @@ export interface RequestContext extends Request {
    * - [How to use `renderInitiator`](https://brisa.build/api-reference/components/request-context#render-initiator)
    *
    */
-  renderInitiator: "INITIAL_REQUEST" | "SPA_NAVIGATION" | "SERVER_ACTION";
+  renderInitiator: 'INITIAL_REQUEST' | 'SPA_NAVIGATION' | 'SERVER_ACTION';
 
   /**
    * Description:
@@ -676,11 +676,7 @@ export type ReactiveMap = {
   set: <T>(key: string, value: T) => void;
   delete: (key: string) => void;
   has: (key: string) => boolean;
-  setOptimistic: <T>(
-    actionName: string,
-    storeKey: string,
-    updater: (value: T) => T,
-  ) => void;
+  setOptimistic: <T>(actionName: string, storeKey: string, updater: (value: T) => T) => void;
   Map: Map<string, unknown>;
 };
 
@@ -688,10 +684,7 @@ type Props<T extends Record<string, unknown> = Record<string, unknown>> = T & {
   children?: JSXElement;
 };
 
-export type ResponseHeaders = (
-  req: RequestContext,
-  status: number,
-) => HeadersInit;
+export type ResponseHeaders = (req: RequestContext, status: number) => HeadersInit;
 
 export type Primitives = string | number | boolean | undefined | null;
 
@@ -716,9 +709,7 @@ export interface ComponentType extends JSXComponent {
   ) => JSXNode | Promise<JSXNode>;
 }
 
-export type JSXComponent<
-  T extends Record<string, unknown> = Record<string, unknown>,
-> = ((
+export type JSXComponent<T extends Record<string, unknown> = Record<string, unknown>> = ((
   props: Props<T>,
   request: RequestContext,
 ) => JSXNode | Promise<JSXNode>) & {
@@ -737,10 +728,7 @@ export type ExtendPluginOptions =
       entrypoint: string;
     };
 
-export type ExtendPlugins = (
-  plugins: BunPlugin[],
-  options: ExtendPluginOptions,
-) => BunPlugin[];
+export type ExtendPlugins = (plugins: BunPlugin[], options: ExtendPluginOptions) => BunPlugin[];
 
 export type Configuration = {
   /**
@@ -876,7 +864,7 @@ export type Configuration = {
    *
    * - [How to use `output`](https://brisa.build/building-your-application/configuring/output)
    */
-  output?: "static" | "server" | "desktop" | "android" | "ios";
+  output?: 'static' | 'server' | 'desktop' | 'android' | 'ios';
 
   /**
    * Description:
@@ -916,7 +904,7 @@ export type Translations = {
 
 export type I18nDomainConfig = {
   defaultLocale: string;
-  protocol?: "http" | "https";
+  protocol?: 'http' | 'https';
   dev?: boolean;
 };
 
@@ -949,21 +937,17 @@ type RouterType = {
 };
 
 type RemovePlural<Key extends string> = Key extends `${infer Prefix}${
-  | "_zero"
-  | "_one"
-  | "_two"
-  | "_few"
-  | "_many"
-  | "_other"
+  | '_zero'
+  | '_one'
+  | '_two'
+  | '_few'
+  | '_many'
+  | '_other'
   | `_${number}`}`
   ? Prefix
   : Key;
 
-type Join<S1, S2> = S1 extends string
-  ? S2 extends string
-    ? `${S1}.${S2}`
-    : never
-  : never;
+type Join<S1, S2> = S1 extends string ? (S2 extends string ? `${S1}.${S2}` : never) : never;
 
 export type Paths<T> = RemovePlural<
   {
@@ -973,10 +957,9 @@ export type Paths<T> = RemovePlural<
   }[Extract<keyof T, string>]
 >;
 
-type ExtendedWebContext =
-  typeof import("@/web-components/_integrations").ExtendedWebContext;
+type ExtendedWebContext = typeof import('@/web-components/_integrations').ExtendedWebContext;
 
-type I18nKey = typeof import("@/i18n").default extends I18nConfig<infer T>
+type I18nKey = typeof import('@/i18n').default extends I18nConfig<infer T>
   ? Paths<T extends object ? T : I18nDictionary>
   : string;
 
@@ -993,7 +976,7 @@ export type PageModule = {
   Head?: ComponentType;
 };
 
-export type Translate = <T extends unknown = string>(
+export type Translate = <T = string>(
   i18nKey: I18nKey,
   query?: TranslationQuery | null,
   options?: TranslateOptions,
@@ -1117,7 +1100,7 @@ export function dangerHTML(html: string): DangerHTMLOutput;
  */
 export function notFound(): never;
 
-export type RenderMode = "reactivity" | "transition" | "native";
+export type RenderMode = 'reactivity' | 'transition' | 'native';
 
 /**
  * Description:
@@ -1154,7 +1137,7 @@ export type NavigateOptions = {
 export function navigate(page: string, options?: NavigateOptions): never;
 
 type DangerHTMLOutput = {
-  type: "HTML";
+  type: 'HTML';
   props: {
     html: string;
   };
@@ -1177,13 +1160,10 @@ type DangerHTMLOutput = {
  *
  * - [How to use `createPortal`](https://brisa.build/api-reference/functions/createPortal)
  */
-export function createPortal(
-  element: JSX.Element,
-  target: HTMLElement,
-): CreatePortalOutput;
+export function createPortal(element: JSX.Element, target: HTMLElement): CreatePortalOutput;
 
 type CreatePortalOutput = {
-  type: "portal";
+  type: 'portal';
   props: {
     element: JSX.Element;
     target: HTMLElement;
@@ -1266,9 +1246,8 @@ declare global {
       children: JSXElement;
     }
 
-    interface ContextProviderAttributes<
-      Target extends EventTarget = HTMLElement,
-    > extends HTMLAttributes<Target> {
+    interface ContextProviderAttributes<Target extends EventTarget = HTMLElement>
+      extends HTMLAttributes<Target> {
       context: BrisaContext<unknown>;
       value: unknown;
       children: unknown;
@@ -1279,14 +1258,14 @@ declare global {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
       // The "indicate" attribute is used to control the processing state of the web-component action.
-      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}`
-        ? `indicate${Rest}`
-        : never]?: IndicatorSignal | undefined;
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}` ? `indicate${Rest}` : never]?:
+        | IndicatorSignal
+        | undefined;
     } & {
       // The "debounce" attribute is used to debounce the web-component action.
-      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}`
-        ? `debounce${Rest}`
-        : never]?: number | undefined;
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}` ? `debounce${Rest}` : never]?:
+        | number
+        | undefined;
     } & {
       children?: JSXElement;
       skipSSR?: boolean;
@@ -1306,40 +1285,40 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-activedescendant)
        */
-      "aria-activedescendant"?: string | undefined;
+      'aria-activedescendant'?: string | undefined;
       /**
        * Indicates whether assistive technologies will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute.
        *
        *  - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-atomic)
        */
-      "aria-atomic"?: boolean | undefined;
+      'aria-atomic'?: boolean | undefined;
       /**
        * Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be
        * presented if they are made.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-autocomplete)
        */
-      "aria-autocomplete"?: "none" | "inline" | "list" | "both" | undefined;
+      'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both' | undefined;
       /**
        * Defines a string value that labels the current element, which is intended to be converted into Braille.
        * @see aria-label.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-braillelabel)
        */
-      "aria-braillelabel"?: string | undefined;
+      'aria-braillelabel'?: string | undefined;
       /**
        * Defines a human-readable, author-localized abbreviated description for the role of an element, which is intended to be converted into Braille.
        * @see aria-roledescription.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-brailleroledescription)
        */
-      "aria-brailleroledescription"?: string | undefined;
+      'aria-brailleroledescription'?: string | undefined;
       /**
        *  Indicates an element is being modified and that assistive technologies MAY want to wait until the modifications are complete before exposing them to the user.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-busy)
        */
-      "aria-busy"?: boolean | undefined;
+      'aria-busy'?: boolean | undefined;
       /**
        * Indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
        * @see aria-pressed
@@ -1347,14 +1326,14 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-checked)
        */
-      "aria-checked"?: boolean | "mixed" | undefined;
+      'aria-checked'?: boolean | 'mixed' | undefined;
       /**
        * Defines the total number of columns in a table, grid, or treegrid.
        * @see aria-colindex.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colcount)
        */
-      "aria-colcount"?: number | undefined;
+      'aria-colcount'?: number | undefined;
       /**
        * Defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
        * @see aria-colcount
@@ -1362,14 +1341,14 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colindex)
        */
-      "aria-colindex"?: number | undefined;
+      'aria-colindex'?: number | undefined;
       /**
        * Defines a human readable text alternative of aria-colindex.
        * @see aria-rowindextext.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colindextext)
        */
-      "aria-colindextext"?: string | undefined;
+      'aria-colindextext'?: string | undefined;
       /**
        * Defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
        * @see aria-colindex
@@ -1377,48 +1356,41 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-colspan)
        */
-      "aria-colspan"?: number | undefined;
+      'aria-colspan'?: number | undefined;
       /**
        * Identifies the element (or elements) whose contents or presence are controlled by the current element.
        * @see aria-owns.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-controls)
        */
-      "aria-controls"?: string | undefined;
+      'aria-controls'?: string | undefined;
       /**
        * Indicates the element that represents the current item within a container or set of related elements.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-current)
        */
-      "aria-current"?:
-        | boolean
-        | "page"
-        | "step"
-        | "location"
-        | "date"
-        | "time"
-        | undefined;
+      'aria-current'?: boolean | 'page' | 'step' | 'location' | 'date' | 'time' | undefined;
       /**
        * Identifies the element (or elements) that describes the object.
        * @see aria-labelledby
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-describedby)
        */
-      "aria-describedby"?: string | undefined;
+      'aria-describedby'?: string | undefined;
       /**
        * Defines a string value that describes or annotates the current element.
        * @see related aria-describedby.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-description)
        */
-      "aria-description"?: string | undefined;
+      'aria-description'?: string | undefined;
       /**
        * Identifies the element that provides a detailed, extended description for the object.
        * @see aria-describedby.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-details)
        */
-      "aria-details"?: string | undefined;
+      'aria-details'?: string | undefined;
       /**
        * Indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
        * @see aria-hidden
@@ -1426,7 +1398,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-disabled)
        */
-      "aria-disabled"?: boolean | undefined;
+      'aria-disabled'?: boolean | undefined;
       /**
        * Identifies the element that provides an error message for the object.
        * @see aria-invalid
@@ -1434,103 +1406,96 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-errormessage)
        */
-      "aria-errormessage"?: string | undefined;
+      'aria-errormessage'?: string | undefined;
       /**
        * Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-expanded)
        */
-      "aria-expanded"?: boolean | undefined;
+      'aria-expanded'?: boolean | undefined;
       /**
        * Identifies the next element (or elements) in an alternate reading order of content which, at the user's discretion,
        * allows assistive technology to override the general default of reading in document source order.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-flowto)
        */
-      "aria-flowto"?: string | undefined;
+      'aria-flowto'?: string | undefined;
       /**
        * Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup)
        */
-      "aria-haspopup"?:
-        | boolean
-        | "menu"
-        | "listbox"
-        | "tree"
-        | "grid"
-        | "dialog"
-        | undefined;
+      'aria-haspopup'?: boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | undefined;
       /**
        * Indicates whether the element is exposed to an accessibility API.
        * @see aria-disabled.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-hidden)
        */
-      "aria-hidden"?: boolean | undefined;
+      'aria-hidden'?: boolean | undefined;
       /**
        * Indicates the entered value does not conform to the format expected by the application.
        * @see aria-errormessage.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-invalid)
        */
-      "aria-invalid"?: boolean | "grammar" | "spelling" | undefined;
+      'aria-invalid'?: boolean | 'grammar' | 'spelling' | undefined;
       /**
        *  Indicates keyboard shortcuts that an author has implemented to activate or give focus to an element.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-keyshortcuts)
        */
-      "aria-keyshortcuts"?: string | undefined;
+      'aria-keyshortcuts'?: string | undefined;
       /**
        * Defines a string value that labels the current element.
        * @see aria-labelledby.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-label)
        */
-      "aria-label"?: string | undefined;
+      'aria-label'?: string | undefined;
       /**
        * Identifies the element (or elements) that labels the current element.
        * @see aria-describedby.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-labelledby)
        */
-      "aria-labelledby"?: string | undefined;
+      'aria-labelledby'?: string | undefined;
       /**
        * Defines the hierarchical level of an element within a structure.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-level)
        */
-      "aria-level"?: number | undefined;
+      'aria-level'?: number | undefined;
       /**
        * Indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-live)
        */
-      "aria-live"?: "off" | "assertive" | "polite" | undefined;
+      'aria-live'?: 'off' | 'assertive' | 'polite' | undefined;
       /**
        * Indicates whether an element is modal when displayed.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-modal)
        */
-      "aria-modal"?: boolean | undefined;
+      'aria-modal'?: boolean | undefined;
       /**
        * Indicates whether a text box accepts multiple lines of input or only a single line.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-multiline)
        */
-      "aria-multiline"?: boolean | undefined;
+      'aria-multiline'?: boolean | undefined;
       /**
        * Indicates that the user may select more than one item from the current selectable descendants.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-multiselectable)
        */
-      "aria-multiselectable"?: boolean | undefined;
+      'aria-multiselectable'?: boolean | undefined;
       /**
        * Indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-orientation)
        */
-      "aria-orientation"?: "horizontal" | "vertical" | undefined;
+      'aria-orientation'?: 'horizontal' | 'vertical' | undefined;
       /**
        * Identifies an element (or elements) in order to define a visual, functional, or contextual parent/child relationship
        * between DOM elements where the DOM hierarchy cannot be used to represent the relationship.
@@ -1538,21 +1503,21 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-owns)
        */
-      "aria-owns"?: string | undefined;
+      'aria-owns'?: string | undefined;
       /**
        * Defines a short hint (a word or short phrase) intended to aid the user with data entry when the control has no value.
        * A hint could be a sample value or a brief description of the expected format.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-placeholder)
        */
-      "aria-placeholder"?: string | undefined;
+      'aria-placeholder'?: string | undefined;
       /**
        * Defines an element's number or position in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
        * @see aria-setsize.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-posinset)
        */
-      "aria-posinset"?: number | undefined;
+      'aria-posinset'?: number | undefined;
       /**
        * Indicates the current "pressed" state of toggle buttons.
        * @see aria-checked
@@ -1560,51 +1525,51 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-pressed)
        */
-      "aria-pressed"?: boolean | "mixed" | undefined;
+      'aria-pressed'?: boolean | 'mixed' | undefined;
       /**
        * Indicates that the element is not editable, but is otherwise operable.
        * @see aria-disabled.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-readonly)
        */
-      "aria-readonly"?: boolean | undefined;
+      'aria-readonly'?: boolean | undefined;
       /**
        * Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
        * @see aria-atomic.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-relevant)
        */
-      "aria-relevant"?:
-        | "additions"
-        | "additions removals"
-        | "additions text"
-        | "all"
-        | "removals"
-        | "removals additions"
-        | "removals text"
-        | "text"
-        | "text additions"
-        | "text removals"
+      'aria-relevant'?:
+        | 'additions'
+        | 'additions removals'
+        | 'additions text'
+        | 'all'
+        | 'removals'
+        | 'removals additions'
+        | 'removals text'
+        | 'text'
+        | 'text additions'
+        | 'text removals'
         | undefined;
       /**
        * Indicates that user input is required on the element before a form may be submitted.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-required)
        */
-      "aria-required"?: boolean | undefined;
+      'aria-required'?: boolean | undefined;
       /**
        * Defines a human-readable, author-localized description for the role of an element.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-roledescription)
        */
-      "aria-roledescription"?: string | undefined;
+      'aria-roledescription'?: string | undefined;
       /**
        * Defines the total number of rows in a table, grid, or treegrid.
        * @see aria-rowindex.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowcount)
        */
-      "aria-rowcount"?: number | undefined;
+      'aria-rowcount'?: number | undefined;
       /**
        * Defines an element's row index or position with respect to the total number of rows within a table, grid, or treegrid.
        * @see aria-rowcount
@@ -1612,14 +1577,14 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowindex)
        */
-      "aria-rowindex"?: number | undefined;
+      'aria-rowindex'?: number | undefined;
       /**
        * Defines a human readable text alternative of aria-rowindex.
        * @see aria-colindextext.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowindextext)
        */
-      "aria-rowindextext"?: string | undefined;
+      'aria-rowindextext'?: string | undefined;
       /**
        * Defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
        * @see aria-rowindex
@@ -1627,7 +1592,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-rowspan)
        */
-      "aria-rowspan"?: number | undefined;
+      'aria-rowspan'?: number | undefined;
       /**
        * Indicates the current "selected" state of various widgets.
        * @see aria-checked
@@ -1635,144 +1600,144 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-selected)
        */
-      "aria-selected"?: boolean | undefined;
+      'aria-selected'?: boolean | undefined;
       /**
        * Defines the number of items in the current set of listitems or treeitems. Not required if all elements in the set are present in the DOM.
        * @see aria-posinset.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-setsize)
        */
-      "aria-setsize"?: number | undefined;
+      'aria-setsize'?: number | undefined;
       /**
        * Indicates if items in a table or grid are sorted in ascending or descending order.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-sort)
        */
-      "aria-sort"?: "none" | "ascending" | "descending" | "other" | undefined;
+      'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other' | undefined;
       /**
        * Defines the maximum allowed value for a range widget.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuemax)
        */
-      "aria-valuemax"?: number | undefined;
+      'aria-valuemax'?: number | undefined;
       /**
        * Defines the minimum allowed value for a range widget.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuemin)
        */
-      "aria-valuemin"?: number | undefined;
+      'aria-valuemin'?: number | undefined;
       /**
        * Defines the current value for a range widget.
        * @see aria-valuetext.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuenow)
        */
-      "aria-valuenow"?: number | undefined;
+      'aria-valuenow'?: number | undefined;
       /**
        * Defines the human readable text alternative of aria-valuenow for a range widget.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-valuetext)
        */
-      "aria-valuetext"?: string | undefined;
+      'aria-valuetext'?: string | undefined;
     }
 
     // All the WAI-ARIA 1.2 role attribute values from https://www.w3.org/TR/wai-aria-1.2/#role_definitions
     type AriaRole =
-      | "alert"
-      | "alertdialog"
-      | "application"
-      | "article"
-      | "banner"
-      | "blockquote"
-      | "button"
-      | "caption"
-      | "cell"
-      | "checkbox"
-      | "code"
-      | "columnheader"
-      | "combobox"
-      | "command"
-      | "complementary"
-      | "composite"
-      | "contentinfo"
-      | "definition"
-      | "deletion"
-      | "dialog"
-      | "directory"
-      | "document"
-      | "emphasis"
-      | "feed"
-      | "figure"
-      | "form"
-      | "generic"
-      | "grid"
-      | "gridcell"
-      | "group"
-      | "heading"
-      | "img"
-      | "input"
-      | "insertion"
-      | "landmark"
-      | "link"
-      | "list"
-      | "listbox"
-      | "listitem"
-      | "log"
-      | "main"
-      | "marquee"
-      | "math"
-      | "meter"
-      | "menu"
-      | "menubar"
-      | "menuitem"
-      | "menuitemcheckbox"
-      | "menuitemradio"
-      | "navigation"
-      | "none"
-      | "note"
-      | "option"
-      | "paragraph"
-      | "presentation"
-      | "progressbar"
-      | "radio"
-      | "radiogroup"
-      | "range"
-      | "region"
-      | "roletype"
-      | "row"
-      | "rowgroup"
-      | "rowheader"
-      | "scrollbar"
-      | "search"
-      | "searchbox"
-      | "section"
-      | "sectionhead"
-      | "select"
-      | "separator"
-      | "slider"
-      | "spinbutton"
-      | "status"
-      | "strong"
-      | "structure"
-      | "subscript"
-      | "superscript"
-      | "switch"
-      | "tab"
-      | "table"
-      | "tablist"
-      | "tabpanel"
-      | "term"
-      | "textbox"
-      | "time"
-      | "timer"
-      | "toolbar"
-      | "tooltip"
-      | "tree"
-      | "treegrid"
-      | "treeitem"
-      | "widget"
-      | "window"
-      | "none presentation";
+      | 'alert'
+      | 'alertdialog'
+      | 'application'
+      | 'article'
+      | 'banner'
+      | 'blockquote'
+      | 'button'
+      | 'caption'
+      | 'cell'
+      | 'checkbox'
+      | 'code'
+      | 'columnheader'
+      | 'combobox'
+      | 'command'
+      | 'complementary'
+      | 'composite'
+      | 'contentinfo'
+      | 'definition'
+      | 'deletion'
+      | 'dialog'
+      | 'directory'
+      | 'document'
+      | 'emphasis'
+      | 'feed'
+      | 'figure'
+      | 'form'
+      | 'generic'
+      | 'grid'
+      | 'gridcell'
+      | 'group'
+      | 'heading'
+      | 'img'
+      | 'input'
+      | 'insertion'
+      | 'landmark'
+      | 'link'
+      | 'list'
+      | 'listbox'
+      | 'listitem'
+      | 'log'
+      | 'main'
+      | 'marquee'
+      | 'math'
+      | 'meter'
+      | 'menu'
+      | 'menubar'
+      | 'menuitem'
+      | 'menuitemcheckbox'
+      | 'menuitemradio'
+      | 'navigation'
+      | 'none'
+      | 'note'
+      | 'option'
+      | 'paragraph'
+      | 'presentation'
+      | 'progressbar'
+      | 'radio'
+      | 'radiogroup'
+      | 'range'
+      | 'region'
+      | 'roletype'
+      | 'row'
+      | 'rowgroup'
+      | 'rowheader'
+      | 'scrollbar'
+      | 'search'
+      | 'searchbox'
+      | 'section'
+      | 'sectionhead'
+      | 'select'
+      | 'separator'
+      | 'slider'
+      | 'spinbutton'
+      | 'status'
+      | 'strong'
+      | 'structure'
+      | 'subscript'
+      | 'superscript'
+      | 'switch'
+      | 'tab'
+      | 'table'
+      | 'tablist'
+      | 'tabpanel'
+      | 'term'
+      | 'textbox'
+      | 'time'
+      | 'timer'
+      | 'toolbar'
+      | 'tooltip'
+      | 'tree'
+      | 'treegrid'
+      | 'treeitem'
+      | 'widget'
+      | 'window'
+      | 'none presentation';
 
     export interface SVGAttributes<Target extends EventTarget = SVGElement>
       extends HTMLAttributes<Target> {
@@ -1781,47 +1746,47 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/accumulate)
        */
-      accumulate?: "none" | "sum" | undefined;
+      accumulate?: 'none' | 'sum' | undefined;
       /**
        * The additive attribute controls whether or not an animation is additive.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/additive)
        */
-      additive?: "replace" | "sum" | undefined;
+      additive?: 'replace' | 'sum' | undefined;
       /**
        * The alignment-baseline attribute specifies how an object is aligned with respect to its parent.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/alignment-baseline)
        */
       alignmentBaseline?:
-        | "auto"
-        | "baseline"
-        | "before-edge"
-        | "text-before-edge"
-        | "middle"
-        | "central"
-        | "after-edge"
-        | "text-after-edge"
-        | "ideographic"
-        | "alphabetic"
-        | "hanging"
-        | "mathematical"
-        | "inherit"
+        | 'auto'
+        | 'baseline'
+        | 'before-edge'
+        | 'text-before-edge'
+        | 'middle'
+        | 'central'
+        | 'after-edge'
+        | 'text-after-edge'
+        | 'ideographic'
+        | 'alphabetic'
+        | 'hanging'
+        | 'mathematical'
+        | 'inherit'
         | undefined;
-      "alignment-baseline"?:
-        | "auto"
-        | "baseline"
-        | "before-edge"
-        | "text-before-edge"
-        | "middle"
-        | "central"
-        | "after-edge"
-        | "text-after-edge"
-        | "ideographic"
-        | "alphabetic"
-        | "hanging"
-        | "mathematical"
-        | "inherit"
+      'alignment-baseline'?:
+        | 'auto'
+        | 'baseline'
+        | 'before-edge'
+        | 'text-before-edge'
+        | 'middle'
+        | 'central'
+        | 'after-edge'
+        | 'text-after-edge'
+        | 'ideographic'
+        | 'alphabetic'
+        | 'hanging'
+        | 'mathematical'
+        | 'inherit'
         | undefined;
       /**
        * The attributeName attribute defines the name of the attribute to be changed.
@@ -1882,7 +1847,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-path)
        */
-      "clip-path"?: string | undefined;
+      'clip-path'?: string | undefined;
       /**
        * The clipPathUnits attribute defines the coordinate system for the contents of the <clipPath> element.
        *
@@ -1904,7 +1869,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/clip-rule)
        */
-      "clip-rule"?: number | string | undefined;
+      'clip-rule'?: number | string | undefined;
       /**
        * The color attribute is used to provide a potential indirect value (currentColor) for the fill, stroke, stop-color, flood-color and lighting-color attributes.
        *
@@ -1916,29 +1881,19 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color)
        */
-      "color-interpolation"?: number | string | undefined;
+      'color-interpolation'?: number | string | undefined;
       /**
        * The color-interpolation-filters attribute specifies the color space for imaging operations performed via filter effects.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
        */
-      colorInterpolationFilters?:
-        | "auto"
-        | "sRGB"
-        | "linearRGB"
-        | "inherit"
-        | undefined;
+      colorInterpolationFilters?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | undefined;
       /**
        * The color-interpolation-filters attribute specifies the color space for imaging operations performed via filter effects.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
        */
-      "color-interpolation-filters"?:
-        | "auto"
-        | "sRGB"
-        | "linearRGB"
-        | "inherit"
-        | undefined;
+      'color-interpolation-filters'?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | undefined;
       /**
        * The cursor attribute specifies the mouse cursor displayed when the mouse pointer is over an element.
        *
@@ -1998,7 +1953,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dominant-baseline)
        */
-      "dominant-baseline"?: number | string | undefined;
+      'dominant-baseline'?: number | string | undefined;
       /**
        * The dur attribute defines the duration of the animation.
        *
@@ -2058,19 +2013,19 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-opacity)
        */
-      "fill-opacity"?: number | string | undefined;
+      'fill-opacity'?: number | string | undefined;
       /**
        * The fill-rule attribute indicates the algorithm which is to be used to determine what side of a path is inside the shape.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule)
        */
-      fillRule?: "nonzero" | "evenodd" | "inherit" | undefined;
+      fillRule?: 'nonzero' | 'evenodd' | 'inherit' | undefined;
       /**
        * The fill-rule attribute indicates the algorithm which is to be used to determine what side of a path is inside the shape.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule)
        */
-      "fill-rule"?: "nonzero" | "evenodd" | "inherit" | undefined;
+      'fill-rule'?: 'nonzero' | 'evenodd' | 'inherit' | undefined;
       /**
        * The filter attribute references a filter to be applied to the given element.
        *
@@ -2094,7 +2049,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-color)
        */
-      "flood-color"?: number | string | undefined;
+      'flood-color'?: number | string | undefined;
       /**
        * The flood-opacity attribute defines the opacity value to use across the current filter primitive subregion.
        *
@@ -2106,7 +2061,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/flood-opacity)
        */
-      "flood-opacity"?: number | string | undefined;
+      'flood-opacity'?: number | string | undefined;
       /**
        * The font-family attribute allows for multiple comma-separated values as a fallback system.
        *
@@ -2118,7 +2073,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-family)
        */
-      "font-family"?: string | undefined;
+      'font-family'?: string | undefined;
       /**
        * The font-size attribute refers to the size of the font from baseline to baseline when multiple lines of text are set solid in a multiline layout environment.
        *
@@ -2130,7 +2085,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size)
        */
-      "font-size"?: number | string | undefined;
+      'font-size'?: number | string | undefined;
       /**
        * The font-size-adjust attribute allows authors to specify an aspect value for an element that will preserve the x-height of the first choice font.
        *
@@ -2142,7 +2097,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-size-adjust)
        */
-      "font-size-adjust"?: number | string | undefined;
+      'font-size-adjust'?: number | string | undefined;
       /**
        * The font-stretch attribute refers to the normal, condensed, and expanded faces.
        *
@@ -2154,7 +2109,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-stretch)
        */
-      "font-stretch"?: number | string | undefined;
+      'font-stretch'?: number | string | undefined;
       /**
        * The font-style attribute refers to the slant of the glyphs in the font.
        *
@@ -2166,7 +2121,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-style)
        */
-      "font-style"?: number | string | undefined;
+      'font-style'?: number | string | undefined;
       /**
        * The font-variant attribute refers to the normal, small-caps and inherit faces.
        *
@@ -2178,7 +2133,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-variant)
        */
-      "font-variant"?: number | string | undefined;
+      'font-variant'?: number | string | undefined;
       /**
        * The font-weight attribute refers to the boldness of the glyphs in the font.
        *
@@ -2190,7 +2145,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/font-weight)
        */
-      "font-weight"?: number | string | undefined;
+      'font-weight'?: number | string | undefined;
       /**
        * The from attribute defines the start interval value of the animation.
        *
@@ -2232,7 +2187,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/image-rendering)
        */
-      "image-rendering"?: number | string | undefined;
+      'image-rendering'?: number | string | undefined;
       /**
        * The in2 attribute identifies the second input for the given filter primitive. It works exactly like the in attribute.
        *
@@ -2316,7 +2271,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/CSS/letter-spacing)
        */
-      "letter-spacing"?: number | string | undefined;
+      'letter-spacing'?: number | string | undefined;
       /**
        * The lighting-color attribute defines the color of the light source for filter primitives feDiffuseLighting and feSpecularLighting.
        *
@@ -2328,7 +2283,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/lighting-color)
        */
-      "lighting-color"?: number | string | undefined;
+      'lighting-color'?: number | string | undefined;
       /**
        * The limitingConeAngle attribute represents the angle of the cone.
        *
@@ -2346,7 +2301,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-end)
        */
-      "marker-end"?: string | undefined;
+      'marker-end'?: string | undefined;
       /**
        * The markerHeight attribute defines the height of the viewport into which the marker is to be fitted when it is rendered.
        *
@@ -2358,7 +2313,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/markerHeight)
        */
-      "marker-height"?: number | string | undefined;
+      'marker-height'?: number | string | undefined;
       /**
        * The markerMid attribute defines the arrowhead or polymarker that will be drawn at every vertex other than the first and last vertex of the given <path> element or basic shape.
        *
@@ -2370,7 +2325,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-mid)
        */
-      "marker-mid"?: string | undefined;
+      'marker-mid'?: string | undefined;
       /**
        * The markerStart attribute defines the arrowhead or polymarker that will be drawn at the first vertex of the given <path> element or basic shape.
        *
@@ -2382,7 +2337,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/marker-start)
        */
-      "marker-start"?: string | undefined;
+      'marker-start'?: string | undefined;
       /**
        * The markerUnits attribute defines the coordinate system for the attributes markerWidth, markerHeight and the contents of the marker.
        *
@@ -2478,7 +2433,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-position)
        */
-      "overline-position"?: number | string | undefined;
+      'overline-position'?: number | string | undefined;
       /**
        * The overlineThickness attribute defines the thickness of the overline text decoration on text.
        *
@@ -2490,7 +2445,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/overline-thickness)
        */
-      "overline-thickness"?: number | string | undefined;
+      'overline-thickness'?: number | string | undefined;
       /**
        * The paint-order attribute defines the order for painting objects.
        *
@@ -2502,7 +2457,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/paint-order)
        */
-      "paint-order"?: number | string | undefined;
+      'paint-order'?: number | string | undefined;
       /**
        * The pathLength attribute lets authors specify the total length for the path, in user units.
        *
@@ -2532,7 +2487,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/pointer-events)
        */
-      "pointer-events"?: number | string | undefined;
+      'pointer-events'?: number | string | undefined;
       /**
        * The points attribute defines the list of points for the given shape.
        *
@@ -2658,7 +2613,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/shape-rendering)
        */
-      "shape-rendering"?: number | string | undefined;
+      'shape-rendering'?: number | string | undefined;
       /**
        * The spacing attribute defines a distance between the copies of the filter effect.
        *
@@ -2706,25 +2661,25 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stop-color)
        */
-      "stop-color"?: string | undefined;
+      'stop-color'?: string | undefined;
       /**
        * The stop-opacity attribute defines the opacity of the gradient stop.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stop-opacity)
        */
-      "stop-opacity"?: number | string | undefined;
+      'stop-opacity'?: number | string | undefined;
       /**
        * The strikethrough-position attribute defines the position of the strikethrough text decoration on text.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/strikethrough-position)
        */
-      "strikethrough-position"?: number | string | undefined;
+      'strikethrough-position'?: number | string | undefined;
       /**
        * The strikethrough-thickness attribute defines the thickness of the strikethrough text decoration on text.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/strikethrough-thickness)
        */
-      "strikethrough-thickness"?: number | string | undefined;
+      'strikethrough-thickness'?: number | string | undefined;
       /**
        * The stoke attribute is a presentation attribute defining the color of the outline of the given graphical element.
        *
@@ -2736,43 +2691,43 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray)
        */
-      "stroke-dasharray"?: string | number | undefined;
+      'stroke-dasharray'?: string | number | undefined;
       /**
        * The stroke-dashoffset attribute is a presentation attribute defining the distance into the dash pattern to start the dash.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dashoffset)
        */
-      "stroke-dashoffset"?: string | number | undefined;
+      'stroke-dashoffset'?: string | number | undefined;
       /**
        * The stroke-linecap attribute is a presentation attribute defining the shape to be used at the end of open subpaths when they are stroked.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap)
        */
-      "stroke-linecap"?: "butt" | "round" | "square" | "inherit" | undefined;
+      'stroke-linecap'?: 'butt' | 'round' | 'square' | 'inherit' | undefined;
       /**
        * The stroke-linejoin attribute is a presentation attribute defining the shape to be used at the corners of paths or basic shapes when they are stroked.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linejoin)
        */
-      "stroke-linejoin"?: "miter" | "round" | "bevel" | "inherit" | undefined;
+      'stroke-linejoin'?: 'miter' | 'round' | 'bevel' | 'inherit' | undefined;
       /**
        * The stroke-miterlimit attribute is a presentation attribute defining the limit for the ratio of the miter length to the stroke-width.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-miterlimit)
        */
-      "stroke-miterlimit"?: string | number | undefined;
+      'stroke-miterlimit'?: string | number | undefined;
       /**
        * The stroke-opacity attribute is a presentation attribute defining the opacity of the paint server used to paint the outline of the shape.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-opacity)
        */
-      "stroke-opacity"?: number | string | undefined;
+      'stroke-opacity'?: number | string | undefined;
       /**
        * The stroke-width attribute is a presentation attribute defining the width of the outline on the current object.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-width)
        */
-      "stroke-width"?: number | string | undefined;
+      'stroke-width'?: number | string | undefined;
       /**
        * The surfaceScale attribute defines the height of the surface for the light filter primitive.
        *
@@ -2808,13 +2763,13 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor)
        */
-      "text-anchor"?: string | undefined;
+      'text-anchor'?: string | undefined;
       /**
        * The text-decoration attribute is a presentation attribute defining the text decoration line to be used.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-decoration)
        */
-      "text-decoration"?: number | string | undefined;
+      'text-decoration'?: number | string | undefined;
       /**
        * The textLength attribute indicates the width of the space into which the text should be rendered.
        *
@@ -2826,7 +2781,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-rendering)
        */
-      "text-rendering"?: number | string | undefined;
+      'text-rendering'?: number | string | undefined;
       /**
        * The to attribute defines the final transformation of the given element.
        *
@@ -2844,19 +2799,19 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/underline-position)
        */
-      "underline-position"?: number | string | undefined;
+      'underline-position'?: number | string | undefined;
       /**
        * The underline-thickness attribute defines the thickness of the underline text decoration on text.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/underline-thickness)
        */
-      "underline-thickness"?: number | string | undefined;
+      'underline-thickness'?: number | string | undefined;
       /**
        * The unicode-bidi attribute is a presentation attribute that is used to specify whether a text should be laid out for right-to-left or left-to-right text direction, and whether the text should be laid out for weak bidirectionality, including the direction of embeddings.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/unicode-bidi)
        */
-      "unicode-bidi"?: number | string | undefined;
+      'unicode-bidi'?: number | string | undefined;
       /**
        * The values attribute has different meanings, depending upon the context where it's used, either it defines a sequence of values used over the course of an animation, or it's a list of numbers for a color matrix, which is interpreted differently depending on the type of color change to be performed.
        *
@@ -2868,7 +2823,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/vector-effect)
        */
-      "vector-effect"?: number | string | undefined;
+      'vector-effect'?: number | string | undefined;
       /**
        * The viewBox attribute defines the position and dimension, in user space, of an SVG viewport.
        *
@@ -2886,13 +2841,13 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/word-spacing)
        */
-      "word-spacing"?: number | string | undefined;
+      'word-spacing'?: number | string | undefined;
       /**
        * The writing-mode attribute defines the orientation of the dominant baseline and the direction of the dominant baseline.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/writing-mode)
        */
-      "writing-mode"?: number | string | undefined;
+      'writing-mode'?: number | string | undefined;
       /**
        * The x1 attribute defines the x-coordinate of the start of the line.
        *
@@ -2928,13 +2883,13 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course)
        */
-      "xmlns:xlink"?: string;
+      'xmlns:xlink'?: string;
       /**
        * The xmlns:serif attribute defines the namespace for the serif reference.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course)
        */
-      "xmlns:serif"?: string;
+      'xmlns:serif'?: string;
       /**
        * The y1 attribute defines the y-coordinate of the start of the line.
        *
@@ -2970,67 +2925,63 @@ declare global {
     export type TargetedEvent<
       Target extends EventTarget = EventTarget,
       TypedEvent extends Event = Event,
-    > = Omit<TypedEvent, "currentTarget"> & {
+    > = Omit<TypedEvent, 'currentTarget'> & {
       readonly currentTarget: Target;
     };
 
-    export type TargetedAnimationEvent<Target extends EventTarget> =
-      TargetedEvent<Target, AnimationEvent>;
-    export type TargetedClipboardEvent<Target extends EventTarget> =
-      TargetedEvent<Target, ClipboardEvent>;
-    export type TargetedCompositionEvent<Target extends EventTarget> =
-      TargetedEvent<Target, CompositionEvent>;
-    export type TargetedDragEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedAnimationEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      DragEvent
+      AnimationEvent
     >;
-    export type TargetedFocusEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedClipboardEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      FocusEvent
+      ClipboardEvent
     >;
-    export type TargetedInputEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedCompositionEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      InputEvent
+      CompositionEvent
     >;
-    export type TargetedKeyboardEvent<Target extends EventTarget> =
-      TargetedEvent<Target, KeyboardEvent>;
-    export type TargetedMouseEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedDragEvent<Target extends EventTarget> = TargetedEvent<Target, DragEvent>;
+    export type TargetedFocusEvent<Target extends EventTarget> = TargetedEvent<Target, FocusEvent>;
+    export type TargetedInputEvent<Target extends EventTarget> = TargetedEvent<Target, InputEvent>;
+    export type TargetedKeyboardEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      MouseEvent
+      KeyboardEvent
     >;
-    export type TargetedPointerEvent<Target extends EventTarget> =
-      TargetedEvent<Target, PointerEvent>;
+    export type TargetedMouseEvent<Target extends EventTarget> = TargetedEvent<Target, MouseEvent>;
+    export type TargetedPointerEvent<Target extends EventTarget> = TargetedEvent<
+      Target,
+      PointerEvent
+    >;
     export type TargetedSubmitEvent<Target extends EventTarget> = TargetedEvent<
       Target,
       SubmitEvent
     >;
-    export type TargetedTouchEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedTouchEvent<Target extends EventTarget> = TargetedEvent<Target, TouchEvent>;
+    export type TargetedTransitionEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      TouchEvent
+      TransitionEvent
     >;
-    export type TargetedTransitionEvent<Target extends EventTarget> =
-      TargetedEvent<Target, TransitionEvent>;
-    export type TargetedUIEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedUIEvent<Target extends EventTarget> = TargetedEvent<Target, UIEvent>;
+    export type TargetedWheelEvent<Target extends EventTarget> = TargetedEvent<Target, WheelEvent>;
+    export type TargetedPictureInPictureEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      UIEvent
+      PictureInPictureEvent
     >;
-    export type TargetedWheelEvent<Target extends EventTarget> = TargetedEvent<
-      Target,
-      WheelEvent
-    >;
-    export type TargetedPictureInPictureEvent<Target extends EventTarget> =
-      TargetedEvent<Target, PictureInPictureEvent>;
 
     export type EventHandler<E extends TargetedEvent> = {
       bivarianceHack(event: E): unknown;
-    }["bivarianceHack"];
+    }['bivarianceHack'];
 
-    export type AnimationEventHandler<Target extends EventTarget> =
-      EventHandler<TargetedAnimationEvent<Target>>;
-    export type ClipboardEventHandler<Target extends EventTarget> =
-      EventHandler<TargetedClipboardEvent<Target>>;
-    export type CompositionEventHandler<Target extends EventTarget> =
-      EventHandler<TargetedCompositionEvent<Target>>;
+    export type AnimationEventHandler<Target extends EventTarget> = EventHandler<
+      TargetedAnimationEvent<Target>
+    >;
+    export type ClipboardEventHandler<Target extends EventTarget> = EventHandler<
+      TargetedClipboardEvent<Target>
+    >;
+    export type CompositionEventHandler<Target extends EventTarget> = EventHandler<
+      TargetedCompositionEvent<Target>
+    >;
     export type DragEventHandler<Target extends EventTarget> = EventHandler<
       TargetedDragEvent<Target>
     >;
@@ -3058,19 +3009,18 @@ declare global {
     export type TouchEventHandler<Target extends EventTarget> = EventHandler<
       TargetedTouchEvent<Target>
     >;
-    export type TransitionEventHandler<Target extends EventTarget> =
-      EventHandler<TargetedTransitionEvent<Target>>;
-    export type UIEventHandler<Target extends EventTarget> = EventHandler<
-      TargetedUIEvent<Target>
+    export type TransitionEventHandler<Target extends EventTarget> = EventHandler<
+      TargetedTransitionEvent<Target>
     >;
+    export type UIEventHandler<Target extends EventTarget> = EventHandler<TargetedUIEvent<Target>>;
     export type WheelEventHandler<Target extends EventTarget> = EventHandler<
       TargetedWheelEvent<Target>
     >;
-    export type PictureInPictureEventHandler<Target extends EventTarget> =
-      EventHandler<TargetedPictureInPictureEvent<Target>>;
+    export type PictureInPictureEventHandler<Target extends EventTarget> = EventHandler<
+      TargetedPictureInPictureEvent<Target>
+    >;
 
-    export interface DOMAttributes<Target extends EventTarget>
-      extends BrisaDOMAttributes {
+    export interface DOMAttributes<Target extends EventTarget> extends BrisaDOMAttributes {
       // Image Events
 
       /**
@@ -7423,19 +7373,19 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#accept-charset)
        */
-      "accept-charset"?: HTMLAttributes["acceptCharset"];
+      'accept-charset'?: HTMLAttributes['acceptCharset'];
       /**
        * The `charSet` attribute specifies the character encoding of the linked resource.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link#charset)
        */
-      charSet?: HTMLAttributes["charSet"];
+      charSet?: HTMLAttributes['charSet'];
       /**
        * The `accesskey` attribute specifies a shortcut key to activate/focus an element.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey)
        */
-      accesskey?: HTMLAttributes["accessKey"];
+      accesskey?: HTMLAttributes['accessKey'];
       /**
        * The `action` attribute specifies where to send the form-data when a form is submitted.
        *
@@ -7587,13 +7537,13 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)
        */
-      contentEditable?: boolean | "" | "plaintext-only" | "inherit" | undefined;
+      contentEditable?: boolean | '' | 'plaintext-only' | 'inherit' | undefined;
       /**
        * The `contentEditable` attribute is a string attribute that is present on the `<element>` element to specify whether the content of an element is editable or not.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)
        */
-      contenteditable?: HTMLAttributes["contentEditable"];
+      contenteditable?: HTMLAttributes['contentEditable'];
       /**
        * The `controls` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements to show browser's default controls.
        *
@@ -7659,7 +7609,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir)
        */
-      dir?: "auto" | "rtl" | "ltr" | undefined;
+      dir?: 'auto' | 'rtl' | 'ltr' | undefined;
       /**
        * The `disabled` attribute is a boolean attribute that is present on the `<button>`, `<fieldset>`, `<input>`, `<optgroup>`, `<option>`, `<select>`, and `<textarea>` elements to specify that the element should be disabled.
        *
@@ -7683,7 +7633,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#decoding)
        */
-      decoding?: "sync" | "async" | "auto" | undefined;
+      decoding?: 'sync' | 'async' | 'auto' | undefined;
       /**
        * The `draggable` attribute is a boolean attribute that is present on the `<element>` element to specify whether the element is draggable or not.
        *
@@ -7707,15 +7657,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/enterkeyhint)
        */
-      enterkeyhint?:
-        | "enter"
-        | "done"
-        | "go"
-        | "next"
-        | "previous"
-        | "search"
-        | "send"
-        | undefined;
+      enterkeyhint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send' | undefined;
       /**
        * The `elementTiming` attribute is used to indicate that an element is flagged for tracking by PerformanceObserver objects using the "element" type.
        *
@@ -7727,7 +7669,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/elementtiming)
        */
-      elementtiming?: HTMLAttributes["elementTiming"];
+      elementtiming?: HTMLAttributes['elementTiming'];
       /**
        * The `exportparts` attribute allows you to select and style elements existing in nested shadow trees, by exporting their part names.
        *
@@ -7823,7 +7765,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/hidden)
        */
-      hidden?: boolean | "hidden" | "until-found" | undefined;
+      hidden?: boolean | 'hidden' | 'until-found' | undefined;
       /**
        * The `high` attribute is a string attribute that is present on the `<meter>` element to specify the range that is considered to be a high value.
        *
@@ -7859,7 +7801,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#http-equiv)
        */
-      "http-equiv"?: string | undefined;
+      'http-equiv'?: string | undefined;
       /**
        * The `id` attribute is a string attribute that is present on the `<element>` element to specify a unique id for an element.
        *
@@ -7931,7 +7873,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#loading)
        */
-      loading?: "eager" | "lazy" | undefined;
+      loading?: 'eager' | 'lazy' | undefined;
       /**
        * The `loop` attribute is a boolean attribute that is present on the `<audio>` and `<video>` elements to specify that the media should play in a loop.
        *
@@ -8130,14 +8072,14 @@ declare global {
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#referrerpolicy)
        */
       referrerpolicy?:
-        | "no-referrer"
-        | "no-referrer-when-downgrade"
-        | "origin"
-        | "origin-when-cross-origin"
-        | "same-origin"
-        | "strict-origin"
-        | "strict-origin-when-cross-origin"
-        | "unsafe-url"
+        | 'no-referrer'
+        | 'no-referrer-when-downgrade'
+        | 'origin'
+        | 'origin-when-cross-origin'
+        | 'same-origin'
+        | 'strict-origin'
+        | 'strict-origin-when-cross-origin'
+        | 'unsafe-url'
         | undefined;
       /**
        * The `rel` attribute is a string attribute that is present on various elements, such as `<a>` and `<link>`, to specify the relationship between the current document and the linked resource.
@@ -8441,27 +8383,13 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
        */
-      autocapitalize?:
-        | "off"
-        | "none"
-        | "on"
-        | "sentences"
-        | "words"
-        | "characters"
-        | undefined;
+      autocapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters' | undefined;
       /**
        * The `allowCapitalize` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the capitalization behavior of the input.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
        */
-      autoCapitalize?:
-        | "off"
-        | "none"
-        | "on"
-        | "sentences"
-        | "words"
-        | "characters"
-        | undefined;
+      autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters' | undefined;
       /**
        * The `disablePictureInPicture` attribute is a boolean attribute that is present on the `<video>` and `<iframe>` elements to specify that the user should not be able to enter picture-in-picture mode.
        *
@@ -8480,7 +8408,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/translate)
        */
-      translate?: "yes" | "no" | undefined;
+      translate?: 'yes' | 'no' | undefined;
 
       // RDFa Attributes
 
@@ -9628,12 +9556,12 @@ declare global {
        *
        * - [How to use `context-provider`](https://brisa.build/building-your-application/components-details/context)
        */
-      "context-provider": ContextProviderAttributes<HTMLElement>;
+      'context-provider': ContextProviderAttributes<HTMLElement>;
     }
   }
 }
 
-declare module "csstype" {
+declare module 'csstype' {
   interface Properties {
     /**
      * `view-transition-name` The view-transition-name CSS property provides the
@@ -9641,32 +9569,32 @@ declare module "csstype" {
      * causes it to participate in a separate view transition from the root view
      * transition — or no view transition if the none value is specified.
      */
-    "view-transition-name"?: string;
+    'view-transition-name'?: string;
   }
 }
 
 export type InputType =
-  | "text"
-  | "password"
-  | "email"
-  | "number"
-  | "checkbox"
-  | "radio"
-  | "file"
-  | "submit"
-  | "reset"
-  | "button"
-  | "image"
-  | "date"
-  | "datetime-local"
-  | "time"
-  | "week"
-  | "month"
-  | "url"
-  | "search"
-  | "tel"
-  | "color"
-  | "hidden";
+  | 'text'
+  | 'password'
+  | 'email'
+  | 'number'
+  | 'checkbox'
+  | 'radio'
+  | 'file'
+  | 'submit'
+  | 'reset'
+  | 'button'
+  | 'image'
+  | 'date'
+  | 'datetime-local'
+  | 'time'
+  | 'week'
+  | 'month'
+  | 'url'
+  | 'search'
+  | 'tel'
+  | 'color'
+  | 'hidden';
 
 export interface BrisaTestMatchers {
   /**
@@ -9899,7 +9827,7 @@ export interface BrisaTestMatchers {
   toHaveElementByNodeName(name: string): void;
 }
 
-declare module "bun:test" {
+declare module 'bun:test' {
   interface Matchers<T> extends BrisaTestMatchers {}
   interface AsymmetricMatchers<T> extends BrisaTestMatchers {}
 }

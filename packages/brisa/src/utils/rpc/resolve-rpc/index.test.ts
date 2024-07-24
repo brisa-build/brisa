@@ -1,94 +1,90 @@
-import { normalizeQuotes } from "@/helpers";
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import { describe, expect, it, afterEach, mock } from "bun:test";
+import { normalizeQuotes } from '@/helpers';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
+import { describe, expect, it, afterEach, mock } from 'bun:test';
 
-let resolveRPC: (
-  res: Response,
-  dataSet: DOMStringMap,
-  args?: unknown[] | string,
-) => Promise<void>;
-const dataSet = { cid: "123" };
+let resolveRPC: (res: Response, dataSet: DOMStringMap, args?: unknown[] | string) => Promise<void>;
+const dataSet = { cid: '123' };
 const decoder = new TextDecoder();
 
 async function initBrowser() {
   GlobalRegistrator.register();
-  await import(".");
+  await import('.');
   resolveRPC = window._rpc;
 }
 
-describe("utils", () => {
+describe('utils', () => {
   afterEach(() => {
-    document.body.innerHTML = "";
+    document.body.innerHTML = '';
     window._s = window._S = undefined;
     GlobalRegistrator.unregister();
   });
 
-  describe("resolve-rpc", () => {
-    describe("when navigate", () => {
-      it("should redirect to a different page", async () => {
-        const res = new Response("[]", {
+  describe('resolve-rpc', () => {
+    describe('when navigate', () => {
+      it('should redirect to a different page', async () => {
+        const res = new Response('[]', {
           headers: {
-            "X-Navigate": "http://localhost/some-page",
+            'X-Navigate': 'http://localhost/some-page',
           },
         });
 
         await initBrowser();
         await resolveRPC(res, dataSet);
 
-        expect(location.toString()).toBe("http://localhost/some-page");
+        expect(location.toString()).toBe('http://localhost/some-page');
         expect(window._xm).toBeNull();
       });
 
-      it("should redirect to a different page with reactivity", async () => {
-        const res = new Response("[]", {
+      it('should redirect to a different page with reactivity', async () => {
+        const res = new Response('[]', {
           headers: {
-            "X-Navigate": "http://localhost/some-page",
-            "X-Mode": "reactivity",
+            'X-Navigate': 'http://localhost/some-page',
+            'X-Mode': 'reactivity',
           },
         });
 
         await initBrowser();
         await resolveRPC(res, dataSet);
 
-        expect(location.toString()).toBe("http://localhost/some-page");
-        expect(window._xm).toBe("reactivity");
+        expect(location.toString()).toBe('http://localhost/some-page');
+        expect(window._xm).toBe('reactivity');
       });
 
-      it("should redirect to a different page with transition", async () => {
-        const res = new Response("[]", {
+      it('should redirect to a different page with transition', async () => {
+        const res = new Response('[]', {
           headers: {
-            "X-Navigate": "http://localhost/some-page",
-            "X-Mode": "transition",
+            'X-Navigate': 'http://localhost/some-page',
+            'X-Mode': 'transition',
           },
         });
 
         await initBrowser();
         await resolveRPC(res, dataSet);
 
-        expect(location.toString()).toBe("http://localhost/some-page");
-        expect(window._xm).toBe("transition");
+        expect(location.toString()).toBe('http://localhost/some-page');
+        expect(window._xm).toBe('transition');
       });
 
-      it("should redirect to a different page with native", async () => {
-        const res = new Response("[]", {
+      it('should redirect to a different page with native', async () => {
+        const res = new Response('[]', {
           headers: {
-            "X-Navigate": "http://localhost/some-page",
-            "X-Mode": "native",
+            'X-Navigate': 'http://localhost/some-page',
+            'X-Mode': 'native',
           },
         });
 
         await initBrowser();
         await resolveRPC(res, dataSet);
 
-        expect(location.toString()).toBe("http://localhost/some-page");
-        expect(window._xm).toBe("native");
+        expect(location.toString()).toBe('http://localhost/some-page');
+        expect(window._xm).toBe('native');
       });
     });
 
-    it("should update the store", async () => {
-      const res = new Response(JSON.stringify([["foo", "bar"]]), {
+    it('should update the store', async () => {
+      const res = new Response(JSON.stringify([['foo', 'bar']]), {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
@@ -102,13 +98,13 @@ describe("utils", () => {
 
       await resolveRPC(res, dataSet);
 
-      expect(window._s.get("foo")).toBe("bar");
+      expect(window._s.get('foo')).toBe('bar');
     });
 
-    it("should update the store without initialize (no signals, only server store with transferToClient)", async () => {
-      const res = new Response(JSON.stringify([["foo", "bar"]]), {
+    it('should update the store without initialize (no signals, only server store with transferToClient)', async () => {
+      const res = new Response(JSON.stringify([['foo', 'bar']]), {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
@@ -120,14 +116,14 @@ describe("utils", () => {
       });
 
       expect(window._s).toBeUndefined();
-      expect(window._S).toEqual([["foo", "bar"]]);
+      expect(window._S).toEqual([['foo', 'bar']]);
       expect(error).toBe(false);
     });
 
-    it("should allow emojis in the transmited store", async () => {
-      const res = new Response(JSON.stringify([["foo", "🚀"]]), {
+    it('should allow emojis in the transmited store', async () => {
+      const res = new Response(JSON.stringify([['foo', '🚀']]), {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
@@ -139,28 +135,28 @@ describe("utils", () => {
       });
 
       expect(window._s).toBeUndefined();
-      expect(window._S).toEqual([["foo", "🚀"]]);
+      expect(window._S).toEqual([['foo', '🚀']]);
       expect(error).toBe(false);
     });
 
-    describe("when receive streamed HTML", () => {
-      it("should call the diff-dom-streaming library", async () => {
+    describe('when receive streamed HTML', () => {
+      it('should call the diff-dom-streaming library', async () => {
         const encoder = new TextEncoder();
         const stream = new ReadableStream({
           start(controller) {
-            controller.enqueue(encoder.encode("<html>"));
-            controller.enqueue(encoder.encode("<head />"));
-            controller.enqueue(encoder.encode("<body>"));
+            controller.enqueue(encoder.encode('<html>'));
+            controller.enqueue(encoder.encode('<head />'));
+            controller.enqueue(encoder.encode('<body>'));
 
             controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
 
-            controller.enqueue(encoder.encode("</body>"));
-            controller.enqueue(encoder.encode("</html>"));
+            controller.enqueue(encoder.encode('</body>'));
+            controller.enqueue(encoder.encode('</html>'));
             controller.close();
           },
         });
         const res = new Response(stream, {
-          headers: { "content-type": "text/html" },
+          headers: { 'content-type': 'text/html' },
         });
 
         await initBrowser();
@@ -170,23 +166,23 @@ describe("utils", () => {
         expect(document.body.innerHTML).toBe('<div class="foo">Bar</div>');
       });
 
-      it("should call the diff-dom-streaming library also for 404 pages", async () => {
+      it('should call the diff-dom-streaming library also for 404 pages', async () => {
         const encoder = new TextEncoder();
         const stream = new ReadableStream({
           start(controller) {
-            controller.enqueue(encoder.encode("<html>"));
-            controller.enqueue(encoder.encode("<head />"));
-            controller.enqueue(encoder.encode("<body>"));
+            controller.enqueue(encoder.encode('<html>'));
+            controller.enqueue(encoder.encode('<head />'));
+            controller.enqueue(encoder.encode('<body>'));
 
             controller.enqueue(encoder.encode('<div class="foo">404</div>'));
 
-            controller.enqueue(encoder.encode("</body>"));
-            controller.enqueue(encoder.encode("</html>"));
+            controller.enqueue(encoder.encode('</body>'));
+            controller.enqueue(encoder.encode('</html>'));
             controller.close();
           },
         });
         const res = new Response(stream, {
-          headers: { "content-type": "text/html" },
+          headers: { 'content-type': 'text/html' },
           status: 404,
         });
 
@@ -198,14 +194,14 @@ describe("utils", () => {
       });
     });
 
-    it("should call e.target.reset() if receive the X-Reset header", async () => {
+    it('should call e.target.reset() if receive the X-Reset header', async () => {
       const formEvent = {
         target: { reset: mock(() => {}) },
       };
 
-      const res = new Response("[]", {
+      const res = new Response('[]', {
         headers: {
-          "X-Reset": "1",
+          'X-Reset': '1',
         },
       });
 
@@ -218,28 +214,28 @@ describe("utils", () => {
     it('should not do transition with X-Mode header as "reactivity"', async () => {
       const mockDiff = mock((...args: any) => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode("<html>"));
-          controller.enqueue(encoder.encode("<head />"));
-          controller.enqueue(encoder.encode("<body>"));
+          controller.enqueue(encoder.encode('<html>'));
+          controller.enqueue(encoder.encode('<head />'));
+          controller.enqueue(encoder.encode('<body>'));
 
           controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
 
-          controller.enqueue(encoder.encode("</body>"));
-          controller.enqueue(encoder.encode("</html>"));
+          controller.enqueue(encoder.encode('</body>'));
+          controller.enqueue(encoder.encode('</html>'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Mode": "reactivity",
+          'content-type': 'text/html',
+          'X-Mode': 'reactivity',
         },
       });
 
@@ -257,28 +253,28 @@ describe("utils", () => {
       const mockDiff = mock((...args: any) => {});
       const mockTransitionFinished = mock(() => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode("<html>"));
-          controller.enqueue(encoder.encode("<head />"));
-          controller.enqueue(encoder.encode("<body>"));
+          controller.enqueue(encoder.encode('<html>'));
+          controller.enqueue(encoder.encode('<head />'));
+          controller.enqueue(encoder.encode('<body>'));
 
           controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
 
-          controller.enqueue(encoder.encode("</body>"));
-          controller.enqueue(encoder.encode("</html>"));
+          controller.enqueue(encoder.encode('</body>'));
+          controller.enqueue(encoder.encode('</html>'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Mode": "transition",
+          'content-type': 'text/html',
+          'X-Mode': 'transition',
         },
       });
 
@@ -304,32 +300,32 @@ describe("utils", () => {
     it('should not do transition with second param as renderMode as "reactivity"', async () => {
       const mockDiff = mock((...args: any) => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode("<html>"));
-          controller.enqueue(encoder.encode("<head />"));
-          controller.enqueue(encoder.encode("<body>"));
+          controller.enqueue(encoder.encode('<html>'));
+          controller.enqueue(encoder.encode('<head />'));
+          controller.enqueue(encoder.encode('<body>'));
 
           controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
 
-          controller.enqueue(encoder.encode("</body>"));
-          controller.enqueue(encoder.encode("</html>"));
+          controller.enqueue(encoder.encode('</body>'));
+          controller.enqueue(encoder.encode('</html>'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
+          'content-type': 'text/html',
         },
       });
 
       await initBrowser();
-      await resolveRPC(res, dataSet, "reactivity");
+      await resolveRPC(res, dataSet, 'reactivity');
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
@@ -338,30 +334,30 @@ describe("utils", () => {
       });
     });
 
-    it("should not do transition without renderMode neither X-Mode header", async () => {
+    it('should not do transition without renderMode neither X-Mode header', async () => {
       const mockDiff = mock((...args: any) => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode("<html>"));
-          controller.enqueue(encoder.encode("<head />"));
-          controller.enqueue(encoder.encode("<body>"));
+          controller.enqueue(encoder.encode('<html>'));
+          controller.enqueue(encoder.encode('<head />'));
+          controller.enqueue(encoder.encode('<body>'));
 
           controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
 
-          controller.enqueue(encoder.encode("</body>"));
-          controller.enqueue(encoder.encode("</html>"));
+          controller.enqueue(encoder.encode('</body>'));
+          controller.enqueue(encoder.encode('</html>'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
+          'content-type': 'text/html',
         },
       });
 
@@ -379,27 +375,27 @@ describe("utils", () => {
       const mockDiff = mock((...args: any) => {});
       const mockTransitionFinished = mock(() => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode("<html>"));
-          controller.enqueue(encoder.encode("<head />"));
-          controller.enqueue(encoder.encode("<body>"));
+          controller.enqueue(encoder.encode('<html>'));
+          controller.enqueue(encoder.encode('<head />'));
+          controller.enqueue(encoder.encode('<body>'));
 
           controller.enqueue(encoder.encode('<div class="foo">Bar</div>'));
 
-          controller.enqueue(encoder.encode("</body>"));
-          controller.enqueue(encoder.encode("</html>"));
+          controller.enqueue(encoder.encode('</body>'));
+          controller.enqueue(encoder.encode('</html>'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
+          'content-type': 'text/html',
         },
       });
 
@@ -412,7 +408,7 @@ describe("utils", () => {
         },
       };
 
-      await resolveRPC(res, dataSet, "transition");
+      await resolveRPC(res, dataSet, 'transition');
 
       expect(mockDiff).toBeCalledWith(document, expect.any, {
         onNextNode: expect.any(Function),
@@ -422,30 +418,26 @@ describe("utils", () => {
       expect(mockTransitionFinished).toBeCalled();
     });
 
-    it("should render currentComponent with reactivity using the comments wrappers (cid)", async () => {
+    it('should render currentComponent with reactivity using the comments wrappers (cid)', async () => {
       const mockDiff = mock((...args: any) => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(
-            encoder.encode(
-              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
-            ),
-          );
+          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Cid": "123",
-          "X-Mode": "reactivity",
-          "X-Type": "currentComponent",
+          'content-type': 'text/html',
+          'X-Cid': '123',
+          'X-Mode': 'reactivity',
+          'X-Type': 'currentComponent',
         },
       });
 
@@ -457,7 +449,7 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const [, bufferReader] = mockDiff.mock.calls[0];
-      let text: string = "";
+      let text = '';
 
       while (true) {
         const buffer = await bufferReader.read();
@@ -481,31 +473,27 @@ describe("utils", () => {
       );
     });
 
-    it("should render currentComponent with transition using the comments wrappers (cid)", async () => {
+    it('should render currentComponent with transition using the comments wrappers (cid)', async () => {
       const mockDiff = mock((...args: any) => {});
       const mockTransitionFinished = mock(() => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(
-            encoder.encode(
-              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
-            ),
-          );
+          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Cid": "123",
-          "X-Mode": "transition",
-          "X-Type": "currentComponent",
+          'content-type': 'text/html',
+          'X-Cid': '123',
+          'X-Mode': 'transition',
+          'X-Type': 'currentComponent',
         },
       });
 
@@ -524,7 +512,7 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const [, bufferReader] = mockDiff.mock.calls[0];
-      let text: string = "";
+      let text = '';
 
       while (true) {
         const buffer = await bufferReader.read();
@@ -549,30 +537,26 @@ describe("utils", () => {
       expect(mockTransitionFinished).toBeCalled();
     });
 
-    it("should render targetComponent with reactivity using the comments wrappers (cid)", async () => {
+    it('should render targetComponent with reactivity using the comments wrappers (cid)', async () => {
       const mockDiff = mock((...args: any) => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(
-            encoder.encode(
-              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
-            ),
-          );
+          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Cid": "123",
-          "X-Mode": "reactivity",
-          "X-Type": "targetComponent",
+          'content-type': 'text/html',
+          'X-Cid': '123',
+          'X-Mode': 'reactivity',
+          'X-Type': 'targetComponent',
         },
       });
 
@@ -584,7 +568,7 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const [, bufferReader] = mockDiff.mock.calls[0];
-      let text: string = "";
+      let text = '';
 
       while (true) {
         const buffer = await bufferReader.read();
@@ -608,31 +592,27 @@ describe("utils", () => {
       );
     });
 
-    it("should render targetComponent with transition using the comments wrappers (cid)", async () => {
+    it('should render targetComponent with transition using the comments wrappers (cid)', async () => {
       const mockDiff = mock((...args: any) => {});
       const mockTransitionFinished = mock(() => {});
 
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
 
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(
-            encoder.encode(
-              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
-            ),
-          );
+          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
           controller.close();
         },
       });
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Cid": "123",
-          "X-Mode": "transition",
-          "X-Type": "targetComponent",
+          'content-type': 'text/html',
+          'X-Cid': '123',
+          'X-Mode': 'transition',
+          'X-Type': 'targetComponent',
         },
       });
 
@@ -651,7 +631,7 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const [, bufferReader] = mockDiff.mock.calls[0];
-      let text: string = "";
+      let text = '';
 
       while (true) {
         const buffer = await bufferReader.read();
@@ -678,16 +658,16 @@ describe("utils", () => {
 
     it('should ignore the node with id "S" and update the store with targetComponent', async () => {
       const mockDiff = mock((...args: any) => {});
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
       const stream = new ReadableStream();
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Cid": "123",
-          "X-Mode": "reactivity",
-          "X-Type": "targetComponent",
+          'content-type': 'text/html',
+          'X-Cid': '123',
+          'X-Mode': 'reactivity',
+          'X-Type': 'targetComponent',
         },
       });
 
@@ -697,26 +677,26 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const options = mockDiff.mock.calls[0][2];
-      const nodeToIgnore = document.createElement("SCRIPT");
-      nodeToIgnore.id = "S";
+      const nodeToIgnore = document.createElement('SCRIPT');
+      nodeToIgnore.id = 'S';
       nodeToIgnore.innerHTML = '[["foo", "bar"]]';
 
       expect(options.shouldIgnoreNode(nodeToIgnore)).toBe(true);
-      expect(window._s.get("foo")).toBe("bar");
+      expect(window._s.get('foo')).toBe('bar');
     });
 
     it('should ignore the node with id "S" and update the store with currentComponent', async () => {
       const mockDiff = mock((...args: any) => {});
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
       const stream = new ReadableStream();
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Cid": "123",
-          "X-Mode": "reactivity",
-          "X-Type": "currentComponent",
+          'content-type': 'text/html',
+          'X-Cid': '123',
+          'X-Mode': 'reactivity',
+          'X-Type': 'currentComponent',
         },
       });
 
@@ -726,26 +706,26 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const options = mockDiff.mock.calls[0][2];
-      const nodeToIgnore = document.createElement("SCRIPT");
-      nodeToIgnore.id = "S";
+      const nodeToIgnore = document.createElement('SCRIPT');
+      nodeToIgnore.id = 'S';
       nodeToIgnore.innerHTML = '[["foo", "bar"]]';
 
       expect(options.shouldIgnoreNode(nodeToIgnore)).toBe(true);
-      expect(window._s.get("foo")).toBe("bar");
+      expect(window._s.get('foo')).toBe('bar');
     });
 
     it('should ignore the node with id "S" and update the store with page', async () => {
       const mockDiff = mock((...args: any) => {});
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
       const stream = new ReadableStream();
       const res = new Response(stream, {
         headers: {
-          "content-type": "text/html",
-          "X-Cid": "123",
-          "X-Mode": "reactivity",
-          "X-Type": "page",
+          'content-type': 'text/html',
+          'X-Cid': '123',
+          'X-Mode': 'reactivity',
+          'X-Type': 'page',
         },
       });
 
@@ -755,22 +735,22 @@ describe("utils", () => {
       await resolveRPC(res, dataSet);
 
       const options = mockDiff.mock.calls[0][2];
-      const nodeToIgnore = document.createElement("SCRIPT");
-      nodeToIgnore.id = "S";
+      const nodeToIgnore = document.createElement('SCRIPT');
+      nodeToIgnore.id = 'S';
       nodeToIgnore.innerHTML = '[["foo", "bar"]]';
 
       expect(options.shouldIgnoreNode(nodeToIgnore)).toBe(true);
-      expect(window._s.get("foo")).toBe("bar");
+      expect(window._s.get('foo')).toBe('bar');
     });
 
     it('should NOT call "shouldIgnoreNode" returning a JSON response', async () => {
       const mockDiff = mock((...args: any) => {});
-      mock.module("diff-dom-streaming", () => ({
+      mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
       }));
-      const res = new Response("[]", {
+      const res = new Response('[]', {
         headers: {
-          "content-type": "application/json",
+          'content-type': 'application/json',
         },
       });
 

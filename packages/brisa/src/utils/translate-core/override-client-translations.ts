@@ -6,7 +6,7 @@ export default function overrideClientTranslations(
     if (!clientMessages.hasOwnProperty(key)) continue;
 
     clientMessages[key] =
-      typeof clientMessages[key] === "object"
+      typeof clientMessages[key] === 'object'
         ? overrideClientTranslations(clientMessages[key], overrideMessages[key])
         : overrideMessages[key];
   }

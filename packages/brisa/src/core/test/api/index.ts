@@ -1,10 +1,10 @@
-import { getServeOptions } from "@/cli/serve/serve-options";
-import renderToString from "@/utils/render-to-string";
-import { blueLog, greenLog, cyanLog } from "@/utils/log/log-color";
-import { registerActions } from "@/utils/rpc/register-actions";
-import { getConstants } from "@/constants";
-import extendRequestContext from "@/utils/extend-request-context";
-import translateCore from "@/utils/translate-core";
+import { getServeOptions } from '@/cli/serve/serve-options';
+import renderToString from '@/utils/render-to-string';
+import { blueLog, greenLog, cyanLog } from '@/utils/log/log-color';
+import { registerActions } from '@/utils/rpc/register-actions';
+import { getConstants } from '@/constants';
+import extendRequestContext from '@/utils/extend-request-context';
+import translateCore from '@/utils/translate-core';
 
 /**
  * Render a JSX element, a string or a Response object into a container
@@ -18,7 +18,7 @@ export async function render(
 ) {
   const { I18N_CONFIG } = getConstants();
   const lang = locale ?? I18N_CONFIG?.defaultLocale;
-  let request = new Request("http://localhost");
+  let request = new Request('http://localhost');
   let container = baseElement;
   let htmlString;
 
@@ -43,12 +43,12 @@ export async function render(
     window.i18n = i18n;
   }
 
-  if (typeof element === "string") {
+  if (typeof element === 'string') {
     htmlString = element;
   } else if (element instanceof Response) {
     htmlString = await element.text();
   } else {
-    container = baseElement.appendChild(document.createElement("div"));
+    container = baseElement.appendChild(document.createElement('div'));
     globalThis.REGISTERED_ACTIONS = [];
     globalThis.FORCE_SUSPENSE_DEFAULT = false;
     htmlString = await renderToString(element, { request });
@@ -58,7 +58,7 @@ export async function render(
   container.innerHTML = htmlString;
 
   const unmount = () => {
-    container.innerHTML = "";
+    container.innerHTML = '';
   };
 
   // Register Server Actions
@@ -84,8 +84,8 @@ export async function render(
 }
 
 export function cleanup() {
-  document.body.innerHTML = "";
-  document.head.innerHTML = "";
+  document.body.innerHTML = '';
+  document.head.innerHTML = '';
   globalThis.REGISTERED_ACTIONS = [];
 }
 
@@ -101,7 +101,7 @@ export async function serveRoute(route: string) {
     );
   }
 
-  const url = new URL(route, "http://localhost:3000");
+  const url = new URL(route, 'http://localhost:3000');
   const request = new Request(url);
 
   globalThis.FORCE_SUSPENSE_DEFAULT = false;
@@ -130,50 +130,41 @@ export async function waitFor(fn: () => unknown, maxMilliseconds = 1000) {
  * Debug the current DOM
  */
 export function debug(
-  element:
-    | HTMLElement
-    | DocumentFragment
-    | ShadowRoot
-    | null = document.documentElement,
+  element: HTMLElement | DocumentFragment | ShadowRoot | null = document.documentElement,
 ) {
-  console.log(element ? prettyDOM(element) : blueLog("<>\n</>"));
+  console.log(element ? prettyDOM(element) : blueLog('<>\n</>'));
 }
 
-function prettyDOM(
-  element: HTMLElement | DocumentFragment | ShadowRoot,
-  prefix: string = "",
-): any {
+function prettyDOM(element: HTMLElement | DocumentFragment | ShadowRoot, prefix = ''): any {
   const isAnElement = isElement(element);
-  const nextPrefix = !prefix && !isAnElement ? "" : prefix + "  ";
-  const separator = nextPrefix ? "\n" : "";
+  const nextPrefix = !prefix && !isAnElement ? '' : prefix + '  ';
+  const separator = nextPrefix ? '\n' : '';
   const lines = [];
 
   if (isAnElement) {
     const attrs = element.attributes;
-    lines.push(prefix, blueLog("<" + element.localName));
+    lines.push(prefix, blueLog('<' + element.localName));
 
     for (let i = 0; i < attrs.length; i += 1) {
       const attr = attrs[i];
       lines.push(
         separator,
         prefix,
-        "    ",
+        '    ',
         cyanLog(attr.name),
         `=${greenLog('"' + attr.value + '"')}`,
       );
     }
 
-    lines.push(blueLog(">"));
+    lines.push(blueLog('>'));
   }
-  let child = isTemplate(element)
-    ? element.content.firstChild
-    : element.firstChild;
+  let child = isTemplate(element) ? element.content.firstChild : element.firstChild;
 
   while (child) {
     if (isElement(child)) {
       lines.push(separator, prettyDOM(child, nextPrefix));
     } else {
-      lines.push(separator, prefix + "  ", child.textContent);
+      lines.push(separator, prefix + '  ', child.textContent);
     }
     child = child.nextSibling;
   }
@@ -181,17 +172,15 @@ function prettyDOM(
   if (isAnElement) {
     lines.push(separator, prefix, blueLog(`</${element.localName}>`));
   }
-  return lines.join("");
+  return lines.join('');
 }
 
 function isElement(value: any): value is HTMLElement {
-  return value && typeof value.nodeType === "number" && value.nodeType === 1;
+  return value && typeof value.nodeType === 'number' && value.nodeType === 1;
 }
 
-function isTemplate(
-  node: Node | null | undefined,
-): node is HTMLTemplateElement {
-  return (node as Element)?.tagName === "TEMPLATE";
+function isTemplate(node: Node | null | undefined): node is HTMLTemplateElement {
+  return (node as Element)?.tagName === 'TEMPLATE';
 }
 
 /**
@@ -199,80 +188,80 @@ function isTemplate(
  */
 export const userEvent = {
   click: (element: Element) => {
-    element.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   },
   submit: (form: HTMLFormElement) => {
-    form.dispatchEvent(new MouseEvent("submit", { bubbles: true }));
+    form.dispatchEvent(new MouseEvent('submit', { bubbles: true }));
   },
   dblClick: (element: Element) => {
-    element.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+    element.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
   },
   type: (element: HTMLInputElement, text: string) => {
     for (const char of text) {
-      element.dispatchEvent(new KeyboardEvent("keydown", { key: char }));
-      element.dispatchEvent(new KeyboardEvent("keypress", { key: char }));
-      element.dispatchEvent(new KeyboardEvent("keyup", { key: char }));
+      element.dispatchEvent(new KeyboardEvent('keydown', { key: char }));
+      element.dispatchEvent(new KeyboardEvent('keypress', { key: char }));
+      element.dispatchEvent(new KeyboardEvent('keyup', { key: char }));
       element.value += char;
-      element.dispatchEvent(new InputEvent("input", { bubbles: true }));
+      element.dispatchEvent(new InputEvent('input', { bubbles: true }));
     }
   },
   keyboard: (key: string, element?: HTMLElement) => {
-    (element ?? window).dispatchEvent(new KeyboardEvent("keydown", { key }));
-    (element ?? window).dispatchEvent(new KeyboardEvent("keypress", { key }));
-    (element ?? window).dispatchEvent(new KeyboardEvent("keyup", { key }));
+    (element ?? window).dispatchEvent(new KeyboardEvent('keydown', { key }));
+    (element ?? window).dispatchEvent(new KeyboardEvent('keypress', { key }));
+    (element ?? window).dispatchEvent(new KeyboardEvent('keyup', { key }));
   },
   clear: (element: HTMLInputElement) => {
-    element.dispatchEvent(new KeyboardEvent("keydown", { key: "" }));
-    element.dispatchEvent(new KeyboardEvent("keypress", { key: "" }));
-    element.dispatchEvent(new KeyboardEvent("keyup", { key: "" }));
-    element.value = "";
-    element.dispatchEvent(new InputEvent("input", { bubbles: true }));
+    element.dispatchEvent(new KeyboardEvent('keydown', { key: '' }));
+    element.dispatchEvent(new KeyboardEvent('keypress', { key: '' }));
+    element.dispatchEvent(new KeyboardEvent('keyup', { key: '' }));
+    element.value = '';
+    element.dispatchEvent(new InputEvent('input', { bubbles: true }));
   },
   hover: (element: Element) => {
-    element.dispatchEvent(new MouseEvent("mouseover", { bubbles: true }));
+    element.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
   },
   unhover: (element: Element) => {
-    element.dispatchEvent(new MouseEvent("mouseout", { bubbles: true }));
+    element.dispatchEvent(new MouseEvent('mouseout', { bubbles: true }));
   },
   focus: (element: Element) => {
-    element.dispatchEvent(new FocusEvent("focus", { bubbles: true }));
+    element.dispatchEvent(new FocusEvent('focus', { bubbles: true }));
   },
   blur: (element: Element) => {
-    element.dispatchEvent(new FocusEvent("blur", { bubbles: true }));
+    element.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
   },
   select: (select: HTMLSelectElement, value: string) => {
     select.value = value;
-    select.dispatchEvent(new Event("input", { bubbles: true }));
-    select.dispatchEvent(new Event("change", { bubbles: true }));
+    select.dispatchEvent(new Event('input', { bubbles: true }));
+    select.dispatchEvent(new Event('change', { bubbles: true }));
   },
   deselect: (selecgt: HTMLSelectElement, value: string) => {
     if (value === selecgt.value) {
-      selecgt.value = "";
+      selecgt.value = '';
     }
-    selecgt.dispatchEvent(new Event("input", { bubbles: true }));
-    selecgt.dispatchEvent(new Event("change", { bubbles: true }));
+    selecgt.dispatchEvent(new Event('input', { bubbles: true }));
+    selecgt.dispatchEvent(new Event('change', { bubbles: true }));
   },
   upload: (input: HTMLInputElement, file: File) => {
     // @ts-ignore
     input.files = [file];
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    input.dispatchEvent(new Event("change", { bubbles: true }));
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
   },
   tab: ({ shift = false } = {}) => {
     const focusableElements = document.querySelectorAll(
-      "input, button, select, textarea, a[href], [tabindex]",
+      'input, button, select, textarea, a[href], [tabindex]',
     );
     const list = Array.prototype.filter
-      .call(focusableElements, (item) => item.getAttribute("tabindex") !== "-1")
+      .call(focusableElements, (item) => item.getAttribute('tabindex') !== '-1')
       .sort((a, b) => {
-        const tabIndexA = a.getAttribute("tabindex");
-        const tabIndexB = b.getAttribute("tabindex");
+        const tabIndexA = a.getAttribute('tabindex');
+        const tabIndexB = b.getAttribute('tabindex');
         return tabIndexA < tabIndexB ? -1 : tabIndexA > tabIndexB ? 1 : 0;
       });
     const index = list.indexOf(document.activeElement);
 
-    let nextIndex = shift ? index - 1 : index + 1;
-    let defaultIndex = shift ? list.length - 1 : 0;
+    const nextIndex = shift ? index - 1 : index + 1;
+    const defaultIndex = shift ? list.length - 1 : 0;
 
     const next = list[nextIndex] || list[defaultIndex];
     if (next) next.focus();
@@ -280,7 +269,7 @@ export const userEvent = {
   paste: (element: HTMLInputElement, text: string) => {
     element.value = text;
     element.dispatchEvent(
-      new ClipboardEvent("paste", {
+      new ClipboardEvent('paste', {
         bubbles: true,
         clipboardData: {
           getData: () => text,

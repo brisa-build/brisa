@@ -1,41 +1,32 @@
-import type { BunPlugin } from "bun";
-import { ESTree } from "meriyah";
-import fs from "node:fs";
-import { join } from "node:path";
-import AST from "@/utils/ast";
-import { getConstants } from "@/constants";
-import type { ActionInfo } from "./get-actions-info";
-import getActionsInfo from "./get-actions-info";
-import { getPurgedBody } from "./get-purged-body";
-import { logBuildError } from "@/utils/log/log-build";
+import type { BunPlugin } from 'bun';
+import type { ESTree } from 'meriyah';
+import fs from 'node:fs';
+import { join } from 'node:path';
+import AST from '@/utils/ast';
+import { getConstants } from '@/constants';
+import type { ActionInfo } from './get-actions-info';
+import getActionsInfo from './get-actions-info';
+import { getPurgedBody } from './get-purged-body';
+import { logBuildError } from '@/utils/log/log-build';
 
 type CompileActionsParams = {
   actionsEntrypoints: string[];
   define: Record<string, string>;
 };
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const EXPORT_TYPES = new Set([
-  "ExportDefaultDeclaration",
-  "ExportNamedDeclaration",
-]);
-const FN_EXPRESSION_TYPES = new Set([
-  "ArrowFunctionExpression",
-  "FunctionExpression",
-]);
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
+const EXPORT_TYPES = new Set(['ExportDefaultDeclaration', 'ExportNamedDeclaration']);
+const FN_EXPRESSION_TYPES = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
 
-export default async function compileActions({
-  actionsEntrypoints,
-  define,
-}: CompileActionsParams) {
+export default async function compileActions({ actionsEntrypoints, define }: CompileActionsParams) {
   const { BUILD_DIR, IS_PRODUCTION } = getConstants();
-  const rawActionsDir = join(BUILD_DIR, "actions_raw");
+  const rawActionsDir = join(BUILD_DIR, 'actions_raw');
   const res = await Bun.build({
     entrypoints: actionsEntrypoints,
-    outdir: join(BUILD_DIR, "actions"),
-    sourcemap: IS_PRODUCTION ? undefined : "inline",
+    outdir: join(BUILD_DIR, 'actions'),
+    sourcemap: IS_PRODUCTION ? undefined : 'inline',
     root: rawActionsDir,
-    target: "bun",
+    target: 'bun',
     minify: IS_PRODUCTION,
     splitting: true,
     define,
@@ -43,7 +34,7 @@ export default async function compileActions({
   });
 
   if (!res.success) {
-    logBuildError("Failed to compile actions", res.logs);
+    logBuildError('Failed to compile actions', res.logs);
   }
 
   fs.rmSync(rawActionsDir, { recursive: true });
@@ -56,10 +47,10 @@ function actionPlugin({
 }: {
   actionsEntrypoints: string[];
 }) {
-  const filter = new RegExp(`(${actionsEntrypoints.join("|")})$`);
+  const filter = new RegExp(`(${actionsEntrypoints.join('|')})$`);
 
   return {
-    name: "action-plugin",
+    name: 'action-plugin',
     setup(build) {
       build.onLoad({ filter }, async ({ path, loader }) => {
         const code = await Bun.file(path).text();
@@ -91,21 +82,21 @@ function addResolveActionImport(ast: ESTree.Program): ESTree.Program {
     ...ast,
     body: [
       {
-        type: "ImportDeclaration",
+        type: 'ImportDeclaration',
         source: {
-          type: "Literal",
-          value: "brisa/server",
+          type: 'Literal',
+          value: 'brisa/server',
         },
         specifiers: [
           {
-            type: "ImportSpecifier",
+            type: 'ImportSpecifier',
             imported: {
-              type: "Identifier",
-              name: "resolveAction",
+              type: 'Identifier',
+              name: 'resolveAction',
             },
             local: {
-              type: "Identifier",
-              name: "__resolveAction",
+              type: 'Identifier',
+              name: '__resolveAction',
             },
           },
         ],
@@ -120,7 +111,7 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
 
   const convert = (declaration: any) => {
     // Convert: let Component = () => {} --> function Component() {}
-    if (declaration?.type === "VariableDeclaration") {
+    if (declaration?.type === 'VariableDeclaration') {
       const res = [];
 
       for (const declarator of declaration.declarations) {
@@ -131,12 +122,12 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
 
         let body = declarator.init.body;
 
-        if (body.type !== "BlockStatement") {
+        if (body.type !== 'BlockStatement') {
           body = {
-            type: "BlockStatement",
+            type: 'BlockStatement',
             body: [
               {
-                type: "ReturnStatement",
+                type: 'ReturnStatement',
                 argument: body,
               },
             ],
@@ -144,7 +135,7 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
         }
 
         res.push({
-          type: "FunctionDeclaration",
+          type: 'FunctionDeclaration',
           id: declarator.id,
           params: declarator.init.params,
           body,
@@ -157,23 +148,23 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
     }
 
     // Convert: () => {} --> function Component() {}
-    if (declaration?.type === "ArrowFunctionExpression") {
+    if (declaration?.type === 'ArrowFunctionExpression') {
       return [
         {
-          type: "FunctionDeclaration",
+          type: 'FunctionDeclaration',
           id: {
-            type: "Identifier",
+            type: 'Identifier',
             name: `Component__${count++}__`,
           },
           params: declaration.params,
           body:
-            declaration.body.type === "BlockStatement"
+            declaration.body.type === 'BlockStatement'
               ? declaration.body
               : {
-                  type: "BlockStatement",
+                  type: 'BlockStatement',
                   body: [
                     {
-                      type: "ReturnStatement",
+                      type: 'ReturnStatement',
                       argument: declaration.body,
                     },
                   ],
@@ -191,13 +182,10 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
   for (const node of ast.body) {
     const isExport = EXPORT_TYPES.has(node?.type);
     const isExportWithSpecifiers = isExport && (node as any).specifiers?.length;
-    const isExportWithIdentifier =
-      isExport && (node as any).declaration?.type === "Identifier";
+    const isExportWithIdentifier = isExport && (node as any).declaration?.type === 'Identifier';
 
     if (!isExportWithSpecifiers && !isExportWithIdentifier) {
-      body.push(
-        ...(isExport ? convert((node as any).declaration) : convert(node)),
-      );
+      body.push(...(isExport ? convert((node as any).declaration) : convert(node)));
     }
   }
 
@@ -206,15 +194,14 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
 
 function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   const body = getPurgedBody(info);
-  const { params, requestDestructuring, requestParamName } =
-    getActionParams(info);
+  const { params, requestDestructuring, requestParamName } = getActionParams(info);
   const FUNCTIONS_TO_IGNORE_AWAIT = new Set([
     requestParamName,
-    "console",
-    "setTimeout",
-    "setInterval",
-    "clearTimeout",
-    "clearInterval",
+    'console',
+    'setTimeout',
+    'setInterval',
+    'clearTimeout',
+    'clearInterval',
   ]);
 
   if (info.actionFnExpression) {
@@ -223,52 +210,47 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
     // There are some cases that exists both, like: onClick={someIdentifier.bind(null, 'foo')}
     if (info.actionIdentifierName) {
       const identifierPosition = body.body.findLastIndex(
-        (node) => node.type === "VariableDeclaration",
+        (node) => node.type === 'VariableDeclaration',
       );
       if (identifierPosition !== -1) position = identifierPosition + 1;
     }
 
     body.body.splice(position, 0, {
-      type: "VariableDeclaration",
-      kind: "const",
+      type: 'VariableDeclaration',
+      kind: 'const',
       declarations: [
         {
-          type: "VariableDeclarator",
+          type: 'VariableDeclarator',
           id: {
-            type: "Identifier",
-            name: "__action",
+            type: 'Identifier',
+            name: '__action',
           },
-          init: JSON.parse(
-            JSON.stringify(info.actionFnExpression!),
-            function (key, value) {
-              if (
-                value?.type === "CallExpression" &&
-                this?.type !== "AwaitExpression" &&
-                !FUNCTIONS_TO_IGNORE_AWAIT.has(value.callee?.object?.name) &&
-                !FUNCTIONS_TO_IGNORE_AWAIT.has(
-                  value.callee?.object?.object?.name,
-                )
-              ) {
-                return {
-                  type: "CallExpression",
-                  callee: {
-                    type: "MemberExpression",
-                    object: {
-                      type: "Identifier",
-                      name: requestParamName,
-                    },
-                    computed: false,
-                    property: {
-                      type: "Identifier",
-                      name: "_p",
-                    },
+          init: JSON.parse(JSON.stringify(info.actionFnExpression!), function (key, value) {
+            if (
+              value?.type === 'CallExpression' &&
+              this?.type !== 'AwaitExpression' &&
+              !FUNCTIONS_TO_IGNORE_AWAIT.has(value.callee?.object?.name) &&
+              !FUNCTIONS_TO_IGNORE_AWAIT.has(value.callee?.object?.object?.name)
+            ) {
+              return {
+                type: 'CallExpression',
+                callee: {
+                  type: 'MemberExpression',
+                  object: {
+                    type: 'Identifier',
+                    name: requestParamName,
                   },
-                  arguments: [value],
-                };
-              }
-              return value;
-            },
-          ),
+                  computed: false,
+                  property: {
+                    type: 'Identifier',
+                    name: '_p',
+                  },
+                },
+                arguments: [value],
+              };
+            }
+            return value;
+          }),
         },
       ],
     });
@@ -285,11 +267,11 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   body.body.push(waitActionCallPromises(info.actionId, requestParamName));
 
   return {
-    type: "ExportNamedDeclaration",
+    type: 'ExportNamedDeclaration',
     declaration: {
-      type: "FunctionDeclaration",
+      type: 'FunctionDeclaration',
       id: {
-        type: "Identifier",
+        type: 'Identifier',
         name: info.actionId,
       },
       params,
@@ -304,41 +286,38 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
 
 function getActionParams(info: ActionInfo) {
   const params = (info.componentFnExpression?.params ?? []).slice();
-  let requestParamName = "req";
+  let requestParamName = 'req';
   let requestDestructuring;
 
   // Add props as first param if there's no params
   if (!params.length) {
-    params.push({ type: "ObjectPattern", properties: [] });
+    params.push({ type: 'ObjectPattern', properties: [] });
   }
 
   // Add "req" as second param
   if (params.length === 1) {
-    params.push({ type: "Identifier", name: requestParamName });
+    params.push({ type: 'Identifier', name: requestParamName });
   } else {
     const currentReq = params[1];
 
-    requestParamName =
-      currentReq?.type === "Identifier" ? currentReq?.name : "req";
-    params[1] = { type: "Identifier", name: requestParamName };
+    requestParamName = currentReq?.type === 'Identifier' ? currentReq?.name : 'req';
+    params[1] = { type: 'Identifier', name: requestParamName };
 
-    if (currentReq.type === "ObjectPattern") {
+    if (currentReq.type === 'ObjectPattern') {
       requestDestructuring = {
-        type: "VariableDeclaration",
-        kind: "const",
+        type: 'VariableDeclaration',
+        kind: 'const',
         declarations: [
           {
-            type: "VariableDeclarator",
+            type: 'VariableDeclarator',
             id: {
-              type: "ObjectPattern",
+              type: 'ObjectPattern',
               properties: currentReq.properties.filter(
-                (p) =>
-                  p.type !== "RestElement" ||
-                  (p as any).argument?.name !== requestParamName,
+                (p) => p.type !== 'RestElement' || (p as any).argument?.name !== requestParamName,
               ),
             },
             init: {
-              type: "Identifier",
+              type: 'Identifier',
               name: requestParamName,
             },
           },
@@ -350,51 +329,46 @@ function getActionParams(info: ActionInfo) {
   return { params, requestDestructuring, requestParamName };
 }
 
-function getActionCall(
-  info: ActionInfo,
-  requestParamName: string,
-): ESTree.ExpressionStatement {
+function getActionCall(info: ActionInfo, requestParamName: string): ESTree.ExpressionStatement {
   return {
-    type: "ExpressionStatement",
+    type: 'ExpressionStatement',
     expression: {
-      type: "AwaitExpression",
+      type: 'AwaitExpression',
       argument: {
-        type: "CallExpression",
+        type: 'CallExpression',
         callee: {
-          type: "Identifier",
-          name: info.actionFnExpression
-            ? "__action"
-            : info.actionIdentifierName,
+          type: 'Identifier',
+          name: info.actionFnExpression ? '__action' : info.actionIdentifierName,
         },
         arguments: [
           {
-            type: "SpreadElement",
+            type: 'SpreadElement',
             argument: {
-              type: "CallExpression",
+              type: 'CallExpression',
               callee: {
-                type: "MemberExpression",
+                type: 'MemberExpression',
                 object: {
-                  type: "MemberExpression",
+                  type: 'MemberExpression',
                   object: {
-                    type: "Identifier",
+                    type: 'Identifier',
                     name: requestParamName,
                   },
                   computed: false,
                   property: {
-                    type: "Identifier",
-                    name: "store",
+                    type: 'Identifier',
+                    name: 'store',
                   },
                 },
                 computed: false,
                 property: {
-                  type: "Identifier",
-                  name: "get",
+                  type: 'Identifier',
+                  name: 'get',
                 },
               },
               arguments: [
                 {
-                  type: "Literal",
-                  value: "__params:" + info.actionId,
+                  type: 'Literal',
+                  value: '__params:' + info.actionId,
                 },
               ],
             },
@@ -410,26 +384,26 @@ function waitActionCallPromises(
   requestParamName: string,
 ): ESTree.ExpressionStatement {
   return {
-    type: "ExpressionStatement",
+    type: 'ExpressionStatement',
     expression: {
-      type: "AwaitExpression",
+      type: 'AwaitExpression',
       argument: {
-        type: "CallExpression",
+        type: 'CallExpression',
         callee: {
-          type: "MemberExpression",
+          type: 'MemberExpression',
           object: {
-            type: "Identifier",
+            type: 'Identifier',
             name: requestParamName,
           },
           computed: false,
           property: {
-            type: "Identifier",
-            name: "_waitActionCallPromises",
+            type: 'Identifier',
+            name: '_waitActionCallPromises',
           },
         },
         arguments: [
           {
-            type: "Literal",
+            type: 'Literal',
             value: actionId,
           },
         ],
@@ -446,7 +420,7 @@ function wrapWithTypeCatch({
 }: {
   body: ESTree.BlockStatement;
   info: ActionInfo;
-  params: ESTree.FunctionDeclaration["params"];
+  params: ESTree.FunctionDeclaration['params'];
   requestParamName: string;
 }): ESTree.BlockStatement {
   const { IS_PRODUCTION } = getConstants();
@@ -455,7 +429,7 @@ function wrapWithTypeCatch({
   // needed to render the component, we need to pass
   // all props as object
   let props = JSON.parse(JSON.stringify(params[0]), (key, value) => {
-    if (value?.value?.type === "AssignmentPattern") {
+    if (value?.value?.type === 'AssignmentPattern') {
       return {
         ...value,
         value: value.value.left,
@@ -464,24 +438,24 @@ function wrapWithTypeCatch({
     return value;
   });
 
-  if (props.type === "Identifier") {
+  if (props.type === 'Identifier') {
     props = {
-      type: "ObjectPattern",
+      type: 'ObjectPattern',
       properties: [
         {
-          type: "RestElement",
+          type: 'RestElement',
           argument: props,
         },
       ],
     };
   }
 
-  if (props.type === "ObjectPattern") {
+  if (props.type === 'ObjectPattern') {
     props.properties.push({
-      type: "RestElement",
+      type: 'RestElement',
       argument: {
-        type: "Identifier",
-        name: "__props",
+        type: 'Identifier',
+        name: '__props',
       },
     });
   }
@@ -490,125 +464,124 @@ function wrapWithTypeCatch({
     ...body,
     body: [
       {
-        type: "TryStatement",
+        type: 'TryStatement',
         block: {
-          type: "BlockStatement",
+          type: 'BlockStatement',
           body: body.body,
         },
         handler: {
-          type: "CatchClause",
+          type: 'CatchClause',
           param: {
-            type: "Identifier",
-            name: "error",
+            type: 'Identifier',
+            name: 'error',
           },
           body: {
-            type: "BlockStatement",
+            type: 'BlockStatement',
             body: [
               {
-                type: "ReturnStatement",
+                type: 'ReturnStatement',
                 argument: {
-                  type: "CallExpression",
+                  type: 'CallExpression',
                   callee: {
-                    type: "Identifier",
-                    name: "__resolveAction",
+                    type: 'Identifier',
+                    name: '__resolveAction',
                   },
                   arguments: [
                     {
-                      type: "ObjectExpression",
+                      type: 'ObjectExpression',
                       properties: [
                         {
-                          type: "Property",
+                          type: 'Property',
                           key: {
-                            type: "Identifier",
-                            name: "req",
+                            type: 'Identifier',
+                            name: 'req',
                           },
                           value: {
-                            type: "Identifier",
+                            type: 'Identifier',
                             name: requestParamName,
                           },
-                          kind: "init",
+                          kind: 'init',
                           computed: false,
                           method: false,
-                          shorthand: requestParamName === "req",
+                          shorthand: requestParamName === 'req',
                         },
                         {
-                          type: "Property",
+                          type: 'Property',
                           key: {
-                            type: "Identifier",
-                            name: "error",
+                            type: 'Identifier',
+                            name: 'error',
                           },
                           value: {
-                            type: "Identifier",
-                            name: "error",
+                            type: 'Identifier',
+                            name: 'error',
                           },
-                          kind: "init",
+                          kind: 'init',
                           computed: false,
                           method: false,
                           shorthand: true,
                         },
                         {
-                          type: "Property",
+                          type: 'Property',
                           key: {
-                            type: "Identifier",
-                            name: "actionId",
+                            type: 'Identifier',
+                            name: 'actionId',
                           },
                           value: {
-                            type: "Literal",
+                            type: 'Literal',
                             value: info.actionId,
                           },
-                          kind: "init",
+                          kind: 'init',
                           computed: false,
                           method: false,
                           shorthand: false,
                         },
                         {
-                          type: "Property",
+                          type: 'Property',
                           key: {
-                            type: "Identifier",
-                            name: "component",
+                            type: 'Identifier',
+                            name: 'component',
                           },
                           value: {
-                            type: "ArrowFunctionExpression",
+                            type: 'ArrowFunctionExpression',
                             params: [
                               {
-                                type: "Identifier",
-                                name: "__props",
+                                type: 'Identifier',
+                                name: '__props',
                               },
                             ],
                             body: {
-                              type: "CallExpression",
+                              type: 'CallExpression',
                               callee: {
-                                type: "Identifier",
-                                name: IS_PRODUCTION ? "jsx" : "jsxDEV",
+                                type: 'Identifier',
+                                name: IS_PRODUCTION ? 'jsx' : 'jsxDEV',
                               },
                               arguments: [
                                 {
-                                  type: "Identifier",
+                                  type: 'Identifier',
                                   name:
-                                    (
-                                      info.componentFnExpression as ESTree.FunctionExpression
-                                    )?.id?.name ??
+                                    (info.componentFnExpression as ESTree.FunctionExpression)?.id
+                                      ?.name ??
                                     // TODO: Support arrow function names
-                                    "Component",
+                                    'Component',
                                 },
                                 props,
                                 ...((IS_PRODUCTION
                                   ? []
                                   : [
                                       {
-                                        type: "Identifier",
-                                        name: "undefined",
+                                        type: 'Identifier',
+                                        name: 'undefined',
                                       },
                                       {
-                                        type: "Literal",
+                                        type: 'Literal',
                                         value: false,
                                       },
                                       {
-                                        type: "Identifier",
-                                        name: "undefined",
+                                        type: 'Identifier',
+                                        name: 'undefined',
                                       },
                                       {
-                                        type: "ThisExpression",
+                                        type: 'ThisExpression',
                                       },
                                     ]) as any),
                               ],
@@ -616,7 +589,7 @@ function wrapWithTypeCatch({
                             async: false,
                             expression: true,
                           },
-                          kind: "init",
+                          kind: 'init',
                           computed: false,
                           method: false,
                           shorthand: false,

@@ -1,1 +1,1 @@
-window.i18nMessages = { clientOne: "example" };
+window.i18nMessages = { clientOne: 'example' };

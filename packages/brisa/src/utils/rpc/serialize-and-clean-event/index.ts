@@ -15,12 +15,12 @@ export function stringifyAndCleanEvent(dataToSerialize: any) {
 
         if (isInstanceOf(Event) || (isNode && k.match(/target/i))) {
           const ev: Record<string, any> = {};
-          for (let field in v as any) ev[field] = (v as any)[field];
+          for (const field in v as any) ev[field] = (v as any)[field];
           if (isInstanceOf(CustomEvent)) ev._wc = true;
           return ev;
         }
 
-        if (v != null && v !== "" && !isNode && !isInstanceOf(Window)) return v;
+        if (v != null && v !== '' && !isNode && !isInstanceOf(Window)) return v;
       }),
     );
   }

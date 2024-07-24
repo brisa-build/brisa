@@ -1,26 +1,25 @@
-import type { ESTree } from "meriyah";
-import { logWarning } from "@/utils/log/log-build";
-import AST from "@/utils/ast";
-import { toInline } from "@/helpers";
+import type { ESTree } from 'meriyah';
+import { logWarning } from '@/utils/log/log-build';
+import AST from '@/utils/ast';
+import { toInline } from '@/helpers';
 
-const { generateCodeFromAST } = AST("tsx");
+const { generateCodeFromAST } = AST('tsx');
 
 export default function processClientAst(ast: ESTree.Program) {
   let i18nKeys = new Set<string>();
   let useI18n = false;
-  let logs: any[] = [];
+  const logs: any[] = [];
   let isDynamicKeysSpecified = false;
 
-  const newAst = JSON.parse(JSON.stringify(ast), function (key, value) {
-    useI18n ||= value?.type === "Identifier" && value?.name === "i18n";
+  const newAst = JSON.parse(JSON.stringify(ast), (key, value) => {
+    useI18n ||= value?.type === 'Identifier' && value?.name === 'i18n';
 
     if (
-      value?.type === "CallExpression" &&
-      ((value?.callee?.type === "Identifier" && value?.callee?.name === "t") ||
-        (value?.callee?.property?.type === "Identifier" &&
-          value?.callee?.property?.name === "t"))
+      value?.type === 'CallExpression' &&
+      ((value?.callee?.type === 'Identifier' && value?.callee?.name === 't') ||
+        (value?.callee?.property?.type === 'Identifier' && value?.callee?.property?.name === 't'))
     ) {
-      if (value?.arguments?.[0]?.type === "Literal") {
+      if (value?.arguments?.[0]?.type === 'Literal') {
         i18nKeys.add(value?.arguments?.[0]?.value);
       } else {
         logs.push(value);
@@ -29,11 +28,11 @@ export default function processClientAst(ast: ESTree.Program) {
 
     // Add dynamic keys from: MyWebComponent.i18nKeys = ['footer', /projects.*title/];
     if (
-      value?.type === "ExpressionStatement" &&
-      value.expression.left?.property?.name === "i18nKeys" &&
-      value.expression?.right?.type === "ArrayExpression"
+      value?.type === 'ExpressionStatement' &&
+      value.expression.left?.property?.name === 'i18nKeys' &&
+      value.expression?.right?.type === 'ArrayExpression'
     ) {
-      for (let element of value.expression.right.elements ?? []) {
+      for (const element of value.expression.right.elements ?? []) {
         i18nKeys.add(element.value);
         isDynamicKeysSpecified = true;
       }
@@ -50,26 +49,26 @@ export default function processClientAst(ast: ESTree.Program) {
   if (logs.length > 0 && !isDynamicKeysSpecified) {
     logWarning(
       [
-        "Addressing Dynamic i18n Key Export Limitations",
-        "",
-        `Code: ${logs.map((v) => toInline(generateCodeFromAST(v))).join(", ")}`,
-        "",
-        "When using dynamic i18n keys like t(someVar) instead of",
+        'Addressing Dynamic i18n Key Export Limitations',
+        '',
+        `Code: ${logs.map((v) => toInline(generateCodeFromAST(v))).join(', ')}`,
+        '',
+        'When using dynamic i18n keys like t(someVar) instead of',
         `literal keys such as t('example'), exporting these keys`,
         `in the client code becomes challenging.`,
-        "",
-        "Unfortunately, it is not feasible to export dynamic keys",
-        "directly.",
-        "",
-        "To address this, it is crucial to specify these keys at",
+        '',
+        'Unfortunately, it is not feasible to export dynamic keys',
+        'directly.',
+        '',
+        'To address this, it is crucial to specify these keys at',
         `web-component level. You can use RegExp. Here's an example:`,
-        "",
+        '',
         `MyWebComponent.i18nKeys = ['footer', /projects.*title/];`,
-        "",
-        "If you have any questions or need further assistance,",
-        "feel free to contact us. We are happy to help!",
+        '',
+        'If you have any questions or need further assistance,',
+        'feel free to contact us. We are happy to help!',
       ],
-      "Docs: https://brisa.build/building-your-application/routing/internationalization#translate-in-your-web-components",
+      'Docs: https://brisa.build/building-your-application/routing/internationalization#translate-in-your-web-components',
     );
   }
 

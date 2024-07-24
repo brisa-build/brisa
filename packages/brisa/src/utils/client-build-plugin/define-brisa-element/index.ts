@@ -1,6 +1,6 @@
-import { ESTree } from "meriyah";
-import { BRISA_IMPORT } from "@/utils/client-build-plugin/constants";
-import getReactiveReturnStatement from "@/utils/client-build-plugin/get-reactive-return-statement";
+import type { ESTree } from 'meriyah';
+import { BRISA_IMPORT } from '@/utils/client-build-plugin/constants';
+import getReactiveReturnStatement from '@/utils/client-build-plugin/get-reactive-return-statement';
 
 export default function defineBrisaElement(
   component: ESTree.FunctionDeclaration,
@@ -10,15 +10,13 @@ export default function defineBrisaElement(
   const newComponentAst = getReactiveReturnStatement(component, componentName);
 
   // Add an identifier to the component
-  const args = [
-    { type: "Identifier", name: componentName },
-  ] as ESTree.Expression[];
+  const args = [{ type: 'Identifier', name: componentName }] as ESTree.Expression[];
 
   if (componentPropsNames?.size) {
     args.push({
-      type: "ArrayExpression",
+      type: 'ArrayExpression',
       elements: Array.from(componentPropsNames).map((propName: string) => ({
-        type: "Literal",
+        type: 'Literal',
         value: propName,
       })),
     });
@@ -26,10 +24,10 @@ export default function defineBrisaElement(
 
   // Wrapping: default export with brisaElement
   const brisaElement = {
-    type: "CallExpression",
+    type: 'CallExpression',
     callee: {
-      type: "Identifier",
-      name: "brisaElement",
+      type: 'Identifier',
+      name: 'brisaElement',
     },
     arguments: args,
   };

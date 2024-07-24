@@ -1,5 +1,5 @@
 export function serialize(value: unknown): string {
-  if (typeof value !== "object") return value as string;
+  if (typeof value !== 'object') return value as string;
 
   return JSON.stringify(value).replace(/"([^"]*)"/g, "'$1'");
 }

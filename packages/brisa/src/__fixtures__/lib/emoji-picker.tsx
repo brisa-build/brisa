@@ -1,7 +1,7 @@
 class EmojiPicker extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
@@ -22,4 +22,4 @@ class EmojiPicker extends HTMLElement {
   }
 }
 
-customElements.define("emoji-picker", EmojiPicker);
+customElements.define('emoji-picker', EmojiPicker);

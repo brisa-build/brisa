@@ -1,13 +1,13 @@
-import { describe, it, expect } from "bun:test";
-import getActionsInfo, { type ActionInfo } from ".";
-import AST from "@/utils/ast";
+import { describe, it, expect } from 'bun:test';
+import getActionsInfo, { type ActionInfo } from '.';
+import AST from '@/utils/ast';
 
-const { parseCodeToAST } = AST("tsx");
+const { parseCodeToAST } = AST('tsx');
 
-describe("utils", () => {
-  describe("compile-actions", () => {
-    describe("get-actions-info", () => {
-      it("should return an array of action info", () => {
+describe('utils', () => {
+  describe('compile-actions', () => {
+    describe('get-actions-info', () => {
+      it('should return an array of action info', () => {
         const ast = parseCodeToAST(`
           function App() {
             return <div onClick={() => console.log('click')} data-action-onClick="1" />;
@@ -18,7 +18,7 @@ describe("utils", () => {
 
         const expected: ActionInfo[] = [
           {
-            actionId: "1",
+            actionId: '1',
             componentFnExpression: fn,
             actionFnExpression: props[0].value,
             actionIdentifierName: undefined,
@@ -30,7 +30,7 @@ describe("utils", () => {
         expect(actionsInfo).toEqual(expected);
       });
 
-      it("should return an array of action info with the action identifier name", () => {
+      it('should return an array of action info with the action identifier name', () => {
         const ast = parseCodeToAST(`
           function App() {
             const onClick = () => console.log('click');
@@ -41,10 +41,10 @@ describe("utils", () => {
 
         const expected: ActionInfo[] = [
           {
-            actionId: "1",
+            actionId: '1',
             componentFnExpression: fn,
             actionFnExpression: undefined,
-            actionIdentifierName: "onClick",
+            actionIdentifierName: 'onClick',
           },
         ];
 
@@ -53,7 +53,7 @@ describe("utils", () => {
         expect(actionsInfo).toEqual(expected);
       });
 
-      it("should return an array of 2 action info", () => {
+      it('should return an array of 2 action info', () => {
         const ast = parseCodeToAST(`
           function App() {
             const onLoad = () => console.log('load');
@@ -72,16 +72,16 @@ describe("utils", () => {
         const props = fn.body.body[1].argument.arguments[1].properties;
         const expected: ActionInfo[] = [
           {
-            actionId: "1",
+            actionId: '1',
             componentFnExpression: fn,
             actionFnExpression: props[0].value,
             actionIdentifierName: undefined,
           },
           {
-            actionId: "2",
+            actionId: '2',
             componentFnExpression: fn,
             actionFnExpression: undefined,
-            actionIdentifierName: "onLoad",
+            actionIdentifierName: 'onLoad',
           },
         ];
 
@@ -90,7 +90,7 @@ describe("utils", () => {
         expect(actionsInfo).toEqual(expected);
       });
 
-      it("should work with reassigned function with .bind", () => {
+      it('should work with reassigned function with .bind', () => {
         const ast = parseCodeToAST(`
         function App() {
           const onLoad = (foo) => console.log('hello '+foo);
@@ -110,16 +110,16 @@ describe("utils", () => {
         const props = fn.body.body[2].argument.arguments[1].properties;
         const expected: ActionInfo[] = [
           {
-            actionId: "1",
+            actionId: '1',
             componentFnExpression: fn,
             actionFnExpression: props[0].value,
             actionIdentifierName: undefined,
           },
           {
-            actionId: "2",
+            actionId: '2',
             componentFnExpression: fn,
             actionFnExpression: undefined,
-            actionIdentifierName: "onLoadReassigned",
+            actionIdentifierName: 'onLoadReassigned',
           },
         ];
 
@@ -129,7 +129,7 @@ describe("utils", () => {
       });
     });
 
-    it("should work with reassigned function with .bind inside the attribute", () => {
+    it('should work with reassigned function with .bind inside the attribute', () => {
       const ast = parseCodeToAST(`
       function App() {
         const onLoad = (foo) => console.log('hello '+foo);
@@ -148,16 +148,16 @@ describe("utils", () => {
       const props = fn.body.body[1].argument.arguments[1].properties;
       const expected: ActionInfo[] = [
         {
-          actionId: "1",
+          actionId: '1',
           componentFnExpression: fn,
           actionFnExpression: props[0].value,
           actionIdentifierName: undefined,
         },
         {
-          actionId: "2",
+          actionId: '2',
           componentFnExpression: fn,
           actionFnExpression: props[2].value,
-          actionIdentifierName: "onLoad",
+          actionIdentifierName: 'onLoad',
         },
       ];
 

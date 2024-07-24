@@ -1,25 +1,22 @@
-import type { MatchedRoute } from "bun";
+import type { MatchedRoute } from 'bun';
 
-import { getConstants } from "@/constants";
-import dangerHTML from "@/utils/danger-html";
-import { LiveReloadScript } from "@/cli/dev-live-reload";
-import LoadLayout from "@/utils/load-layout";
-import type { PageModule } from "@/types";
-import getImportableFilepath from "@/utils/get-importable-filepath";
+import { getConstants } from '@/constants';
+import dangerHTML from '@/utils/danger-html';
+import { LiveReloadScript } from '@/cli/dev-live-reload';
+import LoadLayout from '@/utils/load-layout';
+import type { PageModule } from '@/types';
+import getImportableFilepath from '@/utils/get-importable-filepath';
 
-export default async function processPageRoute(
-  route: MatchedRoute,
-  error?: Error,
-) {
+export default async function processPageRoute(route: MatchedRoute, error?: Error) {
   const { BUILD_DIR } = getConstants();
   const module = (await import(route.filePath)) as PageModule;
-  const layoutPath = getImportableFilepath("layout", BUILD_DIR);
+  const layoutPath = getImportableFilepath('layout', BUILD_DIR);
   const layoutModule = layoutPath ? await import(layoutPath) : undefined;
   const PageComponent = module.default;
 
   const Page = () => (
     <>
-      {dangerHTML("<!DOCTYPE html>")}
+      {dangerHTML('<!DOCTYPE html>')}
       <PageLayout layoutModule={layoutModule}>
         <PageComponent error={error} />
       </PageLayout>
@@ -44,9 +41,5 @@ function PageLayout({
     <LiveReloadScript port={PORT}>{children}</LiveReloadScript>
   );
 
-  return (
-    <LoadLayout layoutModule={layoutModule}>
-      {childrenWithLiveReload}
-    </LoadLayout>
-  );
+  return <LoadLayout layoutModule={layoutModule}>{childrenWithLiveReload}</LoadLayout>;
 }

@@ -1,14 +1,14 @@
-import AST from "@/utils/ast";
+import AST from '@/utils/ast';
 
-const PROPS_IDENTIFIER = "__b_props__";
-const PATTERNS = new Set(["ObjectPattern", "ArrayPattern"]);
+const PROPS_IDENTIFIER = '__b_props__';
+const PATTERNS = new Set(['ObjectPattern', 'ArrayPattern']);
 const EXTRA_END_REGEX = /( \?\?.*|\);)$/;
 const DEP_REGEX = /\?\? ([a-z|A-Z|_]*)\)\;$/;
 const BEFORE_ARROW_REGEX = /.*\(\) => /;
 const SEPARATOR_REGEX = /\.|\[/;
 const OPEN_PARENTHESIS_REGEX = /^\(*/;
 const DOT_END_REGEX = /\.$/;
-const { generateCodeFromAST } = AST("tsx");
+const { generateCodeFromAST } = AST('tsx');
 
 /**
  * Converts a pattern to a list of string arrow fn that can be used to access the
@@ -24,7 +24,7 @@ const { generateCodeFromAST } = AST("tsx");
 export default function getPropsOptimizations(
   inputPattern: any,
   derivedFnName: string,
-  acc = "",
+  acc = '',
 ): string[] {
   const result: string[] = [];
   let pattern = inputPattern;
@@ -36,7 +36,7 @@ export default function getPropsOptimizations(
   const firstLevelFields: string[] = [];
 
   // AssignmentPattern (with default value in top level)
-  if (pattern?.type === "AssignmentPattern") {
+  if (pattern?.type === 'AssignmentPattern') {
     pattern = pattern.left;
   }
 
@@ -45,10 +45,9 @@ export default function getPropsOptimizations(
     for (let i = 0; i < pattern.elements.length; i++) {
       const element = pattern.elements[i];
       const right = element?.right;
-      const isRest = element?.type === "RestElement";
+      const isRest = element?.type === 'RestElement';
       const defaultValue = getDefaultValue(right);
-      const name =
-        element?.left?.name ?? element?.argument?.name ?? element?.name;
+      const name = element?.left?.name ?? element?.argument?.name ?? element?.name;
 
       // Skip first level without default value
       if (!acc) {
@@ -63,27 +62,21 @@ export default function getPropsOptimizations(
          #####     Transform RestElement from Array to an arrow fn     ######
          ####################################################################*/
       if (isRest) {
-        const dot = acc.at(-1) === "." ? "" : ".";
+        const dot = acc.at(-1) === '.' ? '' : '.';
         const suffix = acc ? `${dot}slice(${i})` : name;
-        const res = getDerivedArrowFnString(
-          name,
-          addPrefix(acc + suffix),
-          derivedFnName,
-        );
+        const res = getDerivedArrowFnString(name, addPrefix(acc + suffix), derivedFnName);
 
         result.push(res);
         continue;
       }
 
-      const last = acc.at(-1) === "." ? acc.slice(0, -1) : acc;
+      const last = acc.at(-1) === '.' ? acc.slice(0, -1) : acc;
 
       /* #####################################################################
         #####      Transform ObjectPattern or ArrayPattern element      ######
         ####################################################################*/
       if (PATTERNS.has(element?.type)) {
-        result.push(
-          ...getPropsOptimizations(element, derivedFnName, last + `[${i}].`),
-        );
+        result.push(...getPropsOptimizations(element, derivedFnName, last + `[${i}].`));
         continue;
       }
 
@@ -91,11 +84,7 @@ export default function getPropsOptimizations(
         #####        Transform Element from Array to an arrow fn        ######
         ####################################################################*/
       const suffix = `[${i}]${defaultValue.fallbackText}`;
-      const res = getDerivedArrowFnString(
-        name,
-        addPrefix(last + suffix),
-        derivedFnName,
-      );
+      const res = getDerivedArrowFnString(name, addPrefix(last + suffix), derivedFnName);
 
       result.push(res);
     }
@@ -104,21 +93,20 @@ export default function getPropsOptimizations(
   }
 
   // ObjectPattern
-  for (let prop of pattern?.properties ?? []) {
+  for (const prop of pattern?.properties ?? []) {
     const value = prop?.value;
     const right = value?.right;
     const type = value?.type;
-    const isRest = prop?.type === "RestElement";
+    const isRest = prop?.type === 'RestElement';
     const { name, keyName } = getPropertyNames(prop);
-    const isKeyLiteral = prop?.key?.type === "Literal";
-    const isKeyStringLiteral = isKeyLiteral && typeof keyName === "string";
-    const quotes = isKeyStringLiteral ? `"` : "";
+    const isKeyLiteral = prop?.key?.type === 'Literal';
+    const isKeyStringLiteral = isKeyLiteral && typeof keyName === 'string';
+    const quotes = isKeyStringLiteral ? `"` : '';
     const isRenamed = name !== keyName;
     const field = isRenamed ? `${quotes}${keyName}${quotes}:${name}` : name;
     const defaultValue = getDefaultValue(right);
     const propDefaultText = defaultValue.fallbackText;
-    const hasDefaultObjectValue =
-      !defaultValue.isLiteral && defaultValue.fallbackText;
+    const hasDefaultObjectValue = !defaultValue.isLiteral && defaultValue.fallbackText;
 
     if (!acc) {
       firstLevelFields.push(isRest ? `...${prop?.argument?.name}` : field);
@@ -128,9 +116,9 @@ export default function getPropsOptimizations(
        #####     Transform ObjectPattern or ArrayPattern property    ######
        ####################################################################*/
     if (PATTERNS.has(type)) {
-      const isArrayPattern = type === "ArrayPattern";
-      const dot = isArrayPattern ? "" : ".";
-      const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
+      const isArrayPattern = type === 'ArrayPattern';
+      const dot = isArrayPattern ? '' : '.';
+      const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, '');
       const { fallbackText } = getDefaultValue(inputPattern?.right, name);
       let newAcc = updatedAcc + name;
 
@@ -145,10 +133,10 @@ export default function getPropsOptimizations(
        #####       object/array value                                ######
        ####################################################################*/
     if (hasDefaultObjectValue) {
-      const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, "");
+      const updatedAcc = prop?.key?.name ? acc : acc.replace(DOT_END_REGEX, '');
       let newAcc = updatedAcc + keyName;
 
-      if (value.left?.type === "Identifier") {
+      if (value.left?.type === 'Identifier') {
         const res = getDerivedArrowFnString(
           value.left?.name,
           addPrefix(newAcc + propDefaultText),
@@ -185,15 +173,15 @@ export default function getPropsOptimizations(
     */
     if (isRest && acc) {
       const rest = prop?.argument?.name;
-      const content = acc.replace(DOT_END_REGEX, "");
+      const content = acc.replace(DOT_END_REGEX, '');
       let common;
       let commonLength;
-      let items: string[] = [];
+      const items: string[] = [];
 
       for (let i = result.length - 1; i >= 0; i--) {
         const splitted = result[i]
-          ?.replace(EXTRA_END_REGEX, "")
-          ?.replace(BEFORE_ARROW_REGEX, "() => ")
+          ?.replace(EXTRA_END_REGEX, '')
+          ?.replace(BEFORE_ARROW_REGEX, '() => ')
           ?.split(SEPARATOR_REGEX);
 
         if (!common) {
@@ -212,7 +200,7 @@ export default function getPropsOptimizations(
         items.unshift(splitted.at(size)!);
       }
 
-      const variables = items.join(", ");
+      const variables = items.join(', ');
       const res = getDerivedArrowFnString(
         rest,
         `(({${variables}, ...${rest}}) => ${rest})(${addPrefix(content)})`,
@@ -226,13 +214,8 @@ export default function getPropsOptimizations(
     /* ####################################################################
         #####    Transform ObjectPattern property with default value   ######
         ####################################################################*/
-    if (
-      value?.type === "AssignmentPattern" &&
-      value?.left?.type === "ObjectPattern"
-    ) {
-      result.push(
-        ...getPropsOptimizations(value.left, derivedFnName, acc + name + "."),
-      );
+    if (value?.type === 'AssignmentPattern' && value?.left?.type === 'ObjectPattern') {
+      result.push(...getPropsOptimizations(value.left, derivedFnName, acc + name + '.'));
       continue;
     }
 
@@ -240,7 +223,7 @@ export default function getPropsOptimizations(
        ####### Transform Property from Object to an arrow fn #######
        #############################################################*/
     const consumingKeyText = isKeyLiteral ? `["${keyName}"]` : keyName;
-    const formattedAcc = isKeyLiteral ? acc.replace(DOT_END_REGEX, "") : acc;
+    const formattedAcc = isKeyLiteral ? acc.replace(DOT_END_REGEX, '') : acc;
     const res = getDerivedArrowFnString(
       name,
       addPrefix(formattedAcc + consumingKeyText + propDefaultText),
@@ -256,17 +239,15 @@ export default function getPropsOptimizations(
      ##################################################################*/
   const sortedResult = result.toSorted(sortByPropDependencies());
 
-  if (firstLevelFields.at(-1)?.startsWith("...")) {
-    const rest = firstLevelFields.at(-1)?.replace("...", "");
+  if (firstLevelFields.at(-1)?.startsWith('...')) {
+    const rest = firstLevelFields.at(-1)?.replace('...', '');
     sortedResult.unshift(
-      `const ${rest} = (({${firstLevelFields.join(
-        ", ",
-      )}}) => ${rest})(__b_props__);`,
+      `const ${rest} = (({${firstLevelFields.join(', ')}}) => ${rest})(__b_props__);`,
     );
   }
 
   if (firstLevelVars.length) {
-    sortedResult.unshift(`const {${firstLevelVars.join(", ")}} = __b_props__;`);
+    sortedResult.unshift(`const {${firstLevelVars.join(', ')}} = __b_props__;`);
   }
 
   return sortedResult;
@@ -279,26 +260,22 @@ function getDefaultValue(inputRight: any, name?: string) {
   const text = right ? generateCodeFromAST(right) : null;
 
   return {
-    fallbackText: text ? ` ?? ${text}` : "",
-    isLiteral: right?.type === "Literal",
-    isIdentifier: right?.type === "Identifier",
+    fallbackText: text ? ` ?? ${text}` : '',
+    isLiteral: right?.type === 'Literal',
+    isIdentifier: right?.type === 'Identifier',
   };
 }
 
 function addPrefix(name: string): string {
   const openParenthesis = name.match(OPEN_PARENTHESIS_REGEX)?.[0];
-  let prefix = name.startsWith("[") ? PROPS_IDENTIFIER : PROPS_IDENTIFIER + ".";
+  const prefix = name.startsWith('[') ? PROPS_IDENTIFIER : PROPS_IDENTIFIER + '.';
 
   return openParenthesis
-    ? openParenthesis + prefix + name.replace(openParenthesis, "")
+    ? openParenthesis + prefix + name.replace(openParenthesis, '')
     : prefix + name;
 }
 
-function getDerivedArrowFnString(
-  name: string,
-  arrowContent: string,
-  derivedFnName: string,
-) {
+function getDerivedArrowFnString(name: string, arrowContent: string, derivedFnName: string) {
   return `const ${name} = ${derivedFnName}(() => ${arrowContent});`;
 }
 
@@ -323,10 +300,7 @@ function sortByPropDependencies() {
     else if (!bDeps.size) result = 1;
     else if (unionWithA.size === aDeps.size && unionWithB.size !== bDeps.size) {
       result = 1;
-    } else if (
-      unionWithA.size !== aDeps.size &&
-      unionWithB.size === bDeps.size
-    ) {
+    } else if (unionWithA.size !== aDeps.size && unionWithB.size === bDeps.size) {
       result = -1;
     }
 
@@ -337,7 +311,7 @@ function sortByPropDependencies() {
 }
 
 function getPropertyNames(prop: any) {
-  let name =
+  const name =
     prop?.value?.left?.name ??
     prop?.value?.name ??
     prop?.key?.name ??

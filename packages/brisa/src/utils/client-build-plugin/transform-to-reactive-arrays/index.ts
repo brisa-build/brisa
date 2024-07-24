@@ -1,50 +1,34 @@
-import { ESTree } from "meriyah";
-import { getConstants } from "@/constants";
-import {
-  JSX_NAME,
-  NO_REACTIVE_CHILDREN_EXPRESSION,
-} from "@/utils/client-build-plugin/constants";
-import wrapWithArrowFn from "@/utils/client-build-plugin/wrap-with-arrow-fn";
-import { logError, logWarning } from "@/utils/log/log-build";
+import type { ESTree } from 'meriyah';
+import { getConstants } from '@/constants';
+import { JSX_NAME, NO_REACTIVE_CHILDREN_EXPRESSION } from '@/utils/client-build-plugin/constants';
+import wrapWithArrowFn from '@/utils/client-build-plugin/wrap-with-arrow-fn';
+import { logError, logWarning } from '@/utils/log/log-build';
 
 export const logsPerFile = new Set<string | undefined>();
 
-export default function transformToReactiveArrays(
-  ast: ESTree.Program,
-  path?: string,
-) {
+export default function transformToReactiveArrays(ast: ESTree.Program, path?: string) {
   const { BOOLEANS_IN_HTML, IS_SERVE_PROCESS } = getConstants();
 
   function traverseAToB(key: string, value: any) {
     // css`color: ${someVar.value};` -> css`color: ${() => someVar.value};`
-    if (value?.type === "TaggedTemplateExpression") {
+    if (value?.type === 'TaggedTemplateExpression') {
       return {
         ...value,
         quasi: {
           ...value.quasi,
-          expressions: value.quasi.expressions.map(
-            (expression: ESTree.Node) => {
-              return hasNodeASignal(expression)
-                ? wrapWithArrowFn(expression)
-                : expression;
-            },
-          ),
+          expressions: value.quasi.expressions.map((expression: ESTree.Node) => {
+            return hasNodeASignal(expression) ? wrapWithArrowFn(expression) : expression;
+          }),
         },
       };
     }
 
     // JSX -> ArrayExpression
-    if (
-      value?.type !== "CallExpression" ||
-      !JSX_NAME.has(value?.callee?.name ?? "")
-    ) {
+    if (value?.type !== 'CallExpression' || !JSX_NAME.has(value?.callee?.name ?? '')) {
       return value;
     }
 
-    if (
-      value.arguments[0].type === "Identifier" &&
-      value.arguments[0].name !== "Fragment"
-    ) {
+    if (value.arguments[0].type === 'Identifier' && value.arguments[0].name !== 'Fragment') {
       const errorMessages = [
         `You can't use "${value.arguments[0].name}" variable as a tag name.`,
         `Please use a string instead. You cannot use server-components inside web-components directly.`,
@@ -55,9 +39,8 @@ export default function transformToReactiveArrays(
 
       logError({
         messages: errorMessages,
-        docTitle: "Documentation about web-components",
-        docLink:
-          "https://brisa.build/building-your-application/components-details/web-components",
+        docTitle: 'Documentation about web-components',
+        docLink: 'https://brisa.build/building-your-application/components-details/web-components',
       });
     }
 
@@ -67,37 +50,33 @@ export default function transformToReactiveArrays(
     let children: any = [];
 
     // Add "key" prop if it exists
-    if (value.arguments[2] && value.arguments[2]?.name !== "undefined") {
+    if (value.arguments[2] && value.arguments[2]?.name !== 'undefined') {
       restOfProps.push({
-        type: "Property",
+        type: 'Property',
         key: {
-          type: "Identifier",
-          name: "key",
+          type: 'Identifier',
+          name: 'key',
         },
         value: value.arguments[2],
         shorthand: false,
         computed: false,
         method: false,
-        kind: "init",
+        kind: 'init',
         extra: {
           shorthand: false,
         },
       });
     }
 
-    for (let prop of props) {
+    for (const prop of props) {
       const name = prop.key?.name ?? prop.key?.object?.name;
 
-      if (name === "children" || prop?.key?.value === "children") {
+      if (name === 'children' || prop?.key?.value === 'children') {
         children = prop.key.value ?? prop.value;
         continue;
       }
 
-      if (
-        prop?.type === "SpreadElement" &&
-        !IS_SERVE_PROCESS &&
-        !logsPerFile.has(path)
-      ) {
+      if (prop?.type === 'SpreadElement' && !IS_SERVE_PROCESS && !logsPerFile.has(path)) {
         const warnMessages = [
           `You can't use spread props inside web-components JSX.`,
           `This can cause the lost of reactivity.`,
@@ -107,7 +86,7 @@ export default function transformToReactiveArrays(
 
         logWarning(
           warnMessages,
-          "Docs: https://brisa.build/building-your-application/components-details/web-components",
+          'Docs: https://brisa.build/building-your-application/components-details/web-components',
         );
         logsPerFile.add(path);
       }
@@ -116,38 +95,34 @@ export default function transformToReactiveArrays(
       if (BOOLEANS_IN_HTML.has(name)) {
         prop.shorthand = false;
 
-        if (typeof prop.value?.value === "boolean") {
+        if (typeof prop.value?.value === 'boolean') {
           prop.value = {
-            type: "Identifier",
-            name: prop.value.value ? "_on" : "_off",
+            type: 'Identifier',
+            name: prop.value.value ? '_on' : '_off',
           };
         } else {
           prop.value = {
-            type: "ConditionalExpression",
+            type: 'ConditionalExpression',
             test: prop.value,
             consequent: {
-              type: "Identifier",
-              name: "_on",
+              type: 'Identifier',
+              name: '_on',
             },
             alternate: {
-              type: "Identifier",
-              name: "_off",
+              type: 'Identifier',
+              name: '_off',
             },
           };
         }
       }
 
-      const isPropAnEvent = name?.startsWith("on");
+      const isPropAnEvent = name?.startsWith('on');
 
       if (isPropAnEvent) {
         value =
-          prop.value?.type === "CallExpression"
-            ? createReactiveEvent(prop.value)
-            : prop.value;
+          prop.value?.type === 'CallExpression' ? createReactiveEvent(prop.value) : prop.value;
       } else {
-        value = hasNodeASignal(prop.value, true)
-          ? wrapWithArrowFn(prop.value)
-          : prop.value;
+        value = hasNodeASignal(prop.value, true) ? wrapWithArrowFn(prop.value) : prop.value;
       }
 
       restOfProps.push({ ...prop, value });
@@ -155,18 +130,18 @@ export default function transformToReactiveArrays(
 
     // Transform: <div><span />{someVar ? <b /> : <i />}</div>
     // to: ["div", {}, [['span', {}, ''], [null, {}, () => someVar.value ? ["b", {}, ""] : ["i", {}, ""]]]
-    if (children.type === "ArrayExpression") {
+    if (children.type === 'ArrayExpression') {
       children.elements = children.elements.map((el: any) => {
         if (JSX_NAME.has(el.callee?.name)) return el;
         return {
-          type: "ArrayExpression",
+          type: 'ArrayExpression',
           elements: [
             {
-              type: "Literal",
+              type: 'Literal',
               value: null,
             },
             {
-              type: "ObjectExpression",
+              type: 'ObjectExpression',
               properties: {},
             },
             hasNodeASignal(el) ? wrapWithArrowFn(el) : el,
@@ -176,30 +151,28 @@ export default function transformToReactiveArrays(
     }
 
     const isChildrenJSX =
-      children?.type === "CallExpression" &&
-      JSX_NAME.has(children?.callee?.name ?? "");
+      children?.type === 'CallExpression' && JSX_NAME.has(children?.callee?.name ?? '');
 
     // <div>{someVar.value}</div> -> ["div", {}, () => someVar.value]
-    if (hasNodeASignal(children, !isChildrenJSX))
-      children = wrapWithArrowFn(children);
+    if (hasNodeASignal(children, !isChildrenJSX)) children = wrapWithArrowFn(children);
 
     // <span></span> -> ["span", {}, ""]
     if (Array.isArray(children) && children.length === 0) {
       children = {
-        type: "Literal",
-        value: "",
+        type: 'Literal',
+        value: '',
       };
     }
 
     return {
-      type: "ArrayExpression",
+      type: 'ArrayExpression',
       elements: [
         {
-          type: "Literal",
+          type: 'Literal',
           value: tagName,
         },
         {
-          type: "ObjectExpression",
+          type: 'ObjectExpression',
           properties: tagName == null ? {} : restOfProps,
         },
         children,
@@ -211,25 +184,23 @@ export default function transformToReactiveArrays(
 }
 
 function hasNodeASignal(node: ESTree.Node, allowProperties = false) {
-  const objectType = new Set(["Identifier", "MemberExpression"]);
+  const objectType = new Set(['Identifier', 'MemberExpression']);
   let hasSignal = false;
 
   if (NO_REACTIVE_CHILDREN_EXPRESSION.has(node?.type)) return hasSignal;
 
-  JSON.stringify(node, function (key, value) {
-    if (!allowProperties && value?.type === "Property") return null;
+  JSON.stringify(node, (key, value) => {
+    if (!allowProperties && value?.type === 'Property') return null;
 
     // It's a signal
     hasSignal ||=
-      value?.type === "MemberExpression" &&
+      value?.type === 'MemberExpression' &&
       objectType.has(value?.object?.type) &&
-      value?.property?.type === "Identifier" &&
-      value?.property?.name === "value";
+      value?.property?.type === 'Identifier' &&
+      value?.property?.name === 'value';
 
     // It's a markup generator function, store.get, store.has, etc
-    hasSignal ||=
-      value?.type === "CallExpression" &&
-      !JSX_NAME.has(value?.callee?.name ?? "");
+    hasSignal ||= value?.type === 'CallExpression' && !JSX_NAME.has(value?.callee?.name ?? '');
 
     return value;
   });
@@ -248,21 +219,21 @@ function hasNodeASignal(node: ESTree.Node, allowProperties = false) {
  */
 function createReactiveEvent(eventCallee: ESTree.Expression) {
   return {
-    type: "ArrowFunctionExpression",
+    type: 'ArrowFunctionExpression',
     expression: true,
     params: [
       {
-        type: "Identifier",
-        name: "e",
+        type: 'Identifier',
+        name: 'e',
       },
     ],
     body: {
-      type: "CallExpression",
+      type: 'CallExpression',
       callee: eventCallee,
       arguments: [
         {
-          type: "Identifier",
-          name: "e",
+          type: 'Identifier',
+          name: 'e',
         },
       ],
     },

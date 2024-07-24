@@ -1,14 +1,11 @@
-import type { WebContextPlugin } from "@/types";
+import type { WebContextPlugin } from '@/types';
 
 export const webContextPlugins: WebContextPlugin[] = [
   (ctx, extras) => {
     // @ts-ignore
-    ctx.store.sync = (
-      key: string,
-      storage: "localStorage" | "sessionStorage" = "localStorage",
-    ) => {
+    ctx.store.sync = (key: string, storage: 'localStorage' | 'sessionStorage' = 'localStorage') => {
       // Skip execution on server side (SSR)
-      if (typeof window === "undefined") return;
+      if (typeof window === 'undefined') return;
 
       // Sync from storage to store
       const sync = (event?: StorageEvent) => {
@@ -19,8 +16,8 @@ export const webContextPlugins: WebContextPlugin[] = [
 
       // Add and remove "storage" event listener
       ctx.effect(() => {
-        window.addEventListener("storage", sync);
-        ctx.cleanup(() => window.removeEventListener("storage", sync));
+        window.addEventListener('storage', sync);
+        ctx.cleanup(() => window.removeEventListener('storage', sync));
       });
 
       // Update storage when store changes

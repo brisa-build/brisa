@@ -1,11 +1,11 @@
-import { registerActions } from "@/utils/rpc/register-actions";
-import { stringifyAndCleanEvent } from "@/utils/rpc/serialize-and-clean-event";
+import { registerActions } from '@/utils/rpc/register-actions';
+import { stringifyAndCleanEvent } from '@/utils/rpc/serialize-and-clean-event';
 
-const INDICATOR = "indicator";
-const BRISA_REQUEST_CLASS = "brisa-request";
+const INDICATOR = 'indicator';
+const BRISA_REQUEST_CLASS = 'brisa-request';
 const $document = document;
 const $window = window;
-const method = "POST";
+const method = 'POST';
 const $Promise = Promise;
 let controller = new AbortController();
 let isReady = 0;
@@ -15,22 +15,20 @@ const bodyWithStore = (args?: unknown[], isFormData?: boolean) => {
   const xs = $window._s ? [..._s.Map] : $window._S ?? [];
 
   if (isFormData) {
-    const form = new FormData(
-      (args![0] as SubmitEvent).target as HTMLFormElement,
-    );
-    form.append("x-s", stringifyAndCleanEvent(xs));
+    const form = new FormData((args![0] as SubmitEvent).target as HTMLFormElement);
+    form.append('x-s', stringifyAndCleanEvent(xs));
     return form;
   }
 
-  return stringifyAndCleanEvent({ "x-s": xs, args });
+  return stringifyAndCleanEvent({ 'x-s': xs, args });
 };
 
 function loadRPCResolver() {
   return $window._rpc
     ? $Promise.resolve()
     : new $Promise((res) => {
-        let scriptElement = $document.createElement("script");
-        const basePath = getAttribute($document.head, "basepath") ?? "";
+        const scriptElement = $document.createElement('script');
+        const basePath = getAttribute($document.head, 'basepath') ?? '';
         scriptElement.onload = scriptElement.onerror = res;
         scriptElement.src = basePath + __RPC_LAZY_FILE__;
         $document.head.appendChild(scriptElement);
@@ -49,14 +47,14 @@ async function rpc(
   dataSet: DOMStringMap,
   ...args: unknown[]
 ) {
-  const errorIndicator = "e" + indicator;
+  const errorIndicator = 'e' + indicator;
   const elementsWithIndicator = [];
   const store = $window._s;
-  let promise = loadRPCResolver();
+  const promise = loadRPCResolver();
 
   // Add the "brisa-request" class to all indicators
   if (indicator) {
-    for (let el of querySelectorAll(`[${INDICATOR}]`)) {
+    for (const el of querySelectorAll(`[${INDICATOR}]`)) {
       if (getAttribute(el, INDICATOR)?.includes(indicator)) {
         el.classList.add(BRISA_REQUEST_CLASS);
         elementsWithIndicator.push(el);
@@ -70,8 +68,8 @@ async function rpc(
       method,
       signal: getAbortSignal(),
       headers: {
-        "x-action": actionId,
-        "x-actions": dataSet.actions ?? "",
+        'x-action': actionId,
+        'x-actions': dataSet.actions ?? '',
       },
       body: bodyWithStore(args, isFormData),
     });
@@ -90,7 +88,7 @@ async function rpc(
     store?.set(errorIndicator, e.message);
   } finally {
     // Remove the "brisa-request" after resolve the server action
-    for (let el of elementsWithIndicator) {
+    for (const el of elementsWithIndicator) {
       el.classList.remove(BRISA_REQUEST_CLASS);
     }
     store?.set(indicator, false);
@@ -98,14 +96,13 @@ async function rpc(
 }
 
 function spaNavigation(event: any) {
-  const renderMode =
-    $window._xm ?? getAttribute(getActiveElement(), "rendermode");
+  const renderMode = $window._xm ?? getAttribute(getActiveElement(), 'rendermode');
 
   // Clean render mode from imperative navigate API
   $window._xm = null;
 
   if (
-    renderMode !== "native" &&
+    renderMode !== 'native' &&
     !event.hashChange &&
     event.downloadRequest === null &&
     event.canIntercept
@@ -128,9 +125,7 @@ function spaNavigation(event: any) {
 }
 
 function getActiveElement(element = $document.activeElement): Element | null {
-  return element?.shadowRoot
-    ? getActiveElement(element.shadowRoot.activeElement)
-    : element;
+  return element?.shadowRoot ? getActiveElement(element.shadowRoot.activeElement) : element;
 }
 
 function getAttribute(el: Element | null, attr: string) {
@@ -154,11 +149,11 @@ function initActionRegister() {
 
 initActionRegister();
 
-if ("navigation" in $window) {
-  $window.navigation.addEventListener("navigate", spaNavigation);
+if ('navigation' in $window) {
+  $window.navigation.addEventListener('navigate', spaNavigation);
 }
 
-$document.addEventListener("DOMContentLoaded", () => {
+$document.addEventListener('DOMContentLoaded', () => {
   isReady = 1;
   registerActions(rpc);
 });

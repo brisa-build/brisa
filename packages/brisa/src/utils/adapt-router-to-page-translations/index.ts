@@ -1,17 +1,12 @@
-import extendRequestContext from "@/utils/extend-request-context";
-import type {
-  I18nConfig,
-  RequestContext,
-  RouterType,
-  Translations,
-} from "@/types";
-import routeMatchPathname from "@/utils/route-match-pathname";
-import substituteI18nRouteValues from "@/utils/substitute-i18n-route-values";
+import extendRequestContext from '@/utils/extend-request-context';
+import type { I18nConfig, RequestContext, RouterType, Translations } from '@/types';
+import routeMatchPathname from '@/utils/route-match-pathname';
+import substituteI18nRouteValues from '@/utils/substitute-i18n-route-values';
 
 const regexTrailingSlash = /\/$/;
 
 export default function adaptRouterToPageTranslations(
-  pages: I18nConfig["pages"],
+  pages: I18nConfig['pages'],
   pagesRouter: RouterType,
 ) {
   const pageEntries = Object.entries(pages ?? {});
@@ -21,12 +16,9 @@ export default function adaptRouterToPageTranslations(
   const match = (req: RequestContext) => {
     const url = new URL(req.finalURL);
     const userLocale = req.i18n?.locale;
-    const newReq = (url: string) =>
-      extendRequestContext({ originalRequest: req, finalURL: url });
+    const newReq = (url: string) => extendRequestContext({ originalRequest: req, finalURL: url });
 
-    url.pathname = url.pathname
-      .replace(`/${userLocale}`, "")
-      .replace(regexTrailingSlash, "");
+    url.pathname = url.pathname.replace(`/${userLocale}`, '').replace(regexTrailingSlash, '');
 
     for (const translation in translations) {
       const { route, locale } = translations[translation];
@@ -36,11 +28,7 @@ export default function adaptRouterToPageTranslations(
       const hasLocale = userLocale && pages?.[route][userLocale];
       const translationIsDifferentFromPage = translation !== route;
 
-      if (
-        hasLocale &&
-        translationIsDifferentFromPage &&
-        routeMatchPathname(route, url.pathname)
-      ) {
+      if (hasLocale && translationIsDifferentFromPage && routeMatchPathname(route, url.pathname)) {
         return { route: null, isReservedPathname: false };
       }
 

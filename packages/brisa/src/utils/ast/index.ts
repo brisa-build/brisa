@@ -6,11 +6,11 @@
  * - Replace this file to Bun code and remove this file
  * - Remove astring and meriyah dependencies
  */
-import { generate } from "astring";
-import type { JavaScriptLoader } from "bun";
-import { ESTree, parseScript } from "meriyah";
+import { generate } from 'astring';
+import type { JavaScriptLoader } from 'bun';
+import { type ESTree, parseScript } from 'meriyah';
 
-export default function AST(loader: JavaScriptLoader = "tsx") {
+export default function AST(loader: JavaScriptLoader = 'tsx') {
   const transpiler = new Bun.Transpiler({ loader });
 
   return {
@@ -22,7 +22,7 @@ export default function AST(loader: JavaScriptLoader = "tsx") {
       });
     },
     generateCodeFromAST(ast: ESTree.Program) {
-      return generate(ast, { indent: "  " });
+      return generate(ast, { indent: '  ' });
     },
   };
 }

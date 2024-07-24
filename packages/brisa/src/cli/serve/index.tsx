@@ -1,8 +1,8 @@
-import constants from "@/constants";
-import { getServeOptions } from "./serve-options";
-import type { ServeOptions, Server } from "bun";
-import { blueLog, boldLog } from "@/utils/log/log-color";
-import { logError } from "@/utils/log/log-build";
+import constants from '@/constants';
+import { getServeOptions } from './serve-options';
+import type { ServeOptions, Server } from 'bun';
+import { blueLog, boldLog } from '@/utils/log/log-color';
+import { logError } from '@/utils/log/log-build';
 
 const { LOG_PREFIX } = constants;
 
@@ -11,10 +11,7 @@ function init(options: ServeOptions) {
     const server = Bun.serve(options);
 
     globalThis.brisaServer = server;
-    console.log(
-      LOG_PREFIX.READY,
-      `listening on http://${server.hostname}:${server.port}`,
-    );
+    console.log(LOG_PREFIX.READY, `listening on http://${server.hostname}:${server.port}`);
   } catch (error) {
     const { message } = error as Error;
 
@@ -22,7 +19,7 @@ function init(options: ServeOptions) {
       console.log(LOG_PREFIX.ERROR, message);
       init({ ...options, port: 0 });
     } else {
-      console.error(LOG_PREFIX.ERROR, message ?? "Error on start server");
+      console.error(LOG_PREFIX.ERROR, message ?? 'Error on start server');
       process.exit(1);
     }
   }
@@ -33,14 +30,14 @@ function handleError(errorName: string) {
     logError({
       messages: [
         `Oops! An ${errorName} occurred:`,
-        "",
-        ...e.message.split("\n").map(boldLog),
-        "",
+        '',
+        ...e.message.split('\n').map(boldLog),
+        '',
         `This happened because there might be an unexpected issue in the code or an unforeseen situation.`,
         `If the problem persists, please report this error to the Brisa team:`,
-        blueLog("🔗 https://github.com/brisa-build/brisa/issues/new"),
+        blueLog('🔗 https://github.com/brisa-build/brisa/issues/new'),
         `Please don't worry, we are here to help.`,
-        "More details about the error:",
+        'More details about the error:',
       ],
       stack: e.stack,
     });
@@ -48,15 +45,10 @@ function handleError(errorName: string) {
   };
 }
 
-process.on("unhandledRejection", handleError("Unhandled Rejection"));
-process.on("uncaughtException", handleError("Uncaught Exception"));
-process.on(
-  "uncaughtExceptionMonitor",
-  handleError("Uncaught Exception Monitor"),
-);
-process.setUncaughtExceptionCaptureCallback(
-  handleError("Uncaught Exception Capture Callback"),
-);
+process.on('unhandledRejection', handleError('Unhandled Rejection'));
+process.on('uncaughtException', handleError('Uncaught Exception'));
+process.on('uncaughtExceptionMonitor', handleError('Uncaught Exception Monitor'));
+process.setUncaughtExceptionCaptureCallback(handleError('Uncaught Exception Capture Callback'));
 
 const serveOptions = await getServeOptions();
 

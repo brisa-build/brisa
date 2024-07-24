@@ -1,20 +1,17 @@
-import fs from "node:fs";
-import path from "node:path";
-import { logError } from "@/utils/log/log-build";
-import {
-  ALTERNATIVE_PREFIX,
-  NATIVE_FOLDER,
-} from "@/utils/client-build-plugin/constants";
-import isTestFile from "@/utils/is-test-file";
-import { getEntrypointsRouter } from "@/utils/get-entrypoints";
+import fs from 'node:fs';
+import path from 'node:path';
+import { logError } from '@/utils/log/log-build';
+import { ALTERNATIVE_PREFIX, NATIVE_FOLDER } from '@/utils/client-build-plugin/constants';
+import isTestFile from '@/utils/is-test-file';
+import { getEntrypointsRouter } from '@/utils/get-entrypoints';
 
-const CONTEXT_PROVIDER = "context-provider";
+const CONTEXT_PROVIDER = 'context-provider';
 
 export default async function getWebComponentsList(
   dir: string,
   integrationsPath?: string | null,
 ): Promise<Record<string, string>> {
-  const webDir = path.join(dir, "web-components");
+  const webDir = path.join(dir, 'web-components');
 
   if (!fs.existsSync(webDir)) return {};
 
@@ -25,19 +22,17 @@ export default async function getWebComponentsList(
   if (integrationsPath) {
     entries.push(
       ...(await Promise.all(
-        Object.entries<string>(
-          await import(integrationsPath).then((m) => m.default ?? {}),
-        ).map(async ([key, value]) => {
-          const libPath = import.meta.resolveSync(value, integrationsPath);
-          const hasDefaultExport = (await Bun.file(libPath).text()).includes(
-            "export default",
-          );
+        Object.entries<string>(await import(integrationsPath).then((m) => m.default ?? {})).map(
+          async ([key, value]) => {
+            const libPath = import.meta.resolveSync(value, integrationsPath);
+            const hasDefaultExport = (await Bun.file(libPath).text()).includes('export default');
 
-          return [
-            key,
-            hasDefaultExport ? libPath : `import:${libPath}`,
-          ] satisfies [string, string];
-        }),
+            return [key, hasDefaultExport ? libPath : `import:${libPath}`] satisfies [
+              string,
+              string,
+            ];
+          },
+        ),
       )),
     );
   }
@@ -46,31 +41,29 @@ export default async function getWebComponentsList(
     entries
       .filter(
         ([key]) =>
-          !(key.includes(ALTERNATIVE_PREFIX) || isTestFile(key)) ||
-          key.includes(NATIVE_FOLDER),
+          !(key.includes(ALTERNATIVE_PREFIX) || isTestFile(key)) || key.includes(NATIVE_FOLDER),
       )
       .map(([key, path]) => {
-        const selector = key.replace(/^\/(_)?/g, "").replaceAll("/", "-");
+        const selector = key.replace(/^\/(_)?/g, '').replaceAll('/', '-');
 
         if (selector === CONTEXT_PROVIDER) {
           logError({
             messages: [
               `You can't use the reserved name "${CONTEXT_PROVIDER}"`,
-              "Please, rename it to avoid conflicts.",
+              'Please, rename it to avoid conflicts.',
             ],
             docTitle: `Documentation about ${CONTEXT_PROVIDER}`,
-            docLink:
-              "https://brisa.build/api-reference/components/context-provider",
+            docLink: 'https://brisa.build/api-reference/components/context-provider',
           });
         } else if (existingSelectors.has(selector)) {
           logError({
             messages: [
               `You have more than one web-component with the same name: "${selector}"`,
-              "Please, rename one of them to avoid conflicts.",
+              'Please, rename one of them to avoid conflicts.',
             ],
-            docTitle: "Documentation about web-components",
+            docTitle: 'Documentation about web-components',
             docLink:
-              "https://brisa.build/building-your-application/components-details/web-components",
+              'https://brisa.build/building-your-application/components-details/web-components',
           });
         } else {
           existingSelectors.add(selector);

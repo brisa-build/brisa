@@ -1,7 +1,7 @@
-import { createContext } from "@/core";
-import type { RequestContext } from "@/types";
+import { createContext } from '@/core';
+import type { RequestContext } from '@/types';
 
-const context = createContext("foo");
+const context = createContext('foo');
 
 export default async function SomePage() {
   return (
@@ -15,7 +15,7 @@ export default async function SomePage() {
 
 export function responseHeaders(request: RequestContext) {
   return {
-    "x-test": "test",
-    "x-renderInitiator": request.renderInitiator,
+    'x-test': 'test',
+    'x-renderInitiator': request.renderInitiator,
   };
 }

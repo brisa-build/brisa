@@ -1,47 +1,41 @@
-import { describe, expect, it, spyOn, afterEach } from "bun:test";
-import clientBuildPlugin from ".";
-import { getConstants } from "@/constants";
-import { boldLog } from "@/utils/log/log-color";
-import { logsPerFile } from "@/utils/client-build-plugin/transform-to-reactive-arrays";
+import { describe, expect, it, spyOn, afterEach } from 'bun:test';
+import clientBuildPlugin from '.';
+import { getConstants } from '@/constants';
+import { boldLog } from '@/utils/log/log-color';
+import { logsPerFile } from '@/utils/client-build-plugin/transform-to-reactive-arrays';
 
-const toInline = (s: string) => s.replace(/\s*\n\s*/g, "").replaceAll("'", '"');
+const toInline = (s: string) => s.replace(/\s*\n\s*/g, '').replaceAll("'", '"');
 
-describe("utils", () => {
-  describe("client-build-plugin", () => {
+describe('utils', () => {
+  describe('client-build-plugin', () => {
     afterEach(() => {
       logsPerFile.clear();
       delete globalThis.mockConstants;
     });
-    describe("without transformation", () => {
-      it("should not transform if is inside _native folder", () => {
+    describe('without transformation', () => {
+      it('should not transform if is inside _native folder', () => {
         const input = `
             export default function MyComponent() {
               return <div>foo</div>
             }
           `;
         const output = toInline(
-          clientBuildPlugin(
-            input,
-            "/src/web-components/_native/my-component.tsx",
-          ).code,
+          clientBuildPlugin(input, '/src/web-components/_native/my-component.tsx').code,
         );
         const expected = toInline(input);
         expect(output).toBe(expected);
       });
     });
 
-    describe("basic components with transformation", () => {
-      it("should transform if is inside _partials folder", () => {
+    describe('basic components with transformation', () => {
+      it('should transform if is inside _partials folder', () => {
         const input = `
             export default function partial() {
               return <div>foo</div>
             }
           `;
         const output = toInline(
-          clientBuildPlugin(
-            input,
-            "/src/web-components/_partials/my-component.tsx",
-          ).code,
+          clientBuildPlugin(input, '/src/web-components/_partials/my-component.tsx').code,
         );
         const expected = toInline(`        
           export default function partial() {
@@ -57,9 +51,7 @@ describe("utils", () => {
               return <div>foo</div>
             }
           `;
-        const output = toInline(
-          clientBuildPlugin(input, "__BRISA_CLIENT__ContextProvider").code,
-        );
+        const output = toInline(clientBuildPlugin(input, '__BRISA_CLIENT__ContextProvider').code);
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
           
@@ -70,40 +62,32 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an array if is a variable", () => {
+      it('should transform JSX to an array if is a variable', () => {
         const input = `
             const element = <div>foo</div>
           `;
-        const output = toInline(
-          clientBuildPlugin(input, "/src/components/my-component.tsx").code,
-        );
-        const expected = toInline(
-          `const element = ['div', {}, 'foo'];export default null;`,
-        );
+        const output = toInline(clientBuildPlugin(input, '/src/components/my-component.tsx').code);
+        const expected = toInline(`const element = ['div', {}, 'foo'];export default null;`);
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an array if is a variable with a function", () => {
+      it('should transform JSX to an array if is a variable with a function', () => {
         const input = `
             const element = () => <div>foo</div>
           `;
-        const output = toInline(
-          clientBuildPlugin(input, "/src/components/my-component.tsx").code,
-        );
-        const expected = toInline(
-          `const element = () => ['div', {}, 'foo'];export default null;`,
-        );
+        const output = toInline(clientBuildPlugin(input, '/src/components/my-component.tsx').code);
+        const expected = toInline(`const element = () => ['div', {}, 'foo'];export default null;`);
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component", () => {
+      it('should transform a basic web-component', () => {
         const input = `
             export default function MyComponent() {
               return <div>foo</div>
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -117,14 +101,14 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component with node children", () => {
+      it('should transform a basic web-component with node children', () => {
         const input = `
             export default function MyComponent() {
               return <div><b>foo</b></div>
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -138,14 +122,14 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component with props", () => {
+      it('should transform a basic web-component with props', () => {
         const input = `
             export default function MyComponent(props) {
               return <div>{props.someProp}</div>
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -159,7 +143,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component with props without conflicts with other components", () => {
+      it('should transform a basic web-component with props without conflicts with other components', () => {
         const input = `
             function Test(props) {
               return <div>{props.anotherName}</div>
@@ -170,7 +154,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -188,14 +172,14 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component with destructuring props", () => {
+      it('should transform a basic web-component with destructuring props', () => {
         const input = `
             export default function MyComponent({someProp}) {
               return <div>{someProp}</div>
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -209,7 +193,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with async web components", () => {
+      it('should work with async web components', () => {
         const input = `
             export default async function MyComponent() {
               await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -218,7 +202,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -235,14 +219,14 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component with renamed destructuring props", () => {
+      it('should transform a basic web-component with renamed destructuring props', () => {
         const input = `
             export default function MyComponent({someProp: somePropRenamed}) {
               return <div>{somePropRenamed}</div>
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -255,7 +239,7 @@ describe("utils", () => {
           `);
         expect(output).toBe(expected);
       });
-      it("should transform a basic web-component with fragments", () => {
+      it('should transform a basic web-component with fragments', () => {
         const input = `
             export default function MyComponent() {
               return <>
@@ -265,7 +249,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -278,7 +262,7 @@ describe("utils", () => {
           `);
         expect(output).toBe(expected);
       });
-      it("should transform a basic web-component with fragments and props", () => {
+      it('should transform a basic web-component with fragments and props', () => {
         const input = `
             export default function MyComponent(props) {
               return <>
@@ -288,7 +272,7 @@ describe("utils", () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
@@ -303,7 +287,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a basic web-component with fragments and props with a conflict with another component", () => {
+      it('should transform a basic web-component with fragments and props with a conflict with another component', () => {
         const input = `
             function Test(props) {
               return (
@@ -325,7 +309,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -345,9 +329,9 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should not allow to consume web-components as server-components and log with an error", () => {
+      it('should not allow to consume web-components as server-components and log with an error', () => {
         const { LOG_PREFIX } = getConstants();
-        const mockLog = spyOn(console, "log");
+        const mockLog = spyOn(console, 'log');
 
         mockLog.mockImplementation(() => {});
 
@@ -369,7 +353,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -389,10 +373,7 @@ describe("utils", () => {
         mockLog.mockRestore();
         expect(output).toBe(expected);
         expect(logs[0]).toEqual([LOG_PREFIX.ERROR, `Ops! Error:`]);
-        expect(logs[1]).toEqual([
-          LOG_PREFIX.ERROR,
-          `--------------------------`,
-        ]);
+        expect(logs[1]).toEqual([LOG_PREFIX.ERROR, `--------------------------`]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.ERROR,
           boldLog(`You can't use "Test" variable as a tag name.`),
@@ -405,21 +386,15 @@ describe("utils", () => {
           LOG_PREFIX.ERROR,
           `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`,
         ]);
-        expect(logs[5]).toEqual([
-          LOG_PREFIX.ERROR,
-          `File: src/web-components/my-component.tsx`,
-        ]);
-        expect(logs[6]).toEqual([
-          LOG_PREFIX.ERROR,
-          `--------------------------`,
-        ]);
+        expect(logs[5]).toEqual([LOG_PREFIX.ERROR, `File: src/web-components/my-component.tsx`]);
+        expect(logs[6]).toEqual([LOG_PREFIX.ERROR, `--------------------------`]);
         expect(logs[7]).toEqual([
           LOG_PREFIX.ERROR,
           `Documentation about web-components: https://brisa.build/building-your-application/components-details/web-components`,
         ]);
       });
 
-      it("should be possible to return a string as a child", () => {
+      it('should be possible to return a string as a child', () => {
         const input = `
             export default function MyComponent() {
               return 'foo'
@@ -427,7 +402,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -443,7 +418,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to return a variable as a child", () => {
+      it('should be possible to return a variable as a child', () => {
         const input = `
             export default function MyComponent() {
               const foo = 'Some text'
@@ -452,7 +427,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -469,7 +444,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to return a variable as a child inside suspense", () => {
+      it('should be possible to return a variable as a child inside suspense', () => {
         const input = `
             export default function MyComponent() {
               return 'Hello world'
@@ -482,7 +457,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -503,7 +478,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to return null as a child", () => {
+      it('should be possible to return null as a child', () => {
         const input = `
             export default function MyComponent() {
               return null
@@ -511,7 +486,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -526,7 +501,7 @@ describe("utils", () => {
 
         expect(output).toBe(expected);
       });
-      it("should be possible to return undefined as a child", () => {
+      it('should be possible to return undefined as a child', () => {
         const input = `
             export default function MyComponent() {
               return undefined
@@ -534,7 +509,7 @@ describe("utils", () => {
           `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -550,7 +525,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap conditional renders inside a function", () => {
+      it('should wrap conditional renders inside a function', () => {
         const input = `
           export default function MyComponent({show}) {
             return show ? <div>foo</div> : 'Empty'
@@ -558,7 +533,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -574,13 +549,13 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with a component as an arrow function without blockstatement", () => {
+      it('should work with a component as an arrow function without blockstatement', () => {
         const input = `
           export default (props) => <div>{props.foo}</div>
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -594,13 +569,13 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with a component as an arrow function without blockstatement that return a literal", () => {
+      it('should work with a component as an arrow function without blockstatement that return a literal', () => {
         const input = `
           export default (props) => 'Hello World'
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -614,7 +589,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap reactivity returning a string with a prop concatenated with +", () => {
+      it('should wrap reactivity returning a string with a prop concatenated with +', () => {
         const input = `
           export default function MyComponent({foo}) {
             return 'Hello ' + foo
@@ -622,7 +597,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -638,7 +613,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap reactivity returning a string with a prop concatenated with multiple +", () => {
+      it('should wrap reactivity returning a string with a prop concatenated with multiple +', () => {
         const input = `
           export default function MyComponent({foo, bar, baz}) {
             return "Hello " + foo + " " + bar + " " +  baz
@@ -646,7 +621,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -662,7 +637,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap reactivity returning a string with a prop concatenated with multiple + and props without destructuring", () => {
+      it('should wrap reactivity returning a string with a prop concatenated with multiple + and props without destructuring', () => {
         const input = `
           export default function MyComponent(props) {
             return "Hello " + props.foo + " " + props.bar + " " +  props.baz
@@ -670,7 +645,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -686,7 +661,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap reactivity returning a string with a prop concatenated with multiple + and arrow fn", () => {
+      it('should wrap reactivity returning a string with a prop concatenated with multiple + and arrow fn', () => {
         const input = `
           export default (props) => {
             return "Hello " + props.foo + " " + props.bar + " " +  props.baz
@@ -694,7 +669,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -710,13 +685,13 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with a component as an arrow function without blockstatement that return a string with a prop", () => {
+      it('should work with a component as an arrow function without blockstatement that return a string with a prop', () => {
         const input = `
           export default (props) => 'Hello World' + props.foo
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -730,13 +705,13 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should not do any transformation with a console.log in an arrow function with blockstatement", () => {
+      it('should not do any transformation with a console.log in an arrow function with blockstatement', () => {
         const input = `
           export default (props) => { console.log('Hello World') }
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -750,13 +725,13 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should return a reactive console.log because is consuming a prop from props identifier", () => {
+      it('should return a reactive console.log because is consuming a prop from props identifier', () => {
         const input = `
           export default (props) => console.log('Hello World' + props.foo)
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -770,13 +745,13 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should return a reactive console.log because is consuming a prop from destructuring", () => {
+      it('should return a reactive console.log because is consuming a prop from destructuring', () => {
         const input = `
           export default ({ foo }) => console.log({ foo })
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -790,14 +765,14 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with a component as an arrow function with blockstatement and the default export on a different line", () => {
+      it('should work with a component as an arrow function with blockstatement and the default export on a different line', () => {
         const input = `
         const MyComponent = (props) => <div>{props.foo}</div>
         export default MyComponent
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -811,7 +786,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work default export on a different line in a function declaration", () => {
+      it('should work default export on a different line in a function declaration', () => {
         const input = `
         function MyComponent(props) {
           return <div>{props.foo}</div>
@@ -820,7 +795,7 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -836,7 +811,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with attributes as boolean as <dialog open />", () => {
+      it('should work with attributes as boolean as <dialog open />', () => {
         const input = `
         export default function MyComponent() {
           return <dialog open />
@@ -844,11 +819,10 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected =
-          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent() {
             return ['dialog', {open: _on}, ''];
@@ -859,7 +833,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with attributes as boolean as <dialog open /> and props", () => {
+      it('should work with attributes as boolean as <dialog open /> and props', () => {
         const input = `
         export default function MyComponent(props) {
           return <dialog open={props.open} />
@@ -867,11 +841,10 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected =
-          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent(props) {
             return ['dialog', {open: () => props.open.value ? _on : _off}, ''];
@@ -882,7 +855,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with attributes as boolean as <dialog open /> and state", () => {
+      it('should work with attributes as boolean as <dialog open /> and state', () => {
         const input = `
         export default function MyComponent({}, {state}) {
           const open = state(true);
@@ -891,11 +864,10 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected =
-          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent({}, {state}) {
             const open = state(true);
@@ -907,7 +879,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with attributes as boolean as <dialog open /> and static variable", () => {
+      it('should work with attributes as boolean as <dialog open /> and static variable', () => {
         const input = `
         export default function MyComponent() {
           const open = true;
@@ -916,11 +888,10 @@ describe("utils", () => {
       `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected =
-          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent() {
             const open = true;
@@ -932,7 +903,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside arguments", () => {
+      it('should be possible to set default props inside arguments', () => {
         const input = `
           export default function MyComponent({foo = 'bar'}) {
             const someVar = 'test';
@@ -941,7 +912,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -959,7 +930,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside arrow function arguments and no-direct export default", () => {
+      it('should be possible to set default props inside arrow function arguments and no-direct export default', () => {
         const input = `
           const Component = ({foo = 'bar'}) => {
             const someVar = 'test';
@@ -970,7 +941,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -988,7 +959,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside arrow function arguments and ndirect export default", () => {
+      it('should be possible to set default props inside arrow function arguments and ndirect export default', () => {
         const input = `
           const Component = ({foo = 'bar'}) => {
             const someVar = 'test';
@@ -999,7 +970,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1017,7 +988,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside arrow function renamed arguments and ndirect export default", () => {
+      it('should be possible to set default props inside arrow function renamed arguments and ndirect export default', () => {
         const input = `
           const Component = ({foo: renamedFoo = 'bar'}) => {
             const someVar = 'test';
@@ -1028,7 +999,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1046,7 +1017,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should add the h function when there are more webContext attributes", () => {
+      it('should add the h function when there are more webContext attributes', () => {
         const input = `
           export default function Component({ }, { effect, cleanup, state }: any) {
             const someState = state(0);
@@ -1063,11 +1034,10 @@ describe("utils", () => {
           }        
         `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected =
-          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function Component({}, {effect, cleanup, state}) {
             const someState = state(0);
@@ -1091,11 +1061,10 @@ describe("utils", () => {
           }
         `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected =
-          toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function Component({onFoo}) {
             return ['div', {onClick: onFoo}, 'foo'];
@@ -1106,7 +1075,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside a derived with || operator", () => {
+      it('should be possible to set default props inside a derived with || operator', () => {
         const input = `
           export default function MyComponent({foo}, {derived}) {
             const bar = derived(() => foo || 'bar');
@@ -1115,7 +1084,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1132,7 +1101,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside a derived with props identifier and || operator", () => {
+      it('should be possible to set default props inside a derived with props identifier and || operator', () => {
         const input = `
           export default function MyComponent(props, {derived}) {
             const bar = derived(() => props.foo || 'bar');
@@ -1141,7 +1110,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1158,7 +1127,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside a derived with ?? operator", () => {
+      it('should be possible to set default props inside a derived with ?? operator', () => {
         const input = `
           export default function MyComponent({foo}, {derived}) {
             const bar = derived(() => foo ?? 'bar');
@@ -1167,7 +1136,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1184,7 +1153,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props inside derived with props identifier and ?? operator", () => {
+      it('should be possible to set default props inside derived with props identifier and ?? operator', () => {
         const input = `
           export default function MyComponent(props, {derived}) {
             const bar = derived(() => props.foo ?? 'bar');
@@ -1193,7 +1162,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1210,7 +1179,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform a web-component with conditional render inside the JSX", () => {
+      it('should transform a web-component with conditional render inside the JSX', () => {
         const input = `
         export default function ConditionalRender({ name, children }: any) {
           return (
@@ -1224,8 +1193,7 @@ describe("utils", () => {
     }
           `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/conditional-render.tsx")
-            .code,
+          clientBuildPlugin(input, 'src/web-components/conditional-render.tsx').code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1251,7 +1219,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1277,7 +1245,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1294,7 +1262,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to use props as conditional render inside JSX", () => {
+      it('should be possible to use props as conditional render inside JSX', () => {
         const input = `
           export default function MyComponent({foo, bar}) {
             return <div>{foo && bar ? 'TRUE' : 'FALSE'}</div>
@@ -1302,7 +1270,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1317,7 +1285,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to use props as conditional variables", () => {
+      it('should be possible to use props as conditional variables', () => {
         const input = `
           export default function MyComponent({foo, bar}, {derived}) {
             const baz = derived(() => foo && bar);
@@ -1326,7 +1294,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1349,7 +1317,7 @@ describe("utils", () => {
           }
         `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1363,7 +1331,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap conditional renders in different returns inside a function", () => {
+      it('should wrap conditional renders in different returns inside a function', () => {
         const input = `
           export default function MyComponent({ show }) {
           if (show) return <div>foo</div>
@@ -1373,7 +1341,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1393,7 +1361,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap conditional renders using switch-case and different returns inside a function", () => {
+      it('should wrap conditional renders using switch-case and different returns inside a function', () => {
         const input = `
         export default function MyComponent({ show }) {
           switch (show) {
@@ -1408,7 +1376,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1430,7 +1398,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should be possible to set default props from ...rest inside code", () => {
+      it('should be possible to set default props from ...rest inside code', () => {
         const input = `
           export default function MyComponent({ foo, ...rest }, {derived}) {
             const user = derived(() => rest.user ?? { name: 'No user'});
@@ -1439,7 +1407,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`
@@ -1456,9 +1424,9 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should log a warning when using spread props inside JSX that can lost the reactivity", () => {
+      it('should log a warning when using spread props inside JSX that can lost the reactivity', () => {
         const { LOG_PREFIX } = getConstants();
-        const mockLog = spyOn(console, "log");
+        const mockLog = spyOn(console, 'log');
 
         mockLog.mockImplementation(() => {});
 
@@ -1469,7 +1437,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1484,34 +1452,22 @@ describe("utils", () => {
         mockLog.mockRestore();
         expect(output).toBe(expected);
         expect(logs[0]).toEqual([LOG_PREFIX.WARN, `Ops! Warning:`]);
-        expect(logs[1]).toEqual([
-          LOG_PREFIX.WARN,
-          `--------------------------`,
-        ]);
+        expect(logs[1]).toEqual([LOG_PREFIX.WARN, `--------------------------`]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.WARN,
           boldLog(`You can't use spread props inside web-components JSX.`),
         ]);
-        expect(logs[3]).toEqual([
-          LOG_PREFIX.WARN,
-          `This can cause the lost of reactivity.`,
-        ]);
-        expect(logs[4]).toEqual([
-          LOG_PREFIX.WARN,
-          `File: src/web-components/my-component.tsx`,
-        ]);
-        expect(logs[5]).toEqual([
-          LOG_PREFIX.WARN,
-          `--------------------------`,
-        ]);
+        expect(logs[3]).toEqual([LOG_PREFIX.WARN, `This can cause the lost of reactivity.`]);
+        expect(logs[4]).toEqual([LOG_PREFIX.WARN, `File: src/web-components/my-component.tsx`]);
+        expect(logs[5]).toEqual([LOG_PREFIX.WARN, `--------------------------`]);
         expect(logs[6]).toEqual([
           LOG_PREFIX.WARN,
           `Docs: https://brisa.build/building-your-application/components-details/web-components`,
         ]);
       });
 
-      it("should log warning spread props inside JSX once per file", () => {
-        const mockLog = spyOn(console, "log");
+      it('should log warning spread props inside JSX once per file', () => {
+        const mockLog = spyOn(console, 'log');
 
         mockLog.mockImplementation(() => {});
 
@@ -1521,7 +1477,7 @@ describe("utils", () => {
           }
         `;
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1540,12 +1496,12 @@ describe("utils", () => {
         expect(logs.length).toBe(numLogsEachTime);
       });
 
-      it("should NOT log warning spread props inside JSX when IS_SERVE_PROCESS is tru (hot-reloading)", () => {
+      it('should NOT log warning spread props inside JSX when IS_SERVE_PROCESS is tru (hot-reloading)', () => {
         globalThis.mockConstants = {
           ...getConstants(),
           IS_SERVE_PROCESS: true,
         };
-        const mockLog = spyOn(console, "log");
+        const mockLog = spyOn(console, 'log');
 
         mockLog.mockImplementation(() => {});
 
@@ -1556,7 +1512,7 @@ describe("utils", () => {
         `;
 
         const output = toInline(
-          clientBuildPlugin(input, "src/web-components/my-component.tsx").code,
+          clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
         const expected = toInline(`

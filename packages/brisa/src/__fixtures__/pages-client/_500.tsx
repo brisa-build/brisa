@@ -1,1 +1,1 @@
-alert("500 client code");
+alert('500 client code');

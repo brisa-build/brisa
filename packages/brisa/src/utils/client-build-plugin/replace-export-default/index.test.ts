@@ -1,25 +1,25 @@
-import { describe, expect, it } from "bun:test";
-import replaceExportDefault from ".";
-import { ESTree } from "meriyah";
+import { describe, expect, it } from 'bun:test';
+import replaceExportDefault from '.';
+import type { ESTree } from 'meriyah';
 
-describe("client-build-plugin", () => {
-  describe("utils", () => {
-    describe("replace-export-default", () => {
-      it("should replace the default export of the AST to a variable name", () => {
+describe('client-build-plugin', () => {
+  describe('utils', () => {
+    describe('replace-export-default', () => {
+      it('should replace the default export of the AST to a variable name', () => {
         const ast = {
-          type: "Program",
+          type: 'Program',
           body: [
             {
-              type: "ExportDefaultDeclaration",
+              type: 'ExportDefaultDeclaration',
               declaration: {
-                type: "FunctionDeclaration",
+                type: 'FunctionDeclaration',
                 id: {
-                  type: "Identifier",
-                  name: "Component",
+                  type: 'Identifier',
+                  name: 'Component',
                 },
                 params: [],
                 body: {
-                  type: "BlockStatement",
+                  type: 'BlockStatement',
                   body: [],
                 },
                 generator: false,
@@ -27,30 +27,30 @@ describe("client-build-plugin", () => {
               },
             },
           ],
-          sourceType: "module",
+          sourceType: 'module',
         } as ESTree.Program;
         const expected = {
-          type: "Program",
+          type: 'Program',
           body: [
             {
-              type: "VariableDeclaration",
-              kind: "const",
+              type: 'VariableDeclaration',
+              kind: 'const',
               declarations: [
                 {
-                  type: "VariableDeclarator",
+                  type: 'VariableDeclarator',
                   id: {
-                    type: "Identifier",
-                    name: "Component",
+                    type: 'Identifier',
+                    name: 'Component',
                   },
                   init: {
-                    type: "FunctionDeclaration",
+                    type: 'FunctionDeclaration',
                     id: {
-                      type: "Identifier",
-                      name: "Component",
+                      type: 'Identifier',
+                      name: 'Component',
                     },
                     params: [],
                     body: {
-                      type: "BlockStatement",
+                      type: 'BlockStatement',
                       body: [],
                     },
                     generator: false,
@@ -60,10 +60,10 @@ describe("client-build-plugin", () => {
               ],
             },
           ],
-          sourceType: "module",
+          sourceType: 'module',
         } as unknown as ESTree.Program;
 
-        const result = replaceExportDefault(ast, "Component");
+        const result = replaceExportDefault(ast, 'Component');
         expect(result).toEqual(expected);
       });
     });

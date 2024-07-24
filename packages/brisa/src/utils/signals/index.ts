@@ -1,8 +1,6 @@
-import { type IndicatorSignal, type WebContext } from "@/types";
+import type { IndicatorSignal, WebContext } from '@/types';
 
-type Effect = ((
-  addSubEffect: (effect: Effect) => Effect,
-) => unknown | Promise<unknown>) & {
+type Effect = ((addSubEffect: (effect: Effect) => Effect) => unknown | Promise<unknown>) & {
   id?: Effect;
 };
 type Cleanup = () => void | Promise<void>;
@@ -10,30 +8,27 @@ type Listener = (...params: any[]) => void;
 type State<T> = {
   value: T;
 };
-type StoreOperation = "get" | "set" | "delete";
+type StoreOperation = 'get' | 'set' | 'delete';
 
-const NOTIFY = "n";
-const SUBSCRIBE = "s";
-const UNSUBSCRIBE = "u";
-const INDICATE_PREFIX = "__ind:";
-const ORIGINAL_PREFIX = "__o:";
+const NOTIFY = 'n';
+const SUBSCRIBE = 's';
+const UNSUBSCRIBE = 'u';
+const INDICATE_PREFIX = '__ind:';
+const ORIGINAL_PREFIX = '__o:';
 
 const $window = window as any;
 
 // Create a store object only once (keeping SPA behavior)
-const globalStore = ($window._s ??= { Map: new Map($window._S) } as Record<
-  string,
-  any
->);
+const globalStore = ($window._s ??= { Map: new Map($window._S) } as Record<string, any>);
 
 // Create a subscription object only once (keeping SPA behavior)
 const sub = ($window.sub ??= createSubscription());
 
 // Only get/set/delete from store are reactive
-for (let op of ["get", "set", "delete"]) {
+for (const op of ['get', 'set', 'delete']) {
   globalStore[op] = (key: string, value: any) => {
     const res = globalStore.Map[op as StoreOperation](key, value);
-    sub[NOTIFY](key, value, op === "get");
+    sub[NOTIFY](key, value, op === 'get');
     return res;
   };
 }
@@ -41,12 +36,11 @@ for (let op of ["get", "set", "delete"]) {
 export default function signals() {
   const stack: Effect[] = [];
   const storeSignals = new Map();
-  const getSet = <T>(set: Map<unknown, Set<T>>, key: unknown) =>
-    set.get(key) ?? new Set();
+  const getSet = <T>(set: Map<unknown, Set<T>>, key: unknown) => set.get(key) ?? new Set();
 
-  let effects = new Map<State<unknown>, Set<Effect>>();
-  let cleanups = new Map<Effect, Set<Cleanup>>();
-  let subEffectsPerEffect = new Map<Effect, Set<Effect>>();
+  const effects = new Map<State<unknown>, Set<Effect>>();
+  const cleanups = new Map<Effect, Set<Cleanup>>();
+  const subEffectsPerEffect = new Map<Effect, Set<Effect>>();
   let subscribed = false;
 
   function manageStore(key: string, value: any, getter: boolean) {
@@ -62,7 +56,7 @@ export default function signals() {
 
   function cleanupAnEffect(eff: Effect) {
     const cleans = getSet<Cleanup>(cleanups, eff);
-    for (let clean of cleans) clean();
+    for (const clean of cleans) clean();
     cleanups.delete(eff);
   }
 
@@ -80,7 +74,7 @@ export default function signals() {
   function cleanSubEffects(fn: Effect) {
     const subEffects = getSet<Effect>(subEffectsPerEffect, fn);
 
-    for (let subEffect of subEffects) {
+    for (const subEffect of subEffects) {
       // Call cleanups of subeffects + remove them
       cleanupAnEffect(subEffect);
 
@@ -88,7 +82,7 @@ export default function signals() {
       cleanSubEffects(subEffect);
 
       // Remove subeffects registered via signal
-      for (let signalEffect of effects.keys()) {
+      for (const signalEffect of effects.keys()) {
         const signalEffects = effects.get(signalEffect)!;
         signalEffects.delete(subEffect);
         if (signalEffects.size === 0) effects.delete(signalEffect);
@@ -122,7 +116,7 @@ export default function signals() {
         const currentEffects = getSet<Effect>(effects, this);
         const clonedEffects = new Set<Effect>([...currentEffects]);
 
-        for (let fn of currentEffects) {
+        for (const fn of currentEffects) {
           // Avoid calling the same effect infinitely
           if (fn === stack[0]) {
             if (calledSameEffectOnce) continue;
@@ -151,7 +145,7 @@ export default function signals() {
   }
 
   function reset() {
-    for (let effect of cleanups.keys()) {
+    for (const effect of cleanups.keys()) {
       cleanupAnEffect(effect);
     }
     cleanups.clear();
@@ -205,7 +199,7 @@ export default function signals() {
     has(key: string) {
       return store.get(key) !== undefined;
     },
-  } as WebContext["store"];
+  } as WebContext['store'];
 
   // generate a server action indicator signal
   function indicate(key: string): IndicatorSignal {
@@ -213,7 +207,7 @@ export default function signals() {
     const indicator = derived(() => !!store.get(id)) as IndicatorSignal;
 
     indicator.id = id;
-    indicator.error = derived(() => store.get("e" + id));
+    indicator.error = derived(() => store.get('e' + id));
 
     return indicator;
   }
@@ -229,7 +223,7 @@ function createSubscription() {
       listeners.add(listener);
     },
     [NOTIFY](...params: any[]) {
-      for (let listener of listeners) listener(...params);
+      for (const listener of listeners) listener(...params);
     },
     [UNSUBSCRIBE](listener: Listener) {
       listeners.delete(listener);

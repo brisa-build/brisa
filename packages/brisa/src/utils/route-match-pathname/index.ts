@@ -1,8 +1,8 @@
-import { getConstants } from "@/constants";
+import { getConstants } from '@/constants';
 
 export default function routeMatchPathname(route: string, pathname: string) {
   const { REGEX } = getConstants();
-  const everyCharacter = ".*";
+  const everyCharacter = '.*';
   const routeWithoutDynamicParts = route
     .replace(REGEX.CATCH_ALL, everyCharacter) // [[...catchall]] -> [.*]
     .replace(REGEX.REST_DYNAMIC, everyCharacter) // [...rest] -> [.*]

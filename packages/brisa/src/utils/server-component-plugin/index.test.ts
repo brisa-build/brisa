@@ -1,26 +1,26 @@
-import { describe, expect, it, afterEach, spyOn, jest } from "bun:test";
-import { join } from "path";
+import { describe, expect, it, afterEach, spyOn, jest } from 'bun:test';
+import { join } from 'path';
 
-import serverComponentPlugin, { workaroundText } from ".";
-import { normalizeQuotes } from "@/helpers";
-import AST from "@/utils/ast";
-import { getConstants } from "@/constants";
+import serverComponentPlugin, { workaroundText } from '.';
+import { normalizeQuotes } from '@/helpers';
+import AST from '@/utils/ast';
+import { getConstants } from '@/constants';
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
-const FIXTURES = join(import.meta.dir, "..", "..", "__fixtures__");
-const webComponentPath = join(FIXTURES, "web-components", "web-component.tsx");
-const serverComponentPath = join(FIXTURES, "pages", "index.tsx");
+const FIXTURES = join(import.meta.dir, '..', '..', '__fixtures__');
+const webComponentPath = join(FIXTURES, 'web-components', 'web-component.tsx');
+const serverComponentPath = join(FIXTURES, 'pages', 'index.tsx');
 
 const toExpected = (s: string) =>
   normalizeQuotes(generateCodeFromAST(parseCodeToAST(s)) + workaroundText);
 
-describe("utils", () => {
+describe('utils', () => {
   afterEach(() => {
     globalThis.mockConstants = undefined;
     jest.restoreAllMocks();
   });
-  describe("serverComponentPlugin", () => {
+  describe('serverComponentPlugin', () => {
     it('should not register action ids if the attribute event does not start with "on"', () => {
       const code = `
         export default function ServerComponent({ onFoo }) {
@@ -30,7 +30,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       expect(out.hasActions).toBeFalse();
@@ -44,12 +44,12 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": webComponentPath,
+        'web-component': webComponentPath,
       };
 
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: webComponentPath,
       });
       expect(out.hasActions).toBeFalse();
@@ -64,7 +64,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -88,7 +88,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -109,7 +109,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -135,7 +135,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -161,7 +161,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -193,7 +193,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -210,11 +210,11 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": webComponentPath,
+        'web-component': webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -235,7 +235,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register different action ids for each event of a server-component", () => {
+    it('should register different action ids for each event of a server-component', () => {
       const code = `
         export default function ServerComponent() {
           return <Component onClick={() => console.log('clicked')} onMouseEnter={() => console.log('mouse-enter')} />;
@@ -243,7 +243,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -261,7 +261,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register different action ids of different inner server-components", () => {
+    it('should register different action ids of different inner server-components', () => {
       const code = `
         export default function ServerComponent() {
           return (
@@ -274,7 +274,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -297,7 +297,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register different action ids of different outer server-components", () => {
+    it('should register different action ids of different outer server-components', () => {
       const code = `
         export default function ServerComponent1() {
           return <div onClick={() => console.log('foo')} />;
@@ -310,7 +310,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -346,12 +346,12 @@ describe("utils", () => {
       globalThis.mockConstants = {
         ...getConstants(),
         CONFIG: {
-          output: "static",
+          output: 'static',
         },
       };
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -380,16 +380,16 @@ describe("utils", () => {
           return <div onClick={onFoo} />;
         }
       `;
-      const mockConsoleLog = spyOn(console, "log");
+      const mockConsoleLog = spyOn(console, 'log');
       globalThis.mockConstants = {
         ...getConstants(),
         CONFIG: {
-          output: "static",
+          output: 'static',
         },
       };
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -398,9 +398,7 @@ describe("utils", () => {
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(logs).toContain(
-        'Actions are not supported with the "output": "static" option.',
-      );
+      expect(logs).toContain('Actions are not supported with the "output": "static" option.');
       expect(logs).toContain(`The warn arises in: ${serverComponentPath}`);
     });
 
@@ -414,17 +412,17 @@ describe("utils", () => {
           return <div onClick={onFoo} />;
         }
       `;
-      const mockConsoleLog = spyOn(console, "log");
+      const mockConsoleLog = spyOn(console, 'log');
       globalThis.mockConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
         CONFIG: {
-          output: "static",
+          output: 'static',
         },
       };
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -447,12 +445,12 @@ describe("utils", () => {
       globalThis.mockConstants = {
         ...getConstants(),
         CONFIG: {
-          output: "desktop",
+          output: 'desktop',
         },
       };
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -481,16 +479,16 @@ describe("utils", () => {
           return <div onClick={onFoo} />;
         }
       `;
-      const mockConsoleLog = spyOn(console, "log");
+      const mockConsoleLog = spyOn(console, 'log');
       globalThis.mockConstants = {
         ...getConstants(),
         CONFIG: {
-          output: "desktop",
+          output: 'desktop',
         },
       };
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -499,9 +497,7 @@ describe("utils", () => {
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(logs).toContain(
-        'Actions are not supported with the "output": "desktop" option.',
-      );
+      expect(logs).toContain('Actions are not supported with the "output": "desktop" option.');
       expect(logs).toContain(`The warn arises in: ${serverComponentPath}`);
     });
 
@@ -515,17 +511,17 @@ describe("utils", () => {
           return <div onClick={onFoo} />;
         }
       `;
-      const mockConsoleLog = spyOn(console, "log");
+      const mockConsoleLog = spyOn(console, 'log');
       globalThis.mockConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
         CONFIG: {
-          output: "desktop",
+          output: 'desktop',
         },
       };
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -534,18 +530,18 @@ describe("utils", () => {
       expect(mockConsoleLog).not.toHaveBeenCalled();
     });
 
-    it("should convert a web-component to ServerComponent", () => {
+    it('should convert a web-component to ServerComponent', () => {
       const code = `
         export default function ServerComponent() {
           return <web-component />;
         }
       `;
       const allWebComponents = {
-        "web-component": webComponentPath,
+        'web-component': webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -563,7 +559,7 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it("should convert a list of the same web-component to ServerComponent", () => {
+    it('should convert a list of the same web-component to ServerComponent', () => {
       const code = `
         export default function ServerComponent() {
           return (
@@ -578,11 +574,11 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": webComponentPath,
+        'web-component': webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -608,7 +604,7 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it("should NOT SSR an integrated web-component with direct import and will be added as dependencies", () => {
+    it('should NOT SSR an integrated web-component with direct import and will be added as dependencies', () => {
       const code = `
         export default function ServerComponent() {
           return (
@@ -622,13 +618,13 @@ describe("utils", () => {
           );
         }
       `;
-      const DIRECT_IMPORT_PREFIX = "import:";
+      const DIRECT_IMPORT_PREFIX = 'import:';
       const allWebComponents = {
-        "web-component": DIRECT_IMPORT_PREFIX + webComponentPath,
+        'web-component': DIRECT_IMPORT_PREFIX + webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -639,7 +635,7 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it("should NOT SSR an integrated web-component with direct import and skipSSR attribute and will be added as dependencies", () => {
+    it('should NOT SSR an integrated web-component with direct import and skipSSR attribute and will be added as dependencies', () => {
       const code = `
         export default function ServerComponent() {
           return (
@@ -653,13 +649,13 @@ describe("utils", () => {
           );
         }
       `;
-      const DIRECT_IMPORT_PREFIX = "import:";
+      const DIRECT_IMPORT_PREFIX = 'import:';
       const allWebComponents = {
-        "web-component": DIRECT_IMPORT_PREFIX + webComponentPath,
+        'web-component': DIRECT_IMPORT_PREFIX + webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -677,11 +673,11 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": webComponentPath,
+        'web-component': webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -696,18 +692,18 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it("should not SSR a web-component that starts with native-", () => {
+    it('should not SSR a web-component that starts with native-', () => {
       const code = `
         export default function ServerComponent() {
           return <native-web-component />;
         }
       `;
       const allWebComponents = {
-        "native-web-component": "src/components/native-web-component.tsx",
+        'native-web-component': 'src/components/native-web-component.tsx',
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -729,11 +725,11 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": webComponentPath,
+        'web-component': webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -748,7 +744,7 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it("should use the same name if the web-component is used more than once", () => {
+    it('should use the same name if the web-component is used more than once', () => {
       const code = `
         export default function ServerComponent() {
           return (
@@ -760,11 +756,11 @@ describe("utils", () => {
         }
       `;
       const allWebComponents = {
-        "web-component": webComponentPath,
+        'web-component': webComponentPath,
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -787,7 +783,7 @@ describe("utils", () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it("should add all the dependencies", () => {
+    it('should add all the dependencies', () => {
       const code = `
         import { Foo } from "./foo.tsx";
         import { Bar } from "./bar.tsx";
@@ -806,12 +802,12 @@ describe("utils", () => {
       `;
 
       const allWebComponents = {
-        "web-component": webComponentPath,
+        'web-component': webComponentPath,
       };
 
       const out = serverComponentPlugin(code, {
         allWebComponents,
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
       const outputCode = normalizeQuotes(out.code);
@@ -834,15 +830,15 @@ describe("utils", () => {
         }
       `);
 
-      const pagesPath = join(FIXTURES, "pages");
+      const pagesPath = join(FIXTURES, 'pages');
 
       expect(out.hasActions).toBeFalse();
       expect(outputCode).toEqual(expected);
       expect(out.dependencies).toEqual(
         new Set([
-          join(pagesPath, "foo.tsx"),
-          join(pagesPath, "bar.tsx"),
-          join(pagesPath, "baz.tsx"),
+          join(pagesPath, 'foo.tsx'),
+          join(pagesPath, 'bar.tsx'),
+          join(pagesPath, 'baz.tsx'),
           webComponentPath,
         ]),
       );
@@ -857,7 +853,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -883,7 +879,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -903,7 +899,7 @@ describe("utils", () => {
     // On Components we want to propagate the action (without the need to create it),
     // meanwhile on elements we want to create the arrow function to allow the
     // rerenderInAction to re-render the target component
-    it("should NOT create the arrow function when is a Component instead of element", () => {
+    it('should NOT create the arrow function when is a Component instead of element', () => {
       const code = `
         export default function ServerComponent({onClick}) {
           return <Component onClick={onClick} />;
@@ -911,7 +907,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -937,7 +933,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -958,7 +954,7 @@ describe("utils", () => {
     // On Components we want to propagate the action (without the need to create it),
     // meanwhile on elements we want to create the arrow function to allow the
     // rerenderInAction to re-render the target component
-    it("should NOT create the arrow function using destructuring props comming from props in Component", () => {
+    it('should NOT create the arrow function using destructuring props comming from props in Component', () => {
       const code = `
         export default function ServerComponent({onClick}) {
           const props = { onClick };
@@ -967,7 +963,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -994,7 +990,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1012,7 +1008,7 @@ describe("utils", () => {
       );
     });
 
-    it("should NOT create the arrow function when a server-component has destructuring props comming from props with key:value in a Component", () => {
+    it('should NOT create the arrow function when a server-component has destructuring props comming from props with key:value in a Component', () => {
       const code = `
         export default function ServerComponent({onClick}) {
           const props = { onClick:onClick };
@@ -1021,7 +1017,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1049,7 +1045,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1078,7 +1074,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1107,7 +1103,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1136,7 +1132,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1166,7 +1162,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1196,7 +1192,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1216,12 +1212,12 @@ describe("utils", () => {
       globalThis.mockConstants = {
         ...getConstants(),
         CONFIG: {
-          output: "static",
+          output: 'static',
         },
       };
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1247,7 +1243,7 @@ describe("utils", () => {
       `;
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1273,7 +1269,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register _hasActions only in the component that has events", () => {
+    it('should register _hasActions only in the component that has events', () => {
       const code = `
         export function ServerComponent() {
           return <Component />;
@@ -1286,7 +1282,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1307,7 +1303,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register _hasActions on a function component without export", () => {
+    it('should register _hasActions on a function component without export', () => {
       const code = `
         function ServerComponent() {
           return <Component onClick={() => console.log('clicked')} />;
@@ -1316,7 +1312,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1333,7 +1329,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register _hasActions on a variable with function component without export", () => {
+    it('should register _hasActions on a variable with function component without export', () => {
       const code = `
         const Foo = function() {
           return <Component onClick={() => console.log('clicked')} />;
@@ -1342,7 +1338,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1359,14 +1355,14 @@ describe("utils", () => {
       );
     });
 
-    it("should register _hasActions on a arrow fn component without export", () => {
+    it('should register _hasActions on a arrow fn component without export', () => {
       const code = `
         const ServerComponent = () => <Component onClick={() => console.log('clicked')} />;
       `;
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1380,7 +1376,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register _hasActions on multiple arrow fn component without export", () => {
+    it('should register _hasActions on multiple arrow fn component without export', () => {
       const code = `
         const ServerComponent = () => <Component onClick={() => console.log('clicked')} />,
         ServerComponent2 = () => <Component onClick={() => console.log('clicked')} />;
@@ -1388,7 +1384,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1405,7 +1401,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register only _hasActions on arrow fn component that has actions", () => {
+    it('should register only _hasActions on arrow fn component that has actions', () => {
       const code = `
         const ServerComponent = () => <Component onClick={() => console.log('clicked')} />,
         ServerComponent2 = () => <Component onClick={() => console.log('clicked')} />,
@@ -1415,7 +1411,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1435,7 +1431,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register only _hasActions on arrow fn component that has actions in different var declarations", () => {
+    it('should register only _hasActions on arrow fn component that has actions in different var declarations', () => {
       const code = `
         const ServerComponent = () => <Component onClick={() => console.log('clicked')} />;
         const ServerComponent2 = () => <Component onClick={() => console.log('clicked')} />;
@@ -1445,7 +1441,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1465,7 +1461,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register only _hasActions on function component that has actions in different var declarations", () => {
+    it('should register only _hasActions on function component that has actions in different var declarations', () => {
       const code = `
         function ServerComponent() { return <Component onClick={() => console.log('clicked')} /> };
         function ServerComponent2() { return <Component onClick={() => console.log('clicked')} /> };
@@ -1475,7 +1471,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1495,7 +1491,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register _hasActions on multiple arrow fn component WITH export", () => {
+    it('should register _hasActions on multiple arrow fn component WITH export', () => {
       const code = `
         const ServerComponent = () => <Component onClick={() => console.log('clicked')} />,
         ServerComponent2 = () => <Component onClick={() => console.log('clicked')} />;
@@ -1505,7 +1501,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1524,7 +1520,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register _hasActions only in the component that has events using outside elements", () => {
+    it('should register _hasActions only in the component that has events using outside elements', () => {
       const code = `
        const el = <Component />;
        const el2 = <Component onClick={() => console.log('clicked')} />;
@@ -1540,7 +1536,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1564,7 +1560,7 @@ describe("utils", () => {
       );
     });
 
-    it("should register _hasActions only in the component that has events using outside elements generators", () => {
+    it('should register _hasActions only in the component that has events using outside elements generators', () => {
       const code = `
        const el = () => <Component />;
        const el2 = () => <Component onClick={() => console.log('clicked')} />;
@@ -1580,7 +1576,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1605,7 +1601,7 @@ describe("utils", () => {
       );
     });
 
-    it("should NOT propagate _hasActions from one component to another one consuming with JSX", () => {
+    it('should NOT propagate _hasActions from one component to another one consuming with JSX', () => {
       const code = `
        const A = () => <Component />;
        const B = () => <Component onClick={() => console.log('clicked')} />;
@@ -1621,7 +1617,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1660,7 +1656,7 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
@@ -1684,7 +1680,7 @@ describe("utils", () => {
       );
     });
 
-    it("should NOT solve identifiers from imports when already exists actions in the component", () => {
+    it('should NOT solve identifiers from imports when already exists actions in the component', () => {
       const code = `
         import { getEl } from './el.ts';
 
@@ -1698,14 +1694,12 @@ describe("utils", () => {
 
       const out = serverComponentPlugin(code, {
         allWebComponents: {},
-        fileID: "a1",
+        fileID: 'a1',
         path: serverComponentPath,
       });
 
       expect(out.hasActions).toBeTrue();
-      expect(out.dependencies).toEqual(
-        new Set([join(FIXTURES, "pages", "el.ts")]),
-      );
+      expect(out.dependencies).toEqual(new Set([join(FIXTURES, 'pages', 'el.ts')]));
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
         import { getEl } from './el.ts';
@@ -1722,10 +1716,8 @@ describe("utils", () => {
       );
     });
 
-    it.todo(
-      "should solve identifiers from imports when no actions in the component",
-      () => {
-        const code = `
+    it.todo('should solve identifiers from imports when no actions in the component', () => {
+      const code = `
         import { getEl } from './el.ts';
 
         export default function Component({text}) {
@@ -1733,17 +1725,15 @@ describe("utils", () => {
         }
       `;
 
-        const out = serverComponentPlugin(code, {
-          allWebComponents: {},
-          fileID: "a1",
-          path: serverComponentPath,
-        });
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
 
-        expect(out.dependencies).toEqual(
-          new Set([join(FIXTURES, "pages", "el.ts")]),
-        );
-        expect(normalizeQuotes(out.code)).toBe(
-          toExpected(`
+      expect(out.dependencies).toEqual(new Set([join(FIXTURES, 'pages', 'el.ts')]));
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
         import { getEl } from './el.ts';
 
         export default function Component({text}) {
@@ -1752,12 +1742,11 @@ describe("utils", () => {
 
         Component._hasActions = getEl?._hasActions;
       `),
-        );
-      },
-    );
+      );
+    });
 
     it.todo(
-      "should solve different identifiers from imports when no actions in the component",
+      'should solve different identifiers from imports when no actions in the component',
       () => {
         const code = `
         import getEl from './el.ts';
@@ -1771,15 +1760,15 @@ describe("utils", () => {
 
         const out = serverComponentPlugin(code, {
           allWebComponents: {},
-          fileID: "a1",
+          fileID: 'a1',
           path: serverComponentPath,
         });
 
         expect(out.dependencies).toEqual(
           new Set([
-            join(FIXTURES, "pages", "el.ts"),
-            join(FIXTURES, "pages", "el2.ts"),
-            join(FIXTURES, "pages", "el3.ts"),
+            join(FIXTURES, 'pages', 'el.ts'),
+            join(FIXTURES, 'pages', 'el2.ts'),
+            join(FIXTURES, 'pages', 'el3.ts'),
           ]),
         );
         expect(normalizeQuotes(out.code)).toBe(
@@ -1798,10 +1787,8 @@ describe("utils", () => {
       },
     );
 
-    it.todo(
-      "should NOT solve identifiers from imports not used in the component",
-      () => {
-        const code = `
+    it.todo('should NOT solve identifiers from imports not used in the component', () => {
+      const code = `
         import getEl from './el.ts';
         import { getEl2 } from './el2.ts';
         import { getEl3 } from './el3.ts';
@@ -1813,21 +1800,21 @@ describe("utils", () => {
         console.log(getEl2);
       `;
 
-        const out = serverComponentPlugin(code, {
-          allWebComponents: {},
-          fileID: "a1",
-          path: serverComponentPath,
-        });
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
 
-        expect(out.dependencies).toEqual(
-          new Set([
-            join(FIXTURES, "pages", "el.ts"),
-            join(FIXTURES, "pages", "el2.ts"),
-            join(FIXTURES, "pages", "el3.ts"),
-          ]),
-        );
-        expect(normalizeQuotes(out.code)).toBe(
-          toExpected(`
+      expect(out.dependencies).toEqual(
+        new Set([
+          join(FIXTURES, 'pages', 'el.ts'),
+          join(FIXTURES, 'pages', 'el2.ts'),
+          join(FIXTURES, 'pages', 'el3.ts'),
+        ]),
+      );
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
         import getEl from './el.ts';
         import { getEl2 } from './el2.ts';
         import { getEl3 } from './el3.ts';
@@ -1840,8 +1827,7 @@ describe("utils", () => {
 
         Component._hasActions = getEl?._hasActions ?? getEl3?._hasActions;
       `),
-        );
-      },
-    );
+      );
+    });
   });
 });

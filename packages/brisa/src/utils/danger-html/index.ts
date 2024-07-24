@@ -1,6 +1,6 @@
 export default function dangerHTML(html: string) {
   return {
-    type: "HTML",
+    type: 'HTML',
     props: {
       html,
     },

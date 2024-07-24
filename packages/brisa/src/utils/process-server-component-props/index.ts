@@ -1,7 +1,7 @@
-import type { Controller } from "@/utils/extend-stream-controller";
-import isAnAction from "@/utils/is-an-action";
+import type { Controller } from '@/utils/extend-stream-controller';
+import isAnAction from '@/utils/is-an-action';
 
-const ACTION_PREFIX = "data-action";
+const ACTION_PREFIX = 'data-action';
 
 export default function processServerComponentProps(
   props: Record<string, unknown>,
@@ -21,16 +21,9 @@ export default function processServerComponentProps(
     // instead of an action it should still work. However, adding the actionId
     // property to the function then makes it much easier from render-attributes
     // to rebuild the data-action attributes again.
-    if (
-      typeof value === "function" &&
-      actionIdKey in props &&
-      !("actionId" in value)
-    ) {
+    if (typeof value === 'function' && actionIdKey in props && !('actionId' in value)) {
       if (!actions) {
-        actions = getActionDependencies(
-          parentProps,
-          controller?.getParentComponentId(),
-        );
+        actions = getActionDependencies(parentProps, controller?.getParentComponentId());
       }
 
       Object.assign(value, {
@@ -55,10 +48,7 @@ export default function processServerComponentProps(
   return processedProps;
 }
 
-function getActionDependencies(
-  parentProps?: Record<string, unknown>,
-  componentId: string = "",
-) {
+function getActionDependencies(parentProps?: Record<string, unknown>, componentId = '') {
   const parentDependencies = [];
   let grandparentsDependencies;
 
@@ -71,17 +61,11 @@ function getActionDependencies(
     if (isAnAction(action)) {
       parentDependencies.push([parentProp, action.actionId, componentId]);
 
-      if (
-        !grandparentsDependencies &&
-        Array.isArray(action.actions) &&
-        action.actions.length > 0
-      ) {
+      if (!grandparentsDependencies && Array.isArray(action.actions) && action.actions.length > 0) {
         grandparentsDependencies = action.actions;
       }
     }
   }
 
-  return parentDependencies.length
-    ? [parentDependencies, ...(grandparentsDependencies ?? [])]
-    : [];
+  return parentDependencies.length ? [parentDependencies, ...(grandparentsDependencies ?? [])] : [];
 }

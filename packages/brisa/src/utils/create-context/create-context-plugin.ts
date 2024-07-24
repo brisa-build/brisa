@@ -1,11 +1,10 @@
-import type { BunPlugin } from "bun";
-import { logError } from "@/utils/log/log-build";
-import AST from "@/utils/ast";
+import type { BunPlugin } from 'bun';
+import { logError } from '@/utils/log/log-build';
+import AST from '@/utils/ast';
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
-globalThis.BrisaRegistry =
-  globalThis.BrisaRegistry || new Map<string, number>();
+globalThis.BrisaRegistry = globalThis.BrisaRegistry || new Map<string, number>();
 
 /**
  * This Bun build plugin is responsible for generating the isomorphic context ID.
@@ -16,10 +15,10 @@ globalThis.BrisaRegistry =
  */
 export default function createContextPlugin() {
   return {
-    name: "context-plugin",
+    name: 'context-plugin',
     setup(build) {
       build.onLoad(
-        { filter: new RegExp(".*/src/.*\\.(tsx|jsx|js|ts|mdx)") },
+        { filter: /.*\/src\/.*\.(tsx|jsx|js|ts|mdx)/ },
         async ({ path, loader }) => {
           let code = await Bun.file(path).text();
 
@@ -45,14 +44,12 @@ export default function createContextPlugin() {
 }
 
 export function generateContextID(code: string, path: string) {
-  if (!code.includes("createContext") || !code.includes("brisa")) return code;
+  if (!code.includes('createContext') || !code.includes('brisa')) return code;
 
   const ast = parseCodeToAST(code);
   const pageId = globalThis.BrisaRegistry.has(path)
     ? globalThis.BrisaRegistry.get(path)
-    : globalThis.BrisaRegistry.set(path, globalThis.BrisaRegistry.size).get(
-        path,
-      );
+    : globalThis.BrisaRegistry.set(path, globalThis.BrisaRegistry.size).get(path);
 
   let identifier: string | undefined;
   let count = 0;
@@ -61,12 +58,9 @@ export function generateContextID(code: string, path: string) {
     if (identifier) return value;
 
     // ESM
-    if (
-      value?.type === "ImportDeclaration" &&
-      value?.source?.value === "brisa"
-    ) {
+    if (value?.type === 'ImportDeclaration' && value?.source?.value === 'brisa') {
       for (const specifier of value?.specifiers ?? []) {
-        if (specifier?.imported?.name === "createContext") {
+        if (specifier?.imported?.name === 'createContext') {
           identifier = specifier?.local?.name;
           return value;
         }
@@ -74,13 +68,10 @@ export function generateContextID(code: string, path: string) {
     }
 
     // CJS
-    else if (
-      value?.type === "VariableDeclarator" &&
-      value?.init?.callee?.name === "require"
-    ) {
-      if (value?.id?.type === "ObjectPattern") {
+    else if (value?.type === 'VariableDeclarator' && value?.init?.callee?.name === 'require') {
+      if (value?.id?.type === 'ObjectPattern') {
         for (const property of value?.id?.properties ?? []) {
-          if (property?.key?.name === "createContext") {
+          if (property?.key?.name === 'createContext') {
             identifier = property?.value?.name;
             return value;
           }
@@ -93,12 +84,12 @@ export function generateContextID(code: string, path: string) {
 
   function traverseBToA(key: string, value: any) {
     if (
-      value?.type === "CallExpression" &&
+      value?.type === 'CallExpression' &&
       value?.callee?.name === identifier &&
       value.arguments?.length < 2
     ) {
-      const contextID = { type: "Literal", value: `${pageId}:${count++}` };
-      const undefinedDefaultValue = { type: "Identifier", name: "undefined" };
+      const contextID = { type: 'Literal', value: `${pageId}:${count++}` };
+      const undefinedDefaultValue = { type: 'Identifier', name: 'undefined' };
       value.arguments =
         value.arguments.length === 0
           ? [undefinedDefaultValue, contextID]

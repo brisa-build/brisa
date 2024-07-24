@@ -1,3 +1,3 @@
 export default {
-  output: "server",
+  output: 'server',
 };

@@ -1,27 +1,24 @@
-import type { RequestContext } from "@/types";
-import extendRequestContext from "@/utils/extend-request-context";
-import isAssetRequest from "@/utils/is-asset-request";
-import handleI18n from "@/utils/handle-i18n";
-import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
-import { addBasePathToStringURL } from "@/utils/base-path";
+import type { RequestContext } from '@/types';
+import extendRequestContext from '@/utils/extend-request-context';
+import isAssetRequest from '@/utils/is-asset-request';
+import handleI18n from '@/utils/handle-i18n';
+import redirectTrailingSlash from '@/utils/redirect-trailing-slash';
+import { addBasePathToStringURL } from '@/utils/base-path';
 
 export function redirect(url: string, status = 301) {
   return new Response(null, {
     status,
     headers: {
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      expires: "-1",
-      pragma: "no-cache",
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      expires: '-1',
+      pragma: 'no-cache',
       location: addBasePathToStringURL(url),
-      vary: "Accept-Language",
+      vary: 'Accept-Language',
     },
   });
 }
 
-export function redirectFromUnnormalizedURL(
-  url: URL,
-  currentRequest: RequestContext,
-) {
+export function redirectFromUnnormalizedURL(url: URL, currentRequest: RequestContext) {
   if (url.origin !== new URL(currentRequest.url).origin) {
     return redirect(url.toString(), 307);
   }
@@ -29,8 +26,7 @@ export function redirectFromUnnormalizedURL(
   const req = extendRequestContext({ originalRequest: new Request(url) });
   const isAnAsset = isAssetRequest(req);
   const i18nRes = isAnAsset ? {} : handleI18n(req);
-  const isAnAction =
-    currentRequest.method === "POST" && currentRequest.headers.has("x-action");
+  const isAnAction = currentRequest.method === 'POST' && currentRequest.headers.has('x-action');
 
   if (i18nRes.response) return i18nRes.response;
 

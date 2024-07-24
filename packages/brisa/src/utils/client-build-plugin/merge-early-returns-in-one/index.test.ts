@@ -1,26 +1,24 @@
-import { describe, expect, it } from "bun:test";
-import { ESTree } from "meriyah";
-import mergeEarlyReturnsInOne from ".";
-import { normalizeQuotes } from "@/helpers";
-import AST from "@/utils/ast";
-import getWebComponentAst from "../get-web-component-ast";
+import { describe, expect, it } from 'bun:test';
+import type { ESTree } from 'meriyah';
+import mergeEarlyReturnsInOne from '.';
+import { normalizeQuotes } from '@/helpers';
+import AST from '@/utils/ast';
+import getWebComponentAst from '../get-web-component-ast';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutput = (code: string) => {
   const reactiveAst = parseCodeToAST(code);
   const [componentBranch, index] = getWebComponentAst(reactiveAst);
-  const outputComponentAst = mergeEarlyReturnsInOne(
-    componentBranch as ESTree.FunctionDeclaration,
-  );
+  const outputComponentAst = mergeEarlyReturnsInOne(componentBranch as ESTree.FunctionDeclaration);
 
   (reactiveAst.body[index as number] as any).declaration = outputComponentAst;
 
   return normalizeQuotes(generateCodeFromAST(reactiveAst));
 };
 
-describe("utils", () => {
-  describe("client-build-plugin", () => {
-    describe("merge-early-returns-in-one", () => {
+describe('utils', () => {
+  describe('client-build-plugin', () => {
+    describe('merge-early-returns-in-one', () => {
       it("should not merge when an if doesn't have a return statement", () => {
         const input = `
           export default function Component({ propName }) {
@@ -111,7 +109,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should merge early returns in one", () => {
+      it('should merge early returns in one', () => {
         const input = `
         export default function Component({ propName }) {
           if (propName.value) {
@@ -137,7 +135,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should merge early returns in one when there are multi if-elseif-else", () => {
+      it('should merge early returns in one when there are multi if-elseif-else', () => {
         const input = `
           export default function Component({ propName }) {
             if (propName.value) {
@@ -167,7 +165,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work with a very nested early return", () => {
+      it('should work with a very nested early return', () => {
         const input = `
           export default function Component({ propName }) {
             if (propName.value.startsWith('a')) {
@@ -202,7 +200,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work with a switch statement", () => {
+      it('should work with a switch statement', () => {
         const input = `
           export default function Component({ propName }) {
             switch (propName.value) {
@@ -234,7 +232,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work with a switch-case with block statements", () => {
+      it('should work with a switch-case with block statements', () => {
         const input = `
           export default function Component({ propName }) {
             switch (propName.value) {
@@ -272,7 +270,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work with a mix between if-else and switch-case and final return", () => {
+      it('should work with a mix between if-else and switch-case and final return', () => {
         const input = `
           export default function Component({ propName }) {
             if (propName.value === 'a') {
@@ -312,7 +310,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should not include code before the first early return inside the array of the final return", () => {
+      it('should not include code before the first early return inside the array of the final return', () => {
         const input = `
           export default function Component({ propName }, { state, effect }) {
             const user = state({ name: 'Aral' });
@@ -451,7 +449,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work when an if is declaring an arrow function with a return statement inside", () => {
+      it('should work when an if is declaring an arrow function with a return statement inside', () => {
         const input = `
           export default function Component({ propName }) {
             if (propName.value) {
@@ -469,7 +467,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should work when an if is declaring an function with a return statement inside", () => {
+      it('should work when an if is declaring an function with a return statement inside', () => {
         const input = `
         export default function Component({ propName }) {
           if (propName.value) {
@@ -498,7 +496,7 @@ describe("utils", () => {
         expect(output).toEqual(expected);
       });
 
-      it("should not merge when there is a map inside a condition", () => {
+      it('should not merge when there is a map inside a condition', () => {
         const input = `
         export default function Component({ propName }) {
           let example = ['a', 'b', 'c'];

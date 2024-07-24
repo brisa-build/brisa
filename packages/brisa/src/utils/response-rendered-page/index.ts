@@ -1,12 +1,12 @@
-import type { RequestContext } from "@/types";
-import type { MatchedRoute } from "bun";
-import path from "node:path";
-import fs from "node:fs";
-import renderToReadableStream from "@/utils/render-to-readable-stream";
-import { getConstants } from "@/constants";
-import transferStoreService from "@/utils/transfer-store-service";
-import { RenderInitiator } from "@/public-constants";
-import getPageComponentWithHeaders from "@/utils/get-page-component-with-headers";
+import type { RequestContext } from '@/types';
+import type { MatchedRoute } from 'bun';
+import path from 'node:path';
+import fs from 'node:fs';
+import renderToReadableStream from '@/utils/render-to-readable-stream';
+import { getConstants } from '@/constants';
+import transferStoreService from '@/utils/transfer-store-service';
+import { RenderInitiator } from '@/public-constants';
+import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers';
 
 type Params = {
   req: RequestContext;
@@ -24,14 +24,13 @@ export default async function responseRenderedPage({
   headers = {},
 }: Params) {
   const { transferClientStoreToServer } = await transferStoreService(req);
-  const { PageComponent, pageModule, pageHeaders } =
-    await getPageComponentWithHeaders({
-      req,
-      route,
-      error,
-      status,
-      headers,
-    });
+  const { PageComponent, pageModule, pageHeaders } = await getPageComponentWithHeaders({
+    req,
+    route,
+    error,
+    status,
+    headers,
+  });
 
   // Avoid to transfer again if comes from a rerender from an action
   if (req.renderInitiator !== RenderInitiator.SERVER_ACTION) {
@@ -56,10 +55,10 @@ export default async function responseRenderedPage({
 
 function getPrerenderedPage(route: MatchedRoute) {
   const { BUILD_DIR, CONFIG } = getConstants();
-  const { pathname } = new URL(route.pathname, "http://localhost");
+  const { pathname } = new URL(route.pathname, 'http://localhost');
   const filePath = path.join(
     BUILD_DIR,
-    "prerendered-pages",
+    'prerendered-pages',
     CONFIG.trailingSlash ? `${pathname}/index.html` : `${pathname}.html`,
   );
 

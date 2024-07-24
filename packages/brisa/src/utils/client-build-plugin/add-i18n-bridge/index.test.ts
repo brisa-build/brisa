@@ -1,34 +1,34 @@
-import AST from "@/utils/ast";
-import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test";
-import addI18nBridge from ".";
-import { normalizeQuotes } from "@/helpers";
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import AST from '@/utils/ast';
+import { describe, it, expect, mock, beforeEach, afterEach } from 'bun:test';
+import addI18nBridge from '.';
+import { normalizeQuotes } from '@/helpers';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
 
 const I18N_CONFIG = {
-  defaultLocale: "en",
-  locales: ["en", "pt"],
+  defaultLocale: 'en',
+  locales: ['en', 'pt'],
   messages: {
     en: {
-      hello: "Hello {{name}}",
+      hello: 'Hello {{name}}',
     },
     pt: {
-      hello: "Olá {{name}}",
+      hello: 'Olá {{name}}',
     },
   },
   pages: {},
 };
 
-mock.module("@/constants", () => ({
+mock.module('@/constants', () => ({
   default: { I18N_CONFIG },
 }));
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const emptyAst = parseCodeToAST("");
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
+const emptyAst = parseCodeToAST('');
 
-describe("utils", () => {
-  describe("client-build-plugin", () => {
-    describe("add-i18n-bridge", () => {
-      it("should add the code at the bottom", () => {
+describe('utils', () => {
+  describe('client-build-plugin', () => {
+    describe('add-i18n-bridge', () => {
+      it('should add the code at the bottom', () => {
         const code = `
           import foo from 'bar';
           import baz from 'qux';
@@ -93,7 +93,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
       });
 
-      it("should add the code at the bottom with i18n keys logic and the import on top", () => {
+      it('should add the code at the bottom with i18n keys logic and the import on top', () => {
         const code = `
           import foo from 'bar';
           import baz from 'qux';
@@ -133,7 +133,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
       });
 
-      it("should add work with empty code", () => {
+      it('should add work with empty code', () => {
         const outputAst = addI18nBridge(emptyAst, {
           usei18nKeysLogic: false,
           i18nAdded: false,
@@ -154,7 +154,7 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
       });
 
-      it("should work with empty code with i18n keys logic", () => {
+      it('should work with empty code with i18n keys logic', () => {
         const outputAst = addI18nBridge(emptyAst, {
           usei18nKeysLogic: true,
           i18nAdded: false,
@@ -184,26 +184,26 @@ describe("utils", () => {
         expect(outputCode).toBe(expectedCode);
       });
     });
-    describe("add-i18n-bridge functionality", () => {
+    describe('add-i18n-bridge functionality', () => {
       beforeEach(() => GlobalRegistrator.register());
       afterEach(() => GlobalRegistrator.unregister());
 
-      it("should work the window.i18n without translate code", async () => {
+      it('should work the window.i18n without translate code', async () => {
         const ast = addI18nBridge(emptyAst, {
           usei18nKeysLogic: false,
           i18nAdded: false,
           isTranslateCoreAdded: false,
         });
         const output = generateCodeFromAST(ast);
-        const script = document.createElement("script");
+        const script = document.createElement('script');
         script.innerHTML = output;
-        document.documentElement.lang = "pt";
+        document.documentElement.lang = 'pt';
         document.body.appendChild(script);
 
-        expect(window.i18n.locale).toBe("pt");
+        expect(window.i18n.locale).toBe('pt');
       });
 
-      it("should work the window.i18n with translate code", async () => {
+      it('should work the window.i18n with translate code', async () => {
         const ast = addI18nBridge(emptyAst, {
           usei18nKeysLogic: true,
           i18nAdded: false,
@@ -216,18 +216,18 @@ describe("utils", () => {
           'const translateCore = () => (k) => "Olá John";',
         );
 
-        window.i18nMessages = I18N_CONFIG.messages["pt"];
+        window.i18nMessages = I18N_CONFIG.messages['pt'];
 
-        const script = document.createElement("script");
+        const script = document.createElement('script');
         script.innerHTML = output;
-        document.documentElement.lang = "pt";
+        document.documentElement.lang = 'pt';
         document.body.appendChild(script);
 
-        expect(window.i18n.locale).toBe("pt");
-        expect(window.i18n.t("hello", { name: "John" })).toBe("Olá John");
+        expect(window.i18n.locale).toBe('pt');
+        expect(window.i18n.t('hello', { name: 'John' })).toBe('Olá John');
       });
 
-      it("should work the window.i18n with translate code in separate steps", async () => {
+      it('should work the window.i18n with translate code in separate steps', async () => {
         const ast1 = addI18nBridge(emptyAst, {
           usei18nKeysLogic: false,
           i18nAdded: false,
@@ -246,18 +246,18 @@ describe("utils", () => {
           'const translateCore = () => (k) => "Olá John";',
         );
 
-        window.i18nMessages = I18N_CONFIG.messages["pt"];
+        window.i18nMessages = I18N_CONFIG.messages['pt'];
 
-        const script = document.createElement("script");
+        const script = document.createElement('script');
         script.innerHTML = output;
-        document.documentElement.lang = "pt";
+        document.documentElement.lang = 'pt';
         document.body.appendChild(script);
 
-        expect(window.i18n.locale).toBe("pt");
-        expect(window.i18n.t("hello", { name: "John" })).toBe("Olá John");
+        expect(window.i18n.locale).toBe('pt');
+        expect(window.i18n.t('hello', { name: 'John' })).toBe('Olá John');
       });
 
-      it("should override messages using i18n.overrideMessages util", () => {
+      it('should override messages using i18n.overrideMessages util', () => {
         const ast = addI18nBridge(emptyAst, {
           usei18nKeysLogic: true,
           i18nAdded: false,
@@ -270,27 +270,27 @@ describe("utils", () => {
           "const translateCore = () => (k) => window.i18nMessages[k].replace('{{name}}', 'John');",
         );
 
-        window.i18nMessages = structuredClone(I18N_CONFIG.messages["pt"]);
+        window.i18nMessages = structuredClone(I18N_CONFIG.messages['pt']);
 
-        const script = document.createElement("script");
+        const script = document.createElement('script');
         script.innerHTML = output;
-        document.documentElement.lang = "pt";
+        document.documentElement.lang = 'pt';
         document.body.appendChild(script);
 
-        expect(window.i18n.locale).toBe("pt");
-        expect(window.i18n.t("hello", { name: "John" })).toBe("Olá John");
+        expect(window.i18n.locale).toBe('pt');
+        expect(window.i18n.t('hello', { name: 'John' })).toBe('Olá John');
 
         window.i18n.overrideMessages((messages: Record<string, any>) => ({
           ...messages,
-          hello: "Olááá {{name}}",
+          hello: 'Olááá {{name}}',
         }));
 
         expect(window.i18n.messages).toEqual({ pt: window.i18nMessages });
-        expect(window.i18nMessages).toEqual({ hello: "Olááá {{name}}" });
-        expect(window.i18n.t("hello", { name: "John" })).toBe("Olááá John");
+        expect(window.i18nMessages).toEqual({ hello: 'Olááá {{name}}' });
+        expect(window.i18n.t('hello', { name: 'John' })).toBe('Olááá John');
       });
 
-      it("should override messages using ASYNC i18n.overrideMessages util", async () => {
+      it('should override messages using ASYNC i18n.overrideMessages util', async () => {
         const ast = addI18nBridge(emptyAst, {
           usei18nKeysLogic: true,
           i18nAdded: false,
@@ -303,26 +303,24 @@ describe("utils", () => {
           "const translateCore = () => (k) => window.i18nMessages[k].replace('{{name}}', 'John');",
         );
 
-        window.i18nMessages = structuredClone(I18N_CONFIG.messages["pt"]);
+        window.i18nMessages = structuredClone(I18N_CONFIG.messages['pt']);
 
-        const script = document.createElement("script");
+        const script = document.createElement('script');
         script.innerHTML = output;
-        document.documentElement.lang = "pt";
+        document.documentElement.lang = 'pt';
         document.body.appendChild(script);
 
-        expect(window.i18n.locale).toBe("pt");
-        expect(window.i18n.t("hello", { name: "John" })).toBe("Olá John");
+        expect(window.i18n.locale).toBe('pt');
+        expect(window.i18n.t('hello', { name: 'John' })).toBe('Olá John');
 
-        await window.i18n.overrideMessages(
-          async (messages: Record<string, any>) => ({
-            ...messages,
-            hello: "Olááá {{name}}",
-          }),
-        );
+        await window.i18n.overrideMessages(async (messages: Record<string, any>) => ({
+          ...messages,
+          hello: 'Olááá {{name}}',
+        }));
 
         expect(window.i18n.messages).toEqual({ pt: window.i18nMessages });
-        expect(window.i18nMessages).toEqual({ hello: "Olááá {{name}}" });
-        expect(window.i18n.t("hello", { name: "John" })).toBe("Olááá John");
+        expect(window.i18nMessages).toEqual({ hello: 'Olááá {{name}}' });
+        expect(window.i18n.t('hello', { name: 'John' })).toBe('Olááá John');
       });
     });
   });

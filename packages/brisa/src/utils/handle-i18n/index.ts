@@ -1,34 +1,28 @@
-import getLocaleFromRequest from "@/utils/get-locale-from-request";
-import getRouteMatcher from "@/utils/get-route-matcher";
-import { getConstants } from "@/constants";
-import translateCore from "@/utils/translate-core";
-import adaptRouterToPageTranslations from "@/utils/adapt-router-to-page-translations";
-import type { RequestContext } from "@/types";
-import { logError } from "@/utils/log/log-build";
-import { redirect } from "@/utils/redirect";
+import getLocaleFromRequest from '@/utils/get-locale-from-request';
+import getRouteMatcher from '@/utils/get-route-matcher';
+import { getConstants } from '@/constants';
+import translateCore from '@/utils/translate-core';
+import adaptRouterToPageTranslations from '@/utils/adapt-router-to-page-translations';
+import type { RequestContext } from '@/types';
+import { logError } from '@/utils/log/log-build';
+import { redirect } from '@/utils/redirect';
 
 export default function handleI18n(req: RequestContext): {
   response?: Response;
   pagesRouter?: ReturnType<typeof getRouteMatcher>;
   rootRouter?: ReturnType<typeof getRouteMatcher>;
 } {
-  const {
-    PAGES_DIR,
-    BUILD_DIR,
-    RESERVED_PAGES,
-    I18N_CONFIG,
-    CONFIG,
-    IS_PRODUCTION,
-  } = getConstants();
+  const { PAGES_DIR, BUILD_DIR, RESERVED_PAGES, I18N_CONFIG, CONFIG, IS_PRODUCTION } =
+    getConstants();
   const { locales, defaultLocale, pages, domains } = I18N_CONFIG || {};
-  const trailingSlashSymbol = CONFIG.trailingSlash ? "/" : "";
+  const trailingSlashSymbol = CONFIG.trailingSlash ? '/' : '';
 
   if (!defaultLocale || !locales?.length) return {};
 
   const locale = getLocaleFromRequest(req);
   const url = new URL(req.finalURL);
-  const [, localeFromUrl] = url.pathname.split("/");
-  const pathname = url.pathname.replace(/\/$/, "");
+  const [, localeFromUrl] = url.pathname.split('/');
+  const pathname = url.pathname.replace(/\/$/, '');
 
   const routers = {
     pagesRouter: getRouteMatcher(PAGES_DIR, RESERVED_PAGES, locale),
@@ -40,14 +34,13 @@ export default function handleI18n(req: RequestContext): {
     const { route } = routers.pagesRouter.match(req);
     const translatedRoute = pages?.[route?.name!]?.[locale] ?? pathname;
     const [domain, domainConf] =
-      Object.entries(domains || {}).find(
-        ([, domainConf]) => domainConf.defaultLocale === locale,
-      ) ?? [];
+      Object.entries(domains || {}).find(([, domainConf]) => domainConf.defaultLocale === locale) ??
+      [];
 
     const finalPathname = `/${locale}${translatedRoute}${url.search}${url.hash}${trailingSlashSymbol}`;
     const applyDomain = domain && (IS_PRODUCTION || domainConf?.dev);
     const location = applyDomain
-      ? `${domainConf?.protocol || "https"}://${domain}${finalPathname}`
+      ? `${domainConf?.protocol || 'https'}://${domain}${finalPathname}`
       : finalPathname;
 
     return { response: redirect(location) };
@@ -57,7 +50,7 @@ export default function handleI18n(req: RequestContext): {
   const translateCoreConfig = {
     ...I18N_CONFIG,
     get _messages() {
-      return req.store.get("_messages");
+      return req.store.get('_messages');
     },
   };
 
@@ -69,22 +62,18 @@ export default function handleI18n(req: RequestContext): {
     t: translateCore(locale, translateCoreConfig),
     pages: pages ?? {},
     overrideMessages: (callback) => {
-      if (typeof callback !== "function") {
+      if (typeof callback !== 'function') {
         return logError({
-          messages: [
-            "Error in overrideMessages",
-            "overrideMessages requires a callback function",
-          ],
-          docTitle: "Documentation about overrideMessages",
+          messages: ['Error in overrideMessages', 'overrideMessages requires a callback function'],
+          docTitle: 'Documentation about overrideMessages',
           docLink:
-            "https://brisa.build/building-your-application/routing/internationalization#override-translations-in-web-components",
+            'https://brisa.build/building-your-application/routing/internationalization#override-translations-in-web-components',
           req,
         });
       }
 
       const messages = callback(I18N_CONFIG?.messages?.[locale]);
-      const save = (messages: Record<string, any>) =>
-        req.store.set("_messages", messages);
+      const save = (messages: Record<string, any>) => req.store.set('_messages', messages);
 
       if (messages instanceof Promise) {
         messages.then(save);
@@ -95,10 +84,7 @@ export default function handleI18n(req: RequestContext): {
   };
 
   if (pages) {
-    routers.pagesRouter = adaptRouterToPageTranslations(
-      pages,
-      routers.pagesRouter,
-    );
+    routers.pagesRouter = adaptRouterToPageTranslations(pages, routers.pagesRouter);
   }
 
   return routers;
