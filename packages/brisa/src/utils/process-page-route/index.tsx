@@ -7,7 +7,10 @@ import LoadLayout from '@/utils/load-layout';
 import type { PageModule } from '@/types';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 
-export default async function processPageRoute(route: MatchedRoute, error?: Error) {
+export default async function processPageRoute(
+  route: MatchedRoute,
+  error?: Error,
+) {
   const { BUILD_DIR } = getConstants();
   const module = (await import(route.filePath)) as PageModule;
   const layoutPath = getImportableFilepath('layout', BUILD_DIR);
@@ -41,5 +44,9 @@ function PageLayout({
     <LiveReloadScript port={PORT}>{children}</LiveReloadScript>
   );
 
-  return <LoadLayout layoutModule={layoutModule}>{childrenWithLiveReload}</LoadLayout>;
+  return (
+    <LoadLayout layoutModule={layoutModule}>
+      {childrenWithLiveReload}
+    </LoadLayout>
+  );
 }

@@ -44,24 +44,33 @@ const SUSPENSE_PROPS = 'l';
 const NULL = null;
 const CONTEXT = 'context';
 
-export default function brisaElement(render: Render, observedAttributes: string[] = []) {
+export default function brisaElement(
+  render: Render,
+  observedAttributes: string[] = [],
+) {
   const $document = document;
 
   const createTextNode = (text: Children) => {
     if ((text as any) === false) text = '';
-    return $document.createTextNode((Array.isArray(text) ? text.join('') : text ?? '').toString());
+    return $document.createTextNode(
+      (Array.isArray(text) ? text.join('') : text ?? '').toString(),
+    );
   };
 
   const isObject = (o: unknown) => typeof o === 'object';
   const isReactiveArray = (a: any) => a?.some?.(isObject);
   const arr = Array.from;
-  const isCustomEvent = (e: unknown): e is CustomEvent => e instanceof CustomEvent;
+  const isCustomEvent = (e: unknown): e is CustomEvent =>
+    e instanceof CustomEvent;
   const isFunction = (fn: unknown) => typeof fn === 'function';
   const isAttributeAnEvent = (key: string) => key.startsWith('on');
   const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
     parent.appendChild(child);
 
-  const createElement = (tagName: string, parent?: HTMLElement | DocumentFragment) => {
+  const createElement = (
+    tagName: string,
+    parent?: HTMLElement | DocumentFragment,
+  ) => {
     return tagName === 'svg' ||
       ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
         lowercase((parent as HTMLElement).tagName) !== 'foreignobject')
@@ -78,7 +87,8 @@ export default function brisaElement(render: Render, observedAttributes: string[
       : serialize(value);
 
     const isWithNamespace =
-      el.namespaceURI === SVG_NAMESPACE && (key.startsWith('xlink:') || key === 'href');
+      el.namespaceURI === SVG_NAMESPACE &&
+      (key.startsWith('xlink:') || key === 'href');
 
     // Handle base path
     // This code is removed by the bundler when basePath is not used
@@ -137,7 +147,10 @@ export default function brisaElement(render: Render, observedAttributes: string[
       sheet.replaceSync(css.join(''));
       shadowRoot.adoptedStyleSheets.push(sheet);
 
-      function handlePortal(children: Children, parent: HTMLElement | DocumentFragment) {
+      function handlePortal(
+        children: Children,
+        parent: HTMLElement | DocumentFragment,
+      ) {
         if ((children as any)?.type !== PORTAL) return [children, parent];
         const { element, target } = (children as any).props;
         return [element, target];
@@ -171,7 +184,10 @@ export default function brisaElement(render: Render, observedAttributes: string[
               let cssString = '';
 
               for (const [template, ...values] of cssStyles) {
-                cssString += String.raw(template, ...values.map((v) => (isFunction(v) ? v() : v)));
+                cssString += String.raw(
+                  template,
+                  ...values.map((v) => (isFunction(v) ? v() : v)),
+                );
               }
 
               style.textContent = cssString;
@@ -184,7 +200,9 @@ export default function brisaElement(render: Render, observedAttributes: string[
         // Handle portal
         [children, parent] = handlePortal(children, parent);
 
-        let el = (tagName ? createElement(tagName, parent) : parent) as HTMLElement;
+        let el = (
+          tagName ? createElement(tagName, parent) : parent
+        ) as HTMLElement;
 
         // Handle attributes
         for (const [attribute, attrValue] of Object.entries(attributes)) {
@@ -204,7 +222,9 @@ export default function brisaElement(render: Render, observedAttributes: string[
                 setAttribute(
                   el,
                   attribute,
-                  isIndicator ? (attrValue as IndicatorSignal)?.value : (attrValue as any)(),
+                  isIndicator
+                    ? (attrValue as IndicatorSignal)?.value
+                    : (attrValue as any)(),
                 ),
               ),
             );
@@ -252,7 +272,8 @@ export default function brisaElement(render: Render, observedAttributes: string[
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {
                     const p = createElement('p');
-                    (p as any)[INNER_HTML] += (child as any).props.html as string;
+                    (p as any)[INNER_HTML] += (child as any).props
+                      .html as string;
 
                     for (const node of arr(p.childNodes)) {
                       appendChild(fragment, node);
@@ -268,7 +289,9 @@ export default function brisaElement(render: Render, observedAttributes: string[
                   }
                   insertOrUpdate(fragment);
 
-                  lastNodes = arr(el.childNodes).filter((node) => !currentElNodes.includes(node));
+                  lastNodes = arr(el.childNodes).filter(
+                    (node) => !currentElNodes.includes(node),
+                  );
                 }
                 // Reactive text node
                 else {
@@ -279,7 +302,8 @@ export default function brisaElement(render: Render, observedAttributes: string[
                   lastNodes = [textNode];
                 }
               }
-              if (childOrPromise instanceof Promise) childOrPromise.then(startEffect);
+              if (childOrPromise instanceof Promise)
+                childOrPromise.then(startEffect);
               else startEffect(childOrPromise);
             }),
           );
@@ -360,7 +384,12 @@ export default function brisaElement(render: Render, observedAttributes: string[
       try {
         // Handle suspense
         if (isFunction(render.suspense)) {
-          await startRender(render.suspense!, NULL, suspenseSignals, SUSPENSE_PROPS);
+          await startRender(
+            render.suspense!,
+            NULL,
+            suspenseSignals,
+            SUSPENSE_PROPS,
+          );
         }
         // Handle render
         await startRender(render);
@@ -392,7 +421,11 @@ export default function brisaElement(render: Render, observedAttributes: string[
       };
     }
 
-    attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    attributeChangedCallback(
+      name: string,
+      oldValue: string | null,
+      newValue: string | null,
+    ) {
       const self = this as any;
       const propsField = self[SUSPENSE_PROPS] ? SUSPENSE_PROPS : PROPS;
 
@@ -402,8 +435,13 @@ export default function brisaElement(render: Render, observedAttributes: string[
         self[CONNECTED_CALLBACK]();
       }
       // Handle component props
-      if (self[propsField] && oldValue !== newValue && !isAttributeAnEvent(name)) {
-        (self[propsField][attributesObj[name]] as StateSignal).value = deserialize(newValue);
+      if (
+        self[propsField] &&
+        oldValue !== newValue &&
+        !isAttributeAnEvent(name)
+      ) {
+        (self[propsField][attributesObj[name]] as StateSignal).value =
+          deserialize(newValue);
       }
     }
   };

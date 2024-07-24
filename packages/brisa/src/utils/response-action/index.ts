@@ -9,10 +9,12 @@ import { logError } from '@/utils/log/log-build';
 const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 
 export default async function responseAction(req: RequestContext) {
-  const { transferClientStoreToServer, formData, body } = await transferStoreService(req);
+  const { transferClientStoreToServer, formData, body } =
+    await transferStoreService(req);
   const { BUILD_DIR } = getConstants();
   const url = new URL(req.url);
-  const action = req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';
+  const action =
+    req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';
   const actionsHeaderValue = req.headers.get('x-actions') ?? '[]';
   const actionFile = action.split('_').at(0);
   const actionModule = await import(join(BUILD_DIR, 'actions', actionFile!));
@@ -156,7 +158,9 @@ export default async function responseAction(req: RequestContext) {
     );
 
     return Promise.all(
-      actionCallPromises.slice(currentPromiseIndex + 1).map(([, promise]) => promise),
+      actionCallPromises
+        .slice(currentPromiseIndex + 1)
+        .map(([, promise]) => promise),
     );
   };
 
@@ -183,7 +187,8 @@ export default async function responseAction(req: RequestContext) {
   }
 
   const module = req.route ? await import(req.route.filePath) : {};
-  const pageResponseHeaders = (await module.responseHeaders?.(req, response.status)) ?? {};
+  const pageResponseHeaders =
+    (await module.responseHeaders?.(req, response.status)) ?? {};
 
   // Transfer page response headers
   for (const [key, value] of Object.entries(pageResponseHeaders)) {

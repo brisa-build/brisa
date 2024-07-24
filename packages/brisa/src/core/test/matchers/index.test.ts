@@ -47,7 +47,9 @@ describe('test matchers', () => {
       const div = document.createElement('div');
       div.setAttribute('data-test', 'test-2');
 
-      expect(() => expect(div).toHaveAttribute('data-test', 'test')).toThrowError(
+      expect(() =>
+        expect(div).toHaveAttribute('data-test', 'test'),
+      ).toThrowError(
         `Expected: ${greenLog('"test"')}\nReceived: ${redLog('"test-2"')}`,
       );
     });
@@ -55,7 +57,9 @@ describe('test matchers', () => {
     it('should not pass if the element has not the attribute specifing the attribute', () => {
       const div = document.createElement('div');
 
-      expect(() => expect(div).toHaveAttribute('data-test', 'test')).toThrowError(
+      expect(() =>
+        expect(div).toHaveAttribute('data-test', 'test'),
+      ).toThrowError(
         `Expected: ${greenLog('"test"')}\nReceived: ${redLog('null')}`,
       );
     });
@@ -296,7 +300,9 @@ describe('test matchers', () => {
     it('should fail if the element does not have focus', () => {
       const input = document.createElement('input');
 
-      expect(() => expect(input).toHaveFocus()).toThrowError('expected element to have focus');
+      expect(() => expect(input).toHaveFocus()).toThrowError(
+        'expected element to have focus',
+      );
     });
 
     it('should fail when the received is not an element', () => {
@@ -320,7 +326,9 @@ describe('test matchers', () => {
       // it to null for the test
       div.offsetParent = null;
 
-      expect(() => expect(div).toBeVisible()).toThrowError('expected element to be visible');
+      expect(() => expect(div).toBeVisible()).toThrowError(
+        'expected element to be visible',
+      );
     });
 
     it('should fail if the element is not visible', () => {
@@ -328,7 +336,9 @@ describe('test matchers', () => {
       div.style.display = 'none';
       document.body.appendChild(div);
 
-      expect(() => expect(div).toBeVisible()).toThrowError('expected element to be visible');
+      expect(() => expect(div).toBeVisible()).toThrowError(
+        'expected element to be visible',
+      );
     });
 
     it('should fail when the received is not an element', () => {
@@ -349,7 +359,9 @@ describe('test matchers', () => {
       const button = document.createElement('button');
       button.setAttribute('disabled', '');
 
-      expect(() => expect(button).toBeEnabled()).toThrowError('expected element to be enabled');
+      expect(() => expect(button).toBeEnabled()).toThrowError(
+        'expected element to be enabled',
+      );
     });
 
     it('should fail when the received is not an element', () => {
@@ -370,7 +382,9 @@ describe('test matchers', () => {
     it('should fail if the element is enabled', () => {
       const button = document.createElement('button');
 
-      expect(() => expect(button).toBeDisabled()).toThrowError('expected element to be disabled');
+      expect(() => expect(button).toBeDisabled()).toThrowError(
+        'expected element to be disabled',
+      );
     });
 
     it('should fail when the received is not an element', () => {
@@ -391,7 +405,9 @@ describe('test matchers', () => {
     it('should fail if the element is not selected', () => {
       const option = document.createElement('option');
 
-      expect(() => expect(option).toBeSelected()).toThrowError('expected element to be selected');
+      expect(() => expect(option).toBeSelected()).toThrowError(
+        'expected element to be selected',
+      );
     });
 
     it('should fail when the received is not an option element', () => {
@@ -439,7 +455,9 @@ describe('test matchers', () => {
       const input = document.createElement('input');
       input.setCustomValidity('test');
 
-      expect(() => expect(input).toBeValid()).toThrowError('expected input element to be valid');
+      expect(() => expect(input).toBeValid()).toThrowError(
+        'expected input element to be valid',
+      );
     });
 
     it('should fail when the received is not an input element', () => {

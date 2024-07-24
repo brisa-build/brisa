@@ -47,7 +47,8 @@ export default function getPropsOptimizations(
       const right = element?.right;
       const isRest = element?.type === 'RestElement';
       const defaultValue = getDefaultValue(right);
-      const name = element?.left?.name ?? element?.argument?.name ?? element?.name;
+      const name =
+        element?.left?.name ?? element?.argument?.name ?? element?.name;
 
       // Skip first level without default value
       if (!acc) {
@@ -64,7 +65,11 @@ export default function getPropsOptimizations(
       if (isRest) {
         const dot = acc.at(-1) === '.' ? '' : '.';
         const suffix = acc ? `${dot}slice(${i})` : name;
-        const res = getDerivedArrowFnString(name, addPrefix(acc + suffix), derivedFnName);
+        const res = getDerivedArrowFnString(
+          name,
+          addPrefix(acc + suffix),
+          derivedFnName,
+        );
 
         result.push(res);
         continue;
@@ -76,7 +81,9 @@ export default function getPropsOptimizations(
         #####      Transform ObjectPattern or ArrayPattern element      ######
         ####################################################################*/
       if (PATTERNS.has(element?.type)) {
-        result.push(...getPropsOptimizations(element, derivedFnName, last + `[${i}].`));
+        result.push(
+          ...getPropsOptimizations(element, derivedFnName, last + `[${i}].`),
+        );
         continue;
       }
 
@@ -84,7 +91,11 @@ export default function getPropsOptimizations(
         #####        Transform Element from Array to an arrow fn        ######
         ####################################################################*/
       const suffix = `[${i}]${defaultValue.fallbackText}`;
-      const res = getDerivedArrowFnString(name, addPrefix(last + suffix), derivedFnName);
+      const res = getDerivedArrowFnString(
+        name,
+        addPrefix(last + suffix),
+        derivedFnName,
+      );
 
       result.push(res);
     }
@@ -106,7 +117,8 @@ export default function getPropsOptimizations(
     const field = isRenamed ? `${quotes}${keyName}${quotes}:${name}` : name;
     const defaultValue = getDefaultValue(right);
     const propDefaultText = defaultValue.fallbackText;
-    const hasDefaultObjectValue = !defaultValue.isLiteral && defaultValue.fallbackText;
+    const hasDefaultObjectValue =
+      !defaultValue.isLiteral && defaultValue.fallbackText;
 
     if (!acc) {
       firstLevelFields.push(isRest ? `...${prop?.argument?.name}` : field);
@@ -214,8 +226,13 @@ export default function getPropsOptimizations(
     /* ####################################################################
         #####    Transform ObjectPattern property with default value   ######
         ####################################################################*/
-    if (value?.type === 'AssignmentPattern' && value?.left?.type === 'ObjectPattern') {
-      result.push(...getPropsOptimizations(value.left, derivedFnName, acc + name + '.'));
+    if (
+      value?.type === 'AssignmentPattern' &&
+      value?.left?.type === 'ObjectPattern'
+    ) {
+      result.push(
+        ...getPropsOptimizations(value.left, derivedFnName, acc + name + '.'),
+      );
       continue;
     }
 
@@ -268,14 +285,20 @@ function getDefaultValue(inputRight: any, name?: string) {
 
 function addPrefix(name: string): string {
   const openParenthesis = name.match(OPEN_PARENTHESIS_REGEX)?.[0];
-  const prefix = name.startsWith('[') ? PROPS_IDENTIFIER : PROPS_IDENTIFIER + '.';
+  const prefix = name.startsWith('[')
+    ? PROPS_IDENTIFIER
+    : PROPS_IDENTIFIER + '.';
 
   return openParenthesis
     ? openParenthesis + prefix + name.replace(openParenthesis, '')
     : prefix + name;
 }
 
-function getDerivedArrowFnString(name: string, arrowContent: string, derivedFnName: string) {
+function getDerivedArrowFnString(
+  name: string,
+  arrowContent: string,
+  derivedFnName: string,
+) {
   return `const ${name} = ${derivedFnName}(() => ${arrowContent});`;
 }
 
@@ -300,7 +323,10 @@ function sortByPropDependencies() {
     else if (!bDeps.size) result = 1;
     else if (unionWithA.size === aDeps.size && unionWithB.size !== bDeps.size) {
       result = 1;
-    } else if (unionWithA.size !== aDeps.size && unionWithB.size === bDeps.size) {
+    } else if (
+      unionWithA.size !== aDeps.size &&
+      unionWithB.size === bDeps.size
+    ) {
       result = -1;
     }
 

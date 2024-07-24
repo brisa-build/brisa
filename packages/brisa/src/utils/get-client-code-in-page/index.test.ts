@@ -237,7 +237,10 @@ describe('utils', () => {
 
     it('should add the integrations web context plugins when there are plugins', async () => {
       const pagePath = path.join(pages, 'page-with-web-component.tsx');
-      const integrationsPath = path.join(webComponentsDir, '_integrations2.tsx');
+      const integrationsPath = path.join(
+        webComponentsDir,
+        '_integrations2.tsx',
+      );
       const output = await getClientCodeInPage({
         pagePath,
         allWebComponents,
@@ -249,7 +252,10 @@ describe('utils', () => {
 
     it('should add the integrations with emoji-picker as direct import', async () => {
       const pagePath = path.join(pages, 'page-with-web-component.tsx');
-      const integrationsPath = path.join(webComponentsDir, '_integrations3.tsx');
+      const integrationsPath = path.join(
+        webComponentsDir,
+        '_integrations3.tsx',
+      );
       const output = await getClientCodeInPage({
         pagePath,
         allWebComponents,

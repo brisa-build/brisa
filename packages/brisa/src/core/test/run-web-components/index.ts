@@ -9,8 +9,14 @@ export default async function runWebComponents() {
   const { LOG_PREFIX, SRC_DIR, BUILD_DIR } = getConstants();
   const webComponentsDir = join(SRC_DIR, 'web-components');
   const internalBrisaFolder = join(BUILD_DIR, '_brisa');
-  const integrationsPath = getImportableFilepath('_integrations', webComponentsDir);
-  const allWebComponents = await getWebComponentsList(SRC_DIR, integrationsPath);
+  const integrationsPath = getImportableFilepath(
+    '_integrations',
+    webComponentsDir,
+  );
+  const allWebComponents = await getWebComponentsList(
+    SRC_DIR,
+    integrationsPath,
+  );
 
   if (Object.keys(allWebComponents).length === 0) return;
 

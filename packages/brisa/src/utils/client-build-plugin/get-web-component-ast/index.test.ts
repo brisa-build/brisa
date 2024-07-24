@@ -28,7 +28,9 @@ describe('utils', () => {
           }
         `);
         const [ast, index] = getWebComponentAst(input);
-        const output = normalizeQuotes(generateCodeFromAST(ast as unknown as ESTree.Program));
+        const output = normalizeQuotes(
+          generateCodeFromAST(ast as unknown as ESTree.Program),
+        );
         const expected = normalizeQuotes(`
           function MyComponent() {
             return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);

@@ -76,7 +76,9 @@ function toContainTextContent(received: unknown, text: string) {
   }
 
   return {
-    pass: typeof received.textContent === 'string' && received.textContent.includes(text),
+    pass:
+      typeof received.textContent === 'string' &&
+      received.textContent.includes(text),
     message: () =>
       `Expected to contain: ${greenLog(`"${text}"`)}\nReceived: ${redLog(
         `"${received.textContent}"`,
@@ -244,7 +246,8 @@ function toBeInputTypeOf(received: unknown, type: InputType) {
 
   return {
     pass: received.type === type,
-    message: () => `Expected: ${greenLog(`"${type}"`)}\nReceived: ${redLog(`"${received.type}"`)}`,
+    message: () =>
+      `Expected: ${greenLog(`"${type}"`)}\nReceived: ${redLog(`"${received.type}"`)}`,
   };
 }
 
@@ -263,7 +266,9 @@ function toBeInTheDocument(received: unknown) {
 
 function toHaveElementByNodeName(received: unknown, elementName: string) {
   return {
-    pass: Boolean(received && (received as HTMLElement).querySelector(elementName) !== null),
+    pass: Boolean(
+      received && (received as HTMLElement).querySelector(elementName) !== null,
+    ),
     message: () => `expected element to have ${elementName}`,
   };
 }

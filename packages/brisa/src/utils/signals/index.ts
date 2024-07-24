@@ -1,6 +1,8 @@
 import type { IndicatorSignal, WebContext } from '@/types';
 
-type Effect = ((addSubEffect: (effect: Effect) => Effect) => unknown | Promise<unknown>) & {
+type Effect = ((
+  addSubEffect: (effect: Effect) => Effect,
+) => unknown | Promise<unknown>) & {
   id?: Effect;
 };
 type Cleanup = () => void | Promise<void>;
@@ -19,7 +21,10 @@ const ORIGINAL_PREFIX = '__o:';
 const $window = window as any;
 
 // Create a store object only once (keeping SPA behavior)
-const globalStore = ($window._s ??= { Map: new Map($window._S) } as Record<string, any>);
+const globalStore = ($window._s ??= { Map: new Map($window._S) } as Record<
+  string,
+  any
+>);
 
 // Create a subscription object only once (keeping SPA behavior)
 const sub = ($window.sub ??= createSubscription());
@@ -36,7 +41,8 @@ for (const op of ['get', 'set', 'delete']) {
 export default function signals() {
   const stack: Effect[] = [];
   const storeSignals = new Map();
-  const getSet = <T>(set: Map<unknown, Set<T>>, key: unknown) => set.get(key) ?? new Set();
+  const getSet = <T>(set: Map<unknown, Set<T>>, key: unknown) =>
+    set.get(key) ?? new Set();
 
   const effects = new Map<State<unknown>, Set<Effect>>();
   const cleanups = new Map<Effect, Set<Cleanup>>();

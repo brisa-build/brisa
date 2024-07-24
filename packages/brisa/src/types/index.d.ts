@@ -676,7 +676,11 @@ export type ReactiveMap = {
   set: <T>(key: string, value: T) => void;
   delete: (key: string) => void;
   has: (key: string) => boolean;
-  setOptimistic: <T>(actionName: string, storeKey: string, updater: (value: T) => T) => void;
+  setOptimistic: <T>(
+    actionName: string,
+    storeKey: string,
+    updater: (value: T) => T,
+  ) => void;
   Map: Map<string, unknown>;
 };
 
@@ -684,7 +688,10 @@ type Props<T extends Record<string, unknown> = Record<string, unknown>> = T & {
   children?: JSXElement;
 };
 
-export type ResponseHeaders = (req: RequestContext, status: number) => HeadersInit;
+export type ResponseHeaders = (
+  req: RequestContext,
+  status: number,
+) => HeadersInit;
 
 export type Primitives = string | number | boolean | undefined | null;
 
@@ -709,7 +716,9 @@ export interface ComponentType extends JSXComponent {
   ) => JSXNode | Promise<JSXNode>;
 }
 
-export type JSXComponent<T extends Record<string, unknown> = Record<string, unknown>> = ((
+export type JSXComponent<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> = ((
   props: Props<T>,
   request: RequestContext,
 ) => JSXNode | Promise<JSXNode>) & {
@@ -728,7 +737,10 @@ export type ExtendPluginOptions =
       entrypoint: string;
     };
 
-export type ExtendPlugins = (plugins: BunPlugin[], options: ExtendPluginOptions) => BunPlugin[];
+export type ExtendPlugins = (
+  plugins: BunPlugin[],
+  options: ExtendPluginOptions,
+) => BunPlugin[];
 
 export type Configuration = {
   /**
@@ -947,7 +959,11 @@ type RemovePlural<Key extends string> = Key extends `${infer Prefix}${
   ? Prefix
   : Key;
 
-type Join<S1, S2> = S1 extends string ? (S2 extends string ? `${S1}.${S2}` : never) : never;
+type Join<S1, S2> = S1 extends string
+  ? S2 extends string
+    ? `${S1}.${S2}`
+    : never
+  : never;
 
 export type Paths<T> = RemovePlural<
   {
@@ -957,7 +973,8 @@ export type Paths<T> = RemovePlural<
   }[Extract<keyof T, string>]
 >;
 
-type ExtendedWebContext = typeof import('@/web-components/_integrations').ExtendedWebContext;
+type ExtendedWebContext =
+  typeof import('@/web-components/_integrations').ExtendedWebContext;
 
 type I18nKey = typeof import('@/i18n').default extends I18nConfig<infer T>
   ? Paths<T extends object ? T : I18nDictionary>
@@ -1160,7 +1177,10 @@ type DangerHTMLOutput = {
  *
  * - [How to use `createPortal`](https://brisa.build/api-reference/functions/createPortal)
  */
-export function createPortal(element: JSX.Element, target: HTMLElement): CreatePortalOutput;
+export function createPortal(
+  element: JSX.Element,
+  target: HTMLElement,
+): CreatePortalOutput;
 
 type CreatePortalOutput = {
   type: 'portal';
@@ -1246,8 +1266,9 @@ declare global {
       children: JSXElement;
     }
 
-    interface ContextProviderAttributes<Target extends EventTarget = HTMLElement>
-      extends HTMLAttributes<Target> {
+    interface ContextProviderAttributes<
+      Target extends EventTarget = HTMLElement,
+    > extends HTMLAttributes<Target> {
       context: BrisaContext<unknown>;
       value: unknown;
       children: unknown;
@@ -1258,14 +1279,14 @@ declare global {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
       // The "indicate" attribute is used to control the processing state of the web-component action.
-      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}` ? `indicate${Rest}` : never]?:
-        | IndicatorSignal
-        | undefined;
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}`
+        ? `indicate${Rest}`
+        : never]?: IndicatorSignal | undefined;
     } & {
       // The "debounce" attribute is used to debounce the web-component action.
-      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}` ? `debounce${Rest}` : never]?:
-        | number
-        | undefined;
+      [K in keyof Parameters<T>[0] as K extends `on${infer Rest}`
+        ? `debounce${Rest}`
+        : never]?: number | undefined;
     } & {
       children?: JSXElement;
       skipSSR?: boolean;
@@ -1369,7 +1390,14 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-current)
        */
-      'aria-current'?: boolean | 'page' | 'step' | 'location' | 'date' | 'time' | undefined;
+      'aria-current'?:
+        | boolean
+        | 'page'
+        | 'step'
+        | 'location'
+        | 'date'
+        | 'time'
+        | undefined;
       /**
        * Identifies the element (or elements) that describes the object.
        * @see aria-labelledby
@@ -1425,7 +1453,14 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup)
        */
-      'aria-haspopup'?: boolean | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' | undefined;
+      'aria-haspopup'?:
+        | boolean
+        | 'menu'
+        | 'listbox'
+        | 'tree'
+        | 'grid'
+        | 'dialog'
+        | undefined;
       /**
        * Indicates whether the element is exposed to an accessibility API.
        * @see aria-disabled.
@@ -1887,13 +1922,23 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
        */
-      colorInterpolationFilters?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | undefined;
+      colorInterpolationFilters?:
+        | 'auto'
+        | 'sRGB'
+        | 'linearRGB'
+        | 'inherit'
+        | undefined;
       /**
        * The color-interpolation-filters attribute specifies the color space for imaging operations performed via filter effects.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/color-interpolation-filters)
        */
-      'color-interpolation-filters'?: 'auto' | 'sRGB' | 'linearRGB' | 'inherit' | undefined;
+      'color-interpolation-filters'?:
+        | 'auto'
+        | 'sRGB'
+        | 'linearRGB'
+        | 'inherit'
+        | undefined;
       /**
        * The cursor attribute specifies the mouse cursor displayed when the mouse pointer is over an element.
        *
@@ -2929,59 +2974,63 @@ declare global {
       readonly currentTarget: Target;
     };
 
-    export type TargetedAnimationEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedAnimationEvent<Target extends EventTarget> =
+      TargetedEvent<Target, AnimationEvent>;
+    export type TargetedClipboardEvent<Target extends EventTarget> =
+      TargetedEvent<Target, ClipboardEvent>;
+    export type TargetedCompositionEvent<Target extends EventTarget> =
+      TargetedEvent<Target, CompositionEvent>;
+    export type TargetedDragEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      AnimationEvent
+      DragEvent
     >;
-    export type TargetedClipboardEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedFocusEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      ClipboardEvent
+      FocusEvent
     >;
-    export type TargetedCompositionEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedInputEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      CompositionEvent
+      InputEvent
     >;
-    export type TargetedDragEvent<Target extends EventTarget> = TargetedEvent<Target, DragEvent>;
-    export type TargetedFocusEvent<Target extends EventTarget> = TargetedEvent<Target, FocusEvent>;
-    export type TargetedInputEvent<Target extends EventTarget> = TargetedEvent<Target, InputEvent>;
-    export type TargetedKeyboardEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedKeyboardEvent<Target extends EventTarget> =
+      TargetedEvent<Target, KeyboardEvent>;
+    export type TargetedMouseEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      KeyboardEvent
+      MouseEvent
     >;
-    export type TargetedMouseEvent<Target extends EventTarget> = TargetedEvent<Target, MouseEvent>;
-    export type TargetedPointerEvent<Target extends EventTarget> = TargetedEvent<
-      Target,
-      PointerEvent
-    >;
+    export type TargetedPointerEvent<Target extends EventTarget> =
+      TargetedEvent<Target, PointerEvent>;
     export type TargetedSubmitEvent<Target extends EventTarget> = TargetedEvent<
       Target,
       SubmitEvent
     >;
-    export type TargetedTouchEvent<Target extends EventTarget> = TargetedEvent<Target, TouchEvent>;
-    export type TargetedTransitionEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedTouchEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      TransitionEvent
+      TouchEvent
     >;
-    export type TargetedUIEvent<Target extends EventTarget> = TargetedEvent<Target, UIEvent>;
-    export type TargetedWheelEvent<Target extends EventTarget> = TargetedEvent<Target, WheelEvent>;
-    export type TargetedPictureInPictureEvent<Target extends EventTarget> = TargetedEvent<
+    export type TargetedTransitionEvent<Target extends EventTarget> =
+      TargetedEvent<Target, TransitionEvent>;
+    export type TargetedUIEvent<Target extends EventTarget> = TargetedEvent<
       Target,
-      PictureInPictureEvent
+      UIEvent
     >;
+    export type TargetedWheelEvent<Target extends EventTarget> = TargetedEvent<
+      Target,
+      WheelEvent
+    >;
+    export type TargetedPictureInPictureEvent<Target extends EventTarget> =
+      TargetedEvent<Target, PictureInPictureEvent>;
 
     export type EventHandler<E extends TargetedEvent> = {
       bivarianceHack(event: E): unknown;
     }['bivarianceHack'];
 
-    export type AnimationEventHandler<Target extends EventTarget> = EventHandler<
-      TargetedAnimationEvent<Target>
-    >;
-    export type ClipboardEventHandler<Target extends EventTarget> = EventHandler<
-      TargetedClipboardEvent<Target>
-    >;
-    export type CompositionEventHandler<Target extends EventTarget> = EventHandler<
-      TargetedCompositionEvent<Target>
-    >;
+    export type AnimationEventHandler<Target extends EventTarget> =
+      EventHandler<TargetedAnimationEvent<Target>>;
+    export type ClipboardEventHandler<Target extends EventTarget> =
+      EventHandler<TargetedClipboardEvent<Target>>;
+    export type CompositionEventHandler<Target extends EventTarget> =
+      EventHandler<TargetedCompositionEvent<Target>>;
     export type DragEventHandler<Target extends EventTarget> = EventHandler<
       TargetedDragEvent<Target>
     >;
@@ -3009,18 +3058,19 @@ declare global {
     export type TouchEventHandler<Target extends EventTarget> = EventHandler<
       TargetedTouchEvent<Target>
     >;
-    export type TransitionEventHandler<Target extends EventTarget> = EventHandler<
-      TargetedTransitionEvent<Target>
+    export type TransitionEventHandler<Target extends EventTarget> =
+      EventHandler<TargetedTransitionEvent<Target>>;
+    export type UIEventHandler<Target extends EventTarget> = EventHandler<
+      TargetedUIEvent<Target>
     >;
-    export type UIEventHandler<Target extends EventTarget> = EventHandler<TargetedUIEvent<Target>>;
     export type WheelEventHandler<Target extends EventTarget> = EventHandler<
       TargetedWheelEvent<Target>
     >;
-    export type PictureInPictureEventHandler<Target extends EventTarget> = EventHandler<
-      TargetedPictureInPictureEvent<Target>
-    >;
+    export type PictureInPictureEventHandler<Target extends EventTarget> =
+      EventHandler<TargetedPictureInPictureEvent<Target>>;
 
-    export interface DOMAttributes<Target extends EventTarget> extends BrisaDOMAttributes {
+    export interface DOMAttributes<Target extends EventTarget>
+      extends BrisaDOMAttributes {
       // Image Events
 
       /**
@@ -7657,7 +7707,15 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/enterkeyhint)
        */
-      enterkeyhint?: 'enter' | 'done' | 'go' | 'next' | 'previous' | 'search' | 'send' | undefined;
+      enterkeyhint?:
+        | 'enter'
+        | 'done'
+        | 'go'
+        | 'next'
+        | 'previous'
+        | 'search'
+        | 'send'
+        | undefined;
       /**
        * The `elementTiming` attribute is used to indicate that an element is flagged for tracking by PerformanceObserver objects using the "element" type.
        *
@@ -8383,13 +8441,27 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
        */
-      autocapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters' | undefined;
+      autocapitalize?:
+        | 'off'
+        | 'none'
+        | 'on'
+        | 'sentences'
+        | 'words'
+        | 'characters'
+        | undefined;
       /**
        * The `allowCapitalize` attribute is a string attribute that is present on the `<input>` and `<textarea>` elements to specify the capitalization behavior of the input.
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)
        */
-      autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters' | undefined;
+      autoCapitalize?:
+        | 'off'
+        | 'none'
+        | 'on'
+        | 'sentences'
+        | 'words'
+        | 'characters'
+        | undefined;
       /**
        * The `disablePictureInPicture` attribute is a boolean attribute that is present on the `<video>` and `<iframe>` elements to specify that the user should not be able to enter picture-in-picture mode.
        *

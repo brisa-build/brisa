@@ -19,7 +19,10 @@ export default function getAllPatternNames(
       continue;
     } else if (item.type === 'RestElement') {
       namesIdentifiers.add(item.argument);
-    } else if (element.type === 'ObjectPattern' || element.type === 'ArrayPattern') {
+    } else if (
+      element.type === 'ObjectPattern' ||
+      element.type === 'ArrayPattern'
+    ) {
       getAllPatternNames(element, namesIdentifiers);
     } else if (element.type === 'AssignmentPattern') {
       namesIdentifiers.add(element.left);

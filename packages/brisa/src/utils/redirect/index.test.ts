@@ -47,7 +47,9 @@ describe('utils', () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(307);
-        expect(response.headers.get('location')).toBe(`https://example.com${basePath}/`);
+        expect(response.headers.get('location')).toBe(
+          `https://example.com${basePath}/`,
+        );
       });
 
       it('should return a 301 response if the origin of the given url is the same as the origin of the current request', () => {
@@ -67,7 +69,9 @@ describe('utils', () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get('location')).toBe(`https://example.com${basePath}/favicon.ico`);
+        expect(response.headers.get('location')).toBe(
+          `https://example.com${basePath}/favicon.ico`,
+        );
       });
 
       it('should return a 301 response if the given url is not an asset request and not an action request', () => {
@@ -119,7 +123,9 @@ describe('utils', () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(307);
-        expect(response.headers.get('location')).toBe(`https://example.com${basePath}/`);
+        expect(response.headers.get('location')).toBe(
+          `https://example.com${basePath}/`,
+        );
       });
 
       it('should return a 301 response if the origin of the given url is the same as the origin of the current request', () => {
@@ -139,7 +145,9 @@ describe('utils', () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get('location')).toBe(`https://example.com${basePath}/favicon.ico`);
+        expect(response.headers.get('location')).toBe(
+          `https://example.com${basePath}/favicon.ico`,
+        );
       });
 
       it('should return a 301 response if the given url is not an asset request and not an action request', () => {
@@ -176,7 +184,9 @@ describe('utils', () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(307);
-        expect(response.headers.get('location')).toBe(`https://example.com${basePath}/`);
+        expect(response.headers.get('location')).toBe(
+          `https://example.com${basePath}/`,
+        );
       });
 
       it('should return a 301 response if the origin of the given url is the same as the origin of the current request', () => {
@@ -186,7 +196,9 @@ describe('utils', () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get('location')).toBe(`https://example.com${basePath}/`);
+        expect(response.headers.get('location')).toBe(
+          `https://example.com${basePath}/`,
+        );
       });
 
       it('should return a 301 response if the given url is an asset request', () => {
@@ -196,7 +208,9 @@ describe('utils', () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get('location')).toBe(`https://example.com${basePath}/favicon.ico`);
+        expect(response.headers.get('location')).toBe(
+          `https://example.com${basePath}/favicon.ico`,
+        );
       });
 
       it('should return a 301 response if the given url is not an asset request and not an action request', () => {
@@ -206,7 +220,9 @@ describe('utils', () => {
         });
         const response = redirectFromUnnormalizedURL(url, currentRequest);
         expect(response.status).toBe(301);
-        expect(response.headers.get('location')).toBe(`https://example.com${basePath}/foo/`);
+        expect(response.headers.get('location')).toBe(
+          `https://example.com${basePath}/foo/`,
+        );
       });
     });
   });

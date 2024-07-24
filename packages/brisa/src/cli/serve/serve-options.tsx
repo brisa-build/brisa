@@ -41,7 +41,10 @@ export async function getServeOptions() {
   } = getConstants();
 
   if (IS_PRODUCTION && !fs.existsSync(BUILD_DIR)) {
-    console.log(LOG_PREFIX.ERROR, 'Not exist "build" yet. Please run "brisa build" first');
+    console.log(
+      LOG_PREFIX.ERROR,
+      'Not exist "build" yet. Please run "brisa build" first',
+    );
     return null;
   }
 
@@ -49,7 +52,10 @@ export async function getServeOptions() {
     const path = IS_PRODUCTION ? 'build/pages' : 'src/pages';
     const cli = IS_PRODUCTION ? 'brisa start' : 'brisa dev';
 
-    console.log(LOG_PREFIX.ERROR, `Not exist ${path}" directory. It\'s required to run "${cli}"`);
+    console.log(
+      LOG_PREFIX.ERROR,
+      `Not exist ${path}" directory. It\'s required to run "${cli}"`,
+    );
     return null;
   }
 
@@ -72,7 +78,9 @@ export async function getServeOptions() {
     development: !IS_PRODUCTION,
     async fetch(req: Request, server) {
       const requestId = crypto.randomUUID();
-      const attachedData = wsModule?.attach ? (await wsModule.attach(req)) ?? {} : {};
+      const attachedData = wsModule?.attach
+        ? (await wsModule.attach(req)) ?? {}
+        : {};
 
       if (server.upgrade(req, { data: { id: requestId, ...attachedData } })) {
         return;
@@ -85,13 +93,20 @@ export async function getServeOptions() {
       const url = new URL(request.finalURL);
 
       // Dev tool to open file in editor
-      if (IS_DEVELOPMENT && url.pathname === '/__brisa_dev_file__' && req.method === 'POST') {
+      if (
+        IS_DEVELOPMENT &&
+        url.pathname === '/__brisa_dev_file__' &&
+        req.method === 'POST'
+      ) {
         let file = url.searchParams.get('file');
         const line = url.searchParams.get('line');
         const column = url.searchParams.get('column');
 
         if (file?.startsWith('/_brisa/pages')) {
-          file = path.join(BUILD_DIR, file.replace(/^\/_brisa\/pages/, '/pages-client'));
+          file = path.join(
+            BUILD_DIR,
+            file.replace(/^\/_brisa\/pages/, '/pages-client'),
+          );
         }
 
         if (file && line != null && column != null) {
@@ -131,7 +146,9 @@ export async function getServeOptions() {
       }
 
       const isValidRoute = () => {
-        return pagesRouter.match(request).route || rootRouter.match(request).route;
+        return (
+          pagesRouter.match(request).route || rootRouter.match(request).route
+        );
       };
 
       if (i18nRes.response) {
@@ -159,7 +176,10 @@ export async function getServeOptions() {
         if (isNavigateThrowable(error)) {
           // Here doesn't matter the render mode, because the navigate it's always
           // using a hard redirect
-          return redirectFromUnnormalizedURL(new URL(error.message, url.origin), request);
+          return redirectFromUnnormalizedURL(
+            new URL(error.message, url.origin),
+            request,
+          );
         }
 
         // Log some feedback in the terminal depending on the error
@@ -208,7 +228,10 @@ export async function getServeOptions() {
   ///////////////////////////////////////////////////////
   ////////////////////// HELPERS ///////////////////////
   ///////////////////////////////////////////////////////
-  async function handleRequest(req: RequestContext, { isAnAsset }: { isAnAsset: boolean }) {
+  async function handleRequest(
+    req: RequestContext,
+    { isAnAsset }: { isAnAsset: boolean },
+  ) {
     const locale = req.i18n.locale;
     const url = new URL(req.finalURL);
     const pathname = url.pathname;
@@ -220,7 +243,9 @@ export async function getServeOptions() {
 
     // Middleware
     if (customMiddleware) {
-      const middlewareResponse = await Promise.resolve().then(() => customMiddleware(req));
+      const middlewareResponse = await Promise.resolve().then(() =>
+        customMiddleware(req),
+      );
 
       if (middlewareResponse) return middlewareResponse;
     }

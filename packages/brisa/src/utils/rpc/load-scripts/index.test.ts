@@ -1,6 +1,18 @@
-import { loadScripts, registerCurrentScripts, scripts } from '@/utils/rpc/load-scripts';
+import {
+  loadScripts,
+  registerCurrentScripts,
+  scripts,
+} from '@/utils/rpc/load-scripts';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { describe, expect, it, beforeEach, afterEach, spyOn, mock } from 'bun:test';
+import {
+  describe,
+  expect,
+  it,
+  beforeEach,
+  afterEach,
+  spyOn,
+  mock,
+} from 'bun:test';
 
 let mockLog: ReturnType<typeof spyOn>;
 

@@ -24,13 +24,14 @@ export default async function responseRenderedPage({
   headers = {},
 }: Params) {
   const { transferClientStoreToServer } = await transferStoreService(req);
-  const { PageComponent, pageModule, pageHeaders } = await getPageComponentWithHeaders({
-    req,
-    route,
-    error,
-    status,
-    headers,
-  });
+  const { PageComponent, pageModule, pageHeaders } =
+    await getPageComponentWithHeaders({
+      req,
+      route,
+      error,
+      status,
+      headers,
+    });
 
   // Avoid to transfer again if comes from a rerender from an action
   if (req.renderInitiator !== RenderInitiator.SERVER_ACTION) {

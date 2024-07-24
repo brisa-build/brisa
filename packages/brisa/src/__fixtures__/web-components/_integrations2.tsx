@@ -3,7 +3,10 @@ import type { WebContextPlugin } from '@/types';
 export const webContextPlugins: WebContextPlugin[] = [
   (ctx, extras) => {
     // @ts-ignore
-    ctx.store.sync = (key: string, storage: 'localStorage' | 'sessionStorage' = 'localStorage') => {
+    ctx.store.sync = (
+      key: string,
+      storage: 'localStorage' | 'sessionStorage' = 'localStorage',
+    ) => {
       // Skip execution on server side (SSR)
       if (typeof window === 'undefined') return;
 

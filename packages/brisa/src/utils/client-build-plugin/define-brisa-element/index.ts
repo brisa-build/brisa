@@ -10,7 +10,9 @@ export default function defineBrisaElement(
   const newComponentAst = getReactiveReturnStatement(component, componentName);
 
   // Add an identifier to the component
-  const args = [{ type: 'Identifier', name: componentName }] as ESTree.Expression[];
+  const args = [
+    { type: 'Identifier', name: componentName },
+  ] as ESTree.Expression[];
 
   if (componentPropsNames?.size) {
     args.push({

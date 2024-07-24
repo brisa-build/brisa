@@ -1,7 +1,23 @@
 import path from 'node:path';
-import { debug, render, serveRoute, waitFor, userEvent, cleanup } from '@/core/test/api';
+import {
+  debug,
+  render,
+  serveRoute,
+  waitFor,
+  userEvent,
+  cleanup,
+} from '@/core/test/api';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { describe, it, expect, beforeEach, afterEach, spyOn, jest, mock } from 'bun:test';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  spyOn,
+  jest,
+  mock,
+} from 'bun:test';
 import { getConstants } from '@/constants';
 import { blueLog, cyanLog, greenLog } from '@/utils/log/log-color';
 import type { RequestContext } from '@/types';
@@ -96,7 +112,9 @@ describe('test api', () => {
     it('should be possible to interact with a server action of a server component', async () => {
       const mockLog = spyOn(console, 'log');
       const { container } = await render(
-        <button onClick={() => console.log('hello server action')}>Click me</button>,
+        <button onClick={() => console.log('hello server action')}>
+          Click me
+        </button>,
       );
       const button = container.querySelector('button');
 
@@ -132,14 +150,15 @@ describe('test api', () => {
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import('@/core/test/run-web-components').then(
-        (m) => m.default,
-      );
+      const runWebComponents = await import(
+        '@/core/test/run-web-components'
+      ).then((m) => m.default);
       await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter />);
-      const customCounter = container.querySelector('custom-counter')!.shadowRoot!;
+      const customCounter =
+        container.querySelector('custom-counter')!.shadowRoot!;
 
       expect(customCounter).toContainTextContent('0');
     });
@@ -159,14 +178,15 @@ describe('test api', () => {
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import('@/core/test/run-web-components').then(
-        (m) => m.default,
-      );
+      const runWebComponents = await import(
+        '@/core/test/run-web-components'
+      ).then((m) => m.default);
       await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter initialValue={5} />);
-      const customCounter = container.querySelector('custom-counter')?.shadowRoot!;
+      const customCounter =
+        container.querySelector('custom-counter')?.shadowRoot!;
 
       expect(customCounter.innerHTML).toBe('5');
     });
@@ -178,9 +198,9 @@ describe('test api', () => {
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import('@/core/test/run-web-components').then(
-        (m) => m.default,
-      );
+      const runWebComponents = await import(
+        '@/core/test/run-web-components'
+      ).then((m) => m.default);
       await runWebComponents();
 
       const { container } = await render(
@@ -205,14 +225,15 @@ describe('test api', () => {
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import('@/core/test/run-web-components').then(
-        (m) => m.default,
-      );
+      const runWebComponents = await import(
+        '@/core/test/run-web-components'
+      ).then((m) => m.default);
       await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter />);
-      const customCounter = container.querySelector('custom-counter')!.shadowRoot!;
+      const customCounter =
+        container.querySelector('custom-counter')!.shadowRoot!;
       const [increment, decrement] = customCounter.querySelectorAll('button');
 
       expect(customCounter).toContainTextContent('0');
@@ -241,9 +262,9 @@ describe('test api', () => {
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import('@/core/test/run-web-components').then(
-        (m) => m.default,
-      );
+      const runWebComponents = await import(
+        '@/core/test/run-web-components'
+      ).then((m) => m.default);
       await runWebComponents();
 
       function ServerComponent() {
@@ -257,7 +278,8 @@ describe('test api', () => {
 
       // @ts-ignore
       const { container } = await render(<ServerComponent />);
-      const customCounter = container.querySelector('custom-counter')?.shadowRoot!;
+      const customCounter =
+        container.querySelector('custom-counter')?.shadowRoot!;
       const [increment] = customCounter.querySelectorAll('button');
 
       expect(customCounter).toContainTextContent('0');
@@ -347,14 +369,15 @@ describe('test api', () => {
         },
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import('@/core/test/run-web-components').then(
-        (m) => m.default,
-      );
+      const runWebComponents = await import(
+        '@/core/test/run-web-components'
+      ).then((m) => m.default);
       await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<foo-component />, { locale: 'en' });
-      const fooComponent = container.querySelector('foo-component')?.shadowRoot!;
+      const fooComponent =
+        container.querySelector('foo-component')?.shadowRoot!;
 
       expect(fooComponent).toContainTextContent('Foo Hello World');
     });
@@ -375,16 +398,19 @@ describe('test api', () => {
         },
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import('@/core/test/run-web-components').then(
-        (m) => m.default,
-      );
+      const runWebComponents = await import(
+        '@/core/test/run-web-components'
+      ).then((m) => m.default);
       await runWebComponents();
 
       // @ts-ignore
       const { container, store } = await render(<web-component />);
-      const componentComponent = container.querySelector('web-component')?.shadowRoot!;
+      const componentComponent =
+        container.querySelector('web-component')?.shadowRoot!;
 
-      expect(componentComponent.innerHTML).toBe('<native-some-example></native-some-example>');
+      expect(componentComponent.innerHTML).toBe(
+        '<native-some-example></native-some-example>',
+      );
 
       store.set('foo', 'bar');
 
@@ -536,7 +562,9 @@ describe('test api', () => {
 
     it('should be possible to log a shadow root', () => {
       const mockLog = spyOn(console, 'log');
-      const shadowRoot = document.createElement('div').attachShadow({ mode: 'open' });
+      const shadowRoot = document
+        .createElement('div')
+        .attachShadow({ mode: 'open' });
       shadowRoot.innerHTML = '<div>Foo</div>';
       debug(shadowRoot);
       expect(mockLog.mock.calls[0][0]).toBe(
@@ -589,7 +617,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<button onClick={mockFn}>Click me</button>);
+        const { container } = await render(
+          <button onClick={mockFn}>Click me</button>,
+        );
         const button = container.querySelector('button');
 
         userEvent.click(button!);
@@ -636,7 +666,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<button onDblClick={mockFn}>Click me</button>);
+        const { container } = await render(
+          <button onDblClick={mockFn}>Click me</button>,
+        );
         const button = container.querySelector('button');
 
         userEvent.dblClick(button!);
@@ -659,7 +691,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<input onInput={mockFn} type="text" />);
+        const { container } = await render(
+          <input onInput={mockFn} type="text" />,
+        );
         const input = container.querySelector('input')!;
 
         userEvent.type(input, 'Hello World');
@@ -709,7 +743,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<input onInput={mockFn} type="text" />);
+        const { container } = await render(
+          <input onInput={mockFn} type="text" />,
+        );
         const input = container.querySelector('input')!;
 
         userEvent.type(input, 'Hello World');
@@ -733,7 +769,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<button onMouseOver={mockFn}>Hover me</button>);
+        const { container } = await render(
+          <button onMouseOver={mockFn}>Hover me</button>,
+        );
         const button = container.querySelector('button');
 
         userEvent.hover(button!);
@@ -755,7 +793,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<button onMouseOut={mockFn}>Unhover me</button>);
+        const { container } = await render(
+          <button onMouseOut={mockFn}>Unhover me</button>,
+        );
         const button = container.querySelector('button');
 
         userEvent.unhover(button!);
@@ -776,7 +816,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<input onFocus={mockFn} type="text" />);
+        const { container } = await render(
+          <input onFocus={mockFn} type="text" />,
+        );
         const input = container.querySelector('input')!;
 
         userEvent.focus(input);
@@ -797,7 +839,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<input onBlur={mockFn} type="text" />);
+        const { container } = await render(
+          <input onBlur={mockFn} type="text" />,
+        );
         const input = container.querySelector('input')!;
 
         userEvent.focus(input);
@@ -918,7 +962,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<input type="file" onChange={mockFn} />);
+        const { container } = await render(
+          <input type="file" onChange={mockFn} />,
+        );
         const input = container.querySelector('input')!;
         const file = new File(['foo'], 'foo.txt', {
           type: 'text/plain',
@@ -1009,7 +1055,9 @@ describe('test api', () => {
 
       it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(<input onPaste={mockFn} type="text" />);
+        const { container } = await render(
+          <input onPaste={mockFn} type="text" />,
+        );
         const input = container.querySelector('input')!;
 
         userEvent.paste(input, 'Hello World');

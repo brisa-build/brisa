@@ -1,6 +1,8 @@
 export const lowercase = (str: string) => str.toLowerCase();
 
-export default function stylePropsToString(styleProps: JSX.CSSProperties): string {
+export default function stylePropsToString(
+  styleProps: JSX.CSSProperties,
+): string {
   let res = '';
 
   for (const key in styleProps) {

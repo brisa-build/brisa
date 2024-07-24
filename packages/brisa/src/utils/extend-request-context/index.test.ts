@@ -293,7 +293,9 @@ describe('brisa core', () => {
           color: yellow;
         }
       `;
-      expect(toInline((requestContext as any)._style)).toBe(toInline('body {color: yellow;}'));
+      expect(toInline((requestContext as any)._style)).toBe(
+        toInline('body {color: yellow;}'),
+      );
     });
 
     it('should have renderInitiator as "INITIAL_REQUEST" by default', () => {
@@ -305,7 +307,9 @@ describe('brisa core', () => {
         originalRequest: request,
         route,
       });
-      expect(requestContext.renderInitiator).toBe(RenderInitiator.INITIAL_REQUEST);
+      expect(requestContext.renderInitiator).toBe(
+        RenderInitiator.INITIAL_REQUEST,
+      );
     });
 
     it('should keep the renderInitiator of the originalRequest', () => {
@@ -319,7 +323,9 @@ describe('brisa core', () => {
         originalRequest: request,
         route,
       });
-      expect(requestContext.renderInitiator).toBe(RenderInitiator.SERVER_ACTION);
+      expect(requestContext.renderInitiator).toBe(
+        RenderInitiator.SERVER_ACTION,
+      );
     });
   });
 });

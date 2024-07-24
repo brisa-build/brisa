@@ -1,4 +1,13 @@
-import { afterEach, describe, expect, it, spyOn, beforeEach, mock, type Mock } from 'bun:test';
+import {
+  afterEach,
+  describe,
+  expect,
+  it,
+  spyOn,
+  beforeEach,
+  mock,
+  type Mock,
+} from 'bun:test';
 import fs from 'node:fs';
 import path from 'node:path';
 import compileFiles from '.';
@@ -55,7 +64,9 @@ describe('utils', () => {
       };
 
       const { success, logs } = await compileFiles();
-      const files = fs.readdirSync(DEV_BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(DEV_BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
       const brisaInternals = fs.readdirSync(path.join(DEV_BUILD_DIR, '_brisa'));
 
       expect(mockExtendPlugins).toHaveBeenCalledTimes(1);
@@ -143,7 +154,9 @@ describe('utils', () => {
         entrypoint: path.join(BUILD_DIR, 'pages', 'page-with-web-component.js'),
       });
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
@@ -176,12 +189,20 @@ describe('utils', () => {
       expect(files[16]).toBe('websocket.js');
 
       // Test actions
-      const homePageContent = await Bun.file(path.join(PAGES_DIR, 'index.js')).text();
+      const homePageContent = await Bun.file(
+        path.join(PAGES_DIR, 'index.js'),
+      ).text();
 
-      expect(homePageContent).toContain(`"data-action-onclick":"a1_1","data-action"`);
-      expect(homePageContent).toContain(`"data-action-onclick":"a1_2","data-action"`);
+      expect(homePageContent).toContain(
+        `"data-action-onclick":"a1_1","data-action"`,
+      );
+      expect(homePageContent).toContain(
+        `"data-action-onclick":"a1_2","data-action"`,
+      );
 
-      const pagesClient = fs.readdirSync(pagesClientPath).toSorted((a, b) => a.localeCompare(b));
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
         `_404-${HASH}-en.js`,
@@ -228,13 +249,17 @@ describe('utils', () => {
       ]);
 
       // Check i18n content depending the locale
-      expect(await Bun.file(path.join(pagesClientPath, `_404-${HASH}-en.js`)).text()).toBe(
+      expect(
+        await Bun.file(path.join(pagesClientPath, `_404-${HASH}-en.js`)).text(),
+      ).toBe(
         toInline(`
           window.i18nMessages={"hello":"Hello {{name}}"};
       `),
       );
 
-      expect(await Bun.file(path.join(pagesClientPath, `_404-${HASH}-pt.js`)).text()).toBe(
+      expect(
+        await Bun.file(path.join(pagesClientPath, `_404-${HASH}-pt.js`)).text(),
+      ).toBe(
         toInline(`
           window.i18nMessages={"hello":"Olá {{name}}"};
       `),
@@ -307,7 +332,9 @@ describe('utils', () => {
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
@@ -319,7 +346,9 @@ describe('utils', () => {
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toEqual(['_brisa', 'layout.js', 'pages', 'pages-client']);
 
-      const pagesClient = fs.readdirSync(pagesClientPath).toSorted((a, b) => a.localeCompare(b));
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
         `index-${HASH}.js`,
@@ -376,21 +405,35 @@ describe('utils', () => {
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
         minifyText(`export interface IntrinsicCustomElements { }`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(files).toEqual(['_brisa', 'actions', 'layout.js', 'pages', 'pages-client']);
+      expect(files).toEqual([
+        '_brisa',
+        'actions',
+        'layout.js',
+        'pages',
+        'pages-client',
+      ]);
 
       // Test actions
-      const layoutContent = await Bun.file(path.join(BUILD_DIR, 'layout.js')).text();
+      const layoutContent = await Bun.file(
+        path.join(BUILD_DIR, 'layout.js'),
+      ).text();
 
-      expect(layoutContent).toContain(`"data-action-onclick":"a1_1","data-action"`);
+      expect(layoutContent).toContain(
+        `"data-action-onclick":"a1_1","data-action"`,
+      );
 
-      const pagesClient = fs.readdirSync(pagesClientPath).toSorted((a, b) => a.localeCompare(b));
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
         `_rpc-${constants.VERSION_HASH}.js`,
@@ -451,7 +494,9 @@ describe('utils', () => {
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
@@ -460,7 +505,9 @@ describe('utils', () => {
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toEqual(['_brisa', 'layout.js', 'pages', 'pages-client']);
 
-      const pagesClient = fs.readdirSync(pagesClientPath).toSorted((a, b) => a.localeCompare(b));
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
         `_unsuspense-${constants.VERSION_HASH}.js`,
@@ -515,8 +562,12 @@ describe('utils', () => {
       mockConsoleLog.mockImplementation(() => {});
 
       const { success, logs } = await compileFiles();
-      const englishFile = Bun.file(path.join(pagesClientPath, `index-${HASH}-en.js`));
-      const frenchFile = Bun.file(path.join(pagesClientPath, `index-${HASH}-fr.js`));
+      const englishFile = Bun.file(
+        path.join(pagesClientPath, `index-${HASH}-en.js`),
+      );
+      const frenchFile = Bun.file(
+        path.join(pagesClientPath, `index-${HASH}-fr.js`),
+      );
 
       expect(await englishFile.exists()).toBeTrue();
       expect(await frenchFile.exists()).toBeTrue();
@@ -537,7 +588,9 @@ describe('utils', () => {
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
@@ -546,9 +599,17 @@ describe('utils', () => {
          }`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(files).toEqual(['_brisa', 'i18n.js', 'layout.js', 'pages', 'pages-client']);
+      expect(files).toEqual([
+        '_brisa',
+        'i18n.js',
+        'layout.js',
+        'pages',
+        'pages-client',
+      ]);
 
-      const pagesClient = fs.readdirSync(pagesClientPath).toSorted((a, b) => a.localeCompare(b));
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
         `index-${HASH}-en.js`,
@@ -612,12 +673,16 @@ describe('utils', () => {
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toEqual(['_brisa', 'layout.js', 'pages', 'pages-client']);
 
-      const pagesClient = fs.readdirSync(pagesClientPath).toSorted((a, b) => a.localeCompare(b));
+      const pagesClient = fs
+        .readdirSync(pagesClientPath)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
         `index-${HASH}.js`,
@@ -626,7 +691,9 @@ describe('utils', () => {
         `index.txt`,
       ]);
 
-      const codePage = await Bun.file(path.join(pagesClientPath, `index-${HASH}.js`)).text();
+      const codePage = await Bun.file(
+        path.join(pagesClientPath, `index-${HASH}.js`),
+      ).text();
 
       expect(codePage).toContain(`"context-provider"`);
       expect(codePage).toContain(`"cid"`); // context ID
@@ -678,10 +745,17 @@ describe('utils', () => {
 
       expect(logs).toBeEmpty();
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(success).toBe(true);
-      expect(files).toEqual(['_brisa', 'pages', 'pages-client', 'prerendered-pages']);
+      expect(files).toEqual([
+        '_brisa',
+        'pages',
+        'pages-client',
+        'prerendered-pages',
+      ]);
 
       const prerendered = fs
         .readdirSync(path.join(BUILD_DIR, 'prerendered-pages', 'pokemon'))
@@ -740,10 +814,17 @@ describe('utils', () => {
 
       expect(logs).toBeEmpty();
 
-      const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
       expect(success).toBe(true);
-      expect(files).toEqual(['_brisa', 'pages', 'pages-client', 'prerendered-pages']);
+      expect(files).toEqual([
+        '_brisa',
+        'pages',
+        'pages-client',
+        'prerendered-pages',
+      ]);
 
       const prerendered = fs
         .readdirSync(path.join(BUILD_DIR, 'prerendered-pages', 'pokemon'))
@@ -782,7 +863,10 @@ describe('utils', () => {
   });
 
   it('should compile an app with a web component inside a server component in a nested way but detected correctly', async () => {
-    const SRC_DIR = path.join(FIXTURES, 'with-web-components-inside-server-components');
+    const SRC_DIR = path.join(
+      FIXTURES,
+      'with-web-components-inside-server-components',
+    );
     const BUILD_DIR = path.join(SRC_DIR, 'out');
     const PAGES_DIR = path.join(BUILD_DIR, 'pages');
     const ASSETS_DIR = path.join(BUILD_DIR, 'public');
@@ -805,7 +889,9 @@ describe('utils', () => {
     expect(logs).toBeEmpty();
     expect(success).toBe(true);
 
-    const files = fs.readdirSync(BUILD_DIR).toSorted((a, b) => a.localeCompare(b));
+    const files = fs
+      .readdirSync(BUILD_DIR)
+      .toSorted((a, b) => a.localeCompare(b));
 
     expect(fs.existsSync(TYPES)).toBe(true);
     expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(

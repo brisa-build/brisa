@@ -6,13 +6,21 @@ import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
 
 export default async function build() {
-  const { IS_PRODUCTION, I18N_CONFIG, LOG_PREFIX, BUILD_DIR, ROOT_DIR, IS_STATIC_EXPORT } =
-    getConstants();
+  const {
+    IS_PRODUCTION,
+    I18N_CONFIG,
+    LOG_PREFIX,
+    BUILD_DIR,
+    ROOT_DIR,
+    IS_STATIC_EXPORT,
+  } = getConstants();
   const prebuildPath = path.join(ROOT_DIR, 'prebuild');
 
   console.log(
     LOG_PREFIX.WAIT,
-    IS_PRODUCTION ? '🚀 building your Brisa app...' : 'starting the development server...',
+    IS_PRODUCTION
+      ? '🚀 building your Brisa app...'
+      : 'starting the development server...',
   );
 
   const start = Bun.nanoseconds();
@@ -26,7 +34,11 @@ export default async function build() {
   if (fs.existsSync(prebuildPath)) {
     const finalPrebuildPath = path.join(BUILD_DIR, 'prebuild');
     fs.cpSync(prebuildPath, finalPrebuildPath, { recursive: true });
-    console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `Copied prebuild folder inside build`);
+    console.log(
+      LOG_PREFIX.INFO,
+      LOG_PREFIX.TICK,
+      `Copied prebuild folder inside build`,
+    );
     if (IS_PRODUCTION && !IS_STATIC_EXPORT) console.log(LOG_PREFIX.INFO);
   }
 
@@ -78,7 +90,11 @@ export default async function build() {
     }
     console.log(LOG_PREFIX.INFO);
 
-    console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `Generated static pages successfully!`);
+    console.log(
+      LOG_PREFIX.INFO,
+      LOG_PREFIX.TICK,
+      `Generated static pages successfully!`,
+    );
     console.log(LOG_PREFIX.INFO);
   }
 

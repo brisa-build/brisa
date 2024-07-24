@@ -305,16 +305,24 @@ describe('utils', () => {
         webComponentSymbol: webComponentSymbol4,
       });
 
-      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(4 + currProviderSymbolId);
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(
+        4 + currProviderSymbolId,
+      );
 
       clearProvidersByWCSymbol(webComponentSymbol, req);
-      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(3 + currProviderSymbolId);
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(
+        3 + currProviderSymbolId,
+      );
 
       clearProvidersByWCSymbol(webComponentSymbol2, req);
-      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(2 + currProviderSymbolId);
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(
+        2 + currProviderSymbolId,
+      );
 
       clearProvidersByWCSymbol(webComponentSymbol3, req);
-      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(1 + currProviderSymbolId);
+      expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(
+        1 + currProviderSymbolId,
+      );
 
       clearProvidersByWCSymbol(webComponentSymbol4, req);
       expect(store.get(CONTEXT_STORE_ID).get(context.id).size).toBe(0);

@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, setSystemTime } from 'bun:test';
 import processServerComponentProps from '.';
-import extendStreamController, { type Controller } from '@/utils/extend-stream-controller';
+import extendStreamController, {
+  type Controller,
+} from '@/utils/extend-stream-controller';
 import extendRequestContext from '@/utils/extend-request-context';
 
 let controller: Controller;
@@ -78,10 +80,16 @@ describe('utils', () => {
         'data-action-onclick': '1',
       };
 
-      const result = processServerComponentProps(props, parentProps, controller);
+      const result = processServerComponentProps(
+        props,
+        parentProps,
+        controller,
+      );
       expect(result).toEqual({ onClick });
       expect(result.onClick).toHaveProperty('actionId', '2');
-      expect(result.onClick).toHaveProperty('actions', [[['onAction', '1', '0']]]);
+      expect(result.onClick).toHaveProperty('actions', [
+        [['onAction', '1', '0']],
+      ]);
     });
     it('should add multiple action dependencies if the actions from parent are different', () => {
       const onClick = () => {};
@@ -102,7 +110,11 @@ describe('utils', () => {
         'data-action-onaction2': '1',
       };
 
-      const result = processServerComponentProps(props, parentProps, controller);
+      const result = processServerComponentProps(
+        props,
+        parentProps,
+        controller,
+      );
       expect(result).toEqual({ onClick });
       expect(result.onClick).toHaveProperty('actionId', '3');
       expect(result.onClick).toHaveProperty('actions', [
@@ -117,7 +129,10 @@ describe('utils', () => {
       const onClick = () => {};
       const onAction = () => {};
       const onAction2 = () => {};
-      const grantparentDeps = [[['onFoo', 'bar', '1']], [['onBar', 'foo', '1']]];
+      const grantparentDeps = [
+        [['onFoo', 'bar', '1']],
+        [['onBar', 'foo', '1']],
+      ];
 
       onAction.actionId = '2';
       onAction2.actionId = '1';
@@ -135,7 +150,11 @@ describe('utils', () => {
         'data-action-onaction2': '1',
       };
 
-      const result = processServerComponentProps(props, parentProps, controller);
+      const result = processServerComponentProps(
+        props,
+        parentProps,
+        controller,
+      );
       expect(result).toEqual({ onClick });
       expect(result.onClick).toHaveProperty('actionId', '3');
       expect(result.onClick).toHaveProperty('actions', [

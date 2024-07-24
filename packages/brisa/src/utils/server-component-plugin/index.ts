@@ -14,8 +14,14 @@ const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 const JSX_NAME = new Set(['jsx', 'jsxDEV', 'jsxs']);
 const DIRECT_IMPORT = 'import:';
 const WEB_COMPONENT_REGEX = /.*\/web-components\/.*/;
-const FN_EXPRESSIONS = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
-const FN_DECLARATIONS = new Set(['ArrowFunctionExpression', 'FunctionDeclaration']);
+const FN_EXPRESSIONS = new Set([
+  'ArrowFunctionExpression',
+  'FunctionExpression',
+]);
+const FN_DECLARATIONS = new Set([
+  'ArrowFunctionExpression',
+  'FunctionDeclaration',
+]);
 
 // TODO: Remove this workaround when this issue will be fixed:
 // https://github.com/oven-sh/bun/issues/7499
@@ -62,7 +68,10 @@ export default function serverComponentPlugin(
   function registerDeclarationsAndImports(this: any, key: string, value: any) {
     if (value?.type === 'VariableDeclarator' && value?.init) {
       declarations.set(value.id.name, value.init);
-    } else if (value?.type === 'AssignmentExpression' && value?.left?.type === 'Identifier') {
+    } else if (
+      value?.type === 'AssignmentExpression' &&
+      value?.left?.type === 'Identifier'
+    ) {
       declarations.set(value.left.name, value.right);
     } else if (value?.type === 'FunctionDeclaration') {
       declarations.set(value.id.name, value);
@@ -89,7 +98,8 @@ export default function serverComponentPlugin(
    *   to know which file to call to execute the action.
    */
   function traverseB2A(this: any, key: string, value: any) {
-    const isJSX = value?.type === 'CallExpression' && JSX_NAME.has(value?.callee?.name);
+    const isJSX =
+      value?.type === 'CallExpression' && JSX_NAME.has(value?.callee?.name);
     const isActionsFlag = isServerOutput && value?._hasActions;
     const isComponent = isUpperCaseChar(value?.arguments?.[0]?.name);
 
@@ -112,9 +122,16 @@ export default function serverComponentPlugin(
     // should have its own flag.
     if (isJSX && value?._actionPropagation) delete value._hasActions;
 
-    if (isActionsFlag && value?.type === 'VariableDeclaration' && Array.isArray(this)) {
+    if (
+      isActionsFlag &&
+      value?.type === 'VariableDeclaration' &&
+      Array.isArray(this)
+    ) {
       for (let declaration of value.declarations) {
-        if (declaration._hasActions && FN_EXPRESSIONS.has(declaration.init?.type)) {
+        if (
+          declaration._hasActions &&
+          FN_EXPRESSIONS.has(declaration.init?.type)
+        ) {
           declaration = markActionsFlag({
             value,
             declaration,
@@ -155,7 +172,8 @@ export default function serverComponentPlugin(
           isServerOutput &&
           attributeAst.value?.type === 'Identifier'
         ) {
-          properties[i] = transformActionIdentifierAttributeToArrow(attributeAst);
+          properties[i] =
+            transformActionIdentifierAttributeToArrow(attributeAst);
         }
 
         // In case it is a SpreadElement, we have to note that we want to
@@ -234,7 +252,11 @@ export default function serverComponentPlugin(
             // Change const props = { onClick } to const props = { onClick: (...args) => onClick(...args) }
             // to allow then destructuring on elements: <div {...props} /> + creating an action to allow
             // rendering the target component
-            if (!isComponent && v.value?.type === 'Identifier' && !declarations.has(v.value.name)) {
+            if (
+              !isComponent &&
+              v.value?.type === 'Identifier' &&
+              !declarations.has(v.value.name)
+            ) {
               v.value = transformActionIdentifierAttributeToArrow(v);
               return v;
             }
@@ -278,7 +300,11 @@ export default function serverComponentPlugin(
           shorthand: false,
         };
 
-        value.arguments[1].properties = [...properties, ...actionProperties, dataActionProperty];
+        value.arguments[1].properties = [
+          ...properties,
+          ...actionProperties,
+          dataActionProperty,
+        ];
       }
     }
 
@@ -298,7 +324,8 @@ export default function serverComponentPlugin(
       // Avoid transformation if it has the "skipSSR" attribute
       if (
         value?.arguments?.[1]?.properties?.some(
-          (prop: any) => prop?.key?.name === 'skipSSR' && prop?.value?.value !== false,
+          (prop: any) =>
+            prop?.key?.name === 'skipSSR' && prop?.value?.value !== false,
         )
       ) {
         webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ''));
@@ -366,7 +393,10 @@ export default function serverComponentPlugin(
     return value;
   }
 
-  let modifiedAst = JSON.parse(JSON.stringify(ast, registerDeclarationsAndImports), traverseB2A);
+  let modifiedAst = JSON.parse(
+    JSON.stringify(ast, registerDeclarationsAndImports),
+    traverseB2A,
+  );
 
   if (!isServerOutput && hasActions) {
     logWarning([
@@ -421,11 +451,21 @@ export default function serverComponentPlugin(
     code: generateCodeFromAST(modifiedAst) + workaroundText,
     detectedWebComponents,
     hasActions,
-    dependencies: getDependenciesList(modifiedAst, path, webComponentsWithoutSSR),
+    dependencies: getDependenciesList(
+      modifiedAst,
+      path,
+      webComponentsWithoutSSR,
+    ),
   };
 }
 
-function markActionsFlag({ value, declaration, parent, declarations, imports }: any) {
+function markActionsFlag({
+  value,
+  declaration,
+  parent,
+  declarations,
+  imports,
+}: any) {
   // Stop the propagation of the _hasActions property to the parent
   value._hasActions = false;
 

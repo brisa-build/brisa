@@ -6,7 +6,10 @@ import { logError } from '@/utils/log/log-build';
  * for example for server actions, in this case files are created based on
  * others inside the build/actions folder and then compiled in another process.
  */
-export default function replaceAstImportsToAbsolute(ast: ESTree.Program, path: string) {
+export default function replaceAstImportsToAbsolute(
+  ast: ESTree.Program,
+  path: string,
+) {
   function replacer(key: string, value: any) {
     try {
       // "import something from '../some/path'" => "import something from '/absolute/some/path'"
@@ -16,7 +19,10 @@ export default function replaceAstImportsToAbsolute(ast: ESTree.Program, path: s
       }
 
       // "require('../some/path')" => "require('/absolute/some/path')"
-      if (value?.callee?.name === 'require' && value?.arguments?.[0]?.type === 'Literal') {
+      if (
+        value?.callee?.name === 'require' &&
+        value?.arguments?.[0]?.type === 'Literal'
+      ) {
         value.arguments = [
           {
             type: 'Literal',
@@ -26,7 +32,10 @@ export default function replaceAstImportsToAbsolute(ast: ESTree.Program, path: s
       }
 
       // "import('../some/path')" => "import('/absolute/some/path')"
-      if (value?.type === 'ImportExpression' && value?.source?.type === 'Literal') {
+      if (
+        value?.type === 'ImportExpression' &&
+        value?.source?.type === 'Literal'
+      ) {
         value.source.value = import.meta.resolveSync(value.source.value, path);
       }
     } catch (error) {

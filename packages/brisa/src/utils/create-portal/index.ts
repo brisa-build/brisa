@@ -1,4 +1,7 @@
-export default function createPortal(element: JSX.Element, target: HTMLElement) {
+export default function createPortal(
+  element: JSX.Element,
+  target: HTMLElement,
+) {
   return {
     type: 'portal',
     props: {

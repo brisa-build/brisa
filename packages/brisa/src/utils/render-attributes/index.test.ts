@@ -358,8 +358,12 @@ describe('utils', () => {
       expect(hrefOfATag('/')).toBe(' href="/es"');
       expect(hrefOfATag('/some-page')).toBe(' href="/es/alguna-pagina"');
       expect(hrefOfATag('/user/aral')).toBe(' href="/es/usuario/aral"');
-      expect(hrefOfATag('https://example.com')).toBe(' href="https://example.com"');
-      expect(hrefOfATag('/catch/first/second')).toBe(' href="/es/atrapar/first/second"');
+      expect(hrefOfATag('https://example.com')).toBe(
+        ' href="https://example.com"',
+      );
+      expect(hrefOfATag('/catch/first/second')).toBe(
+        ' href="/es/atrapar/first/second"',
+      );
       expect(hrefOfATag('/dynamic/1/catch/first/second')).toBe(
         ' href="/es/dinamico/1/atrapar/first/second"',
       );
@@ -411,8 +415,12 @@ describe('utils', () => {
         });
 
       expect(hrefOfATag('/?foo=bar#baz')).toBe(' href="/es/?foo=bar#baz"');
-      expect(hrefOfATag('/some-page?foo=bar#baz')).toBe(' href="/es/alguna-pagina?foo=bar#baz"');
-      expect(hrefOfATag('/user/aral?foo=bar#baz')).toBe(' href="/es/usuario/aral?foo=bar#baz"');
+      expect(hrefOfATag('/some-page?foo=bar#baz')).toBe(
+        ' href="/es/alguna-pagina?foo=bar#baz"',
+      );
+      expect(hrefOfATag('/user/aral?foo=bar#baz')).toBe(
+        ' href="/es/usuario/aral?foo=bar#baz"',
+      );
       expect(hrefOfATag('https://example.com?foo=bar#baz')).toBe(
         ' href="https://example.com?foo=bar#baz"',
       );
@@ -546,8 +554,12 @@ describe('utils', () => {
         });
 
       expect(hrefOfPrefetch('/')).toBe(' rel="prefetch" href="/es"');
-      expect(hrefOfPrefetch('/some-page')).toBe(' rel="prefetch" href="/es/alguna-pagina"');
-      expect(hrefOfPrefetch('/user/aral')).toBe(' rel="prefetch" href="/es/usuario/aral"');
+      expect(hrefOfPrefetch('/some-page')).toBe(
+        ' rel="prefetch" href="/es/alguna-pagina"',
+      );
+      expect(hrefOfPrefetch('/user/aral')).toBe(
+        ' rel="prefetch" href="/es/usuario/aral"',
+      );
       expect(hrefOfPrefetch('https://example.com')).toBe(
         ' rel="prefetch" href="https://example.com"',
       );
@@ -605,7 +617,9 @@ describe('utils', () => {
           type: 'link',
         });
 
-      expect(hrefOfPrefetch('/?foo=bar#baz')).toBe(' rel="prefetch" href="/es/?foo=bar#baz"');
+      expect(hrefOfPrefetch('/?foo=bar#baz')).toBe(
+        ' rel="prefetch" href="/es/?foo=bar#baz"',
+      );
       expect(hrefOfPrefetch('/some-page?foo=bar#baz')).toBe(
         ' rel="prefetch" href="/es/alguna-pagina?foo=bar#baz"',
       );
@@ -645,7 +659,9 @@ describe('utils', () => {
         });
 
       expect(hrefOfATag('/')).toBe(' href="/"');
-      expect(hrefOfATag('/pokemon/charmander')).toBe(' href="/pokemon/charmander/"');
+      expect(hrefOfATag('/pokemon/charmander')).toBe(
+        ' href="/pokemon/charmander/"',
+      );
       expect(hrefOfATag('/some-page')).toBe(' href="/some-page/"');
       expect(hrefOfATag('/some-page/')).toBe(' href="/some-page/"');
     });
@@ -699,13 +715,19 @@ describe('utils', () => {
         });
 
       expect(hrefOfATag('/')).toBe(' href="/es/"');
-      expect(hrefOfATag('/pokemon/charmander')).toBe(' href="/es/pokemon/charmander/"');
+      expect(hrefOfATag('/pokemon/charmander')).toBe(
+        ' href="/es/pokemon/charmander/"',
+      );
       expect(hrefOfATag('/some-page')).toBe(' href="/es/alguna-pagina/"');
       expect(hrefOfATag('/some-page/')).toBe(' href="/es/alguna-pagina/"');
       expect(hrefOfATag('/user/aral')).toBe(' href="/es/usuario/aral/"');
       expect(hrefOfATag('/user/aral/')).toBe(' href="/es/usuario/aral/"');
-      expect(hrefOfATag('/catch/first/second')).toBe(' href="/es/atrapar/first/second/"');
-      expect(hrefOfATag('/catch/first/second/')).toBe(' href="/es/atrapar/first/second/"');
+      expect(hrefOfATag('/catch/first/second')).toBe(
+        ' href="/es/atrapar/first/second/"',
+      );
+      expect(hrefOfATag('/catch/first/second/')).toBe(
+        ' href="/es/atrapar/first/second/"',
+      );
       expect(hrefOfATag('/dynamic/1/catch/first/second')).toBe(
         ' href="/es/dinamico/1/atrapar/first/second/"',
       );
@@ -748,13 +770,17 @@ describe('utils', () => {
         ' src="https://example.com/some-image.png"',
       );
 
-      expect(imgSrc('/some-image.png')).toBe(' src="https://cdn.test.com/some-image.png"');
+      expect(imgSrc('/some-image.png')).toBe(
+        ' src="https://cdn.test.com/some-image.png"',
+      );
 
       expect(scriptSrc('https://example.com/some-script.js')).toBe(
         ' src="https://example.com/some-script.js"',
       );
 
-      expect(scriptSrc('/some-script.js')).toBe(' src="https://cdn.test.com/some-script.js"');
+      expect(scriptSrc('/some-script.js')).toBe(
+        ' src="https://cdn.test.com/some-script.js"',
+      );
     });
 
     it('should NOT add the assetPrefix to the "src" attribute for internal src (DEVELOPMENT)', () => {
@@ -913,13 +939,18 @@ describe('utils', () => {
 
       const attributes = renderAttributes({
         elementProps: {
-          indicator: [request.indicate('increment'), request.indicate('decrement')],
+          indicator: [
+            request.indicate('increment'),
+            request.indicate('decrement'),
+          ],
         },
         request,
         type: 'div',
       });
 
-      expect(attributes).toBe(` indicator="['__ind:increment','__ind:decrement']"`);
+      expect(attributes).toBe(
+        ` indicator="['__ind:increment','__ind:decrement']"`,
+      );
     });
 
     it('should simplify indicatorSignal to indicatorId inside "indicate[Event]" attribute with a string value', () => {
@@ -1010,7 +1041,9 @@ describe('utils', () => {
         type: 'div',
       });
 
-      expect(attributes).toBe(` data-action-onclick="a1_1" data-action foo="bar"`);
+      expect(attributes).toBe(
+        ` data-action-onclick="a1_1" data-action foo="bar"`,
+      );
     });
 
     it('should keep data-action if the onClick function is a function with actionId property', () => {
@@ -1032,7 +1065,9 @@ describe('utils', () => {
         type: 'div',
       });
 
-      expect(attributes).toBe(` data-action-onclick="a1_1" data-action foo="bar"`);
+      expect(attributes).toBe(
+        ` data-action-onclick="a1_1" data-action foo="bar"`,
+      );
     });
 
     it('should a nested action work with other actions in the same element', () => {
@@ -1133,7 +1168,10 @@ describe('utils', () => {
 
       const onClick = () => {};
       onClick.actionId = 'a1_1';
-      onClick.actions = [[['onClick', 'a1_1', 'c1']], [['onMouseOver', 'a1_2', 'c2']]];
+      onClick.actions = [
+        [['onClick', 'a1_1', 'c1']],
+        [['onMouseOver', 'a1_2', 'c2']],
+      ];
 
       const attributes = renderAttributes({
         elementProps: {

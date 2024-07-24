@@ -19,7 +19,9 @@ describe('utils', () => {
         const context = createContext("foo", "some-id");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -35,7 +37,9 @@ describe('utils', () => {
         const context = createContext("foo", "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -51,7 +55,9 @@ describe('utils', () => {
         const context = createContext(undefined, "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -69,7 +75,9 @@ describe('utils', () => {
         const context2 = createContext("bar", "0:1");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -85,7 +93,9 @@ describe('utils', () => {
         const context = brisaCreateContext("foo", "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -101,7 +111,9 @@ describe('utils', () => {
         const context = createContext("foo", "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -119,7 +131,9 @@ describe('utils', () => {
         const context = createContext("foo", "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -135,7 +149,9 @@ describe('utils', () => {
         const context = brisaCreateContext("foo", "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -149,7 +165,9 @@ describe('utils', () => {
         const context = require("brisa").createContext("foo", "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -165,7 +183,9 @@ describe('utils', () => {
         const context = brisa.createContext("foo", "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });
@@ -181,7 +201,9 @@ describe('utils', () => {
         const context = brisa.createContext("foo", "0:0");
       `);
 
-      const outputCode = toInline(generateContextID(inputCode, '/some/path.ts'));
+      const outputCode = toInline(
+        generateContextID(inputCode, '/some/path.ts'),
+      );
 
       expect(outputCode).toBe(expectedCode);
     });

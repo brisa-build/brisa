@@ -61,7 +61,9 @@ describe('utils', () => {
       } catch (error: any) {
         expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
-        expect(error.message).toContain(JSON.stringify({ type: 'page', renderMode: 'transition' }));
+        expect(error.message).toContain(
+          JSON.stringify({ type: 'page', renderMode: 'transition' }),
+        );
         expect(error.message).toContain(SUFFIX_MESSAGE);
         expect(error[PROPS_SYMBOL]).toBeUndefined();
       }
@@ -73,7 +75,9 @@ describe('utils', () => {
       } catch (error: any) {
         expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
-        expect(error.message).toContain(JSON.stringify({ type: 'page', renderMode: 'reactivity' }));
+        expect(error.message).toContain(
+          JSON.stringify({ type: 'page', renderMode: 'reactivity' }),
+        );
         expect(error.message).toContain(SUFFIX_MESSAGE);
         expect(error[PROPS_SYMBOL]).toBeUndefined();
       }

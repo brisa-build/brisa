@@ -73,7 +73,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
       const req = extendRequestContext({
         originalRequest: new Request('https://example.com', {
           headers: {
-            'Accept-Language': 'es-ES,es;q=0.9,de-CH;q=0.7,de;q=0.6,pt;q=0.5,ru-RU;q=0.4',
+            'Accept-Language':
+              'es-ES,es;q=0.9,de-CH;q=0.7,de;q=0.6,pt;q=0.5,ru-RU;q=0.4',
           },
         }),
       });
@@ -88,7 +89,9 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
       });
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('location')).toBe(`${basePath}/en/somepage?foo=bar`);
+      expect(response?.headers.get('location')).toBe(
+        `${basePath}/en/somepage?foo=bar`,
+      );
     });
 
     it('should not redirect if there is locale in the URL', () => {
@@ -212,9 +215,13 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
       );
 
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage`);
+      expect(response?.headers.get('Location')).toBe(
+        `https://en.test.com${basePath}/en/somepage`,
+      );
       expect(responseEs?.status).toBe(301);
-      expect(responseEs?.headers.get('Location')).toBe(`http://es.test.com${basePath}/es/somepage`);
+      expect(responseEs?.headers.get('Location')).toBe(
+        `http://es.test.com${basePath}/es/somepage`,
+      );
     });
 
     it('should redirect to the correct browser locale changing the subdomain', async () => {
@@ -243,7 +250,9 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
 
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage`);
+      expect(response?.headers.get('Location')).toBe(
+        `https://en.test.com${basePath}/en/somepage`,
+      );
     });
 
     it('should redirect to the correct browser locale without changing the subdomain in development', async () => {
@@ -303,7 +312,9 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
 
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage`);
+      expect(response?.headers.get('Location')).toBe(
+        `https://en.test.com${basePath}/en/somepage`,
+      );
     });
   });
   describe('with trailing slash', () => {
@@ -405,7 +416,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
       const req = extendRequestContext({
         originalRequest: new Request('https://example.com', {
           headers: {
-            'Accept-Language': 'es-ES,es;q=0.9,de-CH;q=0.7,de;q=0.6,pt;q=0.5,ru-RU;q=0.4',
+            'Accept-Language':
+              'es-ES,es;q=0.9,de-CH;q=0.7,de;q=0.6,pt;q=0.5,ru-RU;q=0.4',
           },
         }),
       });
@@ -423,7 +435,9 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
 
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('Location')).toBe(`${basePath}/en/somepage/`);
+      expect(response?.headers.get('Location')).toBe(
+        `${basePath}/en/somepage/`,
+      );
     });
 
     it('should redirect to the correct default locale of the subdomain', async () => {
@@ -459,7 +473,9 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
       );
 
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage/`);
+      expect(response?.headers.get('Location')).toBe(
+        `https://en.test.com${basePath}/en/somepage/`,
+      );
       expect(responseEs?.status).toBe(301);
       expect(responseEs?.headers.get('Location')).toBe(
         `http://es.test.com${basePath}/es/somepage/`,
@@ -528,7 +544,9 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
 
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage/`);
+      expect(response?.headers.get('Location')).toBe(
+        `https://en.test.com${basePath}/en/somepage/`,
+      );
     });
 
     it('should redirect to the correct browser locale without changing the subdomain in development', async () => {
@@ -557,7 +575,9 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
 
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('Location')).toBe(`${basePath}/en/somepage/`);
+      expect(response?.headers.get('Location')).toBe(
+        `${basePath}/en/somepage/`,
+      );
     });
 
     it('should redirect to the correct browser locale and changing the subdomain in development', async () => {
@@ -588,7 +608,9 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
 
       const { response } = handleI18n(req);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage/`);
+      expect(response?.headers.get('Location')).toBe(
+        `https://en.test.com${basePath}/en/somepage/`,
+      );
     });
   });
 });

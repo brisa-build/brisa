@@ -7,12 +7,18 @@ type I18nKeys = Set<string | RegExp>;
 /**
  * Get the messages that will be sent to the client.
  */
-export default function getI18nClientMessages(locale: string, i18nKeys: I18nKeys) {
+export default function getI18nClientMessages(
+  locale: string,
+  i18nKeys: I18nKeys,
+) {
   const config = getConstants().I18N_CONFIG ?? {};
   const messages = config.messages?.[locale] ?? {};
   const values = new Set<string>();
   const t = translateCore(locale, config);
-  const possibleKeys = increaseKeysWithPluralsAndRegexMatches(i18nKeys, messages);
+  const possibleKeys = increaseKeysWithPluralsAndRegexMatches(
+    i18nKeys,
+    messages,
+  );
 
   for (const i18nKey of possibleKeys) {
     const key = new String(i18nKey);
@@ -67,7 +73,8 @@ function increaseKeysWithPluralsAndRegexMatches(
   const plurals = '(_zero|_one|_two|_few|_many|_other|_[0-9]+)?$';
 
   for (const i18nKey of i18nKeys) {
-    const regex = i18nKey instanceof RegExp ? i18nKey : new RegExp(i18nKey + plurals);
+    const regex =
+      i18nKey instanceof RegExp ? i18nKey : new RegExp(i18nKey + plurals);
     for (const messageKey of list) {
       if (regex.test(messageKey)) result.add(messageKey);
     }

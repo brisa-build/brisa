@@ -398,7 +398,9 @@ describe('utils', () => {
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(logs).toContain('Actions are not supported with the "output": "static" option.');
+      expect(logs).toContain(
+        'Actions are not supported with the "output": "static" option.',
+      );
       expect(logs).toContain(`The warn arises in: ${serverComponentPath}`);
     });
 
@@ -497,7 +499,9 @@ describe('utils', () => {
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(logs).toContain('Actions are not supported with the "output": "desktop" option.');
+      expect(logs).toContain(
+        'Actions are not supported with the "output": "desktop" option.',
+      );
       expect(logs).toContain(`The warn arises in: ${serverComponentPath}`);
     });
 
@@ -1699,7 +1703,9 @@ describe('utils', () => {
       });
 
       expect(out.hasActions).toBeTrue();
-      expect(out.dependencies).toEqual(new Set([join(FIXTURES, 'pages', 'el.ts')]));
+      expect(out.dependencies).toEqual(
+        new Set([join(FIXTURES, 'pages', 'el.ts')]),
+      );
       expect(normalizeQuotes(out.code)).toBe(
         toExpected(`
         import { getEl } from './el.ts';
@@ -1716,8 +1722,10 @@ describe('utils', () => {
       );
     });
 
-    it.todo('should solve identifiers from imports when no actions in the component', () => {
-      const code = `
+    it.todo(
+      'should solve identifiers from imports when no actions in the component',
+      () => {
+        const code = `
         import { getEl } from './el.ts';
 
         export default function Component({text}) {
@@ -1725,15 +1733,17 @@ describe('utils', () => {
         }
       `;
 
-      const out = serverComponentPlugin(code, {
-        allWebComponents: {},
-        fileID: 'a1',
-        path: serverComponentPath,
-      });
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: 'a1',
+          path: serverComponentPath,
+        });
 
-      expect(out.dependencies).toEqual(new Set([join(FIXTURES, 'pages', 'el.ts')]));
-      expect(normalizeQuotes(out.code)).toBe(
-        toExpected(`
+        expect(out.dependencies).toEqual(
+          new Set([join(FIXTURES, 'pages', 'el.ts')]),
+        );
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
         import { getEl } from './el.ts';
 
         export default function Component({text}) {
@@ -1742,8 +1752,9 @@ describe('utils', () => {
 
         Component._hasActions = getEl?._hasActions;
       `),
-      );
-    });
+        );
+      },
+    );
 
     it.todo(
       'should solve different identifiers from imports when no actions in the component',
@@ -1787,8 +1798,10 @@ describe('utils', () => {
       },
     );
 
-    it.todo('should NOT solve identifiers from imports not used in the component', () => {
-      const code = `
+    it.todo(
+      'should NOT solve identifiers from imports not used in the component',
+      () => {
+        const code = `
         import getEl from './el.ts';
         import { getEl2 } from './el2.ts';
         import { getEl3 } from './el3.ts';
@@ -1800,21 +1813,21 @@ describe('utils', () => {
         console.log(getEl2);
       `;
 
-      const out = serverComponentPlugin(code, {
-        allWebComponents: {},
-        fileID: 'a1',
-        path: serverComponentPath,
-      });
+        const out = serverComponentPlugin(code, {
+          allWebComponents: {},
+          fileID: 'a1',
+          path: serverComponentPath,
+        });
 
-      expect(out.dependencies).toEqual(
-        new Set([
-          join(FIXTURES, 'pages', 'el.ts'),
-          join(FIXTURES, 'pages', 'el2.ts'),
-          join(FIXTURES, 'pages', 'el3.ts'),
-        ]),
-      );
-      expect(normalizeQuotes(out.code)).toBe(
-        toExpected(`
+        expect(out.dependencies).toEqual(
+          new Set([
+            join(FIXTURES, 'pages', 'el.ts'),
+            join(FIXTURES, 'pages', 'el2.ts'),
+            join(FIXTURES, 'pages', 'el3.ts'),
+          ]),
+        );
+        expect(normalizeQuotes(out.code)).toBe(
+          toExpected(`
         import getEl from './el.ts';
         import { getEl2 } from './el2.ts';
         import { getEl3 } from './el3.ts';
@@ -1827,7 +1840,8 @@ describe('utils', () => {
 
         Component._hasActions = getEl?._hasActions ?? getEl3?._hasActions;
       `),
-      );
-    });
+        );
+      },
+    );
   });
 });

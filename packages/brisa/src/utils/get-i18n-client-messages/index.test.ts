@@ -102,7 +102,10 @@ describe('utils', () => {
     });
 
     it('should take only the consumed messages and nested messages', () => {
-      const i18nKeys = new Set<string>(['hello-world', 'nested.very-nested.content']);
+      const i18nKeys = new Set<string>([
+        'hello-world',
+        'nested.very-nested.content',
+      ]);
       const output = getI18nClientMessages('en-US', i18nKeys);
       const expected = {
         'hello-world': 'Hello {{name}}',

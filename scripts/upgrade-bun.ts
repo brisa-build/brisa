@@ -29,7 +29,10 @@ packageJSON.engines =
       pnpm: 'please-use-bun',
     };
 // Update all the package.json files
-fs.writeFileSync(join(import.meta.dir, '..', 'package.json'), JSON.stringify(packageJSON, null, 2));
+fs.writeFileSync(
+  join(import.meta.dir, '..', 'package.json'),
+  JSON.stringify(packageJSON, null, 2),
+);
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'brisa', 'package.json'),
   JSON.stringify(brisaPackageJSON, null, 2),
@@ -48,7 +51,13 @@ fs.writeFileSync(
 );
 
 // Update the test.yml file
-const pipelinePath = join(import.meta.dir, '..', '.github', 'workflows', 'test.yml');
+const pipelinePath = join(
+  import.meta.dir,
+  '..',
+  '.github',
+  'workflows',
+  'test.yml',
+);
 const yml = fs
   .readFileSync(pipelinePath)
   .toString()

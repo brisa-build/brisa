@@ -29,14 +29,18 @@ export function contextProvider<T>({
   let currentProviderId = providerStore.get(CURRENT_PROVIDER_ID);
   let isPaused = false;
 
-  function setStores(contextStore: ContextStore, providerStore: Map<symbol, ProviderContent>) {
+  function setStores(
+    contextStore: ContextStore,
+    providerStore: Map<symbol, ProviderContent>,
+  ) {
     contextStore.set(context.id, providerStore);
     store.set(CONTEXT_STORE_ID, contextStore);
   }
 
   function getStores() {
     const contextStore =
-      store.get(CONTEXT_STORE_ID) ?? new Map<ContextStoreKey, Map<symbol, unknown>>();
+      store.get(CONTEXT_STORE_ID) ??
+      new Map<ContextStoreKey, Map<symbol, unknown>>();
     const providerStore = contextStore.get(context.id) ?? new Map<symbol, T>();
     return { contextStore, providerStore };
   }
@@ -128,7 +132,10 @@ export function contextProvider<T>({
 /**
  * Register the slot name to the active context providers
  */
-export function registerSlotToActiveProviders(slotName: string, requestContext: RequestContext) {
+export function registerSlotToActiveProviders(
+  slotName: string,
+  requestContext: RequestContext,
+) {
   const contextStore = requestContext.store.get(CONTEXT_STORE_ID) ?? new Map();
 
   for (const providerStore of contextStore.values()) {
@@ -156,7 +163,10 @@ function forEachActiveProvider(
 /**
  * Restore the context providers and return the restored providers
  */
-export function restoreSlotProviders(slotName: string, requestContext: RequestContext) {
+export function restoreSlotProviders(
+  slotName: string,
+  requestContext: RequestContext,
+) {
   const providers: ReturnType<typeof contextProvider>[] = [];
 
   forEachActiveProvider(requestContext, (provider) => {

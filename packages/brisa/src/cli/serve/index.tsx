@@ -11,7 +11,10 @@ function init(options: ServeOptions) {
     const server = Bun.serve(options);
 
     globalThis.brisaServer = server;
-    console.log(LOG_PREFIX.READY, `listening on http://${server.hostname}:${server.port}`);
+    console.log(
+      LOG_PREFIX.READY,
+      `listening on http://${server.hostname}:${server.port}`,
+    );
   } catch (error) {
     const { message } = error as Error;
 
@@ -47,8 +50,13 @@ function handleError(errorName: string) {
 
 process.on('unhandledRejection', handleError('Unhandled Rejection'));
 process.on('uncaughtException', handleError('Uncaught Exception'));
-process.on('uncaughtExceptionMonitor', handleError('Uncaught Exception Monitor'));
-process.setUncaughtExceptionCaptureCallback(handleError('Uncaught Exception Capture Callback'));
+process.on(
+  'uncaughtExceptionMonitor',
+  handleError('Uncaught Exception Monitor'),
+);
+process.setUncaughtExceptionCaptureCallback(
+  handleError('Uncaught Exception Capture Callback'),
+);
 
 const serveOptions = await getServeOptions();
 

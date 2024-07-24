@@ -99,10 +99,16 @@ describe('utils', () => {
           ['/src/pages/index.tsx', new Set(['/src/components/foo.tsx'])],
           ['/src/components/foo.tsx', new Set(['/src/components/bar.tsx'])],
           ['/src/components/bar.tsx', new Set(['/src/components/baz.tsx'])],
-          ['/src/components/baz.tsx', new Set(['/src/web-components/some-counter.tsx'])],
+          [
+            '/src/components/baz.tsx',
+            new Set(['/src/web-components/some-counter.tsx']),
+          ],
           ['/src/web-components/some-counter.tsx', new Set()],
         ]);
-        const entrypoints = ['/src/pages/page-without-web-component.tsx', '/src/pages/index.tsx'];
+        const entrypoints = [
+          '/src/pages/page-without-web-component.tsx',
+          '/src/pages/index.tsx',
+        ];
 
         const result = getWebComponentsPerEntryPoints(
           webComponentsPerFile,

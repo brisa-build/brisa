@@ -16,7 +16,8 @@ describe('utils', () => {
     });
 
     it('should return custom middleware if "middleware.ts" exists', async () => {
-      path.join = () => join(import.meta.dir, '..', '..', '__fixtures__', 'middleware');
+      path.join = () =>
+        join(import.meta.dir, '..', '..', '__fixtures__', 'middleware');
 
       const middleware = await importFileIfExists('middleware');
       expect(middleware?.default).toBeFunction();
@@ -28,7 +29,8 @@ describe('utils', () => {
     });
 
     it('should return custom i18n if "i18n.ts" exists', async () => {
-      path.join = () => join(import.meta.dir, '..', '..', '__fixtures__', 'i18n');
+      path.join = () =>
+        join(import.meta.dir, '..', '..', '__fixtures__', 'i18n');
 
       const i18n = await importFileIfExists('i18n');
       expect(i18n?.default).toEqual({
