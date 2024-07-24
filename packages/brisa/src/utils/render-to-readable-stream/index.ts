@@ -32,7 +32,7 @@ const ALLOWED_PRIMARIES = new Set(['string', 'number']);
 const NO_INDEX = '<meta name="robots" content="noindex" />';
 
 export default function renderToReadableStream(
-  element: JSXNode,
+  element: JSXNode | Promise<JSXNode>,
   {
     request,
     head,
