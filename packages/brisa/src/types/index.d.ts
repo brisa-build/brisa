@@ -685,7 +685,7 @@ export type ReactiveMap = {
 };
 
 type Props<T extends Record<string, unknown> = Record<string, unknown>> = T & {
-  children?: JSXElement;
+  children?: JSX.Element;
 };
 
 export type ResponseHeaders = (
@@ -695,25 +695,27 @@ export type ResponseHeaders = (
 
 export type Primitives = string | number | boolean | undefined | null;
 
-export type Type = string | number | ComponentType | Promise<ComponentType>;
+export type Type = string | number | ComponentType;
 
-export type JSXNode = Primitives | JSXElement | JSXNode[];
+// export type JSXNode = JSXElement;
 
-export type JSXElement =
-  | Primitives
-  | JSXElement[]
-  | {
-      type: Type;
-      props: Props;
-    };
+// export type JSXElement =
+//   | Primitives
+//   | JSXElement[]
+//   | {
+//       type: Type;
+//       props: Props;
+//     };
 
-export interface ComponentType extends JSXComponent {
+export interface ComponentType<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> extends JSXComponent<T> {
   error: (
-    props: Props & {
+    props: Props<T> & {
       error?: Error;
     },
     request: RequestContext,
-  ) => JSXNode | Promise<JSXNode>;
+  ) => JSX.Element;
 }
 
 export type JSXComponent<
@@ -721,7 +723,7 @@ export type JSXComponent<
 > = ((
   props: Props<T>,
   request: RequestContext,
-) => JSXNode | Promise<JSXNode>) & {
+) => JSX.Element) & {
   suspense?: JSXComponent<T>;
   error?: JSXComponent<T & { error: unknown }>;
 };
@@ -1210,7 +1212,7 @@ export interface BrisaDOMAttributes {
    * <div children="Hello World" />
    * ```
    */
-  children?: JSXElement;
+  children?: JSX.Element;
 
   /**
    * Description:
@@ -1260,10 +1262,24 @@ export interface BrisaDOMAttributes {
 
 declare global {
   export namespace JSX {
-    type Element = JSXElement;
+    type Element =
+      | Primitives
+      | JSX.Element[]
+      | {
+          type: Type;
+          props: Props;
+        }
+      | Promise<
+          | Primitives
+          | JSX.Element[]
+          | {
+              type: Type;
+              props: Props;
+            }
+        >;
 
     interface ElementChildrenAttribute {
-      children: JSXElement;
+      children: JSX.Element;
     }
 
     interface ContextProviderAttributes<
@@ -1288,7 +1304,7 @@ declare global {
         ? `debounce${Rest}`
         : never]?: number | undefined;
     } & {
-      children?: JSXElement;
+      children?: JSX.Element;
       skipSSR?: boolean;
     } & HTMLAttributes<HTMLElement>;
 

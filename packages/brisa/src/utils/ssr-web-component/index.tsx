@@ -2,7 +2,6 @@ import { toInline } from '@/helpers';
 import { Fragment } from '@/jsx-runtime';
 import type { RequestContext } from '@/types';
 import { getConstants } from '@/constants';
-import { sha } from 'bun';
 
 export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
   'AVOID_DECLARATIVE_SHADOW_DOM',
@@ -76,7 +75,6 @@ export default async function SSRWebComponent(
   return (
     <Selector {...props} __isWebComponent>
       {showContent && (
-        // @ts-ignore
         <template
           shadowrootmode="open"
           __skipGlobalCSS={self.shadowRoot.adoptedStyleSheets?.length === 0}
