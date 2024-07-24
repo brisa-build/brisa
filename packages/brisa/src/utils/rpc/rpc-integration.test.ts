@@ -27,7 +27,7 @@ async function simulateRPC({
   fails = false,
   failsThrowingAnError = false,
   dataActions = [] as [string, string][],
-  callbackAfterRPC = () => { },
+  callbackAfterRPC = () => {},
 } = {}) {
   const el = document.createElement(elementName);
 
@@ -387,7 +387,7 @@ describe('utils', () => {
   });
 
   describe('SPA Navigation', () => {
-    const mockNavigationIntercept = mock((handler: () => {}) => { });
+    const mockNavigationIntercept = mock((handler: () => {}) => {});
     async function simulateSPANavigation(
       url: string,
       {
@@ -419,7 +419,7 @@ describe('utils', () => {
       // Simulate the event
       fn({
         destination: { url },
-        scroll: () => { },
+        scroll: () => {},
         hashChange,
         downloadRequest,
         canIntercept,
