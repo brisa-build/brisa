@@ -1294,13 +1294,13 @@ declare global {
 
     export interface CSSProperties extends CSS.Properties<string | number> {
       /**
-       * The index signature was removed to enable closed typing for style
-       * using CSSType. You're able to use type assertion or module augmentation
-       * to add properties or an index signature of your own.
+       * Description:
        *
-       * For examples and more information, visit:
-       * https://github.com/frenic/csstype#what-should-i-do-when-i-get-type-errors
+       * Using CSS custom properties (variables)
+       *
+       * Custom properties (sometimes referred to as CSS variables or cascading variables) are entities defined by CSS authors that represent specific values to be reused throughout a document. They are set using the `@property` at-rule or by custom property syntax (e.g., --primary-color: blue;). Custom properties are accessed using the CSS var() function (e.g., color: var(--primary-color);).
        */
+      [key: `--${string}`]: string | number;
     }
 
     // All the WAI-ARIA 1.1 attributes from https://www.w3.org/TR/wai-aria-1.1/
