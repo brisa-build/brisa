@@ -697,15 +697,15 @@ export type Primitives = string | number | boolean | undefined | null;
 
 export type Type = string | number | ComponentType;
 
-export type JSXNode = JSXElement;
+// export type JSXNode = JSXElement;
 
-export type JSXElement =
-  | Primitives
-  | JSXElement[]
-  | {
-      type: Type;
-      props: Props;
-    };
+// export type JSXElement =
+//   | Primitives
+//   | JSXElement[]
+//   | {
+//       type: Type;
+//       props: Props;
+//     };
 
 export interface ComponentType<
   T extends Record<string, unknown> = Record<string, unknown>,
@@ -715,7 +715,7 @@ export interface ComponentType<
       error?: Error;
     },
     request: RequestContext,
-  ) => JSXElement | Promise<JSXElement>;
+  ) => JSX.Element;
 }
 
 export type JSXComponent<
@@ -723,7 +723,7 @@ export type JSXComponent<
 > = ((
   props: Props<T>,
   request: RequestContext,
-) => JSXElement | Promise<JSXElement>) & {
+) => JSX.Element) & {
   suspense?: JSXComponent<T>;
   error?: JSXComponent<T & { error: unknown }>;
 };
@@ -986,11 +986,11 @@ export type TranslateOptions = {
   returnObjects?: boolean;
   fallback?: string | string[];
   default?: T | string;
-  elements?: JSXElement[] | Record<string, JSXElement>;
+  elements?: JSX.Element[] | Record<string, JSX.Element>;
 };
 
 export type PageModule = {
-  default: (props: { error?: Error }) => JSXNode;
+  default: (props: { error?: Error }) => JSX.Element;
   responseHeaders?: (req: Request, status: number) => HeadersInit;
   Head?: ComponentType;
 };
@@ -1279,7 +1279,7 @@ declare global {
         >;
 
     interface ElementChildrenAttribute {
-      children: JSXElement | Promise<JSXElement>;
+      children: JSX.Element;
     }
 
     interface ContextProviderAttributes<
@@ -1304,7 +1304,7 @@ declare global {
         ? `debounce${Rest}`
         : never]?: number | undefined;
     } & {
-      children?: JSXElement | Promise<JSXElement>;
+      children?: JSX.Element;
       skipSSR?: boolean;
     } & HTMLAttributes<HTMLElement>;
 

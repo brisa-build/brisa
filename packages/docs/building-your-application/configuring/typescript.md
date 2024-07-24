@@ -42,9 +42,7 @@ Web components are like other HTML elements, that is, you don't need to import t
 Using `eslint` (optional) with `@typescript-eslint/no-unsafe-return`, you can use `JSXNode` from `brisa`.
 
 ```tsx
-import type { JSXNode } from "brisa";
-
-export default function MyComponent(): JSXNode {
+export default function MyComponent(): JSX.Element {
   return <div>Hello World</div>;
 }
 ```
