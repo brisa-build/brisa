@@ -151,7 +151,7 @@ async function enqueueDuringRendering(
       continue;
     }
 
-    const { type, props } = elementContent;
+    const { type, props } = elementContent as any;
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
     const isFragment = type?.__isFragment;
     const isTagToIgnore = isFragment || isServerProvider;
