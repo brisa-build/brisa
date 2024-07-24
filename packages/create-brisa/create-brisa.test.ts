@@ -22,7 +22,9 @@ describe('create-brisa', () => {
   it("should create brisa correctly with the name of the project as 'out'", async () => {
     const projectName = 'out';
     await $`echo "${projectName}" | bun run ${CREATE_BRISA_PATH}`;
-    expect(await $`ls ${projectName}`.text()).toBe(EXPECTED_INNER_FILES.join('\n') + '\n');
+    expect(await $`ls ${projectName}`.text()).toBe(
+      EXPECTED_INNER_FILES.join('\n') + '\n',
+    );
   });
 
   it('should exit and display an error if the folder exists', async () => {
@@ -36,6 +38,8 @@ describe('create-brisa', () => {
   it("should create brisa correctly with multi-folder with the name 'out/@foo/bar/baz'", async () => {
     const projectName = join('out', '@foo', 'bar', 'baz');
     await $`echo "${projectName}" | bun run ${CREATE_BRISA_PATH}`;
-    expect(await $`ls ${projectName}`.text()).toBe(EXPECTED_INNER_FILES.join('\n') + '\n');
+    expect(await $`ls ${projectName}`.text()).toBe(
+      EXPECTED_INNER_FILES.join('\n') + '\n',
+    );
   });
 });

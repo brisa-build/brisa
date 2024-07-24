@@ -1,5 +1,10 @@
 import type { RequestContext } from '@/types';
-import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX, decrypt, encrypt } from '@/utils/crypto';
+import {
+  ENCRYPT_NONTEXT_PREFIX,
+  ENCRYPT_PREFIX,
+  decrypt,
+  encrypt,
+} from '@/utils/crypto';
 import { logError } from '@/utils/log/log-build';
 
 export default async function transferStoreService(req: RequestContext) {
@@ -30,7 +35,8 @@ export default async function transferStoreService(req: RequestContext) {
 
           if (
             typeof value === 'string' &&
-            (value.startsWith(ENCRYPT_PREFIX) || value.startsWith(ENCRYPT_NONTEXT_PREFIX))
+            (value.startsWith(ENCRYPT_PREFIX) ||
+              value.startsWith(ENCRYPT_NONTEXT_PREFIX))
           ) {
             encryptedKeys.add(key);
             storeValue = decrypt(value);
@@ -41,7 +47,10 @@ export default async function transferStoreService(req: RequestContext) {
           req.store.transferToClient([key], { encrypt });
         } catch (e: any) {
           logError({
-            messages: [`Error transferring client "${key}" store to server store`, e.message],
+            messages: [
+              `Error transferring client "${key}" store to server store`,
+              e.message,
+            ],
             docTitle: 'Documentation about store.transferToClient',
             docLink:
               'https://brisa.build/api-reference/components/request-context#transfertoclient',

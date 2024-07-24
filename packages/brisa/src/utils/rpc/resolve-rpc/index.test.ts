@@ -2,7 +2,11 @@ import { normalizeQuotes } from '@/helpers';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 import { describe, expect, it, afterEach, mock } from 'bun:test';
 
-let resolveRPC: (res: Response, dataSet: DOMStringMap, args?: unknown[] | string) => Promise<void>;
+let resolveRPC: (
+  res: Response,
+  dataSet: DOMStringMap,
+  args?: unknown[] | string,
+) => Promise<void>;
 const dataSet = { cid: '123' };
 const decoder = new TextDecoder();
 
@@ -428,7 +432,11 @@ describe('utils', () => {
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
+          controller.enqueue(
+            encoder.encode(
+              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+            ),
+          );
           controller.close();
         },
       });
@@ -484,7 +492,11 @@ describe('utils', () => {
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
+          controller.enqueue(
+            encoder.encode(
+              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+            ),
+          );
           controller.close();
         },
       });
@@ -547,7 +559,11 @@ describe('utils', () => {
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
+          controller.enqueue(
+            encoder.encode(
+              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+            ),
+          );
           controller.close();
         },
       });
@@ -603,7 +619,11 @@ describe('utils', () => {
       const encoder = new TextEncoder();
       const stream = new ReadableStream({
         start(controller) {
-          controller.enqueue(encoder.encode('<!--o:123--><div class="foo">Bar</div><!--c:123-->'));
+          controller.enqueue(
+            encoder.encode(
+              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+            ),
+          );
           controller.close();
         },
       });

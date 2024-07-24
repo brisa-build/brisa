@@ -20,7 +20,10 @@ describe('utils', () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, '/src/web-components/_native/my-component.tsx').code,
+          clientBuildPlugin(
+            input,
+            '/src/web-components/_native/my-component.tsx',
+          ).code,
         );
         const expected = toInline(input);
         expect(output).toBe(expected);
@@ -35,7 +38,10 @@ describe('utils', () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, '/src/web-components/_partials/my-component.tsx').code,
+          clientBuildPlugin(
+            input,
+            '/src/web-components/_partials/my-component.tsx',
+          ).code,
         );
         const expected = toInline(`        
           export default function partial() {
@@ -51,7 +57,9 @@ describe('utils', () => {
               return <div>foo</div>
             }
           `;
-        const output = toInline(clientBuildPlugin(input, '__BRISA_CLIENT__ContextProvider').code);
+        const output = toInline(
+          clientBuildPlugin(input, '__BRISA_CLIENT__ContextProvider').code,
+        );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
           
@@ -66,8 +74,12 @@ describe('utils', () => {
         const input = `
             const element = <div>foo</div>
           `;
-        const output = toInline(clientBuildPlugin(input, '/src/components/my-component.tsx').code);
-        const expected = toInline(`const element = ['div', {}, 'foo'];export default null;`);
+        const output = toInline(
+          clientBuildPlugin(input, '/src/components/my-component.tsx').code,
+        );
+        const expected = toInline(
+          `const element = ['div', {}, 'foo'];export default null;`,
+        );
         expect(output).toBe(expected);
       });
 
@@ -75,8 +87,12 @@ describe('utils', () => {
         const input = `
             const element = () => <div>foo</div>
           `;
-        const output = toInline(clientBuildPlugin(input, '/src/components/my-component.tsx').code);
-        const expected = toInline(`const element = () => ['div', {}, 'foo'];export default null;`);
+        const output = toInline(
+          clientBuildPlugin(input, '/src/components/my-component.tsx').code,
+        );
+        const expected = toInline(
+          `const element = () => ['div', {}, 'foo'];export default null;`,
+        );
         expect(output).toBe(expected);
       });
 
@@ -373,7 +389,10 @@ describe('utils', () => {
         mockLog.mockRestore();
         expect(output).toBe(expected);
         expect(logs[0]).toEqual([LOG_PREFIX.ERROR, `Ops! Error:`]);
-        expect(logs[1]).toEqual([LOG_PREFIX.ERROR, `--------------------------`]);
+        expect(logs[1]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.ERROR,
           boldLog(`You can't use "Test" variable as a tag name.`),
@@ -386,8 +405,14 @@ describe('utils', () => {
           LOG_PREFIX.ERROR,
           `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`,
         ]);
-        expect(logs[5]).toEqual([LOG_PREFIX.ERROR, `File: src/web-components/my-component.tsx`]);
-        expect(logs[6]).toEqual([LOG_PREFIX.ERROR, `--------------------------`]);
+        expect(logs[5]).toEqual([
+          LOG_PREFIX.ERROR,
+          `File: src/web-components/my-component.tsx`,
+        ]);
+        expect(logs[6]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
         expect(logs[7]).toEqual([
           LOG_PREFIX.ERROR,
           `Documentation about web-components: https://brisa.build/building-your-application/components-details/web-components`,
@@ -1193,7 +1218,8 @@ describe('utils', () => {
     }
           `;
         const output = toInline(
-          clientBuildPlugin(input, 'src/web-components/conditional-render.tsx').code,
+          clientBuildPlugin(input, 'src/web-components/conditional-render.tsx')
+            .code,
         );
         const expected = toInline(`
           import {brisaElement, _on, _off} from "brisa/client";
@@ -1452,14 +1478,26 @@ describe('utils', () => {
         mockLog.mockRestore();
         expect(output).toBe(expected);
         expect(logs[0]).toEqual([LOG_PREFIX.WARN, `Ops! Warning:`]);
-        expect(logs[1]).toEqual([LOG_PREFIX.WARN, `--------------------------`]);
+        expect(logs[1]).toEqual([
+          LOG_PREFIX.WARN,
+          `--------------------------`,
+        ]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.WARN,
           boldLog(`You can't use spread props inside web-components JSX.`),
         ]);
-        expect(logs[3]).toEqual([LOG_PREFIX.WARN, `This can cause the lost of reactivity.`]);
-        expect(logs[4]).toEqual([LOG_PREFIX.WARN, `File: src/web-components/my-component.tsx`]);
-        expect(logs[5]).toEqual([LOG_PREFIX.WARN, `--------------------------`]);
+        expect(logs[3]).toEqual([
+          LOG_PREFIX.WARN,
+          `This can cause the lost of reactivity.`,
+        ]);
+        expect(logs[4]).toEqual([
+          LOG_PREFIX.WARN,
+          `File: src/web-components/my-component.tsx`,
+        ]);
+        expect(logs[5]).toEqual([
+          LOG_PREFIX.WARN,
+          `--------------------------`,
+        ]);
         expect(logs[6]).toEqual([
           LOG_PREFIX.WARN,
           `Docs: https://brisa.build/building-your-application/components-details/web-components`,

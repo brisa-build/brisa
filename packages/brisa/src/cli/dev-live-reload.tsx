@@ -23,7 +23,9 @@ export async function activateHotReload() {
 
       if (event !== 'change' && file.size !== 0) return;
 
-      const hash = (await file.exists()) ? Bun.hash(await file.arrayBuffer()) : null;
+      const hash = (await file.exists())
+        ? Bun.hash(await file.arrayBuffer())
+        : null;
 
       // Related with:
       // - https://github.com/brisa-build/brisa/issues/227

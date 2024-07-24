@@ -21,7 +21,10 @@ describe('utils', () => {
       `;
 
       const ast = parseCodeToAST(code);
-      const modifiedAst = await replaceAstImportsToAbsolute(ast, import.meta.url);
+      const modifiedAst = await replaceAstImportsToAbsolute(
+        ast,
+        import.meta.url,
+      );
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
         import createPortal from "${utilsDir}/create-portal/index.ts";
@@ -48,7 +51,10 @@ describe('utils', () => {
       `;
 
       const ast = parseCodeToAST(code);
-      const modifiedAst = await replaceAstImportsToAbsolute(ast, import.meta.url);
+      const modifiedAst = await replaceAstImportsToAbsolute(
+        ast,
+        import.meta.url,
+      );
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
         const createPortal = require("${utilsDir}/create-portal/index.ts");
@@ -73,7 +79,10 @@ describe('utils', () => {
       `;
 
       const ast = parseCodeToAST(code);
-      const modifiedAst = await replaceAstImportsToAbsolute(ast, import.meta.url);
+      const modifiedAst = await replaceAstImportsToAbsolute(
+        ast,
+        import.meta.url,
+      );
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
         import("${utilsDir}/create-portal/index.ts");
@@ -93,13 +102,18 @@ describe('utils', () => {
       `;
 
       const ast = parseCodeToAST(code);
-      const modifiedAst = await replaceAstImportsToAbsolute(ast, import.meta.url);
+      const modifiedAst = await replaceAstImportsToAbsolute(
+        ast,
+        import.meta.url,
+      );
       const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
       const expected = normalizeQuotes(`
         import("@/foo/unknown");
       `);
 
-      expect(mockLogError.mock.calls.toString()).toContain('Error resolving import path:');
+      expect(mockLogError.mock.calls.toString()).toContain(
+        'Error resolving import path:',
+      );
       expect(mockLogError.mock.calls.toString()).toContain(
         `Cannot find module "@/foo/unknown" from "file://${utilsDir}/replace-ast-imports-to-absolute/index.test.ts`,
       );

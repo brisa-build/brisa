@@ -8,19 +8,26 @@ export function logTable(data: { [key: string]: string }[]) {
   const { LOG_PREFIX } = getConstants();
   const headers = Object.keys(data[0]);
   const maxLengths = headers.map((header) =>
-    data.reduce((max, item) => Math.max(max, item[header].length), header.length),
+    data.reduce(
+      (max, item) => Math.max(max, item[header].length),
+      header.length,
+    ),
   );
   const lines = [];
 
   // Headers
-  lines.push(headers.map((header, i) => header.padEnd(maxLengths[i])).join(' | '));
+  lines.push(
+    headers.map((header, i) => header.padEnd(maxLengths[i])).join(' | '),
+  );
 
   // Separators
   lines.push('-'.repeat(maxLengths.reduce((total, len) => total + len + 3, 0)));
 
   // Rows
   for (const item of data) {
-    const cells = headers.map((header, i) => item[header].padEnd(maxLengths[i]));
+    const cells = headers.map((header, i) =>
+      item[header].padEnd(maxLengths[i]),
+    );
     lines.push(cells.join(' | '));
   }
 
@@ -91,7 +98,10 @@ export function logWarning(messages: string[], footer?: string) {
   return log('Warning')(messages, footer);
 }
 
-export function logBuildError(title: string, logs: (BuildMessage | ResolveMessage)[]) {
+export function logBuildError(
+  title: string,
+  logs: (BuildMessage | ResolveMessage)[],
+) {
   const messages = [
     title,
     '',
@@ -122,7 +132,9 @@ export function logBuildError(title: string, logs: (BuildMessage | ResolveMessag
   if (isMDXError) {
     messages.push('');
     messages.push('The error above is usually caused by the following:');
-    messages.push('Verify if the MDX plugin is correctly integrated in the brisa.config file');
+    messages.push(
+      'Verify if the MDX plugin is correctly integrated in the brisa.config file',
+    );
     messages.push('Integrate MDX with the following command:');
     messages.push('');
     messages.push(`> bunx brisa add mdx`);

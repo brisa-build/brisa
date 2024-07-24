@@ -1,4 +1,12 @@
-import { describe, it, expect, mock, beforeEach, afterEach, spyOn } from 'bun:test';
+import {
+  describe,
+  it,
+  expect,
+  mock,
+  beforeEach,
+  afterEach,
+  spyOn,
+} from 'bun:test';
 import fs from 'node:fs';
 import path from 'node:path';
 import build from './build';
@@ -21,9 +29,12 @@ const resultWithdDynamicRoute = {
 
 const mockCompileAll = mock(async () => defaultResult);
 const mockTable = mock((v: any) => null);
-const mockGenerateStaticExport = mock(async () => [new Map<string, string[]>()]);
+const mockGenerateStaticExport = mock(async () => [
+  new Map<string, string[]>(),
+]);
 const mockLog = mock((...logs: string[]) => {});
-const green = (text: string) => (Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text);
+const green = (text: string) =>
+  Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
 
 describe('cli', () => {
   describe('build', () => {
@@ -72,7 +83,9 @@ describe('cli', () => {
       const originPrebuildPath = path.join(ROOT_DIR, 'prebuild');
       const finalPrebuildPath = path.join(BUILD_DIR, 'prebuild');
 
-      spyOn(fs, 'existsSync').mockImplementation((v) => (v as string).includes('prebuild'));
+      spyOn(fs, 'existsSync').mockImplementation((v) =>
+        (v as string).includes('prebuild'),
+      );
       spyOn(fs, 'cpSync').mockImplementationOnce(() => null);
 
       await build();
@@ -85,9 +98,13 @@ describe('cli', () => {
         `Copied prebuild folder inside build${LOG_PREFIX.INFO}${LOG_PREFIX.TICK}Compiled successfully!`,
       );
       expect(fs.existsSync).toHaveBeenCalledTimes(2);
-      expect(fs.cpSync).toHaveBeenCalledWith(originPrebuildPath, finalPrebuildPath, {
-        recursive: true,
-      });
+      expect(fs.cpSync).toHaveBeenCalledWith(
+        originPrebuildPath,
+        finalPrebuildPath,
+        {
+          recursive: true,
+        },
+      );
     });
 
     it('should call compileAll if no "output" field is defined in the configuration', async () => {
@@ -175,10 +192,15 @@ describe('cli', () => {
     });
 
     it('should log prerendered dynamic routes with output="static"', async () => {
-      mockCompileAll.mockImplementationOnce(async () => resultWithdDynamicRoute);
+      mockCompileAll.mockImplementationOnce(
+        async () => resultWithdDynamicRoute,
+      );
       mockGenerateStaticExport.mockImplementationOnce(async () => {
         const map = new Map<string, string[]>();
-        map.set('/pages/user/[username].js', ['/user/john.html', '/user/jane.html']);
+        map.set('/pages/user/[username].js', [
+          '/user/john.html',
+          '/user/jane.html',
+        ]);
         return [map];
       });
 

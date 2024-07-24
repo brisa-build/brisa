@@ -9,7 +9,8 @@ export default function generateHrefLang(request: RequestContext) {
   const { locales, hrefLangOrigin } = I18N_CONFIG ?? {};
   const pageRoute = request.route?.name || '';
 
-  if (!locale || !hrefLangOrigin || RESERVED_PAGES.includes(pageRoute)) return '';
+  if (!locale || !hrefLangOrigin || RESERVED_PAGES.includes(pageRoute))
+    return '';
 
   return locales
     .map((lang: string) => {
@@ -33,7 +34,10 @@ export default function generateHrefLang(request: RequestContext) {
 function getHrefLangDomain(locale: string): string {
   const { I18N_CONFIG, IS_PRODUCTION } = getConstants();
   const { hrefLangOrigin } = I18N_CONFIG ?? {};
-  const domain = typeof hrefLangOrigin === 'string' ? hrefLangOrigin : hrefLangOrigin?.[locale];
+  const domain =
+    typeof hrefLangOrigin === 'string'
+      ? hrefLangOrigin
+      : hrefLangOrigin?.[locale];
 
   if (!domain) return '';
 
@@ -48,10 +52,16 @@ function getHrefLangDomain(locale: string): string {
   return domain;
 }
 
-function getURLInAnotherLang(domain: string, locale: string, request: RequestContext) {
+function getURLInAnotherLang(
+  domain: string,
+  locale: string,
+  request: RequestContext,
+) {
   const { I18N_CONFIG, LOCALES_SET } = getConstants();
   const paths = new URL(request.finalURL).pathname.split('/');
-  const page = LOCALES_SET.has(paths[1]) ? paths.join('/').slice(3) : paths.join('/');
+  const page = LOCALES_SET.has(paths[1])
+    ? paths.join('/').slice(3)
+    : paths.join('/');
   const url = new URL(page, domain);
   const { pages = {} } = I18N_CONFIG ?? {};
   const pageRoute = request.route?.name || '';

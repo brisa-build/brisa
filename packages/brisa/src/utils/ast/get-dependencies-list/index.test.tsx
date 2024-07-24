@@ -49,7 +49,9 @@ describe('utils', () => {
         const initialValue = new Set(['/path/to/initial.tsx']);
         const deps = getDependenciesMap(ast, path, initialValue);
 
-        expect(deps).toEqual(new Set(['/path/to/index.tsx', '/path/to/initial.tsx']));
+        expect(deps).toEqual(
+          new Set(['/path/to/index.tsx', '/path/to/initial.tsx']),
+        );
       });
 
       it('should return a list with the dependencies of the given ast with multiple imports', () => {
@@ -82,7 +84,9 @@ describe('utils', () => {
         const path = '/path/to/file.tsx';
         const deps = getDependenciesMap(ast, path);
 
-        expect(deps).toEqual(new Set(['/path/to/index.tsx', '/path/to/bar.tsx']));
+        expect(deps).toEqual(
+          new Set(['/path/to/index.tsx', '/path/to/bar.tsx']),
+        );
       });
 
       it('should work with named imports', () => {

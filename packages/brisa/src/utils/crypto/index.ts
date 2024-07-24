@@ -22,13 +22,17 @@ export function encrypt(textOrObject: unknown) {
     prefix = ENCRYPT_NONTEXT_PREFIX;
   }
 
-  return prefix + cipher.update(text as string, 'utf8', 'hex') + cipher.final('hex');
+  return (
+    prefix + cipher.update(text as string, 'utf8', 'hex') + cipher.final('hex')
+  );
 }
 
 export function decrypt(encrypted: string) {
   const isString = encrypted.startsWith(ENCRYPT_PREFIX);
   const decipher = crypto.createDecipheriv(...getAlorithm());
-  const input = encrypted.replace(ENCRYPT_PREFIX, '').replace(ENCRYPT_NONTEXT_PREFIX, '');
+  const input = encrypted
+    .replace(ENCRYPT_PREFIX, '')
+    .replace(ENCRYPT_NONTEXT_PREFIX, '');
   const text = decipher.update(input, 'hex', 'utf8') + decipher.final('utf8');
 
   return isString ? text : JSON.parse(text);

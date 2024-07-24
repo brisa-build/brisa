@@ -1,6 +1,9 @@
 import type { NavigateOptions } from '@/types';
 
-export default function navigate(url: string, options?: NavigateOptions): never {
+export default function navigate(
+  url: string,
+  options?: NavigateOptions,
+): never {
   const mode = options?.renderMode ?? 'reactivity';
 
   // This code is removed by the bundler when basePath is not used

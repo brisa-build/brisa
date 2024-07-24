@@ -1,5 +1,13 @@
 import path from 'node:path';
-import { describe, expect, it, beforeEach, afterEach, jest, mock } from 'bun:test';
+import {
+  describe,
+  expect,
+  it,
+  beforeEach,
+  afterEach,
+  jest,
+  mock,
+} from 'bun:test';
 import { getConstants } from '@/constants';
 import { render, userEvent } from '@/core/test';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
@@ -41,7 +49,8 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const dialog = component?.querySelector('dialog');
       expect(component).toBeDefined();
       expect(dialog).toBeNull();
@@ -52,8 +61,11 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      store.set(ERROR_STORE_KEY, [{ title: 'Error', details: ['An error occurred'] }]);
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      store.set(ERROR_STORE_KEY, [
+        { title: 'Error', details: ['An error occurred'] },
+      ]);
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const dialog = component?.querySelector('dialog');
 
       expect(component).toBeDefined();
@@ -69,9 +81,12 @@ describe('utils', () => {
         { title: 'Error 1', details: ['An error occurred'] },
         { title: 'Error 2', details: ['Another error occurred'] },
       ]);
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const dialog = component?.querySelector('dialog');
-      const prevErrorBtn = component?.querySelector('nav button:first-child') as Element;
+      const prevErrorBtn = component?.querySelector(
+        'nav button:first-child',
+      ) as Element;
 
       expect(dialog).toContainTextContent('Error 2: Another error occurred');
 
@@ -89,7 +104,8 @@ describe('utils', () => {
         { title: 'Error 1', details: ['An error occurred'] },
         { title: 'Error 2', details: ['Another error occurred'] },
       ]);
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const dialog = component?.querySelector('dialog');
 
       // Always start with the last error
@@ -106,8 +122,11 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      store.set(ERROR_STORE_KEY, [{ title: 'Error', details: ['An error occurred'] }]);
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      store.set(ERROR_STORE_KEY, [
+        { title: 'Error', details: ['An error occurred'] },
+      ]);
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const closeBtn = component?.querySelector('button.close-dialog')!;
       const dialog = component?.querySelector('dialog');
 
@@ -124,9 +143,13 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      store.set(ERROR_STORE_KEY, [{ title: 'Error', details: ['An error occurred'] }]);
+      store.set(ERROR_STORE_KEY, [
+        { title: 'Error', details: ['An error occurred'] },
+      ]);
       const getDialog = () =>
-        container.querySelector('brisa-error-dialog')?.shadowRoot?.querySelector('dialog');
+        container
+          .querySelector('brisa-error-dialog')
+          ?.shadowRoot?.querySelector('dialog');
 
       expect(getDialog()).not.toBeNull();
 
@@ -144,12 +167,18 @@ describe('utils', () => {
           <button>Click</button>
         </>,
       );
-      store.set(ERROR_STORE_KEY, [{ title: 'Error', details: ['An error occurred'] }]);
+      store.set(ERROR_STORE_KEY, [
+        { title: 'Error', details: ['An error occurred'] },
+      ]);
       const button = container.querySelector('button')!;
       const getDialog = () =>
-        container.querySelector('brisa-error-dialog')?.shadowRoot?.querySelector('dialog');
+        container
+          .querySelector('brisa-error-dialog')
+          ?.shadowRoot?.querySelector('dialog');
 
-      button.addEventListener('click', (event) => mockExternalButtonClick(event));
+      button.addEventListener('click', (event) =>
+        mockExternalButtonClick(event),
+      );
       button.focus();
 
       expect(getDialog()).not.toBeNull();
@@ -168,7 +197,9 @@ describe('utils', () => {
 
       expect(store.get(ERROR_STORE_KEY)).toBeEmpty();
 
-      window.dispatchEvent(new ErrorEvent('error', new Error('An error occurred')));
+      window.dispatchEvent(
+        new ErrorEvent('error', new Error('An error occurred')),
+      );
 
       const dialog = document.querySelector('brisa-error-dialog')?.shadowRoot;
 
@@ -187,7 +218,8 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const error = new Error('An error occurred');
       error.stack =
         'Error: An error occurred\n    at someFunction (http://localhost:3000/somefile.js:1:2)';
@@ -198,8 +230,13 @@ describe('utils', () => {
       const hyperlink = dialog?.querySelector('a');
 
       expect(dialog).toContainTextContent('Error: An error occurred');
-      expect(hyperlink).toContainTextContent('http://localhost:3000/somefile.js:1:2');
-      expect(hyperlink).toHaveAttribute('ping', encodeLink('/somefile.js', 1, 2));
+      expect(hyperlink).toContainTextContent(
+        'http://localhost:3000/somefile.js:1:2',
+      );
+      expect(hyperlink).toHaveAttribute(
+        'ping',
+        encodeLink('/somefile.js', 1, 2),
+      );
     });
 
     it('should add file link to the error stack', async () => {
@@ -207,7 +244,8 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const error = new Error('An error occurred');
       error.stack =
         'Error: An error occurred\n    at someFunction (/Users/someuser/somefile.js:1:2)';
@@ -219,7 +257,10 @@ describe('utils', () => {
 
       expect(dialog).toContainTextContent('Error: An error occurred');
       expect(hyperlink).toContainTextContent('/Users/someuser/somefile.js:1:2');
-      expect(hyperlink).toHaveAttribute('ping', encodeLink('/Users/someuser/somefile.js', 1, 2));
+      expect(hyperlink).toHaveAttribute(
+        'ping',
+        encodeLink('/Users/someuser/somefile.js', 1, 2),
+      );
     });
 
     it('should not display throwable navigation error', async () => {
@@ -228,7 +269,8 @@ describe('utils', () => {
         <brisa-error-dialog></brisa-error-dialog>,
       );
 
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const error = new Error('https://example.com');
       error.name = 'navigate:reactivity';
 
@@ -244,7 +286,8 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const error = new Error('An error occurred');
       error.stack =
         'Error: An error occurred\n    at someFunction (C:\\Users\\someuser\\somefile.js:1:2)';
@@ -255,7 +298,9 @@ describe('utils', () => {
       const hyperlink = dialog?.querySelector('a');
 
       expect(dialog).toContainTextContent('Error: An error occurred');
-      expect(hyperlink).toContainTextContent('C:\\Users\\someuser\\somefile.js:1:2');
+      expect(hyperlink).toContainTextContent(
+        'C:\\Users\\someuser\\somefile.js:1:2',
+      );
       expect(hyperlink).toHaveAttribute(
         'ping',
         encodeLink(`C:\\Users\\someuser\\somefile.js`, 1, 2),
@@ -267,10 +312,13 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const error = new Error('An error occurred');
       const docLink = 'https://brisa.dev/docs/error-handling';
-      store.set(ERROR_STORE_KEY, [{ title: 'Error', details: [error.message], docLink }]);
+      store.set(ERROR_STORE_KEY, [
+        { title: 'Error', details: [error.message], docLink },
+      ]);
       const dialog = component?.querySelector('dialog');
       const hyperlink = dialog?.querySelector('a');
 
@@ -284,7 +332,8 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const error = new Error('An error occurred');
       const docLink = 'https://brisa.dev/docs/error-handling';
       store.set(ERROR_STORE_KEY, [
@@ -308,9 +357,12 @@ describe('utils', () => {
         // @ts-ignore
         <brisa-error-dialog></brisa-error-dialog>,
       );
-      const component = container.querySelector('brisa-error-dialog')?.shadowRoot;
+      const component =
+        container.querySelector('brisa-error-dialog')?.shadowRoot;
       const error = new Error('An error occurred');
-      store.set(ERROR_STORE_KEY, [{ title: 'Error title', details: [error.message] }]);
+      store.set(ERROR_STORE_KEY, [
+        { title: 'Error title', details: [error.message] },
+      ]);
       const dialog = component?.querySelector('dialog');
       const titles = dialog?.querySelectorAll('b')!;
 
@@ -321,6 +373,8 @@ describe('utils', () => {
 });
 
 function encodeLink(link: string, line: number, column: number) {
-  const [pathname] = (URL.canParse(link) ? new URL(link).pathname : link).split(':');
+  const [pathname] = (URL.canParse(link) ? new URL(link).pathname : link).split(
+    ':',
+  );
   return `/__brisa_dev_file__?file=${encodeURIComponent(pathname)}&line=${line}&column=${column}`;
 }

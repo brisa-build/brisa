@@ -38,9 +38,18 @@ export default function translateCore(
   ) => {
     const overrideMessages = config._messages || {};
     const dic = { ...(config.messages?.[locale] || {}), ...overrideMessages };
-    const keyWithPlural = plural(pluralRules, dic, i18nKey as string, config, query);
+    const keyWithPlural = plural(
+      pluralRules,
+      dic,
+      i18nKey as string,
+      config,
+      query,
+    );
     const dicValue = getDicValue(dic, keyWithPlural, config, options);
-    const value = typeof dicValue === 'object' ? JSON.parse(JSON.stringify(dicValue)) : dicValue;
+    const value =
+      typeof dicValue === 'object'
+        ? JSON.parse(JSON.stringify(dicValue))
+        : dicValue;
 
     const empty =
       typeof value === 'undefined' ||
@@ -48,7 +57,9 @@ export default function translateCore(
       (value === '' && !allowEmptyStrings);
 
     const fallbacks =
-      typeof options?.fallback === 'string' ? [options.fallback] : options?.fallback || [];
+      typeof options?.fallback === 'string'
+        ? [options.fallback]
+        : options?.fallback || [];
 
     // Fallbacks
     if (empty && Array.isArray(fallbacks) && fallbacks.length) {
@@ -66,7 +77,9 @@ export default function translateCore(
       !fallbacks?.length
     ) {
       // if options.default is falsey there's no reason to do interpolation
-      return options.default ? interpolateUnknown(options.default, query) : options.default;
+      return options.default
+        ? interpolateUnknown(options.default, query)
+        : options.default;
     }
 
     // no need to try interpolation
@@ -79,7 +92,9 @@ export default function translateCore(
 
   const t: Translate = (i18nKey = '', query, options) => {
     const translationText = translate(i18nKey, query, options);
-    return options?.elements ? formatElements(translationText, options.elements) : translationText;
+    return options?.elements
+      ? formatElements(translationText, options.elements)
+      : translationText;
   };
 
   return t;
@@ -168,12 +183,21 @@ function interpolation({
 }): string {
   if (!text || !query) return text || '';
 
-  const escapeRegex = (str: string) => str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-  const { format = null, prefix = '{{', suffix = '}}' } = config.interpolation || {};
+  const escapeRegex = (str: string) =>
+    str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const {
+    format = null,
+    prefix = '{{',
+    suffix = '}}',
+  } = config.interpolation || {};
 
-  const regexEnd = suffix === '' ? '' : `(?:[\\s,]+([\\w-]*))?\\s*${escapeRegex(suffix)}`;
+  const regexEnd =
+    suffix === '' ? '' : `(?:[\\s,]+([\\w-]*))?\\s*${escapeRegex(suffix)}`;
   return Object.keys(query).reduce((all, varKey) => {
-    const regex = new RegExp(`${escapeRegex(prefix)}\\s*${varKey}${regexEnd}`, 'gm');
+    const regex = new RegExp(
+      `${escapeRegex(prefix)}\\s*${varKey}${regexEnd}`,
+      'gm',
+    );
     // $1 is the first match group
     return all.replace(regex, (_match, $1) => {
       // $1 undefined can mean either no formatting requested: "{{name}}"

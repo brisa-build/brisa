@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach, spyOn, mock } from 'bun:test';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  spyOn,
+  mock,
+} from 'bun:test';
 import { injectRPCCode, injectRPCLazyCode } from '.' with { type: 'macro' };
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 import { serialize } from '../serialization';
@@ -74,7 +82,9 @@ async function simulateRPC({
   });
 
   // Simulate the event
-  el.dispatchEvent(eventName === 'custom' ? new CustomEvent(eventName) : new Event(eventName));
+  el.dispatchEvent(
+    eventName === 'custom' ? new CustomEvent(eventName) : new Event(eventName),
+  );
 
   // Wait the fetch to be processed
   await Bun.sleep(0);
@@ -188,7 +198,10 @@ describe('utils', () => {
         navigateTo: 'http://localhost/some-page',
       });
 
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
 
       expect(headers['x-action']).toBe('a1_1');
       expect(headers['x-actions']).toBeEmpty();
@@ -210,7 +223,10 @@ describe('utils', () => {
       });
 
       const body = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
 
       expect(headers['x-action']).toBe('a1_1');
       expect(body['x-s']).toEqual([
@@ -228,7 +244,10 @@ describe('utils', () => {
         navigateTo: 'http://localhost/some-page',
       });
       const body = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
 
       expect(headers['x-action']).toBe('a1_1');
       expect(body['x-s']).toEqual([['c', 'd']]);
@@ -329,7 +348,10 @@ describe('utils', () => {
         navigateTo: 'http://localhost/some-page',
         dataActions: [['onClick', 'a1_2']],
       });
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
       expect(headers['x-action']).toBe('a1_1');
       expect(headers['x-actions']).toBe("[['onClick','a1_2']]");
     });
@@ -339,7 +361,10 @@ describe('utils', () => {
         navigateTo: 'http://localhost/some-page',
         dataActions: [],
       });
-      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<string, string>;
+      const headers = (mockFetch.mock.calls[0][1]?.headers ?? {}) as Record<
+        string,
+        string
+      >;
       expect(headers['x-action']).toBe('a1_1');
       expect(headers['x-actions']).toBeEmpty();
     });
@@ -355,7 +380,9 @@ describe('utils', () => {
         },
       });
 
-      expect(document.body.innerHTML).toBe(`<button data-action-onclick="a1_1"></button>`);
+      expect(document.body.innerHTML).toBe(
+        `<button data-action-onclick="a1_1"></button>`,
+      );
     });
   });
 
@@ -561,7 +588,9 @@ describe('utils', () => {
       const handler = mockNavigationIntercept.mock.calls[0][0];
       await handler();
       expect(mockFetch).toHaveBeenCalled();
-      expect(JSON.parse(mockFetch.mock.calls[0][1].body)['x-s']).toEqual([['a', 'b']]);
+      expect(JSON.parse(mockFetch.mock.calls[0][1].body)['x-s']).toEqual([
+        ['a', 'b'],
+      ]);
     });
 
     it('should register actions after SPA navigation with "data-action" attribute', async () => {

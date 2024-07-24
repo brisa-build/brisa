@@ -15,7 +15,8 @@ export default function feedbackError(error: Error, req?: RequestContext) {
         `path.join(Bun.env.BRISA_BUILD_FOLDER, 'prebuild', \`libadd.\${suffix}\`)`,
       ],
       docTitle: 'Documentation about FFI',
-      docLink: 'https://brisa.build/building-your-application/configuring/zig-rust-c-files',
+      docLink:
+        'https://brisa.build/building-your-application/configuring/zig-rust-c-files',
       req,
     });
     return;

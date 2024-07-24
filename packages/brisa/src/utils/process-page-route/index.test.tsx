@@ -79,7 +79,9 @@ describe('utils', () => {
       const stream = renderToReadableStream(Page(), testOptions);
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toContain('new WebSocket("ws://localhost:0/__brisa_live_reload__")');
+      expect(result).toContain(
+        'new WebSocket("ws://localhost:0/__brisa_live_reload__")',
+      );
     });
   });
 });

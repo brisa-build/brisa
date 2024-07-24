@@ -86,7 +86,9 @@ describe('utils', () => {
       const t = translateCore('en', config);
 
       expect(typeof t).toBe('function');
-      expect(t<string>('hello_world.hello_world_nested', { name: 'Test' })).toBe('Hello Test');
+      expect(
+        t<string>('hello_world.hello_world_nested', { name: 'Test' }),
+      ).toBe('Hello Test');
     });
 
     it('should return an object of root keys', async () => {
@@ -94,7 +96,9 @@ describe('utils', () => {
       const t = translateCore('en', config);
 
       expect(typeof t).toBe('function');
-      expect(t<RootKeysType>('.', null, { returnObjects: true })).toEqual(nsRootKeys);
+      expect(t<RootKeysType>('.', null, { returnObjects: true })).toEqual(
+        nsRootKeys,
+      );
     });
 
     it('should return an object of nested keys', async () => {
@@ -108,12 +112,12 @@ describe('utils', () => {
       const t = translateCore('en', config);
 
       expect(typeof t).toBe('function');
-      expect(t<NestedKeysType['key_1']>('key_1', null, { returnObjects: true })).toEqual(
-        nsNestedKeys.key_1,
-      );
-      expect(t<NestedKeysType['key_2']>('key_2', null, { returnObjects: true })).toEqual(
-        nsNestedKeys.key_2,
-      );
+      expect(
+        t<NestedKeysType['key_1']>('key_1', null, { returnObjects: true }),
+      ).toEqual(nsNestedKeys.key_1);
+      expect(
+        t<NestedKeysType['key_2']>('key_2', null, { returnObjects: true }),
+      ).toEqual(nsNestedKeys.key_2);
     });
 
     it('should return an object of nested keys and interpolate correctly', async () => {
@@ -130,7 +134,9 @@ describe('utils', () => {
       };
 
       expect(typeof t).toBe('function');
-      expect(t<NestedKeysType>('.', { count }, { returnObjects: true })).toEqual(expected);
+      expect(
+        t<NestedKeysType>('.', { count }, { returnObjects: true }),
+      ).toEqual(expected);
     });
 
     it('should return empty string when allowEmptyStrings is passed as true', () => {

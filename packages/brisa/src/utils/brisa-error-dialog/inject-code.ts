@@ -4,7 +4,11 @@ import { logBuildError } from '@/utils/log/log-build';
 
 // Should be used via macro
 export async function injectBrisaDialogErrorCode() {
-  const pathname = path.join(import.meta.dir, 'web-components', 'brisa-error-dialog.tsx');
+  const pathname = path.join(
+    import.meta.dir,
+    'web-components',
+    'brisa-error-dialog.tsx',
+  );
   const internalComponentId = '__BRISA_CLIENT__brisaErrorDialog';
 
   const { success, logs, outputs } = await Bun.build({

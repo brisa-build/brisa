@@ -4,7 +4,13 @@ import path from 'node:path';
 import { getConstants } from '@/constants';
 import precompressAssets from '.';
 
-const assetsPath = path.join(import.meta.dir, '..', '..', '__fixtures__', 'public');
+const assetsPath = path.join(
+  import.meta.dir,
+  '..',
+  '..',
+  '__fixtures__',
+  'public',
+);
 
 describe('utils', () => {
   describe('precompressAssets', () => {
@@ -36,10 +42,14 @@ describe('utils', () => {
 
       expect(await exists(`${assetsPath}/favicon.ico.gz`)).toBeTrue();
       expect(await exists(`${assetsPath}/some-dir/some-img.png.gz`)).toBeTrue();
-      expect(await exists(`${assetsPath}/some-dir/some-text.txt.gz`)).toBeTrue();
+      expect(
+        await exists(`${assetsPath}/some-dir/some-text.txt.gz`),
+      ).toBeTrue();
       expect(await exists(`${assetsPath}/favicon.ico.br`)).toBeTrue();
       expect(await exists(`${assetsPath}/some-dir/some-img.png.br`)).toBeTrue();
-      expect(await exists(`${assetsPath}/some-dir/some-text.txt.br`)).toBeTrue();
+      expect(
+        await exists(`${assetsPath}/some-dir/some-text.txt.br`),
+      ).toBeTrue();
     });
 
     it('should not precomopress any file in development', async () => {

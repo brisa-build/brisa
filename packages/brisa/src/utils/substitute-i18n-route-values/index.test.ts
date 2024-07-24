@@ -24,7 +24,10 @@ describe('utils', () => {
         }),
       }));
 
-      const output = substituteI18nRouteValues('/example/[id]', '/ejemplo/some-id');
+      const output = substituteI18nRouteValues(
+        '/example/[id]',
+        '/ejemplo/some-id',
+      );
 
       expect(output).toBe('/example/some-id');
     });
@@ -69,7 +72,10 @@ describe('utils', () => {
         }),
       }));
 
-      const output = substituteI18nRouteValues('/example', '/ejemplo?foo=bar#baz');
+      const output = substituteI18nRouteValues(
+        '/example',
+        '/ejemplo?foo=bar#baz',
+      );
 
       expect(output).toBe('/example?foo=bar#baz');
     });

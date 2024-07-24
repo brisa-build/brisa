@@ -9,7 +9,9 @@ export default async function Home({}, { i18n }: RequestContext) {
 }
 
 Home.suspense = () => {
-  return <div onClick={() => console.log('Hello from suspense')}>Loading...</div>;
+  return (
+    <div onClick={() => console.log('Hello from suspense')}>Loading...</div>
+  );
 };
 
 export async function responseHeaders(req: RequestContext, status: number) {

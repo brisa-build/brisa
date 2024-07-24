@@ -7,7 +7,8 @@ import AST from '@/utils/ast';
 import { boldLog } from '@/utils/log/log-color';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
-const toOutputCode = (ast: ESTree.Program) => normalizeQuotes(generateCodeFromAST(ast));
+const toOutputCode = (ast: ESTree.Program) =>
+  normalizeQuotes(generateCodeFromAST(ast));
 
 describe('utils', () => {
   describe('client-build-plugin', () => {
@@ -20,23 +21,35 @@ describe('utils', () => {
       });
 
       it('should transform JSX to an array if is a web-component arrow fn', () => {
-        const input = parseCodeToAST(`export default ({ name = 'foo' }) => <div>{name}</div>`);
+        const input = parseCodeToAST(
+          `export default ({ name = 'foo' }) => <div>{name}</div>`,
+        );
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`export default ({name = 'foo'}) => ['div', {}, name];`);
+        const expected = normalizeQuotes(
+          `export default ({name = 'foo'}) => ['div', {}, name];`,
+        );
         expect(output).toBe(expected);
       });
 
       it('should transform jsxDEV (jsx-runtime method) to an array', () => {
-        const input = parseCodeToAST(`export default () => jsxDEV('div', {}, 'foo', false, false)`);
+        const input = parseCodeToAST(
+          `export default () => jsxDEV('div', {}, 'foo', false, false)`,
+        );
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`export default () => ['div', {key: 'foo'}, ''];`);
+        const expected = normalizeQuotes(
+          `export default () => ['div', {key: 'foo'}, ''];`,
+        );
         expect(output).toBe(expected);
       });
 
       it('should transform jsxs (jsx-runtime method) to an array', () => {
-        const input = parseCodeToAST(`export default () => jsxs('div', {children: 'bar'}, 'foo')`);
+        const input = parseCodeToAST(
+          `export default () => jsxs('div', {children: 'bar'}, 'foo')`,
+        );
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`export default () => ['div', {key: 'foo'}, 'bar'];`);
+        const expected = normalizeQuotes(
+          `export default () => ['div', {key: 'foo'}, 'bar'];`,
+        );
         expect(output).toBe(expected);
       });
 
@@ -623,7 +636,10 @@ describe('utils', () => {
         logMock.mockRestore();
         expect(output).toBe(expected);
         expect(logs[0]).toEqual([LOG_PREFIX.ERROR, `Ops! Error:`]);
-        expect(logs[1]).toEqual([LOG_PREFIX.ERROR, `--------------------------`]);
+        expect(logs[1]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.ERROR,
           boldLog(`You can't use "Test" variable as a tag name.`),
@@ -636,7 +652,10 @@ describe('utils', () => {
           LOG_PREFIX.ERROR,
           `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`,
         ]);
-        expect(logs[5]).toEqual([LOG_PREFIX.ERROR, `--------------------------`]);
+        expect(logs[5]).toEqual([
+          LOG_PREFIX.ERROR,
+          `--------------------------`,
+        ]);
         expect(logs[6]).toEqual([
           LOG_PREFIX.ERROR,
           `Documentation about web-components: https://brisa.build/building-your-application/components-details/web-components`,

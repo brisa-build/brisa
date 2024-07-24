@@ -21,7 +21,9 @@ export default function getWebComponentsPerEntryPoints(
       continue;
     }
 
-    for (const [webComponentSelector, webComponentFilePath] of Object.entries(webComponents)) {
+    for (const [webComponentSelector, webComponentFilePath] of Object.entries(
+      webComponents,
+    )) {
       const entryPoints = findEntryPoints(
         dependenciesPerFile,
         webComponentFilePath,
@@ -33,7 +35,8 @@ export default function getWebComponentsPerEntryPoints(
         if (!webComponentsPerEntryPoint[buildEntryPoint]) {
           webComponentsPerEntryPoint[buildEntryPoint] = {};
         }
-        webComponentsPerEntryPoint[buildEntryPoint][webComponentSelector] = webComponentFilePath;
+        webComponentsPerEntryPoint[buildEntryPoint][webComponentSelector] =
+          webComponentFilePath;
       }
     }
   }
@@ -41,7 +44,11 @@ export default function getWebComponentsPerEntryPoints(
   return webComponentsPerEntryPoint;
 }
 
-function findEntryPoints(dependencies: DependenciesMap, file: string, entryPoints: Set<string>) {
+function findEntryPoints(
+  dependencies: DependenciesMap,
+  file: string,
+  entryPoints: Set<string>,
+) {
   const entryPointSet = new Set<string>();
   const visited = new Set<string>();
   const stack = [file.replace(/^import:/, '')];

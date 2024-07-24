@@ -325,7 +325,10 @@ const WITH_DEFAULT_VALUES_FROM_OTHER_PROPS = [
   },
   {
     param: '{baz, bar: foo = baz}',
-    expected: ['const {baz} = __b_props__;', 'const foo = derived(() => __b_props__.bar ?? baz);'],
+    expected: [
+      'const {baz} = __b_props__;',
+      'const foo = derived(() => __b_props__.bar ?? baz);',
+    ],
   },
   {
     param: '{ a: foo = 1, b: { c = foo, d = 2 } }',
@@ -379,7 +382,10 @@ const WITH_DEFAULT_VALUES_FROM_EXTERNAL_IDENTIFIERS = [
 const WITH_RENAMED_PROPS_IN_NESTED_LEVEL = [
   {
     param: '{ foo: bar, bar: { baz: qux } }',
-    expected: ['const {foo:bar} = __b_props__;', 'const qux = derived(() => __b_props__.bar.baz);'],
+    expected: [
+      'const {foo:bar} = __b_props__;',
+      'const qux = derived(() => __b_props__.bar.baz);',
+    ],
   },
   {
     param: "{ 'foo-name': bar, bar: { 'baz-name': qux } }",
@@ -390,7 +396,10 @@ const WITH_RENAMED_PROPS_IN_NESTED_LEVEL = [
   },
   {
     param: '{ 1: bar, bar: { 2: qux } }',
-    expected: ['const {1:bar} = __b_props__;', "const qux = derived(() => __b_props__.bar['2']);"],
+    expected: [
+      'const {1:bar} = __b_props__;',
+      "const qux = derived(() => __b_props__.bar['2']);",
+    ],
   },
   {
     param: '{ foo: bar, bar: [{ baz: qux }] }',

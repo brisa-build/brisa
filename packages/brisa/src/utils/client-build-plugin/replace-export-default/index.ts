@@ -1,6 +1,9 @@
 import type { ESTree } from 'meriyah';
 
-export default function replaceExportDefault(ast: ESTree.Program, name: string) {
+export default function replaceExportDefault(
+  ast: ESTree.Program,
+  name: string,
+) {
   return {
     ...ast,
     body: ast.body.map((node) => {

@@ -1,6 +1,9 @@
 import { describe, expect, it, beforeEach, afterEach } from 'bun:test';
 import { getConstants } from '@/constants';
-import { addBasePathToStringURL, removeBasePathFromStringURL } from '@/utils/base-path';
+import {
+  addBasePathToStringURL,
+  removeBasePathFromStringURL,
+} from '@/utils/base-path';
 
 describe('utils', () => {
   beforeEach(() => {

@@ -1,7 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { logError } from '@/utils/log/log-build';
-import { ALTERNATIVE_PREFIX, NATIVE_FOLDER } from '@/utils/client-build-plugin/constants';
+import {
+  ALTERNATIVE_PREFIX,
+  NATIVE_FOLDER,
+} from '@/utils/client-build-plugin/constants';
 import isTestFile from '@/utils/is-test-file';
 import { getEntrypointsRouter } from '@/utils/get-entrypoints';
 
@@ -22,17 +25,19 @@ export default async function getWebComponentsList(
   if (integrationsPath) {
     entries.push(
       ...(await Promise.all(
-        Object.entries<string>(await import(integrationsPath).then((m) => m.default ?? {})).map(
-          async ([key, value]) => {
-            const libPath = import.meta.resolveSync(value, integrationsPath);
-            const hasDefaultExport = (await Bun.file(libPath).text()).includes('export default');
+        Object.entries<string>(
+          await import(integrationsPath).then((m) => m.default ?? {}),
+        ).map(async ([key, value]) => {
+          const libPath = import.meta.resolveSync(value, integrationsPath);
+          const hasDefaultExport = (await Bun.file(libPath).text()).includes(
+            'export default',
+          );
 
-            return [key, hasDefaultExport ? libPath : `import:${libPath}`] satisfies [
-              string,
-              string,
-            ];
-          },
-        ),
+          return [
+            key,
+            hasDefaultExport ? libPath : `import:${libPath}`,
+          ] satisfies [string, string];
+        }),
       )),
     );
   }
@@ -41,7 +46,8 @@ export default async function getWebComponentsList(
     entries
       .filter(
         ([key]) =>
-          !(key.includes(ALTERNATIVE_PREFIX) || isTestFile(key)) || key.includes(NATIVE_FOLDER),
+          !(key.includes(ALTERNATIVE_PREFIX) || isTestFile(key)) ||
+          key.includes(NATIVE_FOLDER),
       )
       .map(([key, path]) => {
         const selector = key.replace(/^\/(_)?/g, '').replaceAll('/', '-');
@@ -53,7 +59,8 @@ export default async function getWebComponentsList(
               'Please, rename it to avoid conflicts.',
             ],
             docTitle: `Documentation about ${CONTEXT_PROVIDER}`,
-            docLink: 'https://brisa.build/api-reference/components/context-provider',
+            docLink:
+              'https://brisa.build/api-reference/components/context-provider',
           });
         } else if (existingSelectors.has(selector)) {
           logError({

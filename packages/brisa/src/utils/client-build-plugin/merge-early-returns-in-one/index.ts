@@ -1,7 +1,10 @@
 import type { ESTree } from 'meriyah';
 
 const CONDITIONAL_TYPES = new Set(['IfStatement', 'SwitchStatement']);
-const TYPES_TO_AVOID_ANALYZE_RETURN = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
+const TYPES_TO_AVOID_ANALYZE_RETURN = new Set([
+  'ArrowFunctionExpression',
+  'FunctionExpression',
+]);
 
 /**
  * Merge early returns in one
@@ -81,7 +84,10 @@ export default function mergeEarlyReturnsInOne(
   }
 
   const bodyWithoutReturnPaths = body.slice(0, firstEarlyReturn);
-  const bodyWithReturnPaths = body.slice(firstEarlyReturn, Number.POSITIVE_INFINITY);
+  const bodyWithReturnPaths = body.slice(
+    firstEarlyReturn,
+    Number.POSITIVE_INFINITY,
+  );
 
   // Merge the conditional statements to only one
   return {

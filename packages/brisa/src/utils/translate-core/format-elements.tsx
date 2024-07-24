@@ -2,14 +2,16 @@ export const tagParsingRegex = /<(\w+) *>(.*?)<\/\1 *>|<(\w+) *\/>/;
 
 const nlRe = /(?:\r\n|\r|\n)/g;
 
-function getElements(parts: Array<string | undefined>): Array<string | undefined>[] {
+function getElements(
+  parts: Array<string | undefined>,
+): Array<string | undefined>[] {
   if (!parts.length) return [];
 
   const [paired, children, unpaired, after] = parts.slice(0, 4);
 
-  return [[(paired || unpaired) as string, children || ('' as string), after]].concat(
-    getElements(parts.slice(4, parts.length)),
-  );
+  return [
+    [(paired || unpaired) as string, children || ('' as string), after],
+  ].concat(getElements(parts.slice(4, parts.length)));
 }
 
 export default function formatElements(
@@ -33,7 +35,9 @@ export default function formatElements(
       ...element,
       props: {
         ...(element.props ?? {}),
-        children: children ? formatElements(children, elements) : element.props.children,
+        children: children
+          ? formatElements(children, elements)
+          : element.props.children,
       },
     };
 

@@ -24,7 +24,9 @@ describe('utils', () => {
         ];
 
         const output = getContentReturns(statements);
-        expect(output).toEqual(new Set<ESTree.ReturnStatement>([returnStatement]));
+        expect(output).toEqual(
+          new Set<ESTree.ReturnStatement>([returnStatement]),
+        );
       });
 
       it('should return all return statements in the given AST with nested structures', () => {
@@ -57,7 +59,9 @@ describe('utils', () => {
         ];
 
         const output = getContentReturns(statements);
-        expect(output).toEqual(new Set<ESTree.ReturnStatement>([returnStatement, returnStatement]));
+        expect(output).toEqual(
+          new Set<ESTree.ReturnStatement>([returnStatement, returnStatement]),
+        );
       });
     });
   });

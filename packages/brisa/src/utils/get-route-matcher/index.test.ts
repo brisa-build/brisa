@@ -3,7 +3,13 @@ import path from 'node:path';
 import getRouteMatcher from '.';
 import extendRequestContext from '@/utils/extend-request-context';
 
-const PAGES_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__', 'pages');
+const PAGES_DIR = path.join(
+  import.meta.dir,
+  '..',
+  '..',
+  '__fixtures__',
+  'pages',
+);
 
 describe('utils', () => {
   beforeEach(() => {

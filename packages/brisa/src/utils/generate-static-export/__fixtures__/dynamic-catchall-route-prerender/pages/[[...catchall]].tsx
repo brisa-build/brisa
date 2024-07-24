@@ -3,5 +3,9 @@ export default function User() {
 }
 
 export function prerender() {
-  return [{ catchall: ['a', 'b', 'c'] }, { catchall: ['a', 'b'] }, { catchall: ['a'] }];
+  return [
+    { catchall: ['a', 'b', 'c'] },
+    { catchall: ['a', 'b'] },
+    { catchall: ['a'] },
+  ];
 }

@@ -71,9 +71,15 @@ describe('utils', () => {
 
       spyOn(console, 'log').mockImplementation((f, s) => mockLog(f, s));
 
-      const logs = [{ message: 'Error message 1' }, { message: 'Error message 2' }];
+      const logs = [
+        { message: 'Error message 1' },
+        { message: 'Error message 2' },
+      ];
 
-      logBuildError('Failed to compile', logs as (BuildMessage | ResolveMessage)[]);
+      logBuildError(
+        'Failed to compile',
+        logs as (BuildMessage | ResolveMessage)[],
+      );
 
       const output = mockLog.mock.results.map((t) => t.value).join('\n');
 
@@ -89,7 +95,10 @@ describe('utils', () => {
 
       const logs = [{ message: 'Could not resolve: "react/jsx-dev-runtime".' }];
 
-      logBuildError('Failed to compile', logs as (BuildMessage | ResolveMessage)[]);
+      logBuildError(
+        'Failed to compile',
+        logs as (BuildMessage | ResolveMessage)[],
+      );
 
       const output = mockLog.mock.results.map((t) => t.value).join('\n');
 
@@ -126,7 +135,10 @@ describe('utils', () => {
         },
       ];
 
-      logBuildError('Failed to compile', logs as (BuildMessage | ResolveMessage)[]);
+      logBuildError(
+        'Failed to compile',
+        logs as (BuildMessage | ResolveMessage)[],
+      );
 
       const output = mockLog.mock.results.map((t) => t.value).join('\n');
 
@@ -162,7 +174,10 @@ describe('utils', () => {
         },
       ];
 
-      logBuildError('Failed to compile', logs as (BuildMessage | ResolveMessage)[]);
+      logBuildError(
+        'Failed to compile',
+        logs as (BuildMessage | ResolveMessage)[],
+      );
 
       const output = mockLog.mock.results.map((t) => t.value).join('\n');
 

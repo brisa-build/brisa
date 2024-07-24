@@ -1,4 +1,11 @@
-import { it, describe, expect, mock, beforeEach, setSystemTime } from 'bun:test';
+import {
+  it,
+  describe,
+  expect,
+  mock,
+  beforeEach,
+  setSystemTime,
+} from 'bun:test';
 import extendStreamController from '.';
 import extendRequestContext from '@/utils/extend-request-context';
 import { RenderInitiator } from '@/public-constants';
@@ -24,7 +31,11 @@ describe('extendStreamController', () => {
     controller.enqueue('Hello world!');
     controller.endTag('</div>');
 
-    expect(mockController.enqueue.mock.calls).toEqual([['<div>'], ['Hello world!'], ['</div>']]);
+    expect(mockController.enqueue.mock.calls).toEqual([
+      ['<div>'],
+      ['Hello world!'],
+      ['</div>'],
+    ]);
   });
 
   it('should not enqueue directly the suspensed chunks and do it later', async () => {
@@ -57,7 +68,9 @@ describe('extendStreamController', () => {
       ['<div>'],
       ['Another'],
       ['</div>'],
-      [`<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`],
+      [
+        `<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`,
+      ],
     ]);
   });
 
@@ -121,7 +134,9 @@ describe('extendStreamController', () => {
       ['Another'],
       ['</div>'],
       ['</html>'],
-      [`<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`],
+      [
+        `<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`,
+      ],
     ]);
 
     controller.enqueue('Success 2!', secondSuspenseId);
@@ -142,8 +157,12 @@ describe('extendStreamController', () => {
       ['Another'],
       ['</div>'],
       ['</html>'],
-      [`<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`],
-      [`<template id="U:2">Success 2!</template><script id="R:2">u$('2')</script>`],
+      [
+        `<template id="U:1">Success!</template><script id="R:1">u$('1')</script>`,
+      ],
+      [
+        `<template id="U:2">Success 2!</template><script id="R:2">u$('2')</script>`,
+      ],
     ]);
   });
 
@@ -184,8 +203,12 @@ describe('extendStreamController', () => {
       ['<h1>'],
       ['Hello world'],
       ['</h1>'],
-      [`<template id="U:2"><div>Success U2!</div></template><script id="R:2">u$('2')</script>`],
-      [`<template id="U:1">Success U1!</template><script id="R:1">u$('1')</script>`],
+      [
+        `<template id="U:2"><div>Success U2!</div></template><script id="R:2">u$('2')</script>`,
+      ],
+      [
+        `<template id="U:1">Success U1!</template><script id="R:1">u$('1')</script>`,
+      ],
     ]);
   });
 
@@ -220,8 +243,12 @@ describe('extendStreamController', () => {
       ['<h1>'],
       ['Hello world'],
       ['</h1>'],
-      [`<template id="U:2">Success U2!</template><script id="R:2">u$('2')</script>`],
-      [`<template id="U:1">Success U1!</template><script id="R:1">u$('1')</script>`],
+      [
+        `<template id="U:2">Success U2!</template><script id="R:2">u$('2')</script>`,
+      ],
+      [
+        `<template id="U:1">Success U1!</template><script id="R:1">u$('1')</script>`,
+      ],
     ]);
   });
 
@@ -248,7 +275,9 @@ describe('extendStreamController', () => {
       [`<div id="S:1">`],
       ['Loading...'],
       ['</div>'],
-      [`<template id="U:1">This is a test</template><script id="R:1">u$('1')</script>`],
+      [
+        `<template id="U:1">This is a test</template><script id="R:1">u$('1')</script>`,
+      ],
     ]);
   });
 
@@ -309,7 +338,9 @@ describe('extendStreamController', () => {
     controller.transferStoreToClient();
 
     expect(mockController.enqueue.mock.calls).toEqual([
-      [`<script>window._S=[["test","test"]];for(let [k, v] of _S) _s?.set?.(k, v)</script>`],
+      [
+        `<script>window._S=[["test","test"]];for(let [k, v] of _S) _s?.set?.(k, v)</script>`,
+      ],
     ]);
   });
 
@@ -424,7 +455,9 @@ describe('extendStreamController', () => {
     controller.transferStoreToClient();
 
     expect(mockController.enqueue.mock.calls).toEqual([
-      [`<script>window._S=[["some","foo"]];for(let [k, v] of _S) _s?.set?.(k, v)</script>`],
+      [
+        `<script>window._S=[["some","foo"]];for(let [k, v] of _S) _s?.set?.(k, v)</script>`,
+      ],
     ]);
   });
 

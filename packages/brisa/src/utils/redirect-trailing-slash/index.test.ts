@@ -23,7 +23,9 @@ describe('utils', () => {
       });
       const response = redirectTrailingSlash(request);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('location')).toBe(`https://example.com${basePath}/foo`);
+      expect(response?.headers.get('location')).toBe(
+        `https://example.com${basePath}/foo`,
+      );
     });
 
     it('should NOT redirect the home trailingSlash=false + trailing slash', () => {
@@ -94,7 +96,9 @@ describe('utils', () => {
       });
       const response = redirectTrailingSlash(request);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get('location')).toBe(`https://example.com${basePath}/foo/`);
+      expect(response?.headers.get('location')).toBe(
+        `https://example.com${basePath}/foo/`,
+      );
     });
 
     it('should not redirect when trailingSlash=true but already has the trailing slash', () => {

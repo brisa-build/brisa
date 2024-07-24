@@ -37,7 +37,10 @@ export default function ErrorDialog(
       onClose();
     } else if (e.key === 'ArrowLeft' && currentIndex.value > 0) {
       currentIndex.value -= 1;
-    } else if (e.key === 'ArrowRight' && currentIndex.value < numErrors.value - 1) {
+    } else if (
+      e.key === 'ArrowRight' &&
+      currentIndex.value < numErrors.value - 1
+    ) {
       currentIndex.value += 1;
     }
   }
@@ -45,12 +48,14 @@ export default function ErrorDialog(
   async function explainMeError() {
     try {
       const promptMsg =
-        'Explain this JS error: ' + JSON.stringify(errors.value[currentIndex.value]);
+        'Explain this JS error: ' +
+        JSON.stringify(errors.value[currentIndex.value]);
       loadingAIResponse.value = true;
       aiResponse.value = '';
       const model = await modelPromise;
       const promise = model.prompt(promptMsg);
-      const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+      const sleep = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
       aiResponse.value = await Promise.race([
         promise,
         sleep(5000).then(() => 'AI response timed out'),
@@ -224,7 +229,10 @@ export default function ErrorDialog(
 
   if (!displayDialog.value) {
     return (
-      <button class="brisa-error-notification" onClick={() => (displayDialog.value = true)}>
+      <button
+        class="brisa-error-notification"
+        onClick={() => (displayDialog.value = true)}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -258,7 +266,11 @@ export default function ErrorDialog(
                   type="button"
                   disabled={currentIndex.value === 0}
                 >
-                  <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <title>previous</title>
                     <path
                       d="M6.99996 1.16666L1.16663 6.99999L6.99996 12.8333M12.8333 6.99999H1.99996H12.8333Z"
@@ -274,7 +286,11 @@ export default function ErrorDialog(
                   type="button"
                   disabled={currentIndex.value + 1 === numErrors.value}
                 >
-                  <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <title>next</title>
                     <path
                       d="M6.99996 1.16666L12.8333 6.99999L6.99996 12.8333M1.16663 6.99999H12H1.16663Z"
@@ -307,11 +323,16 @@ export default function ErrorDialog(
               style={{ width: 'auto' }}
               onClick={explainMeError}
             >
-              ✨ {loadingAIResponse.value ? 'Generating...' : 'Generate AI fix proposal'}
+              ✨{' '}
+              {loadingAIResponse.value
+                ? 'Generating...'
+                : 'Generate AI fix proposal'}
             </button>
           </>
         )}
-        {aiResponse.value && <p style={{ color: '#8d3939' }}>{aiResponse.value}</p>}
+        {aiResponse.value && (
+          <p style={{ color: '#8d3939' }}>{aiResponse.value}</p>
+        )}
         <button class="close-dialog" onClick={onClose}>
           Close
         </button>
@@ -383,7 +404,10 @@ function printStack(stack?: string) {
       const finalUrl = `/__brisa_dev_file__?file=${encodeURIComponent(
         file,
       )}&line=${line}&column=${column}`;
-      result = result.replace(link, `<a href="javascript:void(0);" ping="${finalUrl}">${link}</a>`);
+      result = result.replace(
+        link,
+        `<a href="javascript:void(0);" ping="${finalUrl}">${link}</a>`,
+      );
     }
 
     return result;

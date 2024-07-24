@@ -22,7 +22,9 @@ async function validateBrisaURLs(directory: string) {
       } else if (!filePath.match(/\.test\.(ts|tsx|js|jsx)$/)) {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
         const isDocs = filePath.startsWith('packages/docs/');
-        const regex = isDocs ? /\(\/[^\s"']+/g : /https:\/\/brisa\.build[^\s"']+/g;
+        const regex = isDocs
+          ? /\(\/[^\s"']+/g
+          : /https:\/\/brisa\.build[^\s"']+/g;
         const match = fileContent.match(regex);
 
         if (match) {
@@ -51,7 +53,10 @@ async function validateBrisaURLs(directory: string) {
   let ko = 0;
   for (const [url, filePath] of urls) {
     // TODO: Remove the replace when the Brisa documentation is public
-    const finalUrl = url.replace('https://brisa.build', 'https://brisa-mu.vercel.app');
+    const finalUrl = url.replace(
+      'https://brisa.build',
+      'https://brisa-mu.vercel.app',
+    );
     try {
       const response = await fetch(finalUrl);
       if (!response.ok) {

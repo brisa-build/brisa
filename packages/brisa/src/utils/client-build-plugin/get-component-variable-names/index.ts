@@ -1,6 +1,8 @@
 import type { ESTree } from 'meriyah';
 
-export default function getComponentVariableNames(componentBranch: ESTree.FunctionDeclaration) {
+export default function getComponentVariableNames(
+  componentBranch: ESTree.FunctionDeclaration,
+) {
   const varNames = new Set<string>([]);
 
   JSON.stringify(componentBranch, (key, value) => {
@@ -10,7 +12,10 @@ export default function getComponentVariableNames(componentBranch: ESTree.Functi
     }
 
     // somevar.name -> register somevar as a variable
-    if (value?.object?.type === 'Identifier' && value?.property?.type === 'Identifier') {
+    if (
+      value?.object?.type === 'Identifier' &&
+      value?.property?.type === 'Identifier'
+    ) {
       varNames.add(value?.object?.name);
     }
 

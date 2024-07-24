@@ -51,10 +51,12 @@ export default function getReactiveReturnStatement(
     !returnStatement &&
     componentBody.length === 1 &&
     componentBody[0]?.type === 'VariableDeclaration' &&
-    componentBody[0]?.declarations[0]?.init?.type === 'ArrowFunctionExpression' &&
+    componentBody[0]?.declarations[0]?.init?.type ===
+      'ArrowFunctionExpression' &&
     componentBody[0]?.declarations[0]?.init?.body?.type !== 'BlockStatement'
   ) {
-    const elements = (componentBody[0] as any)?.declarations[0]?.init?.body?.elements ?? [];
+    const elements =
+      (componentBody[0] as any)?.declarations[0]?.init?.body?.elements ?? [];
     tagName = {
       type: 'Literal',
       value: elements[0]?.value ?? null,

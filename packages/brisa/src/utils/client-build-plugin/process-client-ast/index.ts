@@ -17,7 +17,8 @@ export default function processClientAst(ast: ESTree.Program) {
     if (
       value?.type === 'CallExpression' &&
       ((value?.callee?.type === 'Identifier' && value?.callee?.name === 't') ||
-        (value?.callee?.property?.type === 'Identifier' && value?.callee?.property?.name === 't'))
+        (value?.callee?.property?.type === 'Identifier' &&
+          value?.callee?.property?.name === 't'))
     ) {
       if (value?.arguments?.[0]?.type === 'Literal') {
         i18nKeys.add(value?.arguments?.[0]?.value);

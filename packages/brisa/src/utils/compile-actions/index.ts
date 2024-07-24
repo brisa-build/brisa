@@ -15,10 +15,19 @@ type CompileActionsParams = {
 };
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
-const EXPORT_TYPES = new Set(['ExportDefaultDeclaration', 'ExportNamedDeclaration']);
-const FN_EXPRESSION_TYPES = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
+const EXPORT_TYPES = new Set([
+  'ExportDefaultDeclaration',
+  'ExportNamedDeclaration',
+]);
+const FN_EXPRESSION_TYPES = new Set([
+  'ArrowFunctionExpression',
+  'FunctionExpression',
+]);
 
-export default async function compileActions({ actionsEntrypoints, define }: CompileActionsParams) {
+export default async function compileActions({
+  actionsEntrypoints,
+  define,
+}: CompileActionsParams) {
   const { BUILD_DIR, IS_PRODUCTION } = getConstants();
   const rawActionsDir = join(BUILD_DIR, 'actions_raw');
   const res = await Bun.build({
@@ -182,10 +191,13 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
   for (const node of ast.body) {
     const isExport = EXPORT_TYPES.has(node?.type);
     const isExportWithSpecifiers = isExport && (node as any).specifiers?.length;
-    const isExportWithIdentifier = isExport && (node as any).declaration?.type === 'Identifier';
+    const isExportWithIdentifier =
+      isExport && (node as any).declaration?.type === 'Identifier';
 
     if (!isExportWithSpecifiers && !isExportWithIdentifier) {
-      body.push(...(isExport ? convert((node as any).declaration) : convert(node)));
+      body.push(
+        ...(isExport ? convert((node as any).declaration) : convert(node)),
+      );
     }
   }
 
@@ -194,7 +206,8 @@ function convertToFunctionDeclarations(ast: ESTree.Program): ESTree.Program {
 
 function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
   const body = getPurgedBody(info);
-  const { params, requestDestructuring, requestParamName } = getActionParams(info);
+  const { params, requestDestructuring, requestParamName } =
+    getActionParams(info);
   const FUNCTIONS_TO_IGNORE_AWAIT = new Set([
     requestParamName,
     'console',
@@ -225,32 +238,37 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
             type: 'Identifier',
             name: '__action',
           },
-          init: JSON.parse(JSON.stringify(info.actionFnExpression!), function (key, value) {
-            if (
-              value?.type === 'CallExpression' &&
-              this?.type !== 'AwaitExpression' &&
-              !FUNCTIONS_TO_IGNORE_AWAIT.has(value.callee?.object?.name) &&
-              !FUNCTIONS_TO_IGNORE_AWAIT.has(value.callee?.object?.object?.name)
-            ) {
-              return {
-                type: 'CallExpression',
-                callee: {
-                  type: 'MemberExpression',
-                  object: {
-                    type: 'Identifier',
-                    name: requestParamName,
+          init: JSON.parse(
+            JSON.stringify(info.actionFnExpression!),
+            function (key, value) {
+              if (
+                value?.type === 'CallExpression' &&
+                this?.type !== 'AwaitExpression' &&
+                !FUNCTIONS_TO_IGNORE_AWAIT.has(value.callee?.object?.name) &&
+                !FUNCTIONS_TO_IGNORE_AWAIT.has(
+                  value.callee?.object?.object?.name,
+                )
+              ) {
+                return {
+                  type: 'CallExpression',
+                  callee: {
+                    type: 'MemberExpression',
+                    object: {
+                      type: 'Identifier',
+                      name: requestParamName,
+                    },
+                    computed: false,
+                    property: {
+                      type: 'Identifier',
+                      name: '_p',
+                    },
                   },
-                  computed: false,
-                  property: {
-                    type: 'Identifier',
-                    name: '_p',
-                  },
-                },
-                arguments: [value],
-              };
-            }
-            return value;
-          }),
+                  arguments: [value],
+                };
+              }
+              return value;
+            },
+          ),
         },
       ],
     });
@@ -300,7 +318,8 @@ function getActionParams(info: ActionInfo) {
   } else {
     const currentReq = params[1];
 
-    requestParamName = currentReq?.type === 'Identifier' ? currentReq?.name : 'req';
+    requestParamName =
+      currentReq?.type === 'Identifier' ? currentReq?.name : 'req';
     params[1] = { type: 'Identifier', name: requestParamName };
 
     if (currentReq.type === 'ObjectPattern') {
@@ -313,7 +332,9 @@ function getActionParams(info: ActionInfo) {
             id: {
               type: 'ObjectPattern',
               properties: currentReq.properties.filter(
-                (p) => p.type !== 'RestElement' || (p as any).argument?.name !== requestParamName,
+                (p) =>
+                  p.type !== 'RestElement' ||
+                  (p as any).argument?.name !== requestParamName,
               ),
             },
             init: {
@@ -329,7 +350,10 @@ function getActionParams(info: ActionInfo) {
   return { params, requestDestructuring, requestParamName };
 }
 
-function getActionCall(info: ActionInfo, requestParamName: string): ESTree.ExpressionStatement {
+function getActionCall(
+  info: ActionInfo,
+  requestParamName: string,
+): ESTree.ExpressionStatement {
   return {
     type: 'ExpressionStatement',
     expression: {
@@ -338,7 +362,9 @@ function getActionCall(info: ActionInfo, requestParamName: string): ESTree.Expre
         type: 'CallExpression',
         callee: {
           type: 'Identifier',
-          name: info.actionFnExpression ? '__action' : info.actionIdentifierName,
+          name: info.actionFnExpression
+            ? '__action'
+            : info.actionIdentifierName,
         },
         arguments: [
           {
@@ -559,8 +585,9 @@ function wrapWithTypeCatch({
                                 {
                                   type: 'Identifier',
                                   name:
-                                    (info.componentFnExpression as ESTree.FunctionExpression)?.id
-                                      ?.name ??
+                                    (
+                                      info.componentFnExpression as ESTree.FunctionExpression
+                                    )?.id?.name ??
                                     // TODO: Support arrow function names
                                     'Component',
                                 },

@@ -49,7 +49,10 @@ describe('utils', () => {
         ];
       }
 
-      customElements.define('test-counter', brisaElement(Counter as any, ['name']));
+      customElements.define(
+        'test-counter',
+        brisaElement(Counter as any, ['name']),
+      );
 
       document.body.innerHTML = `
         <test-counter name="Aral">
@@ -91,7 +94,11 @@ describe('utils', () => {
               {},
               [
                 ['b', {}, () => 'Hello ' + name.value],
-                ['span', {}, () => (name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴')],
+                [
+                  'span',
+                  {},
+                  () => (name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'),
+                ],
               ],
             ],
             children,
@@ -99,7 +106,10 @@ describe('utils', () => {
         ];
       }
 
-      customElements.define('conditional-render', brisaElement(ConditionalRender as any, ['name']));
+      customElements.define(
+        'conditional-render',
+        brisaElement(ConditionalRender as any, ['name']),
+      );
 
       document.body.innerHTML = `
         <conditional-render name="Aral">
@@ -107,7 +117,9 @@ describe('utils', () => {
         </conditional-render>
       `;
 
-      const conditionalRender = document.querySelector('conditional-render') as HTMLElement;
+      const conditionalRender = document.querySelector(
+        'conditional-render',
+      ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
         '<h2><b>Hello Aral</b><span>🥴</span></h2><slot></slot>',
@@ -134,13 +146,20 @@ describe('utils', () => {
           {},
           [
             ['b', {}, () => 'Hello ' + name.value],
-            ['', {}, () => (name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴')],
+            [
+              '',
+              {},
+              () => (name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'),
+            ],
             children,
           ],
         ];
       }
 
-      customElements.define('conditional-render', brisaElement(ConditionalRender as any, ['name']));
+      customElements.define(
+        'conditional-render',
+        brisaElement(ConditionalRender as any, ['name']),
+      );
 
       document.body.innerHTML = `
         <conditional-render name="Aral">
@@ -148,7 +167,9 @@ describe('utils', () => {
         </conditional-render>
       `;
 
-      const conditionalRender = document.querySelector('conditional-render') as HTMLElement;
+      const conditionalRender = document.querySelector(
+        'conditional-render',
+      ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
         '<h2><b>Hello Aral</b>🥴<slot></slot></h2>',
@@ -173,7 +194,11 @@ describe('utils', () => {
               {},
               [
                 ['b', {}, () => 'Hello ' + name.value],
-                ['', {}, () => (name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴')],
+                [
+                  '',
+                  {},
+                  () => (name.value === 'Barbara' ? ['b', {}, '!! 🥳'] : '🥴'),
+                ],
               ],
             ],
             children,
@@ -181,7 +206,10 @@ describe('utils', () => {
         ];
       }
 
-      customElements.define('conditional-render', brisaElement(ConditionalRender as any, ['name']));
+      customElements.define(
+        'conditional-render',
+        brisaElement(ConditionalRender as any, ['name']),
+      );
 
       document.body.innerHTML = `
         <conditional-render name="Aral">
@@ -189,7 +217,9 @@ describe('utils', () => {
         </conditional-render>
       `;
 
-      const conditionalRender = document.querySelector('conditional-render') as HTMLElement;
+      const conditionalRender = document.querySelector(
+        'conditional-render',
+      ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
         '<h2><b>Hello Aral</b>🥴</h2><slot></slot>',
@@ -223,7 +253,10 @@ describe('utils', () => {
         ];
       }
 
-      customElements.define('conditional-render', brisaElement(ConditionalRender as any, ['name']));
+      customElements.define(
+        'conditional-render',
+        brisaElement(ConditionalRender as any, ['name']),
+      );
 
       document.body.innerHTML = `
           <conditional-render name="Aral">
@@ -231,7 +264,9 @@ describe('utils', () => {
           </conditional-render>
         `;
 
-      const conditionalRender = document.querySelector('conditional-render') as HTMLElement;
+      const conditionalRender = document.querySelector(
+        'conditional-render',
+      ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
         '<h2><b>Hello Aral</b>🥴<slot></slot></h2>',
@@ -257,7 +292,9 @@ describe('utils', () => {
 
       const emptyNodes = document.querySelector('empty-nodes') as HTMLElement;
 
-      expect(emptyNodes?.shadowRoot?.innerHTML).toBe('<div><span></span></div>');
+      expect(emptyNodes?.shadowRoot?.innerHTML).toBe(
+        '<div><span></span></div>',
+      );
     });
 
     it('should display a component to display a series of images in a sliding carousel', () => {
@@ -268,7 +305,8 @@ describe('utils', () => {
           index.value = (index.value + 1) % images.value.length;
         };
         const prev = () => {
-          index.value = (index.value - 1 + images.value.length) % images.value.length;
+          index.value =
+            (index.value - 1 + images.value.length) % images.value.length;
         };
         return [
           'div',
@@ -285,9 +323,14 @@ describe('utils', () => {
         <sliding-carousel images="['https://picsum.photos/200/300', 'https://picsum.photos/200/300?grayscale']" />
       `;
 
-      customElements.define('sliding-carousel', brisaElement(Carousel as any, ['images']));
+      customElements.define(
+        'sliding-carousel',
+        brisaElement(Carousel as any, ['images']),
+      );
 
-      const carousel = document.querySelector('sliding-carousel') as HTMLElement;
+      const carousel = document.querySelector(
+        'sliding-carousel',
+      ) as HTMLElement;
       const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
         'button',
       ) as NodeListOf<HTMLButtonElement>;
@@ -317,7 +360,8 @@ describe('utils', () => {
           index.value = (index.value + 1) % images.value.length;
         };
         const prev = () => {
-          index.value = (index.value - 1 + images.value.length) % images.value.length;
+          index.value =
+            (index.value - 1 + images.value.length) % images.value.length;
         };
         return [
           'div',
@@ -340,7 +384,10 @@ describe('utils', () => {
         <carousel-images images="[{'url':'https://picsum.photos/200/300'},{'url':'https://picsum.photos/200/300?grayscale'}]" />
       `;
 
-      customElements.define('carousel-images', brisaElement(Carousel as any, ['images']));
+      customElements.define(
+        'carousel-images',
+        brisaElement(Carousel as any, ['images']),
+      );
 
       const carousel = document.querySelector('carousel-images') as HTMLElement;
       const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
@@ -388,7 +435,9 @@ describe('utils', () => {
       `;
 
       const timer = document.querySelector('timer-component') as HTMLElement;
-      const button = timer?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = timer?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(timer?.shadowRoot?.innerHTML).toBe(
         '<div><span>Time: 0</span><button>stop</button></div>',
@@ -412,7 +461,10 @@ describe('utils', () => {
         return ['button', { onClick: onAfterClick }, 'click me'];
       }
 
-      customElements.define('test-button', brisaElement(Button as any, ['onAfterClick']));
+      customElements.define(
+        'test-button',
+        brisaElement(Button as any, ['onAfterClick']),
+      );
       const onAfterClickMock = mock(() => {});
 
       window.onAfterClick = onAfterClickMock;
@@ -421,7 +473,9 @@ describe('utils', () => {
       `;
 
       const testButton = document.querySelector('test-button') as HTMLElement;
-      const button = testButton?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testButton?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -443,12 +497,20 @@ describe('utils', () => {
         return ['button', { onClick: () => onClickMe('TEST') }, children];
       }
 
-      customElements.define('second-component', brisaElement(SecondComponent, ['onClickMe']));
-      customElements.define('first-component', brisaElement(FirstComponent, ['onClickMe']));
+      customElements.define(
+        'second-component',
+        brisaElement(SecondComponent, ['onClickMe']),
+      );
+      customElements.define(
+        'first-component',
+        brisaElement(FirstComponent, ['onClickMe']),
+      );
       customElements.define('parent-component', brisaElement(Parent));
       document.body.innerHTML = '<parent-component />';
 
-      const parentComponent = document.querySelector('parent-component') as HTMLElement;
+      const parentComponent = document.querySelector(
+        'parent-component',
+      ) as HTMLElement;
 
       const firstComponent = parentComponent?.shadowRoot?.querySelector(
         'first-component',
@@ -466,9 +528,13 @@ describe('utils', () => {
         '<second-component><slot></slot></second-component>',
       );
 
-      expect(secondComponent?.shadowRoot?.innerHTML).toBe('<button><slot></slot></button>');
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe(
+        '<button><slot></slot></button>',
+      );
 
-      const button = secondComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = secondComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -489,18 +555,30 @@ describe('utils', () => {
       }
 
       function SecondComponent({ onClickMe, children }: any) {
-        return ['button', { onClick: () => onClickMe('TEST', 'TEST2') }, children];
+        return [
+          'button',
+          { onClick: () => onClickMe('TEST', 'TEST2') },
+          children,
+        ];
       }
 
-      customElements.define('second-component', brisaElement(SecondComponent, ['onClickMe']));
+      customElements.define(
+        'second-component',
+        brisaElement(SecondComponent, ['onClickMe']),
+      );
 
-      customElements.define('first-component', brisaElement(FirstComponent, ['onClickMe']));
+      customElements.define(
+        'first-component',
+        brisaElement(FirstComponent, ['onClickMe']),
+      );
 
       customElements.define('parent-component', brisaElement(Parent));
 
       document.body.innerHTML = '<parent-component />';
 
-      const parentComponent = document.querySelector('parent-component') as HTMLElement;
+      const parentComponent = document.querySelector(
+        'parent-component',
+      ) as HTMLElement;
 
       const firstComponent = parentComponent?.shadowRoot?.querySelector(
         'first-component',
@@ -518,9 +596,13 @@ describe('utils', () => {
         '<second-component><slot></slot></second-component>',
       );
 
-      expect(secondComponent?.shadowRoot?.innerHTML).toBe('<button><slot></slot></button>');
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe(
+        '<button><slot></slot></button>',
+      );
 
-      const button = secondComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = secondComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -532,7 +614,11 @@ describe('utils', () => {
       const onDblClickMock = mock(() => {});
 
       function Parent() {
-        return ['first-component', { onDblClickMe: onDblClickMock }, 'click me'];
+        return [
+          'first-component',
+          { onDblClickMe: onDblClickMock },
+          'click me',
+        ];
       }
 
       function FirstComponent({ onDblClickMe, children }: any) {
@@ -540,18 +626,30 @@ describe('utils', () => {
       }
 
       function SecondComponent({ onDblClickMe, children }: any) {
-        return ['button', { onDblClick: () => onDblClickMe('TEST', 'TEST2') }, children];
+        return [
+          'button',
+          { onDblClick: () => onDblClickMe('TEST', 'TEST2') },
+          children,
+        ];
       }
 
-      customElements.define('second-component', brisaElement(SecondComponent, ['onDblClickMe']));
+      customElements.define(
+        'second-component',
+        brisaElement(SecondComponent, ['onDblClickMe']),
+      );
 
-      customElements.define('first-component', brisaElement(FirstComponent, ['onDblClickMe']));
+      customElements.define(
+        'first-component',
+        brisaElement(FirstComponent, ['onDblClickMe']),
+      );
 
       customElements.define('parent-component', brisaElement(Parent));
 
       document.body.innerHTML = '<parent-component />';
 
-      const parentComponent = document.querySelector('parent-component') as HTMLElement;
+      const parentComponent = document.querySelector(
+        'parent-component',
+      ) as HTMLElement;
 
       const firstComponent = parentComponent?.shadowRoot?.querySelector(
         'first-component',
@@ -569,9 +667,13 @@ describe('utils', () => {
         '<second-component><slot></slot></second-component>',
       );
 
-      expect(secondComponent?.shadowRoot?.innerHTML).toBe('<button><slot></slot></button>');
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe(
+        '<button><slot></slot></button>',
+      );
 
-      const button = secondComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = secondComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.dispatchEvent(new Event('dblclick'));
 
@@ -607,15 +709,22 @@ describe('utils', () => {
         ];
       }
 
-      customElements.define('color-selector', brisaElement(ColorSelector as any, ['color']));
+      customElements.define(
+        'color-selector',
+        brisaElement(ColorSelector as any, ['color']),
+      );
 
       document.body.innerHTML = `
         <color-selector color="#000000" />
       `;
 
-      const colorSelector = document.querySelector('color-selector') as HTMLElement;
+      const colorSelector = document.querySelector(
+        'color-selector',
+      ) as HTMLElement;
 
-      const input = colorSelector?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = colorSelector?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
         '<div><input type="color" value="#000000"><span style="color:#000000;">#000000</span></div>',
@@ -633,14 +742,21 @@ describe('utils', () => {
     it('should render a TodoList component from props', () => {
       type Props = { todos: { value: string[] } };
       function TodoList({ todos }: Props) {
-        return ['ul', {}, () => todos.value.map((todo: string) => ['li', {}, todo])];
+        return [
+          'ul',
+          {},
+          () => todos.value.map((todo: string) => ['li', {}, todo]),
+        ];
       }
 
       document.body.innerHTML = `
         <todo-list todos="['todo 1', 'todo 2', 'todo 3']" />
       `;
 
-      customElements.define('todo-list', brisaElement(TodoList as any, ['todos']));
+      customElements.define(
+        'todo-list',
+        brisaElement(TodoList as any, ['todos']),
+      );
 
       const todoList = document.querySelector('todo-list') as HTMLElement;
 
@@ -650,7 +766,9 @@ describe('utils', () => {
 
       todoList.setAttribute('todos', '["todo 4", "todo 5"]');
 
-      expect(todoList?.shadowRoot?.innerHTML).toBe('<ul><li>todo 4</li><li>todo 5</li></ul>');
+      expect(todoList?.shadowRoot?.innerHTML).toBe(
+        '<ul><li>todo 4</li><li>todo 5</li></ul>',
+      );
     });
 
     it('should work an interactive TodoList with state', () => {
@@ -675,7 +793,11 @@ describe('utils', () => {
               '',
             ],
             ['button', { onClick: addTodo }, 'Add'],
-            ['ul', {}, () => todos.value.map((todo: string) => ['li', {}, todo])],
+            [
+              'ul',
+              {},
+              () => todos.value.map((todo: string) => ['li', {}, todo]),
+            ],
           ],
         ];
       }
@@ -685,9 +807,13 @@ describe('utils', () => {
 
       const todoList = document.querySelector('todo-list') as HTMLElement;
 
-      const input = todoList?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = todoList?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
-      const button = todoList?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = todoList?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(todoList?.shadowRoot?.innerHTML).toBe(
         '<div><input value=""><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul></div>',
@@ -726,11 +852,17 @@ describe('utils', () => {
       document.body.innerHTML = '<test-image />';
 
       const testImage = document.querySelector('test-image') as HTMLElement;
-      const img = testImage?.shadowRoot?.querySelector('img') as HTMLImageElement;
+      const img = testImage?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
 
-      expect(testImage?.shadowRoot?.innerHTML).toBe('<img src="https://test.com/image.png">');
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/image.png">',
+      );
       img.dispatchEvent(new Event('error'));
-      expect(testImage?.shadowRoot?.innerHTML).toBe('<img src="https://test.com/error.png">');
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/error.png">',
+      );
     });
 
     it('should be possible to change a dynamic src attribute using the onerror event from img', () => {
@@ -753,11 +885,17 @@ describe('utils', () => {
       document.body.innerHTML = '<test-image />';
 
       const testImage = document.querySelector('test-image') as HTMLElement;
-      const img = testImage?.shadowRoot?.querySelector('img') as HTMLImageElement;
+      const img = testImage?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
 
-      expect(testImage?.shadowRoot?.innerHTML).toBe('<img src="https://test.com/image.png">');
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/image.png">',
+      );
       img.dispatchEvent(new Event('error'));
-      expect(testImage?.shadowRoot?.innerHTML).toBe('<img src="https://test.com/error.png">');
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/error.png">',
+      );
     });
 
     it('should unregister effects when the component is disconnected', async () => {
@@ -780,7 +918,9 @@ describe('utils', () => {
 
       customElements.define('test-component', brisaElement(Test));
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>0</div>');
       expect(mockEffect).toHaveBeenCalledTimes(1);
@@ -820,19 +960,29 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Test, ['count']));
       document.body.innerHTML = "<test-component count='1' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>1</div><button>increment</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>1</div><button>increment</button>',
+      );
 
       button.click();
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>2</div><button>increment</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>2</div><button>increment</button>',
+      );
 
       testComponent.setAttribute('count', '3');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>3</div><button>increment</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>3</div><button>increment</button>',
+      );
     });
 
     it('should work an async web-component', async () => {
@@ -845,7 +995,9 @@ describe('utils', () => {
       customElements.define('async-component', brisaElement(AsyncComponent));
       document.body.innerHTML = '<async-component />';
 
-      const asyncComponent = document.querySelector('async-component') as HTMLElement;
+      const asyncComponent = document.querySelector(
+        'async-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -867,7 +1019,9 @@ describe('utils', () => {
       customElements.define('async-component', brisaElement(AsyncComponent));
       document.body.innerHTML = '<async-component />';
 
-      const asyncComponent = document.querySelector('async-component') as HTMLElement;
+      const asyncComponent = document.querySelector(
+        'async-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -893,9 +1047,13 @@ describe('utils', () => {
 
       customElements.define('test-component', brisaElement(Test));
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(mockCleanup).toHaveBeenCalledTimes(0);
       expect(mockEffect).toHaveBeenCalledTimes(1);
@@ -927,7 +1085,9 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Test));
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(mockEffect).toHaveBeenCalledTimes(1);
       expect(mockCleanup).toHaveBeenCalledTimes(0);
@@ -954,7 +1114,9 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Test));
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(mockEffect).toHaveBeenCalledTimes(1);
       expect(mockCleanup).toHaveBeenCalledTimes(0);
@@ -982,7 +1144,9 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Test));
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(mockEffect).toHaveBeenCalledTimes(1);
       expect(mockCleanup).toHaveBeenCalledTimes(0);
@@ -1133,7 +1297,11 @@ describe('utils', () => {
 
       customElements.define(
         'color-svg',
-        brisaElement(ColorSVG as any, ['firstColor', 'secondColor', 'thirdColor']),
+        brisaElement(ColorSVG as any, [
+          'firstColor',
+          'secondColor',
+          'thirdColor',
+        ]),
       );
 
       document.body.innerHTML = `
@@ -1173,7 +1341,9 @@ describe('utils', () => {
 
       const testSVG = document.querySelector('test-svg') as HTMLElement;
       const svg = testSVG?.shadowRoot?.querySelector('svg') as SVGElement;
-      const foreignObject = testSVG?.shadowRoot?.querySelector('foreignObject') as SVGElement;
+      const foreignObject = testSVG?.shadowRoot?.querySelector(
+        'foreignObject',
+      ) as SVGElement;
       const div = testSVG?.shadowRoot?.querySelector('div') as HTMLElement;
 
       expect(svg.namespaceURI).toBe('http://www.w3.org/2000/svg');
@@ -1203,7 +1373,11 @@ describe('utils', () => {
           if (index === 0) return;
           const item = list.value[index];
           list.value = list.value.filter((_: string, i: number) => i !== index);
-          list.value = [...list.value.slice(0, index - 1), item, ...list.value.slice(index - 1)];
+          list.value = [
+            ...list.value.slice(0, index - 1),
+            item,
+            ...list.value.slice(index - 1),
+          ];
         };
 
         return [
@@ -1214,7 +1388,11 @@ describe('utils', () => {
               'form',
               { onSubmit: addItem },
               [
-                ['input', { name: 'item', id: 'item', placeholder: 'Add item' }, ''],
+                [
+                  'input',
+                  { name: 'item', id: 'item', placeholder: 'Add item' },
+                  '',
+                ],
                 ['button', {}, 'add'],
               ],
             ],
@@ -1236,13 +1414,20 @@ describe('utils', () => {
         ];
       }
 
-      customElements.define('magic-list', brisaElement(MagicList as any, ['items']));
+      customElements.define(
+        'magic-list',
+        brisaElement(MagicList as any, ['items']),
+      );
 
       document.body.innerHTML = '<magic-list />';
 
       const magicList = document.querySelector('magic-list') as HTMLElement;
-      const form = magicList?.shadowRoot?.querySelector('form') as HTMLFormElement;
-      const input = magicList?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const form = magicList?.shadowRoot?.querySelector(
+        'form',
+      ) as HTMLFormElement;
+      const input = magicList?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(magicList?.shadowRoot?.innerHTML).toBe(
         '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>another</li></ul></div>',
@@ -1257,7 +1442,9 @@ describe('utils', () => {
 
       // Moving up the last item
       const moveUpButton = [
-        ...(magicList?.shadowRoot?.querySelectorAll('button') as NodeListOf<HTMLButtonElement>),
+        ...(magicList?.shadowRoot?.querySelectorAll(
+          'button',
+        ) as NodeListOf<HTMLButtonElement>),
       ].at(-1) as HTMLButtonElement;
       moveUpButton.click();
       expect(magicList?.shadowRoot?.innerHTML).toBe(
@@ -1268,7 +1455,9 @@ describe('utils', () => {
       const deleteLast = () =>
         (
           [
-            ...(magicList?.shadowRoot?.querySelectorAll('button') as NodeListOf<HTMLButtonElement>),
+            ...(magicList?.shadowRoot?.querySelectorAll(
+              'button',
+            ) as NodeListOf<HTMLButtonElement>),
           ].at(-2) as HTMLButtonElement
         ).click();
       deleteLast();
@@ -1293,10 +1482,15 @@ describe('utils', () => {
         return ['div', {}, () => count?.value];
       }
 
-      customElements.define('test-component', brisaElement(Test as any, ['count']));
+      customElements.define(
+        'test-component',
+        brisaElement(Test as any, ['count']),
+      );
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>1</div>');
 
@@ -1321,9 +1515,15 @@ describe('utils', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
-      const a = testComponent?.shadowRoot?.querySelector('a') as HTMLAnchorElement;
-      const img = testComponent?.shadowRoot?.querySelector('img') as HTMLImageElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
 
       expect(a.getAttribute('href')).toBe('/test');
       expect(img.getAttribute('src')).toBe('/image.png');
@@ -1346,9 +1546,15 @@ describe('utils', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
-      const a = testComponent?.shadowRoot?.querySelector('a') as HTMLAnchorElement;
-      const img = testComponent?.shadowRoot?.querySelector('img') as HTMLImageElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
 
       expect(a.getAttribute('href')).toBe('/base-path/test');
       expect(img.getAttribute('src')).toBe('/base-path/image.png');
@@ -1371,9 +1577,15 @@ describe('utils', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
-      const a = testComponent?.shadowRoot?.querySelector('a') as HTMLAnchorElement;
-      const img = testComponent?.shadowRoot?.querySelector('img') as HTMLImageElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
 
       expect(a.getAttribute('href')).toBe('https://example.com/test');
       expect(img.getAttribute('src')).toBe('https://example.com/image.png');
@@ -1400,20 +1612,31 @@ describe('utils', () => {
         ];
       }
 
-      customElements.define('test-component', brisaElement(Test as any, ['count']));
+      customElements.define(
+        'test-component',
+        brisaElement(Test as any, ['count']),
+      );
       document.body.innerHTML = "<test-component count='1' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>one</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>one</span></div>',
+      );
 
       testComponent.setAttribute('count', '2');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>two</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>two</span></div>',
+      );
 
       testComponent.setAttribute('count', '3');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>three</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>three</span></div>',
+      );
     });
 
     it('should work nested conditionals renders', () => {
@@ -1431,7 +1654,12 @@ describe('utils', () => {
                     {},
                     () =>
                       second.value === 2
-                        ? ['span', {}, () => (third.value === 3 ? 'test work' : 'no-third')]
+                        ? [
+                            'span',
+                            {},
+                            () =>
+                              third.value === 3 ? 'test work' : 'no-third',
+                          ]
                         : 'no-second',
                   ]
                 : 'no-first',
@@ -1444,9 +1672,12 @@ describe('utils', () => {
         brisaElement(Test as any, ['first', 'second', 'third']),
       );
 
-      document.body.innerHTML = "<test-component first='1' second='2' third='3' />";
+      document.body.innerHTML =
+        "<test-component first='1' second='2' third='3' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<div><div><span>test work</span></div></div>',
@@ -1459,7 +1690,9 @@ describe('utils', () => {
       testComponent.setAttribute('first', '1');
       testComponent.setAttribute('second', '3');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><div>no-second</div></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><div>no-second</div></div>',
+      );
 
       testComponent.setAttribute('second', '2');
       testComponent.setAttribute('third', '4');
@@ -1506,7 +1739,9 @@ describe('utils', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -1516,7 +1751,9 @@ describe('utils', () => {
 
       await Bun.sleep(0);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>no-second 42</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>no-second 42</div>',
+      );
     });
 
     it('should allow async/await conditional renders from props', async () => {
@@ -1544,7 +1781,10 @@ describe('utils', () => {
 
       document.body.innerHTML = "<test-async first='1' second='2' third='3' />";
 
-      customElements.define('test-async', brisaElement(Test as any, ['first', 'second', 'third']));
+      customElements.define(
+        'test-async',
+        brisaElement(Test as any, ['first', 'second', 'third']),
+      );
 
       const testComponent = document.querySelector('test-async') as HTMLElement;
 
@@ -1615,8 +1855,12 @@ describe('utils', () => {
 
       document.body.innerHTML = '<accordion-element />';
 
-      const accordion = document.querySelector('accordion-element') as HTMLElement;
-      const button = accordion?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const accordion = document.querySelector(
+        'accordion-element',
+      ) as HTMLElement;
+      const button = accordion?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
         '<div><button>toggle</button><div style="display:none;">content</div></div>',
@@ -1679,7 +1923,9 @@ describe('utils', () => {
       document.body.innerHTML = '<tooltip-element />';
 
       const tooltip = document.querySelector('tooltip-element') as HTMLElement;
-      const span = tooltip?.shadowRoot?.querySelector('span') as HTMLSpanElement;
+      const span = tooltip?.shadowRoot?.querySelector(
+        'span',
+      ) as HTMLSpanElement;
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
         '<div><span style="position:relative;"><span style="position:absolute;visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
@@ -1736,38 +1982,59 @@ describe('utils', () => {
 
       customElements.define('web-component-1', brisaElement(WebComponent1));
       customElements.define('web-component-2', brisaElement(WebComponent2));
-      customElements.define('parent-web-component', brisaElement(ParentWebComponent, ['name']));
+      customElements.define(
+        'parent-web-component',
+        brisaElement(ParentWebComponent, ['name']),
+      );
 
       document.body.innerHTML = '<parent-web-component name="WebComponent1" />';
 
-      const parentWebComponent = document.querySelector('parent-web-component') as HTMLElement;
+      const parentWebComponent = document.querySelector(
+        'parent-web-component',
+      ) as HTMLElement;
       const firstWebComponent = parentWebComponent?.shadowRoot?.querySelector(
         'web-component-1',
       ) as HTMLElement;
-      const firstDiv = firstWebComponent?.shadowRoot?.querySelector('div') as HTMLElement;
+      const firstDiv = firstWebComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLElement;
 
       // The first component should be mounted
-      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe('<web-component-1></web-component-1>');
-      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent1</div>');
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<web-component-1></web-component-1>',
+      );
+      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent1</div>',
+      );
 
       // The first component should be updated
       firstDiv.click();
-      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent1 updated</div>');
+      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent1 updated</div>',
+      );
 
       // Changing the conditional render on the parent component
       parentWebComponent.setAttribute('name', 'WebComponent2');
       const secondWebComponent = parentWebComponent?.shadowRoot?.querySelector(
         'web-component-2',
       ) as HTMLElement;
-      const secondDiv = secondWebComponent?.shadowRoot?.querySelector('div') as HTMLElement;
+      const secondDiv = secondWebComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLElement;
 
       // The second component should be mounted
-      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe('<web-component-2></web-component-2>');
-      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent2</div>');
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<web-component-2></web-component-2>',
+      );
+      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent2</div>',
+      );
 
       // The second component should be updated
       secondDiv.click();
-      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent2 updated</div>');
+      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent2 updated</div>',
+      );
 
       // Changing the conditional render on the parent component again to the first component
       parentWebComponent.setAttribute('name', 'WebComponent1');
@@ -1776,8 +2043,12 @@ describe('utils', () => {
       ) as HTMLElement;
 
       // The first component should be unmounted and the state should be reset
-      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe('<web-component-1></web-component-1>');
-      expect(firstComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent1</div>');
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<web-component-1></web-component-1>',
+      );
+      expect(firstComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent1</div>',
+      );
     });
 
     it('should open/close a dialog with the "open" attribute', () => {
@@ -1816,8 +2087,12 @@ describe('utils', () => {
       document.body.innerHTML = '<dialog-element />';
 
       const dialog = document.querySelector('dialog-element') as HTMLElement;
-      const button = dialog?.shadowRoot?.querySelector('button') as HTMLButtonElement;
-      const dialogElement = dialog?.shadowRoot?.querySelector('dialog') as HTMLDialogElement;
+      const button = dialog?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+      const dialogElement = dialog?.shadowRoot?.querySelector(
+        'dialog',
+      ) as HTMLDialogElement;
 
       expect(dialog?.shadowRoot?.innerHTML).toBe(
         '<div><button>open</button><dialog>dialog</dialog></div>',
@@ -1845,12 +2120,19 @@ describe('utils', () => {
       }
 
       customElements.define('test-component', brisaElement(Test));
-      customElements.define('web-component', brisaElement(WebComponent, ['user']));
+      customElements.define(
+        'web-component',
+        brisaElement(WebComponent, ['user']),
+      );
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
-      const webComponent = testComponent?.shadowRoot?.querySelector('web-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const webComponent = testComponent?.shadowRoot?.querySelector(
+        'web-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         `<web-component user="{'name':'Aral'}"></web-component>`,
@@ -1880,9 +2162,13 @@ describe('utils', () => {
       customElements.define('bool-component', brisaElement(Component));
 
       document.body.innerHTML = '<bool-component />';
-      const boolComponent = document.querySelector('bool-component') as HTMLElement;
+      const boolComponent = document.querySelector(
+        'bool-component',
+      ) as HTMLElement;
 
-      expect(boolComponent?.shadowRoot?.innerHTML).toBe('<div>TRUE</div><div>TRUE</div>0');
+      expect(boolComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>TRUE</div><div>TRUE</div>0',
+      );
     });
 
     it('should work with booleans and numbers from props in the same way than React', () => {
@@ -1904,9 +2190,13 @@ describe('utils', () => {
 
       document.body.innerHTML =
         "<bool-component first='true' second='false' third='1' fourth='0' />";
-      const boolComponent = document.querySelector('bool-component') as HTMLElement;
+      const boolComponent = document.querySelector(
+        'bool-component',
+      ) as HTMLElement;
 
-      expect(boolComponent?.shadowRoot?.innerHTML).toBe('<div>TRUE</div><div>TRUE</div>0');
+      expect(boolComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>TRUE</div><div>TRUE</div>0',
+      );
     });
 
     it('should be possible to render undefined and null', () => {
@@ -1922,7 +2212,9 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Component));
 
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<div class="empty"></div><div class="empty"></div>',
@@ -1935,14 +2227,20 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Component));
 
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<script>alert("test")</script>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<script>alert("test")</script>',
+      );
 
       const script = document.querySelector('script');
 
       expect(script).toBeNull();
-      expect(testComponent?.shadowRoot?.firstChild?.nodeType === Node.TEXT_NODE).toBeTruthy();
+      expect(
+        testComponent?.shadowRoot?.firstChild?.nodeType === Node.TEXT_NODE,
+      ).toBeTruthy();
     });
 
     it('should handle keyboard events', () => {
@@ -1960,11 +2258,15 @@ describe('utils', () => {
       customElements.define('keyboard-events', brisaElement(Component));
 
       document.body.innerHTML = '<keyboard-events />';
-      const keyboardEventEl = document.querySelector('keyboard-events') as HTMLElement;
+      const keyboardEventEl = document.querySelector(
+        'keyboard-events',
+      ) as HTMLElement;
 
       expect(keyboardEventEl?.shadowRoot?.innerHTML).toBe('<input>');
 
-      const input = keyboardEventEl?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = keyboardEventEl?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       input.dispatchEvent(new KeyboardEvent('keydown'));
 
@@ -1974,7 +2276,8 @@ describe('utils', () => {
     });
 
     it('should handle asynchronous updates', async () => {
-      const fetchData = () => Promise.resolve({ json: () => Promise.resolve({ name: 'Barbara' }) });
+      const fetchData = () =>
+        Promise.resolve({ json: () => Promise.resolve({ name: 'Barbara' }) });
       const Component = ({}, { state }: any) => {
         const user = state({ name: 'Aral' });
 
@@ -2000,15 +2303,23 @@ describe('utils', () => {
       customElements.define('async-updates', brisaElement(Component));
 
       document.body.innerHTML = '<async-updates />';
-      const asyncUpdatesComp = document.querySelector('async-updates') as HTMLElement;
+      const asyncUpdatesComp = document.querySelector(
+        'async-updates',
+      ) as HTMLElement;
 
-      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe('<button>fetch</button><div>Aral</div>');
+      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
+        '<button>fetch</button><div>Aral</div>',
+      );
 
-      const button = asyncUpdatesComp?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = asyncUpdatesComp?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
-      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe('<button>fetch</button><div>Aral</div>');
+      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
+        '<button>fetch</button><div>Aral</div>',
+      );
 
       await Bun.sleep(0);
 
@@ -2029,12 +2340,18 @@ describe('utils', () => {
               'button',
               {
                 onClick: () => {
-                  list.value = list.value.map((item: string) => item.toUpperCase());
+                  list.value = list.value.map((item: string) =>
+                    item.toUpperCase(),
+                  );
                 },
               },
               'uppercase',
             ],
-            ['ul', {}, () => list.value.map((item: string) => ['li', {}, item])],
+            [
+              'ul',
+              {},
+              () => list.value.map((item: string) => ['li', {}, item]),
+            ],
           ],
         ];
       };
@@ -2042,13 +2359,17 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Component));
 
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<button>uppercase</button><ul><li>one</li><li>two</li><li>three</li></ul>',
       );
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -2072,7 +2393,9 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Component));
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>original</div>');
 
@@ -2133,7 +2456,9 @@ describe('utils', () => {
 
       expect(mockCallback).toHaveBeenCalledTimes(1);
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       testComponent.remove();
 
@@ -2156,7 +2481,9 @@ describe('utils', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       testComponent.remove();
 
@@ -2182,7 +2509,9 @@ describe('utils', () => {
       customElements.define('parent-component', brisaElement(ParentComponent));
       document.body.innerHTML = '<parent-component />';
 
-      const parentComponent = document.querySelector('parent-component') as HTMLElement;
+      const parentComponent = document.querySelector(
+        'parent-component',
+      ) as HTMLElement;
 
       parentComponent.remove();
 
@@ -2200,11 +2529,16 @@ describe('utils', () => {
         return () => name.value;
       };
 
-      customElements.define('test-component', brisaElement(Component, ['name']));
+      customElements.define(
+        'test-component',
+        brisaElement(Component, ['name']),
+      );
 
       document.body.innerHTML = '<test-component name="suspense" />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -2216,7 +2550,9 @@ describe('utils', () => {
 
       await Bun.sleep(0);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>final content</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>final content</div>',
+      );
     });
 
     it('should have reactive props inside the error component', async () => {
@@ -2228,11 +2564,16 @@ describe('utils', () => {
         return () => name.value;
       };
 
-      customElements.define('test-component', brisaElement(Component, ['name']));
+      customElements.define(
+        'test-component',
+        brisaElement(Component, ['name']),
+      );
 
       document.body.innerHTML = '<test-component name="some error" />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -2261,7 +2602,9 @@ describe('utils', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -2270,7 +2613,9 @@ describe('utils', () => {
 
       await Bun.sleep(0);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>final content</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>final content</div>',
+      );
 
       expect(mockCallback).toHaveBeenCalledTimes(1);
     });
@@ -2283,7 +2628,11 @@ describe('utils', () => {
 
         await Bun.sleep(0);
 
-        return ['div', { onClick: () => count.value++ }, () => 'REAL:' + count.value];
+        return [
+          'div',
+          { onClick: () => count.value++ },
+          () => 'REAL:' + count.value,
+        ];
       };
 
       Component.suspense = ({}, { state, cleanup }: any) => {
@@ -2293,22 +2642,32 @@ describe('utils', () => {
           mockUnmountSuspense('cleanup');
         });
 
-        return ['div', { onClick: () => count.value++ }, () => 'SUSPENSE:' + count.value];
+        return [
+          'div',
+          { onClick: () => count.value++ },
+          () => 'SUSPENSE:' + count.value,
+        ];
       };
 
       customElements.define('test-component', brisaElement(Component));
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>SUSPENSE:0</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>SUSPENSE:0</div>',
+      );
 
       testComponent?.shadowRoot?.querySelector('div')!.click();
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>SUSPENSE:1</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>SUSPENSE:1</div>',
+      );
       expect(mockUnmountSuspense).toHaveBeenCalledTimes(0);
 
       await Bun.sleep(0);
@@ -2341,7 +2700,9 @@ describe('utils', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('');
 
@@ -2361,7 +2722,9 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Component));
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         "<div><script>alert('test')</script></div>",
@@ -2380,19 +2743,29 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Component));
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>hello world</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>hello world</div>',
+      );
     });
 
     it('should work createPortal helper rendering in another HTML element', () => {
       const Component = () =>
-        createPortal(['div', {}, 'test'] as any, document.querySelector('#portal') as any);
+        createPortal(
+          ['div', {}, 'test'] as any,
+          document.querySelector('#portal') as any,
+        );
 
       customElements.define('portal-component', brisaElement(Component));
-      document.body.innerHTML = '<div id="portal"></div><portal-component></portal-component>';
+      document.body.innerHTML =
+        '<div id="portal"></div><portal-component></portal-component>';
 
-      const portalComponent = document.querySelector('portal-component') as HTMLElement;
+      const portalComponent = document.querySelector(
+        'portal-component',
+      ) as HTMLElement;
 
       expect(portalComponent?.shadowRoot?.innerHTML).toBe('');
 
@@ -2422,7 +2795,9 @@ describe('utils', () => {
       customElements.define('test-component', brisaElement(Component, ['foo']));
       document.body.innerHTML = '<test-component foo="bar" />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<div><b>test</b><span>test2</span><div>test3</div></div>',
@@ -2430,7 +2805,9 @@ describe('utils', () => {
 
       testComponent.removeAttribute('foo');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><div>test3</div></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><div>test3</div></div>',
+      );
     });
 
     it('should work a ternary operator with several elements', () => {
@@ -2460,13 +2837,21 @@ describe('utils', () => {
         ];
       };
 
-      customElements.define('test-component', brisaElement(Component, ['error']));
+      customElements.define(
+        'test-component',
+        brisaElement(Component, ['error']),
+      );
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Test</div>');
 
-      testComponent.setAttribute('error', serialize({ message: 'message', stack: 'stack' }));
+      testComponent.setAttribute(
+        'error',
+        serialize({ message: 'message', stack: 'stack' }),
+      );
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         'Error: message <pre>stack</pre><div>Test</div>',
@@ -2479,12 +2864,21 @@ describe('utils', () => {
 
     it('should add the "brisa-request" when the indicator is true', () => {
       const Component = () => {
-        return ['button', { indicator: { id: '__ind:increment', value: true } }, 'Test'];
+        return [
+          'button',
+          { indicator: { id: '__ind:increment', value: true } },
+          'Test',
+        ];
       };
 
-      customElements.define('test-component', brisaElement(Component, ['error']));
+      customElements.define(
+        'test-component',
+        brisaElement(Component, ['error']),
+      );
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       const button = testComponent?.shadowRoot?.firstChild as HTMLButtonElement;
 
@@ -2493,12 +2887,21 @@ describe('utils', () => {
 
     it('should not add the "brisa-request" when the indicator is false', () => {
       const Component = () => {
-        return ['button', { indicator: { id: '__ind:increment', value: false } }, 'Test'];
+        return [
+          'button',
+          { indicator: { id: '__ind:increment', value: false } },
+          'Test',
+        ];
       };
 
-      customElements.define('test-component', brisaElement(Component, ['error']));
+      customElements.define(
+        'test-component',
+        brisaElement(Component, ['error']),
+      );
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       const button = testComponent?.shadowRoot?.firstChild as HTMLButtonElement;
 
@@ -2515,7 +2918,9 @@ describe('utils', () => {
       document.body.innerHTML = '<key-component key="1" />';
       customElements.define('key-component', brisaElement(Component));
 
-      const testComponent = document.querySelector('key-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'key-component',
+      ) as HTMLElement;
 
       expect(mockRender).toHaveBeenCalledTimes(1);
       expect(mockRender.mock.calls[0][0]).toBe(1);
@@ -2540,7 +2945,9 @@ describe('utils', () => {
       customElements.define('context-component', brisaElement(Component));
       document.body.innerHTML = '<context-component />';
 
-      const contextComponent = document.querySelector('context-component') as HTMLElement;
+      const contextComponent = document.querySelector(
+        'context-component',
+      ) as HTMLElement;
 
       expect(contextComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
     });
@@ -2553,9 +2960,13 @@ describe('utils', () => {
       customElements.define('style-component', brisaElement(Component));
       document.body.innerHTML = '<style-component />';
 
-      const styleComponent = document.querySelector('style-component') as HTMLElement;
+      const styleComponent = document.querySelector(
+        'style-component',
+      ) as HTMLElement;
 
-      expect(styleComponent?.shadowRoot?.innerHTML).toBe('<div style="color:red;"></div>');
+      expect(styleComponent?.shadowRoot?.innerHTML).toBe(
+        '<div style="color:red;"></div>',
+      );
     });
 
     it('should also work with "style" prop as string', () => {
@@ -2566,9 +2977,13 @@ describe('utils', () => {
       customElements.define('style-component', brisaElement(Component));
       document.body.innerHTML = '<style-component />';
 
-      const styleComponent = document.querySelector('style-component') as HTMLElement;
+      const styleComponent = document.querySelector(
+        'style-component',
+      ) as HTMLElement;
 
-      expect(styleComponent?.shadowRoot?.innerHTML).toBe('<div style="color:red;"></div>');
+      expect(styleComponent?.shadowRoot?.innerHTML).toBe(
+        '<div style="color:red;"></div>',
+      );
     });
 
     it('i18n from webContext is always the window.i18n object', () => {
@@ -2580,14 +2995,18 @@ describe('utils', () => {
       customElements.define('i18n-component', brisaElement(Component));
       document.body.innerHTML = '<i18n-component />';
 
-      const i18nComponent = document.querySelector('i18n-component') as HTMLElement;
+      const i18nComponent = document.querySelector(
+        'i18n-component',
+      ) as HTMLElement;
 
       expect(i18nComponent?.shadowRoot?.innerHTML).toBe('<div>works</div>');
     });
 
     it('should web context plugin work', () => {
       window.__WEB_CONTEXT_PLUGINS__ = true;
-      window._P = [(ctx) => ({ ...ctx, test: 'this is a test' })] satisfies WebContextPlugin[];
+      window._P = [
+        (ctx) => ({ ...ctx, test: 'this is a test' }),
+      ] satisfies WebContextPlugin[];
 
       // @ts-ignore
       const Component = ({}, { test }: WebContext) => {
@@ -2597,9 +3016,13 @@ describe('utils', () => {
       customElements.define('store-component', brisaElement(Component));
       document.body.innerHTML = '<store-component />';
 
-      const storeComponent = document.querySelector('store-component') as HTMLElement;
+      const storeComponent = document.querySelector(
+        'store-component',
+      ) as HTMLElement;
 
-      expect(storeComponent?.shadowRoot?.innerHTML).toBe('<div>this is a test</div>');
+      expect(storeComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>this is a test</div>',
+      );
     });
 
     it('should automatic adopt the global style sheets from document.styleSheets', async () => {
@@ -2615,14 +3038,18 @@ describe('utils', () => {
       customElements.define('style-sheet-component', brisaElement(Component));
       document.body.innerHTML = '<style-sheet-component />';
 
-      const styleSheetComponent = document.querySelector('style-sheet-component') as HTMLElement;
+      const styleSheetComponent = document.querySelector(
+        'style-sheet-component',
+      ) as HTMLElement;
 
       const expectedSheet = new CSSStyleSheet();
 
       expectedSheet.insertRule('div { color: red; }');
 
       expect(styleSheetComponent?.shadowRoot?.innerHTML).toBe('<div></div>');
-      expect(styleSheetComponent?.shadowRoot?.adoptedStyleSheets).toEqual([expectedSheet]);
+      expect(styleSheetComponent?.shadowRoot?.adoptedStyleSheets).toEqual([
+        expectedSheet,
+      ]);
     });
 
     it('should adopt more than one style sheet from document.styleSheets', async () => {
@@ -2654,13 +3081,17 @@ describe('utils', () => {
       customElements.define('style-sheet-component', brisaElement(Component));
       document.body.innerHTML = '<style-sheet-component />';
 
-      const styleSheetComponent = document.querySelector('style-sheet-component') as HTMLElement;
+      const styleSheetComponent = document.querySelector(
+        'style-sheet-component',
+      ) as HTMLElement;
 
       const expectedSheet = new CSSStyleSheet();
       expectedSheet.replaceSync(css1 + css2);
 
       expect(styleSheetComponent?.shadowRoot?.innerHTML).toBe('<div></div>');
-      expect(styleSheetComponent?.shadowRoot?.adoptedStyleSheets).toEqual([expectedSheet]);
+      expect(styleSheetComponent?.shadowRoot?.adoptedStyleSheets).toEqual([
+        expectedSheet,
+      ]);
     });
   });
 });

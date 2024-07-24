@@ -16,8 +16,15 @@ const SCRIPT_404 = get404ClientScript();
 export default async function generateStaticExport(): Promise<
   [Map<string, string[]>, string] | null
 > {
-  const { ROOT_DIR, BUILD_DIR, I18N_CONFIG, IS_PRODUCTION, CONFIG, IS_STATIC_EXPORT, LOG_PREFIX } =
-    getConstants();
+  const {
+    ROOT_DIR,
+    BUILD_DIR,
+    I18N_CONFIG,
+    IS_PRODUCTION,
+    CONFIG,
+    IS_STATIC_EXPORT,
+    LOG_PREFIX,
+  } = getConstants();
   let fistLog = true;
   const serveOptions = await getServeOptions();
   const basePath = CONFIG.basePath ?? '';
@@ -65,7 +72,11 @@ export default async function generateStaticExport(): Promise<
       // Prerender all pages in case of output=static
       const start = Bun.nanoseconds();
       const request = new Request(new URL(basePath + routeName, fakeOrigin));
-      const response = await serveOptions.fetch.call(fakeServer, request, fakeServer);
+      const response = await serveOptions.fetch.call(
+        fakeServer,
+        request,
+        fakeServer,
+      );
 
       const html = await response.text();
       const relativePath = (route?.filePath ?? '').replace(BUILD_DIR, '');
@@ -85,11 +96,18 @@ export default async function generateStaticExport(): Promise<
         prerenderedRoutes.set(relativePath, []);
       }
 
-      prerenderedRoutes.set(relativePath, [...prerenderedRoutes.get(relativePath)!, htmlPath]);
+      prerenderedRoutes.set(relativePath, [
+        ...prerenderedRoutes.get(relativePath)!,
+        htmlPath,
+      ]);
 
       const timeMs = ((Bun.nanoseconds() - start) / 1e6).toFixed(2);
 
-      console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `${htmlPath} prerendered in ${timeMs}ms`);
+      console.log(
+        LOG_PREFIX.INFO,
+        LOG_PREFIX.TICK,
+        `${htmlPath} prerendered in ${timeMs}ms`,
+      );
 
       // Bun.write creates the folder if it doesn't exist
       return Bun.write(path.join(outDir, htmlPath), html);
@@ -144,7 +162,11 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
   const locales = I18N_CONFIG?.locales?.length ? I18N_CONFIG.locales : [''];
   const newRoutes: [string, MatchedRoute | null][] = [];
 
-  const addPathname = (pathname: string, locale: string, route: MatchedRoute | null) => {
+  const addPathname = (
+    pathname: string,
+    locale: string,
+    route: MatchedRoute | null,
+  ) => {
     let newRoute = `${locale ? `/${locale}` : ''}${pathname}`;
     const endsWithTrailingSlash = newRoute.endsWith('/');
 
@@ -165,7 +187,9 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
     for (const locale of locales) {
       const route = router.match(pageName);
 
-      const pathname = locale ? I18N_CONFIG.pages?.[pageName]?.[locale] ?? pageName : pageName;
+      const pathname = locale
+        ? I18N_CONFIG.pages?.[pageName]?.[locale] ?? pageName
+        : pageName;
 
       if (route && route.kind !== 'exact') {
         const module = await import(route.filePath);
@@ -181,13 +205,16 @@ async function formatRoutes(routes: string[], router: FileSystemRouter) {
         if (!prerenderFn) continue;
 
         // Prerender dynamic routes
-        const paramsOfAllStaticPages: { [key: string]: string }[] = await module.prerender();
+        const paramsOfAllStaticPages: { [key: string]: string }[] =
+          await module.prerender();
 
         for (const params of paramsOfAllStaticPages) {
           let correctPathname = pathname;
 
           for (const [key, value] of Object.entries(params)) {
-            const stringValue = Array.isArray(value) ? value.join(path.sep) : value;
+            const stringValue = Array.isArray(value)
+              ? value.join(path.sep)
+              : value;
             correctPathname = correctPathname
               .replace(`[[...${key}]]`, stringValue)
               .replace(`[...${key}]`, stringValue)

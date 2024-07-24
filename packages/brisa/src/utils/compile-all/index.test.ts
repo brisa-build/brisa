@@ -1,4 +1,12 @@
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'bun:test';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'bun:test';
 import fs from 'node:fs';
 import path from 'node:path';
 import compileAll from '.';
@@ -67,8 +75,15 @@ describe('compileAll', () => {
     expect(fs.readdirSync(path.join(OUT_DIR, 'public')).toSorted()).toEqual(
       ['favicon.ico', 'some-dir'].toSorted(),
     );
-    expect(fs.readdirSync(path.join(OUT_DIR, 'public', 'some-dir')).toSorted()).toEqual(
-      ['some-text.txt.gz', 'some-text.txt.br', 'some-img.png', 'some-text.txt'].toSorted(),
+    expect(
+      fs.readdirSync(path.join(OUT_DIR, 'public', 'some-dir')).toSorted(),
+    ).toEqual(
+      [
+        'some-text.txt.gz',
+        'some-text.txt.br',
+        'some-img.png',
+        'some-text.txt',
+      ].toSorted(),
     );
   });
 });

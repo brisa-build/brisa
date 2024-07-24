@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach, mock, spyOn } from 'bun:test';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  mock,
+  spyOn,
+} from 'bun:test';
 import path from 'node:path';
 import fs from 'node:fs';
 import generateStaticExport from './index';
@@ -26,10 +34,13 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
   describe('generate-static-export', () => {
     beforeEach(() => {
-      spyWrite = spyOn(Bun, 'write').mockImplementation((...args) => mockWrite(...args));
+      spyWrite = spyOn(Bun, 'write').mockImplementation((...args) =>
+        mockWrite(...args),
+      );
       mock.module('./utils', () => ({
         getServeOptions: async () => ({
-          fetch: async (request: Request) => mockFetch(request) ?? new Response(''),
+          fetch: async (request: Request) =>
+            mockFetch(request) ?? new Response(''),
         }),
       }));
 
@@ -82,7 +93,10 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
               formatPath('pages', 'page-with-web-component.tsx'),
               [formatPath('page-with-web-component.html')],
             ],
-            [formatPath('pages', 'somepage.tsx'), [formatPath('somepage.html')]],
+            [
+              formatPath('pages', 'somepage.tsx'),
+              [formatPath('somepage.html')],
+            ],
             [
               formatPath('pages', 'somepage-with-context.tsx'),
               [formatPath('somepage-with-context.html')],
@@ -96,7 +110,9 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           path.join(ROOT_DIR, 'out', basePath),
         ]);
 
-        expect(mockWrite.mock.calls[0][0]).toStartWith(path.join(ROOT_DIR, 'out'));
+        expect(mockWrite.mock.calls[0][0]).toStartWith(
+          path.join(ROOT_DIR, 'out'),
+        );
       });
 
       it('should generate static export with i18n with a soft redirect to the locale', () => {
@@ -155,7 +171,10 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
             ],
             [
               formatPath('pages', 'somepage.tsx'),
-              [formatPath('en', 'somepage.html'), formatPath('pt', 'alguma-pagina.html')],
+              [
+                formatPath('en', 'somepage.html'),
+                formatPath('pt', 'alguma-pagina.html'),
+              ],
             ],
             [
               formatPath('pages', 'somepage-with-context.tsx'),
@@ -164,7 +183,10 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
                 formatPath('pt', 'alguma-pagina-com-contexto.html'),
               ],
             ],
-            [formatPath('pages', 'index.tsx'), [formatPath('en.html'), formatPath('pt.html')]],
+            [
+              formatPath('pages', 'index.tsx'),
+              [formatPath('en.html'), formatPath('pt.html')],
+            ],
             [
               formatPath('pages', 'user', '[username].tsx'),
               [
@@ -221,14 +243,23 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
         expect(generateStaticExport()).resolves.toEqual([
           new Map([
-            [formatPath('pages', '_404.tsx'), [formatPath('_404', 'index.html')]],
-            [formatPath('pages', '_500.tsx'), [formatPath('_500', 'index.html')]],
+            [
+              formatPath('pages', '_404.tsx'),
+              [formatPath('_404', 'index.html')],
+            ],
+            [
+              formatPath('pages', '_500.tsx'),
+              [formatPath('_500', 'index.html')],
+            ],
             [formatPath('pages', 'foo.tsx'), [formatPath('foo', 'index.html')]],
             [
               formatPath('pages', 'page-with-web-component.tsx'),
               [formatPath('page-with-web-component', 'index.html')],
             ],
-            [formatPath('pages', 'somepage.tsx'), [formatPath('somepage', 'index.html')]],
+            [
+              formatPath('pages', 'somepage.tsx'),
+              [formatPath('somepage', 'index.html')],
+            ],
             [
               formatPath('pages', 'somepage-with-context.tsx'),
               [formatPath('somepage-with-context', 'index.html')],
@@ -289,7 +320,8 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         await generateStaticExport();
 
         const logs = mockLog.mock.calls.flat().toString();
-        const expectedTitle = 'Unable to generate a hard redirect to the user browser language.';
+        const expectedTitle =
+          'Unable to generate a hard redirect to the user browser language.';
         const expectedDocs =
           'https://brisa.build/building-your-application/deploying/static-exports#hard-redirects';
         expect(logs).toContain('Ops! Warning:');
@@ -325,7 +357,9 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         expect(mockLog.mock.calls[4]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/page-with-web-component.html prerendered in '),
+          expect.stringContaining(
+            '/page-with-web-component.html prerendered in ',
+          ),
         ]);
         expect(mockLog.mock.calls[5]).toEqual([
           constants.LOG_PREFIX.INFO,
@@ -335,7 +369,9 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         expect(mockLog.mock.calls[6]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/somepage-with-context.html prerendered in '),
+          expect.stringContaining(
+            '/somepage-with-context.html prerendered in ',
+          ),
         ]);
         expect(mockLog.mock.calls[7]).toEqual([
           constants.LOG_PREFIX.INFO,
@@ -361,7 +397,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should warn an error with a dynamic page without prerender function', () => {
         const mockLog = mock((...args: any[]) => null);
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'dynamic-route');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-route',
+        );
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
@@ -383,12 +423,18 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         const logs = mockLog.mock.calls.flat().toString();
 
         expect(logs).toContain('Ops! Warning:');
-        expect(logs).toContain('The dynamic route "/[slug]" does not have a "prerender" function.');
+        expect(logs).toContain(
+          'The dynamic route "/[slug]" does not have a "prerender" function.',
+        );
       });
 
       it('should warn an error with a [...rest] page without prerender function', () => {
         const mockLog = mock((...args: any[]) => null);
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'dynamic-rest-route');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-rest-route',
+        );
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
@@ -417,7 +463,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should warn an error with a [[...catchall]] page without prerender function', () => {
         const mockLog = mock((...args: any[]) => null);
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'dynamic-catchall-route');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-catchall-route',
+        );
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
@@ -445,7 +495,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should generate dynamic routes thanks to prerender function', () => {
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'dynamic-route-prerender');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-route-prerender',
+        );
 
         mockConstants = {
           ...getConstants(),
@@ -489,7 +543,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           new Map([
             [
               formatPath('pages', '[foo]', 'index.tsx'),
-              [formatPath('foo.html'), formatPath('bar.html'), formatPath('baz.html')],
+              [
+                formatPath('foo.html'),
+                formatPath('bar.html'),
+                formatPath('baz.html'),
+              ],
             ],
             [
               formatPath('pages', '[foo]', '[slug].tsx'),
@@ -528,7 +586,10 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           new Map([
             [
               formatPath('pages', '[...rest].tsx'),
-              [formatPath('foo', 'bar', 'baz.html'), formatPath('foo', 'bar', 'baz', 'qux.html')],
+              [
+                formatPath('foo', 'bar', 'baz.html'),
+                formatPath('foo', 'bar', 'baz', 'qux.html'),
+              ],
             ],
           ]),
           path.join(dynamicPath, 'out', basePath),
@@ -557,7 +618,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           new Map([
             [
               formatPath('pages', '[[...catchall]].tsx'),
-              [formatPath('a', 'b', 'c.html'), formatPath('a', 'b.html'), formatPath('a.html')],
+              [
+                formatPath('a', 'b', 'c.html'),
+                formatPath('a', 'b.html'),
+                formatPath('a.html'),
+              ],
             ],
           ]),
           path.join(dynamicPath, 'out', basePath),
@@ -565,7 +630,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should prerender all routes althought only one has prerender=true (IS_STATIC_EXPORT=true do all)', () => {
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'prerender-one');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'prerender-one',
+        );
 
         mockConstants = {
           ...getConstants(),
@@ -610,7 +679,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should NOT warn an error with a dynamic page without prerender function', () => {
         const mockLog = mock((...args: any[]) => null);
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'dynamic-route');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-route',
+        );
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
@@ -633,7 +706,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should NOT warn an error with a [...rest] page without prerender function', () => {
         const mockLog = mock((...args: any[]) => null);
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'dynamic-rest-route');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-rest-route',
+        );
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
@@ -656,7 +733,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should NOT warn an error with a [[...catchall]] page without prerender function', () => {
         const mockLog = mock((...args: any[]) => null);
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'dynamic-catchall-route');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-catchall-route',
+        );
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
@@ -895,7 +976,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should generate dynamic routes thanks to prerender function', () => {
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'dynamic-route-prerender');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-route-prerender',
+        );
 
         mockConstants = {
           ...getConstants(),
@@ -939,7 +1024,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           new Map([
             [
               formatPath('pages', '[foo]', 'index.tsx'),
-              [formatPath('foo.html'), formatPath('bar.html'), formatPath('baz.html')],
+              [
+                formatPath('foo.html'),
+                formatPath('bar.html'),
+                formatPath('baz.html'),
+              ],
             ],
             [
               formatPath('pages', '[foo]', '[slug].tsx'),
@@ -978,7 +1067,10 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           new Map([
             [
               formatPath('pages', '[...rest].tsx'),
-              [formatPath('foo', 'bar', 'baz.html'), formatPath('foo', 'bar', 'baz', 'qux.html')],
+              [
+                formatPath('foo', 'bar', 'baz.html'),
+                formatPath('foo', 'bar', 'baz', 'qux.html'),
+              ],
             ],
           ]),
           path.join(dynamicPath, 'prerendered-pages'),
@@ -1007,7 +1099,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           new Map([
             [
               formatPath('pages', '[[...catchall]].tsx'),
-              [formatPath('a', 'b', 'c.html'), formatPath('a', 'b.html'), formatPath('a.html')],
+              [
+                formatPath('a', 'b', 'c.html'),
+                formatPath('a', 'b.html'),
+                formatPath('a.html'),
+              ],
             ],
           ]),
           path.join(dynamicPath, 'prerendered-pages'),
@@ -1015,7 +1111,11 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should prerender only the route with prerender=true', () => {
-        const dynamicPath = path.join(import.meta.dir, '__fixtures__', 'prerender-one');
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'prerender-one',
+        );
 
         mockConstants = {
           ...getConstants(),

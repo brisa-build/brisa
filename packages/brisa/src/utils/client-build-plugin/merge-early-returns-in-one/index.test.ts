@@ -9,7 +9,9 @@ const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutput = (code: string) => {
   const reactiveAst = parseCodeToAST(code);
   const [componentBranch, index] = getWebComponentAst(reactiveAst);
-  const outputComponentAst = mergeEarlyReturnsInOne(componentBranch as ESTree.FunctionDeclaration);
+  const outputComponentAst = mergeEarlyReturnsInOne(
+    componentBranch as ESTree.FunctionDeclaration,
+  );
 
   (reactiveAst.body[index as number] as any).declaration = outputComponentAst;
 

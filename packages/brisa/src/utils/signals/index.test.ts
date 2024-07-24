@@ -3,7 +3,8 @@ import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it, mock } from 'bun:test';
 import type { IndicatorSignal } from '@/types';
 
-const signals = () => require('.').default() as ReturnType<typeof import('./index').default>;
+const signals = () =>
+  require('.').default() as ReturnType<typeof import('./index').default>;
 
 describe('signals', () => {
   beforeAll(async () => {
@@ -45,7 +46,9 @@ describe('signals', () => {
     const { state, effect, reset } = signals();
     const count = state(0);
     const username = state('Anonymous');
-    const mockEffect = mock<(count?: number, username?: string) => void>(() => {});
+    const mockEffect = mock<(count?: number, username?: string) => void>(
+      () => {},
+    );
     const updatedCount = 435;
     const updatedUsername = 'Aral';
 
@@ -157,7 +160,9 @@ describe('signals', () => {
     const { state, effect, reset } = signals();
     const a = state<number>(0);
     const b = state<string>('x');
-    const mockEffect = mock<(name: string, value: string | number) => void>(() => {});
+    const mockEffect = mock<(name: string, value: string | number) => void>(
+      () => {},
+    );
 
     effect((r) => {
       effect(
@@ -186,7 +191,9 @@ describe('signals', () => {
     const { state, effect, reset } = signals();
     const a = state<number>(0);
     const b = state<string>('x');
-    const mockEffect = mock<(name: string, value: string | number) => void>(() => {});
+    const mockEffect = mock<(name: string, value: string | number) => void>(
+      () => {},
+    );
 
     effect((r) => {
       if (a.value === 0) {
@@ -215,7 +222,9 @@ describe('signals', () => {
     const { state, effect, reset } = signals();
     const a = state<number>(0);
     const b = state<string>('x');
-    const mockEffect = mock<(name: string, value: string | number) => void>(() => {});
+    const mockEffect = mock<(name: string, value: string | number) => void>(
+      () => {},
+    );
 
     effect((r) => {
       if (a.value === 1) {
@@ -243,7 +252,9 @@ describe('signals', () => {
     const { state, effect, reset } = signals();
     const a = state<number>(0);
     const b = state<string>('x');
-    const mockEffect = mock<(name: string, value: string | number) => void>(() => {});
+    const mockEffect = mock<(name: string, value: string | number) => void>(
+      () => {},
+    );
 
     effect((r) => {
       if (a.value === 0) {
@@ -527,7 +538,9 @@ describe('signals', () => {
 
   it('should work the error in "indicate" method', () => {
     const { indicate, store, effect, reset } = signals();
-    const mockEffect = mock<(error: IndicatorSignal['error']['value']) => void>(() => {});
+    const mockEffect = mock<(error: IndicatorSignal['error']['value']) => void>(
+      () => {},
+    );
     const indicator = indicate('increment');
 
     effect(() => {
@@ -662,7 +675,9 @@ describe('signals', () => {
 
     signal.store.set('bar', 'FOO!');
 
-    const text = await Bun.file(path.join(import.meta.dirname, 'index.ts')).text();
+    const text = await Bun.file(
+      path.join(import.meta.dirname, 'index.ts'),
+    ).text();
     const transpiler = new Bun.Transpiler({ loader: 'ts' });
     const jsCode = await transpiler.transform(text);
     const blob = new Blob([jsCode], { type: 'application/javascript' });

@@ -7,7 +7,9 @@ import docsPackageJSON from '../packages/docs/package.json';
 import wwwPackageJSON from '../packages/www/package.json';
 
 const currentVersion = packageJSON.version;
-const version = prompt(`Introduce the new version of Brisa (now ${currentVersion}): `);
+const version = prompt(
+  `Introduce the new version of Brisa (now ${currentVersion}): `,
+);
 
 if (
   !version ||
@@ -21,7 +23,10 @@ if (
 
 // Root monorepo package.json
 packageJSON.version = version;
-fs.writeFileSync(join(import.meta.dir, '..', 'package.json'), JSON.stringify(packageJSON, null, 2));
+fs.writeFileSync(
+  join(import.meta.dir, '..', 'package.json'),
+  JSON.stringify(packageJSON, null, 2),
+);
 
 // Brisa package.json
 brisaPackageJSON.version = version;
@@ -62,7 +67,10 @@ const createBrisaCLIPath = join(
 const createBrisaCLI = fs
   .readFileSync(createBrisaCLIPath)
   .toString()
-  .replace(`BRISA_VERSION = "${currentVersion}";`, `BRISA_VERSION = "${version}";`);
+  .replace(
+    `BRISA_VERSION = "${currentVersion}";`,
+    `BRISA_VERSION = "${version}";`,
+  );
 
 fs.writeFileSync(createBrisaCLIPath, createBrisaCLI);
 

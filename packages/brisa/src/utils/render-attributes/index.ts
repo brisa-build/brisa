@@ -1,5 +1,11 @@
 import { getConstants } from '@/constants';
-import type { I18nConfig, IndicatorSignal, Props, RequestContext, Translations } from '@/types';
+import type {
+  I18nConfig,
+  IndicatorSignal,
+  Props,
+  RequestContext,
+  Translations,
+} from '@/types';
 import routeMatchPathname from '@/utils/route-match-pathname';
 import { serialize } from '@/utils/serialization';
 import stylePropsToString from '@/utils/style-props-to-string';
@@ -7,7 +13,11 @@ import substituteI18nRouteValues from '@/utils/substitute-i18n-route-values';
 import isAnAction from '@/utils/is-an-action';
 import { addBasePathToStringURL } from '@/utils/base-path';
 
-const PROPS_TO_IGNORE = new Set(['children', '__isWebComponent', '__skipGlobalCSS']);
+const PROPS_TO_IGNORE = new Set([
+  'children',
+  '__isWebComponent',
+  '__skipGlobalCSS',
+]);
 const VALUES_TYPE_TO_IGNORE = new Set(['function', 'undefined']);
 const fakeOrigin = 'http://localhost';
 
@@ -40,18 +50,28 @@ export default function renderAttributes({
     // Add the key to the set to avoid duplicates
     keys.add(key);
 
-    if (PROPS_TO_IGNORE.has(prop) || (type === 'html' && prop === 'lang')) continue;
+    if (PROPS_TO_IGNORE.has(prop) || (type === 'html' && prop === 'lang'))
+      continue;
 
     // Add the basePath or assetPrefix to internal assets (img, picture, video, audio, script)
-    if (prop === 'src' && (useAssetPrefix || basePath) && !URL.canParse(value as string)) {
+    if (
+      prop === 'src' &&
+      (useAssetPrefix || basePath) &&
+      !URL.canParse(value as string)
+    ) {
       value = `${useAssetPrefix ? assetPrefix : basePath}${value}`;
     }
 
     // Manage unregistered actions (useful to use it outside of Brisa to recover the actions)
     // In Brisa, currently it's only useful for the testing API (render method), to recover
     // the actions to test them.
-    if (globalThis.REGISTERED_ACTIONS && typeof value === 'function' && !isAnAction(value)) {
-      (value as any).actionId = globalThis.REGISTERED_ACTIONS.push(value as Function) - 1;
+    if (
+      globalThis.REGISTERED_ACTIONS &&
+      typeof value === 'function' &&
+      !isAnAction(value)
+    ) {
+      (value as any).actionId =
+        globalThis.REGISTERED_ACTIONS.push(value as Function) - 1;
     }
 
     // Nested actions (coming from props)
@@ -88,7 +108,10 @@ export default function renderAttributes({
       value = serialize(arr.map((a) => a.id));
     }
     // `indicate` attribute
-    if (key.startsWith('indicate') && (value as IndicatorSignal)?.id?.startsWith('__ind:')) {
+    if (
+      key.startsWith('indicate') &&
+      (value as IndicatorSignal)?.id?.startsWith('__ind:')
+    ) {
       value = (value as IndicatorSignal).id;
     }
 
@@ -195,7 +218,9 @@ export default function renderAttributes({
 
   if (type === 'html' && request.i18n?.locale) {
     attributes += ` lang="${request.i18n?.locale}"`;
-    const { direction } = (new Intl.Locale(request.i18n?.locale) as any).getTextInfo();
+    const { direction } = (
+      new Intl.Locale(request.i18n?.locale) as any
+    ).getTextInfo();
     attributes += ` dir="${direction}"`;
   }
 
@@ -206,7 +231,10 @@ export default function renderAttributes({
   return attributes;
 }
 
-export function renderHrefAttribute(hrefValue: string, request: RequestContext) {
+export function renderHrefAttribute(
+  hrefValue: string,
+  request: RequestContext,
+) {
   const { I18N_CONFIG } = getConstants();
   const { pages } = I18N_CONFIG ?? {};
   const { locale, locales } = request.i18n ?? {};
@@ -237,8 +265,12 @@ export function renderHrefAttribute(hrefValue: string, request: RequestContext) 
     formattedHref = '/' + formattedHref;
   }
 
-  const useI18n = !locales?.some((locale) => formattedHref?.split('/')?.[1] === locale);
-  const fixedUrl = manageTrailingSlash(useI18n ? `/${locale}${formattedHref}` : formattedHref);
+  const useI18n = !locales?.some(
+    (locale) => formattedHref?.split('/')?.[1] === locale,
+  );
+  const fixedUrl = manageTrailingSlash(
+    useI18n ? `/${locale}${formattedHref}` : formattedHref,
+  );
 
   return addBasePathToStringURL(fixedUrl);
 }
