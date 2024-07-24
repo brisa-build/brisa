@@ -27,7 +27,7 @@ async function simulateRPC({
   fails = false,
   failsThrowingAnError = false,
   dataActions = [] as [string, string][],
-  callbackAfterRPC = () => {},
+  callbackAfterRPC = () => { },
 } = {}) {
   const el = document.createElement(elementName);
 
@@ -387,13 +387,18 @@ describe('utils', () => {
   });
 
   describe('SPA Navigation', () => {
-    const mockNavigationIntercept = mock((handler: () => {}) => {});
+    const mockNavigationIntercept = mock((handler: () => {}) => { });
     async function simulateSPANavigation(
       url: string,
       {
         downloadRequest = null,
         hashChange = false,
-      }: { downloadRequest?: string | null; hashChange?: boolean } = {},
+        navigationType = 'push',
+      }: {
+        downloadRequest?: string | null;
+        hashChange?: boolean;
+        navigationType?: 'push' | 'replace';
+      } = {},
     ) {
       const origin = `http://localhost`;
       const canIntercept = new URL(url).origin === origin;
@@ -414,10 +419,11 @@ describe('utils', () => {
       // Simulate the event
       fn({
         destination: { url },
-        scroll: () => {},
+        scroll: () => { },
         hashChange,
         downloadRequest,
         canIntercept,
+        navigationType,
         intercept: ({ handler }: any) => {
           if (handler) {
             mockNavigationIntercept(handler);
@@ -608,6 +614,13 @@ describe('utils', () => {
 
       // Should remove data-action attribute after register the action
       expect(document.body.querySelector('[data-action]')).toBeNull();
+    });
+
+    it('should skip SPA navigation using "replace" as "navigationType" (history.replaceState)', async () => {
+      await simulateSPANavigation('http://localhost/some-page', {
+        navigationType: 'replace',
+      });
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
   });
 });
