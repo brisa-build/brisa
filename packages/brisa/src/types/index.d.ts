@@ -708,9 +708,11 @@ export type JSXElement =
       props: Props;
     };
 
-export interface ComponentType extends JSXComponent {
+export interface ComponentType<
+  T extends Record<string, unknown> = Record<string, unknown>,
+> extends JSXComponent<T> {
   error: (
-    props: Props & {
+    props: Props<T> & {
       error?: Error;
     },
     request: RequestContext,
