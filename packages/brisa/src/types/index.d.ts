@@ -701,7 +701,6 @@ export type JSXNode = JSXElement;
 
 export type JSXElement =
   | Primitives
-  | Promise<JSXElement>
   | JSXElement[]
   | {
       type: Type;
@@ -716,12 +715,15 @@ export interface ComponentType<
       error?: Error;
     },
     request: RequestContext,
-  ) => JSXElement;
+  ) => JSXElement | Promise<JSXElement>;
 }
 
 export type JSXComponent<
   T extends Record<string, unknown> = Record<string, unknown>,
-> = ((props: Props<T>, request: RequestContext) => JSXElement) & {
+> = ((
+  props: Props<T>,
+  request: RequestContext,
+) => JSXElement | Promise<JSXElement>) & {
   suspense?: JSXComponent<T>;
   error?: JSXComponent<T & { error: unknown }>;
 };
@@ -1260,10 +1262,24 @@ export interface BrisaDOMAttributes {
 
 declare global {
   export namespace JSX {
-    type Element = JSXElement;
+    type Element =
+      | Primitives
+      | JSX.Element[]
+      | {
+          type: Type;
+          props: Props;
+        }
+      | Promise<
+          | Primitives
+          | JSX.Element[]
+          | {
+              type: Type;
+              props: Props;
+            }
+        >;
 
     interface ElementChildrenAttribute {
-      children: JSX.Element;
+      children: JSXElement | Promise<JSXElement>;
     }
 
     interface ContextProviderAttributes<
@@ -1288,7 +1304,7 @@ declare global {
         ? `debounce${Rest}`
         : never]?: number | undefined;
     } & {
-      children?: JSX.Element;
+      children?: JSXElement | Promise<JSXElement>;
       skipSSR?: boolean;
     } & HTMLAttributes<HTMLElement>;
 
