@@ -75,7 +75,7 @@ export async function render(
           // @ts-ignore
           args[0].formData = new FormData(args[0].target);
         }
-        globalThis.REGISTERED_ACTIONS[+actionId](...args);
+        globalThis.REGISTERED_ACTIONS![+actionId](...args);
       },
     );
   }
