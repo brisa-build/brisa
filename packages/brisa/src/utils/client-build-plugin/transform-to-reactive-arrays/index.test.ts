@@ -1,59 +1,46 @@
-import { describe, expect, it, spyOn } from "bun:test";
-import { ESTree } from "meriyah";
-import transformToReactiveArrays from ".";
-import { getConstants } from "@/constants";
-import { normalizeQuotes } from "@/helpers";
-import AST from "@/utils/ast";
-import { boldLog } from "@/utils/log/log-color";
+import { describe, expect, it, spyOn } from 'bun:test';
+import type { ESTree } from 'meriyah';
+import transformToReactiveArrays from '.';
+import { getConstants } from '@/constants';
+import { normalizeQuotes } from '@/helpers';
+import AST from '@/utils/ast';
+import { boldLog } from '@/utils/log/log-color';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
-const toOutputCode = (ast: ESTree.Program) =>
-  normalizeQuotes(generateCodeFromAST(ast));
+const toOutputCode = (ast: ESTree.Program) => normalizeQuotes(generateCodeFromAST(ast));
 
-describe("utils", () => {
-  describe("client-build-plugin", () => {
-    describe("transform-to-reactive-arrays", () => {
-      it("should transform JSX to an array if is not a web-component", () => {
+describe('utils', () => {
+  describe('client-build-plugin', () => {
+    describe('transform-to-reactive-arrays', () => {
+      it('should transform JSX to an array if is not a web-component', () => {
         const input = parseCodeToAST(`const element = <div>foo</div>`);
         const output = toOutputCode(transformToReactiveArrays(input));
         const expected = normalizeQuotes(`const element = ['div', {}, 'foo'];`);
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an array if is a web-component arrow fn", () => {
-        const input = parseCodeToAST(
-          `export default ({ name = 'foo' }) => <div>{name}</div>`,
-        );
+      it('should transform JSX to an array if is a web-component arrow fn', () => {
+        const input = parseCodeToAST(`export default ({ name = 'foo' }) => <div>{name}</div>`);
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(
-          `export default ({name = 'foo'}) => ['div', {}, name];`,
-        );
+        const expected = normalizeQuotes(`export default ({name = 'foo'}) => ['div', {}, name];`);
         expect(output).toBe(expected);
       });
 
-      it("should transform jsxDEV (jsx-runtime method) to an array", () => {
-        const input = parseCodeToAST(
-          `export default () => jsxDEV('div', {}, 'foo', false, false)`,
-        );
+      it('should transform jsxDEV (jsx-runtime method) to an array', () => {
+        const input = parseCodeToAST(`export default () => jsxDEV('div', {}, 'foo', false, false)`);
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(
-          `export default () => ['div', {key: 'foo'}, ''];`,
-        );
+        const expected = normalizeQuotes(`export default () => ['div', {key: 'foo'}, ''];`);
         expect(output).toBe(expected);
       });
 
-      it("should transform jsxs (jsx-runtime method) to an array", () => {
-        const input = parseCodeToAST(
-          `export default () => jsxs('div', {children: 'bar'}, 'foo')`,
-        );
+      it('should transform jsxs (jsx-runtime method) to an array', () => {
+        const input = parseCodeToAST(`export default () => jsxs('div', {children: 'bar'}, 'foo')`);
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(
-          `export default () => ['div', {key: 'foo'}, 'bar'];`,
-        );
+        const expected = normalizeQuotes(`export default () => ['div', {key: 'foo'}, 'bar'];`);
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an array if is a web-component", () => {
+      it('should transform JSX to an array if is a web-component', () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
             return (
@@ -73,7 +60,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an reactive array if have some signal (state)", () => {
+      it('should transform JSX to an reactive array if have some signal (state)', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const count = state(0);
@@ -97,7 +84,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an reactive array if have some wrapped signal (state)", () => {
+      it('should transform JSX to an reactive array if have some wrapped signal (state)', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const count = state(0);
@@ -123,7 +110,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform to reactive attribute when it has a signal (state) inside", () => {
+      it('should transform to reactive attribute when it has a signal (state) inside', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const bar = state(0);
@@ -146,7 +133,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform to reactive attribute when it has a signal (store) inside", () => {
+      it('should transform to reactive attribute when it has a signal (store) inside', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
@@ -166,7 +153,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an reactive array if have some signal (state) inside suspense", () => {
+      it('should transform JSX to an reactive array if have some signal (state) inside suspense', () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
             return 'Hello world'
@@ -195,7 +182,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an reactive array if have some signal (store) inside suspense", () => {
+      it('should transform JSX to an reactive array if have some signal (store) inside suspense', () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
             return 'Hello world'
@@ -221,7 +208,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should transform JSX to an reactive array if have some signal (store)", () => {
+      it('should transform JSX to an reactive array if have some signal (store)', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
@@ -242,7 +229,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal state is used in a conditional", () => {
+      it('should change signals to function if the signal state is used in a conditional', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const count = state(0);
@@ -265,7 +252,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal store is used in a conditional", () => {
+      it('should change signals to function if the signal store is used in a conditional', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
@@ -285,7 +272,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should not change signals to function if the signal state is used in an event", () => {
+      it('should not change signals to function if the signal state is used in an event', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const count = state(0);
@@ -315,7 +302,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal state is used in a ternary", () => {
+      it('should change signals to function if the signal state is used in a ternary', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const count = state(0);
@@ -338,7 +325,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal store is used in a ternary", () => {
+      it('should change signals to function if the signal store is used in a ternary', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
@@ -358,7 +345,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal state is used in an atributte", () => {
+      it('should change signals to function if the signal state is used in an atributte', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const count = state(0);
@@ -382,7 +369,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal store is used in an atributte", () => {
+      it('should change signals to function if the signal store is used in an atributte', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
@@ -403,7 +390,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal state is used in a child also", () => {
+      it('should change signals to function if the signal state is used in a child also', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const count = state(0);
@@ -428,7 +415,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal store is used in a child also", () => {
+      it('should change signals to function if the signal store is used in a child also', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
@@ -450,7 +437,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal state is used in a child element also", () => {
+      it('should change signals to function if the signal state is used in a child element also', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { state }) {
             const count = state(0);
@@ -475,7 +462,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should change signals to function if the signal store is used in a child element also", () => {
+      it('should change signals to function if the signal store is used in a child element also', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({}, { store }) {
             return (
@@ -497,7 +484,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with fragments", () => {
+      it('should work with fragments', () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
             return (
@@ -519,7 +506,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with multiple fragments", () => {
+      it('should work with multiple fragments', () => {
         const input = parseCodeToAST(`
         export default function MyComponent() {
           return (
@@ -541,7 +528,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with open attribute of a dialog from a prop", () => {
+      it('should work with open attribute of a dialog from a prop', () => {
         const input = parseCodeToAST(`
           type RuntimeLogProps = {
             error: { stack: string, message: string };
@@ -571,7 +558,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should work with open attribute of a dialog from a prop with an expression", () => {
+      it('should work with open attribute of a dialog from a prop with an expression', () => {
         const input = parseCodeToAST(`
           type RuntimeLogProps = {
             error: { stack: string, message: string };
@@ -601,7 +588,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should ignore server-components as fragments and log with an error", () => {
+      it('should ignore server-components as fragments and log with an error', () => {
         const { LOG_PREFIX } = getConstants();
         const input = parseCodeToAST(`
             function Test(props) {
@@ -619,7 +606,7 @@ describe("utils", () => {
               )
             }
           `);
-        const logMock = spyOn(console, "log");
+        const logMock = spyOn(console, 'log');
         logMock.mockImplementation(() => {});
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
@@ -636,10 +623,7 @@ describe("utils", () => {
         logMock.mockRestore();
         expect(output).toBe(expected);
         expect(logs[0]).toEqual([LOG_PREFIX.ERROR, `Ops! Error:`]);
-        expect(logs[1]).toEqual([
-          LOG_PREFIX.ERROR,
-          `--------------------------`,
-        ]);
+        expect(logs[1]).toEqual([LOG_PREFIX.ERROR, `--------------------------`]);
         expect(logs[2]).toEqual([
           LOG_PREFIX.ERROR,
           boldLog(`You can't use "Test" variable as a tag name.`),
@@ -652,17 +636,14 @@ describe("utils", () => {
           LOG_PREFIX.ERROR,
           `You must use the "children" or slots in conjunction with the events to communicate with the server-components.`,
         ]);
-        expect(logs[5]).toEqual([
-          LOG_PREFIX.ERROR,
-          `--------------------------`,
-        ]);
+        expect(logs[5]).toEqual([LOG_PREFIX.ERROR, `--------------------------`]);
         expect(logs[6]).toEqual([
           LOG_PREFIX.ERROR,
           `Documentation about web-components: https://brisa.build/building-your-application/components-details/web-components`,
         ]);
       });
 
-      it("should transform multi JSX interpolations like fragments", () => {
+      it('should transform multi JSX interpolations like fragments', () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
             const example = 'example';
@@ -681,7 +662,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should allow returning an array of strings without applying any transformation", () => {
+      it('should allow returning an array of strings without applying any transformation', () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {
             return ['Hello', ' ', 'World'];
@@ -698,7 +679,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should return a fragment with the ternary", () => {
+      it('should return a fragment with the ternary', () => {
         const input = parseCodeToAST(`
           export default function MyComponent({ error }) {
             return (
@@ -738,7 +719,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should return a reactive array when a signal array is mapped", () => {
+      it('should return a reactive array when a signal array is mapped', () => {
         const input = parseCodeToAST(`
           export default function TodoList({ todos }: any) {
             return (
@@ -761,7 +742,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should executing functions for events to be reactive", () => {
+      it('should executing functions for events to be reactive', () => {
         const input = parseCodeToAST(`
           export default function TodoList({ todos }: any) {
             const someEvent = todos => () => window.someEvent(value);
@@ -782,7 +763,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should return a reactive array when an array is created with a signal", () => {
+      it('should return a reactive array when an array is created with a signal', () => {
         const input = parseCodeToAST(`
           export default function Test({ num }: any) {
             return (
@@ -805,7 +786,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap css TaggedTemplate expressions in a function when has a signal", () => {
+      it('should wrap css TaggedTemplate expressions in a function when has a signal', () => {
         const input = parseCodeToAST(`
           export default function Test({foo}, {css}) {
             css\`color: \${foo.value};\`;
@@ -829,7 +810,7 @@ describe("utils", () => {
         expect(output).toBe(expected);
       });
 
-      it("should wrap css TaggedTemplate expressions in a function when has a signal without destructuring", () => {
+      it('should wrap css TaggedTemplate expressions in a function when has a signal without destructuring', () => {
         const input = parseCodeToAST(`
           export default function Test({foo}, webContext) {
             webContext.css\`color: \${foo.value};\`;

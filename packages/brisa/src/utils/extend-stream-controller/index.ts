@@ -1,6 +1,6 @@
-import { RenderInitiator } from "@/public-constants";
-import type { ComponentType, RequestContext } from "@/types";
-import { getTransferedServerStoreToClient } from "@/utils/transfer-store-service";
+import { RenderInitiator } from '@/public-constants';
+import type { ComponentType, RequestContext } from '@/types';
+import { getTransferedServerStoreToClient } from '@/utils/transfer-store-service';
 
 export type ChunksOptions = {
   chunk: string;
@@ -62,7 +62,7 @@ export default function extendStreamController({
   const suspensedMap = new Map<number, SuspensedState>();
   const styleSheetsChunks: string[] = [];
   const getSuspensedState = (id: number) =>
-    suspensedMap.get(id) ?? { chunk: "", openTags: 0, closeTags: 0 };
+    suspensedMap.get(id) ?? { chunk: '', openTags: 0, closeTags: 0 };
 
   let storeTransfered = false;
   let initialComponentId: number;
@@ -74,7 +74,7 @@ export default function extendStreamController({
     insideHeadTag: false,
     hasUnsuspense: false,
     hasActionRPC: false,
-    areSignalsInjected: request.method === "POST",
+    areSignalsInjected: request.method === 'POST',
     applySuspense,
     generateComponentId() {
       if (!initialComponentId) {
@@ -83,10 +83,10 @@ export default function extendStreamController({
       componentIDs.push((initialComponentId++).toString(36));
     },
     getComponentId() {
-      return componentIDs.at(-1) ?? "";
+      return componentIDs.at(-1) ?? '';
     },
     getParentComponentId() {
-      return componentIDs.at(-2) ?? "";
+      return componentIDs.at(-2) ?? '';
     },
     removeComponentId() {
       componentIDs.pop();
@@ -143,7 +143,7 @@ export default function extendStreamController({
       const state = getSuspensedState(suspenseId);
 
       state.openTags++;
-      state.chunk += chunk ?? "";
+      state.chunk += chunk ?? '';
       suspensedMap.set(suspenseId, state);
     },
     enqueue(chunk, suspenseId) {
@@ -157,7 +157,7 @@ export default function extendStreamController({
     },
     async endTag(chunk, suspenseId) {
       if (!suspenseId) {
-        const isClosingHTMLTag = chunk === "</html>";
+        const isClosingHTMLTag = chunk === '</html>';
 
         // unsuspense inside the document html
         if (isClosingHTMLTag) {
@@ -181,7 +181,7 @@ export default function extendStreamController({
       const state = getSuspensedState(suspenseId);
 
       state.closeTags++;
-      state.chunk += chunk ?? "";
+      state.chunk += chunk ?? '';
       suspensedMap.set(suspenseId, state);
     },
     flushAndUnsupenseAllReady() {
@@ -193,9 +193,7 @@ export default function extendStreamController({
     },
     suspensePromise(promise: Promise<void>) {
       suspensePromises.push(
-        Promise.all([finishDocument.promise, promise]).then(() =>
-          this.flushAndUnsupenseAllReady(),
-        ),
+        Promise.all([finishDocument.promise, promise]).then(() => this.flushAndUnsupenseAllReady()),
       );
     },
     async waitSuspensedPromises() {

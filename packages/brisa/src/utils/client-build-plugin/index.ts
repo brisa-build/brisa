@@ -1,19 +1,19 @@
-import { ESTree } from "meriyah";
+import type { ESTree } from 'meriyah';
 
-import AST from "@/utils/ast";
-import getWebComponentAst from "./get-web-component-ast";
-import transformToDirectExport from "./transform-to-direct-export";
-import defineBrisaElement from "./define-brisa-element";
-import mergeEarlyReturnsInOne from "./merge-early-returns-in-one";
-import optimizeEffects from "./optimize-effects";
-import transformToReactiveArrays from "./transform-to-reactive-arrays";
-import transformToReactiveProps from "./transform-to-reactive-props";
-import mapComponentStatics from "./map-component-statics";
-import replaceExportDefault from "./replace-export-default";
-import processClientAst from "./process-client-ast";
-import getReactiveReturnStatement from "./get-reactive-return-statement";
-import { WEB_COMPONENT_ALTERNATIVE_REGEX, NATIVE_FOLDER } from "./constants";
-import addI18nBridge from "./add-i18n-bridge";
+import AST from '@/utils/ast';
+import getWebComponentAst from './get-web-component-ast';
+import transformToDirectExport from './transform-to-direct-export';
+import defineBrisaElement from './define-brisa-element';
+import mergeEarlyReturnsInOne from './merge-early-returns-in-one';
+import optimizeEffects from './optimize-effects';
+import transformToReactiveArrays from './transform-to-reactive-arrays';
+import transformToReactiveProps from './transform-to-reactive-props';
+import mapComponentStatics from './map-component-statics';
+import replaceExportDefault from './replace-export-default';
+import processClientAst from './process-client-ast';
+import getReactiveReturnStatement from './get-reactive-return-statement';
+import { WEB_COMPONENT_ALTERNATIVE_REGEX, NATIVE_FOLDER } from './constants';
+import addI18nBridge from './add-i18n-bridge';
 
 type ClientBuildPluginConfig = {
   isI18nAdded: boolean;
@@ -26,8 +26,8 @@ type ClientBuildPluginResult = {
   i18nKeys: Set<string>;
 };
 
-const { parseCodeToAST, generateCodeFromAST } = AST("tsx");
-const BRISA_INTERNAL_PATH = "__BRISA_CLIENT__";
+const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
+const BRISA_INTERNAL_PATH = '__BRISA_CLIENT__';
 const DEFAULT_CONFIG: ClientBuildPluginConfig = {
   isI18nAdded: false,
   isTranslateCoreAdded: false,
@@ -44,7 +44,7 @@ export default function clientBuildPlugin(
     return { code, useI18n: false, i18nKeys: new Set<string>() };
   }
 
-  let rawAst = parseCodeToAST(code);
+  const rawAst = parseCodeToAST(code);
   let { useI18n, i18nKeys, ast } = processClientAst(rawAst);
 
   if (useI18n) {
@@ -59,13 +59,9 @@ export default function clientBuildPlugin(
   const out = transformToReactiveProps(astWithDirectExport);
   const reactiveAst = transformToReactiveArrays(out.ast, path);
   const observedAttributesSet = new Set(out.observedAttributes);
-  let [componentBranch, exportIndex, identifierIndex] =
-    getWebComponentAst(reactiveAst);
+  let [componentBranch, exportIndex, identifierIndex] = getWebComponentAst(reactiveAst);
 
-  if (
-    !componentBranch ||
-    (WEB_COMPONENT_ALTERNATIVE_REGEX.test(path) && !isInternal)
-  ) {
+  if (!componentBranch || (WEB_COMPONENT_ALTERNATIVE_REGEX.test(path) && !isInternal)) {
     return {
       code: generateCodeFromAST(reactiveAst),
       useI18n,
@@ -73,15 +69,11 @@ export default function clientBuildPlugin(
     };
   }
 
-  for (const { observedAttributes = new Set<string>() } of Object.values(
-    out.statics ?? {},
-  )) {
+  for (const { observedAttributes = new Set<string>() } of Object.values(out.statics ?? {})) {
     for (const prop of observedAttributes) observedAttributesSet.add(prop);
   }
 
-  componentBranch = mergeEarlyReturnsInOne(
-    optimizeEffects(componentBranch, out.vars),
-  );
+  componentBranch = mergeEarlyReturnsInOne(optimizeEffects(componentBranch, out.vars));
 
   // Merge early returns in one + optimize effects inside statics (suspense + error phases)
   mapComponentStatics(reactiveAst, out.componentName, (value, name) => {
@@ -125,9 +117,7 @@ export default function clientBuildPlugin(
   if (isInternal) {
     const internalComponentName = path.split(BRISA_INTERNAL_PATH).at(-1)!;
     return {
-      code: generateCodeFromAST(
-        replaceExportDefault(reactiveAst, internalComponentName),
-      ),
+      code: generateCodeFromAST(replaceExportDefault(reactiveAst, internalComponentName)),
       useI18n,
       i18nKeys,
     };

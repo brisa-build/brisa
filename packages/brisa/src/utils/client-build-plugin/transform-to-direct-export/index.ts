@@ -1,9 +1,9 @@
-import { ESTree } from "meriyah";
+import type { ESTree } from 'meriyah';
 
 const DIRECT_TYPES = new Set([
-  "ArrowFunctionExpression",
-  "FunctionExpression",
-  "VariableDeclaration",
+  'ArrowFunctionExpression',
+  'FunctionExpression',
+  'VariableDeclaration',
 ]);
 
 /**
@@ -21,12 +21,8 @@ const DIRECT_TYPES = new Set([
  * @param {ESTree.Program} ast
  * @returns {ESTree.Program}
  */
-export default function transformToDirectExport(
-  ast: ESTree.Program,
-): ESTree.Program {
-  const defaultExportIndex = ast.body.findIndex(
-    (node) => node.type === "ExportDefaultDeclaration",
-  );
+export default function transformToDirectExport(ast: ESTree.Program): ESTree.Program {
+  const defaultExportIndex = ast.body.findIndex((node) => node.type === 'ExportDefaultDeclaration');
 
   // Add "export default null" if there is no default export
   if (defaultExportIndex === -1) {
@@ -35,8 +31,8 @@ export default function transformToDirectExport(
       body: [
         ...ast.body,
         {
-          type: "ExportDefaultDeclaration",
-          declaration: { type: "Literal", value: null },
+          type: 'ExportDefaultDeclaration',
+          declaration: { type: 'Literal', value: null },
         },
       ],
     };
@@ -51,11 +47,8 @@ export default function transformToDirectExport(
     body: ast.body.filter((node, index) => index !== defaultExportIndex),
   };
 
-  let componentDeclarationIndex = ast.body.findIndex((node: any) => {
-    return (
-      DIRECT_TYPES.has(node.type) &&
-      getName(node) === defaultExportNode.declaration.name
-    );
+  const componentDeclarationIndex = ast.body.findIndex((node: any) => {
+    return DIRECT_TYPES.has(node.type) && getName(node) === defaultExportNode.declaration.name;
   });
 
   if (componentDeclarationIndex === -1) return ast;
@@ -68,9 +61,9 @@ export default function transformToDirectExport(
       const node = ast.body[i];
 
       if (
-        node.type === "ExpressionStatement" &&
-        node.expression.type === "AssignmentExpression" &&
-        node.expression.left.type === "Identifier" &&
+        node.type === 'ExpressionStatement' &&
+        node.expression.type === 'AssignmentExpression' &&
+        node.expression.left.type === 'Identifier' &&
         node.expression.left.name === getName(componentDeclaration)
       ) {
         componentDeclaration = {
@@ -88,12 +81,12 @@ export default function transformToDirectExport(
     }
   }
 
-  if (componentDeclaration.type === "VariableDeclaration") {
+  if (componentDeclaration.type === 'VariableDeclaration') {
     const updatedBody = astWithoutDefaultExport.body.map((node, index) => {
       if (index === componentDeclarationIndex) {
         return {
           ...node,
-          type: "ExportDefaultDeclaration",
+          type: 'ExportDefaultDeclaration',
           declaration: componentDeclaration.declarations[0].init,
         };
       }
@@ -107,9 +100,5 @@ export default function transformToDirectExport(
 }
 
 function getName(node: any) {
-  return (
-    node?.id?.name ??
-    node?.declaration?.name ??
-    node?.declarations?.[0]?.id?.name
-  );
+  return node?.id?.name ?? node?.declaration?.name ?? node?.declarations?.[0]?.id?.name;
 }

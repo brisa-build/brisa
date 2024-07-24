@@ -1,17 +1,17 @@
-import { describe, it, expect, afterEach } from "bun:test";
+import { describe, it, expect, afterEach } from 'bun:test';
 
-import redirectTrailingSlash from ".";
-import extendRequestContext from "@/utils/extend-request-context";
+import redirectTrailingSlash from '.';
+import extendRequestContext from '@/utils/extend-request-context';
 
-const BASE_PATHS = ["", "/foo", "/foo/bar"];
+const BASE_PATHS = ['', '/foo', '/foo/bar'];
 
-describe("utils", () => {
-  describe.each(BASE_PATHS)("redirectTrailingSlash %s", (basePath) => {
+describe('utils', () => {
+  describe.each(BASE_PATHS)('redirectTrailingSlash %s', (basePath) => {
     afterEach(() => {
       globalThis.mockConstants = undefined;
     });
 
-    it("should redirect without trailing slash", () => {
+    it('should redirect without trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
           trailingSlash: false,
@@ -23,12 +23,10 @@ describe("utils", () => {
       });
       const response = redirectTrailingSlash(request);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get("location")).toBe(
-        `https://example.com${basePath}/foo`,
-      );
+      expect(response?.headers.get('location')).toBe(`https://example.com${basePath}/foo`);
     });
 
-    it("should NOT redirect the home trailingSlash=false + trailing slash", () => {
+    it('should NOT redirect the home trailingSlash=false + trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
           trailingSlash: false,
@@ -42,7 +40,7 @@ describe("utils", () => {
       expect(response).not.toBeDefined();
     });
 
-    it("should NOT redirect the home trailingSlash=false + without trailing slash", () => {
+    it('should NOT redirect the home trailingSlash=false + without trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
           trailingSlash: false,
@@ -56,7 +54,7 @@ describe("utils", () => {
       expect(response).not.toBeDefined();
     });
 
-    it("should NOT redirect the home trailingSlash=true + trailing slash", () => {
+    it('should NOT redirect the home trailingSlash=true + trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
           trailingSlash: true,
@@ -70,7 +68,7 @@ describe("utils", () => {
       expect(response).not.toBeDefined();
     });
 
-    it("should NOT redirect the home trailingSlash=true + without trailing slash", () => {
+    it('should NOT redirect the home trailingSlash=true + without trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
           trailingSlash: true,
@@ -84,7 +82,7 @@ describe("utils", () => {
       expect(response).not.toBeDefined();
     });
 
-    it("should redirect with trailing slash", () => {
+    it('should redirect with trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
           trailingSlash: true,
@@ -96,12 +94,10 @@ describe("utils", () => {
       });
       const response = redirectTrailingSlash(request);
       expect(response?.status).toBe(301);
-      expect(response?.headers.get("location")).toBe(
-        `https://example.com${basePath}/foo/`,
-      );
+      expect(response?.headers.get('location')).toBe(`https://example.com${basePath}/foo/`);
     });
 
-    it("should not redirect when trailingSlash=true but already has the trailing slash", () => {
+    it('should not redirect when trailingSlash=true but already has the trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
           trailingSlash: true,
@@ -115,7 +111,7 @@ describe("utils", () => {
       expect(response).toBeUndefined();
     });
 
-    it("should not redirect when trailingSlash=false but already has no trailing slash", () => {
+    it('should not redirect when trailingSlash=false but already has no trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
           trailingSlash: false,

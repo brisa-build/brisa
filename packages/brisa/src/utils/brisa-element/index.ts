@@ -1,8 +1,8 @@
-import type { WebContext, BrisaContext, IndicatorSignal } from "@/types";
-import getProviderId from "@/utils/get-provider-id";
-import { deserialize, serialize } from "@/utils/serialization";
-import signals from "@/utils/signals";
-import stylePropsToString, { lowercase } from "@/utils/style-props-to-string";
+import type { WebContext, BrisaContext, IndicatorSignal } from '@/types';
+import getProviderId from '@/utils/get-provider-id';
+import { deserialize, serialize } from '@/utils/serialization';
+import signals from '@/utils/signals';
+import stylePropsToString, { lowercase } from '@/utils/style-props-to-string';
 
 type Attr = Record<string, unknown>;
 type StateSignal = { value: unknown };
@@ -24,56 +24,47 @@ type Children =
   | { type: string; props: any };
 type Event = (e: unknown) => void;
 
-export const _on = Symbol("on");
-export const _off = Symbol("off");
+export const _on = Symbol('on');
+export const _off = Symbol('off');
 
-const W3 = "http://www.w3.org/";
-const SVG_NAMESPACE = W3 + "2000/svg";
-const XLINK_NAMESPACE = W3 + "1999/xlink";
-const HTML = "HTML";
-const INDICATOR = "indicator";
-const BRISA_REQUEST_CLASS = "brisa-request";
-const PORTAL = "portal";
-const SLOT_TAG = "slot";
-const KEY = "key";
-const CONNECTED_CALLBACK = "connectedCallback";
-const DISCONNECTED_CALLBACK = "dis" + CONNECTED_CALLBACK;
-const INNER_HTML = "inner" + HTML;
-const PROPS = "p";
-const SUSPENSE_PROPS = "l";
+const W3 = 'http://www.w3.org/';
+const SVG_NAMESPACE = W3 + '2000/svg';
+const XLINK_NAMESPACE = W3 + '1999/xlink';
+const HTML = 'HTML';
+const INDICATOR = 'indicator';
+const BRISA_REQUEST_CLASS = 'brisa-request';
+const PORTAL = 'portal';
+const SLOT_TAG = 'slot';
+const KEY = 'key';
+const CONNECTED_CALLBACK = 'connectedCallback';
+const DISCONNECTED_CALLBACK = 'dis' + CONNECTED_CALLBACK;
+const INNER_HTML = 'inner' + HTML;
+const PROPS = 'p';
+const SUSPENSE_PROPS = 'l';
 const NULL = null;
-const CONTEXT = "context";
+const CONTEXT = 'context';
 
-export default function brisaElement(
-  render: Render,
-  observedAttributes: string[] = [],
-) {
+export default function brisaElement(render: Render, observedAttributes: string[] = []) {
   const $document = document;
 
   const createTextNode = (text: Children) => {
-    if ((text as any) === false) text = "";
-    return $document.createTextNode(
-      (Array.isArray(text) ? text.join("") : text ?? "").toString(),
-    );
+    if ((text as any) === false) text = '';
+    return $document.createTextNode((Array.isArray(text) ? text.join('') : text ?? '').toString());
   };
 
-  const isObject = (o: unknown) => typeof o === "object";
+  const isObject = (o: unknown) => typeof o === 'object';
   const isReactiveArray = (a: any) => a?.some?.(isObject);
   const arr = Array.from;
-  const isCustomEvent = (e: unknown): e is CustomEvent =>
-    e instanceof CustomEvent;
-  const isFunction = (fn: unknown) => typeof fn === "function";
-  const isAttributeAnEvent = (key: string) => key.startsWith("on");
+  const isCustomEvent = (e: unknown): e is CustomEvent => e instanceof CustomEvent;
+  const isFunction = (fn: unknown) => typeof fn === 'function';
+  const isAttributeAnEvent = (key: string) => key.startsWith('on');
   const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
     parent.appendChild(child);
 
-  const createElement = (
-    tagName: string,
-    parent?: HTMLElement | DocumentFragment,
-  ) => {
-    return tagName === "svg" ||
+  const createElement = (tagName: string, parent?: HTMLElement | DocumentFragment) => {
+    return tagName === 'svg' ||
       ((parent as HTMLElement)?.namespaceURI === SVG_NAMESPACE &&
-        lowercase((parent as HTMLElement).tagName) !== "foreignobject")
+        lowercase((parent as HTMLElement).tagName) !== 'foreignobject')
       ? $document.createElementNS(SVG_NAMESPACE, tagName)
       : $document.createElement(tagName);
   };
@@ -81,19 +72,18 @@ export default function brisaElement(
   const setAttribute = (el: HTMLElement, key: string, value: string) => {
     const on = (value as unknown as symbol) === _on;
     const off = (value as unknown as symbol) === _off;
-    const isStyleObj = key === "style" && isObject(value);
+    const isStyleObj = key === 'style' && isObject(value);
     let serializedValue = isStyleObj
       ? stylePropsToString(value as JSX.CSSProperties)
       : serialize(value);
 
     const isWithNamespace =
-      el.namespaceURI === SVG_NAMESPACE &&
-      (key.startsWith("xlink:") || key === "href");
+      el.namespaceURI === SVG_NAMESPACE && (key.startsWith('xlink:') || key === 'href');
 
     // Handle base path
     // This code is removed by the bundler when basePath is not used
     if (__BASE_PATH__) {
-      if ((key === "src" || key === "href") && !URL.canParse(value)) {
+      if ((key === 'src' || key === 'href') && !URL.canParse(value)) {
         serializedValue = __BASE_PATH__ + serializedValue;
       }
     }
@@ -101,14 +91,14 @@ export default function brisaElement(
     if (key === INDICATOR) {
       if (value) el.classList.add(BRISA_REQUEST_CLASS);
       else el.classList.remove(BRISA_REQUEST_CLASS);
-    } else if (key === "ref") {
+    } else if (key === 'ref') {
       (value as unknown as StateSignal).value = el;
     } else if (isWithNamespace) {
       if (off) el.removeAttributeNS(XLINK_NAMESPACE, key);
-      else el.setAttributeNS(XLINK_NAMESPACE, key, on ? "" : serializedValue);
+      else el.setAttributeNS(XLINK_NAMESPACE, key, on ? '' : serializedValue);
     } else {
       if (off) el.removeAttribute(key);
-      else el.setAttribute(key, on ? "" : serializedValue);
+      else el.setAttribute(key, on ? '' : serializedValue);
     }
   };
 
@@ -117,7 +107,7 @@ export default function brisaElement(
 
   observedAttributes.push(KEY);
 
-  for (let attr of observedAttributes) {
+  for (const attr of observedAttributes) {
     const lowercaseAttr = lowercase(attr);
     attributesObj[lowercaseAttr] = attributesObj[attr] = attr;
     attributesLowercase.push(lowercaseAttr);
@@ -134,7 +124,7 @@ export default function brisaElement(
 
     async [CONNECTED_CALLBACK]() {
       const self = this;
-      const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: "open" });
+      const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: 'open' });
       const fnToExecuteAfterMount: (() => void)[] = [];
       const cssStyles: CSSStyles = [];
       const sheet = new CSSStyleSheet();
@@ -144,13 +134,10 @@ export default function brisaElement(
       for (const { cssRules } of $document.styleSheets) {
         for (const rule of cssRules) css.push(rule.cssText);
       }
-      sheet.replaceSync(css.join(""));
+      sheet.replaceSync(css.join(''));
       shadowRoot.adoptedStyleSheets.push(sheet);
 
-      function handlePortal(
-        children: Children,
-        parent: HTMLElement | DocumentFragment,
-      ) {
+      function handlePortal(children: Children, parent: HTMLElement | DocumentFragment) {
         if ((children as any)?.type !== PORTAL) return [children, parent];
         const { element, target } = (children as any).props;
         return [element, target];
@@ -174,20 +161,17 @@ export default function brisaElement(
         if (initialRender) {
           // Reset innerHTML when using shadowRoot
           if (self.shadowRoot) {
-            (self.shadowRoot as any)[INNER_HTML] = "";
+            (self.shadowRoot as any)[INNER_HTML] = '';
           }
           // Handle CSS
           if (cssStyles.length) {
-            const style = createElement("style");
+            const style = createElement('style');
 
             effect(() => {
-              let cssString = "";
+              let cssString = '';
 
-              for (let [template, ...values] of cssStyles) {
-                cssString += String.raw(
-                  template,
-                  ...values.map((v) => (isFunction(v) ? v() : v)),
-                );
+              for (const [template, ...values] of cssStyles) {
+                cssString += String.raw(template, ...values.map((v) => (isFunction(v) ? v() : v)));
               }
 
               style.textContent = cssString;
@@ -200,12 +184,10 @@ export default function brisaElement(
         // Handle portal
         [children, parent] = handlePortal(children, parent);
 
-        let el = (
-          tagName ? createElement(tagName, parent) : parent
-        ) as HTMLElement;
+        let el = (tagName ? createElement(tagName, parent) : parent) as HTMLElement;
 
         // Handle attributes
-        for (let [attribute, attrValue] of Object.entries(attributes)) {
+        for (const [attribute, attrValue] of Object.entries(attributes)) {
           const isEvent = isAttributeAnEvent(attribute);
           const isIndicator = attribute === INDICATOR;
 
@@ -222,9 +204,7 @@ export default function brisaElement(
                 setAttribute(
                   el,
                   attribute,
-                  isIndicator
-                    ? (attrValue as IndicatorSignal)?.value
-                    : (attrValue as any)(),
+                  isIndicator ? (attrValue as IndicatorSignal)?.value : (attrValue as any)(),
                 ),
               ),
             );
@@ -240,7 +220,7 @@ export default function brisaElement(
           appendChild(el, createElement(SLOT_TAG));
         } else if (isReactiveArray(children)) {
           if (isReactiveArray((children as any)[0])) {
-            for (let child of children as Children[]) {
+            for (const child of children as Children[]) {
               mount(NULL, {}, child, el, r, effect);
             }
           } else {
@@ -252,7 +232,7 @@ export default function brisaElement(
           const insertOrUpdate = (element: ChildNode | DocumentFragment) => {
             if (lastNodes && el.contains(lastNodes[0])) {
               el.insertBefore(element, lastNodes[0]);
-              for (let node of lastNodes) node?.remove();
+              for (const node of lastNodes) node?.remove();
             } else appendChild(el, element);
           };
 
@@ -266,22 +246,21 @@ export default function brisaElement(
                 const isDangerHTML = (child as any)?.type === HTML;
 
                 if (isDangerHTML || isReactiveArray(child)) {
-                  let currentElNodes = arr(el.childNodes);
+                  const currentElNodes = arr(el.childNodes);
                   const fragment = $document.createDocumentFragment();
 
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {
-                    const p = createElement("p");
-                    (p as any)[INNER_HTML] += (child as any).props
-                      .html as string;
+                    const p = createElement('p');
+                    (p as any)[INNER_HTML] += (child as any).props.html as string;
 
-                    for (let node of arr(p.childNodes)) {
+                    for (const node of arr(p.childNodes)) {
                       appendChild(fragment, node);
                     }
                   }
                   // Reactive child node
                   else if (isReactiveArray((child as Children[])[0])) {
-                    for (let c of child as Children[]) {
+                    for (const c of child as Children[]) {
                       mount(NULL, {}, c, fragment, r(r2), effect);
                     }
                   } else if ((child as ReactiveArray).length) {
@@ -289,9 +268,7 @@ export default function brisaElement(
                   }
                   insertOrUpdate(fragment);
 
-                  lastNodes = arr(el.childNodes).filter(
-                    (node) => !currentElNodes.includes(node),
-                  );
+                  lastNodes = arr(el.childNodes).filter((node) => !currentElNodes.includes(node));
                 }
                 // Reactive text node
                 else {
@@ -302,8 +279,7 @@ export default function brisaElement(
                   lastNodes = [textNode];
                 }
               }
-              if (childOrPromise instanceof Promise)
-                childOrPromise.then(startEffect);
+              if (childOrPromise instanceof Promise) childOrPromise.then(startEffect);
               else startEffect(childOrPromise);
             }),
           );
@@ -318,14 +294,14 @@ export default function brisaElement(
         fn: Render,
         extraProps?: { [key: string]: unknown } | null,
         renderSignals = signals(),
-        propsField: "p" | "l" = PROPS,
+        propsField: 'p' | 'l' = PROPS,
       ) => {
         // Save signals to reset them later in the disconnectedCallback
         self.s = renderSignals;
 
         // Attributes (events and props)
         self[propsField] = {};
-        for (let attr of observedAttributes) {
+        for (const attr of observedAttributes) {
           self[propsField]![attributesObj[attr]] = isAttributeAnEvent(attr)
             ? self.e(attr)
             : renderSignals.state(deserialize(self.getAttribute(attr)));
@@ -361,7 +337,7 @@ export default function brisaElement(
 
         // This code is removed by the bundler when plugins are not used
         if (__WEB_CONTEXT_PLUGINS__) {
-          for (let plugin of window._P) {
+          for (const plugin of window._P) {
             Object.assign(webContext, plugin(webContext));
           }
         }
@@ -378,18 +354,13 @@ export default function brisaElement(
         );
       };
 
-      let suspenseSignals = signals();
+      const suspenseSignals = signals();
 
       // Render the component
       try {
         // Handle suspense
         if (isFunction(render.suspense)) {
-          await startRender(
-            render.suspense!,
-            NULL,
-            suspenseSignals,
-            SUSPENSE_PROPS,
-          );
+          await startRender(render.suspense!, NULL, suspenseSignals, SUSPENSE_PROPS);
         }
         // Handle render
         await startRender(render);
@@ -421,11 +392,7 @@ export default function brisaElement(
       };
     }
 
-    attributeChangedCallback(
-      name: string,
-      oldValue: string | null,
-      newValue: string | null,
-    ) {
+    attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
       const self = this as any;
       const propsField = self[SUSPENSE_PROPS] ? SUSPENSE_PROPS : PROPS;
 
@@ -435,13 +402,8 @@ export default function brisaElement(
         self[CONNECTED_CALLBACK]();
       }
       // Handle component props
-      if (
-        self[propsField] &&
-        oldValue !== newValue &&
-        !isAttributeAnEvent(name)
-      ) {
-        (self[propsField][attributesObj[name]] as StateSignal).value =
-          deserialize(newValue);
+      if (self[propsField] && oldValue !== newValue && !isAttributeAnEvent(name)) {
+        (self[propsField][attributesObj[name]] as StateSignal).value = deserialize(newValue);
       }
     }
   };

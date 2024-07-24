@@ -1,31 +1,29 @@
-import { watch } from "node:fs";
-import path from "node:path";
-import constants from "@/constants";
-import dangerHTML from "@/utils/danger-html";
-import compileAll from "@/utils/compile-all";
-import { toInline } from "@/helpers";
-import { logError } from "@/utils/log/log-build";
+import { watch } from 'node:fs';
+import path from 'node:path';
+import constants from '@/constants';
+import dangerHTML from '@/utils/danger-html';
+import compileAll from '@/utils/compile-all';
+import { toInline } from '@/helpers';
+import { logError } from '@/utils/log/log-build';
 
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
-const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
-const LIVE_RELOAD_COMMAND = "reload";
+const LIVE_RELOAD_WEBSOCKET_PATH = '__brisa_live_reload__';
+const LIVE_RELOAD_COMMAND = 'reload';
 const hashSet = new Set();
 const MAX_HASHES = 100;
 
 export async function activateHotReload() {
   let semaphore = false;
-  let waitFilename = "";
+  let waitFilename = '';
 
   async function watchSourceListener(event: any, filename: any) {
     try {
       const filePath = path.join(SRC_DIR, filename);
       const file = Bun.file(filePath);
 
-      if (event !== "change" && file.size !== 0) return;
+      if (event !== 'change' && file.size !== 0) return;
 
-      const hash = (await file.exists())
-        ? Bun.hash(await file.arrayBuffer())
-        : null;
+      const hash = (await file.exists()) ? Bun.hash(await file.arrayBuffer()) : null;
 
       // Related with:
       // - https://github.com/brisa-build/brisa/issues/227
@@ -42,7 +40,7 @@ export async function activateHotReload() {
         messages: [e.message, `Error while trying to recompile ${filename}`],
         stack: e.stack,
         docTitle: `Please, file a GitHub issue to Brisa's team`,
-        docLink: "https://github.com/brisa-build/brisa/issues/new",
+        docLink: 'https://github.com/brisa-build/brisa/issues/new',
       });
     }
   }
@@ -66,11 +64,11 @@ export async function activateHotReload() {
 
     if (!globalThis.brisaServer) return;
 
-    globalThis.brisaServer.publish("hot-reload", LIVE_RELOAD_COMMAND);
+    globalThis.brisaServer.publish('hot-reload', LIVE_RELOAD_COMMAND);
 
     if (waitFilename) {
-      let popFilename = waitFilename;
-      waitFilename = "";
+      const popFilename = waitFilename;
+      waitFilename = '';
       await recompile(popFilename);
     }
     semaphore = false;
@@ -79,12 +77,12 @@ export async function activateHotReload() {
   if (globalThis.watcher) {
     globalThis.watcher.close();
   } else {
-    console.log(LOG_PREFIX.INFO, "hot reloading enabled");
+    console.log(LOG_PREFIX.INFO, 'hot reloading enabled');
   }
 
   globalThis.watcher = watch(SRC_DIR, { recursive: true }, watchSourceListener);
 
-  process.on("SIGINT", () => {
+  process.on('SIGINT', () => {
     globalThis.watcher?.close();
     process.exit(0);
   });

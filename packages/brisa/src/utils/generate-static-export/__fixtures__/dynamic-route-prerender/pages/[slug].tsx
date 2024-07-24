@@ -3,5 +3,5 @@ export default function User() {
 }
 
 export function prerender() {
-  return [{ slug: "user" }, { slug: "user2" }];
+  return [{ slug: 'user' }, { slug: 'user2' }];
 }

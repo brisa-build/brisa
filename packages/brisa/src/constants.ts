@@ -1,43 +1,28 @@
-import path from "node:path";
-import type { BunPlugin } from "bun";
-import { version } from "../package.json";
-import type { Configuration, I18nConfig } from "./types";
-import importFileIfExists from "./utils/import-file-if-exists";
-import {
-  blueLog,
-  cyanLog,
-  greenLog,
-  redLog,
-  yellowLog,
-} from "./utils/log/log-color";
+import path from 'node:path';
+import type { BunPlugin } from 'bun';
+import { version } from '../package.json';
+import type { Configuration, I18nConfig } from './types';
+import importFileIfExists from './utils/import-file-if-exists';
+import { blueLog, cyanLog, greenLog, redLog, yellowLog } from './utils/log/log-color';
 
 const rootDir = process.cwd();
-const staticExportOutputOption = new Set([
-  "static",
-  "desktop",
-  "android",
-  "ios",
-]);
-const srcDir = path.join(rootDir, "src");
-const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, "build");
-const PAGE_404 = "/_404";
-const PAGE_500 = "/_500";
+const staticExportOutputOption = new Set(['static', 'desktop', 'android', 'ios']);
+const srcDir = path.join(rootDir, 'src');
+const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, 'build');
+const PAGE_404 = '/_404';
+const PAGE_500 = '/_500';
 const integrations = await importFileIfExists(
-  "_integrations",
-  path.join(buildDir, "web-components"),
+  '_integrations',
+  path.join(buildDir, 'web-components'),
 );
-const I18N_CONFIG = (await importFileIfExists("i18n", buildDir))
-  ?.default as I18nConfig;
-const CONFIG =
-  (await importFileIfExists("brisa.config", rootDir))?.default ?? {};
+const I18N_CONFIG = (await importFileIfExists('i18n', buildDir))?.default as I18nConfig;
+const CONFIG = (await importFileIfExists('brisa.config', rootDir))?.default ?? {};
 
 // Remove trailing slash from pages
 if (I18N_CONFIG?.pages) {
   I18N_CONFIG.pages = JSON.parse(
     JSON.stringify(I18N_CONFIG.pages, (key, value) =>
-      typeof value === "string" && value.length > 1
-        ? value.replace(/\/$/g, "")
-        : value,
+      typeof value === 'string' && value.length > 1 ? value.replace(/\/$/g, '') : value,
     ),
   );
 }
@@ -52,47 +37,46 @@ globalThis.__BASE_PATH__ = CONFIG.basePath;
 
 const defaultConfig = {
   trailingSlash: false,
-  assetPrefix: "",
-  basePath: "",
+  assetPrefix: '',
+  basePath: '',
   extendPlugins: (plugins: BunPlugin[]) => plugins,
-  output: "server",
+  output: 'server',
 };
 
 const BOOLEANS_IN_HTML = new Set([
-  "allowfullscreen",
-  "async",
-  "autofocus",
-  "autoplay",
-  "checked",
-  "controls",
-  "default",
-  "disabled",
-  "formnovalidate",
-  "hidden",
-  "indeterminate",
-  "ismap",
-  "loop",
-  "multiple",
-  "muted",
-  "nomodule",
-  "novalidate",
-  "open",
-  "playsinline",
-  "readonly",
-  "required",
-  "reversed",
-  "seamless",
-  "selected",
-  "data-action",
+  'allowfullscreen',
+  'async',
+  'autofocus',
+  'autoplay',
+  'checked',
+  'controls',
+  'default',
+  'disabled',
+  'formnovalidate',
+  'hidden',
+  'indeterminate',
+  'ismap',
+  'loop',
+  'multiple',
+  'muted',
+  'nomodule',
+  'novalidate',
+  'open',
+  'playsinline',
+  'readonly',
+  'required',
+  'reversed',
+  'seamless',
+  'selected',
+  'data-action',
 ]);
 
 const { NODE_ENV } = process.env;
 
-const IS_PRODUCTION =
-  process.argv.some((t) => t === "PROD") || NODE_ENV === "production";
+const IS_PRODUCTION = process.argv.some((t) => t === 'PROD') || NODE_ENV === 'production';
 const CACHE_CONTROL = IS_PRODUCTION
-  ? "public, max-age=31536000, immutable"
-  : "no-store, must-revalidate";
+  ? 'public, max-age=31536000, immutable'
+  : 'no-store, must-revalidate';
 
 const constants = {
   PAGE_404,
@@ -102,25 +86,22 @@ const constants = {
   WEB_CONTEXT_PLUGINS: integrations?.webContextPlugins ?? [],
   RESERVED_PAGES: [PAGE_404, PAGE_500],
   IS_PRODUCTION,
-  IS_DEVELOPMENT:
-    process.argv.some((t) => t === "DEV") || NODE_ENV === "development",
-  IS_SERVE_PROCESS: Bun.main.endsWith(
-    path.join("brisa", "out", "cli", "serve", "index.js"),
-  ),
-  PORT: parseInt(process.argv[2]) || 0,
+  IS_DEVELOPMENT: process.argv.some((t) => t === 'DEV') || NODE_ENV === 'development',
+  IS_SERVE_PROCESS: Bun.main.endsWith(path.join('brisa', 'out', 'cli', 'serve', 'index.js')),
+  PORT: Number.parseInt(process.argv[2]) || 0,
   BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,
   SRC_DIR: srcDir,
-  ASSETS_DIR: path.join(buildDir, "public"),
-  PAGES_DIR: path.join(buildDir, "pages"),
+  ASSETS_DIR: path.join(buildDir, 'public'),
+  PAGES_DIR: path.join(buildDir, 'pages'),
   I18N_CONFIG,
   LOG_PREFIX: {
-    WAIT: cyanLog("[ wait ]") + " ",
-    READY: greenLog("[ ready ] ") + " ",
-    INFO: blueLog("[ info ] ") + " ",
-    ERROR: redLog("[ error ] ") + " ",
-    WARN: yellowLog("[ warn ] ") + " ",
-    TICK: greenLog("✓ ") + " ",
+    WAIT: cyanLog('[ wait ]') + ' ',
+    READY: greenLog('[ ready ] ') + ' ',
+    INFO: blueLog('[ info ] ') + ' ',
+    ERROR: redLog('[ error ] ') + ' ',
+    WARN: yellowLog('[ warn ] ') + ' ',
+    TICK: greenLog('✓ ') + ' ',
   },
   LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
   CONFIG: { ...defaultConfig, ...CONFIG } as Configuration,
@@ -144,9 +125,7 @@ const constants = {
  * it in all the codebase and implement the mock modules in the tests.
  */
 export const getConstants = () =>
-  globalThis.mockConstants
-    ? (globalThis.mockConstants as typeof constants)
-    : constants;
+  globalThis.mockConstants ? (globalThis.mockConstants as typeof constants) : constants;
 
 declare global {
   var mockConstants: Partial<typeof constants> | undefined;
@@ -154,7 +133,7 @@ declare global {
   var FORCE_SUSPENSE_DEFAULT: boolean | undefined;
   var BrisaRegistry: Map<string, number>;
   var lastContextProviderId: number;
-  var watcher: import("node:fs").FSWatcher;
+  var watcher: import('node:fs').FSWatcher;
   var __WEB_CONTEXT_PLUGINS__: boolean;
   var __RPC_LAZY_FILE__: string;
   var __BASE_PATH__: string;

@@ -13,7 +13,7 @@ u$ = (idSection: string) => {
 
   l$.add(idSection);
 
-  for (let id of l$) {
+  for (const id of l$) {
     const suspensedElement = byId(`S:${id}`);
     const ususpensedTemplate = byId(`U:${id}`) as HTMLTemplateElement;
 

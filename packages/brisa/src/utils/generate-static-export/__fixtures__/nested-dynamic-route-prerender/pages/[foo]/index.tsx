@@ -3,5 +3,5 @@ export default function Foo() {
 }
 
 export const prerender = async () => {
-  return [{ foo: "foo" }, { foo: "bar" }, { foo: "baz" }];
+  return [{ foo: 'foo' }, { foo: 'bar' }, { foo: 'baz' }];
 };

@@ -1,6 +1,6 @@
-import { createContext } from "@/core";
+import { createContext } from '@/core';
 
-const context = createContext("foo");
+const context = createContext('foo');
 
 export default async function SomePage() {
   return (
@@ -12,6 +12,6 @@ export default async function SomePage() {
 
 export function responseHeaders() {
   return {
-    "x-test": "test",
+    'x-test': 'test',
   };
 }

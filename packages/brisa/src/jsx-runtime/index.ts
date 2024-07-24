@@ -1,4 +1,4 @@
-import type { Type, Props } from "@/types";
+import type { Type, Props } from '@/types';
 
 const Fragment = (props: Props) => props.children;
 const createNode = (type: Type, props: Props, key: string) => {
@@ -8,9 +8,4 @@ const createNode = (type: Type, props: Props, key: string) => {
 
 Fragment.__isFragment = true;
 
-export {
-  createNode as jsx,
-  createNode as jsxs,
-  createNode as jsxDEV,
-  Fragment,
-};
+export { createNode as jsx, createNode as jsxs, createNode as jsxDEV, Fragment };

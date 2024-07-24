@@ -1,23 +1,19 @@
-import path from "node:path";
-import clientBuildPlugin from "@/utils/client-build-plugin";
-import { logBuildError } from "@/utils/log/log-build";
+import path from 'node:path';
+import clientBuildPlugin from '@/utils/client-build-plugin';
+import { logBuildError } from '@/utils/log/log-build';
 
 // Should be used via macro
 export async function injectBrisaDialogErrorCode() {
-  const pathname = path.join(
-    import.meta.dir,
-    "web-components",
-    "brisa-error-dialog.tsx",
-  );
-  const internalComponentId = "__BRISA_CLIENT__brisaErrorDialog";
+  const pathname = path.join(import.meta.dir, 'web-components', 'brisa-error-dialog.tsx');
+  const internalComponentId = '__BRISA_CLIENT__brisaErrorDialog';
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [pathname],
-    target: "browser",
-    external: ["brisa"],
+    target: 'browser',
+    external: ['brisa'],
     plugins: [
       {
-        name: "context-provider-transformer",
+        name: 'context-provider-transformer',
         setup(build) {
           build.onLoad({ filter: /.*/ }, async ({ path, loader }) => ({
             contents: clientBuildPlugin(
@@ -34,8 +30,8 @@ export async function injectBrisaDialogErrorCode() {
   });
 
   if (!success) {
-    logBuildError("Failed to use brisa dialog error in development", logs);
+    logBuildError('Failed to use brisa dialog error in development', logs);
   }
 
-  return (await outputs?.[0]?.text?.()) ?? "";
+  return (await outputs?.[0]?.text?.()) ?? '';
 }

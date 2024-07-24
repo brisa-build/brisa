@@ -3,5 +3,5 @@ export default function User() {
 }
 
 export function prerender() {
-  return [{ rest: "foo/bar/baz" }, { rest: "foo/bar/baz/qux" }];
+  return [{ rest: 'foo/bar/baz' }, { rest: 'foo/bar/baz/qux' }];
 }

@@ -4,8 +4,8 @@ import type {
   Translate,
   TranslateOptions,
   TranslationQuery,
-} from "@/types";
-import formatElements from "./format-elements";
+} from '@/types';
+import formatElements from './format-elements';
 
 export default function translateCore(
   locale: string,
@@ -32,39 +32,28 @@ export default function translateCore(
   };
 
   const translate = (
-    i18nKey: string | TemplateStringsArray = "",
+    i18nKey: string | TemplateStringsArray = '',
     query: TranslationQuery | null | undefined,
     options?: TranslateOptions,
   ) => {
     const overrideMessages = config._messages || {};
     const dic = { ...(config.messages?.[locale] || {}), ...overrideMessages };
-    const keyWithPlural = plural(
-      pluralRules,
-      dic,
-      i18nKey as string,
-      config,
-      query,
-    );
+    const keyWithPlural = plural(pluralRules, dic, i18nKey as string, config, query);
     const dicValue = getDicValue(dic, keyWithPlural, config, options);
-    const value =
-      typeof dicValue === "object"
-        ? JSON.parse(JSON.stringify(dicValue))
-        : dicValue;
+    const value = typeof dicValue === 'object' ? JSON.parse(JSON.stringify(dicValue)) : dicValue;
 
     const empty =
-      typeof value === "undefined" ||
-      (typeof value === "object" && !Object.keys(value).length) ||
-      (value === "" && !allowEmptyStrings);
+      typeof value === 'undefined' ||
+      (typeof value === 'object' && !Object.keys(value).length) ||
+      (value === '' && !allowEmptyStrings);
 
     const fallbacks =
-      typeof options?.fallback === "string"
-        ? [options.fallback]
-        : options?.fallback || [];
+      typeof options?.fallback === 'string' ? [options.fallback] : options?.fallback || [];
 
     // Fallbacks
     if (empty && Array.isArray(fallbacks) && fallbacks.length) {
       const [firstFallback, ...restFallbacks] = fallbacks;
-      if (typeof firstFallback === "string") {
+      if (typeof firstFallback === 'string') {
         return t(firstFallback, query, { ...options, fallback: restFallbacks });
       }
     }
@@ -73,13 +62,11 @@ export default function translateCore(
       empty &&
       options &&
       // options.default could be a nullish value so check that the property exists
-      options.hasOwnProperty("default") &&
+      options.hasOwnProperty('default') &&
       !fallbacks?.length
     ) {
       // if options.default is falsey there's no reason to do interpolation
-      return options.default
-        ? interpolateUnknown(options.default, query)
-        : options.default;
+      return options.default ? interpolateUnknown(options.default, query) : options.default;
     }
 
     // no need to try interpolation
@@ -90,11 +77,9 @@ export default function translateCore(
     return interpolateUnknown(value, query);
   };
 
-  const t: Translate = (i18nKey = "", query, options) => {
+  const t: Translate = (i18nKey = '', query, options) => {
     const translationText = translate(i18nKey, query, options);
-    return options?.elements
-      ? formatElements(translationText, options.elements)
-      : translationText;
+    return options?.elements ? formatElements(translationText, options.elements) : translationText;
   };
 
   return t;
@@ -105,31 +90,31 @@ export default function translateCore(
  */
 function getDicValue(
   dic: I18nDictionary,
-  key: string = "",
+  key = '',
   config: I18nConfig,
   options: { returnObjects?: boolean; fallback?: string | string[] } = {
     returnObjects: false,
   },
 ): unknown | undefined {
-  const { keySeparator = "." } = config || {};
+  const { keySeparator = '.' } = config || {};
   const keyParts = keySeparator ? key.split(keySeparator) : [key];
 
   if (key === keySeparator && options.returnObjects) return dic;
 
   const value: string | object = keyParts.reduce(
     (val: I18nDictionary | I18nDictionary[] | string, key: string) => {
-      if (typeof val === "string") return {};
+      if (typeof val === 'string') return {};
 
       const res = (val as any)[key];
 
       // pass all truthy values or (empty) strings
-      return res || (typeof res === "string" ? res : {});
+      return res || (typeof res === 'string' ? res : {});
     },
     dic,
   );
 
   if (
-    typeof value === "string" ||
+    typeof value === 'string' ||
     ((value as unknown) instanceof Object && options.returnObjects)
   ) {
     return value;
@@ -148,7 +133,7 @@ function plural(
   config: I18nConfig,
   query?: TranslationQuery | null,
 ): string {
-  if (!query || typeof query.count !== "number") return key;
+  if (!query || typeof query.count !== 'number') return key;
 
   const numKey = `${key}_${query.count}`;
   if (getDicValue(dic, numKey, config) !== undefined) return numKey;
@@ -181,23 +166,14 @@ function interpolation({
   config: I18nConfig;
   locale: string;
 }): string {
-  if (!text || !query) return text || "";
+  if (!text || !query) return text || '';
 
-  const escapeRegex = (str: string) =>
-    str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-  const {
-    format = null,
-    prefix = "{{",
-    suffix = "}}",
-  } = config.interpolation || {};
+  const escapeRegex = (str: string) => str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const { format = null, prefix = '{{', suffix = '}}' } = config.interpolation || {};
 
-  const regexEnd =
-    suffix === "" ? "" : `(?:[\\s,]+([\\w-]*))?\\s*${escapeRegex(suffix)}`;
+  const regexEnd = suffix === '' ? '' : `(?:[\\s,]+([\\w-]*))?\\s*${escapeRegex(suffix)}`;
   return Object.keys(query).reduce((all, varKey) => {
-    const regex = new RegExp(
-      `${escapeRegex(prefix)}\\s*${varKey}${regexEnd}`,
-      "gm",
-    );
+    const regex = new RegExp(`${escapeRegex(prefix)}\\s*${varKey}${regexEnd}`, 'gm');
     // $1 is the first match group
     return all.replace(regex, (_match, $1) => {
       // $1 undefined can mean either no formatting requested: "{{name}}"
@@ -229,7 +205,7 @@ function objectInterpolation({
         config,
         locale,
       });
-    if (typeof obj[key] === "string")
+    if (typeof obj[key] === 'string')
       obj[key] = interpolation({
         text: obj[key] as string,
         query,

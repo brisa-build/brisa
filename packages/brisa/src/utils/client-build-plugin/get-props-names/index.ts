@@ -1,27 +1,28 @@
-import { ESTree } from "meriyah";
-import getWebComponentAst from "@/utils/client-build-plugin/get-web-component-ast";
-import mapComponentStatics from "@/utils/client-build-plugin/map-component-statics";
+import type { ESTree } from 'meriyah';
+import getWebComponentAst from '@/utils/client-build-plugin/get-web-component-ast';
+import mapComponentStatics from '@/utils/client-build-plugin/map-component-statics';
 
 type PropSet = Set<string>;
 
-const CHILDREN = "children";
+const CHILDREN = 'children';
 
 export default function getPropsNames(
   webComponentAst: any,
   propNamesFromExport: string[] = [],
 ): [PropSet, PropSet, PropSet] {
   const propsAst =
-    webComponentAst?.params?.[0] ??
-    webComponentAst?.declarations?.[0]?.init?.params?.[0];
+    webComponentAst?.params?.[0] ?? webComponentAst?.declarations?.[0]?.init?.params?.[0];
   const propNames = [];
   const renamedPropNames = [];
   const standaloneProps = [];
 
-  if (propsAst?.type === "ObjectPattern") {
+  if (propsAst?.type === 'ObjectPattern') {
     for (const prop of propsAst.properties as any[]) {
-      if (prop.type === "RestElement") {
-        const [names, renamedNames, standaloneNames] =
-          getPropsNamesFromIdentifier(prop.argument.name, webComponentAst);
+      if (prop.type === 'RestElement') {
+        const [names, renamedNames, standaloneNames] = getPropsNamesFromIdentifier(
+          prop.argument.name,
+          webComponentAst,
+        );
 
         propNames.push(...names);
         renamedPropNames.push(...renamedNames);
@@ -41,10 +42,7 @@ export default function getPropsNames(
       standaloneProps.push(renamedPropName);
     }
 
-    const [, renames, standaloneNames] = getPropsNamesFromIdentifier(
-      "",
-      webComponentAst,
-    );
+    const [, renames, standaloneNames] = getPropsNamesFromIdentifier('', webComponentAst);
 
     renamedPropNames.push(...renames);
     standaloneProps.push(...standaloneNames);
@@ -57,17 +55,12 @@ export default function getPropsNames(
   }
 
   if (
-    propsAst?.type === "Identifier" ||
-    (propsAst?.type === "AssignmentPattern" &&
-      propsAst.left.type === "Identifier")
+    propsAst?.type === 'Identifier' ||
+    (propsAst?.type === 'AssignmentPattern' && propsAst.left.type === 'Identifier')
   ) {
     const identifier = propsAst.name ?? propsAst.left.name;
     const res = getPropsNamesFromIdentifier(identifier, webComponentAst);
-    return [
-      unify(res[0], propNamesFromExport),
-      unify(res[1], propNamesFromExport),
-      res[2],
-    ];
+    return [unify(res[0], propNamesFromExport), unify(res[1], propNamesFromExport), res[2]];
   }
 
   const propNamesFromExportSet = new Set(propNamesFromExport);
@@ -75,10 +68,7 @@ export default function getPropsNames(
   return [propNamesFromExportSet, propNamesFromExportSet, new Set()];
 }
 
-function getPropsNamesFromIdentifier(
-  identifier: string,
-  ast: any,
-): [PropSet, PropSet, PropSet] {
+function getPropsNamesFromIdentifier(identifier: string, ast: any): [PropSet, PropSet, PropSet] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
   const standaloneProps = new Set<string>([]);
@@ -87,12 +77,11 @@ function getPropsNamesFromIdentifier(
   JSON.stringify(ast, (key, value) => {
     // props.name
     if (
-      value?.object?.type === "Identifier" &&
-      value?.property?.type === "Identifier" &&
+      value?.object?.type === 'Identifier' &&
+      value?.property?.type === 'Identifier' &&
       identifiers.has(value?.object?.name)
     ) {
-      const name =
-        value?.property?.name !== CHILDREN ? value?.property?.name : null;
+      const name = value?.property?.name !== CHILDREN ? value?.property?.name : null;
 
       if (name) {
         propsNames.add(name);
@@ -102,13 +91,13 @@ function getPropsNamesFromIdentifier(
 
     // const { name } = props
     else if (
-      value?.init?.type === "Identifier" &&
+      value?.init?.type === 'Identifier' &&
       value?.id?.properties &&
       identifiers.has(value?.init?.name)
     ) {
       for (const prop of value.id.properties) {
         const isProp = prop?.key?.name && prop.key.name !== CHILDREN;
-        const isRest = prop?.type === "RestElement";
+        const isRest = prop?.type === 'RestElement';
         const isRenamed = prop?.value?.name;
 
         // destructured props like: const { name, ...rest } = props
@@ -129,9 +118,9 @@ function getPropsNamesFromIdentifier(
 
     // const foo = props.name
     else if (
-      value?.type === "VariableDeclarator" &&
-      value?.init?.object?.type === "Identifier" &&
-      value?.init?.property?.type === "Identifier" &&
+      value?.type === 'VariableDeclarator' &&
+      value?.init?.object?.type === 'Identifier' &&
+      value?.init?.property?.type === 'Identifier' &&
       identifiers.has(value?.init?.object?.name)
     ) {
       propsNames.add(value?.init?.property?.name);
@@ -148,9 +137,9 @@ function getPropsNamesFromIdentifier(
 export function getPropNamesFromExport(ast: ESTree.Program) {
   const exportProps = ast.body.find(
     (node) =>
-      node.type === "ExportNamedDeclaration" &&
-      node.declaration?.type === "VariableDeclaration" &&
-      (node as any).declaration?.declarations?.[0]?.id?.name === "props",
+      node.type === 'ExportNamedDeclaration' &&
+      node.declaration?.type === 'VariableDeclaration' &&
+      (node as any).declaration?.declarations?.[0]?.id?.name === 'props',
   ) as any;
 
   return (

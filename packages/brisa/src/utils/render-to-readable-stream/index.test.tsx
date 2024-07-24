@@ -1,47 +1,32 @@
-import { type MatchedRoute } from "bun";
-import path from "node:path";
-import {
-  setSystemTime,
-  afterEach,
-  describe,
-  expect,
-  it,
-  beforeEach,
-  mock,
-  spyOn,
-} from "bun:test";
-import renderToReadableStream from ".";
-import { getConstants } from "@/constants";
-import { normalizeQuotes, toInline } from "@/helpers";
-import type {
-  ComponentType,
-  I18n,
-  RequestContext,
-  Translate,
-  WebContext,
-} from "@/types";
-import createContext from "@/utils/create-context";
-import navigate from "@/utils/navigate";
-import dangerHTML from "@/utils/danger-html";
-import extendRequestContext from "@/utils/extend-request-context";
-import notFound from "@/utils/not-found";
-import SSRWebComponent from "@/utils/ssr-web-component";
-import handleI18n from "@/utils/handle-i18n";
-import { RenderInitiator } from "@/public-constants";
+import type { MatchedRoute } from 'bun';
+import path from 'node:path';
+import { setSystemTime, afterEach, describe, expect, it, beforeEach, mock, spyOn } from 'bun:test';
+import renderToReadableStream from '.';
+import { getConstants } from '@/constants';
+import { normalizeQuotes, toInline } from '@/helpers';
+import type { ComponentType, I18n, RequestContext, Translate, WebContext } from '@/types';
+import createContext from '@/utils/create-context';
+import navigate from '@/utils/navigate';
+import dangerHTML from '@/utils/danger-html';
+import extendRequestContext from '@/utils/extend-request-context';
+import notFound from '@/utils/not-found';
+import SSRWebComponent from '@/utils/ssr-web-component';
+import handleI18n from '@/utils/handle-i18n';
+import { RenderInitiator } from '@/public-constants';
 
 const emptyI18n = {
-  locale: "",
-  defaultLocale: "",
+  locale: '',
+  defaultLocale: '',
   locales: [],
-  t: () => "",
+  t: () => '',
   pages: {},
   overrideMessages: () => {},
 } as I18n;
 
-const FIXTURES_PATH = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const FIXTURES_PATH = path.join(import.meta.dir, '..', '..', '__fixtures__');
 
 const testRequest = extendRequestContext({
-  originalRequest: new Request("http://test.com/"),
+  originalRequest: new Request('http://test.com/'),
 });
 const testOptions = {
   request: testRequest,
@@ -50,10 +35,10 @@ const testOptions = {
 
 let mockLog: ReturnType<typeof spyOn>;
 
-describe("utils", () => {
+describe('utils', () => {
   beforeEach(() => {
-    setSystemTime(new Date("2024-01-01T00:00:00.000Z"));
-    mockLog = spyOn(console, "log");
+    setSystemTime(new Date('2024-01-01T00:00:00.000Z'));
+    mockLog = spyOn(console, 'log');
   });
   afterEach(() => {
     testRequest.store.clear();
@@ -66,8 +51,8 @@ describe("utils", () => {
     mockLog.mockRestore();
   });
 
-  describe("renderToReadableStream", () => {
-    it("should render a simple JSX element", async () => {
+  describe('renderToReadableStream', () => {
+    it('should render a simple JSX element', async () => {
       const element = <div class="test">Hello World</div>;
       const stream = renderToReadableStream(element, {
         ...testOptions,
@@ -78,14 +63,14 @@ describe("utils", () => {
       const expected = `<div class="test">Hello World</div>`;
       expect(result).toBe(expected);
       expect(mockLog.mock.calls.toString()).toContain(
-        "You should have a <head> tag in your document. Please review your layout. You can experiment some issues with client JavaScript code without it.",
+        'You should have a <head> tag in your document. Please review your layout. You can experiment some issues with client JavaScript code without it.',
       );
     });
 
-    it("should register the server action inside globalThis.REGISTERED_ACTIONS when is defined", async () => {
+    it('should register the server action inside globalThis.REGISTERED_ACTIONS when is defined', async () => {
       globalThis.REGISTERED_ACTIONS = [];
       const element = (
-        <div onClick={() => console.log("Hello Action")} class="test">
+        <div onClick={() => console.log('Hello Action')} class="test">
           Hello World
         </div>
       );
@@ -97,12 +82,12 @@ describe("utils", () => {
       const action = globalThis.REGISTERED_ACTIONS[0] as any;
       action();
 
-      expect(mockLog).toHaveBeenCalledWith("Hello Action");
+      expect(mockLog).toHaveBeenCalledWith('Hello Action');
     });
 
-    it("should NOT register the server action inside globalThis.REGISTERED_ACTIONS when is NOT defined", async () => {
+    it('should NOT register the server action inside globalThis.REGISTERED_ACTIONS when is NOT defined', async () => {
       const element = (
-        <div onClick={() => console.log("Hello Action")} class="test">
+        <div onClick={() => console.log('Hello Action')} class="test">
           Hello World
         </div>
       );
@@ -112,7 +97,7 @@ describe("utils", () => {
       expect(globalThis.REGISTERED_ACTIONS).toBeEmpty();
     });
 
-    it("should render with a Request without RequextContext extension", async () => {
+    it('should render with a Request without RequextContext extension', async () => {
       const Component = ({ name }: { name: string }) => <div>Hello {name}</div>;
       const element = (
         <html>
@@ -123,7 +108,7 @@ describe("utils", () => {
         </html>
       );
       const stream = renderToReadableStream(element, {
-        request: new Request("http://test.com/"),
+        request: new Request('http://test.com/'),
       });
       const result = await Bun.readableStreamToText(stream);
 
@@ -131,11 +116,11 @@ describe("utils", () => {
       expect(result).toBe(expected);
     });
 
-    it("should render the head with basepath attribute when has basePath", async () => {
+    it('should render the head with basepath attribute when has basePath', async () => {
       globalThis.mockConstants = {
         ...getConstants(),
         CONFIG: {
-          basePath: "/docs",
+          basePath: '/docs',
         },
       };
       const Component = ({ name }: { name: string }) => <div>Hello {name}</div>;
@@ -148,7 +133,7 @@ describe("utils", () => {
         </html>
       );
       const stream = renderToReadableStream(element, {
-        request: new Request("http://test.com/"),
+        request: new Request('http://test.com/'),
       });
       const result = await Bun.readableStreamToText(stream);
 
@@ -169,8 +154,8 @@ describe("utils", () => {
       expect(mockLog.mock.calls.length).toBe(0);
     });
 
-    it("should render an empty text node", () => {
-      const element = <div class="test">{""}</div>;
+    it('should render an empty text node', () => {
+      const element = <div class="test">{''}</div>;
       const stream = renderToReadableStream(element, testOptions);
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toBe(`<div class="test"></div>`);
@@ -178,12 +163,12 @@ describe("utils", () => {
 
     it('should not display the "head" tag warning if the request is aborted', async () => {
       const request = extendRequestContext({
-        originalRequest: new Request("http://test.com/"),
+        originalRequest: new Request('http://test.com/'),
       });
 
       const SlowComponent = async () => {
         await Bun.sleep(10);
-        return "Hello World";
+        return 'Hello World';
       };
 
       const element = (
@@ -193,7 +178,7 @@ describe("utils", () => {
       );
       const stream = renderToReadableStream(element, { request });
 
-      request.signal.dispatchEvent(new Event("abort"));
+      request.signal.dispatchEvent(new Event('abort'));
 
       const result = await Bun.readableStreamToText(stream);
       const expected = `<div class="test">`;
@@ -202,7 +187,7 @@ describe("utils", () => {
       expect(mockLog.mock.calls.length).toBe(0);
     });
 
-    it("should not log a warning when it has a <head> tag", async () => {
+    it('should not log a warning when it has a <head> tag', async () => {
       const element = (
         <html>
           <head></head>
@@ -224,10 +209,10 @@ describe("utils", () => {
 
       const expected = `<div class="test">Hello World</div>`;
       expect(result).toBe(expected);
-      expect(mockLog.mock.calls.toString()).toContain("No <head> tag");
+      expect(mockLog.mock.calls.toString()).toContain('No <head> tag');
     });
 
-    it("should render a complex JSX element", async () => {
+    it('should render a complex JSX element', async () => {
       const Component = ({ name, title }: { name: string; title: string }) => (
         <div title={title}>
           <h1>Hello {name}</h1>
@@ -237,15 +222,14 @@ describe("utils", () => {
       const element = <Component name="World" title="Test" />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      const expected =
-        '<div title="Test"><h1>Hello World</h1><p>This is a paragraph</p></div>';
+      const expected = '<div title="Test"><h1>Hello World</h1><p>This is a paragraph</p></div>';
       expect(result).toBe(expected);
     });
 
-    it("should work with async components", async () => {
+    it('should work with async components', async () => {
       const AsyncChild = async ({ name }: { name: string }) => (
         <h1>
-          Hello {await Promise.resolve("test")} {name}
+          Hello {await Promise.resolve('test')} {name}
         </h1>
       );
       const AsyncComponent = async ({ title }: { title: string }) => (
@@ -254,17 +238,13 @@ describe("utils", () => {
           <p>This is a paragraph</p>
         </div>
       );
-      const stream = renderToReadableStream(
-        <AsyncComponent title="Test" />,
-        testOptions,
-      );
+      const stream = renderToReadableStream(<AsyncComponent title="Test" />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      const expected =
-        '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>';
+      const expected = '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>';
       expect(result).toBe(expected);
     });
 
-    it("should be possible to access to the request object inside components", async () => {
+    it('should be possible to access to the request object inside components', async () => {
       const Component = (
         { name, title }: { name: string; title: string },
         request: RequestContext,
@@ -282,56 +262,53 @@ describe("utils", () => {
       expect(result).toBe(expected);
     });
 
-    it("should be possible to set and get store values", async () => {
+    it('should be possible to set and get store values', async () => {
       const ComponentChild = ({}, request: RequestContext) => (
-        <div>Hello {request.store.get("testData").testName}</div>
+        <div>Hello {request.store.get('testData').testName}</div>
       );
 
-      const Component = (
-        { name }: { name: string },
-        request: RequestContext,
-      ) => {
+      const Component = ({ name }: { name: string }, request: RequestContext) => {
         const url = new URL(request.finalURL);
         const query = new URLSearchParams(url.search);
-        const testName = query.get("name") || name;
+        const testName = query.get('name') || name;
 
-        request.store.set("testData", { testName });
+        request.store.set('testData', { testName });
         return <ComponentChild />;
       };
 
       const element = <Component name="World" />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      const expected = "<div>Hello World</div>";
+      const expected = '<div>Hello World</div>';
 
       const stream2 = await renderToReadableStream(element, {
         ...testOptions,
         request: extendRequestContext({
-          originalRequest: new Request("http://test.com/?name=Test"),
+          originalRequest: new Request('http://test.com/?name=Test'),
         }),
       });
       const result2 = await Bun.readableStreamToText(stream2);
-      const expected2 = "<div>Hello Test</div>";
+      const expected2 = '<div>Hello Test</div>';
 
       expect(result).toBe(expected);
       expect(result2).toEqual(expected2);
     });
 
-    it("should throw an error if the component throws an error", async () => {
+    it('should throw an error if the component throws an error', async () => {
       const Component = () => {
-        throw new Error("Test");
+        throw new Error('Test');
       };
 
       try {
         await renderToReadableStream(<Component />, testOptions);
       } catch (e: any) {
-        expect(e.message).toEqual("Test");
+        expect(e.message).toEqual('Test');
       }
     });
 
-    it("should render the error component as fallback if the component throws an error", async () => {
+    it('should render the error component as fallback if the component throws an error', async () => {
       const Component = () => {
-        throw new Error("Test");
+        throw new Error('Test');
       };
 
       Component.error = ({ name, error }: any) => (
@@ -340,17 +317,14 @@ describe("utils", () => {
         </div>
       );
 
-      const stream = renderToReadableStream(
-        <Component name="world" />,
-        testOptions,
-      );
+      const stream = renderToReadableStream(<Component name="world" />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<div>Error Test, hello world</div>");
+      expect(result).toBe('<div>Error Test, hello world</div>');
     });
 
-    it("should render the error component as fallback if the nested component throws an error", async () => {
+    it('should render the error component as fallback if the nested component throws an error', async () => {
       const ComponentChild = () => {
-        throw new Error("Test");
+        throw new Error('Test');
       };
 
       ComponentChild.error = () => <div>Error</div>;
@@ -366,12 +340,10 @@ describe("utils", () => {
 
       const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe(
-        "<div><h1>Parent component</h1><div>Error</div></div>",
-      );
+      expect(result).toBe('<div><h1>Parent component</h1><div>Error</div></div>');
     });
 
-    it("should work using the children prop", async () => {
+    it('should work using the children prop', async () => {
       const Component = ({ children }: { children: JSX.Element }) => children;
       const AnotherComponent = ({ children }: { children: JSX.Element }) => (
         <div>
@@ -390,11 +362,11 @@ describe("utils", () => {
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(
-        "<div><h1>another component</h1><script>alert(&#x27;test&#x27;)</script></div>",
+        '<div><h1>another component</h1><script>alert(&#x27;test&#x27;)</script></div>',
       );
     });
 
-    it("should work with fragments", async () => {
+    it('should work with fragments', async () => {
       const Component = ({ children }: { children: JSX.Element }) => (
         <>
           <>This is</>
@@ -412,18 +384,14 @@ describe("utils", () => {
         testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("This is a <b>test</b>");
+      expect(result).toBe('This is a <b>test</b>');
     });
 
-    it("should render a list of elements", async () => {
+    it('should render a list of elements', async () => {
       const arrayOfNumbers = [0, 1, 2, 3, 4, 5];
 
-      const Bold = ({ children }: { children: JSX.Element }) => (
-        <b>{children}</b>
-      );
-      const Component = ({ children }: { children: JSX.Element[] }) => (
-        <>{children}</>
-      );
+      const Bold = ({ children }: { children: JSX.Element }) => <b>{children}</b>;
+      const Component = ({ children }: { children: JSX.Element[] }) => <>{children}</>;
 
       const stream = renderToReadableStream(
         <Component>
@@ -434,10 +402,10 @@ describe("utils", () => {
         testOptions,
       );
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>");
+      expect(result).toBe('<b>0</b><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b>');
     });
 
-    it("should render a list of SSR web components", async () => {
+    it('should render a list of SSR web components', async () => {
       const WebComponent = ({
         name,
         children,
@@ -455,11 +423,7 @@ describe("utils", () => {
         <div>
           <h1>Test</h1>
           {Array.from({ length: 3 }, (_, i) => (
-            <SSRWebComponent
-              Component={WebComponent}
-              selector="web-component"
-              name={"World" + i}
-            >
+            <SSRWebComponent Component={WebComponent} selector="web-component" name={'World' + i}>
               <b> Child </b>
             </SSRWebComponent>
           ))}
@@ -496,7 +460,7 @@ describe("utils", () => {
       );
     });
 
-    it("should work with booleans and numbers in the same way than React", async () => {
+    it('should work with booleans and numbers in the same way than React', async () => {
       const Component = () => (
         <>
           {true && <div>TRUE</div>}
@@ -508,34 +472,34 @@ describe("utils", () => {
 
       const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<div>TRUE</div><div>TRUE</div>0");
+      expect(result).toBe('<div>TRUE</div><div>TRUE</div>0');
     });
 
-    it("should be possible to render in a tag {text|number} in a middle of string ", async () => {
+    it('should be possible to render in a tag {text|number} in a middle of string ', async () => {
       const Component = () => (
         <div>
-          This is {1} {"example"}
+          This is {1} {'example'}
         </div>
       );
 
       const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<div>This is 1 example</div>");
+      expect(result).toBe('<div>This is 1 example</div>');
     });
 
-    it("should be possible to render in a Fragment {text|number} in a middle of string", async () => {
+    it('should be possible to render in a Fragment {text|number} in a middle of string', async () => {
       const Component = () => (
         <>
-          This is {1} {"example"}
+          This is {1} {'example'}
         </>
       );
 
       const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("This is 1 example");
+      expect(result).toBe('This is 1 example');
     });
 
-    it("should be possible to render undefined and null", async () => {
+    it('should be possible to render undefined and null', async () => {
       const Component = () => (
         <>
           <div class="empty">{undefined}</div>
@@ -549,33 +513,28 @@ describe("utils", () => {
     });
 
     it('should not be possible to send "undefined" as a attribute', async () => {
-      const Component = ({ name }: { name: string }) => (
-        <div title={name}>Hello {name}</div>
-      );
+      const Component = ({ name }: { name: string }) => <div title={name}>Hello {name}</div>;
 
-      const stream = renderToReadableStream(
-        <Component name={undefined as any} />,
-        testOptions,
-      );
+      const stream = renderToReadableStream(<Component name={undefined as any} />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<div>Hello </div>");
+      expect(result).toBe('<div>Hello </div>');
     });
 
-    it("should inject the hrefLang attributes if the i18n is enabled and have hrefLangOrigin defined", () => {
+    it('should inject the hrefLang attributes if the i18n is enabled and have hrefLangOrigin defined', () => {
       const req = extendRequestContext({
         originalRequest: new Request(testRequest),
       });
       const i18n = {
-        locale: "es",
-        locales: ["en", "es"],
-        defaultLocale: "en",
+        locale: 'es',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
       };
-      req.i18n = { ...i18n, t: () => "", pages: {} } as any;
+      req.i18n = { ...i18n, t: () => '', pages: {} } as any;
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
           ...i18n,
-          hrefLangOrigin: "https://test.com",
+          hrefLangOrigin: 'https://test.com',
         },
       };
 
@@ -595,21 +554,21 @@ describe("utils", () => {
       );
     });
 
-    it("should inject the hrefLang attributes for rtl if the i18n is enabled and have hrefLangOrigin defined", () => {
+    it('should inject the hrefLang attributes for rtl if the i18n is enabled and have hrefLangOrigin defined', () => {
       const req = extendRequestContext({
         originalRequest: new Request(testRequest),
       });
       const i18n = {
-        locale: "ar",
-        locales: ["en", "ar"],
-        defaultLocale: "en",
+        locale: 'ar',
+        locales: ['en', 'ar'],
+        defaultLocale: 'en',
       };
-      req.i18n = { ...i18n, t: () => "", pages: {} } as any;
+      req.i18n = { ...i18n, t: () => '', pages: {} } as any;
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
           ...i18n,
-          hrefLangOrigin: "https://test.com",
+          hrefLangOrigin: 'https://test.com',
         },
       };
 
@@ -629,7 +588,7 @@ describe("utils", () => {
       );
     });
 
-    it("should inject the unsuspense script", async () => {
+    it('should inject the unsuspense script', async () => {
       const element = (
         <html>
           <head></head>
@@ -640,13 +599,13 @@ describe("utils", () => {
       const request = extendRequestContext({
         originalRequest: new Request(testRequest),
         route: {
-          filePath: "/index.js",
+          filePath: '/index.js',
         } as MatchedRoute,
       });
 
       globalThis.mockConstants = {
         ...constants,
-        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+        BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
       };
 
       const stream = renderToReadableStream(element, { request });
@@ -659,7 +618,7 @@ describe("utils", () => {
       );
     });
 
-    it("should inject the unsuspense script with basePath", async () => {
+    it('should inject the unsuspense script with basePath', async () => {
       const element = (
         <html>
           <head></head>
@@ -670,15 +629,15 @@ describe("utils", () => {
       const request = extendRequestContext({
         originalRequest: new Request(testRequest),
         route: {
-          filePath: "/index.js",
+          filePath: '/index.js',
         } as MatchedRoute,
       });
 
       globalThis.mockConstants = {
         ...constants,
-        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+        BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
         CONFIG: {
-          basePath: "/test",
+          basePath: '/test',
         },
       };
 
@@ -692,7 +651,7 @@ describe("utils", () => {
       );
     });
 
-    it("should inject the action rpc script", async () => {
+    it('should inject the action rpc script', async () => {
       const constants = getConstants();
       const element = (
         <html>
@@ -703,13 +662,13 @@ describe("utils", () => {
       const request = extendRequestContext({
         originalRequest: new Request(testRequest),
         route: {
-          filePath: "/somepage.js",
+          filePath: '/somepage.js',
         } as MatchedRoute,
       });
 
       globalThis.mockConstants = {
         ...constants,
-        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+        BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
       };
 
       const stream = renderToReadableStream(element, { request });
@@ -722,7 +681,7 @@ describe("utils", () => {
       );
     });
 
-    it("should inject the action rpc script with basePath", async () => {
+    it('should inject the action rpc script with basePath', async () => {
       const constants = getConstants();
       const element = (
         <html>
@@ -733,15 +692,15 @@ describe("utils", () => {
       const request = extendRequestContext({
         originalRequest: new Request(testRequest),
         route: {
-          filePath: "/somepage.js",
+          filePath: '/somepage.js',
         } as MatchedRoute,
       });
 
       globalThis.mockConstants = {
         ...constants,
-        BUILD_DIR: path.join(FIXTURES_PATH, "fakeBuild"),
+        BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
         CONFIG: {
-          basePath: "/test",
+          basePath: '/test',
         },
       };
 
@@ -755,33 +714,29 @@ describe("utils", () => {
       );
     });
 
-    it("should inject client i18n script if some web component consumes translations", () => {
+    it('should inject client i18n script if some web component consumes translations', () => {
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
-          locales: ["en", "es"],
-          defaultLocale: "en",
+          locales: ['en', 'es'],
+          defaultLocale: 'en',
           messages: {
             en: {
-              hello: "test",
+              hello: 'test',
             },
           },
         },
-        PAGES_DIR: path.join(FIXTURES_PATH, "pages"),
+        PAGES_DIR: path.join(FIXTURES_PATH, 'pages'),
         BUILD_DIR: FIXTURES_PATH,
       };
 
       const request = extendRequestContext({
         originalRequest: extendRequestContext({
-          originalRequest: new Request("http://test.com/en"),
+          originalRequest: new Request('http://test.com/en'),
         }),
         route: {
-          src: "page-with-web-component.js",
-          filePath: path.join(
-            FIXTURES_PATH,
-            "pages",
-            "page-with-web-component.js",
-          ),
+          src: 'page-with-web-component.js',
+          filePath: path.join(FIXTURES_PATH, 'pages', 'page-with-web-component.js'),
         } as MatchedRoute,
       });
 
@@ -809,36 +764,32 @@ describe("utils", () => {
       );
     });
 
-    it("should inject client i18n script if some web component consumes translations with basePath", () => {
+    it('should inject client i18n script if some web component consumes translations with basePath', () => {
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
-          locales: ["en", "es"],
-          defaultLocale: "en",
+          locales: ['en', 'es'],
+          defaultLocale: 'en',
           messages: {
             en: {
-              hello: "test",
+              hello: 'test',
             },
           },
         },
-        PAGES_DIR: path.join(FIXTURES_PATH, "pages"),
+        PAGES_DIR: path.join(FIXTURES_PATH, 'pages'),
         BUILD_DIR: FIXTURES_PATH,
         CONFIG: {
-          basePath: "/test",
+          basePath: '/test',
         },
       };
 
       const request = extendRequestContext({
         originalRequest: extendRequestContext({
-          originalRequest: new Request("http://test.com/en"),
+          originalRequest: new Request('http://test.com/en'),
         }),
         route: {
-          src: "page-with-web-component.js",
-          filePath: path.join(
-            FIXTURES_PATH,
-            "pages",
-            "page-with-web-component.js",
-          ),
+          src: 'page-with-web-component.js',
+          filePath: path.join(FIXTURES_PATH, 'pages', 'page-with-web-component.js'),
         } as MatchedRoute,
       });
 
@@ -866,34 +817,30 @@ describe("utils", () => {
       );
     });
 
-    it("should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used", () => {
+    it('should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used', () => {
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
-          locales: ["en", "es"],
-          defaultLocale: "en",
+          locales: ['en', 'es'],
+          defaultLocale: 'en',
           messages: {
             en: {
-              clientOne: "test",
-              serverOne: "test2",
+              clientOne: 'test',
+              serverOne: 'test2',
             },
           },
         },
-        PAGES_DIR: path.join(FIXTURES_PATH, "pages"),
+        PAGES_DIR: path.join(FIXTURES_PATH, 'pages'),
         BUILD_DIR: FIXTURES_PATH,
       };
 
       const request = extendRequestContext({
         originalRequest: extendRequestContext({
-          originalRequest: new Request("http://test.com/en"),
+          originalRequest: new Request('http://test.com/en'),
         }),
         route: {
-          src: "page-with-web-component.js",
-          filePath: path.join(
-            FIXTURES_PATH,
-            "pages",
-            "page-with-web-component.js",
-          ),
+          src: 'page-with-web-component.js',
+          filePath: path.join(FIXTURES_PATH, 'pages', 'page-with-web-component.js'),
         } as MatchedRoute,
       });
 
@@ -907,8 +854,8 @@ describe("utils", () => {
       handleI18n(request);
 
       request.i18n.overrideMessages(() => ({
-        clientOne: "foo",
-        serverOne: "bar",
+        clientOne: 'foo',
+        serverOne: 'bar',
       }));
 
       const stream = renderToReadableStream(element, { request });
@@ -926,37 +873,33 @@ describe("utils", () => {
       );
     });
 
-    it("should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used with basePath", () => {
+    it('should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used with basePath', () => {
       globalThis.mockConstants = {
         ...getConstants(),
         I18N_CONFIG: {
-          locales: ["en", "es"],
-          defaultLocale: "en",
+          locales: ['en', 'es'],
+          defaultLocale: 'en',
           messages: {
             en: {
-              clientOne: "test",
-              serverOne: "test2",
+              clientOne: 'test',
+              serverOne: 'test2',
             },
           },
         },
-        PAGES_DIR: path.join(FIXTURES_PATH, "pages"),
+        PAGES_DIR: path.join(FIXTURES_PATH, 'pages'),
         BUILD_DIR: FIXTURES_PATH,
         CONFIG: {
-          basePath: "/test",
+          basePath: '/test',
         },
       };
 
       const request = extendRequestContext({
         originalRequest: extendRequestContext({
-          originalRequest: new Request("http://test.com/en"),
+          originalRequest: new Request('http://test.com/en'),
         }),
         route: {
-          src: "page-with-web-component.js",
-          filePath: path.join(
-            FIXTURES_PATH,
-            "pages",
-            "page-with-web-component.js",
-          ),
+          src: 'page-with-web-component.js',
+          filePath: path.join(FIXTURES_PATH, 'pages', 'page-with-web-component.js'),
         } as MatchedRoute,
       });
 
@@ -970,8 +913,8 @@ describe("utils", () => {
       handleI18n(request);
 
       request.i18n.overrideMessages(() => ({
-        clientOne: "foo",
-        serverOne: "bar",
+        clientOne: 'foo',
+        serverOne: 'bar',
       }));
 
       const stream = renderToReadableStream(element, { request });
@@ -989,7 +932,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render the style tag when the css is used in the component", async () => {
+    it('should render the style tag when the css is used in the component', async () => {
       const Component = ({}, { css }: RequestContext) => {
         css`
           .red {
@@ -1016,7 +959,7 @@ describe("utils", () => {
       );
     });
 
-    it("should add different styles in different components", async () => {
+    it('should add different styles in different components', async () => {
       const Component = ({}, { css }: RequestContext) => {
         css`
           .red {
@@ -1056,7 +999,7 @@ describe("utils", () => {
       );
     });
 
-    it("should work an async generator component with css", async () => {
+    it('should work an async generator component with css', async () => {
       const Component = async function* ({}, { css }: RequestContext) {
         yield <div class="red">Hello</div>;
 
@@ -1080,7 +1023,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render the suspense component before if the async component support it", async () => {
+    it('should render the suspense component before if the async component support it', async () => {
       const Component = async () => {
         await Promise.resolve();
         return <div>Test</div>;
@@ -1095,7 +1038,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render the unsuspense part inside the html tag (when exists)", async () => {
+    it('should render the unsuspense part inside the html tag (when exists)', async () => {
       const Component = async () => {
         await Bun.sleep(0); // Next clock tick
         return <div>Test</div>;
@@ -1119,7 +1062,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render the rest of HTML meanhile the suspense component is loading", async () => {
+    it('should render the rest of HTML meanhile the suspense component is loading', async () => {
       const Component = async () => {
         await Bun.sleep(0); // Next clock tick
         return <div>Test</div>;
@@ -1143,10 +1086,10 @@ describe("utils", () => {
       );
     });
 
-    it("should be possible in tag suspense to render {text|number} in a middle of string ", async () => {
+    it('should be possible in tag suspense to render {text|number} in a middle of string ', async () => {
       const Component = () => (
         <div>
-          This is {1} {"example"}
+          This is {1} {'example'}
         </div>
       );
 
@@ -1159,10 +1102,10 @@ describe("utils", () => {
       );
     });
 
-    it("should be possible to render in a Fragment suspense {text|number} in a middle of string", async () => {
+    it('should be possible to render in a Fragment suspense {text|number} in a middle of string', async () => {
       const Component = () => (
         <>
-          This is {1} {"example"}
+          This is {1} {'example'}
         </>
       );
 
@@ -1175,7 +1118,7 @@ describe("utils", () => {
       );
     });
 
-    it("should be possible to render in a Fragment suspense different tags and components", async () => {
+    it('should be possible to render in a Fragment suspense different tags and components', async () => {
       const Example = () => <>example</>;
       const Component = () => (
         <>
@@ -1192,11 +1135,11 @@ describe("utils", () => {
       );
     });
 
-    it("should be possible to suspense with children {text|number} in a middle of string", async () => {
+    it('should be possible to suspense with children {text|number} in a middle of string', async () => {
       const Example = ({ children }: { children: JSX.Element }) => children;
       const Component = () => (
         <Example>
-          This is {1} {"example"}
+          This is {1} {'example'}
         </Example>
       );
 
@@ -1209,7 +1152,7 @@ describe("utils", () => {
       );
     });
 
-    it("should be possible to suspense a div with multiple items", async () => {
+    it('should be possible to suspense a div with multiple items', async () => {
       const Component = () => (
         <div>
           This is <b>is </b>
@@ -1234,13 +1177,13 @@ describe("utils", () => {
       );
     });
 
-    it("should add the lang attribute inside the html tag when i18n locale exist", async () => {
+    it('should add the lang attribute inside the html tag when i18n locale exist', async () => {
       testRequest.i18n = {
         overrideMessages: () => {},
-        locale: "en",
-        locales: ["en", "es"],
-        defaultLocale: "en",
-        t: () => "",
+        locale: 'en',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
+        t: () => '',
         pages: {},
       } as any;
       const element = (
@@ -1255,27 +1198,27 @@ describe("utils", () => {
       expect(result).toStartWith(`<html lang="en" dir="ltr"><head>`);
     });
 
-    it("should translate the URLs to the correct path", async () => {
+    it('should translate the URLs to the correct path', async () => {
       testRequest.i18n = {
         overrideMessages: () => {},
-        locale: "en",
-        locales: ["en", "es", "it", "fr", "de"],
-        defaultLocale: "en",
+        locale: 'en',
+        locales: ['en', 'es', 'it', 'fr', 'de'],
+        defaultLocale: 'en',
         t: ((v: string) => v.toUpperCase()) as Translate,
         pages: {
-          "/about-us": {
-            en: "/about-us",
-            es: "/sobre-nosotros",
-            it: "/chi-siamo",
-            fr: "/a-propos",
-            de: "/uber-uns",
+          '/about-us': {
+            en: '/about-us',
+            es: '/sobre-nosotros',
+            it: '/chi-siamo',
+            fr: '/a-propos',
+            de: '/uber-uns',
           },
         },
       };
 
       testRequest.route = {
-        name: "/about-us",
-        pathname: "/about-us",
+        name: '/about-us',
+        pathname: '/about-us',
       } as MatchedRoute;
 
       function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
@@ -1321,21 +1264,21 @@ describe("utils", () => {
       );
     });
 
-    it("should use dynamic routes to the correct path", async () => {
+    it('should use dynamic routes to the correct path', async () => {
       testRequest.i18n = {
-        locale: "en",
-        locales: ["en", "es", "it", "fr", "de"],
-        defaultLocale: "en",
+        locale: 'en',
+        locales: ['en', 'es', 'it', 'fr', 'de'],
+        defaultLocale: 'en',
         t: ((v: string) => v.toUpperCase()) as Translate,
         overrideMessages: () => {},
         pages: {},
       };
 
       testRequest.route = {
-        name: "/user/[username]",
-        pathname: "/user/aralroca",
+        name: '/user/[username]',
+        pathname: '/user/aralroca',
         params: {
-          username: "aralroca",
+          username: 'aralroca',
         },
       } as unknown as MatchedRoute;
 
@@ -1382,29 +1325,29 @@ describe("utils", () => {
       );
     });
 
-    it("should translate dynamic routes to the correct path", async () => {
+    it('should translate dynamic routes to the correct path', async () => {
       testRequest.i18n = {
-        locale: "en",
-        locales: ["en", "es", "it", "fr", "de"],
-        defaultLocale: "en",
+        locale: 'en',
+        locales: ['en', 'es', 'it', 'fr', 'de'],
+        defaultLocale: 'en',
         t: ((v: string) => v.toUpperCase()) as Translate,
         overrideMessages: () => {},
         pages: {
-          "/user/[username]": {
-            en: "/user/[username]",
-            es: "/usuario/[username]",
-            it: "/utente/[username]",
-            fr: "/utilisateur/[username]",
-            de: "/benutzer/[username]",
+          '/user/[username]': {
+            en: '/user/[username]',
+            es: '/usuario/[username]',
+            it: '/utente/[username]',
+            fr: '/utilisateur/[username]',
+            de: '/benutzer/[username]',
           },
         },
       };
 
       testRequest.route = {
-        name: "/user/[username]",
-        pathname: "/user/aralroca",
+        name: '/user/[username]',
+        pathname: '/user/aralroca',
         params: {
-          username: "aralroca",
+          username: 'aralroca',
         },
       } as unknown as MatchedRoute;
 
@@ -1451,12 +1394,12 @@ describe("utils", () => {
       );
     });
 
-    it("should replace the lang attribute inside the html tag when i18n locale exist", async () => {
+    it('should replace the lang attribute inside the html tag when i18n locale exist', async () => {
       testRequest.i18n = {
-        locale: "es",
-        locales: ["en", "es"],
-        defaultLocale: "en",
-        t: () => "",
+        locale: 'es',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
+        t: () => '',
         overrideMessages: () => {},
         pages: {},
       } as any;
@@ -1474,10 +1417,10 @@ describe("utils", () => {
 
     it('should render the "a" tag with the locale if the i18n is enabled and the link does not has locale', async () => {
       testRequest.i18n = {
-        locale: "es",
-        locales: ["en", "es"],
-        defaultLocale: "en",
-        t: () => "",
+        locale: 'es',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
+        t: () => '',
         overrideMessages: () => {},
         pages: {},
       } as any;
@@ -1499,10 +1442,10 @@ describe("utils", () => {
 
     it('should render the "a" tag with the locale if i18n is enabled, the link lacks locale but starts with a page with locale in its name', async () => {
       testRequest.i18n = {
-        locale: "es",
-        locales: ["en", "es"],
-        defaultLocale: "en",
-        t: () => "",
+        locale: 'es',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
+        t: () => '',
         overrideMessages: () => {},
         pages: {},
       } as any;
@@ -1510,10 +1453,7 @@ describe("utils", () => {
         renderToReadableStream(<a href="/essence">Test</a>, testOptions),
       );
       const withParam = await Bun.readableStreamToText(
-        renderToReadableStream(
-          <a href="/essence?some=true">Test</a>,
-          testOptions,
-        ),
+        renderToReadableStream(<a href="/essence?some=true">Test</a>, testOptions),
       );
       const withHash = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence#some">Test</a>, testOptions),
@@ -1534,10 +1474,10 @@ describe("utils", () => {
       };
 
       testRequest.i18n = {
-        locale: "es",
-        locales: ["en", "es"],
-        defaultLocale: "en",
-        t: () => "",
+        locale: 'es',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
+        t: () => '',
         overrideMessages: () => {},
         pages: {},
       } as any;
@@ -1545,10 +1485,7 @@ describe("utils", () => {
         renderToReadableStream(<a href="/essence">Test</a>, testOptions),
       );
       const withParam = await Bun.readableStreamToText(
-        renderToReadableStream(
-          <a href="/essence?some=true">Test</a>,
-          testOptions,
-        ),
+        renderToReadableStream(<a href="/essence?some=true">Test</a>, testOptions),
       );
       const withHash = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence#some">Test</a>, testOptions),
@@ -1562,10 +1499,10 @@ describe("utils", () => {
 
     it('should NOT render the "a" tag with the locale if the url is external', async () => {
       testRequest.i18n = {
-        locale: "es",
-        locales: ["en", "es"],
-        defaultLocale: "en",
-        t: () => "",
+        locale: 'es',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
+        t: () => '',
         pages: {},
       } as any;
       const element = <a href="http://test.com/test">Test</a>;
@@ -1578,9 +1515,9 @@ describe("utils", () => {
     it('should NOT render the "a" tag with the locale if the url is external and mailto protocol', async () => {
       testRequest.i18n = {
         ...emptyI18n,
-        locale: "es",
-        locales: ["en", "es"],
-        defaultLocale: "en",
+        locale: 'es',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
       };
       const element = <a href="mailto:test@test.com">Test</a>;
       const stream = renderToReadableStream(element, testOptions);
@@ -1592,9 +1529,9 @@ describe("utils", () => {
     it('should NOT render the "a" tag with the locale if the i18n is enabled and the link already has some locale', async () => {
       testRequest.i18n = {
         ...emptyI18n,
-        locale: "es",
-        locales: ["en", "es"],
-        defaultLocale: "en",
+        locale: 'es',
+        locales: ['en', 'es'],
+        defaultLocale: 'en',
       };
       const element = <a href="/en/test">Test</a>;
       const stream = renderToReadableStream(element, testOptions);
@@ -1603,16 +1540,14 @@ describe("utils", () => {
       expect(result).toBe(`<a href="/en/test">Test</a>`);
     });
 
-    it("should not be possible to inject HTML as string directly in the JSX element", async () => {
+    it('should not be possible to inject HTML as string directly in the JSX element', async () => {
       const element = <div>{`<script>alert('test')</script>`}</div>;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe(
-        `<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`,
-      );
+      expect(result).toBe(`<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`);
     });
 
-    it("should not be possible to inject HTML as string directly in the JSX component", async () => {
+    it('should not be possible to inject HTML as string directly in the JSX component', async () => {
       const Component = () => (
         <div>
           <h1>Example</h1>
@@ -1633,27 +1568,23 @@ describe("utils", () => {
       expect(result).toBe(`<div><script>alert('test')</script></div>`);
     });
 
-    it("should not be possible to inject HTML as children string directly in the JSX", async () => {
+    it('should not be possible to inject HTML as children string directly in the JSX', async () => {
       const Component = () => <>{`<script>alert('test')</script>`}</>;
       const element = <Component />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe(
-        `&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`,
-      );
+      expect(result).toBe(`&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`);
     });
 
     it('should be possible to inject HTML as children string in the JSX using the "dangerHTML" helper', async () => {
-      const Component = () => (
-        <>{dangerHTML(`<script>alert('test')</script>`)}</>
-      );
+      const Component = () => <>{dangerHTML(`<script>alert('test')</script>`)}</>;
       const element = <Component />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe(`<script>alert('test')</script>`);
     });
 
-    it("should render the head element with the canonical", () => {
+    it('should render the head element with the canonical', () => {
       const element = (
         <html>
           <head>
@@ -1677,7 +1608,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render the head element with the title replacing the original title", () => {
+    it('should render the head element with the title replacing the original title', () => {
       const element = (
         <html>
           <head>
@@ -1701,7 +1632,7 @@ describe("utils", () => {
       );
     });
 
-    it("should allow multiple ids outside the head (not ideal but should not break the render)", () => {
+    it('should allow multiple ids outside the head (not ideal but should not break the render)', () => {
       const element = (
         <html>
           <head></head>
@@ -1719,7 +1650,7 @@ describe("utils", () => {
       );
     });
 
-    it("should not finish the stream if the request is aborted", async () => {
+    it('should not finish the stream if the request is aborted', async () => {
       const originalRequest = new Request(testRequest, {
         signal: new AbortController().signal,
       });
@@ -1741,15 +1672,15 @@ describe("utils", () => {
       const { done, value } = await reader.read();
 
       expect(done).toBe(false);
-      expect(value).toBe("<html>");
+      expect(value).toBe('<html>');
 
       // abort the request
-      req.signal.dispatchEvent(new Event("abort"));
+      req.signal.dispatchEvent(new Event('abort'));
 
       // just the next chunk is not ready aborted
       const { done: done2, value: value2 } = await reader.read();
       expect(done2).toBe(false);
-      expect(value2).toBe("<head>");
+      expect(value2).toBe('<head>');
 
       // Not continue reading because the request is aborted
       const { done: done3, value: value3 } = await reader.read();
@@ -1765,7 +1696,7 @@ describe("utils", () => {
       );
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<dialog open><h1>Test</h1></dialog>");
+      expect(result).toBe('<dialog open><h1>Test</h1></dialog>');
     });
 
     it('should render "open" attribute without content in the "dialog" tag when opEN={true} (no lowercase)', async () => {
@@ -1776,7 +1707,7 @@ describe("utils", () => {
       );
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<dialog open><h1>Test</h1></dialog>");
+      expect(result).toBe('<dialog open><h1>Test</h1></dialog>');
     });
 
     it('should not render "open" attribute in the "dialog" tag when opEN={false} (no lowercase)', async () => {
@@ -1787,7 +1718,7 @@ describe("utils", () => {
       );
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<dialog><h1>Test</h1></dialog>");
+      expect(result).toBe('<dialog><h1>Test</h1></dialog>');
     });
 
     it('should not render "open" attribute in the "dialog" tag when open={false}', async () => {
@@ -1798,10 +1729,10 @@ describe("utils", () => {
       );
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe("<dialog><h1>Test</h1></dialog>");
+      expect(result).toBe('<dialog><h1>Test</h1></dialog>');
     });
 
-    it("should serialize an attribute that is an object as a string", async () => {
+    it('should serialize an attribute that is an object as a string', async () => {
       const element = <div data-test={{ a: 1, b: 2 }} />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
@@ -1810,7 +1741,7 @@ describe("utils", () => {
 
     it('should work context with "useContext" hook without context-provider', async () => {
       type TestContext = { name: string };
-      const context = createContext<TestContext>({ name: "bar" });
+      const context = createContext<TestContext>({ name: 'bar' });
 
       const Component = ({}, { useContext }: RequestContext) => {
         const contextSignal = useContext<TestContext>(context);
@@ -1826,7 +1757,7 @@ describe("utils", () => {
 
     it('should work context with "useContext" hook with context-provider', async () => {
       type TestContext = { name: string };
-      const context = createContext<TestContext>({ name: "bar" });
+      const context = createContext<TestContext>({ name: 'bar' });
 
       const Component = ({}, { useContext }: RequestContext) => {
         const contextSignal = useContext<TestContext>(context);
@@ -1834,7 +1765,7 @@ describe("utils", () => {
       };
 
       const stream = renderToReadableStream(
-        <context-provider context={context} value={{ name: "foo" }}>
+        <context-provider context={context} value={{ name: 'foo' }}>
           <Component />
         </context-provider>,
         testOptions,
@@ -1855,7 +1786,7 @@ describe("utils", () => {
     it('should work context with "useContext" hook with context-provider and multiple providers', async () => {
       type TestContext = { name: string };
 
-      const context = createContext<TestContext>({ name: "bar" });
+      const context = createContext<TestContext>({ name: 'bar' });
 
       const Component = ({}, { useContext }: RequestContext) => {
         const contextSignal = useContext<TestContext>(context);
@@ -1864,7 +1795,7 @@ describe("utils", () => {
 
       const Parent = () => {
         return Array.from({ length: 5 }, (_, i) => (
-          <context-provider context={context} value={{ name: "foo" + i }}>
+          <context-provider context={context} value={{ name: 'foo' + i }}>
             <Component />
           </context-provider>
         ));
@@ -1895,7 +1826,7 @@ describe("utils", () => {
 
     it('should work context with "useContext" hook with context-provider and multiple providers and nested context', async () => {
       type TestContext = { name: string };
-      const context = createContext<TestContext>({ name: "bar" });
+      const context = createContext<TestContext>({ name: 'bar' });
 
       const Component = ({}, { useContext }: RequestContext) => {
         const contextSignal = useContext<TestContext>(context);
@@ -1904,8 +1835,8 @@ describe("utils", () => {
 
       const Parent = () => {
         return Array.from({ length: 5 }, (_, i) => (
-          <context-provider context={context} value={{ name: "foo" + i }}>
-            <context-provider context={context} value={{ name: "foo2" + i }}>
+          <context-provider context={context} value={{ name: 'foo' + i }}>
+            <context-provider context={context} value={{ name: 'foo2' + i }}>
               <Component />
             </context-provider>
           </context-provider>
@@ -1947,12 +1878,9 @@ describe("utils", () => {
 
     it('should work "useContext" method with context-provider children prop', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
-      function ThemeProvider({
-        color,
-        children,
-      }: Theme & { children: JSX.Element }) {
+      function ThemeProvider({ color, children }: Theme & { children: JSX.Element }) {
         return (
           <context-provider context={ThemeCtx} value={{ color }}>
             {children}
@@ -1981,12 +1909,9 @@ describe("utils", () => {
 
     it('should work "useContext" method with context-provider children prop and web-components (SSR)', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
-      function ThemeProvider({
-        color,
-        children,
-      }: Theme & { children: JSX.Element }) {
+      function ThemeProvider({ color, children }: Theme & { children: JSX.Element }) {
         return (
           <context-provider context={ThemeCtx} value={{ color }}>
             {children}
@@ -2000,15 +1925,8 @@ describe("utils", () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
-          color="red"
-        >
-          <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
-          ></SSRWebComponent>
+        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
+          <SSRWebComponent Component={ChildComponent} selector="child-component"></SSRWebComponent>
         </SSRWebComponent>,
         testOptions,
       );
@@ -2035,7 +1953,7 @@ describe("utils", () => {
 
     it('should work "useContext" method with context-provider slots with name and web-components (SSR)', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
       function ThemeProvider({ color }: Theme) {
         return (
@@ -2054,15 +1972,8 @@ describe("utils", () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
-          color="red"
-        >
-          <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
-          ></SSRWebComponent>
+        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
+          <SSRWebComponent Component={ChildComponent} selector="child-component"></SSRWebComponent>
           <SSRWebComponent
             Component={ChildComponent}
             selector="child-component"
@@ -2098,9 +2009,9 @@ describe("utils", () => {
       );
     });
 
-    it("should ignore slotted content when there is a div wrapper without slot attribute", () => {
+    it('should ignore slotted content when there is a div wrapper without slot attribute', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
       function ThemeProvider({ color }: Theme) {
         return (
@@ -2119,11 +2030,7 @@ describe("utils", () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
-          color="red"
-        >
+        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
           <div>
             <SSRWebComponent
               Component={ChildComponent}
@@ -2167,9 +2074,9 @@ describe("utils", () => {
       );
     });
 
-    it("should not conflict the same slot name in different web-components (SSR)", () => {
+    it('should not conflict the same slot name in different web-components (SSR)', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
       function ThemeProvider({ color }: Theme) {
         return (
@@ -2188,16 +2095,8 @@ describe("utils", () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
-          color="red"
-        >
-          <SSRWebComponent
-            Component={ThemeProvider}
-            selector="theme-provider"
-            color="blue"
-          >
+        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
+          <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="blue">
             <SSRWebComponent
               Component={ChildComponent}
               selector="child-component"
@@ -2208,10 +2107,7 @@ describe("utils", () => {
               slot="with-theme"
             ></SSRWebComponent>
           </SSRWebComponent>
-          <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
-          ></SSRWebComponent>
+          <SSRWebComponent Component={ChildComponent} selector="child-component"></SSRWebComponent>
           <SSRWebComponent
             Component={ChildComponent}
             selector="child-component"
@@ -2265,9 +2161,9 @@ describe("utils", () => {
       );
     });
 
-    it("should apply slotted content when there is a div wrapper with slot attribute", () => {
+    it('should apply slotted content when there is a div wrapper with slot attribute', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
       function ThemeProvider({ color }: Theme) {
         return (
@@ -2286,11 +2182,7 @@ describe("utils", () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
-          color="red"
-        >
+        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
           <div slot="with-theme">
             <SSRWebComponent
               Component={ChildComponent}
@@ -2336,7 +2228,7 @@ describe("utils", () => {
 
     it('should work "useContext" method with context-provider array of slots with name and web-components (SSR)', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
       function ThemeProvider({ color }: Theme) {
         return (
@@ -2360,18 +2252,14 @@ describe("utils", () => {
             <SSRWebComponent
               Component={ChildComponent}
               selector="child-component"
-              slot={useTheme ? "with-theme" : undefined}
+              slot={useTheme ? 'with-theme' : undefined}
             ></SSRWebComponent>
           </>
         );
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
-          color="red"
-        >
+        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
           <ServerComponent useTheme={false} />
           <ServerComponent useTheme={true} />
         </SSRWebComponent>,
@@ -2406,7 +2294,7 @@ describe("utils", () => {
 
     it('should work "useContext" method with context-provider and repeated slots with name and web-components (SSR)', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
       function ThemeProvider({ color }: Theme) {
         return (
@@ -2425,20 +2313,13 @@ describe("utils", () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
-          color="red"
-        >
+        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
           <SSRWebComponent
             Component={ChildComponent}
             selector="child-component"
             slot="with-theme"
           ></SSRWebComponent>
-          <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
-          ></SSRWebComponent>
+          <SSRWebComponent Component={ChildComponent} selector="child-component"></SSRWebComponent>
           <SSRWebComponent
             Component={ChildComponent}
             selector="child-component"
@@ -2479,9 +2360,9 @@ describe("utils", () => {
       );
     });
 
-    it("should not apply slotted context when slot attribute is in a server-component", () => {
+    it('should not apply slotted context when slot attribute is in a server-component', () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
       function ThemeProvider({ color }: Theme) {
         return (
@@ -2500,20 +2381,11 @@ describe("utils", () => {
       }
 
       function ServerComponent() {
-        return (
-          <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
-          />
-        );
+        return <SSRWebComponent Component={ChildComponent} selector="child-component" />;
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
-          color="red"
-        >
+        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
           <ServerComponent slot="with-theme" />
           <ServerComponent />
           <ServerComponent slot="with-theme" />
@@ -2552,14 +2424,14 @@ describe("utils", () => {
       );
     });
 
-    it("should work context-provider inside another context-provider in web-components SSR", async () => {
+    it('should work context-provider inside another context-provider in web-components SSR', async () => {
       type Theme = { color: string };
-      const ThemeCtx = createContext<Theme>({ color: "yellow" });
+      const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
       function ColorTest({ color }: Theme) {
         return (
           <context-provider context={ThemeCtx} value={{ color }}>
-            <context-provider context={ThemeCtx} value={{ color: "blue" }}>
+            <context-provider context={ThemeCtx} value={{ color: 'blue' }}>
               <SSRWebComponent
                 Component={ChildComponent}
                 selector="child-component"
@@ -2579,11 +2451,7 @@ describe("utils", () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent
-          Component={ColorTest}
-          selector="theme-provider"
-          color="red"
-        />,
+        <SSRWebComponent Component={ColorTest} selector="theme-provider" color="red" />,
         testOptions,
       );
 
@@ -2614,7 +2482,7 @@ describe("utils", () => {
 
     it('should work context with "useContext" hook with "serverOnly" with context-provider', async () => {
       type TestContext = { name: string };
-      const context = createContext<TestContext>({ name: "bar" });
+      const context = createContext<TestContext>({ name: 'bar' });
 
       const Component = ({}, { useContext }: RequestContext) => {
         const contextSignal = useContext<TestContext>(context);
@@ -2622,7 +2490,7 @@ describe("utils", () => {
       };
 
       const stream = renderToReadableStream(
-        <context-provider serverOnly context={context} value={{ name: "foo" }}>
+        <context-provider serverOnly context={context} value={{ name: 'foo' }}>
           <Component />
         </context-provider>,
         testOptions,
@@ -2636,7 +2504,7 @@ describe("utils", () => {
     it('should work context with "useContext" hook  with "serverOnly" with context-provider and multiple providers', async () => {
       type TestContext = { name: string };
 
-      const context = createContext<TestContext>({ name: "bar" });
+      const context = createContext<TestContext>({ name: 'bar' });
 
       const Component = ({}, { useContext }: RequestContext) => {
         const contextSignal = useContext<TestContext>(context);
@@ -2645,11 +2513,7 @@ describe("utils", () => {
 
       const Parent = () => {
         return Array.from({ length: 5 }, (_, i) => (
-          <context-provider
-            serverOnly
-            context={context}
-            value={{ name: "foo" + i }}
-          >
+          <context-provider serverOnly context={context} value={{ name: 'foo' + i }}>
             <Component />
           </context-provider>
         ));
@@ -2666,7 +2530,7 @@ describe("utils", () => {
 
     it('should work context with "useContext" hook with "serverOnly" with context-provider and multiple providers and nested context', async () => {
       type TestContext = { name: string };
-      const context = createContext<TestContext>({ name: "bar" });
+      const context = createContext<TestContext>({ name: 'bar' });
 
       const Component = ({}, { useContext }: RequestContext) => {
         const contextSignal = useContext<TestContext>(context);
@@ -2675,16 +2539,8 @@ describe("utils", () => {
 
       const Parent = () => {
         return Array.from({ length: 5 }, (_, i) => (
-          <context-provider
-            serverOnly
-            context={context}
-            value={{ name: "foo" + i }}
-          >
-            <context-provider
-              serverOnly
-              context={context}
-              value={{ name: "foo2" + i }}
-            >
+          <context-provider serverOnly context={context} value={{ name: 'foo' + i }}>
+            <context-provider serverOnly context={context} value={{ name: 'foo2' + i }}>
               <Component />
             </context-provider>
           </context-provider>
@@ -2700,7 +2556,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render [object Object] in case of rendering an object", async () => {
+    it('should render [object Object] in case of rendering an object', async () => {
       const Component = () => {
         const object = {};
         return <div>{object}</div>;
@@ -2712,10 +2568,10 @@ describe("utils", () => {
       expect(result).toBe(`<div>[object Object]</div>`);
     });
 
-    it("should transfer request store data into the web store", () => {
+    it('should transfer request store data into the web store', () => {
       const Component = ({}, { store }: RequestContext) => {
-        store.set("test", "test");
-        store.transferToClient(["test"]);
+        store.set('test', 'test');
+        store.transferToClient(['test']);
 
         return <div>TEST</div>;
       };
@@ -2747,11 +2603,11 @@ describe("utils", () => {
       );
     });
 
-    it("should transfer request store data into the web store working with suspense", () => {
+    it('should transfer request store data into the web store working with suspense', () => {
       async function Component({}, { store }: RequestContext) {
         await Bun.sleep(0);
-        store.set("test", "test");
-        store.transferToClient(["test"]);
+        store.set('test', 'test');
+        store.transferToClient(['test']);
 
         return <div>TEST</div>;
       }
@@ -2788,10 +2644,10 @@ describe("utils", () => {
       );
     });
 
-    it("should transfer request store with a component without head, body, and html tags", () => {
+    it('should transfer request store with a component without head, body, and html tags', () => {
       const Component = ({}, { store }: RequestContext) => {
-        store.set("test", "test");
-        store.transferToClient(["test"]);
+        store.set('test', 'test');
+        store.transferToClient(['test']);
 
         return <div>TEST</div>;
       };
@@ -2804,11 +2660,11 @@ describe("utils", () => {
       );
     });
 
-    it("should transfer request store twice in a different way data with and without suspense", () => {
+    it('should transfer request store twice in a different way data with and without suspense', () => {
       async function ComponentWithSuspense({}, { store }: RequestContext) {
         await Bun.sleep(0);
-        store.set("suspense", "foo");
-        store.transferToClient(["suspense"]);
+        store.set('suspense', 'foo');
+        store.transferToClient(['suspense']);
 
         return <div>Suspense</div>;
       }
@@ -2816,8 +2672,8 @@ describe("utils", () => {
       ComponentWithSuspense.suspense = () => <div>Loading...</div>;
 
       function ComponentWithoutSuspense({}, { store }: RequestContext) {
-        store.set("no-suspense", "bar");
-        store.transferToClient(["no-suspense"]);
+        store.set('no-suspense', 'bar');
+        store.transferToClient(['no-suspense']);
 
         return <div>Without Suspense</div>;
       }
@@ -2874,14 +2730,12 @@ describe("utils", () => {
 
       // Test script 404 behavior
       globalThis.location = {
-        href: "http://localhost/",
+        href: 'http://localhost/',
         replace: mock((v) => v),
       } as any;
 
       eval(script404);
-      expect(globalThis.location.replace).toHaveBeenCalledWith(
-        "http://localhost/?_not-found=1",
-      );
+      expect(globalThis.location.replace).toHaveBeenCalledWith('http://localhost/?_not-found=1');
       globalThis.location = undefined as any;
     });
 
@@ -2892,12 +2746,12 @@ describe("utils", () => {
       };
 
       const request = extendRequestContext({
-        originalRequest: new Request("http://localhost/"),
+        originalRequest: new Request('http://localhost/'),
       });
-      request.store.set("server-foo", "server-bar");
-      request.store.set("foo", "bar");
-      request.store.transferToClient(["foo"]);
-      request.store.transferToClient(["foo"]);
+      request.store.set('server-foo', 'server-bar');
+      request.store.set('foo', 'bar');
+      request.store.transferToClient(['foo']);
+      request.store.transferToClient(['foo']);
       const stream = renderToReadableStream(<Component />, { request });
       const result = await Bun.readableStreamToText(stream);
       const script404 = `(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()`;
@@ -2912,14 +2766,12 @@ describe("utils", () => {
 
       // Test script 404 behavior
       globalThis.location = {
-        href: "http://localhost/",
+        href: 'http://localhost/',
         replace: mock((v) => v),
       } as any;
 
       eval(script404);
-      expect(globalThis.location.replace).toHaveBeenCalledWith(
-        "http://localhost/?_not-found=1",
-      );
+      expect(globalThis.location.replace).toHaveBeenCalledWith('http://localhost/?_not-found=1');
       globalThis.location = undefined as any;
     });
 
@@ -2930,7 +2782,7 @@ describe("utils", () => {
       };
 
       const request = extendRequestContext({
-        originalRequest: new Request("http://localhost/"),
+        originalRequest: new Request('http://localhost/'),
       });
       request.renderInitiator = RenderInitiator.SERVER_ACTION;
       const stream = renderToReadableStream(<Component />, { request });
@@ -2946,14 +2798,12 @@ describe("utils", () => {
 
       // Test script 404 behavior
       globalThis.location = {
-        href: "http://localhost/",
+        href: 'http://localhost/',
         assign: mock((v) => v),
       } as any;
 
       eval(script404);
-      expect(globalThis.location.assign).toHaveBeenCalledWith(
-        "http://localhost/?_not-found=1",
-      );
+      expect(globalThis.location.assign).toHaveBeenCalledWith('http://localhost/?_not-found=1');
       globalThis.location = undefined as any;
     });
 
@@ -2964,13 +2814,13 @@ describe("utils", () => {
       };
 
       const request = extendRequestContext({
-        originalRequest: new Request("http://localhost/"),
+        originalRequest: new Request('http://localhost/'),
       });
       request.renderInitiator = RenderInitiator.SERVER_ACTION;
-      request.store.set("server-foo", "server-bar");
-      request.store.set("foo", "bar");
-      request.store.transferToClient(["foo"]);
-      request.store.transferToClient(["foo"]);
+      request.store.set('server-foo', 'server-bar');
+      request.store.set('foo', 'bar');
+      request.store.transferToClient(['foo']);
+      request.store.transferToClient(['foo']);
       const stream = renderToReadableStream(<Component />, { request });
       const result = await Bun.readableStreamToText(stream);
       const script404 = `(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.assign(u.toString())})()`;
@@ -2985,20 +2835,18 @@ describe("utils", () => {
 
       // Test script 404 behavior
       globalThis.location = {
-        href: "http://localhost/",
+        href: 'http://localhost/',
         assign: mock((v) => v),
       } as any;
 
       eval(script404);
-      expect(globalThis.location.assign).toHaveBeenCalledWith(
-        "http://localhost/?_not-found=1",
-      );
+      expect(globalThis.location.assign).toHaveBeenCalledWith('http://localhost/?_not-found=1');
       globalThis.location = undefined as any;
     });
 
     it('should add the location.replace script when the "navigate" method is called during rendering', async () => {
       const Component = () => {
-        navigate("http://localhost/foo");
+        navigate('http://localhost/foo');
         return <div>TEST</div>;
       };
 
@@ -3015,34 +2863,30 @@ describe("utils", () => {
       } as any;
 
       eval(scriptNavigate);
-      expect(globalThis.location.replace).toHaveBeenCalledWith(
-        "http://localhost/foo",
-      );
+      expect(globalThis.location.replace).toHaveBeenCalledWith('http://localhost/foo');
       globalThis.location = undefined as any;
       globalThis.window = undefined as any;
     });
 
     it('should add the location.replace script transferring the client store when the "navigate" method is called during rendering', async () => {
       const Component = () => {
-        navigate("http://localhost/foo");
+        navigate('http://localhost/foo');
         return <div>TEST</div>;
       };
 
       const request = extendRequestContext({
-        originalRequest: new Request("http://localhost/"),
+        originalRequest: new Request('http://localhost/'),
       });
-      request.store.set("foo", "bar");
-      request.store.set("foo-client", "bar-client");
-      request.store.transferToClient(["foo-client"]);
+      request.store.set('foo', 'bar');
+      request.store.set('foo-client', 'bar-client');
+      request.store.transferToClient(['foo-client']);
       const stream = renderToReadableStream(<Component />, { request });
       const result = await Bun.readableStreamToText(stream);
       const scriptNavigate = `window._xm="reactivity";location.replace("http://localhost/foo")`;
       const scriptStore = `window._S=[["foo-client","bar-client"]]`;
 
       expect(result).toBe(
-        toInline(
-          `<script>${scriptStore}</script><script>${scriptNavigate}</script>`,
-        ),
+        toInline(`<script>${scriptStore}</script><script>${scriptNavigate}</script>`),
       );
 
       // Test script navigate behavior
@@ -3052,21 +2896,19 @@ describe("utils", () => {
       } as any;
 
       eval(scriptNavigate);
-      expect(globalThis.location.replace).toHaveBeenCalledWith(
-        "http://localhost/foo",
-      );
+      expect(globalThis.location.replace).toHaveBeenCalledWith('http://localhost/foo');
       globalThis.location = undefined as any;
       globalThis.window = undefined as any;
     });
 
     it('should add the location.assign script when the "navigate" method is called during server action rerendering', async () => {
       const Component = () => {
-        navigate("http://localhost/foo");
+        navigate('http://localhost/foo');
         return <div>TEST</div>;
       };
 
       const request = extendRequestContext({
-        originalRequest: new Request("http://localhost/"),
+        originalRequest: new Request('http://localhost/'),
       });
       request.renderInitiator = RenderInitiator.SERVER_ACTION;
       const stream = renderToReadableStream(<Component />, { request });
@@ -3082,26 +2924,24 @@ describe("utils", () => {
       } as any;
 
       eval(scriptNavigate);
-      expect(globalThis.location.assign).toHaveBeenCalledWith(
-        "http://localhost/foo",
-      );
+      expect(globalThis.location.assign).toHaveBeenCalledWith('http://localhost/foo');
       globalThis.location = undefined as any;
       globalThis.window = undefined as any;
     });
 
     it('should add the location.assign script transferring the client store when the "navigate" method is called during server action rerendering', async () => {
       const Component = () => {
-        navigate("http://localhost/foo");
+        navigate('http://localhost/foo');
         return <div>TEST</div>;
       };
 
       const request = extendRequestContext({
-        originalRequest: new Request("http://localhost/"),
+        originalRequest: new Request('http://localhost/'),
       });
       request.renderInitiator = RenderInitiator.SERVER_ACTION;
-      request.store.set("foo", "bar");
-      request.store.set("foo-client", "bar-client");
-      request.store.transferToClient(["foo-client"]);
+      request.store.set('foo', 'bar');
+      request.store.set('foo-client', 'bar-client');
+      request.store.transferToClient(['foo-client']);
       const stream = renderToReadableStream(<Component />, { request });
       const result = await Bun.readableStreamToText(stream);
       const scriptNavigate = `window._xm="reactivity";location.assign("http://localhost/foo")`;
@@ -3120,16 +2960,14 @@ describe("utils", () => {
       } as any;
 
       eval(scriptNavigate);
-      expect(globalThis.location.assign).toHaveBeenCalledWith(
-        "http://localhost/foo",
-      );
+      expect(globalThis.location.assign).toHaveBeenCalledWith('http://localhost/foo');
       globalThis.location = undefined as any;
       globalThis.window = undefined as any;
     });
 
-    it("should log an error and not throw error to avoid breaking the rendering when component render fails", async () => {
+    it('should log an error and not throw error to avoid breaking the rendering when component render fails', async () => {
       const Component = () => {
-        throw new Error("test");
+        throw new Error('test');
       };
 
       const stream = renderToReadableStream(
@@ -3143,18 +2981,16 @@ describe("utils", () => {
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(toInline(`<html><head></head><body>`));
-      expect(result).toContain(
-        "Error in SSR of Component component with props {}",
-      );
+      expect(result).toContain('Error in SSR of Component component with props {}');
       expect(result).toEndWith(toInline(`</body></html>`));
       expect(mockLog.mock.calls.toString()).toContain(
-        "Error in SSR of Component component with props {}",
+        'Error in SSR of Component component with props {}',
       );
     });
 
-    it("should display the name of the functional component in the error", async () => {
+    it('should display the name of the functional component in the error', async () => {
       function SomeTestComponent() {
-        throw new Error("test");
+        throw new Error('test');
       }
 
       const stream = renderToReadableStream(
@@ -3168,22 +3004,20 @@ describe("utils", () => {
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(toInline(`<html><head></head><body>`));
-      expect(result).toContain(
-        "Error in SSR of SomeTestComponent component with props {}",
-      );
+      expect(result).toContain('Error in SSR of SomeTestComponent component with props {}');
       expect(result).toEndWith(toInline(`</body></html>`));
       expect(mockLog.mock.calls.toString()).toContain(
-        "Error in SSR of SomeTestComponent component with props {}",
+        'Error in SSR of SomeTestComponent component with props {}',
       );
     });
 
-    it("should render correctly if there is an async event in some element", () => {
+    it('should render correctly if there is an async event in some element', () => {
       async function ComponentWithAsyncEvent({}, { i18n }: RequestContext) {
         async function onAsyncEvent() {
-          console.log("foo");
+          console.log('foo');
           await i18n.overrideMessages(async (messages) => ({
             ...messages,
-            modalDictionary: { someKey: "Some key" },
+            modalDictionary: { someKey: 'Some key' },
           }));
         }
 
@@ -3198,7 +3032,7 @@ describe("utils", () => {
       expect(result).resolves.toBe(toInline(`<button>TEST</button>`));
     });
 
-    it("should keep the parent actionId correctly with nested server actions", () => {
+    it('should keep the parent actionId correctly with nested server actions', () => {
       // Note: data-action-onclick and data-action are added in compile-time
       const Child = ({ onClickAction }: any) => (
         <button onClick={onClickAction} data-action-onclick="a3_1" data-action>
@@ -3234,7 +3068,7 @@ describe("utils", () => {
       );
     });
 
-    it("should render a server component with async generator", async () => {
+    it('should render a server component with async generator', async () => {
       async function* List() {
         yield <h2>Count: 0</h2>;
         yield <h2>Count: 1</h2>;
@@ -3246,14 +3080,12 @@ describe("utils", () => {
 
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe(
-        "<h2>Count: 0</h2><h2>Count: 1</h2><h2>Count: 2</h2><h2>Count: 3</h2>",
-      );
+      expect(result).toBe('<h2>Count: 0</h2><h2>Count: 1</h2><h2>Count: 2</h2><h2>Count: 3</h2>');
     });
 
-    it("should render a server component with async generator and context", async () => {
+    it('should render a server component with async generator and context', async () => {
       type TestContext = { name: string };
-      const context = createContext<TestContext>({ name: "bar" });
+      const context = createContext<TestContext>({ name: 'bar' });
 
       async function* List({}, { useContext }: RequestContext) {
         const contextSignal = useContext<TestContext>(context);
@@ -3261,7 +3093,7 @@ describe("utils", () => {
       }
 
       const stream = renderToReadableStream(
-        <context-provider serverOnly context={context} value={{ name: "foo" }}>
+        <context-provider serverOnly context={context} value={{ name: 'foo' }}>
           <List />
         </context-provider>,
         testOptions,
@@ -3269,22 +3101,19 @@ describe("utils", () => {
 
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe("<h2>foo</h2>");
+      expect(result).toBe('<h2>foo</h2>');
     });
 
-    it("should render data-actions with only the action props", async () => {
+    it('should render data-actions with only the action props', async () => {
       const Component = ({ foo }: any) => (
         <p data-action-onclick="a1_1" data-action>
           {foo}
         </p>
       );
       const onClick = () => {};
-      onClick.actionId = "a1_1";
-      onClick.cid = "1";
-      const stream = renderToReadableStream(
-        <Component foo="bar" onClick={onClick} />,
-        testOptions,
-      );
+      onClick.actionId = 'a1_1';
+      onClick.cid = '1';
+      const stream = renderToReadableStream(<Component foo="bar" onClick={onClick} />, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
@@ -3292,24 +3121,21 @@ describe("utils", () => {
       );
     });
 
-    it("should not render data-actions if any prop is an action", async () => {
+    it('should not render data-actions if any prop is an action', async () => {
       const Component = ({ foo }: any) => (
         <p data-action-onclick="a1_1" data-action>
           {foo}
         </p>
       );
       const onClick = () => {};
-      onClick.actionId = "a1_1";
-      const stream = renderToReadableStream(
-        <Component foo="bar" bar="baz" />,
-        testOptions,
-      );
+      onClick.actionId = 'a1_1';
+      const stream = renderToReadableStream(<Component foo="bar" bar="baz" />, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe('<p data-action-onclick="a1_1" data-action>bar</p>');
     });
 
-    it("should skip suspense when applySuspense is false", async () => {
+    it('should skip suspense when applySuspense is false', async () => {
       const Component = async () => <div>test</div>;
       Component.suspense = () => <div>suspense</div>;
       const stream = renderToReadableStream(<Component />, {
@@ -3319,10 +3145,10 @@ describe("utils", () => {
 
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe("<div>test</div>");
+      expect(result).toBe('<div>test</div>');
     });
 
-    it("should do suspense when applySuspense is true", async () => {
+    it('should do suspense when applySuspense is true', async () => {
       const Component = async () => <div>test</div>;
       Component.suspense = () => <div>suspense</div>;
       const stream = renderToReadableStream(<Component />, {
@@ -3337,7 +3163,7 @@ describe("utils", () => {
       );
     });
 
-    it("should skip suspense when FORCE_SUSPENSE_DEFAULT=false", async () => {
+    it('should skip suspense when FORCE_SUSPENSE_DEFAULT=false', async () => {
       globalThis.FORCE_SUSPENSE_DEFAULT = false;
       const Component = async () => <div>test</div>;
       Component.suspense = () => <div>suspense</div>;
@@ -3347,10 +3173,10 @@ describe("utils", () => {
 
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe("<div>test</div>");
+      expect(result).toBe('<div>test</div>');
     });
 
-    it("should add brisa-error-dialog when IS_DEVELOPMENT and IS_SERVE_PROCESS are true", async () => {
+    it('should add brisa-error-dialog when IS_DEVELOPMENT and IS_SERVE_PROCESS are true', async () => {
       globalThis.mockConstants = {
         ...getConstants(),
         IS_PRODUCTION: false,
@@ -3375,7 +3201,7 @@ describe("utils", () => {
       );
     });
 
-    it("should NOT add brisa-error-dialog when IS_SERVE_PROCESS is true but IS_DEVELOPMENT is false", async () => {
+    it('should NOT add brisa-error-dialog when IS_SERVE_PROCESS is true but IS_DEVELOPMENT is false', async () => {
       globalThis.mockConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
@@ -3398,7 +3224,7 @@ describe("utils", () => {
       expect(result).toBe(`<html><head></head><body>test</body></html>`);
     });
 
-    it("should NOT add brisa-error-dialog when IS_DEVELOPMENT is true but IS_SERVE_PROCESS is false", async () => {
+    it('should NOT add brisa-error-dialog when IS_DEVELOPMENT is true but IS_SERVE_PROCESS is false', async () => {
       globalThis.mockConstants = {
         ...getConstants(),
         IS_PRODUCTION: false,
@@ -3421,60 +3247,40 @@ describe("utils", () => {
       expect(result).toBe(`<html><head></head><body>test</body></html>`);
     });
 
-    it("should render comments wrapping a component with _hasActions=true", async () => {
+    it('should render comments wrapping a component with _hasActions=true', async () => {
       const Component = () => <div data-action>test</div>;
       Component._hasActions = true;
 
       const request = extendRequestContext({
-        originalRequest: new Request("http://localhost/"),
+        originalRequest: new Request('http://localhost/'),
       });
-      request.id = "123456";
+      request.id = '123456';
 
-      const stream = renderToReadableStream(
-        <Component data-action-onclick="a1_1" data-action />,
-        {
-          ...testOptions,
-          request,
-        },
-      );
+      const stream = renderToReadableStream(<Component data-action-onclick="a1_1" data-action />, {
+        ...testOptions,
+        request,
+      });
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe(
-        `<!--o:0--><div data-action data-cid="0">test</div><!--c:0-->`,
-      );
+      expect(result).toBe(`<!--o:0--><div data-action data-cid="0">test</div><!--c:0-->`);
     });
 
-    it("should render several comments with different final number to each component of a list", async () => {
+    it('should render several comments with different final number to each component of a list', async () => {
       const Component = ({ foo }: any) => <div data-action>{foo}</div>;
       Component._hasActions = true;
 
       const List = ({ onClick }: any) => (
         <>
-          <Component
-            foo="bar"
-            onClick={onClick}
-            data-action-onclick="a1_1"
-            data-action
-          />
-          <Component
-            foo="baz"
-            onClick={onClick}
-            data-action-onclick="a2_1"
-            data-action
-          />
-          <Component
-            foo="foo"
-            onClick={onClick}
-            data-action-onclick="a3_1"
-            data-action
-          />
+          <Component foo="bar" onClick={onClick} data-action-onclick="a1_1" data-action />
+          <Component foo="baz" onClick={onClick} data-action-onclick="a2_1" data-action />
+          <Component foo="foo" onClick={onClick} data-action-onclick="a3_1" data-action />
         </>
       );
 
       const request = extendRequestContext({
-        originalRequest: new Request("http://localhost/"),
+        originalRequest: new Request('http://localhost/'),
       });
-      request.id = "123456";
+      request.id = '123456';
 
       const stream = renderToReadableStream(<List />, {
         ...testOptions,
@@ -3513,12 +3319,10 @@ describe("utils", () => {
       const stream = renderToReadableStream(<List />, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe(
-        `<div key="1">foo</div><div key="2">bar</div><div key="3">baz</div>`,
-      );
+      expect(result).toBe(`<div key="1">foo</div><div key="2">bar</div><div key="3">baz</div>`);
     });
 
-    it("should add a global style inside the declarative shadow DOM", async () => {
+    it('should add a global style inside the declarative shadow DOM', async () => {
       const Component = () => <div>test</div>;
 
       const stream = renderToReadableStream(

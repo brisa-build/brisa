@@ -1,17 +1,14 @@
 // @ts-nocheck
-import { MatchedRoute } from "bun";
-import { I18n, RequestContext, type TransferOptions } from "@/types";
-import {
-  CURRENT_PROVIDER_ID,
-  CONTEXT_STORE_ID,
-} from "@/utils/context-provider/server";
-import { encrypt } from "@/utils/crypto";
-import { RenderInitiator } from "@/core/server";
+import type { MatchedRoute } from 'bun';
+import type { I18n, RequestContext, TransferOptions } from '@/types';
+import { CURRENT_PROVIDER_ID, CONTEXT_STORE_ID } from '@/utils/context-provider/server';
+import { encrypt } from '@/utils/crypto';
+import { RenderInitiator } from '@/core/server';
 
 type ExtendRequestContext = {
   originalRequest: Request;
   route?: MatchedRoute;
-  store?: RequestContext["store"];
+  store?: RequestContext['store'];
   i18n?: I18n;
   finalURL?: string;
   id?: string;
@@ -27,26 +24,21 @@ export default function extendRequestContext({
   id,
 }: ExtendRequestContext): RequestContext {
   // finalURL
-  originalRequest.finalURL =
-    finalURL ?? originalRequest.finalURL ?? originalRequest.url;
+  originalRequest.finalURL = finalURL ?? originalRequest.finalURL ?? originalRequest.url;
 
   // route
   originalRequest.route = route ?? originalRequest.route;
 
   // store
-  originalRequest.store =
-    store ?? originalRequest.store ?? new Map<string | symbol, any>();
+  originalRequest.store = store ?? originalRequest.store ?? new Map<string | symbol, any>();
 
   // webStore (used for store.transferToClient)
   originalRequest.webStore =
     webStore ?? originalRequest.webStore ?? new Map<string | symbol, any>();
 
   // store.transferToClient
-  originalRequest.store.transferToClient = (
-    keys: string[],
-    options?: TransferOptions,
-  ) => {
-    for (let key of keys) {
+  originalRequest.store.transferToClient = (keys: string[], options?: TransferOptions) => {
+    for (const key of keys) {
       originalRequest.webStore.set(key, options);
     }
   };
@@ -55,7 +47,7 @@ export default function extendRequestContext({
   originalRequest.useContext = (ctx) => {
     const store = originalRequest.store;
     const context = store.get(CONTEXT_STORE_ID)?.get(ctx.id);
-    let value = ctx.defaultValue;
+    const value = ctx.defaultValue;
 
     if (!context) return { value };
 
@@ -78,10 +70,10 @@ export default function extendRequestContext({
   // i18n
   originalRequest.i18n = originalRequest.i18n ??
     i18n ?? {
-      defaultLocale: "",
+      defaultLocale: '',
       locales: [],
-      locale: "",
-      t: () => "",
+      locale: '',
+      t: () => '',
       overrideMessages: () => {},
       pages: {},
     };
@@ -94,11 +86,8 @@ export default function extendRequestContext({
   });
 
   // css
-  originalRequest._style = "";
-  originalRequest.css = (
-    template: TemplateStringsArray,
-    ...values: string[]
-  ) => {
+  originalRequest._style = '';
+  originalRequest.css = (template: TemplateStringsArray, ...values: string[]) => {
     originalRequest._style += String.raw(template, ...values);
   };
 

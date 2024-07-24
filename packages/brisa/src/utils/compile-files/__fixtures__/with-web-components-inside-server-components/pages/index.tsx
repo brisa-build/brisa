@@ -1,4 +1,4 @@
-import Foo from "../components/foo";
+import Foo from '../components/foo';
 
 export default function Homepage() {
   return (

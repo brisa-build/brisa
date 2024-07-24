@@ -1,4 +1,4 @@
-import { getConstants } from "@/constants";
+import { getConstants } from '@/constants';
 
 type DependenciesMap = Map<string, Set<string>>;
 
@@ -11,7 +11,7 @@ export default function getWebComponentsPerEntryPoints(
   const webComponentsPerEntryPoint: Record<string, Record<string, string>> = {};
   const { SRC_DIR, BUILD_DIR } = getConstants();
   const getBuildPath = (path: string): string =>
-    path.replace(SRC_DIR, BUILD_DIR).replace(/\.tsx?$/, ".js");
+    path.replace(SRC_DIR, BUILD_DIR).replace(/\.tsx?$/, '.js');
 
   for (const [file, webComponents] of Object.entries(webComponentsPerFile)) {
     const buildPath = getBuildPath(file);
@@ -21,9 +21,7 @@ export default function getWebComponentsPerEntryPoints(
       continue;
     }
 
-    for (const [webComponentSelector, webComponentFilePath] of Object.entries(
-      webComponents,
-    )) {
+    for (const [webComponentSelector, webComponentFilePath] of Object.entries(webComponents)) {
       const entryPoints = findEntryPoints(
         dependenciesPerFile,
         webComponentFilePath,
@@ -35,8 +33,7 @@ export default function getWebComponentsPerEntryPoints(
         if (!webComponentsPerEntryPoint[buildEntryPoint]) {
           webComponentsPerEntryPoint[buildEntryPoint] = {};
         }
-        webComponentsPerEntryPoint[buildEntryPoint][webComponentSelector] =
-          webComponentFilePath;
+        webComponentsPerEntryPoint[buildEntryPoint][webComponentSelector] = webComponentFilePath;
       }
     }
   }
@@ -44,14 +41,10 @@ export default function getWebComponentsPerEntryPoints(
   return webComponentsPerEntryPoint;
 }
 
-function findEntryPoints(
-  dependencies: DependenciesMap,
-  file: string,
-  entryPoints: Set<string>,
-) {
+function findEntryPoints(dependencies: DependenciesMap, file: string, entryPoints: Set<string>) {
   const entryPointSet = new Set<string>();
   const visited = new Set<string>();
-  const stack = [file.replace(/^import:/, "")];
+  const stack = [file.replace(/^import:/, '')];
 
   while (stack.length) {
     const currentFile = stack.pop();

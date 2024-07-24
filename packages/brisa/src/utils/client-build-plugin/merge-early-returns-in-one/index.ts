@@ -1,10 +1,7 @@
-import { ESTree } from "meriyah";
+import type { ESTree } from 'meriyah';
 
-const CONDITIONAL_TYPES = new Set(["IfStatement", "SwitchStatement"]);
-const TYPES_TO_AVOID_ANALYZE_RETURN = new Set([
-  "ArrowFunctionExpression",
-  "FunctionExpression",
-]);
+const CONDITIONAL_TYPES = new Set(['IfStatement', 'SwitchStatement']);
+const TYPES_TO_AVOID_ANALYZE_RETURN = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
 
 /**
  * Merge early returns in one
@@ -67,7 +64,7 @@ export default function mergeEarlyReturnsInOne(
       }
 
       // If there is a return statement, register it
-      if (key === "type" && value === "ReturnStatement") {
+      if (key === 'type' && value === 'ReturnStatement') {
         hasReturnStatement = true;
         return null;
       }
@@ -84,7 +81,7 @@ export default function mergeEarlyReturnsInOne(
   }
 
   const bodyWithoutReturnPaths = body.slice(0, firstEarlyReturn);
-  const bodyWithReturnPaths = body.slice(firstEarlyReturn, Infinity);
+  const bodyWithReturnPaths = body.slice(firstEarlyReturn, Number.POSITIVE_INFINITY);
 
   // Merge the conditional statements to only one
   return {
@@ -94,17 +91,17 @@ export default function mergeEarlyReturnsInOne(
       body: [
         ...bodyWithoutReturnPaths,
         {
-          type: "ReturnStatement",
+          type: 'ReturnStatement',
           argument: {
-            type: "ArrayExpression",
+            type: 'ArrayExpression',
             elements: [
-              { type: "Literal", value: null },
-              { type: "ObjectExpression", properties: [] },
+              { type: 'Literal', value: null },
+              { type: 'ObjectExpression', properties: [] },
               {
-                type: "ArrowFunctionExpression",
+                type: 'ArrowFunctionExpression',
                 params: [],
                 body: {
-                  type: "BlockStatement",
+                  type: 'BlockStatement',
                   body: bodyWithReturnPaths,
                 },
               },

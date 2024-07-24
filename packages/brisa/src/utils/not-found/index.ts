@@ -1,7 +1,7 @@
-const NOT_FOUND_ERROR_NAME = "NotFoundError";
+const NOT_FOUND_ERROR_NAME = 'NotFoundError';
 
 export default function notFound() {
-  throw new NotFoundError("Not found");
+  throw new NotFoundError('Not found');
 }
 
 export class NotFoundError extends Error {

@@ -3,10 +3,10 @@ export const scripts = new Set();
 let scriptLoaded: Promise<void>;
 
 export function registerCurrentScripts() {
-  for (let script of document.scripts) {
+  for (const script of document.scripts) {
     const hasValidID = script.id && !/R:\d+/.test(script.id);
-    if (hasValidID || script.hasAttribute("src")) {
-      scripts.add(script.id || script.getAttribute("src"));
+    if (hasValidID || script.hasAttribute('src')) {
+      scripts.add(script.id || script.getAttribute('src'));
     }
   }
 }
@@ -16,9 +16,9 @@ export async function loadScripts(node: Node) {
   const $window = window;
   const $document = document;
 
-  if (node.nodeName !== "SCRIPT") return;
+  if (node.nodeName !== 'SCRIPT') return;
 
-  const src = (node as HTMLScriptElement).getAttribute("src");
+  const src = (node as HTMLScriptElement).getAttribute('src');
 
   if (scripts.has(src) || scripts.has((node as HTMLScriptElement).id)) {
     return;
@@ -26,7 +26,7 @@ export async function loadScripts(node: Node) {
 
   await $window.lastDiffTransition?.finished;
 
-  const script = $document.createElement("script");
+  const script = $document.createElement('script');
 
   if (src) script.src = src;
 
@@ -35,9 +35,7 @@ export async function loadScripts(node: Node) {
   await scriptLoaded;
 
   if (src) {
-    scriptLoaded = new Promise(
-      (r) => (script.onload = script.onerror = () => r(script.remove())),
-    );
+    scriptLoaded = new Promise((r) => (script.onload = script.onerror = () => r(script.remove())));
   }
 
   $document.head.appendChild(script);

@@ -1,13 +1,13 @@
-import { describe, expect, it } from "bun:test";
-import dangerHTML from ".";
+import { describe, expect, it } from 'bun:test';
+import dangerHTML from '.';
 
-describe("danger-html", () => {
+describe('danger-html', () => {
   it('should be transformed to "HTML" element', () => {
-    const html = "<div>test</div>";
+    const html = '<div>test</div>';
     const element = dangerHTML(html);
 
     expect(element).toEqual({
-      type: "HTML",
+      type: 'HTML',
       props: {
         html,
       },

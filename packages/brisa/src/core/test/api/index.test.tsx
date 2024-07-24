@@ -1,32 +1,16 @@
-import path from "node:path";
-import {
-  debug,
-  render,
-  serveRoute,
-  waitFor,
-  userEvent,
-  cleanup,
-} from "@/core/test/api";
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  spyOn,
-  jest,
-  mock,
-} from "bun:test";
-import { getConstants } from "@/constants";
-import { blueLog, cyanLog, greenLog } from "@/utils/log/log-color";
-import type { RequestContext } from "@/types";
+import path from 'node:path';
+import { debug, render, serveRoute, waitFor, userEvent, cleanup } from '@/core/test/api';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
+import { describe, it, expect, beforeEach, afterEach, spyOn, jest, mock } from 'bun:test';
+import { getConstants } from '@/constants';
+import { blueLog, cyanLog, greenLog } from '@/utils/log/log-color';
+import type { RequestContext } from '@/types';
 
-const BUILD_DIR = path.join(import.meta.dir, "..", "..", "..", "__fixtures__");
-const PAGES_DIR = path.join(BUILD_DIR, "pages");
-const ASSETS_DIR = path.join(BUILD_DIR, "public");
+const BUILD_DIR = path.join(import.meta.dir, '..', '..', '..', '__fixtures__');
+const PAGES_DIR = path.join(BUILD_DIR, 'pages');
+const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 
-describe("test api", () => {
+describe('test api', () => {
   beforeEach(() => {
     globalThis.REGISTERED_ACTIONS = [];
     GlobalRegistrator.register();
@@ -36,8 +20,8 @@ describe("test api", () => {
     GlobalRegistrator.unregister();
     globalThis.mockConstants = undefined;
   });
-  describe("render", () => {
-    it("should render the element", async () => {
+  describe('render', () => {
+    it('should render the element', async () => {
       function Foo() {
         return (
           <>
@@ -47,30 +31,30 @@ describe("test api", () => {
         );
       }
       const { container } = await render(<Foo />);
-      expect(container.innerHTML).toBe("<div>Foo</div><span>Bar</span>");
-      expect(container).toContainTextContent("Foo");
-      expect(container).toContainTextContent("Bar");
+      expect(container.innerHTML).toBe('<div>Foo</div><span>Bar</span>');
+      expect(container).toContainTextContent('Foo');
+      expect(container).toContainTextContent('Bar');
     });
 
-    it("should render the element with children", async () => {
+    it('should render the element with children', async () => {
       function Foo({ children }: { children: string }) {
         return <div>{children}</div>;
       }
       const { container } = await render(<Foo children="Foo" />);
-      expect(container.innerHTML).toBe("<div>Foo</div>");
-      expect(container).toContainTextContent("Foo");
+      expect(container.innerHTML).toBe('<div>Foo</div>');
+      expect(container).toContainTextContent('Foo');
     });
 
-    it("should render the element with props", async () => {
+    it('should render the element with props', async () => {
       function Foo({ foo }: { foo: string }) {
         return <div>{foo}</div>;
       }
       const { container } = await render(<Foo foo="Foo" />);
-      expect(container.innerHTML).toBe("<div>Foo</div>");
-      expect(container).toContainTextContent("Foo");
+      expect(container.innerHTML).toBe('<div>Foo</div>');
+      expect(container).toContainTextContent('Foo');
     });
 
-    it("should append the container to the document.body by default", async () => {
+    it('should append the container to the document.body by default', async () => {
       function Foo() {
         return <div>Foo</div>;
       }
@@ -78,89 +62,86 @@ describe("test api", () => {
       expect(document.documentElement.contains(container)).toBeTrue();
     });
 
-    it("should append the container to a baseElement", async () => {
+    it('should append the container to a baseElement', async () => {
       function Foo() {
         return <div>Foo</div>;
       }
-      const parent = document.createElement("div");
+      const parent = document.createElement('div');
       const { container } = await render(<Foo />, { baseElement: parent });
       expect(parent.contains(container)).toBeTrue();
     });
 
-    it("should work with a response", async () => {
-      const response = new Response("Foo");
+    it('should work with a response', async () => {
+      const response = new Response('Foo');
       const { container } = await render(response);
-      expect(container.innerHTML).toBe("Foo");
-      expect(container).toContainTextContent("Foo");
+      expect(container.innerHTML).toBe('Foo');
+      expect(container).toContainTextContent('Foo');
     });
 
-    it("should work with a response that return HTML", async () => {
+    it('should work with a response that return HTML', async () => {
       const response = new Response('<div id="test">Foo</div>');
       const { container } = await render(response);
-      const testedElement = container.querySelector("#test")!;
-      expect(testedElement.innerHTML).toBe("Foo");
-      expect(container).toContainTextContent("Foo");
+      const testedElement = container.querySelector('#test')!;
+      expect(testedElement.innerHTML).toBe('Foo');
+      expect(container).toContainTextContent('Foo');
     });
 
-    it("should unmount the container", async () => {
+    it('should unmount the container', async () => {
       const Foo = () => <div>Foo</div>;
       const { container, unmount } = await render(<Foo />);
       unmount();
       expect(container.innerHTML).toBeEmpty();
     });
 
-    it("should be possible to interact with a server action of a server component", async () => {
-      const mockLog = spyOn(console, "log");
+    it('should be possible to interact with a server action of a server component', async () => {
+      const mockLog = spyOn(console, 'log');
       const { container } = await render(
-        <button onClick={() => console.log("hello server action")}>
-          Click me
-        </button>,
+        <button onClick={() => console.log('hello server action')}>Click me</button>,
       );
-      const button = container.querySelector("button");
+      const button = container.querySelector('button');
 
       button?.click();
 
-      expect(mockLog).toHaveBeenCalledWith("hello server action");
+      expect(mockLog).toHaveBeenCalledWith('hello server action');
     });
 
-    it("should onSubmit server action of form be transformed to an event with formData", async () => {
-      const mockLog = spyOn(console, "log");
+    it('should onSubmit server action of form be transformed to an event with formData', async () => {
+      const mockLog = spyOn(console, 'log');
       const { container } = await render(
         <form
           onSubmit={(event: FormDataEvent) => {
             // In the server the formData is already generated and accessible inside the serialized event
-            console.log(event.formData.get("name"));
+            console.log(event.formData.get('name'));
           }}
         >
           <input type="text" name="name" value="foo" />
           <button type="submit">Submit</button>
         </form>,
       );
-      const form = container.querySelector("form")!;
+      const form = container.querySelector('form')!;
 
       userEvent.submit(form);
 
-      expect(mockLog).toHaveBeenCalledWith("foo");
+      expect(mockLog).toHaveBeenCalledWith('foo');
     });
 
-    it("should render a web component", async () => {
+    it('should render a web component', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import(
-        "@/core/test/run-web-components"
-      ).then((m) => m.default);
+      const runWebComponents = await import('@/core/test/run-web-components').then(
+        (m) => m.default,
+      );
       await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter />);
-      const customCounter =
-        container.querySelector("custom-counter")!.shadowRoot!;
+      const customCounter = container.querySelector('custom-counter')!.shadowRoot!;
 
-      expect(customCounter).toContainTextContent("0");
+      expect(customCounter).toContainTextContent('0');
     });
 
     // I think it fails the test because the customElement is already defined:
@@ -171,36 +152,35 @@ describe("test api", () => {
     //
     // I think part of the problem is that in the first case the connectedCallback is async,
     // so the attributeChangeCallback arrives in the middle.
-    it.todo("should render a web component with props", async () => {
+    it.todo('should render a web component with props', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import(
-        "@/core/test/run-web-components"
-      ).then((m) => m.default);
+      const runWebComponents = await import('@/core/test/run-web-components').then(
+        (m) => m.default,
+      );
       await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter initialValue={5} />);
-      const customCounter =
-        container.querySelector("custom-counter")?.shadowRoot!;
+      const customCounter = container.querySelector('custom-counter')?.shadowRoot!;
 
-      expect(customCounter.innerHTML).toBe("5");
+      expect(customCounter.innerHTML).toBe('5');
     });
 
-    it("should render a web component with slots", async () => {
+    it('should render a web component with slots', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import(
-        "@/core/test/run-web-components"
-      ).then((m) => m.default);
+      const runWebComponents = await import('@/core/test/run-web-components').then(
+        (m) => m.default,
+      );
       await runWebComponents();
 
       const { container } = await render(
@@ -211,60 +191,59 @@ describe("test api", () => {
           {/* @ts-ignore */}
         </custom-slot>,
       );
-      const customSlot = container.querySelector("custom-slot")?.shadowRoot!;
+      const customSlot = container.querySelector('custom-slot')?.shadowRoot!;
 
-      expect(customSlot).toHaveElementByNodeName("slot");
-      expect(container).toContainTextContent("Header");
-      expect(container).toContainTextContent("Footer");
+      expect(customSlot).toHaveElementByNodeName('slot');
+      expect(container).toContainTextContent('Header');
+      expect(container).toContainTextContent('Footer');
     });
 
-    it("should be possible to interact with a web component", async () => {
+    it('should be possible to interact with a web component', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import(
-        "@/core/test/run-web-components"
-      ).then((m) => m.default);
+      const runWebComponents = await import('@/core/test/run-web-components').then(
+        (m) => m.default,
+      );
       await runWebComponents();
 
       // @ts-ignore
       const { container } = await render(<custom-counter />);
-      const customCounter =
-        container.querySelector("custom-counter")!.shadowRoot!;
-      const [increment, decrement] = customCounter.querySelectorAll("button");
+      const customCounter = container.querySelector('custom-counter')!.shadowRoot!;
+      const [increment, decrement] = customCounter.querySelectorAll('button');
 
-      expect(customCounter).toContainTextContent("0");
-
-      userEvent.click(increment);
-
-      expect(customCounter).toContainTextContent("1");
+      expect(customCounter).toContainTextContent('0');
 
       userEvent.click(increment);
 
-      expect(customCounter).toContainTextContent("2");
+      expect(customCounter).toContainTextContent('1');
+
+      userEvent.click(increment);
+
+      expect(customCounter).toContainTextContent('2');
 
       userEvent.click(decrement);
 
-      expect(customCounter).toContainTextContent("1");
+      expect(customCounter).toContainTextContent('1');
 
       userEvent.click(decrement);
 
-      expect(customCounter).toContainTextContent("0");
+      expect(customCounter).toContainTextContent('0');
     });
 
-    it("should be possible to render a server component with a web component inside", async () => {
+    it('should be possible to render a server component with a web component inside', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import(
-        "@/core/test/run-web-components"
-      ).then((m) => m.default);
+      const runWebComponents = await import('@/core/test/run-web-components').then(
+        (m) => m.default,
+      );
       await runWebComponents();
 
       function ServerComponent() {
@@ -278,26 +257,25 @@ describe("test api", () => {
 
       // @ts-ignore
       const { container } = await render(<ServerComponent />);
-      const customCounter =
-        container.querySelector("custom-counter")?.shadowRoot!;
-      const [increment] = customCounter.querySelectorAll("button");
+      const customCounter = container.querySelector('custom-counter')?.shadowRoot!;
+      const [increment] = customCounter.querySelectorAll('button');
 
-      expect(customCounter).toContainTextContent("0");
+      expect(customCounter).toContainTextContent('0');
       userEvent.click(increment);
-      expect(customCounter).toContainTextContent("1");
+      expect(customCounter).toContainTextContent('1');
     });
 
-    it("should render server component using i18n", async () => {
+    it('should render server component using i18n', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
         I18N_CONFIG: {
-          defaultLocale: "en",
-          locales: ["en", "es"],
+          defaultLocale: 'en',
+          locales: ['en', 'es'],
           messages: {
             en: {
-              "hello-world": "Hello World",
+              'hello-world': 'Hello World',
             },
           },
         },
@@ -306,29 +284,29 @@ describe("test api", () => {
       function ServerComponent({}, { i18n }: RequestContext) {
         return (
           <div>
-            <span>{i18n.t("hello-world")}</span>
+            <span>{i18n.t('hello-world')}</span>
           </div>
         );
       }
 
       // @ts-ignore
-      const { container } = await render(<ServerComponent />, { locale: "en" });
-      const span = container.querySelector("span")!;
+      const { container } = await render(<ServerComponent />, { locale: 'en' });
+      const span = container.querySelector('span')!;
 
-      expect(span.innerHTML).toBe("Hello World");
+      expect(span.innerHTML).toBe('Hello World');
     });
 
-    it("should be possible to use overrideMessages inside a server component", async () => {
+    it('should be possible to use overrideMessages inside a server component', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
         I18N_CONFIG: {
-          defaultLocale: "en",
-          locales: ["en", "es"],
+          defaultLocale: 'en',
+          locales: ['en', 'es'],
           messages: {
             en: {
-              "hello-world": "Hello World",
+              'hello-world': 'Hello World',
             },
           },
         },
@@ -336,109 +314,105 @@ describe("test api", () => {
 
       function ServerComponent({}, { i18n }: RequestContext) {
         i18n.overrideMessages(() => ({
-          hello: "Hi {{name}}",
+          hello: 'Hi {{name}}',
         }));
 
         return (
           <div>
-            <span>{i18n.t("hello", { name: "Foo" })}</span>
+            <span>{i18n.t('hello', { name: 'Foo' })}</span>
           </div>
         );
       }
 
       // @ts-ignore
-      const { container } = await render(<ServerComponent />, { locale: "en" });
-      const span = container.querySelector("span")!;
+      const { container } = await render(<ServerComponent />, { locale: 'en' });
+      const span = container.querySelector('span')!;
 
-      expect(span.innerHTML).toBe("Hi Foo");
+      expect(span.innerHTML).toBe('Hi Foo');
     });
 
-    it("should render the web component foo-component using i18n", async () => {
+    it('should render the web component foo-component using i18n', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
         I18N_CONFIG: {
-          defaultLocale: "en",
-          locales: ["en", "es"],
+          defaultLocale: 'en',
+          locales: ['en', 'es'],
           messages: {
             en: {
-              "hello-world": "Hello World",
+              'hello-world': 'Hello World',
             },
           },
         },
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import(
-        "@/core/test/run-web-components"
-      ).then((m) => m.default);
+      const runWebComponents = await import('@/core/test/run-web-components').then(
+        (m) => m.default,
+      );
       await runWebComponents();
 
       // @ts-ignore
-      const { container } = await render(<foo-component />, { locale: "en" });
-      const fooComponent =
-        container.querySelector("foo-component")?.shadowRoot!;
+      const { container } = await render(<foo-component />, { locale: 'en' });
+      const fooComponent = container.querySelector('foo-component')?.shadowRoot!;
 
-      expect(fooComponent).toContainTextContent("Foo Hello World");
+      expect(fooComponent).toContainTextContent('Foo Hello World');
     });
 
-    it("should render the web component and react with store", async () => {
+    it('should render the web component and react with store', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
         I18N_CONFIG: {
-          defaultLocale: "en",
-          locales: ["en", "es"],
+          defaultLocale: 'en',
+          locales: ['en', 'es'],
           messages: {
             en: {
-              "hello-world": "Hello World",
+              'hello-world': 'Hello World',
             },
           },
         },
       };
       // Register DOM and web components from __fixtures__/web-components
-      const runWebComponents = await import(
-        "@/core/test/run-web-components"
-      ).then((m) => m.default);
+      const runWebComponents = await import('@/core/test/run-web-components').then(
+        (m) => m.default,
+      );
       await runWebComponents();
 
       // @ts-ignore
       const { container, store } = await render(<web-component />);
-      const componentComponent =
-        container.querySelector("web-component")?.shadowRoot!;
+      const componentComponent = container.querySelector('web-component')?.shadowRoot!;
 
-      expect(componentComponent.innerHTML).toBe(
-        "<native-some-example></native-some-example>",
-      );
+      expect(componentComponent.innerHTML).toBe('<native-some-example></native-some-example>');
 
-      store.set("foo", "bar");
+      store.set('foo', 'bar');
 
-      expect(componentComponent).toContainTextContent("bar");
+      expect(componentComponent).toContainTextContent('bar');
     });
   });
 
-  describe("cleanup", () => {
-    it("should cleanup the registed actions", () => {
+  describe('cleanup', () => {
+    it('should cleanup the registed actions', () => {
       globalThis.REGISTERED_ACTIONS = [() => {}];
       cleanup();
       expect(globalThis.REGISTERED_ACTIONS).toBeEmpty();
     });
 
-    it("should cleanup the document body", async () => {
-      document.body.innerHTML = "<div>Foo</div>";
+    it('should cleanup the document body', async () => {
+      document.body.innerHTML = '<div>Foo</div>';
       cleanup();
       expect(document.body.innerHTML).toBeEmpty();
     });
 
-    it("should cleanup the document head", async () => {
-      document.head.innerHTML = "<title>Foo</title>";
+    it('should cleanup the document head', async () => {
+      document.head.innerHTML = '<title>Foo</title>';
       cleanup();
       expect(document.head.innerHTML).toBeEmpty();
     });
   });
 
-  describe("serveRoute", () => {
+  describe('serveRoute', () => {
     beforeEach(() => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
@@ -449,424 +423,406 @@ describe("test api", () => {
       };
     });
 
-    it("should throw an error if build is not executed", async () => {
+    it('should throw an error if build is not executed', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
-        PAGES_DIR: "invalid",
-        BUILD_DIR: "invalid",
-        SRC_DIR: "invalid",
-        ASSETS_DIR: "invalid",
+        PAGES_DIR: 'invalid',
+        BUILD_DIR: 'invalid',
+        SRC_DIR: 'invalid',
+        ASSETS_DIR: 'invalid',
       };
-      await expect(serveRoute("/api/example")).rejects.toThrow(
+      await expect(serveRoute('/api/example')).rejects.toThrow(
         new Error(
           "Error: Unable to execute 'serveRoute'. Prior execution of 'brisa build' is required to utilize the 'serveRoute' method.",
         ),
       );
     });
 
-    it("should serve an API endpoint", async () => {
-      const response = await serveRoute("/api/example");
+    it('should serve an API endpoint', async () => {
+      const response = await serveRoute('/api/example');
       const data = await response.json();
 
-      expect(data).toEqual({ hello: "world" });
+      expect(data).toEqual({ hello: 'world' });
     });
 
-    it("should serve a page", async () => {
-      const response = await serveRoute("/somepage");
+    it('should serve a page', async () => {
+      const response = await serveRoute('/somepage');
       const { container } = await render(response);
 
-      expect(response.headers.get("x-test")).toBe("test");
-      expect(container).toContainTextContent("Some page");
+      expect(response.headers.get('x-test')).toBe('test');
+      expect(container).toContainTextContent('Some page');
     });
 
-    it("should serve a page should be interactive (server actions)", async () => {
+    it('should serve a page should be interactive (server actions)', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
-          defaultLocale: "en",
-          locales: ["en", "es"],
+          defaultLocale: 'en',
+          locales: ['en', 'es'],
         },
       };
-      const mockLog = spyOn(console, "log");
+      const mockLog = spyOn(console, 'log');
 
-      await render(await serveRoute("/en"));
+      await render(await serveRoute('/en'));
 
-      const div = document.querySelector("[data-action-onclick]")!;
+      const div = document.querySelector('[data-action-onclick]')!;
 
       await userEvent.click(div!);
 
-      expect(div).toContainTextContent("hello-world");
-      expect(mockLog).toHaveBeenCalledWith("hello world");
+      expect(div).toContainTextContent('hello-world');
+      expect(mockLog).toHaveBeenCalledWith('hello world');
     });
   });
 
-  describe("waitFor", () => {
-    it("should wait for the content of the element", async () => {
+  describe('waitFor', () => {
+    it('should wait for the content of the element', async () => {
       let element: any;
 
       const withDelay = async (ms: number) => {
         await Bun.sleep(ms);
-        element = document.createElement("div");
-        element.textContent = "Foo";
+        element = document.createElement('div');
+        element.textContent = 'Foo';
       };
       withDelay(1);
 
       await waitFor(() => expect(element).toBeDefined());
-      expect(element).toHaveTextContent("Foo");
+      expect(element).toHaveTextContent('Foo');
     });
   });
 
-  describe("debug", () => {
-    it("should log the document", () => {
-      const mockLog = spyOn(console, "log");
-      document.body.innerHTML = "<div>Foo</div>";
+  describe('debug', () => {
+    it('should log the document', () => {
+      const mockLog = spyOn(console, 'log');
+      document.body.innerHTML = '<div>Foo</div>';
       debug();
       expect(mockLog.mock.calls[0][0]).toBe(
-        blueLog("<html") +
-          blueLog(">") +
-          "\n  " +
-          blueLog("<head") +
-          blueLog(">") +
-          "\n  " +
-          blueLog("</head>") +
-          "\n  " +
-          blueLog("<body") +
-          blueLog(">") +
-          "\n    " +
-          blueLog("<div") +
-          blueLog(">") +
-          "\n      " +
-          "Foo\n    " +
-          blueLog("</div>") +
-          "\n  " +
-          blueLog("</body>") +
-          "\n" +
-          blueLog("</html>"),
+        blueLog('<html') +
+          blueLog('>') +
+          '\n  ' +
+          blueLog('<head') +
+          blueLog('>') +
+          '\n  ' +
+          blueLog('</head>') +
+          '\n  ' +
+          blueLog('<body') +
+          blueLog('>') +
+          '\n    ' +
+          blueLog('<div') +
+          blueLog('>') +
+          '\n      ' +
+          'Foo\n    ' +
+          blueLog('</div>') +
+          '\n  ' +
+          blueLog('</body>') +
+          '\n' +
+          blueLog('</html>'),
       );
     });
 
-    it("should log the attributes in cyan (key) and green (value)", () => {
-      const mockLog = spyOn(console, "log");
+    it('should log the attributes in cyan (key) and green (value)', () => {
+      const mockLog = spyOn(console, 'log');
       document.body.innerHTML = '<div id="test" class="test">Foo</div>';
       debug();
       expect(mockLog.mock.calls[0][0]).toContain(
-        cyanLog("id") +
-          "=" +
+        cyanLog('id') +
+          '=' +
           greenLog('"test"') +
-          "\n        " +
-          cyanLog("class") +
-          "=" +
+          '\n        ' +
+          cyanLog('class') +
+          '=' +
           greenLog('"test"'),
       );
     });
 
-    it("should be possible to log a shadow root", () => {
-      const mockLog = spyOn(console, "log");
-      const shadowRoot = document
-        .createElement("div")
-        .attachShadow({ mode: "open" });
-      shadowRoot.innerHTML = "<div>Foo</div>";
+    it('should be possible to log a shadow root', () => {
+      const mockLog = spyOn(console, 'log');
+      const shadowRoot = document.createElement('div').attachShadow({ mode: 'open' });
+      shadowRoot.innerHTML = '<div>Foo</div>';
       debug(shadowRoot);
       expect(mockLog.mock.calls[0][0]).toBe(
-        blueLog("<div") + blueLog(">") + "\n  " + "Foo\n" + blueLog("</div>"),
+        blueLog('<div') + blueLog('>') + '\n  ' + 'Foo\n' + blueLog('</div>'),
       );
     });
 
-    it("should be possible to log a document fragment", () => {
-      const mockLog = spyOn(console, "log");
+    it('should be possible to log a document fragment', () => {
+      const mockLog = spyOn(console, 'log');
       const fragment = document.createDocumentFragment();
-      const div = document.createElement("div");
-      div.innerHTML = "Foo<div>Bar</div>";
+      const div = document.createElement('div');
+      div.innerHTML = 'Foo<div>Bar</div>';
       fragment.appendChild(div);
       debug(fragment);
       expect(mockLog.mock.calls[0][0]).toBe(
-        blueLog("<div") +
-          blueLog(">") +
-          "\n  " +
-          "Foo\n  " +
-          blueLog("<div") +
-          blueLog(">") +
-          "\n    " +
-          "Bar\n  " +
-          blueLog("</div>") +
-          "\n" +
-          blueLog("</div>"),
+        blueLog('<div') +
+          blueLog('>') +
+          '\n  ' +
+          'Foo\n  ' +
+          blueLog('<div') +
+          blueLog('>') +
+          '\n    ' +
+          'Bar\n  ' +
+          blueLog('</div>') +
+          '\n' +
+          blueLog('</div>'),
       );
     });
 
-    it("should be possible to log null element an see an empty fragment", () => {
-      const mockLog = spyOn(console, "log");
+    it('should be possible to log null element an see an empty fragment', () => {
+      const mockLog = spyOn(console, 'log');
       debug(null);
-      expect(mockLog.mock.calls[0][0]).toBe(blueLog("<>\n</>"));
+      expect(mockLog.mock.calls[0][0]).toBe(blueLog('<>\n</>'));
     });
   });
 
-  describe("userEvent", () => {
-    describe("click", () => {
-      it("should click the element", async () => {
+  describe('userEvent', () => {
+    describe('click', () => {
+      it('should click the element', async () => {
         const mockClick = mock(() => {});
-        const element = document.createElement("button");
+        const element = document.createElement('button');
 
-        element.textContent = "Click me";
+        element.textContent = 'Click me';
         document.body.appendChild(element);
-        element.addEventListener("click", mockClick);
+        element.addEventListener('click', mockClick);
         userEvent.click(element);
 
         expect(mockClick).toHaveBeenCalled();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <button onClick={mockFn}>Click me</button>,
-        );
-        const button = container.querySelector("button");
+        const { container } = await render(<button onClick={mockFn}>Click me</button>);
+        const button = container.querySelector('button');
 
         userEvent.click(button!);
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("submit", () => {
-      it("should submit the element", async () => {
+    describe('submit', () => {
+      it('should submit the element', async () => {
         const mockSubmit = mock(() => {});
-        const element = document.createElement("form");
+        const element = document.createElement('form');
 
         document.body.appendChild(element);
-        element.addEventListener("submit", mockSubmit);
+        element.addEventListener('submit', mockSubmit);
 
         userEvent.submit(element);
         expect(mockSubmit).toHaveBeenCalled();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <form onSubmit={mockFn}>
             <button type="submit">Submit</button>
           </form>,
         );
-        const form = container.querySelector("form");
+        const form = container.querySelector('form');
 
         userEvent.submit(form!);
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("dblClick", () => {
-      it("should double click the element", async () => {
+    describe('dblClick', () => {
+      it('should double click the element', async () => {
         const mockDblClick = mock(() => {});
-        const element = document.createElement("button");
+        const element = document.createElement('button');
 
-        element.textContent = "Click me";
+        element.textContent = 'Click me';
         document.body.appendChild(element);
-        element.addEventListener("dblclick", mockDblClick);
+        element.addEventListener('dblclick', mockDblClick);
 
         userEvent.dblClick(element);
         expect(mockDblClick).toHaveBeenCalled();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <button onDblClick={mockFn}>Click me</button>,
-        );
-        const button = container.querySelector("button");
+        const { container } = await render(<button onDblClick={mockFn}>Click me</button>);
+        const button = container.querySelector('button');
 
         userEvent.dblClick(button!);
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("type", () => {
-      it("should type the element", async () => {
-        const element = document.createElement("input");
+    describe('type', () => {
+      it('should type the element', async () => {
+        const element = document.createElement('input');
         document.body.appendChild(element);
 
-        userEvent.type(element, "Foo");
+        userEvent.type(element, 'Foo');
 
-        expect(element).toHaveValue("Foo");
+        expect(element).toHaveValue('Foo');
 
-        userEvent.type(element, "Bar");
+        userEvent.type(element, 'Bar');
 
-        expect(element).toHaveValue("FooBar");
+        expect(element).toHaveValue('FooBar');
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <input onInput={mockFn} type="text" />,
-        );
-        const input = container.querySelector("input")!;
+        const { container } = await render(<input onInput={mockFn} type="text" />);
+        const input = container.querySelector('input')!;
 
-        userEvent.type(input, "Hello World");
-        expect(input.value).toBe("Hello World");
+        userEvent.type(input, 'Hello World');
+        expect(input.value).toBe('Hello World');
         expect(mockFn).toHaveBeenCalledTimes(11);
       });
     });
-    describe("keyboard", () => {
-      it("should trigger a keyboard event", async () => {
+    describe('keyboard', () => {
+      it('should trigger a keyboard event', async () => {
         const mockKeyboard = mock(() => {});
-        const element = document.createElement("input");
+        const element = document.createElement('input');
         document.body.appendChild(element);
-        element.addEventListener("keydown", mockKeyboard);
-        element.addEventListener("keypress", mockKeyboard);
-        element.addEventListener("keyup", mockKeyboard);
+        element.addEventListener('keydown', mockKeyboard);
+        element.addEventListener('keypress', mockKeyboard);
+        element.addEventListener('keyup', mockKeyboard);
 
-        userEvent.keyboard("Enter", element);
+        userEvent.keyboard('Enter', element);
 
         expect(mockKeyboard).toHaveBeenCalledTimes(3);
       });
 
-      it("should trigger a Escape from window", async () => {
+      it('should trigger a Escape from window', async () => {
         const mockKeyboard = mock(() => {});
-        window.addEventListener("keydown", mockKeyboard);
-        window.addEventListener("keypress", mockKeyboard);
-        window.addEventListener("keyup", mockKeyboard);
+        window.addEventListener('keydown', mockKeyboard);
+        window.addEventListener('keypress', mockKeyboard);
+        window.addEventListener('keyup', mockKeyboard);
 
-        userEvent.keyboard("Escape");
+        userEvent.keyboard('Escape');
 
         expect(mockKeyboard).toHaveBeenCalledTimes(3);
         expect(mockKeyboard).toHaveBeenCalledWith(
           // @ts-ignore
-          expect.objectContaining({ key: "Escape" }),
+          expect.objectContaining({ key: 'Escape' }),
         );
       });
     });
-    describe("clear", () => {
-      it("should clear the element", async () => {
-        const element = document.createElement("input");
-        element.value = "Foo";
+    describe('clear', () => {
+      it('should clear the element', async () => {
+        const element = document.createElement('input');
+        element.value = 'Foo';
         document.body.appendChild(element);
 
         userEvent.clear(element);
 
-        expect(element).toHaveValue("");
+        expect(element).toHaveValue('');
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <input onInput={mockFn} type="text" />,
-        );
-        const input = container.querySelector("input")!;
+        const { container } = await render(<input onInput={mockFn} type="text" />);
+        const input = container.querySelector('input')!;
 
-        userEvent.type(input, "Hello World");
+        userEvent.type(input, 'Hello World');
         userEvent.clear(input);
         expect(input.value).toBeEmpty();
         expect(mockFn).toHaveBeenCalledTimes(12);
       });
     });
-    describe("hover", () => {
-      it("should hover the element", async () => {
+    describe('hover', () => {
+      it('should hover the element', async () => {
         const mockHover = mock(() => {});
-        const element = document.createElement("button");
+        const element = document.createElement('button');
 
-        element.textContent = "Hover me";
+        element.textContent = 'Hover me';
         document.body.appendChild(element);
-        element.addEventListener("mouseover", mockHover);
+        element.addEventListener('mouseover', mockHover);
 
         userEvent.hover(element);
         expect(mockHover).toHaveBeenCalled();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <button onMouseOver={mockFn}>Hover me</button>,
-        );
-        const button = container.querySelector("button");
+        const { container } = await render(<button onMouseOver={mockFn}>Hover me</button>);
+        const button = container.querySelector('button');
 
         userEvent.hover(button!);
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("unhover", () => {
-      it("should unhover the element", async () => {
+    describe('unhover', () => {
+      it('should unhover the element', async () => {
         const mockUnhover = mock(() => {});
-        const element = document.createElement("button");
+        const element = document.createElement('button');
 
-        element.textContent = "Unhover me";
+        element.textContent = 'Unhover me';
         document.body.appendChild(element);
-        element.addEventListener("mouseout", mockUnhover);
+        element.addEventListener('mouseout', mockUnhover);
 
         userEvent.unhover(element);
         expect(mockUnhover).toHaveBeenCalled();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <button onMouseOut={mockFn}>Unhover me</button>,
-        );
-        const button = container.querySelector("button");
+        const { container } = await render(<button onMouseOut={mockFn}>Unhover me</button>);
+        const button = container.querySelector('button');
 
         userEvent.unhover(button!);
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("focus", () => {
-      it("should focus the element", async () => {
+    describe('focus', () => {
+      it('should focus the element', async () => {
         const mockFocus = mock(() => {});
-        const element = document.createElement("input");
+        const element = document.createElement('input');
 
         document.body.appendChild(element);
-        element.addEventListener("focus", mockFocus);
+        element.addEventListener('focus', mockFocus);
 
         userEvent.focus(element);
         expect(mockFocus).toHaveBeenCalled();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <input onFocus={mockFn} type="text" />,
-        );
-        const input = container.querySelector("input")!;
+        const { container } = await render(<input onFocus={mockFn} type="text" />);
+        const input = container.querySelector('input')!;
 
         userEvent.focus(input);
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("blur", () => {
-      it("should blur the element", async () => {
+    describe('blur', () => {
+      it('should blur the element', async () => {
         const mockBlur = mock(() => {});
-        const element = document.createElement("input");
+        const element = document.createElement('input');
 
         document.body.appendChild(element);
-        element.addEventListener("blur", mockBlur);
+        element.addEventListener('blur', mockBlur);
 
         userEvent.blur(element);
         expect(mockBlur).toHaveBeenCalled();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <input onBlur={mockFn} type="text" />,
-        );
-        const input = container.querySelector("input")!;
+        const { container } = await render(<input onBlur={mockFn} type="text" />);
+        const input = container.querySelector('input')!;
 
         userEvent.focus(input);
         userEvent.blur(input);
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("select", () => {
-      it("should select the element", async () => {
-        const element = document.createElement("select");
-        const option1 = document.createElement("option");
-        const option2 = document.createElement("option");
-        option1.value = "Foo";
-        option2.value = "Bar";
+    describe('select', () => {
+      it('should select the element', async () => {
+        const element = document.createElement('select');
+        const option1 = document.createElement('option');
+        const option2 = document.createElement('option');
+        option1.value = 'Foo';
+        option2.value = 'Bar';
         element.appendChild(option1);
         element.appendChild(option2);
         document.body.appendChild(element);
 
-        userEvent.select(element, "Bar");
+        userEvent.select(element, 'Bar');
 
         expect(option1.selected).toBeFalse();
         expect(option2.selected).toBeTrue();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <select onChange={mockFn}>
@@ -874,14 +830,14 @@ describe("test api", () => {
             <option value="2">Option 2</option>
           </select>,
         );
-        const select = container.querySelector("select")!;
+        const select = container.querySelector('select')!;
 
-        userEvent.select(select, "2");
-        expect(select.value).toBe("2");
+        userEvent.select(select, '2');
+        expect(select.value).toBe('2');
         expect(mockFn).toHaveBeenCalled();
       });
 
-      it("should work with render and onInput", async () => {
+      it('should work with render and onInput', async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <select onInput={mockFn}>
@@ -889,32 +845,32 @@ describe("test api", () => {
             <option value="2">Option 2</option>
           </select>,
         );
-        const select = container.querySelector("select")!;
+        const select = container.querySelector('select')!;
 
-        userEvent.select(select, "2");
-        expect(select.value).toBe("2");
+        userEvent.select(select, '2');
+        expect(select.value).toBe('2');
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("deselect", () => {
-      it("should deselect the element", async () => {
-        const element = document.createElement("select");
-        const option1 = document.createElement("option");
-        const option2 = document.createElement("option");
-        option1.value = "Foo";
-        option2.value = "Bar";
+    describe('deselect', () => {
+      it('should deselect the element', async () => {
+        const element = document.createElement('select');
+        const option1 = document.createElement('option');
+        const option2 = document.createElement('option');
+        option1.value = 'Foo';
+        option2.value = 'Bar';
         option2.selected = true;
         element.appendChild(option1);
         element.appendChild(option2);
         document.body.appendChild(element);
 
-        userEvent.deselect(element, "Bar");
+        userEvent.deselect(element, 'Bar');
 
         expect(option1.selected).toBeFalse();
         expect(option2.selected).toBeFalse();
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <select onChange={mockFn}>
@@ -922,15 +878,15 @@ describe("test api", () => {
             <option value="2">Option 2</option>
           </select>,
         );
-        const select = container.querySelector("select")!;
+        const select = container.querySelector('select')!;
 
-        userEvent.select(select, "2");
-        userEvent.deselect(select, "2");
+        userEvent.select(select, '2');
+        userEvent.deselect(select, '2');
         expect(select.value).toBeEmpty();
         expect(mockFn).toHaveBeenCalledTimes(2);
       });
 
-      it("should work with render and onInput", async () => {
+      it('should work with render and onInput', async () => {
         const mockFn = mock(() => {});
         const { container } = await render(
           <select onInput={mockFn}>
@@ -938,21 +894,21 @@ describe("test api", () => {
             <option value="2">Option 2</option>
           </select>,
         );
-        const select = container.querySelector("select")!;
+        const select = container.querySelector('select')!;
 
-        userEvent.select(select, "2");
-        userEvent.deselect(select, "2");
+        userEvent.select(select, '2');
+        userEvent.deselect(select, '2');
         expect(select.value).toBeEmpty();
         expect(mockFn).toHaveBeenCalledTimes(2);
       });
     });
-    describe("upload", () => {
-      it("should upload the element", async () => {
-        const file = new File(["foo"], "foo.txt", {
-          type: "text/plain",
+    describe('upload', () => {
+      it('should upload the element', async () => {
+        const file = new File(['foo'], 'foo.txt', {
+          type: 'text/plain',
         });
-        const element = document.createElement("input");
-        element.type = "file";
+        const element = document.createElement('input');
+        element.type = 'file';
         document.body.appendChild(element);
 
         userEvent.upload(element, file);
@@ -960,14 +916,12 @@ describe("test api", () => {
         expect(element.files).toContain(file);
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <input type="file" onChange={mockFn} />,
-        );
-        const input = container.querySelector("input")!;
-        const file = new File(["foo"], "foo.txt", {
-          type: "text/plain",
+        const { container } = await render(<input type="file" onChange={mockFn} />);
+        const input = container.querySelector('input')!;
+        const file = new File(['foo'], 'foo.txt', {
+          type: 'text/plain',
         });
 
         userEvent.upload(input, file);
@@ -975,10 +929,10 @@ describe("test api", () => {
         expect(mockFn).toHaveBeenCalled();
       });
     });
-    describe("tab", () => {
-      it("should tab the element", async () => {
-        const input = document.createElement("input");
-        const button = document.createElement("button");
+    describe('tab', () => {
+      it('should tab the element', async () => {
+        const input = document.createElement('input');
+        const button = document.createElement('button');
         document.body.appendChild(input);
         document.body.appendChild(button);
 
@@ -989,7 +943,7 @@ describe("test api", () => {
         expect(document.activeElement).toBe(button);
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const { container } = await render(
           <>
             <input type="text" />
@@ -997,9 +951,9 @@ describe("test api", () => {
             <a href="#">Link</a>
           </>,
         );
-        const input = container.querySelector("input")!;
-        const button = container.querySelector("button")!;
-        const link = container.querySelector("a")!;
+        const input = container.querySelector('input')!;
+        const button = container.querySelector('button')!;
+        const link = container.querySelector('a')!;
 
         userEvent.tab();
         expect(document.activeElement).toBe(input);
@@ -1011,7 +965,7 @@ describe("test api", () => {
         expect(document.activeElement).toBe(link);
       });
 
-      it("should respect dom order when tabindex are all the same", async () => {
+      it('should respect dom order when tabindex are all the same', async () => {
         const { container } = await render(
           <div>
             <input tabIndex={0} type="checkbox" />
@@ -1020,9 +974,9 @@ describe("test api", () => {
           </div>,
         );
 
-        const checkbox = container.querySelector("input[type=checkbox]")!;
-        const radio = container.querySelector("input[type=radio]")!;
-        const number = container.querySelector("input[type=number]")!;
+        const checkbox = container.querySelector('input[type=checkbox]')!;
+        const radio = container.querySelector('input[type=radio]')!;
+        const number = container.querySelector('input[type=number]')!;
 
         userEvent.tab();
 
@@ -1041,27 +995,25 @@ describe("test api", () => {
         expect(document.activeElement).toBe(checkbox);
       });
     });
-    describe("paste", () => {
-      it("should paste the element", async () => {
+    describe('paste', () => {
+      it('should paste the element', async () => {
         const mockPaste = mock(() => {});
-        const element = document.createElement("input");
+        const element = document.createElement('input');
         document.body.appendChild(element);
-        element.addEventListener("paste", mockPaste);
+        element.addEventListener('paste', mockPaste);
 
-        userEvent.paste(element, "Foo");
+        userEvent.paste(element, 'Foo');
         expect(mockPaste).toHaveBeenCalled();
-        expect(element).toHaveValue("Foo");
+        expect(element).toHaveValue('Foo');
       });
 
-      it("should work with render", async () => {
+      it('should work with render', async () => {
         const mockFn = mock(() => {});
-        const { container } = await render(
-          <input onPaste={mockFn} type="text" />,
-        );
-        const input = container.querySelector("input")!;
+        const { container } = await render(<input onPaste={mockFn} type="text" />);
+        const input = container.querySelector('input')!;
 
-        userEvent.paste(input, "Hello World");
-        expect(input.value).toBe("Hello World");
+        userEvent.paste(input, 'Hello World');
+        expect(input.value).toBe('Hello World');
         expect(mockFn).toHaveBeenCalled();
       });
     });

@@ -1,29 +1,29 @@
 /// <reference lib="dom" />
 
-import path from "node:path";
-import { describe, it, expect, beforeAll, afterAll } from "bun:test";
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
+import path from 'node:path';
+import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
 
-const filePathname = path.join(import.meta.dir, "unsuspense.ts");
+const filePathname = path.join(import.meta.dir, 'unsuspense.ts');
 const transpiler = new Bun.Transpiler({
-  loader: "tsx",
-  target: "browser",
+  loader: 'tsx',
+  target: 'browser',
   minifyWhitespace: true,
 });
 
 const code = (await transpiler.transform(await Bun.file(filePathname).text()))
-  .replaceAll("u$", "window.u$")
-  .replaceAll("l$", "window.l$");
+  .replaceAll('u$', 'window.u$')
+  .replaceAll('l$', 'window.l$');
 
 const runCode = (ids: string[]) => {
-  eval(code + ids.map((id) => `u$(${id});`).join("") + "u$('0')");
+  eval(code + ids.map((id) => `u$(${id});`).join('') + "u$('0')");
 };
 
 function inlineHTML(html: string) {
-  return html.replaceAll(/\n\s*/g, "");
+  return html.replaceAll(/\n\s*/g, '');
 }
 
-describe("unsuspense window.u$", () => {
+describe('unsuspense window.u$', () => {
   beforeAll(() => {
     GlobalRegistrator.register();
   });
@@ -31,7 +31,7 @@ describe("unsuspense window.u$", () => {
     GlobalRegistrator.unregister();
   });
 
-  it("should replace pending to success nodes", async () => {
+  it('should replace pending to success nodes', async () => {
     document.body.innerHTML = inlineHTML(`
       <body id="test_1">
         <div id="S:1">
@@ -45,7 +45,7 @@ describe("unsuspense window.u$", () => {
       </body>
     `);
 
-    await runCode(["1"]);
+    await runCode(['1']);
 
     expect(document.body.innerHTML).toEqual(
       inlineHTML(`
@@ -57,7 +57,7 @@ describe("unsuspense window.u$", () => {
     );
   });
 
-  it("should work with multiple pending/success nodes", async () => {
+  it('should work with multiple pending/success nodes', async () => {
     document.body.innerHTML = inlineHTML(`
       <body id="test_2">
         <div id="S:1">
@@ -78,7 +78,7 @@ describe("unsuspense window.u$", () => {
       </body>
     `);
 
-    await runCode(["1", "2"]);
+    await runCode(['1', '2']);
 
     expect(document.body.innerHTML).toEqual(
       inlineHTML(`
@@ -91,7 +91,7 @@ describe("unsuspense window.u$", () => {
     );
   });
 
-  it("should work with nested success nodes", async () => {
+  it('should work with nested success nodes', async () => {
     document.body.innerHTML = inlineHTML(`
       <body id="test_3">
         <div id="S:1">
@@ -111,7 +111,7 @@ describe("unsuspense window.u$", () => {
       </body>
     `);
 
-    await runCode(["1", "1.1"]);
+    await runCode(['1', '1.1']);
 
     expect(document.body.innerHTML).toEqual(
       inlineHTML(`
@@ -123,7 +123,7 @@ describe("unsuspense window.u$", () => {
     );
   });
 
-  it("should work with nested pending nodes", async () => {
+  it('should work with nested pending nodes', async () => {
     document.body.innerHTML = inlineHTML(`
       <body id="test_4">
         <div id="S:1">
@@ -143,7 +143,7 @@ describe("unsuspense window.u$", () => {
       </body>
     `);
 
-    await runCode(["1"]);
+    await runCode(['1']);
 
     expect(document.body.innerHTML).toEqual(
       inlineHTML(`

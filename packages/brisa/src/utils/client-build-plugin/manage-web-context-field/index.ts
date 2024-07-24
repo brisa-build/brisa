@@ -3,19 +3,18 @@ export default function manageWebContextField(
   fieldName: string,
   originalFieldName: string,
 ) {
-  const componentParams =
-    componentAST.params ?? componentAST.declarations?.[0]?.init?.params ?? [];
+  const componentParams = componentAST.params ?? componentAST.declarations?.[0]?.init?.params ?? [];
   const property = {
-    type: "Property",
+    type: 'Property',
     key: {
-      type: "Identifier",
+      type: 'Identifier',
       name: originalFieldName,
     },
     value: {
-      type: "Identifier",
+      type: 'Identifier',
       name: fieldName,
     },
-    kind: "init",
+    kind: 'init',
     computed: false,
     method: false,
     shorthand: fieldName === originalFieldName,
@@ -24,7 +23,7 @@ export default function manageWebContextField(
   // convert function () {} to function ({}) {}
   if (!componentParams?.length) {
     componentParams.push({
-      type: "ObjectPattern",
+      type: 'ObjectPattern',
       properties: [],
     });
   }
@@ -32,26 +31,26 @@ export default function manageWebContextField(
   // convert function ({}) {} to function ({}, { effect }) {}
   if (componentParams?.length === 1) {
     componentParams.push({
-      type: "ObjectPattern",
+      type: 'ObjectPattern',
       properties: [property],
     });
   }
   // convert function ({}, { state }) {} to function ({}, { state, effect }) {}
-  else if (componentParams[1]?.type === "ObjectPattern") {
+  else if (componentParams[1]?.type === 'ObjectPattern') {
     const existFieldName = componentParams[1].properties.some(
       (prop: any) => prop.key.name === originalFieldName,
     );
     if (!existFieldName) componentParams[1].properties.push(property);
   }
   // convert function ({}, webContext) {} to function ({ effect, ...webContext }) {}
-  else if (componentParams[1]?.type === "Identifier") {
+  else if (componentParams[1]?.type === 'Identifier') {
     const props = componentParams[1];
     componentParams[1] = {
-      type: "ObjectPattern",
+      type: 'ObjectPattern',
       properties: [
         property,
         {
-          type: "RestElement",
+          type: 'RestElement',
           argument: props,
         },
       ],
@@ -60,8 +59,8 @@ export default function manageWebContextField(
 
   // Replace all introduced effect calls by the compiler with the new field name (effect -> effect$)
   // these cases are rare, but they can happen when the user uses some variable named "effect"
-  if (originalFieldName === "effect" && originalFieldName !== fieldName) {
-    for (let statement of componentAST.body.body) {
+  if (originalFieldName === 'effect' && originalFieldName !== fieldName) {
+    for (const statement of componentAST.body.body) {
       if (statement.isEffect) {
         statement.expression.callee.name = fieldName;
       }
