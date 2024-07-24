@@ -5,7 +5,7 @@ const PROPS_SYMBOL = Symbol.for('props');
 
 describe('utils', () => {
   describe('rerender-in-action', () => {
-    it('should throw the correct error', () => {
+    it('should throw the correct throwable', () => {
       try {
         rerenderInAction();
       } catch (error: any) {
@@ -21,7 +21,7 @@ describe('utils', () => {
       }
     });
 
-    it("should throw the correct error with type='targetComponent' and renderMode='reactivity'", () => {
+    it("should throw the correct throwable with type='targetComponent' and renderMode='reactivity'", () => {
       try {
         rerenderInAction({ type: 'targetComponent', renderMode: 'reactivity' });
       } catch (error: any) {
@@ -35,7 +35,7 @@ describe('utils', () => {
       }
     });
 
-    it("should throw the correct error with type='currentComponent' and renderMode='reactivity'", () => {
+    it("should throw the correct throwable with type='currentComponent' and renderMode='reactivity'", () => {
       try {
         rerenderInAction({
           type: 'currentComponent',
@@ -55,7 +55,7 @@ describe('utils', () => {
       }
     });
 
-    it("should throw the correct error with type='page' and renderMode='transition'", () => {
+    it("should throw the correct throwable with type='page' and renderMode='transition'", () => {
       try {
         rerenderInAction({ type: 'page', renderMode: 'transition' });
       } catch (error: any) {
@@ -69,7 +69,7 @@ describe('utils', () => {
       }
     });
 
-    it("should throw the correct error with type='page' and renderMode='reactivity'", () => {
+    it("should throw the correct throwable with type='page' and renderMode='reactivity'", () => {
       try {
         rerenderInAction({ type: 'page' });
       } catch (error: any) {
@@ -83,7 +83,7 @@ describe('utils', () => {
       }
     });
 
-    it("should throw the correct error with type='currentComponent' and renderMode='transition'", () => {
+    it("should throw the correct throwable with type='currentComponent' and renderMode='transition'", () => {
       try {
         rerenderInAction({ renderMode: 'transition' });
       } catch (error: any) {
@@ -100,7 +100,7 @@ describe('utils', () => {
       }
     });
 
-    it("should throw the correct error with type='targetComponent' and renderMode='transition'", () => {
+    it("should throw the correct throwable with type='targetComponent' and renderMode='transition'", () => {
       try {
         rerenderInAction({ type: 'targetComponent', renderMode: 'transition' });
       } catch (error: any) {
@@ -114,7 +114,7 @@ describe('utils', () => {
       }
     });
 
-    it('should throw the correct error with props', () => {
+    it('should throw the correct throwable with props', () => {
       try {
         rerenderInAction({ props: { foo: 'bar' } });
       } catch (error: any) {
