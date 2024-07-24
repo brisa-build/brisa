@@ -133,6 +133,10 @@ By default it is already native in these cases:
 >
 > Modifying the [**`history`**](https://developer.mozilla.org/en-US/docs/Web/API/History) Web API always acts as `native` navigation, bypassing `reactivity` and `transition` modes.
 
+> [!TIP]
+>
+> To have the URL `params` as a signal, take a look this [example](/api-reference/components/web-context.md#example-reactive-url-params).
+
 ## Navigation to dynamic paths
 
 You can also use interpolation to create the path, which comes in handy for [dynamic route segments](/building-your-application/routing/dynamic-routes). For example, to show a list of posts which have been passed to the component as a prop:
