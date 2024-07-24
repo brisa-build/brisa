@@ -332,6 +332,7 @@ function sortByPropDependencies() {
       result = -1;
     }
 
+    // @ts-ignore note: union exists but not in the types
     depsSet = unionWithA.union(unionWithB);
 
     return result;

@@ -9906,5 +9906,5 @@ export interface BrisaTestMatchers {
 
 declare module 'bun:test' {
   interface Matchers<T> extends BrisaTestMatchers {}
-  interface AsymmetricMatchers<T> extends BrisaTestMatchers {}
+  interface AsymmetricMatchers extends BrisaTestMatchers {}
 }

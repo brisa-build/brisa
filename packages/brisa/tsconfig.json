@@ -1,34 +1,20 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "lib": ["ESNext"],
-    "module": "esnext",
-    "baseUrl": "./src",
-    "target": "esnext",
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noFallthroughCasesInSwitch": true,
-    "noEmit": true,
-    "composite": true,
-    "strict": true,
-    "downlevelIteration": true,
-    "skipLibCheck": true,
     "jsx": "react-jsx",
     "jsxImportSource": "brisa",
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
     }
   },
+  "include": ["src", "cli.*"],
   "exclude": [
     "node_modules",
     "out",
     "server",
     "client",
+    "test",
     "jsx-runtime",
     "jsx-dev-runtime",
     "**/out",
