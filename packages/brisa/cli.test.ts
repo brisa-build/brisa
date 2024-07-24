@@ -14,7 +14,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 
 declare module './cli.cjs' {
-  export function main(): Promise<void>
+  export function main(): Promise<void>;
 }
 
 const FIXTURES = path.join(import.meta.dir, 'src', '__fixtures__');
