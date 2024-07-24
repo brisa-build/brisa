@@ -130,12 +130,19 @@ export async function waitFor(fn: () => unknown, maxMilliseconds = 1000) {
  * Debug the current DOM
  */
 export function debug(
-  element: HTMLElement | DocumentFragment | ShadowRoot | null = document.documentElement,
+  element:
+    | HTMLElement
+    | DocumentFragment
+    | ShadowRoot
+    | null = document.documentElement,
 ) {
   console.log(element ? prettyDOM(element) : blueLog('<>\n</>'));
 }
 
-function prettyDOM(element: HTMLElement | DocumentFragment | ShadowRoot, prefix = ''): any {
+function prettyDOM(
+  element: HTMLElement | DocumentFragment | ShadowRoot,
+  prefix = '',
+): any {
   const isAnElement = isElement(element);
   const nextPrefix = !prefix && !isAnElement ? '' : prefix + '  ';
   const separator = nextPrefix ? '\n' : '';
@@ -158,7 +165,9 @@ function prettyDOM(element: HTMLElement | DocumentFragment | ShadowRoot, prefix 
 
     lines.push(blueLog('>'));
   }
-  let child = isTemplate(element) ? element.content.firstChild : element.firstChild;
+  let child = isTemplate(element)
+    ? element.content.firstChild
+    : element.firstChild;
 
   while (child) {
     if (isElement(child)) {
@@ -179,7 +188,9 @@ function isElement(value: any): value is HTMLElement {
   return value && typeof value.nodeType === 'number' && value.nodeType === 1;
 }
 
-function isTemplate(node: Node | null | undefined): node is HTMLTemplateElement {
+function isTemplate(
+  node: Node | null | undefined,
+): node is HTMLTemplateElement {
   return (node as Element)?.tagName === 'TEMPLATE';
 }
 

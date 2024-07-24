@@ -34,7 +34,8 @@ describe('utils', () => {
     });
 
     it('should return custom layout if "layout.tsx" exists', async () => {
-      path.join = () => join(import.meta.dir, '..', '..', '__fixtures__', 'layout');
+      path.join = () =>
+        join(import.meta.dir, '..', '..', '__fixtures__', 'layout');
 
       const layoutPath = getImportableFilepath('layout', buildDir);
       const layoutModule = layoutPath ? await import(layoutPath) : undefined;

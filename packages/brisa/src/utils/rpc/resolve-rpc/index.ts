@@ -7,7 +7,11 @@ const TRANSITION_MODE = 'transition';
 const $window = window as any;
 const encoder = new TextEncoder();
 
-async function resolveRPC(res: Response, dataSet: DOMStringMap, args: unknown[] | RenderMode = []) {
+async function resolveRPC(
+  res: Response,
+  dataSet: DOMStringMap,
+  args: unknown[] | RenderMode = [],
+) {
   const store = $window._s;
   const mode = res.headers.get('X-Mode');
   const type = res.headers.get('X-Type');
@@ -50,14 +54,18 @@ async function resolveRPC(res: Response, dataSet: DOMStringMap, args: unknown[] 
       ? new ReadableStream({
           async start(controller) {
             const html = document.documentElement.outerHTML;
-            controller.enqueue(encoder.encode(html.split(`<!--o:${componentId}-->`)[0]));
+            controller.enqueue(
+              encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
+            );
             const reader = res.body!.getReader();
             while (true) {
               const { value, done } = await reader.read();
               if (done) break;
               controller.enqueue(value);
             }
-            controller.enqueue(encoder.encode(html.split(`<!--c:${componentId}-->`)[1]));
+            controller.enqueue(
+              encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
+            );
             controller.close();
           },
         })

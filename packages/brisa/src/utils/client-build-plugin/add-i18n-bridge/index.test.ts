@@ -313,10 +313,12 @@ describe('utils', () => {
         expect(window.i18n.locale).toBe('pt');
         expect(window.i18n.t('hello', { name: 'John' })).toBe('Olá John');
 
-        await window.i18n.overrideMessages(async (messages: Record<string, any>) => ({
-          ...messages,
-          hello: 'Olááá {{name}}',
-        }));
+        await window.i18n.overrideMessages(
+          async (messages: Record<string, any>) => ({
+            ...messages,
+            hello: 'Olááá {{name}}',
+          }),
+        );
 
         expect(window.i18n.messages).toEqual({ pt: window.i18nMessages });
         expect(window.i18nMessages).toEqual({ hello: 'Olááá {{name}}' });

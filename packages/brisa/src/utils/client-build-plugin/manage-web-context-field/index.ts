@@ -3,7 +3,8 @@ export default function manageWebContextField(
   fieldName: string,
   originalFieldName: string,
 ) {
-  const componentParams = componentAST.params ?? componentAST.declarations?.[0]?.init?.params ?? [];
+  const componentParams =
+    componentAST.params ?? componentAST.declarations?.[0]?.init?.params ?? [];
   const property = {
     type: 'Property',
     key: {

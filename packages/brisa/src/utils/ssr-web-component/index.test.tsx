@@ -19,13 +19,18 @@ describe('utils', () => {
     it('should render a web component', async () => {
       const Component = () => <div>hello world</div>;
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('hello world');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'hello world',
+      );
     });
 
     it('should render a web component with props', async () => {
@@ -44,9 +49,9 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children.join('')).toBe(
-        'hello world',
-      );
+      expect(
+        output.props.children[0].props.children[0].props.children.join(''),
+      ).toBe('hello world');
     });
 
     it('should render a web component with css template literal', async () => {
@@ -60,15 +65,22 @@ describe('utils', () => {
         return <div>hello world</div>;
       };
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('hello world');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'hello world',
+      );
       expect(output.props.children[0].props.children[1].type).toBe('style');
-      expect(output.props.children[0].props.children[1].props.children).toBe('div {color: red;}');
+      expect(output.props.children[0].props.children[1].props.children).toBe(
+        'div {color: red;}',
+      );
     });
 
     it('should render a web component with css template literal and signals', async () => {
@@ -83,15 +95,22 @@ describe('utils', () => {
         return <div>hello world</div>;
       };
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('hello world');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'hello world',
+      );
       expect(output.props.children[0].props.children[1].type).toBe('style');
-      expect(output.props.children[0].props.children[1].props.children).toBe('div {color: red;}');
+      expect(output.props.children[0].props.children[1].props.children).toBe(
+        'div {color: red;}',
+      );
     });
 
     it('should render a web component with a initial state', async () => {
@@ -101,15 +120,18 @@ describe('utils', () => {
         return <div>hello {foo.value.name}</div>;
       };
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children.join('')).toBe(
-        'hello world',
-      );
+      expect(
+        output.props.children[0].props.children[0].props.children.join(''),
+      ).toBe('hello world');
     });
 
     it('should render a web component with a derived state', async () => {
@@ -120,15 +142,18 @@ describe('utils', () => {
         return <div>hello {bar.value}</div>;
       };
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children.join('')).toBe(
-        'hello world',
-      );
+      expect(
+        output.props.children[0].props.children[0].props.children.join(''),
+      ).toBe('hello world');
     });
 
     it('should render a web component with a effect', async () => {
@@ -140,13 +165,18 @@ describe('utils', () => {
         return <div>hello world</div>;
       };
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('hello world');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'hello world',
+      );
     });
 
     it('should render a web component with a cleanup', async () => {
@@ -158,13 +188,18 @@ describe('utils', () => {
         return <div>hello world</div>;
       };
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('hello world');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'hello world',
+      );
     });
 
     it('should render a web component with a onMount', async () => {
@@ -176,13 +211,18 @@ describe('utils', () => {
         return <div>hello world</div>;
       };
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('hello world');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'hello world',
+      );
     });
 
     it('should render a web component with a "reset" method', async () => {
@@ -192,13 +232,18 @@ describe('utils', () => {
       };
 
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('hello world');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'hello world',
+      );
     });
 
     it('should render a web component with a "store" property', async () => {
@@ -208,15 +253,18 @@ describe('utils', () => {
       };
 
       const selector = 'my-component';
-      const output = (await SSRWebComponent({ Component, selector }, requestContext)) as any;
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
 
       expect(output.type).toBe(selector);
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children.join('')).toBe(
-        'hello world',
-      );
+      expect(
+        output.props.children[0].props.children[0].props.children.join(''),
+      ).toBe('hello world');
     });
 
     it('should render a web component with a children slot', async () => {
@@ -239,8 +287,12 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children[0]).toBe('hello ');
-      expect(output.props.children[0].props.children[0].props.children[1].type).toBe('slot');
+      expect(output.props.children[0].props.children[0].props.children[0]).toBe(
+        'hello ',
+      );
+      expect(
+        output.props.children[0].props.children[0].props.children[1].type,
+      ).toBe('slot');
       expect(output.props.children[1].props.children).toBe('world');
     });
 
@@ -264,8 +316,12 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children[0]).toBe('hello ');
-      expect(output.props.children[0].props.children[0].props.children[1].type).toBe('slot');
+      expect(output.props.children[0].props.children[0].props.children[0]).toBe(
+        'hello ',
+      );
+      expect(
+        output.props.children[0].props.children[0].props.children[1].type,
+      ).toBe('slot');
       expect(output.props.children[1].props.children).toBe('world');
     });
 
@@ -290,7 +346,9 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('loading...');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'loading...',
+      );
     });
 
     it('should render the error component when there is an error rendering the component', async () => {
@@ -318,9 +376,9 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children.join('')).toBe(
-        'Ops! some error, hello world',
-      );
+      expect(
+        output.props.children[0].props.children[0].props.children.join(''),
+      ).toBe('Ops! some error, hello world');
     });
 
     it('should render the error component when there is an error rendering the suspense component', async () => {
@@ -346,7 +404,9 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('Ops! error');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'Ops! error',
+      );
     });
 
     it('should throw the error if there is no an error component', async () => {
@@ -468,8 +528,12 @@ describe('utils', () => {
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
 
       expect(output.props.children[0].props.children[0].type).toBe('button');
-      expect(output.props.children[0].props.children[0].props.children).toBe('TEST');
-      expect(output.props.children[0].props.children[0].props.onClick).toBeInstanceOf(Function);
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'TEST',
+      );
+      expect(
+        output.props.children[0].props.children[0].props.onClick,
+      ).toBeInstanceOf(Function);
     });
 
     it('should extend the "webContext" in SSR when plugins are defined', async () => {
@@ -504,7 +568,9 @@ describe('utils', () => {
     });
 
     it('should not render the declarative shadow DOM when AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL is defined in the store', async () => {
-      const Component = ({ children }: any) => <div>hello world {children}</div>;
+      const Component = ({ children }: any) => (
+        <div>hello world {children}</div>
+      );
       const selector = 'my-component';
       const req = extendRequestContext({
         originalRequest: {
@@ -566,7 +632,9 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('button');
-      expect(output.props.children[0].props.children[0].props.disabled).toBe(false);
+      expect(output.props.children[0].props.children[0].props.disabled).toBe(
+        false,
+      );
     });
 
     it('should ignore store.setOptimistic in SSR', async () => {
@@ -589,7 +657,9 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.children[0].type).toBe('div');
-      expect(output.props.children[0].props.children[0].props.children).toBe('hello world');
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'hello world',
+      );
     });
 
     it('should work "self.shadowRoot.adoptedStyleSheets = []" in SSR', async () => {

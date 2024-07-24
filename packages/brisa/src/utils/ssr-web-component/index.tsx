@@ -4,7 +4,9 @@ import type { RequestContext } from '@/types';
 import { getConstants } from '@/constants';
 import { sha } from 'bun';
 
-export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for('AVOID_DECLARATIVE_SHADOW_DOM');
+export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
+  'AVOID_DECLARATIVE_SHADOW_DOM',
+);
 
 type Props = {
   Component: any;
@@ -61,7 +63,10 @@ export default async function SSRWebComponent(
         : Component(componentProps, webContext));
     } catch (error) {
       if (Component.error) {
-        content = await Component.error({ ...componentProps, error }, webContext);
+        content = await Component.error(
+          { ...componentProps, error },
+          webContext,
+        );
       } else {
         throw error;
       }

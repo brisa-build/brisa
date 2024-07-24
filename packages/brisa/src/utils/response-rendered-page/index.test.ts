@@ -35,7 +35,9 @@ describe('utils', () => {
 
     it('should return 200 page with client page code', async () => {
       const req = extendRequestContext({
-        originalRequest: new Request('http://localhost:1234/es/page-with-web-component'),
+        originalRequest: new Request(
+          'http://localhost:1234/es/page-with-web-component',
+        ),
         i18n: {
           locale: 'es',
           defaultLocale: 'es',
@@ -265,7 +267,9 @@ describe('utils', () => {
         } as MatchedRoute,
       });
 
-      expect(await response.text()).not.toContain('window._S=[["key","value"]]');
+      expect(await response.text()).not.toContain(
+        'window._S=[["key","value"]]',
+      );
     });
   });
 });

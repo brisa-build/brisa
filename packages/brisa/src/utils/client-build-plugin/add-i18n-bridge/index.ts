@@ -47,7 +47,9 @@ export default function addI18nBridge(
   `);
 
   if (usei18nKeysLogic && i18nAdded && !isTranslateCoreAdded) {
-    const newAst = parseCodeToAST(`Object.assign(window.i18n, {${i18nKeysLogic(i18nConfig)}})`);
+    const newAst = parseCodeToAST(
+      `Object.assign(window.i18n, {${i18nKeysLogic(i18nConfig)}})`,
+    );
     body = [TRANSLATE_CORE_IMPORT, ...ast.body, ...newAst.body];
   } else if (usei18nKeysLogic) {
     body = [TRANSLATE_CORE_IMPORT, ...ast.body, ...bridgeAst.body];

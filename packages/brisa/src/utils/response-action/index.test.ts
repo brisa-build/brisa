@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach, spyOn, jest } from 'bun:test';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  spyOn,
+  jest,
+} from 'bun:test';
 import path from 'node:path';
 import extendRequestContext from '@/utils/extend-request-context';
 import responseAction from '.';
@@ -485,7 +493,9 @@ describe('utils', () => {
 
       const logs = logMock.mock.calls.toString();
 
-      expect(logs).toBe('a3_4 is original action?,true,a3_5 is original action?,false');
+      expect(logs).toBe(
+        'a3_4 is original action?,true,a3_5 is original action?,false',
+      );
     });
 
     it('should return the response of the second action when the second one returns a Response', async () => {
@@ -645,7 +655,9 @@ describe('utils', () => {
     });
 
     it('should log an error if the decryption fails from "x-s" store body', async () => {
-      const xs = [['sensitive-data', ENCRYPT_NONTEXT_PREFIX + 'invalid-encrypted-data']];
+      const xs = [
+        ['sensitive-data', ENCRYPT_NONTEXT_PREFIX + 'invalid-encrypted-data'],
+      ];
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
           method: 'POST',
@@ -670,23 +682,32 @@ describe('utils', () => {
 
       expect(logMock).toHaveBeenCalledTimes(7);
       expect(logMock.mock.calls[0]).toEqual([LOG_PREFIX.ERROR, 'Ops! Error:']);
-      expect(logMock.mock.calls[1]).toEqual([LOG_PREFIX.ERROR, '--------------------------']);
+      expect(logMock.mock.calls[1]).toEqual([
+        LOG_PREFIX.ERROR,
+        '--------------------------',
+      ]);
       expect(logMock.mock.calls[2]).toEqual([
         LOG_PREFIX.ERROR,
-        boldLog('Error transferring client "sensitive-data" store to server store'),
+        boldLog(
+          'Error transferring client "sensitive-data" store to server store',
+        ),
       ]);
       expect(logMock.mock.calls[3]).toEqual([
         LOG_PREFIX.ERROR,
         'The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.',
       ]);
-      expect(logMock.mock.calls[4]).toEqual([LOG_PREFIX.ERROR, '--------------------------']);
+      expect(logMock.mock.calls[4]).toEqual([
+        LOG_PREFIX.ERROR,
+        '--------------------------',
+      ]);
 
       expect(resBody).toEqual([
         [
           '__BRISA_ERRORS__',
           [
             {
-              title: 'Error transferring client "sensitive-data" store to server store',
+              title:
+                'Error transferring client "sensitive-data" store to server store',
               details: [
                 'The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.',
               ],
@@ -759,8 +780,12 @@ describe('utils', () => {
       const logMessage = logMock.mock.calls.toString();
 
       expect(logMock).toHaveBeenCalled();
-      expect(logMessage).toContain('The action a1_non-existing-action was not found');
-      expect(logMessage).toContain("Don't worry, it's not your fault. Probably a bug in Brisa.");
+      expect(logMessage).toContain(
+        'The action a1_non-existing-action was not found',
+      );
+      expect(logMessage).toContain(
+        "Don't worry, it's not your fault. Probably a bug in Brisa.",
+      );
 
       expect(res.status).toBe(404);
       expect(res.headers.get('content-type')).toBe('application/json');
@@ -783,7 +808,9 @@ describe('utils', () => {
 
       await responseAction(req);
 
-      expect(req.store.get(Symbol.for('DEPENDENCIES'))).toEqual([[['onClick', 'a1_2']]]);
+      expect(req.store.get(Symbol.for('DEPENDENCIES'))).toEqual([
+        [['onClick', 'a1_2']],
+      ]);
     });
 
     it('should clear the context store', async () => {

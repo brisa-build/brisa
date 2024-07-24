@@ -18,8 +18,14 @@ import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/ast/get-webcomponents-per-entrypoints';
 
 export default async function compileFiles() {
-  const { SRC_DIR, BUILD_DIR, CONFIG, IS_PRODUCTION, LOG_PREFIX, IS_STATIC_EXPORT } =
-    getConstants();
+  const {
+    SRC_DIR,
+    BUILD_DIR,
+    CONFIG,
+    IS_PRODUCTION,
+    LOG_PREFIX,
+    IS_STATIC_EXPORT,
+  } = getConstants();
   const webComponentsDir = join(SRC_DIR, 'web-components');
   const pagesDir = join(SRC_DIR, 'pages');
   const apiDir = join(SRC_DIR, 'api');
@@ -29,8 +35,14 @@ export default async function compileFiles() {
   const websocketPath = getImportableFilepath('websocket', SRC_DIR);
   const layoutPath = getImportableFilepath('layout', SRC_DIR);
   const i18nPath = getImportableFilepath('i18n', SRC_DIR);
-  const integrationsPath = getImportableFilepath('_integrations', webComponentsDir);
-  const allWebComponents = await getWebComponentsList(SRC_DIR, integrationsPath);
+  const integrationsPath = getImportableFilepath(
+    '_integrations',
+    webComponentsDir,
+  );
+  const allWebComponents = await getWebComponentsList(
+    SRC_DIR,
+    integrationsPath,
+  );
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
   const webComponentsPerFile: Record<string, Record<string, string>> = {};
   const dependenciesPerFile = new Map<string, Set<string>>();
@@ -68,37 +80,44 @@ export default async function compileFiles() {
           setup(build) {
             let actionIdCount = 1;
 
-            build.onLoad({ filter: /\.(tsx|jsx|mdx)$/ }, async ({ path, loader }) => {
-              let code = await Bun.file(path).text();
+            build.onLoad(
+              { filter: /\.(tsx|jsx|mdx)$/ },
+              async ({ path, loader }) => {
+                let code = await Bun.file(path).text();
 
-              try {
-                const fileID = `a${actionIdCount}`;
-                const result = serverComponentPlugin(code, {
-                  path,
-                  allWebComponents,
-                  fileID,
-                });
-                if (result.hasActions) {
-                  const actionEntrypoint = join(BUILD_DIR, 'actions_raw', `${fileID}.${loader}`);
+                try {
+                  const fileID = `a${actionIdCount}`;
+                  const result = serverComponentPlugin(code, {
+                    path,
+                    allWebComponents,
+                    fileID,
+                  });
+                  if (result.hasActions) {
+                    const actionEntrypoint = join(
+                      BUILD_DIR,
+                      'actions_raw',
+                      `${fileID}.${loader}`,
+                    );
 
-                  actionsEntrypoints.push(actionEntrypoint);
-                  actionIdCount += 1;
-                  await Bun.write(actionEntrypoint, result.code);
+                    actionsEntrypoints.push(actionEntrypoint);
+                    actionIdCount += 1;
+                    await Bun.write(actionEntrypoint, result.code);
+                  }
+
+                  code = result.code;
+                  webComponentsPerFile[path] = result.detectedWebComponents;
+                  dependenciesPerFile.set(path, result.dependencies);
+                } catch (error) {
+                  console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
+                  console.log(LOG_PREFIX.ERROR, (error as Error).message);
                 }
 
-                code = result.code;
-                webComponentsPerFile[path] = result.detectedWebComponents;
-                dependenciesPerFile.set(path, result.dependencies);
-              } catch (error) {
-                console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
-                console.log(LOG_PREFIX.ERROR, (error as Error).message);
-              }
-
-              return {
-                contents: code,
-                loader,
-              };
-            });
+                return {
+                  contents: code,
+                  loader,
+                };
+              },
+            );
           },
         },
         createContextPlugin(),
@@ -128,7 +147,11 @@ export default async function compileFiles() {
   if (!pagesSize) {
     return {
       success: false,
-      logs: [{ message: 'Error compiling web components' } as BuildMessage | ResolveMessage],
+      logs: [
+        { message: 'Error compiling web components' } as
+          | BuildMessage
+          | ResolveMessage,
+      ],
       pagesSize,
     };
   }
@@ -166,7 +189,9 @@ export default async function compileFiles() {
         {
           Route: `${isPrerender ? '○' : symbol} ${route.replace('.js', '')}`,
           'JS server': byteSizeToString(isPrerender ? 0 : output.size, 0),
-          'JS client (gz)': isPage ? byteSizeToString(pagesSize[route] ?? 0, 0, true) : '',
+          'JS client (gz)': isPage
+            ? byteSizeToString(pagesSize[route] ?? 0, 0, true)
+            : '',
         },
       ];
 
@@ -175,7 +200,9 @@ export default async function compileFiles() {
           res.push({
             Route: `| ○ ${prerenderRoute.replace('.html', '')}`,
             'JS server': byteSizeToString(0, 0),
-            'JS client (gz)': isPage ? byteSizeToString(pagesSize[route] ?? 0, 0, true) : '',
+            'JS client (gz)': isPage
+              ? byteSizeToString(pagesSize[route] ?? 0, 0, true)
+              : '',
           });
         }
       }
@@ -193,7 +220,10 @@ export default async function compileFiles() {
   if (websocketPath) console.log(LOG_PREFIX.INFO, 'Ψ  Websocket');
   if (integrationsPath) {
     console.log(LOG_PREFIX.INFO, 'Θ  Web components integrations');
-    console.log(LOG_PREFIX.INFO, `\t- client code already included in each page`);
+    console.log(
+      LOG_PREFIX.INFO,
+      `\t- client code already included in each page`,
+    );
     console.log(LOG_PREFIX.INFO, `\t- server code is used for SSR`);
     console.log(LOG_PREFIX.INFO);
   }
@@ -346,7 +376,10 @@ async function compileClientCodePage(
 
         // Compression in production
         if (IS_PRODUCTION) {
-          Bun.write(`${i18nPagePath}.gz`, gzipSync(new TextEncoder().encode(i18nCode)));
+          Bun.write(
+            `${i18nPagePath}.gz`,
+            gzipSync(new TextEncoder().encode(i18nCode)),
+          );
           Bun.write(`${i18nPagePath}.br`, brotliCompressSync(i18nCode));
         }
       }
@@ -408,14 +441,20 @@ function addExtraChunk(
   Bun.write(join(pagesClientPath, jsFilename), code);
 
   if (!skipList) {
-    Bun.write(join(pagesClientPath, `${filename}.txt`), pagePath.replace(BUILD_DIR, ''));
+    Bun.write(
+      join(pagesClientPath, `${filename}.txt`),
+      pagePath.replace(BUILD_DIR, ''),
+    );
   }
 
   if (IS_PRODUCTION) {
     const gzipUnsuspense = gzipSync(new TextEncoder().encode(code));
 
     Bun.write(join(pagesClientPath, `${jsFilename}.gz`), gzipUnsuspense);
-    Bun.write(join(pagesClientPath, `${jsFilename}.br`), brotliCompressSync(code));
+    Bun.write(
+      join(pagesClientPath, `${jsFilename}.br`),
+      brotliCompressSync(code),
+    );
     return gzipUnsuspense.length;
   }
 

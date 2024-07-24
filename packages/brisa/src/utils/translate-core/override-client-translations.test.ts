@@ -11,7 +11,9 @@ describe('utils', () => {
           b: 'bb',
           c: 'cc',
         };
-        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({});
+        expect(
+          overrideClientTranslations(clientMessages, overrideMessages),
+        ).toEqual({});
       });
 
       it('should only override these fields that exists in client messages', () => {
@@ -26,7 +28,9 @@ describe('utils', () => {
           c: 'cc',
           d: 'dd',
         };
-        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({
+        expect(
+          overrideClientTranslations(clientMessages, overrideMessages),
+        ).toEqual({
           a: 'aa',
           b: 'bb',
           c: 'cc',
@@ -61,7 +65,9 @@ describe('utils', () => {
             },
           },
         };
-        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({
+        expect(
+          overrideClientTranslations(clientMessages, overrideMessages),
+        ).toEqual({
           a: 'aa',
           b: 'bb',
           c: 'cc',
@@ -88,7 +94,9 @@ describe('utils', () => {
           c: 'cc',
           d: ['ee', 'ff', 'gg'],
         };
-        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({
+        expect(
+          overrideClientTranslations(clientMessages, overrideMessages),
+        ).toEqual({
           a: 'aa',
           b: 'bb',
           c: 'cc',
@@ -112,7 +120,9 @@ describe('utils', () => {
             g: ['hh', 'ii'],
           },
         };
-        expect(overrideClientTranslations(clientMessages, overrideMessages)).toEqual({
+        expect(
+          overrideClientTranslations(clientMessages, overrideMessages),
+        ).toEqual({
           a: 'a',
           b: 'b',
           c: 'c',

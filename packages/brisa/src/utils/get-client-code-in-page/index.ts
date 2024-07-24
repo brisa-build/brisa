@@ -3,8 +3,12 @@ import { join } from 'node:path';
 
 import { getConstants } from '@/constants';
 import AST from '@/utils/ast';
-import { injectRPCCode, injectRPCLazyCode } from '@/utils/rpc' with { type: 'macro' };
-import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with { type: 'macro' };
+import { injectRPCCode, injectRPCLazyCode } from '@/utils/rpc' with {
+  type: 'macro',
+};
+import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
+  type: 'macro',
+};
 import { injectClientContextProviderCode } from '@/utils/context-provider/inject-client' with {
   type: 'macro',
 };
@@ -40,7 +44,9 @@ const ENV_VAR_PREFIX = 'BRISA_PUBLIC_';
 const DIRECT_IMPORT = 'import:';
 
 async function getAstFromPath(path: string) {
-  return ASTUtil.parseCodeToAST(path.startsWith(DIRECT_IMPORT) ? '' : await Bun.file(path).text());
+  return ASTUtil.parseCodeToAST(
+    path.startsWith(DIRECT_IMPORT) ? '' : await Bun.file(path).text(),
+  );
 }
 
 export default async function getClientCodeInPage({
@@ -55,11 +61,8 @@ export default async function getClientCodeInPage({
 
   const ast = await getAstFromPath(pagePath);
 
-  let { useSuspense, useContextProvider, useActions, useHyperlink } = analyzeServerAst(
-    ast,
-    allWebComponents,
-    layoutHasContextProvider,
-  );
+  let { useSuspense, useContextProvider, useActions, useHyperlink } =
+    analyzeServerAst(ast, allWebComponents, layoutHasContextProvider);
 
   // Web components inside web components
   const nestedComponents = await Promise.all(
@@ -124,8 +127,15 @@ export async function transformToWebComponents({
   integrationsPath,
   pagePath,
 }: TransformOptions) {
-  const { SRC_DIR, BUILD_DIR, CONFIG, LOG_PREFIX, IS_DEVELOPMENT, IS_PRODUCTION, VERSION_HASH } =
-    getConstants();
+  const {
+    SRC_DIR,
+    BUILD_DIR,
+    CONFIG,
+    LOG_PREFIX,
+    IS_DEVELOPMENT,
+    IS_PRODUCTION,
+    VERSION_HASH,
+  } = getConstants();
 
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
   const internalDir = join(BUILD_DIR, '_brisa');
@@ -174,13 +184,15 @@ export async function transformToWebComponents({
   let code = '';
 
   if (useContextProvider) {
-    const contextProviderCode = injectClientContextProviderCode() as unknown as string;
+    const contextProviderCode =
+      injectClientContextProviderCode() as unknown as string;
     code += contextProviderCode;
   }
 
   // IS_DEVELOPMENT to avoid PROD and TEST environments
   if (IS_DEVELOPMENT) {
-    const brisaDialogErrorCode = injectBrisaDialogErrorCode() as unknown as string;
+    const brisaDialogErrorCode =
+      injectBrisaDialogErrorCode() as unknown as string;
     code += brisaDialogErrorCode;
   }
 

@@ -1,6 +1,8 @@
 import type { ESTree } from 'meriyah';
 
-export default function getContentReturns(statements: ESTree.Statement[]): Set<ESTree.Node> {
+export default function getContentReturns(
+  statements: ESTree.Statement[],
+): Set<ESTree.Node> {
   const returns = new Set<ESTree.Node>();
 
   JSON.stringify(statements, (k, v) => {

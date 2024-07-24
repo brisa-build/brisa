@@ -1,6 +1,9 @@
 import type { ESTree } from 'meriyah';
 
-export default function containsIdentifiers(node: ESTree.Node, identifiers: Set<string>) {
+export default function containsIdentifiers(
+  node: ESTree.Node,
+  identifiers: Set<string>,
+) {
   let contains = false;
 
   JSON.stringify(node, function (k, v) {

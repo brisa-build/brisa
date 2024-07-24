@@ -14,7 +14,8 @@ describe('utils', () => {
           const a = (props) => ['div', { foo: () => props.bar.value }, 'baz']
         `) as any;
 
-        const component = program.body[0].declarations[0].init as ESTree.FunctionDeclaration;
+        const component = program.body[0].declarations[0]
+          .init as ESTree.FunctionDeclaration;
 
         const output = getReactiveReturnStatement(component, 'a');
 
@@ -22,7 +23,9 @@ describe('utils', () => {
           `function a(props) {return ['div', {foo: () => props.bar.value}, 'baz'];}`,
         );
 
-        expect(normalizeQuotes(generateCodeFromAST(output as any))).toBe(expectedCode);
+        expect(normalizeQuotes(generateCodeFromAST(output as any))).toBe(
+          expectedCode,
+        );
       });
 
       it('should be reactive returning a variable', () => {
@@ -33,7 +36,8 @@ describe('utils', () => {
           }
         `) as any;
 
-        const component = program.body[0].declarations[0].init as ESTree.FunctionDeclaration;
+        const component = program.body[0].declarations[0]
+          .init as ESTree.FunctionDeclaration;
         const output = getReactiveReturnStatement(component, 'a');
         const expectedCode = normalizeQuotes(`
           function a(props) {
@@ -42,7 +46,9 @@ describe('utils', () => {
           }
         `);
 
-        expect(normalizeQuotes(generateCodeFromAST(output as any))).toBe(expectedCode);
+        expect(normalizeQuotes(generateCodeFromAST(output as any))).toBe(
+          expectedCode,
+        );
       });
     });
   });

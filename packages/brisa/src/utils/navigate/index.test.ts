@@ -51,7 +51,9 @@ describe('utils', () => {
       });
 
       it('should throw a navigation without adding the basePath to the external URL', () => {
-        expect(() => navigate('https://test.com/some')).toThrow(`https://test.com/some`);
+        expect(() => navigate('https://test.com/some')).toThrow(
+          `https://test.com/some`,
+        );
       });
     });
 
@@ -76,8 +78,12 @@ describe('utils', () => {
       it('should throw a navigation in client-side and change the location.assign without adding basePath to the external URL', () => {
         const mockEventListener = spyOn(window, 'addEventListener');
         const mockLocationAssign = spyOn(location, 'assign');
-        expect(() => navigate('https://test.com/some')).toThrow('https://test.com/some');
-        expect(mockLocationAssign).toHaveBeenCalledWith('https://test.com/some');
+        expect(() => navigate('https://test.com/some')).toThrow(
+          'https://test.com/some',
+        );
+        expect(mockLocationAssign).toHaveBeenCalledWith(
+          'https://test.com/some',
+        );
         expect(mockEventListener).toHaveBeenCalled();
       });
     });

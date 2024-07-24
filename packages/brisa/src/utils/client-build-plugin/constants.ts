@@ -1,6 +1,9 @@
 import type { ESTree } from 'meriyah';
 
-export const NO_REACTIVE_CHILDREN_EXPRESSION = new Set(['Literal', 'ArrayExpression']);
+export const NO_REACTIVE_CHILDREN_EXPRESSION = new Set([
+  'Literal',
+  'ArrayExpression',
+]);
 export const ALTERNATIVE_PREFIX = '_';
 export const NATIVE_FOLDER = `${ALTERNATIVE_PREFIX}native`;
 export const SUPPORTED_DEFAULT_PROPS_OPERATORS = new Set(['??', '||']);
@@ -72,4 +75,8 @@ export const TRANSLATE_CORE_IMPORT = {
   },
 } as ESTree.ImportDeclaration;
 
-export const FN = new Set(['ArrowFunctionExpression', 'FunctionExpression', 'FunctionDeclaration']);
+export const FN = new Set([
+  'ArrowFunctionExpression',
+  'FunctionExpression',
+  'FunctionDeclaration',
+]);

@@ -1,4 +1,12 @@
-import { expect, describe, it, spyOn, beforeEach, afterEach, jest } from 'bun:test';
+import {
+  expect,
+  describe,
+  it,
+  spyOn,
+  beforeEach,
+  afterEach,
+  jest,
+} from 'bun:test';
 import path from 'node:path';
 import fs from 'node:fs';
 import integrateMDX from '@/cli/integrations/mdx';
@@ -30,7 +38,9 @@ describe('integrateMDX', () => {
 
     integrateMDX();
 
-    expect(fsExistsSync).toHaveBeenCalledWith(path.join(ROOT_DIR, 'brisa.config.ts'));
+    expect(fsExistsSync).toHaveBeenCalledWith(
+      path.join(ROOT_DIR, 'brisa.config.ts'),
+    );
     expect(fsWriteFileSync.mock.calls[0][0]).toContain('brisa.config.ts');
     expect(normalizeQuotes(fsWriteFileSync.mock.calls[0][1] as string)).toBe(
       normalizeQuotes(`import mdx from '@mdx-js/esbuild';
@@ -54,8 +64,12 @@ describe('integrateMDX', () => {
 
     integrateMDX();
 
-    expect(fsExistsSync).toHaveBeenCalledWith(path.join(ROOT_DIR, 'brisa.config.ts'));
+    expect(fsExistsSync).toHaveBeenCalledWith(
+      path.join(ROOT_DIR, 'brisa.config.ts'),
+    );
     expect(fsWriteFileSync).not.toHaveBeenCalled();
-    expect(consoleLog).toHaveBeenCalledWith('TODO: Integrate MDX into existing brisa.config.ts');
+    expect(consoleLog).toHaveBeenCalledWith(
+      'TODO: Integrate MDX into existing brisa.config.ts',
+    );
   });
 });

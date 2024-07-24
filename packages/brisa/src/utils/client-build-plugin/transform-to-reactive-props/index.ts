@@ -1,7 +1,9 @@
 import type { ESTree } from 'meriyah';
 import generateUniqueVariableName from '@/utils/client-build-plugin/generate-unique-variable-name';
 import getComponentVariableNames from '@/utils/client-build-plugin/get-component-variable-names';
-import getPropsNames, { getPropNamesFromExport } from '@/utils/client-build-plugin/get-props-names';
+import getPropsNames, {
+  getPropNamesFromExport,
+} from '@/utils/client-build-plugin/get-props-names';
 import getWebComponentAst from '@/utils/client-build-plugin/get-web-component-ast';
 import manageWebContextField from '@/utils/client-build-plugin/manage-web-context-field';
 import mapComponentStatics from '@/utils/client-build-plugin/map-component-statics';
@@ -27,7 +29,8 @@ type Result = {
 };
 
 export default function transformToReactiveProps(ast: ESTree.Program): Result {
-  const [component, defaultExportIndex, identifierDeclarationIndex] = getWebComponentAst(ast);
+  const [component, defaultExportIndex, identifierDeclarationIndex] =
+    getWebComponentAst(ast);
   const defaultComponentName = 'Component';
 
   if (!component)
@@ -42,7 +45,9 @@ export default function transformToReactiveProps(ast: ESTree.Program): Result {
   const propsFromExport = getPropNamesFromExport(ast);
   const statics: Statics = {};
   const componentIndex =
-    identifierDeclarationIndex !== -1 ? identifierDeclarationIndex : defaultExportIndex;
+    identifierDeclarationIndex !== -1
+      ? identifierDeclarationIndex
+      : defaultExportIndex;
 
   const out = transformComponentToReactiveProps(component, propsFromExport);
 
@@ -54,9 +59,13 @@ export default function transformToReactiveProps(ast: ESTree.Program): Result {
       if (index !== componentIndex) return node;
 
       const hasDeclaration = 'declaration' in (node as any);
-      const comp = hasDeclaration ? (node as any)?.declaration : (node as any)?.declarations?.[0];
+      const comp = hasDeclaration
+        ? (node as any)?.declaration
+        : (node as any)?.declarations?.[0];
 
-      componentName = comp?.id?.name ?? generateUniqueVariableName(defaultComponentName, out.vars);
+      componentName =
+        comp?.id?.name ??
+        generateUniqueVariableName(defaultComponentName, out.vars);
 
       if (hasDeclaration) {
         return {
@@ -82,7 +91,10 @@ export default function transformToReactiveProps(ast: ESTree.Program): Result {
   } as ESTree.Program;
 
   mapComponentStatics(newAst, componentName, (staticAst, staticName) => {
-    const staticsOut = transformComponentToReactiveProps(staticAst, propsFromExport);
+    const staticsOut = transformComponentToReactiveProps(
+      staticAst,
+      propsFromExport,
+    );
 
     statics[staticName] = {
       ast: staticsOut.component,
@@ -105,13 +117,19 @@ export default function transformToReactiveProps(ast: ESTree.Program): Result {
   };
 }
 
-export function transformComponentToReactiveProps(component: any, propNamesFromExport: string[]) {
+export function transformComponentToReactiveProps(
+  component: any,
+  propNamesFromExport: string[],
+) {
   const componentVariableNames = getComponentVariableNames(component);
   const firstLevelVars = getFistLevelVariables(component);
   const declaration = component?.declarations?.[0];
   const params = getComponentParams(component);
   const propsIdentifierName = getPropsIdentifierName(params[0]);
-  const derivedName = generateUniqueVariableName(DERIVED_NAME, new Set(componentVariableNames));
+  const derivedName = generateUniqueVariableName(
+    DERIVED_NAME,
+    new Set(componentVariableNames),
+  );
   const derivedPropsInfo = getDerivedProps(component, derivedName);
 
   if (derivedPropsInfo.propsOptimizationsAst.length) {
@@ -128,10 +146,8 @@ export function transformComponentToReactiveProps(component: any, propNamesFromE
 
   // Recover the component body after the mutation
   const componentBody = component?.body ?? declaration?.init.body;
-  const [observedAttributes, renamedPropsNames, destructuredProps] = getPropsNames(
-    component,
-    propNamesFromExport,
-  );
+  const [observedAttributes, renamedPropsNames, destructuredProps] =
+    getPropsNames(component, propNamesFromExport);
   const allVariableNames = new Set([
     ...observedAttributes,
     ...componentVariableNames,
@@ -164,7 +180,8 @@ export function transformComponentToReactiveProps(component: any, propNamesFromE
     // Avoid adding .value if there is a variable "const foo = props.foo"
     const isMemberExpressionProperty =
       this?.property === value && this?.type === 'MemberExpression';
-    const isInitialVariable = !isMemberExpressionProperty && firstLevelVars.has(value?.name);
+    const isInitialVariable =
+      !isMemberExpressionProperty && firstLevelVars.has(value?.name);
 
     if (
       value?.type === 'Identifier' &&
@@ -200,7 +217,10 @@ export function transformComponentToReactiveProps(component: any, propNamesFromE
     return value;
   }
 
-  const newComponentBody = JSON.parse(JSON.stringify(componentBody, traverseA2B), traverseB2A);
+  const newComponentBody = JSON.parse(
+    JSON.stringify(componentBody, traverseA2B),
+    traverseB2A,
+  );
 
   const newComponent = declaration
     ? { ...declaration?.init, body: newComponentBody }
@@ -230,7 +250,9 @@ function getDerivedProps(component: any, derivedName: string) {
   const propNames = [];
   const params = getComponentParams(component);
   const propsOptimizations = getPropsOptimizations(params[0], derivedName);
-  const propsOptimizationsAst = propsOptimizations.flatMap((c) => parseCodeToAST(c).body[0]);
+  const propsOptimizationsAst = propsOptimizations.flatMap(
+    (c) => parseCodeToAST(c).body[0],
+  );
 
   for (const node of propsOptimizationsAst) {
     const name = (node as any).declarations[0].id.name;

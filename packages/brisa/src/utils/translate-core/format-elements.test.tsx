@@ -79,7 +79,10 @@ describe('utils', () => {
         c: <span />,
       };
 
-      const output = formatElements('<a>this is a <b>test</b></a><c>!</c>', elements);
+      const output = formatElements(
+        '<a>this is a <b>test</b></a><c>!</c>',
+        elements,
+      );
       const elementA = output[0] as any;
       const elementB = elementA.props?.children as any;
       const elementC = output[1] as any;

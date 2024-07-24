@@ -487,7 +487,8 @@ export default defineConfig({
     ],
     editLink: {
       text: 'Edit this page on GitHub',
-      pattern: 'https://github.com/brisa-build/brisa/tree/main/packages/docs/:path',
+      pattern:
+        'https://github.com/brisa-build/brisa/tree/main/packages/docs/:path',
     },
     footer: {
       message: 'Released under the MIT License.',

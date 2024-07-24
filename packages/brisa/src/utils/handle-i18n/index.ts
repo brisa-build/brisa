@@ -12,8 +12,14 @@ export default function handleI18n(req: RequestContext): {
   pagesRouter?: ReturnType<typeof getRouteMatcher>;
   rootRouter?: ReturnType<typeof getRouteMatcher>;
 } {
-  const { PAGES_DIR, BUILD_DIR, RESERVED_PAGES, I18N_CONFIG, CONFIG, IS_PRODUCTION } =
-    getConstants();
+  const {
+    PAGES_DIR,
+    BUILD_DIR,
+    RESERVED_PAGES,
+    I18N_CONFIG,
+    CONFIG,
+    IS_PRODUCTION,
+  } = getConstants();
   const { locales, defaultLocale, pages, domains } = I18N_CONFIG || {};
   const trailingSlashSymbol = CONFIG.trailingSlash ? '/' : '';
 
@@ -34,8 +40,9 @@ export default function handleI18n(req: RequestContext): {
     const { route } = routers.pagesRouter.match(req);
     const translatedRoute = pages?.[route?.name!]?.[locale] ?? pathname;
     const [domain, domainConf] =
-      Object.entries(domains || {}).find(([, domainConf]) => domainConf.defaultLocale === locale) ??
-      [];
+      Object.entries(domains || {}).find(
+        ([, domainConf]) => domainConf.defaultLocale === locale,
+      ) ?? [];
 
     const finalPathname = `/${locale}${translatedRoute}${url.search}${url.hash}${trailingSlashSymbol}`;
     const applyDomain = domain && (IS_PRODUCTION || domainConf?.dev);
@@ -64,7 +71,10 @@ export default function handleI18n(req: RequestContext): {
     overrideMessages: (callback) => {
       if (typeof callback !== 'function') {
         return logError({
-          messages: ['Error in overrideMessages', 'overrideMessages requires a callback function'],
+          messages: [
+            'Error in overrideMessages',
+            'overrideMessages requires a callback function',
+          ],
           docTitle: 'Documentation about overrideMessages',
           docLink:
             'https://brisa.build/building-your-application/routing/internationalization#override-translations-in-web-components',
@@ -73,7 +83,8 @@ export default function handleI18n(req: RequestContext): {
       }
 
       const messages = callback(I18N_CONFIG?.messages?.[locale]);
-      const save = (messages: Record<string, any>) => req.store.set('_messages', messages);
+      const save = (messages: Record<string, any>) =>
+        req.store.set('_messages', messages);
 
       if (messages instanceof Promise) {
         messages.then(save);
@@ -84,7 +95,10 @@ export default function handleI18n(req: RequestContext): {
   };
 
   if (pages) {
-    routers.pagesRouter = adaptRouterToPageTranslations(pages, routers.pagesRouter);
+    routers.pagesRouter = adaptRouterToPageTranslations(
+      pages,
+      routers.pagesRouter,
+    );
   }
 
   return routers;

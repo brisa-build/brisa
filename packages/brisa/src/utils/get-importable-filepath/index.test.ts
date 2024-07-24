@@ -2,7 +2,13 @@ import { describe, it, expect } from 'bun:test';
 import path from 'node:path';
 import getImportableFilepath from '.';
 
-const dir = path.join(import.meta.dir, '..', '..', '__fixtures__', 'files-to-detect');
+const dir = path.join(
+  import.meta.dir,
+  '..',
+  '..',
+  '__fixtures__',
+  'files-to-detect',
+);
 
 describe('utils', () => {
   describe('getImportableFilepath', () => {

@@ -1,6 +1,14 @@
 import { registerActions } from '@/utils/rpc/register-actions';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { it, describe, expect, mock, beforeEach, afterEach, jest } from 'bun:test';
+import {
+  it,
+  describe,
+  expect,
+  mock,
+  beforeEach,
+  afterEach,
+  jest,
+} from 'bun:test';
 
 describe('utils', () => {
   beforeEach(() => {

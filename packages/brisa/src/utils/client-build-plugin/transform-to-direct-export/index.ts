@@ -21,8 +21,12 @@ const DIRECT_TYPES = new Set([
  * @param {ESTree.Program} ast
  * @returns {ESTree.Program}
  */
-export default function transformToDirectExport(ast: ESTree.Program): ESTree.Program {
-  const defaultExportIndex = ast.body.findIndex((node) => node.type === 'ExportDefaultDeclaration');
+export default function transformToDirectExport(
+  ast: ESTree.Program,
+): ESTree.Program {
+  const defaultExportIndex = ast.body.findIndex(
+    (node) => node.type === 'ExportDefaultDeclaration',
+  );
 
   // Add "export default null" if there is no default export
   if (defaultExportIndex === -1) {
@@ -48,7 +52,10 @@ export default function transformToDirectExport(ast: ESTree.Program): ESTree.Pro
   };
 
   const componentDeclarationIndex = ast.body.findIndex((node: any) => {
-    return DIRECT_TYPES.has(node.type) && getName(node) === defaultExportNode.declaration.name;
+    return (
+      DIRECT_TYPES.has(node.type) &&
+      getName(node) === defaultExportNode.declaration.name
+    );
   });
 
   if (componentDeclarationIndex === -1) return ast;
@@ -100,5 +107,9 @@ export default function transformToDirectExport(ast: ESTree.Program): ESTree.Pro
 }
 
 function getName(node: any) {
-  return node?.id?.name ?? node?.declaration?.name ?? node?.declarations?.[0]?.id?.name;
+  return (
+    node?.id?.name ??
+    node?.declaration?.name ??
+    node?.declarations?.[0]?.id?.name
+  );
 }

@@ -3,7 +3,13 @@ import path from 'node:path';
 
 import getFilesFromDir from '.';
 
-const assetsPath = path.join(import.meta.dir, '..', '..', '__fixtures__', 'public');
+const assetsPath = path.join(
+  import.meta.dir,
+  '..',
+  '..',
+  '__fixtures__',
+  'public',
+);
 
 describe('utils', () => {
   describe('getFilesFromDir', () => {

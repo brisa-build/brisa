@@ -8,7 +8,9 @@ const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
 function expectCodeToPurge(code: string, actionId = 'a1_1') {
   const ast = parseCodeToAST(code) as any;
-  const actionInfo = getActionsInfo(ast).find((info) => info.actionId === actionId);
+  const actionInfo = getActionsInfo(ast).find(
+    (info) => info.actionId === actionId,
+  );
 
   if (ast.body[0].async) {
     ast.body[0].body = getPurgedBody(actionInfo!);
@@ -18,7 +20,9 @@ function expectCodeToPurge(code: string, actionId = 'a1_1') {
 
   return {
     toBe: (expectedCode: string) =>
-      expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(normalizeQuotes(expectedCode)),
+      expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
+        normalizeQuotes(expectedCode),
+      ),
   };
 }
 

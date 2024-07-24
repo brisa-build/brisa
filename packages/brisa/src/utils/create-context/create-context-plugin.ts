@@ -4,7 +4,8 @@ import AST from '@/utils/ast';
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
-globalThis.BrisaRegistry = globalThis.BrisaRegistry || new Map<string, number>();
+globalThis.BrisaRegistry =
+  globalThis.BrisaRegistry || new Map<string, number>();
 
 /**
  * This Bun build plugin is responsible for generating the isomorphic context ID.
@@ -49,7 +50,9 @@ export function generateContextID(code: string, path: string) {
   const ast = parseCodeToAST(code);
   const pageId = globalThis.BrisaRegistry.has(path)
     ? globalThis.BrisaRegistry.get(path)
-    : globalThis.BrisaRegistry.set(path, globalThis.BrisaRegistry.size).get(path);
+    : globalThis.BrisaRegistry.set(path, globalThis.BrisaRegistry.size).get(
+        path,
+      );
 
   let identifier: string | undefined;
   let count = 0;
@@ -58,7 +61,10 @@ export function generateContextID(code: string, path: string) {
     if (identifier) return value;
 
     // ESM
-    if (value?.type === 'ImportDeclaration' && value?.source?.value === 'brisa') {
+    if (
+      value?.type === 'ImportDeclaration' &&
+      value?.source?.value === 'brisa'
+    ) {
       for (const specifier of value?.specifiers ?? []) {
         if (specifier?.imported?.name === 'createContext') {
           identifier = specifier?.local?.name;
@@ -68,7 +74,10 @@ export function generateContextID(code: string, path: string) {
     }
 
     // CJS
-    else if (value?.type === 'VariableDeclarator' && value?.init?.callee?.name === 'require') {
+    else if (
+      value?.type === 'VariableDeclarator' &&
+      value?.init?.callee?.name === 'require'
+    ) {
       if (value?.id?.type === 'ObjectPattern') {
         for (const property of value?.id?.properties ?? []) {
           if (property?.key?.name === 'createContext') {

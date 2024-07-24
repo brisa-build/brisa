@@ -6,7 +6,9 @@ export const SUFFIX_MESSAGE = `\n\nPlease use the 'rerenderInAction' function in
   'https://brisa.build/api-reference/server-apis/rerenderInAction#rerenderinaction',
 )}`;
 
-export default function rerenderInAction<T>(config: RerenderInActionProps<T> = {}) {
+export default function rerenderInAction<T>(
+  config: RerenderInActionProps<T> = {},
+) {
   const type = config.type ?? 'currentComponent';
   const renderMode = config.renderMode ?? 'reactivity';
 

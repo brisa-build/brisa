@@ -21,7 +21,9 @@ describe('utils', () => {
         const [componentBranch] = getWebComponentAst(ast);
         const varNames = getVariableNames(componentBranch as any);
 
-        expect(varNames.toSorted()).toEqual(['name', 'age', 'address', 'rest', 'props'].toSorted());
+        expect(varNames.toSorted()).toEqual(
+          ['name', 'age', 'address', 'rest', 'props'].toSorted(),
+        );
       });
     });
   });

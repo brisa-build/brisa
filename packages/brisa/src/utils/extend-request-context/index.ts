@@ -1,7 +1,10 @@
 // @ts-nocheck
 import type { MatchedRoute } from 'bun';
 import type { I18n, RequestContext, TransferOptions } from '@/types';
-import { CURRENT_PROVIDER_ID, CONTEXT_STORE_ID } from '@/utils/context-provider/server';
+import {
+  CURRENT_PROVIDER_ID,
+  CONTEXT_STORE_ID,
+} from '@/utils/context-provider/server';
 import { encrypt } from '@/utils/crypto';
 import { RenderInitiator } from '@/core/server';
 
@@ -24,20 +27,25 @@ export default function extendRequestContext({
   id,
 }: ExtendRequestContext): RequestContext {
   // finalURL
-  originalRequest.finalURL = finalURL ?? originalRequest.finalURL ?? originalRequest.url;
+  originalRequest.finalURL =
+    finalURL ?? originalRequest.finalURL ?? originalRequest.url;
 
   // route
   originalRequest.route = route ?? originalRequest.route;
 
   // store
-  originalRequest.store = store ?? originalRequest.store ?? new Map<string | symbol, any>();
+  originalRequest.store =
+    store ?? originalRequest.store ?? new Map<string | symbol, any>();
 
   // webStore (used for store.transferToClient)
   originalRequest.webStore =
     webStore ?? originalRequest.webStore ?? new Map<string | symbol, any>();
 
   // store.transferToClient
-  originalRequest.store.transferToClient = (keys: string[], options?: TransferOptions) => {
+  originalRequest.store.transferToClient = (
+    keys: string[],
+    options?: TransferOptions,
+  ) => {
     for (const key of keys) {
       originalRequest.webStore.set(key, options);
     }
@@ -87,7 +95,10 @@ export default function extendRequestContext({
 
   // css
   originalRequest._style = '';
-  originalRequest.css = (template: TemplateStringsArray, ...values: string[]) => {
+  originalRequest.css = (
+    template: TemplateStringsArray,
+    ...values: string[]
+  ) => {
     originalRequest._style += String.raw(template, ...values);
   };
 

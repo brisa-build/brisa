@@ -2,7 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import type { ComponentType, Props, RequestContext } from '@/types';
-import extendStreamController, { type Controller } from '@/utils/extend-stream-controller';
+import extendStreamController, {
+  type Controller,
+} from '@/utils/extend-stream-controller';
 import generateHrefLang from '@/utils/generate-href-lang';
 import renderAttributes from '@/utils/render-attributes';
 import { isNotFoundError } from '@/utils/not-found';
@@ -62,13 +64,23 @@ export default function renderToReadableStream(
         }),
       );
 
-      extendedController.hasUnsuspense = await isInPathList(unsuspenseListPath, req);
+      extendedController.hasUnsuspense = await isInPathList(
+        unsuspenseListPath,
+        req,
+      );
 
       // @deprecated
       // TODO: Remove the list generared + replace this to tack type.__isAction
-      extendedController.hasActionRPC = await isInPathList(actionRPCListPath, req);
+      extendedController.hasActionRPC = await isInPathList(
+        actionRPCListPath,
+        req,
+      );
 
-      const renderingPromise = enqueueDuringRendering(element, req, extendedController)
+      const renderingPromise = enqueueDuringRendering(
+        element,
+        req,
+        extendedController,
+      )
         .then(() => extendedController.waitSuspensedPromises())
         .then(() => extendedController.transferStoreToClient())
         .catch(async (e) => {
@@ -78,7 +90,9 @@ export default function renderToReadableStream(
             extendedController.enqueue(get404ClientScript(req));
           } else if (isNavigateThrowable(e)) {
             const action =
-              req.renderInitiator === RenderInitiator.SERVER_ACTION ? 'assign' : 'replace';
+              req.renderInitiator === RenderInitiator.SERVER_ACTION
+                ? 'assign'
+                : 'replace';
 
             extendedController.transferStoreToClient();
             extendedController.enqueue(
@@ -95,7 +109,12 @@ export default function renderToReadableStream(
 
       controller.close();
 
-      if (isPage && !IS_PRODUCTION && !aborted && !extendedController.hasHeadTag) {
+      if (
+        isPage &&
+        !IS_PRODUCTION &&
+        !aborted &&
+        !extendedController.hasHeadTag
+      ) {
         logError({
           messages: [
             'No <head> tag',
@@ -120,7 +139,8 @@ async function enqueueDuringRendering(
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
   const elements = Array.isArray(result) ? result : [result];
-  const { BUILD_DIR, VERSION_HASH, CONFIG, IS_DEVELOPMENT, IS_SERVE_PROCESS } = getConstants();
+  const { BUILD_DIR, VERSION_HASH, CONFIG, IS_DEVELOPMENT, IS_SERVE_PROCESS } =
+    getConstants();
   const basePath = CONFIG.basePath || '';
   const compiledPagesPath = basePath + '/_brisa/pages';
 
@@ -207,9 +227,14 @@ async function enqueueDuringRendering(
 
     if (isComponent(type) && !isTagToIgnore) {
       const hasActions = type?._hasActions;
-      const processedProps = processServerComponentProps(props, componentProps, controller);
+      const processedProps = processServerComponentProps(
+        props,
+        componentProps,
+        controller,
+      );
       const componentContent = { component: type, props: processedProps };
-      const isSuspenseComponent = controller.applySuspense && isComponent(type.suspense);
+      const isSuspenseComponent =
+        controller.applySuspense && isComponent(type.suspense);
 
       if (isSuspenseComponent) {
         const id = controller.nextSuspenseIndex();
@@ -227,14 +252,23 @@ async function enqueueDuringRendering(
         await controller.endTag(`</div>`, suspenseId);
 
         return controller.suspensePromise(
-          enqueueComponent(componentContent, request, controller, id, isNextInSlottedPosition),
+          enqueueComponent(
+            componentContent,
+            request,
+            controller,
+            id,
+            isNextInSlottedPosition,
+          ),
         );
       }
 
       // Open tag useful for a rerenderInAction to know the component
       if (hasActions) {
         controller.generateComponentId();
-        controller.enqueue(`<!--o:${controller.getComponentId()}-->`, suspenseId);
+        controller.enqueue(
+          `<!--o:${controller.getComponentId()}-->`,
+          suspenseId,
+        );
       }
 
       const res = await enqueueComponent(
@@ -247,7 +281,10 @@ async function enqueueDuringRendering(
 
       // Close tag useful for a rerenderInAction to know the component
       if (hasActions) {
-        controller.enqueue(`<!--c:${controller.getComponentId()}-->`, suspenseId);
+        controller.enqueue(
+          `<!--c:${controller.getComponentId()}-->`,
+          suspenseId,
+        );
         controller.removeComponentId();
       }
 
@@ -280,7 +317,10 @@ async function enqueueDuringRendering(
     }
 
     // Node tag start
-    controller.startTag(isTagToIgnore ? null : `<${type}${attributes}>`, suspenseId);
+    controller.startTag(
+      isTagToIgnore ? null : `<${type}${attributes}>`,
+      suspenseId,
+    );
 
     // Open head tag
     if (type === 'head') {
@@ -297,7 +337,11 @@ async function enqueueDuringRendering(
     }
 
     // Add global styles inside Declarative Shadow DOM of Web Components
-    else if (type === 'template' && props.shadowrootmode === 'open' && !props.__skipGlobalCSS) {
+    else if (
+      type === 'template' &&
+      props.shadowrootmode === 'open' &&
+      !props.__skipGlobalCSS
+    ) {
       controller.enqueue(controller.styleSheetsChunks.join(''), suspenseId);
     }
 
@@ -333,15 +377,24 @@ async function enqueueDuringRendering(
     }
 
     // StyleSheets: save to use it inside Declarative Shadow DOM of Web Components
-    else if (type === 'link' && props.rel === 'stylesheet' && controller.insideHeadTag) {
-      controller.styleSheetsChunks.push(`<link rel="stylesheet" href="${props.href}"></link>`);
+    else if (
+      type === 'link' &&
+      props.rel === 'stylesheet' &&
+      controller.insideHeadTag
+    ) {
+      controller.styleSheetsChunks.push(
+        `<link rel="stylesheet" href="${props.href}"></link>`,
+      );
     }
 
     // Close body tag
     else if (type === 'body') {
       // Brisa error dialog for development
       if (IS_DEVELOPMENT && IS_SERVE_PROCESS) {
-        controller.enqueue('<brisa-error-dialog skipSSR></brisa-error-dialog>', suspenseId);
+        controller.enqueue(
+          '<brisa-error-dialog skipSSR></brisa-error-dialog>',
+          suspenseId,
+        );
       }
 
       const clientFile = request.route?.filePath
@@ -360,7 +413,11 @@ async function enqueueDuringRendering(
         // Script to load the i18n page content (messages and translated pages to navigate)
         if (locale) {
           const filenameI18n = filename.replace('.js', `-${locale}.js`);
-          const pathPageI18n = path.join(BUILD_DIR, 'pages-client', filenameI18n);
+          const pathPageI18n = path.join(
+            BUILD_DIR,
+            'pages-client',
+            filenameI18n,
+          );
           const i18nFile = Bun.file(pathPageI18n);
 
           if (await i18nFile.exists()) {
@@ -416,7 +473,11 @@ async function enqueueComponent(
   suspenseId?: number,
   isSlottedPosition = false,
 ): Promise<void> {
-  const componentValue = (await getValueOfComponent(component, props, request)) as JSX.Element;
+  const componentValue = (await getValueOfComponent(
+    component,
+    props,
+    request,
+  )) as JSX.Element;
 
   injectCSS(controller, request, suspenseId);
 
@@ -425,13 +486,23 @@ async function enqueueComponent(
     for await (const val of componentValue) {
       injectCSS(controller, request, suspenseId);
 
-      await enqueueChildren(val, request, controller, suspenseId, isSlottedPosition, props);
+      await enqueueChildren(
+        val,
+        request,
+        controller,
+        suspenseId,
+        isSlottedPosition,
+        props,
+      );
     }
     return;
   }
 
   if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
-    return controller.enqueue(Bun.escapeHTML(componentValue.toString()), suspenseId);
+    return controller.enqueue(
+      Bun.escapeHTML(componentValue.toString()),
+      suspenseId,
+    );
   }
 
   if (Array.isArray(componentValue)) {
@@ -534,7 +605,8 @@ async function getValueOfComponent(
       }
       if (!isComponent(componentFn.error)) {
         const isWebComponent = (componentFn as any).__isWebComponent;
-        const componentName = (isWebComponent ? props.selector : componentFn.name) || 'Component';
+        const componentName =
+          (isWebComponent ? props.selector : componentFn.name) || 'Component';
         const title = `Error in SSR of ${componentName} component with props ${JSON.stringify(
           props,
         )}`;
@@ -567,9 +639,16 @@ async function isInPathList(pathname: string, request: RequestContext) {
   return new Set(listText.split('\n')).has(route);
 }
 
-function injectCSS(controller: Controller, request: RequestContext, suspenseId?: number) {
+function injectCSS(
+  controller: Controller,
+  request: RequestContext,
+  suspenseId?: number,
+) {
   if ((request as any)._style) {
-    controller.enqueue(`<style>${toInline((request as any)._style)}</style>`, suspenseId);
+    controller.enqueue(
+      `<style>${toInline((request as any)._style)}</style>`,
+      suspenseId,
+    );
     (request as any)._style = '';
   }
 }

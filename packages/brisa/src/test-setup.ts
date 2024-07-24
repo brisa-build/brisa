@@ -11,7 +11,10 @@ globalThis.__BASE_PATH__ = '';
 
 // All tests about this diff dom streaming algorithm are inside the library
 mock.module('diff-dom-streaming', () => ({
-  default: async (doc: Document, reader: ReadableStreamDefaultReader<Uint8Array>) => {
+  default: async (
+    doc: Document,
+    reader: ReadableStreamDefaultReader<Uint8Array>,
+  ) => {
     let result = '';
     while (true) {
       const { done, value } = await reader.read();

@@ -266,7 +266,9 @@ describe('utils', () => {
         },
       };
       const input = extendRequestContext({
-        originalRequest: new Request('https://www.example.com/somepage/1/settings/2/3'),
+        originalRequest: new Request(
+          'https://www.example.com/somepage/1/settings/2/3',
+        ),
         route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
       });
       input.i18n = {
@@ -342,7 +344,9 @@ describe('utils', () => {
         },
       };
       const input = extendRequestContext({
-        originalRequest: new Request('https://www.example.com/somepage/1/settings/2/3'),
+        originalRequest: new Request(
+          'https://www.example.com/somepage/1/settings/2/3',
+        ),
         route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
       });
       input.i18n = {
@@ -388,7 +392,9 @@ describe('utils', () => {
         },
       };
       const input = extendRequestContext({
-        originalRequest: new Request('https://www.example.com/en/somepage/1/settings/2/3'),
+        originalRequest: new Request(
+          'https://www.example.com/en/somepage/1/settings/2/3',
+        ),
         route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
       });
       input.i18n = {
@@ -537,11 +543,15 @@ describe('utils', () => {
         route: { name: '/' } as MatchedRoute,
       });
       const withTrailingSlash = extendRequestContext({
-        originalRequest: new Request('https://www.example.com/en/somepage/1/settings/2/3/'),
+        originalRequest: new Request(
+          'https://www.example.com/en/somepage/1/settings/2/3/',
+        ),
         route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
       });
       const withoutTrailingSlash = extendRequestContext({
-        originalRequest: new Request('https://www.example.com/en/somepage/1/settings/2/3'),
+        originalRequest: new Request(
+          'https://www.example.com/en/somepage/1/settings/2/3',
+        ),
         route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
       });
 
@@ -620,11 +630,15 @@ describe('utils', () => {
         route: { name: '/' } as MatchedRoute,
       });
       const withTrailingSlash = extendRequestContext({
-        originalRequest: new Request('https://www.example.com/en/somepage/1/settings/2/3/'),
+        originalRequest: new Request(
+          'https://www.example.com/en/somepage/1/settings/2/3/',
+        ),
         route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
       });
       const withoutTrailingSlash = extendRequestContext({
-        originalRequest: new Request('https://www.example.com/en/somepage/1/settings/2/3'),
+        originalRequest: new Request(
+          'https://www.example.com/en/somepage/1/settings/2/3',
+        ),
         route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
       });
 

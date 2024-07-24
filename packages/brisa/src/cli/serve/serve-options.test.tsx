@@ -1,5 +1,14 @@
 import type { BunFile } from 'bun';
-import { afterEach, beforeEach, describe, expect, it, spyOn, mock, jest } from 'bun:test';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  spyOn,
+  mock,
+  jest,
+} from 'bun:test';
 import { brotliDecompressSync } from 'node:zlib';
 import path from 'node:path';
 import { getConstants } from '@/constants';
@@ -12,8 +21,13 @@ const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 const BASE_PATHS = ['', '/some-dir', '/es', '/some/dir'];
 
-async function testRequest(request: Request, upgrade = false): Promise<Response> {
-  const serveOptions = await (await import('./serve-options')).getServeOptions();
+async function testRequest(
+  request: Request,
+  upgrade = false,
+): Promise<Response> {
+  const serveOptions = await (
+    await import('./serve-options')
+  ).getServeOptions();
 
   return (
     // @ts-ignore
@@ -54,7 +68,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     expect(process.env.__CRYPTO_KEY__).toBeDefined();
     expect(process.env.__CRYPTO_IV__).toBeDefined();
-    expect(process.env.BRISA_BUILD_FOLDER).toBe(path.join(process.cwd(), 'build'));
+    expect(process.env.BRISA_BUILD_FOLDER).toBe(
+      path.join(process.cwd(), 'build'),
+    );
   });
 
   it('should log an error and exit if there are no "build" directory in production', async () => {
@@ -66,7 +82,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
     const mockLog = spyOn(console, 'log');
 
-    const serveOptions = await (await import('./serve-options')).getServeOptions();
+    const serveOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     expect(mockLog).toHaveBeenCalledWith(
       constants.LOG_PREFIX.ERROR,
@@ -87,7 +105,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
     const mockLog = spyOn(console, 'log');
 
-    const serveOptions = await (await import('./serve-options')).getServeOptions();
+    const serveOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     expect(mockLog).toHaveBeenCalledWith(
       constants.LOG_PREFIX.ERROR,
@@ -108,7 +128,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
     const mockLog = spyOn(console, 'log');
 
-    const serveOptions = await (await import('./serve-options')).getServeOptions();
+    const serveOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     expect(mockLog).toHaveBeenCalledWith(
       constants.LOG_PREFIX.ERROR,
@@ -134,7 +156,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   it('should return 500 page if the middleware throws an error', async () => {
     const response = await testRequest(
       // "throws-error" parameter is managed by __fixtures__/middleware.tsx
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component?throws-error=1`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component?throws-error=1`,
+      ),
     );
     const html = await response.text();
 
@@ -142,7 +166,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toStartWith('<!DOCTYPE html>');
     expect(html).toContain('<title id="title">Some internal error</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Some internal error <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Some internal error <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_500.tsx"></script>`,
     );
@@ -151,7 +177,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   it('should be possible to redirect to "/" in the middleware', async () => {
     const response = await testRequest(
       // "redirect" parameter is managed by __fixtures__/middleware.tsx
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component?redirect=1`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component?redirect=1`,
+      ),
     );
 
     expect(response.status).toBe(301);
@@ -167,13 +195,17 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`http://localhost:1234${basePath}/es/somepage`);
+    expect(response.headers.get('Location')).toBe(
+      `http://localhost:1234${basePath}/es/somepage`,
+    );
   });
 
   it('should navigate resolving i18n when the middleware throws a navigate error', async () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component?navigate=/somepage`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/somepage`,
+      ),
     );
 
     expect(response.status).toBe(301);
@@ -189,7 +221,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`http://localhost:1234${basePath}/es/somepage`);
+    expect(response.headers.get('Location')).toBe(
+      `http://localhost:1234${basePath}/es/somepage`,
+    );
   });
 
   it('should navigate removing trailing slash and adding i18n at the same time when the middleware throws a navigate error', async () => {
@@ -213,13 +247,17 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get('Location')).toBe(`https://brisa.build${basePath}/foo/`);
+    expect(response.headers.get('Location')).toBe(
+      `https://brisa.build${basePath}/foo/`,
+    );
   });
 
   it('should return 404 page when the middleware throws a not found error', async () => {
     const response = await testRequest(
       // "throws-not-found" parameter is managed by __fixtures__/middleware.tsx
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component?throws-not-found=1`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component?throws-not-found=1`,
+      ),
     );
     const html = await response.text();
 
@@ -227,7 +265,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toStartWith('<!DOCTYPE html>');
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Page not found 404 <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Page not found 404 <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
@@ -243,7 +283,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toStartWith('<!DOCTYPE html>');
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Page not found 404 <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Page not found 404 <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
@@ -280,7 +322,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toStartWith('<!DOCTYPE html>');
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Page not found 404 <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Page not found 404 <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
@@ -303,7 +347,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toStartWith('<!DOCTYPE html>');
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Page not found 404 <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Page not found 404 <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
@@ -319,7 +365,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toStartWith('<!DOCTYPE html>');
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Page not found 404 <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Page not found 404 <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
@@ -327,7 +375,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should return 404 page with a valid url but with the param _not-found in the query string', async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component?_not-found=1`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component?_not-found=1`,
+      ),
     );
     const html = await response.text();
 
@@ -335,7 +385,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toStartWith('<!DOCTYPE html>');
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Page not found 404 <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Page not found 404 <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
@@ -343,7 +395,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should return 200 page with client page code', async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component`,
+      ),
     );
     const html = await response.text();
 
@@ -357,7 +411,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should return 200 page with client page code using a hash', async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component#hash`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component#hash`,
+      ),
     );
     const html = await response.text();
 
@@ -378,7 +434,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component/#hash`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component/#hash`,
+      ),
     );
     const html = await response.text();
 
@@ -398,13 +456,17 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/page-with-web-component`),
+      new Request(
+        `http://localhost:1234${basePath}/es/page-with-web-component`,
+      ),
     );
     expect(response.status).toBe(404);
   });
 
   it('should redirect the home to the correct locale', async () => {
-    const response = await testRequest(new Request(`http://localhost:1234${basePath}`));
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}`),
+    );
     expect(response.status).toBe(301);
     expect(response.headers.get('Location')).toBe(`${basePath}/es`);
   });
@@ -417,13 +479,17 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         trailingSlash: true,
       },
     };
-    const response = await testRequest(new Request(`http://localhost:1234${basePath}/`));
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/`),
+    );
     expect(response.status).toBe(301);
     expect(response.headers.get('Location')).toBe(`${basePath}/es/`);
   });
 
   it('should redirect to the correct locale', async () => {
-    const response = await testRequest(new Request(`http://localhost:1234${basePath}/somepage`));
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage`),
+    );
     expect(response.status).toBe(301);
     expect(response.headers.get('Location')).toBe(`${basePath}/es/somepage`);
   });
@@ -458,14 +524,22 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
 
-    const response = await testRequest(new Request(`https://en.test.com${basePath}/somepage`));
+    const response = await testRequest(
+      new Request(`https://en.test.com${basePath}/somepage`),
+    );
 
-    const responseEs = await testRequest(new Request(`https://es.test.com${basePath}/somepage`));
+    const responseEs = await testRequest(
+      new Request(`https://es.test.com${basePath}/somepage`),
+    );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage`);
+    expect(response.headers.get('Location')).toBe(
+      `https://en.test.com${basePath}/en/somepage`,
+    );
     expect(responseEs.status).toBe(301);
-    expect(responseEs.headers.get('Location')).toBe(`http://es.test.com${basePath}/es/somepage`);
+    expect(responseEs.headers.get('Location')).toBe(
+      `http://es.test.com${basePath}/es/somepage`,
+    );
   });
 
   it('should redirect to the correct browser locale changing the subdomain', async () => {
@@ -492,7 +566,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage`);
+    expect(response.headers.get('Location')).toBe(
+      `https://en.test.com${basePath}/en/somepage`,
+    );
   });
 
   it('should redirect to the correct browser locale changing the subdomain and the page route name', async () => {
@@ -524,7 +600,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage-en`);
+    expect(response.headers.get('Location')).toBe(
+      `https://en.test.com${basePath}/en/somepage-en`,
+    );
   });
 
   it('should redirect to the correct browser locale changing the subdomain and the page route name with hash', async () => {
@@ -594,7 +672,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage-en/`);
+    expect(response.headers.get('Location')).toBe(
+      `https://en.test.com${basePath}/en/somepage-en/`,
+    );
   });
 
   it('should redirect to the correct browser locale without changing the subdomain in development', async () => {
@@ -650,7 +730,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`https://en.test.com${basePath}/en/somepage`);
+    expect(response.headers.get('Location')).toBe(
+      `https://en.test.com${basePath}/en/somepage`,
+    );
   });
 
   it('should redirect to the correct browser locale changing the subdomain and trailingSlash', async () => {
@@ -682,7 +764,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`http://en.test.com${basePath}/en/somepage/`);
+    expect(response.headers.get('Location')).toBe(
+      `http://en.test.com${basePath}/en/somepage/`,
+    );
   });
 
   it('should redirect with trailingSlash', async () => {
@@ -693,9 +777,13 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         trailingSlash: true,
       },
     };
-    const response = await testRequest(new Request(`http://localhost:1234${basePath}/es/somepage`));
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/es/somepage`),
+    );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`http://localhost:1234${basePath}/es/somepage/`);
+    expect(response.headers.get('Location')).toBe(
+      `http://localhost:1234${basePath}/es/somepage/`,
+    );
   });
 
   it('should redirect with locale and trailingSlash', async () => {
@@ -706,13 +794,17 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         trailingSlash: true,
       },
     };
-    const response = await testRequest(new Request(`http://localhost:1234${basePath}/somepage`));
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage`),
+    );
     expect(response.status).toBe(301);
     expect(response.headers.get('Location')).toBe(`${basePath}/es/somepage/`);
   });
 
   it('should return a page with layout and i18n', async () => {
-    const response = await testRequest(new Request(`http://localhost:1234${basePath}/es/somepage`));
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/es/somepage`),
+    );
     const html = await response.text();
     expect(response.status).toBe(200);
     expect(html).toStartWith('<!DOCTYPE html>');
@@ -771,7 +863,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(response.status).toBe(404);
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Page not found 404 <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Page not found 404 <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
@@ -788,7 +882,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(response.status).toBe(404);
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Page not found 404 <web-component></web-component></h1>');
+    expect(html).toContain(
+      '<h1>Page not found 404 <web-component></web-component></h1>',
+    );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
@@ -804,19 +900,26 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const textDecoder = new TextDecoder('utf-8');
-    const req = new Request(`http:///localhost:1234${basePath}/some-dir/some-text.txt`, {
-      headers: {
-        'accept-encoding': 'gzip',
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          'accept-encoding': 'gzip',
+        },
       },
-    });
+    );
     const response = await testRequest(req);
-    const textBuffer = Bun.gunzipSync(new Uint8Array(await response.arrayBuffer()));
+    const textBuffer = Bun.gunzipSync(
+      new Uint8Array(await response.arrayBuffer()),
+    );
     const text = textDecoder.decode(textBuffer);
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-encoding')).toBe('gzip');
     expect(response.headers.get('vary')).toBe('Accept-Encoding');
-    expect(response.headers.get('content-type')).toBe('text/plain;charset=utf-8');
+    expect(response.headers.get('content-type')).toBe(
+      'text/plain;charset=utf-8',
+    );
     expect(text).toBe('Some text :D');
   });
 
@@ -829,17 +932,22 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         assetCompression: true,
       },
     };
-    const req = new Request(`http:///localhost:1234${basePath}/some-dir/some-text.txt`, {
-      headers: {
-        'accept-encoding': 'gzip',
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          'accept-encoding': 'gzip',
+        },
       },
-    });
+    );
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-encoding')).toBe(null);
     expect(response.headers.get('vary')).toBe(null);
-    expect(response.headers.get('content-type')).toBe('text/plain;charset=utf-8');
+    expect(response.headers.get('content-type')).toBe(
+      'text/plain;charset=utf-8',
+    );
   });
 
   it('should not return in PRODUCTION an asset in zip when CONFIG.assetCompression is false', async () => {
@@ -851,17 +959,22 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         assetCompression: false,
       },
     };
-    const req = new Request(`http:///localhost:1234${basePath}/some-dir/some-text.txt`, {
-      headers: {
-        'accept-encoding': 'gzip',
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          'accept-encoding': 'gzip',
+        },
       },
-    });
+    );
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-encoding')).toBe(null);
     expect(response.headers.get('vary')).toBe(null);
-    expect(response.headers.get('content-type')).toBe('text/plain;charset=utf-8');
+    expect(response.headers.get('content-type')).toBe(
+      'text/plain;charset=utf-8',
+    );
   });
 
   it('should return an asset in brotli if the browser accept it and the "brotli" option is enabled', async () => {
@@ -874,19 +987,26 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const textDecoder = new TextDecoder('utf-8');
-    const req = new Request(`http:///localhost:1234${basePath}/some-dir/some-text.txt`, {
-      headers: {
-        'accept-encoding': 'br',
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          'accept-encoding': 'br',
+        },
       },
-    });
+    );
     const response = await testRequest(req);
-    const textBuffer = brotliDecompressSync(new Uint8Array(await response.arrayBuffer()));
+    const textBuffer = brotliDecompressSync(
+      new Uint8Array(await response.arrayBuffer()),
+    );
     const text = textDecoder.decode(textBuffer);
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-encoding')).toBe('br');
     expect(response.headers.get('vary')).toBe('Accept-Encoding');
-    expect(response.headers.get('content-type')).toBe('text/plain;charset=utf-8');
+    expect(response.headers.get('content-type')).toBe(
+      'text/plain;charset=utf-8',
+    );
     expect(text).toBe('Some text :D');
   });
 
@@ -899,17 +1019,22 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         assetCompression: true,
       },
     };
-    const req = new Request(`http:///localhost:1234${basePath}/some-dir/some-text.txt`, {
-      headers: {
-        'accept-encoding': 'br',
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          'accept-encoding': 'br',
+        },
       },
-    });
+    );
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-encoding')).toBe(null);
     expect(response.headers.get('vary')).toBe(null);
-    expect(response.headers.get('content-type')).toBe('text/plain;charset=utf-8');
+    expect(response.headers.get('content-type')).toBe(
+      'text/plain;charset=utf-8',
+    );
   });
 
   it('should not return in PRODUCTION an asset in brotli when CONFIG.assetCompression is false', async () => {
@@ -921,17 +1046,22 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         assetCompression: false,
       },
     };
-    const req = new Request(`http:///localhost:1234${basePath}/some-dir/some-text.txt`, {
-      headers: {
-        'accept-encoding': 'br',
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          'accept-encoding': 'br',
+        },
       },
-    });
+    );
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-encoding')).toBe(null);
     expect(response.headers.get('vary')).toBe(null);
-    expect(response.headers.get('content-type')).toBe('text/plain;charset=utf-8');
+    expect(response.headers.get('content-type')).toBe(
+      'text/plain;charset=utf-8',
+    );
   });
 
   it('should not return an asset with incorrect basePath', async () => {
@@ -941,11 +1071,14 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         basePath: '/incorrect',
       },
     };
-    const req = new Request(`http:///localhost:1234${basePath}/some-dir/some-text.txt`, {
-      headers: {
-        'accept-encoding': 'gzip',
+    const req = new Request(
+      `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
+      {
+        headers: {
+          'accept-encoding': 'gzip',
+        },
       },
-    });
+    );
     const response = await testRequest(req);
     expect(response.status).toBe(404);
   });
@@ -970,7 +1103,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     mockFile.mockRestore();
     expect(response.status).toBe(200);
-    expect(response.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
+    expect(response.headers.get('cache-control')).toBe(
+      'public, max-age=31536000, immutable',
+    );
   });
 
   it('should not cache client page code in development', async () => {
@@ -986,11 +1121,15 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     mockFile.mockRestore();
     expect(response.status).toBe(200);
-    expect(response.headers.get('cache-control')).toBe('no-store, must-revalidate');
+    expect(response.headers.get('cache-control')).toBe(
+      'no-store, must-revalidate',
+    );
   });
 
   it('should subscribe to hotload when "open" the websocket connection in development', async () => {
-    const serverOptions = await (await import('./serve-options')).getServeOptions();
+    const serverOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockSubscribe = mock(() => {});
@@ -1010,7 +1149,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       IS_PRODUCTION: true,
     };
 
-    const serverOptions = await (await import('./serve-options')).getServeOptions();
+    const serverOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockSubscribe = mock(() => {});
@@ -1025,7 +1166,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should call the "open" method of the websocket module', async () => {
-    const serverOptions = await (await import('./serve-options')).getServeOptions();
+    const serverOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockLog = spyOn(console, 'log');
@@ -1040,7 +1183,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should unsubscribe to hotload when "close" the websocket connection in development', async () => {
-    const serverOptions = await (await import('./serve-options')).getServeOptions();
+    const serverOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockUnsubscribe = mock(() => {});
@@ -1060,7 +1205,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       IS_PRODUCTION: true,
     };
 
-    const serverOptions = await (await import('./serve-options')).getServeOptions();
+    const serverOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockUnsubscribe = mock(() => {});
@@ -1075,7 +1222,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should call the "close" method of the websocket module', async () => {
-    const serverOptions = await (await import('./serve-options')).getServeOptions();
+    const serverOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockLog = spyOn(console, 'log');
@@ -1090,7 +1239,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should call the "drain" method of the websocket module', async () => {
-    const serverOptions = await (await import('./serve-options')).getServeOptions();
+    const serverOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockLog = spyOn(console, 'log');
@@ -1105,7 +1256,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should call the "message" method of the websocket module', async () => {
-    const serverOptions = await (await import('./serve-options')).getServeOptions();
+    const serverOptions = await (
+      await import('./serve-options')
+    ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockLog = spyOn(console, 'log');
@@ -1140,7 +1293,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    expect(mockResponseAction.mock.calls[0][0].renderInitiator).toBe(RenderInitiator.SERVER_ACTION);
+    expect(mockResponseAction.mock.calls[0][0].renderInitiator).toBe(
+      RenderInitiator.SERVER_ACTION,
+    );
   });
 
   it('should have req.renderInitiator with "SERVER_ACTION" when is POST method and has x-action header and i18n', async () => {
@@ -1159,7 +1314,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    expect(mockResponseAction.mock.calls[0][0].renderInitiator).toBe(RenderInitiator.SERVER_ACTION);
+    expect(mockResponseAction.mock.calls[0][0].renderInitiator).toBe(
+      RenderInitiator.SERVER_ACTION,
+    );
   });
 
   it('should have req.renderInitiator with "SPA_NAVIGATION" when the Page is POST method without x-action header', async () => {
@@ -1176,7 +1333,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(RenderInitiator.SPA_NAVIGATION);
+    expect(res.headers.get('x-renderInitiator')).toBe(
+      RenderInitiator.SPA_NAVIGATION,
+    );
   });
 
   it('should have req.renderInitiator with "SPA_NAVIGATION" when the Page is POST method without x-action header and i18n', async () => {
@@ -1188,7 +1347,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(RenderInitiator.SPA_NAVIGATION);
+    expect(res.headers.get('x-renderInitiator')).toBe(
+      RenderInitiator.SPA_NAVIGATION,
+    );
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when the Page is GET method', async () => {
@@ -1204,7 +1365,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(RenderInitiator.INITIAL_REQUEST);
+    expect(res.headers.get('x-renderInitiator')).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when the Page is GET method and i18n', async () => {
@@ -1215,7 +1378,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(RenderInitiator.INITIAL_REQUEST);
+    expect(res.headers.get('x-renderInitiator')).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint', async () => {
@@ -1236,7 +1401,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(RenderInitiator.INITIAL_REQUEST);
+    expect(res.headers.get('x-renderInitiator')).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint and i18n', async () => {
@@ -1253,7 +1420,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(RenderInitiator.INITIAL_REQUEST);
+    expect(res.headers.get('x-renderInitiator')).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint with x-action header', async () => {
@@ -1277,7 +1446,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(RenderInitiator.INITIAL_REQUEST);
+    expect(res.headers.get('x-renderInitiator')).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint with x-action header and i18n', async () => {
@@ -1297,7 +1468,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
 
     // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(RenderInitiator.INITIAL_REQUEST);
+    expect(res.headers.get('x-renderInitiator')).toBe(
+      RenderInitiator.INITIAL_REQUEST,
+    );
   });
 
   it('should NOT call responseAction method with GET and return 200 with the page', async () => {
@@ -1375,7 +1548,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
-    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(() => {});
+    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
+      () => {},
+    );
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
@@ -1398,13 +1573,24 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
-    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(() => {});
-    const inputFile = encodeURIComponent('/_brisa/pages/index-595519026220381824.js');
-    const expectedFile = path.resolve(BUILD_DIR, 'pages-client', 'index-595519026220381824.js');
+    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
+      () => {},
+    );
+    const inputFile = encodeURIComponent(
+      '/_brisa/pages/index-595519026220381824.js',
+    );
+    const expectedFile = path.resolve(
+      BUILD_DIR,
+      'pages-client',
+      'index-595519026220381824.js',
+    );
     const response = await testRequest(
-      new Request(`http://localhost:1234/__brisa_dev_file__?file=${inputFile}&line=1&column=1`, {
-        method: 'POST',
-      }),
+      new Request(
+        `http://localhost:1234/__brisa_dev_file__?file=${inputFile}&line=1&column=1`,
+        {
+          method: 'POST',
+        },
+      ),
     );
 
     expect(response.status).toBe(200);
@@ -1420,7 +1606,9 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
-    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(() => {});
+    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
+      () => {},
+    );
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(

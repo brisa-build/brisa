@@ -35,7 +35,9 @@ export async function loadScripts(node: Node) {
   await scriptLoaded;
 
   if (src) {
-    scriptLoaded = new Promise((r) => (script.onload = script.onerror = () => r(script.remove())));
+    scriptLoaded = new Promise(
+      (r) => (script.onload = script.onerror = () => r(script.remove())),
+    );
   }
 
   $document.head.appendChild(script);

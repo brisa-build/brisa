@@ -31,7 +31,10 @@ export default function getVarDeclarationIdentifiers(node: ESTree.Node) {
 
     if (v.id.type === 'ObjectPattern') {
       for (const property of v.id.properties) {
-        identifiers.set(property.key.name, getIdentifiersDependenciesOn(property.value));
+        identifiers.set(
+          property.key.name,
+          getIdentifiersDependenciesOn(property.value),
+        );
       }
     } else if (v.id.type === 'Identifier') {
       identifiers.set(v.id.name, getIdentifiersDependenciesOn(v.init!));

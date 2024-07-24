@@ -1,14 +1,22 @@
 import { getConstants } from '@/constants';
 
 export function addBasePathToStringURL(url: string) {
-  return processURLBasePath(url, (pathname, basePath) => `${basePath}${pathname}`);
+  return processURLBasePath(
+    url,
+    (pathname, basePath) => `${basePath}${pathname}`,
+  );
 }
 
 export function removeBasePathFromStringURL(url: string) {
-  return processURLBasePath(url, (pathname, basePath) => pathname.replace(basePath, ''));
+  return processURLBasePath(url, (pathname, basePath) =>
+    pathname.replace(basePath, ''),
+  );
 }
 
-function processURLBasePath(url: string, operate: (pathname: string, basePath: string) => string) {
+function processURLBasePath(
+  url: string,
+  operate: (pathname: string, basePath: string) => string,
+) {
   const { CONFIG } = getConstants();
   const basePath = CONFIG.basePath || '';
   let finalUrl;

@@ -1,6 +1,9 @@
 import type { RequestContext } from '@/types';
 
-export default function Layout({ children }: { children: JSX.Element }, { i18n }: RequestContext) {
+export default function Layout(
+  { children }: { children: JSX.Element },
+  { i18n }: RequestContext,
+) {
   return (
     <html>
       <head>

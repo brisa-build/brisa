@@ -3,7 +3,9 @@ import path from 'node:path';
 import { transformToActionCode } from '.';
 import { normalizeQuotes } from '@/helpers';
 import { getConstants } from '@/constants';
-import serverComponentPlugin, { workaroundText } from '@/utils/server-component-plugin';
+import serverComponentPlugin, {
+  workaroundText,
+} from '@/utils/server-component-plugin';
 
 function compileActions(code: string) {
   const modifiedCode = serverComponentPlugin(code, {
@@ -15,7 +17,14 @@ function compileActions(code: string) {
   return normalizeQuotes(transformToActionCode(modifiedCode));
 }
 
-const brisaServerFile = path.join(import.meta.dirname, '..', '..', '..', 'server', 'index.js');
+const brisaServerFile = path.join(
+  import.meta.dirname,
+  '..',
+  '..',
+  '..',
+  'server',
+  'index.js',
+);
 
 describe('utils', () => {
   afterEach(() => {
@@ -1202,7 +1211,9 @@ describe('utils', () => {
         }
       `;
       expect(normalizeQuotes(transformToActionCode(code))).toContain(
-        normalizeQuotes('component: __props => jsx(Component, {text, ...__props})'),
+        normalizeQuotes(
+          'component: __props => jsx(Component, {text, ...__props})',
+        ),
       );
     });
     it('should keep variables used inside the action but defined outside', () => {
@@ -2764,8 +2775,10 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it.todo('should work mixing elements with element generatos and components', () => {
-      const code = `
+    it.todo(
+      'should work mixing elements with element generatos and components',
+      () => {
+        const code = `
         const generator = () => <div onClick={() => console.log('hello world')}> Click me </div>;
         const el = generator();
 
@@ -2778,9 +2791,9 @@ describe('utils', () => {
         }
       `;
 
-      const output = compileActions(code);
+        const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+        const expected = normalizeQuotes(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function generator() {
@@ -2822,8 +2835,9 @@ describe('utils', () => {
           }
         }`);
 
-      expect(output).toBe(expected);
-    });
+        expect(output).toBe(expected);
+      },
+    );
     it.todo('should work mixing element with 2 generators', () => {
       const code = `
         const generator = () => <div onClick={() => console.log('hello world')}> Click me </div>;
@@ -2889,8 +2903,10 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it.todo('should work with an element with 2 generators and the 2nd one with actions', () => {
-      const code = `
+    it.todo(
+      'should work with an element with 2 generators and the 2nd one with actions',
+      () => {
+        const code = `
         const generator = () => <div onClick={() => console.log('hello world')}> Click me </div>;
         const generator2 = () => <>{generator()}</>
 
@@ -2903,9 +2919,9 @@ describe('utils', () => {
         }
       `;
 
-      const output = compileActions(code);
+        const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+        const expected = normalizeQuotes(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function generator() {
@@ -2948,11 +2964,14 @@ describe('utils', () => {
           }
         }`);
 
-      expect(output).toBe(expected);
-    });
+        expect(output).toBe(expected);
+      },
+    );
 
-    it.todo('should work el = gen1() + gen2() and the second one with actions', () => {
-      const code = `
+    it.todo(
+      'should work el = gen1() + gen2() and the second one with actions',
+      () => {
+        const code = `
         const gen1 = () => <></>
         const gen2 = () => <div onClick={() => console.log('hello world')}> Click me </div>;
         const el = gen1()+gen2();
@@ -2966,9 +2985,9 @@ describe('utils', () => {
         }
       `;
 
-      const output = compileActions(code);
+        const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+        const expected = normalizeQuotes(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function gen1() {
@@ -3011,8 +3030,9 @@ describe('utils', () => {
           }
         }`);
 
-      expect(output).toBe(expected);
-    });
+        expect(output).toBe(expected);
+      },
+    );
 
     it.todo('should transform simple HOC with an action', () => {
       const code = `
@@ -3066,8 +3086,10 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it.todo('should work with an element with an action defined outside the Component', () => {
-      const code = `
+    it.todo(
+      'should work with an element with an action defined outside the Component',
+      () => {
+        const code = `
       const el = <div onClick={() => console.log('hello world')} data - action - onClick="a1_1" data - action > Click me < /div>;
 
       export default function Component() {
@@ -3075,9 +3097,9 @@ describe('utils', () => {
       }
       `;
 
-      const output = compileActions(code);
+        const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+        const expected = normalizeQuotes(`
         import { resolveAction as __resolveAction } from 'brisa/server';
 
         const el = jsxDEV("div", { onClick: () => console.log('hello world'), "data-action-onclick": "a1_1", "data-action": true, children: "Click me" }, undefined, false, undefined, this);
@@ -3101,7 +3123,8 @@ describe('utils', () => {
           }
         } `);
 
-      expect(output).toEqual(expected);
-    });
+        expect(output).toEqual(expected);
+      },
+    );
   });
 });

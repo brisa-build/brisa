@@ -5,7 +5,9 @@ import extendRequestContext from '@/utils/extend-request-context';
 import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from '../rerender-in-action';
 import { getConstants } from '@/constants';
 import resolveAction from '.';
-import SSRWebComponent, { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
+import SSRWebComponent, {
+  AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
+} from '@/utils/ssr-web-component';
 import { normalizeQuotes } from '@/helpers';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
@@ -58,7 +60,9 @@ describe('utils', () => {
         component: () => <div />,
       });
 
-      expect(await response.headers.get('X-Navigate')).toBe('http://localhost/?_not-found=1');
+      expect(await response.headers.get('X-Navigate')).toBe(
+        'http://localhost/?_not-found=1',
+      );
     });
 
     it('should redirect to an specific url with reactivity mode', async () => {
@@ -286,7 +290,9 @@ describe('utils', () => {
       const logs = mockLog.mock.calls.toString();
       expect(logs).toContain('There was an error executing the server action');
       expect(logs).toContain('Field "foo" does not exist in props');
-      expect(logs).toContain('Please note that for security reasons Brisa does not automatically');
+      expect(logs).toContain(
+        'Please note that for security reasons Brisa does not automatically',
+      );
       expect(logs).toContain(
         'Documentation about Server actions: https://brisa.build/building-your-application/data-management/server-actions#props-in-server-actions',
       );
@@ -319,7 +325,9 @@ describe('utils', () => {
       expect(response.status).toBe(200);
       expect(await response.text()).toBe('<div>Test</div>');
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
-      expect(response.headers.get('Content-Type')).toBe('text/html; charset=utf-8');
+      expect(response.headers.get('Content-Type')).toBe(
+        'text/html; charset=utf-8',
+      );
       expect(response.headers.get('Transfer-Encoding')).toBe('chunked');
       expect(response.headers.get('vary')).toBe('Accept-Encoding');
       expect(response.headers.get('X-Mode')).toBe('transition');
@@ -378,7 +386,9 @@ describe('utils', () => {
       expect(response.status).toBe(200);
       expect(await response.text()).toBe('<div>Test</div>');
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
-      expect(response.headers.get('Content-Type')).toBe('text/html; charset=utf-8');
+      expect(response.headers.get('Content-Type')).toBe(
+        'text/html; charset=utf-8',
+      );
       expect(response.headers.get('Transfer-Encoding')).toBe('chunked');
       expect(response.headers.get('vary')).toBe('Accept-Encoding');
       expect(response.headers.get('X-Mode')).toBe('transition');
@@ -391,7 +401,9 @@ describe('utils', () => {
     it('should render the "currentComponent" with "X-Cid" when different originalActionId than actionId', async () => {
       const req = getReq();
 
-      req.store.set(Symbol.for('DEPENDENCIES'), [[['onClick', 'a1_3', 'test-cid']]]);
+      req.store.set(Symbol.for('DEPENDENCIES'), [
+        [['onClick', 'a1_3', 'test-cid']],
+      ]);
       // @ts-ignore
       req._originalActionId = 'a1_1';
       const error = new Error(
@@ -415,7 +427,9 @@ describe('utils', () => {
       expect(response.status).toBe(200);
       expect(await response.text()).toBe('<div>Test</div>');
       expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
-      expect(response.headers.get('Content-Type')).toBe('text/html; charset=utf-8');
+      expect(response.headers.get('Content-Type')).toBe(
+        'text/html; charset=utf-8',
+      );
       expect(response.headers.get('Transfer-Encoding')).toBe('chunked');
       expect(response.headers.get('vary')).toBe('Accept-Encoding');
       expect(response.headers.get('X-Mode')).toBe('transition');
@@ -524,7 +538,11 @@ describe('utils', () => {
         error,
         actionId: 'a1_1',
         component: (__props: any) => (
-          <div data-action data-actions="[['onClick', 'a1_3', 'test-cid']]" {...__props}>
+          <div
+            data-action
+            data-actions="[['onClick', 'a1_3', 'test-cid']]"
+            {...__props}
+          >
             Test
           </div>
         ),

@@ -33,7 +33,10 @@ function getLocalesFromAcceptLanguage(request: Request): string[] | undefined {
   return acceptLanguage?.split(',').map((locale) => locale.split(';')[0]);
 }
 
-function getDefaultLocale(request: RequestContext, I18N_CONFIG: I18nConfig): string {
+function getDefaultLocale(
+  request: RequestContext,
+  I18N_CONFIG: I18nConfig,
+): string {
   const domain = new URL(request.finalURL).hostname;
   const domainDefaultLocale = I18N_CONFIG.domains?.[domain]?.defaultLocale;
 

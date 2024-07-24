@@ -62,7 +62,9 @@ describe('utils', () => {
 
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toEqual(new Set(['foo', 'bar', 'baz']));
-        expect(out.vars).toEqual(new Set(['foo', 'bar', 'baz', 'console', 'props']));
+        expect(out.vars).toEqual(
+          new Set(['foo', 'bar', 'baz', 'console', 'props']),
+        );
       });
 
       it('should transform all props from destructured props', () => {
@@ -131,7 +133,9 @@ describe('utils', () => {
 
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toEqual(new Set(['foo', 'bar', 'baz']));
-        expect(out.vars).toEqual(new Set(['foo', 'bar', 'baz', 'console', 'rest']));
+        expect(out.vars).toEqual(
+          new Set(['foo', 'bar', 'baz', 'console', 'rest']),
+        );
       });
 
       it('should transform all props from arrow function without block statement', () => {
@@ -196,7 +200,16 @@ describe('utils', () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toEqual(new Set(['foo', 'bar', 'baz']));
         expect(out.vars).toEqual(
-          new Set(['foo', 'bar', 'baz', 'foot', 'props', 'bart', 'bazt', 'console']),
+          new Set([
+            'foo',
+            'bar',
+            'baz',
+            'foot',
+            'props',
+            'bart',
+            'bazt',
+            'console',
+          ]),
         );
       });
 
@@ -229,7 +242,14 @@ describe('utils', () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toBeEmpty();
         expect(out.vars).toEqual(
-          new Set(['stateFoo', 'stateBar', 'stateBaz', 'renamedFoo', 'renamedBar', 'renamedBaz']),
+          new Set([
+            'stateFoo',
+            'stateBar',
+            'stateBaz',
+            'renamedFoo',
+            'renamedBar',
+            'renamedBaz',
+          ]),
         );
       });
 
@@ -262,7 +282,14 @@ describe('utils', () => {
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toBeEmpty();
         expect(out.vars).toEqual(
-          new Set(['stateFoo', 'stateBar', 'stateBaz', 'renamedFoo', 'renamedBar', 'renamedBaz']),
+          new Set([
+            'stateFoo',
+            'stateBar',
+            'stateBaz',
+            'renamedFoo',
+            'renamedBar',
+            'renamedBaz',
+          ]),
         );
       });
 
@@ -288,7 +315,9 @@ describe('utils', () => {
 
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toEqual(new Set(['foo', 'bar', 'baz']));
-        expect(out.vars).toEqual(new Set(['foo', 'bar', 'baz', 'props', 'console']));
+        expect(out.vars).toEqual(
+          new Set(['foo', 'bar', 'baz', 'props', 'console']),
+        );
       });
 
       it('should work consuming a property of some props', () => {
@@ -321,7 +350,9 @@ describe('utils', () => {
 
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toEqual(new Set(['foo', 'bar', 'baz']));
-        expect(out.vars).toEqual(new Set(['foo', 'bar', 'baz', 'console', 'props']));
+        expect(out.vars).toEqual(
+          new Set(['foo', 'bar', 'baz', 'console', 'props']),
+        );
       });
 
       it('should not add .value inside an attribute key, only in the value', () => {
@@ -621,8 +652,12 @@ describe('utils', () => {
         `);
 
         expect(outputCode).toBe(expectedCode);
-        expect(out.observedAttributes).toEqual(new Set(['onClick', 'onClickSpan']));
-        expect(out.vars).toEqual(new Set(['onClick', 'onClickSpan', 'props', 'rest']));
+        expect(out.observedAttributes).toEqual(
+          new Set(['onClick', 'onClickSpan']),
+        );
+        expect(out.vars).toEqual(
+          new Set(['onClick', 'onClickSpan', 'props', 'rest']),
+        );
       });
 
       it('should transform props consumed in an expression inside an attribute value', () => {
@@ -911,8 +946,10 @@ describe('utils', () => {
         expect(outputCode).toBe(expectedCode);
       });
 
-      it.each(VARS)('should not conflict between props.foo and %s variable', (varType) => {
-        const code = `
+      it.each(VARS)(
+        'should not conflict between props.foo and %s variable',
+        (varType) => {
+          const code = `
           export default function Component(props, { state }) {
             const example = state(props.foo);
 
@@ -925,11 +962,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component(props, {state}) {
             const example = state(props.foo.value);
 
@@ -941,11 +978,14 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-      it.each(PARAMS)('should not conflict between props.foo and %s param', (param) => {
-        const code = `
+      it.each(PARAMS)(
+        'should not conflict between props.foo and %s param',
+        (param) => {
+          const code = `
           export default function Component(props, { state }) {
             const example = state(props.foo);
 
@@ -957,11 +997,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component(props, {state}) {
             const example = state(props.foo.value);
 
@@ -972,8 +1012,9 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
       it.each(VARS)(
         'should not conflict between destructuring props.foo and %s variable',
@@ -1045,8 +1086,10 @@ describe('utils', () => {
         },
       );
 
-      it.each(VARS)('should not conflict between {foo} props and %s variable', (varType) => {
-        const code = `
+      it.each(VARS)(
+        'should not conflict between {foo} props and %s variable',
+        (varType) => {
+          const code = `
           export default function Component({foo}, { state }) {
             const example = state(foo);
 
@@ -1059,11 +1102,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component({foo}, {state}) {
             const example = state(foo.value);
 
@@ -1075,11 +1118,14 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-      it.each(PARAMS)('should not conflict between {foo} props and %s param', (param) => {
-        const code = `
+      it.each(PARAMS)(
+        'should not conflict between {foo} props and %s param',
+        (param) => {
+          const code = `
           export default function Component({foo}, { state }) {
             const example = state(foo);
 
@@ -1091,11 +1137,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component({foo}, {state}) {
             const example = state(foo.value);
 
@@ -1106,11 +1152,14 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-      it.each(VARS)('should not conflict between {foo="bar"} props and %s variable', (varType) => {
-        const code = `
+      it.each(VARS)(
+        'should not conflict between {foo="bar"} props and %s variable',
+        (varType) => {
+          const code = `
           export default function Component({foo="bar"}, { state }) {
             const example = state(foo);
 
@@ -1123,11 +1172,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component(__b_props__, {state, derived}) {
             const foo = derived(() => __b_props__.foo.value ?? "bar");
             const example = state(foo.value);
@@ -1140,11 +1189,14 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-      it.each(PARAMS)('should not conflict between {foo="bar"} props and %s param', (param) => {
-        const code = `
+      it.each(PARAMS)(
+        'should not conflict between {foo="bar"} props and %s param',
+        (param) => {
+          const code = `
           export default function Component({foo="bar"}, { state }) {
             const example = state(foo);
 
@@ -1156,11 +1208,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component(__b_props__, {state, derived}) {
             const foo = derived(() => __b_props__.foo.value ?? "bar");
             const example = state(foo.value);
@@ -1172,11 +1224,14 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-      it.each(VARS)('should not conflict between {foot: foo} props and %s variable', (varType) => {
-        const code = `
+      it.each(VARS)(
+        'should not conflict between {foot: foo} props and %s variable',
+        (varType) => {
+          const code = `
           export default function Component({foot: foo}, { state }) {
             const example = state(foo);
 
@@ -1189,11 +1244,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component({foot: foo}, {state}) {
             const example = state(foo.value);
 
@@ -1205,11 +1260,14 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
-      it.each(PARAMS)('should not conflict between {foot: foo} props and %s param', (param) => {
-        const code = `
+      it.each(PARAMS)(
+        'should not conflict between {foot: foo} props and %s param',
+        (param) => {
+          const code = `
           export default function Component({foot: foo}, { state }) {
             const example = state(foo);
 
@@ -1221,11 +1279,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component({foot: foo}, {state}) {
             const example = state(foo.value);
 
@@ -1236,8 +1294,9 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
       it.each(VARS)(
         'should not conflict between {foot: {foo}} props and %s variable',
@@ -1276,8 +1335,10 @@ describe('utils', () => {
         },
       );
 
-      it.each(PARAMS)('should not conflict between {foot: {foo}} props and %s param', (param) => {
-        const code = `
+      it.each(PARAMS)(
+        'should not conflict between {foot: {foo}} props and %s param',
+        (param) => {
+          const code = `
           export default function Component({foot: {foo}}, { state }) {
             const example = state(foo);
 
@@ -1289,11 +1350,11 @@ describe('utils', () => {
           }
       `;
 
-        const ast = parseCodeToAST(code);
-        const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const ast = parseCodeToAST(code);
+          const out = transformToReactiveProps(ast);
+          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeQuotes(`
           export default function Component(__b_props__, {state, derived}) {
             const foo = derived(() => __b_props__.foot.value.foo);
             const example = state(foo.value);
@@ -1305,8 +1366,9 @@ describe('utils', () => {
             return jsxDEV("div", {onClick: () => {},children: example.value}, undefined, false, undefined, this);
           }
       `);
-        expect(outputCode).toBe(expectedCode);
-      });
+          expect(outputCode).toBe(expectedCode);
+        },
+      );
 
       it.each(VARS)(
         'should not conflict between renamed props in a var and %s variable',

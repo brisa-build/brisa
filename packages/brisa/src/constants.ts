@@ -3,10 +3,21 @@ import type { BunPlugin } from 'bun';
 import { version } from '../package.json';
 import type { Configuration, I18nConfig } from './types';
 import importFileIfExists from './utils/import-file-if-exists';
-import { blueLog, cyanLog, greenLog, redLog, yellowLog } from './utils/log/log-color';
+import {
+  blueLog,
+  cyanLog,
+  greenLog,
+  redLog,
+  yellowLog,
+} from './utils/log/log-color';
 
 const rootDir = process.cwd();
-const staticExportOutputOption = new Set(['static', 'desktop', 'android', 'ios']);
+const staticExportOutputOption = new Set([
+  'static',
+  'desktop',
+  'android',
+  'ios',
+]);
 const srcDir = path.join(rootDir, 'src');
 const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, 'build');
 const PAGE_404 = '/_404';
@@ -15,14 +26,18 @@ const integrations = await importFileIfExists(
   '_integrations',
   path.join(buildDir, 'web-components'),
 );
-const I18N_CONFIG = (await importFileIfExists('i18n', buildDir))?.default as I18nConfig;
-const CONFIG = (await importFileIfExists('brisa.config', rootDir))?.default ?? {};
+const I18N_CONFIG = (await importFileIfExists('i18n', buildDir))
+  ?.default as I18nConfig;
+const CONFIG =
+  (await importFileIfExists('brisa.config', rootDir))?.default ?? {};
 
 // Remove trailing slash from pages
 if (I18N_CONFIG?.pages) {
   I18N_CONFIG.pages = JSON.parse(
     JSON.stringify(I18N_CONFIG.pages, (key, value) =>
-      typeof value === 'string' && value.length > 1 ? value.replace(/\/$/g, '') : value,
+      typeof value === 'string' && value.length > 1
+        ? value.replace(/\/$/g, '')
+        : value,
     ),
   );
 }
@@ -73,7 +88,8 @@ const BOOLEANS_IN_HTML = new Set([
 
 const { NODE_ENV } = process.env;
 
-const IS_PRODUCTION = process.argv.some((t) => t === 'PROD') || NODE_ENV === 'production';
+const IS_PRODUCTION =
+  process.argv.some((t) => t === 'PROD') || NODE_ENV === 'production';
 const CACHE_CONTROL = IS_PRODUCTION
   ? 'public, max-age=31536000, immutable'
   : 'no-store, must-revalidate';
@@ -86,8 +102,11 @@ const constants = {
   WEB_CONTEXT_PLUGINS: integrations?.webContextPlugins ?? [],
   RESERVED_PAGES: [PAGE_404, PAGE_500],
   IS_PRODUCTION,
-  IS_DEVELOPMENT: process.argv.some((t) => t === 'DEV') || NODE_ENV === 'development',
-  IS_SERVE_PROCESS: Bun.main.endsWith(path.join('brisa', 'out', 'cli', 'serve', 'index.js')),
+  IS_DEVELOPMENT:
+    process.argv.some((t) => t === 'DEV') || NODE_ENV === 'development',
+  IS_SERVE_PROCESS: Bun.main.endsWith(
+    path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
+  ),
   PORT: Number.parseInt(process.argv[2]) || 0,
   BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,
@@ -125,7 +144,9 @@ const constants = {
  * it in all the codebase and implement the mock modules in the tests.
  */
 export const getConstants = () =>
-  globalThis.mockConstants ? (globalThis.mockConstants as typeof constants) : constants;
+  globalThis.mockConstants
+    ? (globalThis.mockConstants as typeof constants)
+    : constants;
 
 declare global {
   var mockConstants: Partial<typeof constants> | undefined;

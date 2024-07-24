@@ -18,7 +18,10 @@ export function redirect(url: string, status = 301) {
   });
 }
 
-export function redirectFromUnnormalizedURL(url: URL, currentRequest: RequestContext) {
+export function redirectFromUnnormalizedURL(
+  url: URL,
+  currentRequest: RequestContext,
+) {
   if (url.origin !== new URL(currentRequest.url).origin) {
     return redirect(url.toString(), 307);
   }
@@ -26,7 +29,8 @@ export function redirectFromUnnormalizedURL(url: URL, currentRequest: RequestCon
   const req = extendRequestContext({ originalRequest: new Request(url) });
   const isAnAsset = isAssetRequest(req);
   const i18nRes = isAnAsset ? {} : handleI18n(req);
-  const isAnAction = currentRequest.method === 'POST' && currentRequest.headers.has('x-action');
+  const isAnAction =
+    currentRequest.method === 'POST' && currentRequest.headers.has('x-action');
 
   if (i18nRes.response) return i18nRes.response;
 

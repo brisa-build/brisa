@@ -8,4 +8,9 @@ const createNode = (type: Type, props: Props, key: string) => {
 
 Fragment.__isFragment = true;
 
-export { createNode as jsx, createNode as jsxs, createNode as jsxDEV, Fragment };
+export {
+  createNode as jsx,
+  createNode as jsxs,
+  createNode as jsxDEV,
+  Fragment,
+};

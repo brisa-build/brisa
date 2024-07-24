@@ -9,7 +9,9 @@ const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutput = (code: string) => {
   const reactiveAst = parseCodeToAST(code);
   const [componentBranch, index] = getWebComponentAst(reactiveAst);
-  const outputComponentAst = optimizeEffects(componentBranch as ESTree.FunctionDeclaration);
+  const outputComponentAst = optimizeEffects(
+    componentBranch as ESTree.FunctionDeclaration,
+  );
 
   (reactiveAst.body[index as number] as any).declaration = outputComponentAst;
 
@@ -21,7 +23,9 @@ describe('utils', () => {
     describe('optimize-effects', () => {
       it('should not do any transformation if not the effect in webContext', () => {
         const input = `export default ({ }, { h }: any) => ['div', {}, 'test'];`;
-        const expected = normalizeQuotes(`export default ({}, {h}) => ['div', {}, 'test'];`);
+        const expected = normalizeQuotes(
+          `export default ({}, {h}) => ['div', {}, 'test'];`,
+        );
         const output = toOutput(input);
 
         expect(output).toEqual(expected);

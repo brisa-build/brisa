@@ -11,7 +11,8 @@ export default function getPropsNames(
   propNamesFromExport: string[] = [],
 ): [PropSet, PropSet, PropSet] {
   const propsAst =
-    webComponentAst?.params?.[0] ?? webComponentAst?.declarations?.[0]?.init?.params?.[0];
+    webComponentAst?.params?.[0] ??
+    webComponentAst?.declarations?.[0]?.init?.params?.[0];
   const propNames = [];
   const renamedPropNames = [];
   const standaloneProps = [];
@@ -19,10 +20,8 @@ export default function getPropsNames(
   if (propsAst?.type === 'ObjectPattern') {
     for (const prop of propsAst.properties as any[]) {
       if (prop.type === 'RestElement') {
-        const [names, renamedNames, standaloneNames] = getPropsNamesFromIdentifier(
-          prop.argument.name,
-          webComponentAst,
-        );
+        const [names, renamedNames, standaloneNames] =
+          getPropsNamesFromIdentifier(prop.argument.name, webComponentAst);
 
         propNames.push(...names);
         renamedPropNames.push(...renamedNames);
@@ -42,7 +41,10 @@ export default function getPropsNames(
       standaloneProps.push(renamedPropName);
     }
 
-    const [, renames, standaloneNames] = getPropsNamesFromIdentifier('', webComponentAst);
+    const [, renames, standaloneNames] = getPropsNamesFromIdentifier(
+      '',
+      webComponentAst,
+    );
 
     renamedPropNames.push(...renames);
     standaloneProps.push(...standaloneNames);
@@ -56,11 +58,16 @@ export default function getPropsNames(
 
   if (
     propsAst?.type === 'Identifier' ||
-    (propsAst?.type === 'AssignmentPattern' && propsAst.left.type === 'Identifier')
+    (propsAst?.type === 'AssignmentPattern' &&
+      propsAst.left.type === 'Identifier')
   ) {
     const identifier = propsAst.name ?? propsAst.left.name;
     const res = getPropsNamesFromIdentifier(identifier, webComponentAst);
-    return [unify(res[0], propNamesFromExport), unify(res[1], propNamesFromExport), res[2]];
+    return [
+      unify(res[0], propNamesFromExport),
+      unify(res[1], propNamesFromExport),
+      res[2],
+    ];
   }
 
   const propNamesFromExportSet = new Set(propNamesFromExport);
@@ -68,7 +75,10 @@ export default function getPropsNames(
   return [propNamesFromExportSet, propNamesFromExportSet, new Set()];
 }
 
-function getPropsNamesFromIdentifier(identifier: string, ast: any): [PropSet, PropSet, PropSet] {
+function getPropsNamesFromIdentifier(
+  identifier: string,
+  ast: any,
+): [PropSet, PropSet, PropSet] {
   const propsNames = new Set<string>([]);
   const renamedPropsNames = new Set<string>([]);
   const standaloneProps = new Set<string>([]);
@@ -81,7 +91,8 @@ function getPropsNamesFromIdentifier(identifier: string, ast: any): [PropSet, Pr
       value?.property?.type === 'Identifier' &&
       identifiers.has(value?.object?.name)
     ) {
-      const name = value?.property?.name !== CHILDREN ? value?.property?.name : null;
+      const name =
+        value?.property?.name !== CHILDREN ? value?.property?.name : null;
 
       if (name) {
         propsNames.add(name);

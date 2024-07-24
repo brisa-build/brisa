@@ -5,13 +5,25 @@ import type { ESTree } from 'meriyah';
 export type ActionInfo = {
   actionId: string;
   actionIdentifierName?: string;
-  actionFnExpression?: ESTree.ArrowFunctionExpression | ESTree.FunctionExpression;
-  componentFnExpression?: ESTree.ArrowFunctionExpression | ESTree.FunctionExpression;
+  actionFnExpression?:
+    | ESTree.ArrowFunctionExpression
+    | ESTree.FunctionExpression;
+  componentFnExpression?:
+    | ESTree.ArrowFunctionExpression
+    | ESTree.FunctionExpression;
 };
 
 const { parseCodeToAST } = AST('tsx');
-const EXPRESSION_TYPES = new Set(['CallExpression', 'MemberExpression', 'LogicalExpression']);
-const FN = new Set(['ArrowFunctionExpression', 'FunctionExpression', 'FunctionDeclaration']);
+const EXPRESSION_TYPES = new Set([
+  'CallExpression',
+  'MemberExpression',
+  'LogicalExpression',
+]);
+const FN = new Set([
+  'ArrowFunctionExpression',
+  'FunctionExpression',
+  'FunctionDeclaration',
+]);
 
 function isJSXDeclaration(declaration: any) {
   return JSX_NAME.has(declaration?.init?.callee?.name);
@@ -36,7 +48,9 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
         // When a Component use identifiers of outside elements with actions, register
         // the actions of the outside elements as well in the component.
         if (isComponent && isElementIdentifier) {
-          const elementActions = actionsFromElements.get(curr?.name) as ActionInfo[];
+          const elementActions = actionsFromElements.get(
+            curr?.name,
+          ) as ActionInfo[];
 
           for (const action of elementActions) {
             actionInfo.push({ ...action, componentFnExpression: comp });
@@ -48,18 +62,26 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
         // When a Element use identifiers of outside elements with actions, we need
         // to propagate the registry to the element
         else if (isElement && isElementIdentifier) {
-          const elementActions = actionsFromElements.get(curr?.name) as ActionInfo[];
+          const elementActions = actionsFromElements.get(
+            curr?.name,
+          ) as ActionInfo[];
           actionsFromElements.set(element.id.name, elementActions);
         }
 
         // When a component use element generators (functions that return JSX elements),
         // register it to replace the actionFnExpression with the real component function
         // after the analysis.
-        else if (curr?.type === 'CallExpression' && curr?.callee?.type === 'Identifier') {
+        else if (
+          curr?.type === 'CallExpression' &&
+          curr?.callee?.type === 'Identifier'
+        ) {
           fnCallsInsideComponents.set(curr?.callee?.name, comp);
 
           // When an action is detected, register it when it is not registered yet.
-        } else if (curr?.type === 'Property' && curr?.key?.value?.startsWith?.('data-action-')) {
+        } else if (
+          curr?.type === 'Property' &&
+          curr?.key?.value?.startsWith?.('data-action-')
+        ) {
           const eventName = curr?.key?.value?.replace?.('data-action-', '');
           const eventNameLowerCase = eventName?.toLowerCase();
           const actionId = curr?.value?.value;
@@ -105,15 +127,18 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           // If the eventContent is not found, it means that maybe is
           //  using destructuring from some object
           if (!eventContent) {
-            const spreads = this.filter?.((e: any) => e.type === 'SpreadElement') ?? [];
+            const spreads =
+              this.filter?.((e: any) => e.type === 'SpreadElement') ?? [];
 
             if (spreads.length) {
               const eventNameCamelCase = `on${eventName[2].toUpperCase()}${eventName.slice(3)}`;
               const expressionCode = spreads
                 .map((e: any) => `${e.argument.name}.${eventNameCamelCase}`)
                 .join(' ?? ');
-              eventContent = (parseCodeToAST(expressionCode).body[0] as ESTree.ExpressionStatement)
-                ?.expression;
+              eventContent = (
+                parseCodeToAST(expressionCode)
+                  .body[0] as ESTree.ExpressionStatement
+              )?.expression;
             }
           }
 
@@ -137,7 +162,8 @@ export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {
           registeredActions.add(actionId);
 
           if (isElement) {
-            const elementActions = actionsFromElements.get(element.id.name) ?? [];
+            const elementActions =
+              actionsFromElements.get(element.id.name) ?? [];
             actionsFromElements.set(element.id.name, [
               ...elementActions,
               {

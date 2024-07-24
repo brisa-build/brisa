@@ -21,6 +21,8 @@ describe('dev-live-reload', () => {
   it('should use native navigation when the websocket message is "hot-reload"', () => {
     const output = LiveReloadScript({ port: 4000, children: null }) as any;
 
-    expect(output.props.children[0].props.children.props.html).toContain('window._xm = "native";');
+    expect(output.props.children[0].props.children.props.html).toContain(
+      'window._xm = "native";',
+    );
   });
 });

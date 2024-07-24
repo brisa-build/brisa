@@ -48,7 +48,15 @@
   "bin": {
     "brisa": "./cli.cjs"
   },
-  "files": ["out", "jsx-runtime", "jsx-dev-runtime", "client", "server", "test", "cli.cjs"],
+  "files": [
+    "out",
+    "jsx-runtime",
+    "jsx-dev-runtime",
+    "client",
+    "server",
+    "test",
+    "cli.cjs"
+  ],
   "workspaces": ["packages/*"],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-test",

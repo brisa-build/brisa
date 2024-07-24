@@ -15,7 +15,9 @@ const bodyWithStore = (args?: unknown[], isFormData?: boolean) => {
   const xs = $window._s ? [..._s.Map] : $window._S ?? [];
 
   if (isFormData) {
-    const form = new FormData((args![0] as SubmitEvent).target as HTMLFormElement);
+    const form = new FormData(
+      (args![0] as SubmitEvent).target as HTMLFormElement,
+    );
     form.append('x-s', stringifyAndCleanEvent(xs));
     return form;
   }
@@ -96,7 +98,8 @@ async function rpc(
 }
 
 function spaNavigation(event: any) {
-  const renderMode = $window._xm ?? getAttribute(getActiveElement(), 'rendermode');
+  const renderMode =
+    $window._xm ?? getAttribute(getActiveElement(), 'rendermode');
 
   // Clean render mode from imperative navigate API
   $window._xm = null;
@@ -125,7 +128,9 @@ function spaNavigation(event: any) {
 }
 
 function getActiveElement(element = $document.activeElement): Element | null {
-  return element?.shadowRoot ? getActiveElement(element.shadowRoot.activeElement) : element;
+  return element?.shadowRoot
+    ? getActiveElement(element.shadowRoot.activeElement)
+    : element;
 }
 
 function getAttribute(el: Element | null, attr: string) {

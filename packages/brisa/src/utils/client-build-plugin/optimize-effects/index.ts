@@ -6,11 +6,21 @@ type WebContextDetails = {
   cleanupName: string;
   identifier?: string;
 };
-type Properties = (ESTree.Property | ESTree.RestElement | ESTree.CallExpression['callee'])[];
+type Properties = (
+  | ESTree.Property
+  | ESTree.RestElement
+  | ESTree.CallExpression['callee']
+)[];
 
-const DECLARATION_NODE_TYPES = new Set(['FunctionDeclaration', 'VariableDeclarator']);
+const DECLARATION_NODE_TYPES = new Set([
+  'FunctionDeclaration',
+  'VariableDeclarator',
+]);
 
-const EFFECT_EXECUTION_TYPES = new Set(['CallExpression', 'FunctionDeclaration']);
+const EFFECT_EXECUTION_TYPES = new Set([
+  'CallExpression',
+  'FunctionDeclaration',
+]);
 
 /**
  * Optimizes effects doing 3 things:
@@ -105,10 +115,14 @@ export default function optimizeEffects(
   // add the effectDeps to the effect function.
   // ex: effect(someFn); function someFn(r) {} // adding 'r' as dependency
   function traverseAgainA2B(this: any, key: string, node: any) {
-    if (DECLARATION_NODE_TYPES.has(node?.type) && node?.id?.name === getEffectIdentifier()) {
+    if (
+      DECLARATION_NODE_TYPES.has(node?.type) &&
+      node?.id?.name === getEffectIdentifier()
+    ) {
       return JSON.parse(
         JSON.stringify(node, (k, v) => {
-          if (v?.constructor === Object) v.effectDeps = [getRNameFromIdentifier(node?.id?.name)];
+          if (v?.constructor === Object)
+            v.effectDeps = [getRNameFromIdentifier(node?.id?.name)];
           return v;
         }),
       );
@@ -122,7 +136,10 @@ export default function optimizeEffects(
   //   ex: effect((r) => effect(r1 => {})) --> effect((r) => effect(r(r1 => {})));
   // - add 'r.id' as second parameter to cleanups used inside effects
   function traverseB2A(this: any, key: string, node: any) {
-    if (DECLARATION_NODE_TYPES.has(node?.type) && node?.id?.name === getEffectIdentifier()) {
+    if (
+      DECLARATION_NODE_TYPES.has(node?.type) &&
+      node?.id?.name === getEffectIdentifier()
+    ) {
       return transformInnerEffect(node, this);
     }
 
@@ -155,11 +172,15 @@ export default function optimizeEffects(
 
     const parser = (key: string, innerVal: any) => {
       if (!EFFECT_EXECUTION_TYPES.has(innerVal?.type)) return innerVal;
-      if (innerVal?.callee?.property?.name && innerVal?.callee?.object?.name !== effectIdentifier) {
+      if (
+        innerVal?.callee?.property?.name &&
+        innerVal?.callee?.object?.name !== effectIdentifier
+      ) {
         return innerVal;
       }
 
-      const innerName = innerVal?.callee?.name ?? innerVal?.callee?.property?.name;
+      const innerName =
+        innerVal?.callee?.name ?? innerVal?.callee?.property?.name;
 
       if (innerName !== webContextDetails.cleanupName) return innerVal;
 
@@ -277,12 +298,17 @@ function propagateEffectDeps(node: EffectNode, parent: EffectNode) {
  * @example
  * const wrappedEffect = wrapEffectWithDependencies(effect, parent);
  */
-function wrapEffectWithDependencies(effect: EffectNode, parent: EffectNode, async = false) {
+function wrapEffectWithDependencies(
+  effect: EffectNode,
+  parent: EffectNode,
+  async = false,
+) {
   const deps = parent.effectDeps ?? [];
   let newEffectNode: EffectNode = effect;
 
   for (const depName of deps) {
-    const innerFn = (newEffectNode.arguments?.[0] ?? newEffectNode) as EffectNode;
+    const innerFn = (newEffectNode.arguments?.[0] ??
+      newEffectNode) as EffectNode;
 
     if (depName === innerFn?.callee?.name) continue;
 
@@ -325,7 +351,10 @@ function getRNameGenerator(allVariableNames: Set<string>) {
     let defaultName = `r${count ? count : ''}`;
 
     // Update the name if it's already taken adding a '$' at the end
-    while (registeredRNames.has(defaultName) || allVariableNames.has(defaultName)) {
+    while (
+      registeredRNames.has(defaultName) ||
+      allVariableNames.has(defaultName)
+    ) {
       defaultName += '$';
     }
 
@@ -361,9 +390,13 @@ function getSubEffectManager(allVariableNames: Set<string>) {
   let effectIdentifier: string | undefined;
 
   return {
-    getRNameFromIdentifier: (identifier: string) => identifierRName.get(identifier),
+    getRNameFromIdentifier: (identifier: string) =>
+      identifierRName.get(identifier),
     getEffectIdentifier: () => effectIdentifier,
-    assignRNameToNode: (node: any, { takenName, parent }: { takenName?: string; parent: any }) => {
+    assignRNameToNode: (
+      node: any,
+      { takenName, parent }: { takenName?: string; parent: any },
+    ) => {
       const args = node?.arguments?.[0] ?? {};
 
       const rName =
@@ -373,7 +406,11 @@ function getSubEffectManager(allVariableNames: Set<string>) {
         generateUniqueRName();
 
       node.effectDeps = Array.from(
-        new Set([rName, ...(parent?.effectDeps ?? []), ...(node?.effectDeps ?? [])]),
+        new Set([
+          rName,
+          ...(parent?.effectDeps ?? []),
+          ...(node?.effectDeps ?? []),
+        ]),
       );
 
       if (args.type === 'Identifier') {

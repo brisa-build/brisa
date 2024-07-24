@@ -19,7 +19,9 @@ declare global {
 function defineBrisaWebComponent(code: string, path: string) {
   const componentName = path.split('/').pop()?.split('.')[0] as string;
 
-  const webComponent = `(() => {${normalizeQuotes(clientBuildPlugin(code, path).code)
+  const webComponent = `(() => {${normalizeQuotes(
+    clientBuildPlugin(code, path).code,
+  )
     .replace('import {brisaElement, _on, _off} from "brisa/client";', '')
     .replace('export default', 'const _Test =')}return _Test;})()`;
 
@@ -29,7 +31,9 @@ function defineBrisaWebComponent(code: string, path: string) {
 }
 
 async function getContextProviderCode() {
-  const code = await Bun.file(join(import.meta.dir, '..', 'context-provider', 'client.tsx')).text();
+  const code = await Bun.file(
+    join(import.meta.dir, '..', 'context-provider', 'client.tsx'),
+  ).text();
   return code.replace(/import.*\n/g, '');
 }
 
@@ -59,7 +63,9 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('Hello World');
     });
@@ -77,7 +83,9 @@ describe('integration', () => {
 
       await Bun.sleep(0);
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('Hello world');
     });
@@ -91,7 +99,9 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('Hello World');
     });
@@ -107,7 +117,9 @@ describe('integration', () => {
 
       document.body.innerHTML = "<test-component count='3' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<span>0</span><span>1</span><span>2</span>',
@@ -135,7 +147,9 @@ describe('integration', () => {
 
       document.body.innerHTML = `<test-component items="['1','2','3']"" />`;
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<span>1</span><span>2</span><span>3</span>',
@@ -163,7 +177,9 @@ describe('integration', () => {
 
       document.body.innerHTML = "<test-component count='3' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<span>0</span><span>1</span><span>2</span>',
@@ -190,9 +206,13 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -214,9 +234,13 @@ describe('integration', () => {
 
       window.onClick = onClickMock;
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -247,13 +271,17 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<div><span>0</span><span>1</span><span>2</span></div>',
       );
 
-      const div = testComponent?.shadowRoot?.querySelector('div') as HTMLDivElement;
+      const div = testComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLDivElement;
 
       div.click();
 
@@ -279,19 +307,27 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(window.insideGenerateMarkup).toHaveBeenCalledTimes(1);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>3</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>3</span></div>',
+      );
 
-      const div = testComponent?.shadowRoot?.querySelector('div') as HTMLDivElement;
+      const div = testComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLDivElement;
 
       div.click();
 
       expect(window.insideGenerateMarkup).toHaveBeenCalledTimes(1);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>4</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>4</span></div>',
+      );
     });
 
     it('should call markup generator twice when using signal value as attribute', () => {
@@ -311,19 +347,27 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(window.insideGenerateMarkup).toHaveBeenCalledTimes(1);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>3</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>3</span></div>',
+      );
 
-      const div = testComponent?.shadowRoot?.querySelector('div') as HTMLDivElement;
+      const div = testComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLDivElement;
 
       div.click();
 
       expect(window.insideGenerateMarkup).toHaveBeenCalledTimes(2);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>4</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>4</span></div>',
+      );
     });
 
     it('should work interactivity using a markup generator that returns a signal', () => {
@@ -340,11 +384,15 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>3</div>');
 
-      const div = testComponent?.shadowRoot?.querySelector('div') as HTMLDivElement;
+      const div = testComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLDivElement;
 
       div.click();
 
@@ -360,7 +408,9 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component>Hello World</test-component>';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<slot></slot>');
 
@@ -426,7 +476,10 @@ describe('integration', () => {
         );
       }`;
 
-      defineBrisaWebComponent(code, 'src/web-components/conditional-render.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/conditional-render.tsx',
+      );
 
       document.body.innerHTML = `
         <conditional-render name="Aral">
@@ -434,7 +487,9 @@ describe('integration', () => {
         </conditional-render>
       `;
 
-      const conditionalRender = document.querySelector('conditional-render') as HTMLElement;
+      const conditionalRender = document.querySelector(
+        'conditional-render',
+      ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
         '<h2><b>Hello Aral</b><span>🥴</span></h2><slot></slot>',
@@ -506,9 +561,10 @@ describe('integration', () => {
         '<my-component-using-slots><div slot="header">Header Content</div><p slot="content">These are the child components!</p></my-component-using-slots>',
       );
 
-      const myComponentUsingSlots = parentComponentUsingSlots?.shadowRoot?.querySelector(
-        'my-component-using-slots',
-      ) as HTMLElement;
+      const myComponentUsingSlots =
+        parentComponentUsingSlots?.shadowRoot?.querySelector(
+          'my-component-using-slots',
+        ) as HTMLElement;
 
       expect(myComponentUsingSlots?.shadowRoot?.innerHTML).toBe(
         '<div><p>This is my component with slots</p><div><slot name="header"></slot></div><div><slot name="content"></slot></div></div>',
@@ -518,13 +574,17 @@ describe('integration', () => {
         'slot[name="header"]',
       ) as HTMLSlotElement;
 
-      expect(headerSlot?.assignedElements()[0].innerHTML).toBe('Header Content');
+      expect(headerSlot?.assignedElements()[0].innerHTML).toBe(
+        'Header Content',
+      );
 
       const contentSlot = myComponentUsingSlots?.shadowRoot?.querySelector(
         'slot[name="content"]',
       ) as HTMLSlotElement;
 
-      expect(contentSlot?.assignedElements()[0].innerHTML).toBe('These are the child components!');
+      expect(contentSlot?.assignedElements()[0].innerHTML).toBe(
+        'These are the child components!',
+      );
     });
 
     it('should work with conditional rendering inside text node', () => {
@@ -540,7 +600,10 @@ describe('integration', () => {
       }
       `;
 
-      defineBrisaWebComponent(code, 'src/web-components/conditional-render.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/conditional-render.tsx',
+      );
 
       document.body.innerHTML = `
         <conditional-render name="Aral">
@@ -548,7 +611,9 @@ describe('integration', () => {
         </conditional-render>
       `;
 
-      const conditionalRender = document.querySelector('conditional-render') as HTMLElement;
+      const conditionalRender = document.querySelector(
+        'conditional-render',
+      ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
         '<h2><b>Hello Aral</b>🥴<slot></slot></h2>',
@@ -575,7 +640,10 @@ describe('integration', () => {
         );
       }`;
 
-      defineBrisaWebComponent(code, 'src/web-components/conditional-render.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/conditional-render.tsx',
+      );
 
       document.body.innerHTML = `
         <conditional-render name="Aral">
@@ -583,7 +651,9 @@ describe('integration', () => {
         </conditional-render>
       `;
 
-      const conditionalRender = document.querySelector('conditional-render') as HTMLElement;
+      const conditionalRender = document.querySelector(
+        'conditional-render',
+      ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
         '<h2><b>Hello Aral</b>🥴</h2><slot></slot>',
@@ -608,7 +678,10 @@ describe('integration', () => {
         );
       }`;
 
-      defineBrisaWebComponent(code, 'src/web-components/conditional-render.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/conditional-render.tsx',
+      );
 
       document.body.innerHTML = `
           <conditional-render name="Aral">
@@ -616,7 +689,9 @@ describe('integration', () => {
           </conditional-render>
         `;
 
-      const conditionalRender = document.querySelector('conditional-render') as HTMLElement;
+      const conditionalRender = document.querySelector(
+        'conditional-render',
+      ) as HTMLElement;
 
       expect(conditionalRender?.shadowRoot?.innerHTML).toBe(
         '<h2><b>Hello Aral</b>🥴<slot></slot></h2>',
@@ -642,7 +717,9 @@ describe('integration', () => {
 
       const emptyNodes = document.querySelector('empty-nodes') as HTMLElement;
 
-      expect(emptyNodes?.shadowRoot?.innerHTML).toBe('<div><span></span></div>');
+      expect(emptyNodes?.shadowRoot?.innerHTML).toBe(
+        '<div><span></span></div>',
+      );
     });
 
     it('should display a component to display a series of images in a sliding carousel', () => {
@@ -673,7 +750,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/sliding-carousel.tsx');
 
-      const carousel = document.querySelector('sliding-carousel') as HTMLElement;
+      const carousel = document.querySelector(
+        'sliding-carousel',
+      ) as HTMLElement;
       const [prev, next] = carousel?.shadowRoot?.querySelectorAll(
         'button',
       ) as NodeListOf<HTMLButtonElement>;
@@ -765,7 +844,9 @@ describe('integration', () => {
       `;
 
       const timer = document.querySelector('timer-component') as HTMLElement;
-      const button = timer?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = timer?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(timer?.shadowRoot?.innerHTML).toBe(
         '<div><span>Time: 0</span><button>stop</button></div>',
@@ -799,7 +880,9 @@ describe('integration', () => {
       `;
 
       const testButton = document.querySelector('test-button') as HTMLElement;
-      const button = testButton?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testButton?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -821,13 +904,24 @@ describe('integration', () => {
         return <button onClick={() => onClickMe("TEST")}>{children}</button>
       }`;
 
-      defineBrisaWebComponent(secondCode, 'src/web-components/second-component.tsx');
-      defineBrisaWebComponent(firstCode, 'src/web-components/first-component.tsx');
-      defineBrisaWebComponent(parentCode, 'src/web-components/parent-component.tsx');
+      defineBrisaWebComponent(
+        secondCode,
+        'src/web-components/second-component.tsx',
+      );
+      defineBrisaWebComponent(
+        firstCode,
+        'src/web-components/first-component.tsx',
+      );
+      defineBrisaWebComponent(
+        parentCode,
+        'src/web-components/parent-component.tsx',
+      );
 
       document.body.innerHTML = '<parent-component />';
 
-      const parentComponent = document.querySelector('parent-component') as HTMLElement;
+      const parentComponent = document.querySelector(
+        'parent-component',
+      ) as HTMLElement;
 
       const firstComponent = parentComponent?.shadowRoot?.querySelector(
         'first-component',
@@ -845,9 +939,13 @@ describe('integration', () => {
         '<second-component><slot></slot></second-component>',
       );
 
-      expect(secondComponent?.shadowRoot?.innerHTML).toBe('<button><slot></slot></button>');
+      expect(secondComponent?.shadowRoot?.innerHTML).toBe(
+        '<button><slot></slot></button>',
+      );
 
-      const button = secondComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = secondComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -872,9 +970,13 @@ describe('integration', () => {
         <color-selector color="#000000" />
       `;
 
-      const colorSelector = document.querySelector('color-selector') as HTMLElement;
+      const colorSelector = document.querySelector(
+        'color-selector',
+      ) as HTMLElement;
 
-      const input = colorSelector?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = colorSelector?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(colorSelector?.shadowRoot?.innerHTML).toBe(
         '<div><input type="color" value="#000000"><span style="color:#000000;">#000000</span></div>',
@@ -908,7 +1010,9 @@ describe('integration', () => {
 
       todoList.setAttribute('todos', '["todo 4", "todo 5"]');
 
-      expect(todoList?.shadowRoot?.innerHTML).toBe('<ul><li>todo 4</li><li>todo 5</li></ul>');
+      expect(todoList?.shadowRoot?.innerHTML).toBe(
+        '<ul><li>todo 4</li><li>todo 5</li></ul>',
+      );
     });
 
     it('should work an interactive TodoList with state', () => {
@@ -934,9 +1038,13 @@ describe('integration', () => {
 
       const todoList = document.querySelector('todo-list') as HTMLElement;
 
-      const input = todoList?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = todoList?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
-      const button = todoList?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = todoList?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(todoList?.shadowRoot?.innerHTML).toBe(
         '<div><input value=""><button>Add</button><ul><li>todo 1</li><li>todo 2</li><li>todo 3</li></ul></div>',
@@ -966,11 +1074,17 @@ describe('integration', () => {
       document.body.innerHTML = '<test-image />';
 
       const testImage = document.querySelector('test-image') as HTMLElement;
-      const img = testImage?.shadowRoot?.querySelector('img') as HTMLImageElement;
+      const img = testImage?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
 
-      expect(testImage?.shadowRoot?.innerHTML).toBe('<img src="https://test.com/image.png">');
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/image.png">',
+      );
       img.dispatchEvent(new Event('error'));
-      expect(testImage?.shadowRoot?.innerHTML).toBe('<img src="https://test.com/error.png">');
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/error.png">',
+      );
     });
 
     it('should be possible to change a dynamic src attribute using the onerror event from img', () => {
@@ -984,11 +1098,17 @@ describe('integration', () => {
       document.body.innerHTML = '<test-image />';
 
       const testImage = document.querySelector('test-image') as HTMLElement;
-      const img = testImage?.shadowRoot?.querySelector('img') as HTMLImageElement;
+      const img = testImage?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
 
-      expect(testImage?.shadowRoot?.innerHTML).toBe('<img src="https://test.com/image.png">');
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/image.png">',
+      );
       img.dispatchEvent(new Event('error'));
-      expect(testImage?.shadowRoot?.innerHTML).toBe('<img src="https://test.com/error.png">');
+      expect(testImage?.shadowRoot?.innerHTML).toBe(
+        '<img src="https://test.com/error.png">',
+      );
     });
 
     it('should unregister effects when the component is disconnected', async () => {
@@ -1009,7 +1129,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>0</div>');
       expect(window.mock).toHaveBeenCalledTimes(1);
@@ -1047,19 +1169,29 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = "<test-component count='1' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>1</div><button>increment</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>1</div><button>increment</button>',
+      );
 
       button.click();
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>2</div><button>increment</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>2</div><button>increment</button>',
+      );
 
       testComponent.setAttribute('count', '3');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>3</div><button>increment</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>3</div><button>increment</button>',
+      );
     });
 
     it('should work an async web-component', async () => {
@@ -1072,7 +1204,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/async-component.tsx');
       document.body.innerHTML = '<async-component />';
 
-      const asyncComponent = document.querySelector('async-component') as HTMLElement;
+      const asyncComponent = document.querySelector(
+        'async-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -1095,7 +1229,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/async-component.tsx');
       document.body.innerHTML = '<async-component />';
 
-      const asyncComponent = document.querySelector('async-component') as HTMLElement;
+      const asyncComponent = document.querySelector(
+        'async-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -1110,7 +1246,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/empty-text-node.tsx');
       document.body.innerHTML = '<empty-text-node />';
 
-      const emptyTextNode = document.querySelector('empty-text-node') as HTMLElement;
+      const emptyTextNode = document.querySelector(
+        'empty-text-node',
+      ) as HTMLElement;
 
       expect(emptyTextNode?.shadowRoot?.innerHTML).toBe('<div></div>');
     });
@@ -1134,9 +1272,13 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(window.mockEffect).toHaveBeenCalledTimes(1);
       expect(window.mockCleanup).toHaveBeenCalledTimes(0);
@@ -1170,7 +1312,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/cleanup-component.tsx');
       document.body.innerHTML = '<cleanup-component />';
 
-      const testComponent = document.querySelector('cleanup-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'cleanup-component',
+      ) as HTMLElement;
 
       expect(window.mockEffect).toHaveBeenCalledTimes(1);
       expect(window.mockCleanup).toHaveBeenCalledTimes(0);
@@ -1198,7 +1342,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(window.mockEffect).toHaveBeenCalledTimes(1);
       expect(window.mockCleanup).toHaveBeenCalledTimes(0);
@@ -1226,7 +1372,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(window.mockEffect).toHaveBeenCalledTimes(1);
       expect(window.mockCleanup).toHaveBeenCalledTimes(0);
@@ -1323,7 +1471,9 @@ describe('integration', () => {
 
       const testSVG = document.querySelector('test-svg') as HTMLElement;
       const svg = testSVG?.shadowRoot?.querySelector('svg') as SVGElement;
-      const foreignObject = testSVG?.shadowRoot?.querySelector('foreignObject') as SVGElement;
+      const foreignObject = testSVG?.shadowRoot?.querySelector(
+        'foreignObject',
+      ) as SVGElement;
       const div = testSVG?.shadowRoot?.querySelector('div') as HTMLElement;
 
       expect(svg.namespaceURI).toBe('http://www.w3.org/2000/svg');
@@ -1383,8 +1533,12 @@ describe('integration', () => {
       document.body.innerHTML = '<magic-list />';
 
       const magicList = document.querySelector('magic-list') as HTMLElement;
-      const form = magicList?.shadowRoot?.querySelector('form') as HTMLFormElement;
-      const input = magicList?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const form = magicList?.shadowRoot?.querySelector(
+        'form',
+      ) as HTMLFormElement;
+      const input = magicList?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       expect(magicList?.shadowRoot?.innerHTML).toBe(
         '<div><form><input name="item" id="item" placeholder="Add item"><button>add</button></form><ul><li><button>delete</button><button>move up</button>some</li><li><button>delete</button><button>move up</button>another</li></ul></div>',
@@ -1399,7 +1553,9 @@ describe('integration', () => {
 
       // Moving up the last item
       const moveUpButton = [
-        ...(magicList?.shadowRoot?.querySelectorAll('button') as NodeListOf<HTMLButtonElement>),
+        ...(magicList?.shadowRoot?.querySelectorAll(
+          'button',
+        ) as NodeListOf<HTMLButtonElement>),
       ].at(-1) as HTMLButtonElement;
       moveUpButton.click();
       expect(magicList?.shadowRoot?.innerHTML).toBe(
@@ -1410,7 +1566,9 @@ describe('integration', () => {
       const deleteLast = () =>
         (
           [
-            ...(magicList?.shadowRoot?.querySelectorAll('button') as NodeListOf<HTMLButtonElement>),
+            ...(magicList?.shadowRoot?.querySelectorAll(
+              'button',
+            ) as NodeListOf<HTMLButtonElement>),
           ].at(-2) as HTMLButtonElement
         ).click();
       deleteLast();
@@ -1435,7 +1593,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>1</div>');
 
@@ -1456,17 +1616,25 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = "<test-component count='1' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>one</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>one</span></div>',
+      );
 
       testComponent.setAttribute('count', '2');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>two</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>two</span></div>',
+      );
 
       testComponent.setAttribute('count', '3');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><span>three</span></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><span>three</span></div>',
+      );
     });
 
     it('should work nested conditionals renders', () => {
@@ -1490,9 +1658,12 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      document.body.innerHTML = "<test-component first='1' second='2' third='3' />";
+      document.body.innerHTML =
+        "<test-component first='1' second='2' third='3' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<div><div><span>test work</span></div></div>',
@@ -1505,7 +1676,9 @@ describe('integration', () => {
       testComponent.setAttribute('first', '1');
       testComponent.setAttribute('second', '3');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><div>no-second</div></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><div>no-second</div></div>',
+      );
 
       testComponent.setAttribute('second', '2');
       testComponent.setAttribute('third', '4');
@@ -1550,7 +1723,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       await Bun.sleep(0);
 
@@ -1560,7 +1735,9 @@ describe('integration', () => {
 
       await Bun.sleep(0);
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>no-second 42</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>no-second 42</div>',
+      );
     });
 
     it('should allow async/await conditional renders from props', async () => {
@@ -1641,8 +1818,12 @@ describe('integration', () => {
 
       document.body.innerHTML = '<accordion-element />';
 
-      const accordion = document.querySelector('accordion-element') as HTMLElement;
-      const button = accordion?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const accordion = document.querySelector(
+        'accordion-element',
+      ) as HTMLElement;
+      const button = accordion?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(accordion?.shadowRoot?.innerHTML).toBe(
         '<div><button>toggle</button><div style="display:none;">content</div></div>',
@@ -1680,7 +1861,9 @@ describe('integration', () => {
       document.body.innerHTML = '<tooltip-element />';
 
       const tooltip = document.querySelector('tooltip-element') as HTMLElement;
-      const span = tooltip?.shadowRoot?.querySelector('span') as HTMLSpanElement;
+      const span = tooltip?.shadowRoot?.querySelector(
+        'span',
+      ) as HTMLSpanElement;
 
       expect(tooltip?.shadowRoot?.innerHTML).toBe(
         '<div><span style="position:relative;"><span style="position:absolute;visibility:hidden;">Tooltip text</span>Hover over me</span></div>',
@@ -1730,37 +1913,58 @@ describe('integration', () => {
 
       defineBrisaWebComponent(wc1, 'src/web-components/web-component-1.tsx');
       defineBrisaWebComponent(wc2, 'src/web-components/web-component-2.tsx');
-      defineBrisaWebComponent(parent, 'src/web-components/parent-web-component.tsx');
+      defineBrisaWebComponent(
+        parent,
+        'src/web-components/parent-web-component.tsx',
+      );
       document.body.innerHTML = '<parent-web-component name="WebComponent1" />';
 
-      const parentWebComponent = document.querySelector('parent-web-component') as HTMLElement;
+      const parentWebComponent = document.querySelector(
+        'parent-web-component',
+      ) as HTMLElement;
       const firstWebComponent = parentWebComponent?.shadowRoot?.querySelector(
         'web-component-1',
       ) as HTMLElement;
-      const firstDiv = firstWebComponent?.shadowRoot?.querySelector('div') as HTMLElement;
+      const firstDiv = firstWebComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLElement;
 
       // The first component should be mounted
-      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe('<web-component-1></web-component-1>');
-      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent1</div>');
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<web-component-1></web-component-1>',
+      );
+      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent1</div>',
+      );
 
       // The first component should be updated
       firstDiv.click();
-      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent1 updated</div>');
+      expect(firstWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent1 updated</div>',
+      );
 
       // Changing the conditional render on the parent component
       parentWebComponent.setAttribute('name', 'WebComponent2');
       const secondWebComponent = parentWebComponent?.shadowRoot?.querySelector(
         'web-component-2',
       ) as HTMLElement;
-      const secondDiv = secondWebComponent?.shadowRoot?.querySelector('div') as HTMLElement;
+      const secondDiv = secondWebComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLElement;
 
       // The second component should be mounted
-      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe('<web-component-2></web-component-2>');
-      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent2</div>');
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<web-component-2></web-component-2>',
+      );
+      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent2</div>',
+      );
 
       // The second component should be updated
       secondDiv.click();
-      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent2 updated</div>');
+      expect(secondWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent2 updated</div>',
+      );
 
       // Changing the conditional render on the parent component again to the first component
       parentWebComponent.setAttribute('name', 'WebComponent1');
@@ -1769,8 +1973,12 @@ describe('integration', () => {
       ) as HTMLElement;
 
       // The first component should be unmounted and the state should be reset
-      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe('<web-component-1></web-component-1>');
-      expect(firstComponent?.shadowRoot?.innerHTML).toBe('<div>WebComponent1</div>');
+      expect(parentWebComponent?.shadowRoot?.innerHTML).toBe(
+        '<web-component-1></web-component-1>',
+      );
+      expect(firstComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>WebComponent1</div>',
+      );
     });
 
     it('should open/close a dialog with the "open" attribute', () => {
@@ -1789,8 +1997,12 @@ describe('integration', () => {
       document.body.innerHTML = '<dialog-element />';
 
       const dialog = document.querySelector('dialog-element') as HTMLElement;
-      const button = dialog?.shadowRoot?.querySelector('button') as HTMLButtonElement;
-      const dialogElement = dialog?.shadowRoot?.querySelector('dialog') as HTMLDialogElement;
+      const button = dialog?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+      const dialogElement = dialog?.shadowRoot?.querySelector(
+        'dialog',
+      ) as HTMLDialogElement;
 
       expect(dialog?.shadowRoot?.innerHTML).toBe(
         '<div><button>open</button><dialog>dialog</dialog></div>',
@@ -1834,7 +2046,10 @@ describe('integration', () => {
 
       expect(runtimeLog?.shadowRoot?.innerHTML).toBe('<dialog></dialog>');
 
-      runtimeLog.setAttribute('error', "{ 'stack': 'stack', 'message': 'message' }");
+      runtimeLog.setAttribute(
+        'error',
+        "{ 'stack': 'stack', 'message': 'message' }",
+      );
 
       expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
         '<dialog open="">Error: message<pre>stack</pre></dialog>',
@@ -1846,7 +2061,9 @@ describe('integration', () => {
 
       runtimeLog.setAttribute('warning', 'warning');
 
-      expect(runtimeLog?.shadowRoot?.innerHTML).toBe('<dialog open="">Warning: warning</dialog>');
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
+        '<dialog open="">Warning: warning</dialog>',
+      );
 
       runtimeLog.removeAttribute('warning');
 
@@ -1876,7 +2093,10 @@ describe('integration', () => {
 
       expect(runtimeLog?.shadowRoot?.innerHTML).toBe('<dialog></dialog>');
 
-      runtimeLog.setAttribute('error', '{ "stack": "stack", "message": "message" }');
+      runtimeLog.setAttribute(
+        'error',
+        '{ "stack": "stack", "message": "message" }',
+      );
 
       expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
         '<dialog open="">Error: message<pre>stack</pre></dialog>',
@@ -1888,7 +2108,9 @@ describe('integration', () => {
 
       runtimeLog.setAttribute('warning', 'warning');
 
-      expect(runtimeLog?.shadowRoot?.innerHTML).toBe('<dialog open="">Warning: warning</dialog>');
+      expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
+        '<dialog open="">Warning: warning</dialog>',
+      );
 
       runtimeLog.removeAttribute('warning');
 
@@ -1996,13 +2218,20 @@ describe('integration', () => {
         return <div>{user.name}</div>;
       }`;
 
-      defineBrisaWebComponent(testComp, 'src/web-components/test-component.tsx');
+      defineBrisaWebComponent(
+        testComp,
+        'src/web-components/test-component.tsx',
+      );
       defineBrisaWebComponent(wc, 'src/web-components/web-component.tsx');
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
-      const webComponent = testComponent?.shadowRoot?.querySelector('web-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const webComponent = testComponent?.shadowRoot?.querySelector(
+        'web-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         `<web-component user="{'name':'Aral'}"></web-component>`,
@@ -2030,9 +2259,13 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/bool-component.tsx');
 
       document.body.innerHTML = '<bool-component />';
-      const boolComponent = document.querySelector('bool-component') as HTMLElement;
+      const boolComponent = document.querySelector(
+        'bool-component',
+      ) as HTMLElement;
 
-      expect(boolComponent?.shadowRoot?.innerHTML).toBe('<div>TRUE</div><div>TRUE</div>0');
+      expect(boolComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>TRUE</div><div>TRUE</div>0',
+      );
     });
 
     it('should work with booleans and numbers from props in the same way than React', () => {
@@ -2051,9 +2284,13 @@ describe('integration', () => {
 
       document.body.innerHTML =
         "<bool-component first='true' second='false' third='1' fourth='0' />";
-      const boolComponent = document.querySelector('bool-component') as HTMLElement;
+      const boolComponent = document.querySelector(
+        'bool-component',
+      ) as HTMLElement;
 
-      expect(boolComponent?.shadowRoot?.innerHTML).toBe('<div>TRUE</div><div>TRUE</div>0');
+      expect(boolComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>TRUE</div><div>TRUE</div>0',
+      );
     });
 
     it('should be possible to render undefined and null', () => {
@@ -2067,7 +2304,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<div class="empty"></div><div class="empty"></div>',
@@ -2084,14 +2323,20 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<script>alert("test")</script>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<script>alert("test")</script>',
+      );
 
       const script = document.querySelector('script');
 
       expect(script).toBeNull();
-      expect(testComponent?.shadowRoot?.firstChild?.nodeType === Node.TEXT_NODE).toBeTruthy();
+      expect(
+        testComponent?.shadowRoot?.firstChild?.nodeType === Node.TEXT_NODE,
+      ).toBeTruthy();
     });
 
     it('should handle keyboard events', () => {
@@ -2101,11 +2346,15 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/keyboard-events.tsx');
       document.body.innerHTML = '<keyboard-events />';
 
-      const keyboardEventEl = document.querySelector('keyboard-events') as HTMLElement;
+      const keyboardEventEl = document.querySelector(
+        'keyboard-events',
+      ) as HTMLElement;
 
       expect(keyboardEventEl?.shadowRoot?.innerHTML).toBe('<input>');
 
-      const input = keyboardEventEl?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = keyboardEventEl?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       input.dispatchEvent(new KeyboardEvent('keydown'));
 
@@ -2139,15 +2388,23 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/async-updates.tsx');
       document.body.innerHTML = '<async-updates />';
 
-      const asyncUpdatesComp = document.querySelector('async-updates') as HTMLElement;
+      const asyncUpdatesComp = document.querySelector(
+        'async-updates',
+      ) as HTMLElement;
 
-      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe('<button>fetch</button><div>Aral</div>');
+      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
+        '<button>fetch</button><div>Aral</div>',
+      );
 
-      const button = asyncUpdatesComp?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = asyncUpdatesComp?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
-      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe('<button>fetch</button><div>Aral</div>');
+      expect(asyncUpdatesComp?.shadowRoot?.innerHTML).toBe(
+        '<button>fetch</button><div>Aral</div>',
+      );
 
       await Bun.sleep(0);
 
@@ -2175,13 +2432,17 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<button>uppercase</button><ul><li>one</li><li>two</li><li>three</li></ul>',
       );
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
@@ -2205,7 +2466,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>original</div>');
 
@@ -2268,7 +2531,9 @@ describe('integration', () => {
 
       expect(window.mockCallback).toHaveBeenCalledTimes(1);
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       testComponent.remove();
 
@@ -2291,7 +2556,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       testComponent.remove();
 
@@ -2308,11 +2575,19 @@ describe('integration', () => {
 
       const parentComp = `export default () => <test-component />;`;
 
-      defineBrisaWebComponent(testComp, 'src/web-components/test-component.tsx');
-      defineBrisaWebComponent(parentComp, 'src/web-components/parent-component.tsx');
+      defineBrisaWebComponent(
+        testComp,
+        'src/web-components/test-component.tsx',
+      );
+      defineBrisaWebComponent(
+        parentComp,
+        'src/web-components/parent-component.tsx',
+      );
       document.body.innerHTML = '<parent-component />';
 
-      const parentComponent = document.querySelector('parent-component') as HTMLElement;
+      const parentComponent = document.querySelector(
+        'parent-component',
+      ) as HTMLElement;
 
       parentComponent.remove();
 
@@ -2327,7 +2602,9 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2349,7 +2626,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2369,7 +2648,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2389,7 +2670,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2412,7 +2695,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2435,7 +2720,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2452,7 +2739,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2472,7 +2761,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2496,7 +2787,9 @@ describe('integration', () => {
 
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
 
@@ -2519,7 +2812,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = '<test-component />';
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<div><script>alert("test")</script></div>',
@@ -2542,7 +2837,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = "<test-component name='Aral' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<b>Aral</b>');
 
@@ -2559,7 +2856,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = "<test-component name='Aral' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<b>Aral</b>');
 
@@ -2583,7 +2882,9 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = "<test-component name='Aral' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<b>Aral</b>');
 
@@ -2610,9 +2911,13 @@ describe('integration', () => {
       `;
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
       document.body.innerHTML = "<test-component propName='a' />";
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<b>a</b><b>b</b><b>c</b>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<b>a</b><b>b</b><b>c</b>',
+      );
 
       testComponent.setAttribute('propName', 'b');
 
@@ -2620,7 +2925,9 @@ describe('integration', () => {
 
       testComponent.setAttribute('propName', 'a');
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<b>a</b><b>b</b><b>c</b>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<b>a</b><b>b</b><b>c</b>',
+      );
     });
 
     it('should be possible to set default props from ...rest inside code', () => {
@@ -2634,7 +2941,9 @@ describe('integration', () => {
 
       document.body.innerHTML = "<test-component foo='bar' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>No user</div>');
 
@@ -2657,7 +2966,9 @@ describe('integration', () => {
 
       document.body.innerHTML = "<test-component name='Aral' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('');
       expect(document.body.innerHTML).toBe(
@@ -2686,7 +2997,9 @@ describe('integration', () => {
 
       document.body.innerHTML = "<test-component name='Aral' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('');
       expect(document.body.innerHTML).toBe(
@@ -2718,21 +3031,33 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<button>open</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<button>open</button>',
+      );
       expect(document.body.innerHTML).toBe('<test-component></test-component>');
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<button>close</button>');
-      expect(document.body.innerHTML).toBe('<test-component></test-component><div>modal</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<button>close</button>',
+      );
+      expect(document.body.innerHTML).toBe(
+        '<test-component></test-component><div>modal</div>',
+      );
 
       button.click();
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<button>open</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<button>open</button>',
+      );
 
       expect(document.body.innerHTML).toBe('<test-component></test-component>');
     });
@@ -2754,19 +3079,29 @@ describe('integration', () => {
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
       document.body.innerHTML = '<test-component />';
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<button>open</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<button>open</button>',
+      );
 
-      const button = testComponent?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = testComponent?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       button.click();
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<button>close</button><div>content</div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<button>close</button><div>content</div>',
+      );
 
       button.click();
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<button>open</button>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<button>open</button>',
+      );
     });
 
     it('should call the inner signal only when the signal exists', async () => {
@@ -2790,7 +3125,9 @@ describe('integration', () => {
       expect(window.mockSignalParent).toHaveBeenCalledTimes(1);
       expect(window.mockSignalChild).toHaveBeenCalledTimes(0);
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('EMPTY');
 
@@ -2839,16 +3176,23 @@ describe('integration', () => {
       expect(window.mockSignalChild).toHaveBeenCalledTimes(0);
       expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(0);
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('EMPTY');
 
-      testComponent.setAttribute('user', "{ 'emails': ['contact@aralroca.com'] }");
+      testComponent.setAttribute(
+        'user',
+        "{ 'emails': ['contact@aralroca.com'] }",
+      );
 
       expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
       expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
       expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(1);
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div><b>contact@aralroca.com</b></div>');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div><b>contact@aralroca.com</b></div>',
+      );
 
       testComponent.removeAttribute('user');
 
@@ -2887,11 +3231,17 @@ describe('integration', () => {
         };
       `;
 
-      defineBrisaWebComponent(code, 'src/web-components/unregister-cleanup.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/unregister-cleanup.tsx',
+      );
 
-      document.body.innerHTML = '<unregister-cleanup foo="some"></unregister-cleanup>';
+      document.body.innerHTML =
+        '<unregister-cleanup foo="some"></unregister-cleanup>';
 
-      const testComponent = document.querySelector('unregister-cleanup') as HTMLElement;
+      const testComponent = document.querySelector(
+        'unregister-cleanup',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>some</div>');
 
@@ -2933,11 +3283,16 @@ describe('integration', () => {
         };
       `;
 
-      defineBrisaWebComponent(code, 'src/web-components/unregister-cleanup.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/unregister-cleanup.tsx',
+      );
 
       document.body.innerHTML = '<unregister-cleanup></unregister-cleanup>';
 
-      const testComponent = document.querySelector('unregister-cleanup') as HTMLElement;
+      const testComponent = document.querySelector(
+        'unregister-cleanup',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>no value</div>');
 
@@ -2987,7 +3342,10 @@ describe('integration', () => {
 
       document.body.innerHTML = '<unregister-subeffect></unregister-subeffect>';
 
-      defineBrisaWebComponent(code, 'src/web-components/unregister-subeffect.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/unregister-subeffect.tsx',
+      );
 
       expect(window.mockEffect).toHaveBeenCalledTimes(3);
       expect(window.mockEffect.mock.calls[0]).toEqual(['A', 0]);
@@ -3025,7 +3383,10 @@ describe('integration', () => {
 
       document.body.innerHTML = '<unregister-subeffect></unregister-subeffect>';
 
-      defineBrisaWebComponent(code, 'src/web-components/unregister-subeffect.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/unregister-subeffect.tsx',
+      );
 
       expect(window.mockEffect).toHaveBeenCalledTimes(5);
       expect(window.mockEffect.mock.calls[0]).toEqual(['B', 'x']);
@@ -3062,13 +3423,18 @@ describe('integration', () => {
 
       defineBrisaWebComponent(userInfoCode, 'src/web-components/user-info.tsx');
 
-      defineBrisaWebComponent(userImagesCode, 'src/web-components/user-images.tsx');
+      defineBrisaWebComponent(
+        userImagesCode,
+        'src/web-components/user-images.tsx',
+      );
 
       document.body.innerHTML = '<user-info />';
 
       const userInfo = document.querySelector('user-info') as HTMLElement;
 
-      const userImages = userInfo?.shadowRoot?.querySelector('user-images') as HTMLElement;
+      const userImages = userInfo?.shadowRoot?.querySelector(
+        'user-images',
+      ) as HTMLElement;
 
       expect(userImages?.shadowRoot?.innerHTML).toBe(
         '<img class="avatar" src="some-image.jpg" width="300" height="300"><img class="avatar" src="another-url.jpg" width="300" height="300">',
@@ -3094,7 +3460,9 @@ describe('integration', () => {
 
       document.body.innerHTML = "<test-component key='1' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>1</div>');
 
@@ -3124,7 +3492,9 @@ describe('integration', () => {
 
       document.body.innerHTML = "<test-component key='1' />";
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       const div = testComponent?.shadowRoot?.querySelector('div');
 
@@ -3175,7 +3545,10 @@ describe('integration', () => {
       `);
 
       expect(() =>
-        defineBrisaWebComponent(Component, 'src/web-components/my-component.tsx'),
+        defineBrisaWebComponent(
+          Component,
+          'src/web-components/my-component.tsx',
+        ),
       ).toThrow();
     });
 
@@ -3226,7 +3599,9 @@ describe('integration', () => {
 
       await Bun.sleep(0);
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>foo</div>');
 
@@ -3258,7 +3633,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>foo</div>');
 
@@ -3287,7 +3664,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>foo</div>');
 
@@ -3344,7 +3723,9 @@ describe('integration', () => {
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>0</div>');
 
-      const button = myComponent?.shadowRoot?.querySelector('div') as HTMLElement;
+      const button = myComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLElement;
 
       button.click();
 
@@ -3597,7 +3978,10 @@ describe('integration', () => {
 
       await Bun.sleep(0);
 
-      mySuspense.setAttribute('name', 'Change during rendering the real component');
+      mySuspense.setAttribute(
+        'name',
+        'Change during rendering the real component',
+      );
 
       expect(mySuspense?.shadowRoot?.innerHTML).toBe(
         '<div>Change during rendering the real component</div>',
@@ -3638,7 +4022,10 @@ describe('integration', () => {
 
       document.body.innerHTML = '<unregister-subeffect></unregister-subeffect>';
 
-      defineBrisaWebComponent(code, 'src/web-components/unregister-subeffect.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/unregister-subeffect.tsx',
+      );
 
       expect(window.mockEffect).toHaveBeenCalledTimes(5);
       expect(window.mockEffect.mock.calls[0]).toEqual(['B', 'x']);
@@ -3683,7 +4070,10 @@ describe('integration', () => {
 
       document.body.innerHTML = '<unregister-subeffect></unregister-subeffect>';
 
-      defineBrisaWebComponent(code, 'src/web-components/unregister-subeffect.tsx');
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/unregister-subeffect.tsx',
+      );
 
       expect(window.mockEffect).toHaveBeenCalledTimes(5);
       expect(window.mockEffect.mock.calls[0]).toEqual(['B', 'x']);
@@ -3709,7 +4099,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>foo</div>');
 
@@ -3738,7 +4130,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>foo</div>');
 
@@ -3764,7 +4158,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>foo</div>');
 
@@ -3794,7 +4190,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>foo</div>');
 
@@ -3819,9 +4217,13 @@ describe('integration', () => {
       defineBrisaWebComponent(code2, 'src/web-components/second-component.tsx');
       document.body.innerHTML = '<first-component /><second-component />';
 
-      const firstComponent = document.querySelector('first-component') as HTMLElement;
+      const firstComponent = document.querySelector(
+        'first-component',
+      ) as HTMLElement;
 
-      const secondComponent = document.querySelector('second-component') as HTMLElement;
+      const secondComponent = document.querySelector(
+        'second-component',
+      ) as HTMLElement;
 
       expect(firstComponent?.shadowRoot?.innerHTML).toBe('<div>0</div>');
       expect(secondComponent?.shadowRoot?.innerHTML).toBe('<div>0</div>');
@@ -3846,7 +4248,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>foo</div>');
     });
@@ -3877,12 +4281,20 @@ describe('integration', () => {
         await getContextProviderCode(),
         'src/web-components/context-provider.tsx',
       );
-      defineBrisaWebComponent(parentCode, 'src/web-components/parent-component.tsx');
-      defineBrisaWebComponent(childCode, 'src/web-components/child-component.tsx');
+      defineBrisaWebComponent(
+        parentCode,
+        'src/web-components/parent-component.tsx',
+      );
+      defineBrisaWebComponent(
+        childCode,
+        'src/web-components/child-component.tsx',
+      );
       document.body.innerHTML = '<parent-component />';
 
       const parent = document.querySelector('parent-component') as HTMLElement;
-      const child = parent?.shadowRoot?.querySelector('child-component') as HTMLElement;
+      const child = parent?.shadowRoot?.querySelector(
+        'child-component',
+      ) as HTMLElement;
 
       expect(parent.shadowRoot?.innerHTML).toBe(
         "<context-provider context=\"{'id':'0:0','defaultValue':{'foo':'foo'}}\" value=\"{'foo':'bar'}\" cid=\"0:0\" pid=\"0\"><child-component></child-component></context-provider>",
@@ -3923,7 +4335,10 @@ describe('integration', () => {
         await getContextProviderCode(),
         'src/web-components/context-provider.tsx',
       );
-      defineBrisaWebComponent(parentCode, 'src/web-components/parent-component.tsx');
+      defineBrisaWebComponent(
+        parentCode,
+        'src/web-components/parent-component.tsx',
+      );
       defineBrisaWebComponent(child, 'src/web-components/child-component.tsx');
       document.body.innerHTML = '<parent-component />';
 
@@ -3940,9 +4355,15 @@ describe('integration', () => {
       parent.setAttribute('second', 'second-changed');
       parent.setAttribute('third', 'third-changed');
 
-      expect(children[0].shadowRoot?.innerHTML).toBe('<div>first-changed</div>');
-      expect(children[1].shadowRoot?.innerHTML).toBe('<div>second-changed</div>');
-      expect(children[2].shadowRoot?.innerHTML).toBe('<div>third-changed</div>');
+      expect(children[0].shadowRoot?.innerHTML).toBe(
+        '<div>first-changed</div>',
+      );
+      expect(children[1].shadowRoot?.innerHTML).toBe(
+        '<div>second-changed</div>',
+      );
+      expect(children[2].shadowRoot?.innerHTML).toBe(
+        '<div>third-changed</div>',
+      );
     });
 
     it('should work with multiple context providers', async () => {
@@ -3979,8 +4400,14 @@ describe('integration', () => {
         await getContextProviderCode(),
         'src/web-components/context-provider.tsx',
       );
-      defineBrisaWebComponent(parentCode, 'src/web-components/parent-component.tsx');
-      defineBrisaWebComponent(childCode, 'src/web-components/child-component.tsx');
+      defineBrisaWebComponent(
+        parentCode,
+        'src/web-components/parent-component.tsx',
+      );
+      defineBrisaWebComponent(
+        childCode,
+        'src/web-components/child-component.tsx',
+      );
       document.body.innerHTML = '<parent-component />';
 
       const parent = document.querySelector('parent-component') as HTMLElement;
@@ -4043,12 +4470,20 @@ describe('integration', () => {
         await getContextProviderCode(),
         'src/web-components/context-provider.tsx',
       );
-      defineBrisaWebComponent(parentCode, 'src/web-components/parent-component.tsx');
-      defineBrisaWebComponent(childCode, 'src/web-components/child-component.tsx');
+      defineBrisaWebComponent(
+        parentCode,
+        'src/web-components/parent-component.tsx',
+      );
+      defineBrisaWebComponent(
+        childCode,
+        'src/web-components/child-component.tsx',
+      );
       document.body.innerHTML = '<parent-component />';
 
       const parent = document.querySelector('parent-component') as HTMLElement;
-      const child = parent?.shadowRoot?.querySelector('child-component') as HTMLElement;
+      const child = parent?.shadowRoot?.querySelector(
+        'child-component',
+      ) as HTMLElement;
 
       expect(parent.shadowRoot?.innerHTML).toBe(
         toInline(`
@@ -4101,25 +4536,40 @@ describe('integration', () => {
         await getContextProviderCode(),
         'src/web-components/context-provider.tsx',
       );
-      defineBrisaWebComponent(itemListProviderCode, 'src/web-components/item-list-provider.tsx');
+      defineBrisaWebComponent(
+        itemListProviderCode,
+        'src/web-components/item-list-provider.tsx',
+      );
       defineBrisaWebComponent(listItemCode, 'src/web-components/list-item.tsx');
 
-      const itemListProvider = document.querySelector('item-list-provider') as HTMLElement;
+      const itemListProvider = document.querySelector(
+        'item-list-provider',
+      ) as HTMLElement;
 
-      itemListProvider.setAttribute('items', JSON.stringify(['first', 'second', 'third']));
+      itemListProvider.setAttribute(
+        'items',
+        JSON.stringify(['first', 'second', 'third']),
+      );
 
       const list = itemListProvider?.shadowRoot?.querySelector('ul');
 
-      const children = list?.querySelectorAll('list-item') as NodeListOf<HTMLElement>;
+      const children = list?.querySelectorAll(
+        'list-item',
+      ) as NodeListOf<HTMLElement>;
 
       expect(children).toHaveLength(3);
       expect(children[0].shadowRoot?.innerHTML).toBe('<li>first</li>');
       expect(children[1].shadowRoot?.innerHTML).toBe('<li>second</li>');
       expect(children[2].shadowRoot?.innerHTML).toBe('<li>third</li>');
 
-      itemListProvider.setAttribute('items', JSON.stringify(['1', '2', '3', '4']));
+      itemListProvider.setAttribute(
+        'items',
+        JSON.stringify(['1', '2', '3', '4']),
+      );
 
-      const item = list?.querySelectorAll('list-item') as NodeListOf<HTMLElement>;
+      const item = list?.querySelectorAll(
+        'list-item',
+      ) as NodeListOf<HTMLElement>;
 
       expect(item).toHaveLength(4);
       expect(item[0].shadowRoot?.innerHTML).toBe('<li>1</li>');
@@ -4208,7 +4658,9 @@ describe('integration', () => {
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;
 
-      const button = webCounter?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = webCounter?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       const style = webCounter?.shadowRoot?.querySelector('style');
 
@@ -4380,7 +4832,9 @@ describe('integration', () => {
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;
 
-      const button = webCounter?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = webCounter?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       const style = webCounter?.shadowRoot?.querySelector('style');
 
@@ -4432,7 +4886,9 @@ describe('integration', () => {
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;
 
-      const button = webCounter?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+      const button = webCounter?.shadowRoot?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       const span = webCounter?.shadowRoot?.querySelector('span');
 
@@ -4466,7 +4922,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
@@ -4510,7 +4968,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
@@ -4561,7 +5021,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
@@ -4614,7 +5076,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
@@ -4674,19 +5138,25 @@ describe('integration', () => {
       document.body.innerHTML = '<triple-render />';
       defineBrisaWebComponent(code, 'src/web-components/triple-render.tsx');
 
-      const tripleRender = document.querySelector('triple-render') as HTMLElement;
+      const tripleRender = document.querySelector(
+        'triple-render',
+      ) as HTMLElement;
 
       expect(tripleRender?.shadowRoot?.innerHTML).toBeEmpty();
 
       window._s.set('show', true);
 
-      const foo = tripleRender?.shadowRoot?.querySelector('div') as HTMLDivElement;
+      const foo = tripleRender?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLDivElement;
 
       expect(foo?.innerHTML).toBe('Foo');
 
       foo.click();
 
-      const bar = tripleRender?.shadowRoot?.querySelector('div') as HTMLDivElement;
+      const bar = tripleRender?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLDivElement;
 
       expect(bar?.innerHTML).toBe('Bar');
     });
@@ -4709,7 +5179,9 @@ describe('integration', () => {
 
       await Bun.sleep(0);
 
-      const webComponent = document.querySelector('iterating-value') as HTMLElement;
+      const webComponent = document.querySelector(
+        'iterating-value',
+      ) as HTMLElement;
 
       expect(webComponent?.shadowRoot?.innerHTML).toBe(
         `<div key="foo">foo</div><div key="bar">bar</div>`,
@@ -4741,7 +5213,9 @@ describe('integration', () => {
 
       await Bun.sleep(0);
 
-      const webComponent = document.querySelector('nested-iterating-value') as HTMLElement;
+      const webComponent = document.querySelector(
+        'nested-iterating-value',
+      ) as HTMLElement;
 
       expect(webComponent?.shadowRoot?.innerHTML).toBe(
         `<div key="foo">foo</div><div key="bar">bar</div>`,
@@ -4761,9 +5235,13 @@ describe('integration', () => {
       document.body.innerHTML = '<input-component />';
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
-      const inputComponent = document.querySelector('input-component') as HTMLElement;
+      const inputComponent = document.querySelector(
+        'input-component',
+      ) as HTMLElement;
 
-      const input = inputComponent?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = inputComponent?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       input.value = 'foo';
       input.dispatchEvent(new Event('input'));
@@ -4785,9 +5263,13 @@ describe('integration', () => {
       document.body.innerHTML = '<input-component />';
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
-      const inputComponent = document.querySelector('input-component') as HTMLElement;
+      const inputComponent = document.querySelector(
+        'input-component',
+      ) as HTMLElement;
 
-      const input = inputComponent?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = inputComponent?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       input.value = 'foo';
       input.dispatchEvent(new Event('input'));
@@ -4841,9 +5323,13 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
-      const inputComponent = document.querySelector('input-component') as HTMLElement;
+      const inputComponent = document.querySelector(
+        'input-component',
+      ) as HTMLElement;
 
-      const input = inputComponent?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = inputComponent?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       input.value = 'bar';
       input.dispatchEvent(new Event('input'));
@@ -4897,9 +5383,13 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
-      const inputComponent = document.querySelector('input-component') as HTMLElement;
+      const inputComponent = document.querySelector(
+        'input-component',
+      ) as HTMLElement;
 
-      const input = inputComponent?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = inputComponent?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       input.value = 'bar';
       input.dispatchEvent(new Event('input'));
@@ -4952,9 +5442,13 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
-      const inputComponent = document.querySelector('input-component') as HTMLElement;
+      const inputComponent = document.querySelector(
+        'input-component',
+      ) as HTMLElement;
 
-      const input = inputComponent?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = inputComponent?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       input.value = 'bar';
       input.dispatchEvent(new Event('input'));
@@ -5007,9 +5501,13 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
-      const inputComponent = document.querySelector('input-component') as HTMLElement;
+      const inputComponent = document.querySelector(
+        'input-component',
+      ) as HTMLElement;
 
-      const input = inputComponent?.shadowRoot?.querySelector('input') as HTMLInputElement;
+      const input = inputComponent?.shadowRoot?.querySelector(
+        'input',
+      ) as HTMLInputElement;
 
       input.value = 'bar';
       input.dispatchEvent(new Event('input'));
@@ -5032,7 +5530,8 @@ describe('integration', () => {
             const sync = (event?: StorageEvent) => {
               if (event && event.key !== key) return;
               const storageValue = window[storage].getItem(key);
-              if (storageValue != null) ctx.store.set(key, JSON.parse(storageValue));
+              if (storageValue != null)
+                ctx.store.set(key, JSON.parse(storageValue));
             };
 
             ctx.effect(() => {
@@ -5042,7 +5541,8 @@ describe('integration', () => {
 
             ctx.effect(() => {
               const val = ctx.store.get(key);
-              if (val != null) window[storage].setItem(key, JSON.stringify(val));
+              if (val != null)
+                window[storage].setItem(key, JSON.stringify(val));
             });
 
             sync();
@@ -5065,7 +5565,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      const testComponent = document.querySelector('test-component') as HTMLElement;
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>bar</div>');
     });
@@ -5082,7 +5584,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/example-component.tsx');
 
-      const example = document.querySelector('example-component') as HTMLElement;
+      const example = document.querySelector(
+        'example-component',
+      ) as HTMLElement;
 
       expect(example?.shadowRoot?.innerHTML).toBe('No foo...');
 
@@ -5112,7 +5616,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/foo-component.tsx');
 
-      const fooComponent = document.querySelector('foo-component') as HTMLElement;
+      const fooComponent = document.querySelector(
+        'foo-component',
+      ) as HTMLElement;
 
       expect(fooComponent?.shadowRoot?.innerHTML).toBe('<div>foobar</div>');
 
@@ -5120,7 +5626,9 @@ describe('integration', () => {
 
       expect(fooComponent?.shadowRoot?.innerHTML).toBe('<div>foobaz</div>');
 
-      const div = fooComponent?.shadowRoot?.querySelector('div') as HTMLDivElement;
+      const div = fooComponent?.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLDivElement;
 
       div.click();
 
@@ -5145,7 +5653,9 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/foo-component.tsx');
 
-      const fooComponent = document.querySelector('foo-component') as HTMLElement;
+      const fooComponent = document.querySelector(
+        'foo-component',
+      ) as HTMLElement;
 
       expect(fooComponent?.shadowRoot?.innerHTML).toBe('<div>foobar</div>');
 
@@ -5156,10 +5666,12 @@ describe('integration', () => {
 
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583
-    it.todo('shoud work "useContext" method with context-provider children prop', async () => {
-      window.mockEffect = mock((s: string) => {});
+    it.todo(
+      'shoud work "useContext" method with context-provider children prop',
+      async () => {
+        window.mockEffect = mock((s: string) => {});
 
-      const themeProviderCode = `
+        const themeProviderCode = `
         const ctx = createContext({}, '0:0');
         
         export default function ThemeProvider({ color, children }) {
@@ -5171,7 +5683,7 @@ describe('integration', () => {
         }
       `;
 
-      const childCode = `
+        const childCode = `
         const ctx = createContext({}, '0:0');
         
         export default function ChildComponent({}, {effect,useContext}) {
@@ -5181,21 +5693,29 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = "<theme-provider color='red'><child-component /></theme-provider>";
+        document.body.innerHTML =
+          "<theme-provider color='red'><child-component /></theme-provider>";
 
-      window._pid = 0;
-      defineBrisaWebComponent(
-        await getContextProviderCode(),
-        'src/web-components/context-provider.tsx',
-      );
+        window._pid = 0;
+        defineBrisaWebComponent(
+          await getContextProviderCode(),
+          'src/web-components/context-provider.tsx',
+        );
 
-      defineBrisaWebComponent(themeProviderCode, 'src/web-components/theme-provider.tsx');
+        defineBrisaWebComponent(
+          themeProviderCode,
+          'src/web-components/theme-provider.tsx',
+        );
 
-      defineBrisaWebComponent(childCode, 'src/web-components/child-component.tsx');
+        defineBrisaWebComponent(
+          childCode,
+          'src/web-components/child-component.tsx',
+        );
 
-      expect(window.mockEffect).toHaveBeenCalledTimes(1);
-      expect(window.mockEffect.mock.calls[0][0]).toBe('red');
-    });
+        expect(window.mockEffect).toHaveBeenCalledTimes(1);
+        expect(window.mockEffect.mock.calls[0][0]).toBe('red');
+      },
+    );
 
     // TODO: Related with https://github.com/brisa-build/brisa/issues/8
     it.todo(
@@ -5260,9 +5780,13 @@ describe('integration', () => {
 
         const magicList = document.querySelector('magic-list') as HTMLElement;
 
-        const input = magicList?.shadowRoot?.querySelector('input') as HTMLInputElement;
+        const input = magicList?.shadowRoot?.querySelector(
+          'input',
+        ) as HTMLInputElement;
 
-        const button = magicList?.shadowRoot?.querySelector('button') as HTMLButtonElement;
+        const button = magicList?.shadowRoot?.querySelector(
+          'button',
+        ) as HTMLButtonElement;
 
         input.value = 'test';
         button.click();
@@ -5279,15 +5803,22 @@ describe('integration', () => {
 
         expect(innerComponents.length).toBe(3);
 
-        const secondInnerComponentButton = innerComponents[1]?.shadowRoot?.querySelector(
-          'button',
-        ) as HTMLButtonElement;
+        const secondInnerComponentButton =
+          innerComponents[1]?.shadowRoot?.querySelector(
+            'button',
+          ) as HTMLButtonElement;
 
         secondInnerComponentButton.click();
 
-        expect(innerComponents[0]?.shadowRoot?.innerHTML).toBe('<button>Aral</button>');
-        expect(innerComponents[1]?.shadowRoot?.innerHTML).toBe('<button>Arala</button>');
-        expect(innerComponents[2]?.shadowRoot?.innerHTML).toBe('<button>Aral</button>');
+        expect(innerComponents[0]?.shadowRoot?.innerHTML).toBe(
+          '<button>Aral</button>',
+        );
+        expect(innerComponents[1]?.shadowRoot?.innerHTML).toBe(
+          '<button>Arala</button>',
+        );
+        expect(innerComponents[2]?.shadowRoot?.innerHTML).toBe(
+          '<button>Aral</button>',
+        );
 
         // Move second item up
         const secondItemMoveUpButton = list?.querySelectorAll('button')[3];
@@ -5301,9 +5832,15 @@ describe('integration', () => {
           'inner-web-component',
         ) as NodeListOf<HTMLElement>;
 
-        expect(newInnerComponents[0]?.shadowRoot?.innerHTML).toBe('<button>Arala</button>');
-        expect(newInnerComponents[1]?.shadowRoot?.innerHTML).toBe('<button>Aral</button>');
-        expect(newInnerComponents[2]?.shadowRoot?.innerHTML).toBe('<button>Aral</button>');
+        expect(newInnerComponents[0]?.shadowRoot?.innerHTML).toBe(
+          '<button>Arala</button>',
+        );
+        expect(newInnerComponents[1]?.shadowRoot?.innerHTML).toBe(
+          '<button>Aral</button>',
+        );
+        expect(newInnerComponents[2]?.shadowRoot?.innerHTML).toBe(
+          '<button>Aral</button>',
+        );
       },
     );
   });

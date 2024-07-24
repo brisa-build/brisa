@@ -15,7 +15,9 @@ export default function getWebComponentAst(
 
   if (defaultExportIndex === -1) return empty;
 
-  const defaultExport = ast.body[defaultExportIndex] as ESTree.ExportDefaultDeclaration;
+  const defaultExport = ast.body[
+    defaultExportIndex
+  ] as ESTree.ExportDefaultDeclaration;
 
   const { type, name } = defaultExport.declaration as ESTree.Identifier;
 

@@ -33,7 +33,8 @@ export default async function resolveAction({
 }: ResolveActionParams) {
   const { PAGES_DIR, RESERVED_PAGES } = getConstants();
   const url = new URL(req.headers.get('referer') ?? '', req.url);
-  const actionCallFromJS = req.headers.get('x-action') && !url.searchParams.has('_aid');
+  const actionCallFromJS =
+    req.headers.get('x-action') && !url.searchParams.has('_aid');
 
   // Avoid declarative shadow dom
   if (actionCallFromJS) {
@@ -86,14 +87,20 @@ export default async function resolveAction({
 
   // @ts-ignore
   const isOriginalAction = req._originalActionId === actionId;
-  const options = JSON.parse(error.message.replace(PREFIX_MESSAGE, '').replace(SUFFIX_MESSAGE, ''));
+  const options = JSON.parse(
+    error.message.replace(PREFIX_MESSAGE, '').replace(SUFFIX_MESSAGE, ''),
+  );
 
   // Return error to be captured on the response-action withResolvers
   if (!isOriginalAction && options.type === 'targetComponent') {
     throw error;
   }
 
-  const pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES, req.i18n?.locale);
+  const pagesRouter = getRouteMatcher(
+    PAGES_DIR,
+    RESERVED_PAGES,
+    req.i18n?.locale,
+  );
 
   const { route, isReservedPathname } = pagesRouter.match(req);
 

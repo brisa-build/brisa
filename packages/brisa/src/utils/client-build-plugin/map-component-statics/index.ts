@@ -1,7 +1,10 @@
 import type { ESTree } from 'meriyah';
 
 const COMPONENT_STATICS = new Set(['error', 'suspense']);
-const FUNCTION_ESXPRESSION_TYPES = new Set(['FunctionExpression', 'ArrowFunctionExpression']);
+const FUNCTION_ESXPRESSION_TYPES = new Set([
+  'FunctionExpression',
+  'ArrowFunctionExpression',
+]);
 
 export default function mapComponentStatics(
   ast: ESTree.Program,
@@ -16,7 +19,10 @@ export default function mapComponentStatics(
   return JSON.parse(
     // Traversing A to B
     JSON.stringify(ast, (key, value) => {
-      if (isComponentProperty(value) && value?.left?.object?.name === componentName) {
+      if (
+        isComponentProperty(value) &&
+        value?.left?.object?.name === componentName
+      ) {
         if (value.right.type === 'Identifier') {
           identifiers.set(value.right.name, value?.left?.property?.name);
           return value;
@@ -41,7 +47,6 @@ export default function mapComponentStatics(
     }),
     // Traversing B to A
     function (key, value) {
-
       if (isDetectedIdentifier(value, this, identifiers)) {
         this.init = mapFn(this.init, identifiers.get(value.name)!);
       }
@@ -69,7 +74,11 @@ function isFromObjectAssign(value: any) {
   );
 }
 
-function isDetectedIdentifier(value: any, parent: any, identifiers: Map<string, string>) {
+function isDetectedIdentifier(
+  value: any,
+  parent: any,
+  identifiers: Map<string, string>,
+) {
   return (
     value?.type === 'Identifier' &&
     identifiers.has(value?.name) &&

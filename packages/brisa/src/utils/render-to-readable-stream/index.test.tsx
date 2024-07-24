@@ -1,10 +1,25 @@
 import type { MatchedRoute } from 'bun';
 import path from 'node:path';
-import { setSystemTime, afterEach, describe, expect, it, beforeEach, mock, spyOn } from 'bun:test';
+import {
+  setSystemTime,
+  afterEach,
+  describe,
+  expect,
+  it,
+  beforeEach,
+  mock,
+  spyOn,
+} from 'bun:test';
 import renderToReadableStream from '.';
 import { getConstants } from '@/constants';
 import { normalizeQuotes, toInline } from '@/helpers';
-import type { ComponentType, I18n, RequestContext, Translate, WebContext } from '@/types';
+import type {
+  ComponentType,
+  I18n,
+  RequestContext,
+  Translate,
+  WebContext,
+} from '@/types';
 import createContext from '@/utils/create-context';
 import navigate from '@/utils/navigate';
 import dangerHTML from '@/utils/danger-html';
@@ -222,7 +237,8 @@ describe('utils', () => {
       const element = <Component name="World" title="Test" />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      const expected = '<div title="Test"><h1>Hello World</h1><p>This is a paragraph</p></div>';
+      const expected =
+        '<div title="Test"><h1>Hello World</h1><p>This is a paragraph</p></div>';
       expect(result).toBe(expected);
     });
 
@@ -238,9 +254,13 @@ describe('utils', () => {
           <p>This is a paragraph</p>
         </div>
       );
-      const stream = renderToReadableStream(<AsyncComponent title="Test" />, testOptions);
+      const stream = renderToReadableStream(
+        <AsyncComponent title="Test" />,
+        testOptions,
+      );
       const result = await Bun.readableStreamToText(stream);
-      const expected = '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>';
+      const expected =
+        '<div title="Test"><h1>Hello test test</h1><p>This is a paragraph</p></div>';
       expect(result).toBe(expected);
     });
 
@@ -267,7 +287,10 @@ describe('utils', () => {
         <div>Hello {request.store.get('testData').testName}</div>
       );
 
-      const Component = ({ name }: { name: string }, request: RequestContext) => {
+      const Component = (
+        { name }: { name: string },
+        request: RequestContext,
+      ) => {
         const url = new URL(request.finalURL);
         const query = new URLSearchParams(url.search);
         const testName = query.get('name') || name;
@@ -317,7 +340,10 @@ describe('utils', () => {
         </div>
       );
 
-      const stream = renderToReadableStream(<Component name="world" />, testOptions);
+      const stream = renderToReadableStream(
+        <Component name="world" />,
+        testOptions,
+      );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe('<div>Error Test, hello world</div>');
     });
@@ -340,7 +366,9 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(<Component />, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe('<div><h1>Parent component</h1><div>Error</div></div>');
+      expect(result).toBe(
+        '<div><h1>Parent component</h1><div>Error</div></div>',
+      );
     });
 
     it('should work using the children prop', async () => {
@@ -390,8 +418,12 @@ describe('utils', () => {
     it('should render a list of elements', async () => {
       const arrayOfNumbers = [0, 1, 2, 3, 4, 5];
 
-      const Bold = ({ children }: { children: JSX.Element }) => <b>{children}</b>;
-      const Component = ({ children }: { children: JSX.Element[] }) => <>{children}</>;
+      const Bold = ({ children }: { children: JSX.Element }) => (
+        <b>{children}</b>
+      );
+      const Component = ({ children }: { children: JSX.Element[] }) => (
+        <>{children}</>
+      );
 
       const stream = renderToReadableStream(
         <Component>
@@ -423,7 +455,11 @@ describe('utils', () => {
         <div>
           <h1>Test</h1>
           {Array.from({ length: 3 }, (_, i) => (
-            <SSRWebComponent Component={WebComponent} selector="web-component" name={'World' + i}>
+            <SSRWebComponent
+              Component={WebComponent}
+              selector="web-component"
+              name={'World' + i}
+            >
               <b> Child </b>
             </SSRWebComponent>
           ))}
@@ -513,9 +549,14 @@ describe('utils', () => {
     });
 
     it('should not be possible to send "undefined" as a attribute', async () => {
-      const Component = ({ name }: { name: string }) => <div title={name}>Hello {name}</div>;
+      const Component = ({ name }: { name: string }) => (
+        <div title={name}>Hello {name}</div>
+      );
 
-      const stream = renderToReadableStream(<Component name={undefined as any} />, testOptions);
+      const stream = renderToReadableStream(
+        <Component name={undefined as any} />,
+        testOptions,
+      );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toBe('<div>Hello </div>');
     });
@@ -736,7 +777,11 @@ describe('utils', () => {
         }),
         route: {
           src: 'page-with-web-component.js',
-          filePath: path.join(FIXTURES_PATH, 'pages', 'page-with-web-component.js'),
+          filePath: path.join(
+            FIXTURES_PATH,
+            'pages',
+            'page-with-web-component.js',
+          ),
         } as MatchedRoute,
       });
 
@@ -789,7 +834,11 @@ describe('utils', () => {
         }),
         route: {
           src: 'page-with-web-component.js',
-          filePath: path.join(FIXTURES_PATH, 'pages', 'page-with-web-component.js'),
+          filePath: path.join(
+            FIXTURES_PATH,
+            'pages',
+            'page-with-web-component.js',
+          ),
         } as MatchedRoute,
       });
 
@@ -840,7 +889,11 @@ describe('utils', () => {
         }),
         route: {
           src: 'page-with-web-component.js',
-          filePath: path.join(FIXTURES_PATH, 'pages', 'page-with-web-component.js'),
+          filePath: path.join(
+            FIXTURES_PATH,
+            'pages',
+            'page-with-web-component.js',
+          ),
         } as MatchedRoute,
       });
 
@@ -899,7 +952,11 @@ describe('utils', () => {
         }),
         route: {
           src: 'page-with-web-component.js',
-          filePath: path.join(FIXTURES_PATH, 'pages', 'page-with-web-component.js'),
+          filePath: path.join(
+            FIXTURES_PATH,
+            'pages',
+            'page-with-web-component.js',
+          ),
         } as MatchedRoute,
       });
 
@@ -1453,7 +1510,10 @@ describe('utils', () => {
         renderToReadableStream(<a href="/essence">Test</a>, testOptions),
       );
       const withParam = await Bun.readableStreamToText(
-        renderToReadableStream(<a href="/essence?some=true">Test</a>, testOptions),
+        renderToReadableStream(
+          <a href="/essence?some=true">Test</a>,
+          testOptions,
+        ),
       );
       const withHash = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence#some">Test</a>, testOptions),
@@ -1485,7 +1545,10 @@ describe('utils', () => {
         renderToReadableStream(<a href="/essence">Test</a>, testOptions),
       );
       const withParam = await Bun.readableStreamToText(
-        renderToReadableStream(<a href="/essence?some=true">Test</a>, testOptions),
+        renderToReadableStream(
+          <a href="/essence?some=true">Test</a>,
+          testOptions,
+        ),
       );
       const withHash = await Bun.readableStreamToText(
         renderToReadableStream(<a href="/essence#some">Test</a>, testOptions),
@@ -1544,7 +1607,9 @@ describe('utils', () => {
       const element = <div>{`<script>alert('test')</script>`}</div>;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe(`<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`);
+      expect(result).toBe(
+        `<div>&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;</div>`,
+      );
     });
 
     it('should not be possible to inject HTML as string directly in the JSX component', async () => {
@@ -1573,11 +1638,15 @@ describe('utils', () => {
       const element = <Component />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe(`&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`);
+      expect(result).toBe(
+        `&lt;script&gt;alert(&#x27;test&#x27;)&lt;/script&gt;`,
+      );
     });
 
     it('should be possible to inject HTML as children string in the JSX using the "dangerHTML" helper', async () => {
-      const Component = () => <>{dangerHTML(`<script>alert('test')</script>`)}</>;
+      const Component = () => (
+        <>{dangerHTML(`<script>alert('test')</script>`)}</>
+      );
       const element = <Component />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
@@ -1880,7 +1949,10 @@ describe('utils', () => {
       type Theme = { color: string };
       const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
-      function ThemeProvider({ color, children }: Theme & { children: JSX.Element }) {
+      function ThemeProvider({
+        color,
+        children,
+      }: Theme & { children: JSX.Element }) {
         return (
           <context-provider context={ThemeCtx} value={{ color }}>
             {children}
@@ -1911,7 +1983,10 @@ describe('utils', () => {
       type Theme = { color: string };
       const ThemeCtx = createContext<Theme>({ color: 'yellow' });
 
-      function ThemeProvider({ color, children }: Theme & { children: JSX.Element }) {
+      function ThemeProvider({
+        color,
+        children,
+      }: Theme & { children: JSX.Element }) {
         return (
           <context-provider context={ThemeCtx} value={{ color }}>
             {children}
@@ -1925,8 +2000,15 @@ describe('utils', () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
-          <SSRWebComponent Component={ChildComponent} selector="child-component"></SSRWebComponent>
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+          ></SSRWebComponent>
         </SSRWebComponent>,
         testOptions,
       );
@@ -1972,8 +2054,15 @@ describe('utils', () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
-          <SSRWebComponent Component={ChildComponent} selector="child-component"></SSRWebComponent>
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+          ></SSRWebComponent>
           <SSRWebComponent
             Component={ChildComponent}
             selector="child-component"
@@ -2030,7 +2119,11 @@ describe('utils', () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
           <div>
             <SSRWebComponent
               Component={ChildComponent}
@@ -2095,8 +2188,16 @@ describe('utils', () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
-          <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="blue">
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
+          <SSRWebComponent
+            Component={ThemeProvider}
+            selector="theme-provider"
+            color="blue"
+          >
             <SSRWebComponent
               Component={ChildComponent}
               selector="child-component"
@@ -2107,7 +2208,10 @@ describe('utils', () => {
               slot="with-theme"
             ></SSRWebComponent>
           </SSRWebComponent>
-          <SSRWebComponent Component={ChildComponent} selector="child-component"></SSRWebComponent>
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+          ></SSRWebComponent>
           <SSRWebComponent
             Component={ChildComponent}
             selector="child-component"
@@ -2182,7 +2286,11 @@ describe('utils', () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
           <div slot="with-theme">
             <SSRWebComponent
               Component={ChildComponent}
@@ -2259,7 +2367,11 @@ describe('utils', () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
           <ServerComponent useTheme={false} />
           <ServerComponent useTheme={true} />
         </SSRWebComponent>,
@@ -2313,13 +2425,20 @@ describe('utils', () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
           <SSRWebComponent
             Component={ChildComponent}
             selector="child-component"
             slot="with-theme"
           ></SSRWebComponent>
-          <SSRWebComponent Component={ChildComponent} selector="child-component"></SSRWebComponent>
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+          ></SSRWebComponent>
           <SSRWebComponent
             Component={ChildComponent}
             selector="child-component"
@@ -2381,11 +2500,20 @@ describe('utils', () => {
       }
 
       function ServerComponent() {
-        return <SSRWebComponent Component={ChildComponent} selector="child-component" />;
+        return (
+          <SSRWebComponent
+            Component={ChildComponent}
+            selector="child-component"
+          />
+        );
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ThemeProvider} selector="theme-provider" color="red">
+        <SSRWebComponent
+          Component={ThemeProvider}
+          selector="theme-provider"
+          color="red"
+        >
           <ServerComponent slot="with-theme" />
           <ServerComponent />
           <ServerComponent slot="with-theme" />
@@ -2451,7 +2579,11 @@ describe('utils', () => {
       }
 
       const stream = renderToReadableStream(
-        <SSRWebComponent Component={ColorTest} selector="theme-provider" color="red" />,
+        <SSRWebComponent
+          Component={ColorTest}
+          selector="theme-provider"
+          color="red"
+        />,
         testOptions,
       );
 
@@ -2513,7 +2645,11 @@ describe('utils', () => {
 
       const Parent = () => {
         return Array.from({ length: 5 }, (_, i) => (
-          <context-provider serverOnly context={context} value={{ name: 'foo' + i }}>
+          <context-provider
+            serverOnly
+            context={context}
+            value={{ name: 'foo' + i }}
+          >
             <Component />
           </context-provider>
         ));
@@ -2539,8 +2675,16 @@ describe('utils', () => {
 
       const Parent = () => {
         return Array.from({ length: 5 }, (_, i) => (
-          <context-provider serverOnly context={context} value={{ name: 'foo' + i }}>
-            <context-provider serverOnly context={context} value={{ name: 'foo2' + i }}>
+          <context-provider
+            serverOnly
+            context={context}
+            value={{ name: 'foo' + i }}
+          >
+            <context-provider
+              serverOnly
+              context={context}
+              value={{ name: 'foo2' + i }}
+            >
               <Component />
             </context-provider>
           </context-provider>
@@ -2735,7 +2879,9 @@ describe('utils', () => {
       } as any;
 
       eval(script404);
-      expect(globalThis.location.replace).toHaveBeenCalledWith('http://localhost/?_not-found=1');
+      expect(globalThis.location.replace).toHaveBeenCalledWith(
+        'http://localhost/?_not-found=1',
+      );
       globalThis.location = undefined as any;
     });
 
@@ -2771,7 +2917,9 @@ describe('utils', () => {
       } as any;
 
       eval(script404);
-      expect(globalThis.location.replace).toHaveBeenCalledWith('http://localhost/?_not-found=1');
+      expect(globalThis.location.replace).toHaveBeenCalledWith(
+        'http://localhost/?_not-found=1',
+      );
       globalThis.location = undefined as any;
     });
 
@@ -2803,7 +2951,9 @@ describe('utils', () => {
       } as any;
 
       eval(script404);
-      expect(globalThis.location.assign).toHaveBeenCalledWith('http://localhost/?_not-found=1');
+      expect(globalThis.location.assign).toHaveBeenCalledWith(
+        'http://localhost/?_not-found=1',
+      );
       globalThis.location = undefined as any;
     });
 
@@ -2840,7 +2990,9 @@ describe('utils', () => {
       } as any;
 
       eval(script404);
-      expect(globalThis.location.assign).toHaveBeenCalledWith('http://localhost/?_not-found=1');
+      expect(globalThis.location.assign).toHaveBeenCalledWith(
+        'http://localhost/?_not-found=1',
+      );
       globalThis.location = undefined as any;
     });
 
@@ -2863,7 +3015,9 @@ describe('utils', () => {
       } as any;
 
       eval(scriptNavigate);
-      expect(globalThis.location.replace).toHaveBeenCalledWith('http://localhost/foo');
+      expect(globalThis.location.replace).toHaveBeenCalledWith(
+        'http://localhost/foo',
+      );
       globalThis.location = undefined as any;
       globalThis.window = undefined as any;
     });
@@ -2886,7 +3040,9 @@ describe('utils', () => {
       const scriptStore = `window._S=[["foo-client","bar-client"]]`;
 
       expect(result).toBe(
-        toInline(`<script>${scriptStore}</script><script>${scriptNavigate}</script>`),
+        toInline(
+          `<script>${scriptStore}</script><script>${scriptNavigate}</script>`,
+        ),
       );
 
       // Test script navigate behavior
@@ -2896,7 +3052,9 @@ describe('utils', () => {
       } as any;
 
       eval(scriptNavigate);
-      expect(globalThis.location.replace).toHaveBeenCalledWith('http://localhost/foo');
+      expect(globalThis.location.replace).toHaveBeenCalledWith(
+        'http://localhost/foo',
+      );
       globalThis.location = undefined as any;
       globalThis.window = undefined as any;
     });
@@ -2924,7 +3082,9 @@ describe('utils', () => {
       } as any;
 
       eval(scriptNavigate);
-      expect(globalThis.location.assign).toHaveBeenCalledWith('http://localhost/foo');
+      expect(globalThis.location.assign).toHaveBeenCalledWith(
+        'http://localhost/foo',
+      );
       globalThis.location = undefined as any;
       globalThis.window = undefined as any;
     });
@@ -2960,7 +3120,9 @@ describe('utils', () => {
       } as any;
 
       eval(scriptNavigate);
-      expect(globalThis.location.assign).toHaveBeenCalledWith('http://localhost/foo');
+      expect(globalThis.location.assign).toHaveBeenCalledWith(
+        'http://localhost/foo',
+      );
       globalThis.location = undefined as any;
       globalThis.window = undefined as any;
     });
@@ -2981,7 +3143,9 @@ describe('utils', () => {
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(toInline(`<html><head></head><body>`));
-      expect(result).toContain('Error in SSR of Component component with props {}');
+      expect(result).toContain(
+        'Error in SSR of Component component with props {}',
+      );
       expect(result).toEndWith(toInline(`</body></html>`));
       expect(mockLog.mock.calls.toString()).toContain(
         'Error in SSR of Component component with props {}',
@@ -3004,7 +3168,9 @@ describe('utils', () => {
       );
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(toInline(`<html><head></head><body>`));
-      expect(result).toContain('Error in SSR of SomeTestComponent component with props {}');
+      expect(result).toContain(
+        'Error in SSR of SomeTestComponent component with props {}',
+      );
       expect(result).toEndWith(toInline(`</body></html>`));
       expect(mockLog.mock.calls.toString()).toContain(
         'Error in SSR of SomeTestComponent component with props {}',
@@ -3080,7 +3246,9 @@ describe('utils', () => {
 
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe('<h2>Count: 0</h2><h2>Count: 1</h2><h2>Count: 2</h2><h2>Count: 3</h2>');
+      expect(result).toBe(
+        '<h2>Count: 0</h2><h2>Count: 1</h2><h2>Count: 2</h2><h2>Count: 3</h2>',
+      );
     });
 
     it('should render a server component with async generator and context', async () => {
@@ -3113,7 +3281,10 @@ describe('utils', () => {
       const onClick = () => {};
       onClick.actionId = 'a1_1';
       onClick.cid = '1';
-      const stream = renderToReadableStream(<Component foo="bar" onClick={onClick} />, testOptions);
+      const stream = renderToReadableStream(
+        <Component foo="bar" onClick={onClick} />,
+        testOptions,
+      );
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
@@ -3129,7 +3300,10 @@ describe('utils', () => {
       );
       const onClick = () => {};
       onClick.actionId = 'a1_1';
-      const stream = renderToReadableStream(<Component foo="bar" bar="baz" />, testOptions);
+      const stream = renderToReadableStream(
+        <Component foo="bar" bar="baz" />,
+        testOptions,
+      );
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe('<p data-action-onclick="a1_1" data-action>bar</p>');
@@ -3256,13 +3430,18 @@ describe('utils', () => {
       });
       request.id = '123456';
 
-      const stream = renderToReadableStream(<Component data-action-onclick="a1_1" data-action />, {
-        ...testOptions,
-        request,
-      });
+      const stream = renderToReadableStream(
+        <Component data-action-onclick="a1_1" data-action />,
+        {
+          ...testOptions,
+          request,
+        },
+      );
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe(`<!--o:0--><div data-action data-cid="0">test</div><!--c:0-->`);
+      expect(result).toBe(
+        `<!--o:0--><div data-action data-cid="0">test</div><!--c:0-->`,
+      );
     });
 
     it('should render several comments with different final number to each component of a list', async () => {
@@ -3271,9 +3450,24 @@ describe('utils', () => {
 
       const List = ({ onClick }: any) => (
         <>
-          <Component foo="bar" onClick={onClick} data-action-onclick="a1_1" data-action />
-          <Component foo="baz" onClick={onClick} data-action-onclick="a2_1" data-action />
-          <Component foo="foo" onClick={onClick} data-action-onclick="a3_1" data-action />
+          <Component
+            foo="bar"
+            onClick={onClick}
+            data-action-onclick="a1_1"
+            data-action
+          />
+          <Component
+            foo="baz"
+            onClick={onClick}
+            data-action-onclick="a2_1"
+            data-action
+          />
+          <Component
+            foo="foo"
+            onClick={onClick}
+            data-action-onclick="a3_1"
+            data-action
+          />
         </>
       );
 
@@ -3319,7 +3513,9 @@ describe('utils', () => {
       const stream = renderToReadableStream(<List />, testOptions);
       const result = await Bun.readableStreamToText(stream);
 
-      expect(result).toBe(`<div key="1">foo</div><div key="2">bar</div><div key="3">baz</div>`);
+      expect(result).toBe(
+        `<div key="1">foo</div><div key="2">bar</div><div key="3">baz</div>`,
+      );
     });
 
     it('should add a global style inside the declarative shadow DOM', async () => {

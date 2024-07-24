@@ -82,7 +82,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
         'console.log(baz);',
       ]);
 
-      expect(getOutputCodeLines(out, 'baz')).toEqual([...varIdentifiers, 'console.log(baz);']);
+      expect(getOutputCodeLines(out, 'baz')).toEqual([
+        ...varIdentifiers,
+        'console.log(baz);',
+      ]);
     });
 
     it('should skip variables inside nested scopes', () => {
@@ -278,7 +281,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
         'console.log(baz);',
       ]);
 
-      expect(getOutputCodeLines(out, 'baz')).toEqual([...varIdentifiers, 'console.log(baz);']);
+      expect(getOutputCodeLines(out, 'baz')).toEqual([
+        ...varIdentifiers,
+        'console.log(baz);',
+      ]);
     });
 
     it('should skip variables inside nested destructured variables', () => {
@@ -334,7 +340,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const varIdentifiers = ['foo', 'bar', 'bar'];
 
       expect(getOutputCodeLines(out, 'foo')).toEqual(varIdentifiers);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...varIdentifiers, 'console.log(bar);']);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...varIdentifiers,
+        'console.log(bar);',
+      ]);
     });
 
     it('should skip all the rest of the scope with nested destructured variables with the same name as prop', () => {
@@ -440,7 +449,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const varIdentifiers = ['bar', 'bar'];
 
       expect(getOutputCodeLines(out, 'foo')).toEqual(varIdentifiers);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...varIdentifiers, 'console.log(bar);']);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...varIdentifiers,
+        'console.log(bar);',
+      ]);
     });
 
     it('should skip all the rest of the scope with nested destructured variables with the same name as prop', () => {
@@ -551,8 +563,14 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const out = applySkipTest(code, props, '', new Set(['foo']));
       const varIdentifiers = ['foo', 'foo', 'bar'];
 
-      expect(getOutputCodeLines(out, 'foo')).toEqual([...varIdentifiers, 'console.log(bar);']);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...varIdentifiers, 'console.log(bar);']);
+      expect(getOutputCodeLines(out, 'foo')).toEqual([
+        ...varIdentifiers,
+        'console.log(bar);',
+      ]);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...varIdentifiers,
+        'console.log(bar);',
+      ]);
     });
 
     it('should skip all the rest of the scope with rest elements with the same name as prop', () => {
@@ -592,7 +610,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
         'console.log(foo);',
       ]);
 
-      expect(getOutputCodeLines(out, 'foo')).toEqual([...varIdentifiers, 'console.log(foo);']);
+      expect(getOutputCodeLines(out, 'foo')).toEqual([
+        ...varIdentifiers,
+        'console.log(foo);',
+      ]);
     });
 
     it('should skip variables inside nested rest elements with the same name as prop', () => {
@@ -658,8 +679,14 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const out = applySkipTest(code, props, '', new Set(['foo']));
       const varIdentifiers = ['foo', 'bar'];
 
-      expect(getOutputCodeLines(out, 'foo')).toEqual([...varIdentifiers, 'console.log(bar);']);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...varIdentifiers, 'console.log(bar);']);
+      expect(getOutputCodeLines(out, 'foo')).toEqual([
+        ...varIdentifiers,
+        'console.log(bar);',
+      ]);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...varIdentifiers,
+        'console.log(bar);',
+      ]);
     });
 
     it('should skip all the rest of the scope with rest elements with the same name as prop', () => {
@@ -1038,7 +1065,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const expectedParams = ['bar', 'bar'];
 
       expect(getOutputCodeLines(out, 'foo')).toEqual(expectedParams);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...expectedParams, 'console.log(bar);']);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...expectedParams,
+        'console.log(bar);',
+      ]);
     });
 
     it('should skip all the rest of the function expression with nested destructured parameters with the same name as prop', () => {
@@ -1117,7 +1147,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const expectedParams = ['bar'];
 
       expect(getOutputCodeLines(out, 'foo')).toEqual(expectedParams);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...expectedParams, 'console.log(bar);']);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...expectedParams,
+        'console.log(bar);',
+      ]);
     });
 
     it('should skip all the rest of the function expression with destructured parameters with the same name as prop', () => {
@@ -1197,7 +1230,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const expectedParams = ['bar', 'bar'];
 
       expect(getOutputCodeLines(out, 'foo')).toEqual(expectedParams);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...expectedParams, 'console.log(bar);']);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...expectedParams,
+        'console.log(bar);',
+      ]);
     });
 
     it('should skip all the rest of the function expression with nested destructured parameters with the same name as prop', () => {
@@ -1357,8 +1393,14 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const out = applySkipTest(code, props, '', new Set(['foo']));
       const expectedParams = ['foo', 'foo', 'bar'];
 
-      expect(getOutputCodeLines(out, 'foo')).toEqual([...expectedParams, 'console.log(bar);']);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...expectedParams, 'console.log(bar);']);
+      expect(getOutputCodeLines(out, 'foo')).toEqual([
+        ...expectedParams,
+        'console.log(bar);',
+      ]);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...expectedParams,
+        'console.log(bar);',
+      ]);
     });
 
     it('should skip all the rest of the function declaration with rest elements with the same name as prop', () => {
@@ -1620,7 +1662,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const expectedParams = ['bar', 'bar'];
 
       expect(getOutputCodeLines(out, 'foo')).toEqual(expectedParams);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...expectedParams, 'console.log(bar)']);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...expectedParams,
+        'console.log(bar)',
+      ]);
     });
 
     it('should skip all the rest of the arrow function expression with nested destructured parameters with the same name as prop', () => {
@@ -1674,7 +1719,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
         'console.log(bar);',
       ]);
 
-      expect(getOutputCodeLines(out, 'baz')).toEqual([...expectedParams, 'console.log(baz);']);
+      expect(getOutputCodeLines(out, 'baz')).toEqual([
+        ...expectedParams,
+        'console.log(baz);',
+      ]);
     });
   });
 
@@ -1690,7 +1738,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const out = applySkipTest(code, props, '', new Set(['foo']));
 
       expect(getOutputCodeLines(out, 'foo')).toEqual(['bar']);
-      expect(getOutputCodeLines(out, 'bar')).toEqual(['bar', 'console.log(bar)']);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        'bar',
+        'console.log(bar)',
+      ]);
     });
 
     it('should skip all the rest of the arrow function expression with destructured parameters with the same name as prop', () => {
@@ -1748,7 +1799,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
         'console.log(bar);',
       ]);
 
-      expect(getOutputCodeLines(out, 'baz')).toEqual([...expectedParams, 'console.log(baz);']);
+      expect(getOutputCodeLines(out, 'baz')).toEqual([
+        ...expectedParams,
+        'console.log(baz);',
+      ]);
     });
   });
 
@@ -1765,7 +1819,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
       const fnParams = ['bar', 'bar'];
 
       expect(getOutputCodeLines(out, 'foo')).toEqual(fnParams);
-      expect(getOutputCodeLines(out, 'bar')).toEqual([...fnParams, 'console.log(bar)']);
+      expect(getOutputCodeLines(out, 'bar')).toEqual([
+        ...fnParams,
+        'console.log(bar)',
+      ]);
     });
 
     it('should skip all the rest of the arrow function expression with nested destructured parameters with the same name as prop', () => {
@@ -1832,7 +1889,10 @@ describe('client-build-plugin/skip-prop-transformation', () => {
         'console.log(bar);',
       ]);
 
-      expect(getOutputCodeLines(out, 'baz')).toEqual([...paramUsedsFn, 'console.log(baz);']);
+      expect(getOutputCodeLines(out, 'baz')).toEqual([
+        ...paramUsedsFn,
+        'console.log(baz);',
+      ]);
     });
   });
 
@@ -2386,7 +2446,12 @@ function applySkipTest(
   const componentBody = component?.body ?? declaration?.init.body;
   return JSON.stringify(
     componentBody,
-    skipPropTransformation(componentBody, props, propsIdentifier, standaloneProps),
+    skipPropTransformation(
+      componentBody,
+      props,
+      propsIdentifier,
+      standaloneProps,
+    ),
   );
 }
 
@@ -2397,7 +2462,8 @@ function getOutputCodeLines(out: string, byProp: string) {
 
   function displaySkippedParts(this: any, key: string, value: any) {
     const isArrowWithoutBlockStatement =
-      this?.type === 'ArrowFunctionExpression' && value?.type !== 'BlockStatement';
+      this?.type === 'ArrowFunctionExpression' &&
+      value?.type !== 'BlockStatement';
 
     if (
       (isArrowWithoutBlockStatement || Array.isArray(this)) &&
