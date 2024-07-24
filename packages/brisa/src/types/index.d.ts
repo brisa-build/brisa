@@ -720,10 +720,7 @@ export interface ComponentType<
 
 export type JSXComponent<
   T extends Record<string, unknown> = Record<string, unknown>,
-> = ((
-  props: Props<T>,
-  request: RequestContext,
-) => JSX.Element) & {
+> = ((props: Props<T>, request: RequestContext) => JSX.Element) & {
   suspense?: JSXComponent<T>;
   error?: JSXComponent<T & { error: unknown }>;
 };
