@@ -8,10 +8,14 @@ import {
   mock,
   type Mock,
 } from 'bun:test';
-import { main } from './cli.cjs';
+import * as cli from './cli.cjs';
 import cp from 'child_process';
 import path from 'node:path';
 import crypto from 'node:crypto';
+
+declare module './cli.cjs' {
+  export function main(): Promise<void>
+}
 
 const FIXTURES = path.join(import.meta.dir, 'src', '__fixtures__');
 const MDX_PATH = path.join(
@@ -103,7 +107,7 @@ describe('Brisa CLI', () => {
   it('should display the --help options', async () => {
     process.argv = ['bun', 'brisa', '--help'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -123,7 +127,7 @@ describe('Brisa CLI', () => {
   it('should display --help when the command is not found', async () => {
     process.argv = ['bun', 'brisa', 'not-found'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -143,7 +147,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa dev" command with default options', async () => {
     process.argv = ['bun', 'brisa', 'dev'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -165,7 +169,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa dev" command with custom port', async () => {
     process.argv = ['bun', 'brisa', 'dev', '--port', '5000'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -187,7 +191,7 @@ describe('Brisa CLI', () => {
   it('should return the help of "brisa dev" command', async () => {
     process.argv = ['bun', 'brisa', 'dev', '--help'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -206,7 +210,7 @@ describe('Brisa CLI', () => {
   it('should debug "brisa dev" command', async () => {
     process.argv = ['bun', 'brisa', 'dev', '--debug'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -228,7 +232,7 @@ describe('Brisa CLI', () => {
   it('should build a web app in development with the flag --dev', async () => {
     process.argv = ['bun', 'brisa', 'build', '--dev'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
     expect(mockSpawnSync.mock.calls[0]).toEqual([
@@ -253,7 +257,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -308,7 +312,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -363,7 +367,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -385,7 +389,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa build" command with default options', async () => {
     process.argv = ['bun', 'brisa', 'build'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -402,7 +406,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa build --help" command', async () => {
     process.argv = ['bun', 'brisa', 'build', '--help'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -425,7 +429,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -480,7 +484,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -503,7 +507,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -558,7 +562,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -581,7 +585,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -636,7 +640,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -653,7 +657,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa start" command with default options', async () => {
     process.argv = ['bun', 'brisa', 'start'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
     expect(mockSpawnSync.mock.calls[0]).toEqual([
@@ -671,7 +675,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa start --help" command', async () => {
     process.argv = ['bun', 'brisa', 'start', '--help'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -687,7 +691,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa start" command with custom port', async () => {
     process.argv = ['bun', 'brisa', 'start', '--port', '5000'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
     expect(mockSpawnSync.mock.calls[0]).toEqual([
@@ -709,7 +713,7 @@ describe('Brisa CLI', () => {
 
     process.argv = ['bun', 'brisa', 'start'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
 
@@ -732,7 +736,7 @@ describe('Brisa CLI', () => {
   it('should "brisa add mdx" command integrate MDX', async () => {
     process.argv = ['bun', 'brisa', 'add', 'mdx'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(3);
     expect(mockSpawnSync.mock.calls[0]).toEqual([
@@ -755,7 +759,7 @@ describe('Brisa CLI', () => {
   it('should "brisa add --help" command provide help', async () => {
     process.argv = ['bun', 'brisa', 'add', '--help'];
 
-    await main();
+    await cli.main();
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1);
     expect(mockLog.mock.calls).toEqual([

@@ -2,7 +2,6 @@
   "compilerOptions": {
     "lib": ["ESNext"],
     "module": "esnext",
-    "baseUrl": ".",
     "target": "esnext",
     "moduleResolution": "bundler",
     "moduleDetection": "force",
@@ -12,13 +11,13 @@
     "noEmit": true,
     "composite": true,
     "strict": true,
+    "alwaysStrict": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "brisa",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true
   },
+  "include": ["scripts"],
   "exclude": ["node_modules"]
 }
