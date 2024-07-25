@@ -5,6 +5,7 @@ import brisaPackageJSON from '../packages/brisa/package.json';
 import createBrisaPackageJSON from '../packages/create-brisa/package.json';
 import docsPackageJSON from '../packages/docs/package.json';
 import wwwPackageJSON from '../packages/www/package.json';
+import adapterVercelPackageJSON from '../packages/adapter-vercel/package.json';
 
 const currentVersion = packageJSON.version;
 const version = prompt(
@@ -54,6 +55,13 @@ wwwPackageJSON.version = version;
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'www', 'package.json'),
   JSON.stringify(wwwPackageJSON, null, 2),
+);
+
+// adapterVercel package.json
+adapterVercelPackageJSON.version = version;
+fs.writeFileSync(
+  join(import.meta.dir, '..', 'packages', 'adapter-vercel', 'package.json'),
+  JSON.stringify(adapterVercelPackageJSON, null, 2),
 );
 
 // Update Brisa CLI version
