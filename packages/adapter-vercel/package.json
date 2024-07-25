@@ -1,5 +1,5 @@
 {
-  "name": "@brisa/adapter-vercel",
+  "name": "brisa-adapter-vercel",
   "version": "0.0.125",
   "license": "MIT",
   "type": "module",
@@ -7,17 +7,12 @@
   "module": "./out/index.js",
   "types": "./out/index.d.ts",
   "scripts": {
-    "release": "bun run build && npm publish",
-    "release:alpha": "bun run build && npm publish --tag next",
     "build": "bun build --minify --target=bun --outdir=out index.ts"
   },
-  "author": {
-    "name": "Aral Roca Gòmez",
-    "email": "contact@aralroca.com"
-  },
+  "author": "Aral Roca Gòmez <contact@aralroca.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/brisa-build/brisa.git",
+    "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/adapter-vercel"
   },
   "files": ["out"],
@@ -30,5 +25,10 @@
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
-  }
+  },
+  "description": "A Brisa adapter that creates a Vercel app.",
+  "bugs": {
+    "url": "https://github.com/brisa-build/brisa/issues"
+  },
+  "homepage": "https://github.com/brisa-build/brisa#readme"
 }
