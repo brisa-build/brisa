@@ -6,6 +6,7 @@ import brisaPackageJSON from '../packages/brisa/package.json';
 import createBrisaPackageJSON from '../packages/create-brisa/package.json';
 import docsPackageJSON from '../packages/docs/package.json';
 import wwwwPackageJSON from '../packages/www/package.json';
+import adapterVercelPackageJSON from '../packages/adapter-vercel/package.json';
 
 const oldVersion = packageJSON.packageManager.replace('bun@', '');
 
@@ -48,6 +49,10 @@ fs.writeFileSync(
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'www', 'package.json'),
   JSON.stringify(wwwwPackageJSON, null, 2),
+);
+fs.writeFileSync(
+  join(import.meta.dir, '..', 'packages', 'adapter-vercel', 'package.json'),
+  JSON.stringify(adapterVercelPackageJSON, null, 2),
 );
 
 // Update the test.yml file
