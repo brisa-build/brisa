@@ -8,12 +8,12 @@ The `outputAdapter` configuration property in `brisa.config.ts` allows you to de
 
 ## Understanding Output Adapters
 
-### 1. Vercel Adapter (`brisa/adapter-vercel`)
+### 1. Vercel Adapter (`@brisa/adapter-vercel`)
 
 The `vercel` adapter allows you to deploy your Brisa project to [Vercel](https://vercel.com/), a cloud platform for static sites, serverless functions and edge entry points. To utilize this adapter in your Brisa project, ensure that your `brisa.config.ts` file includes the following:
 
 ```ts
-import vercel from 'brisa/adapter-vercel';
+import vercel from '@brisa/adapter-vercel';
 
 export default {
   outputAdapter: vercel({ /* ... */ })

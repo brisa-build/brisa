@@ -1,5 +1,5 @@
 {
-  "name": "brisa-adapter-vercel",
+  "name": "@brisa/adapter-vercel",
   "version": "0.0.125",
   "license": "MIT",
   "type": "module",
