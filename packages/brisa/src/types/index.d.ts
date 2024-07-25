@@ -731,6 +731,24 @@ export type ExtendPlugins = (
   options: ExtendPluginOptions,
 ) => BunPlugin[];
 
+export type Builder = {
+  // TODO
+};
+
+export type Adapter = {
+  /**
+   * The name of the adapter, using for logging. Will typically correspond to
+   * the package name.
+   */
+  name: string;
+  /**
+   * This function is called after Brisa has built your app.
+   * @param builder An object provided by Brisa that contains
+   * methods for adapting the app
+   */
+  adapt(builder: Builder): void | Promise<void>;
+};
+
 export type Configuration = {
   /**
    * Description:
@@ -866,6 +884,28 @@ export type Configuration = {
    * - [How to use `output`](https://brisa.build/building-your-application/configuring/output)
    */
   output?: 'static' | 'server' | 'desktop' | 'android' | 'ios';
+
+  /**
+   * Description:
+   *
+   * The `outputAdapter` config property is used to change the output adapter, depending on your cloud provider.
+   *
+   * The default value is `undefined`.
+   *
+   * Example for Vercel:
+   *
+   * ```ts
+   * import vercel from 'brisa/adapter-vercel';
+   *
+   * export default {
+   *  outputAdapter: vercel({ \/* ... *\/ })
+   * };
+   * ```
+   *
+   * See all the deployment options:
+   * - [Documentation](https://brisa.build/building-your-application/deploying/#deploy)
+   */
+  outputAdapter?: Adapter;
 
   /**
    * Description:
