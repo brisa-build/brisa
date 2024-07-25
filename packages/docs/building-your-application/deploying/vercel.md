@@ -15,14 +15,14 @@ To deploy to Vercel, use [adapter-vercel](https://github.com/brisa-build/brisa/b
 Install with:
 
 ```sh
-bun install -D brisa/adapter-vercel
+bun install -D @brisa/adapter-vercel
 ```
 
 Then, add the adapter to your `brisa.config.ts`:
 
 ```ts
 /// file: brisa.config.ts
-import vercel from 'brisa/adapter-vercel';
+import vercel from '@brisa/adapter-vercel';
 
 export default {
   outputAdapter: vercel({
@@ -43,7 +43,7 @@ For example you could deploy some parts of your app as [Edge Functions](https://
 
 ```ts
 /// file: src/pages/about.tsx
-/** @type {import('brisa/adapter-vercel').Config} */
+/** @type {import('@brisa/adapter-vercel').Config} */
 export const config = {
 	runtime: 'edge'
 };
@@ -53,7 +53,7 @@ export const config = {
 
 ```ts
 /// file: admin/+layout.js
-/** @type {import('brisa/adapter-vercel').Config} */
+/** @type {import('@brisa/adapter-vercel').Config} */
 export const config = {
 	runtime: 'nodejs18.x'
 };
