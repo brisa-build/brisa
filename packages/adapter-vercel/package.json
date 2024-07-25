@@ -1,20 +1,30 @@
 {
   "name": "brisa-adapter-vercel",
   "version": "0.0.125",
-  "description": "Adapter for IaC on Vercel",
-  "author": "Brisa Team",
-  "homepage": "https://brisa.build/",
   "license": "MIT",
-  "packageManager": "bun@1.1.20",
-  "private": true,
-  "bugs": "https://github.com/brisa-build/brisa.git",
+  "type": "module",
+  "main": "./out/index.js",
+  "module": "./out/index.js",
+  "types": "./out/index.d.ts",
+  "scripts": {
+    "release": "bun run build && npm publish",
+    "release:alpha": "bun run build && npm publish --tag next",
+    "build": "bun build --minify --target=bun --outdir=out index.ts"
+  },
+  "author": {
+    "name": "Aral Roca Gòmez",
+    "email": "contact@aralroca.com"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/brisa-build/brisa.git"
+    "url": "https://github.com/brisa-build/brisa.git",
+    "directory": "packages/adapter-vercel"
   },
-  "scripts": {
-    "dev": "echo TODO"
+  "files": ["out"],
+  "devDependencies": {
+    "brisa": "0.0.125"
   },
+  "packageManager": "bun@1.1.20",
   "engines": {
     "bun": ">= 1.1.20",
     "npm": "please-use-bun",
