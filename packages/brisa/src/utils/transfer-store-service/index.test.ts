@@ -112,6 +112,54 @@ describe('utils', () => {
       const transferStore = await transferStoreService(req);
       expect(transferStore.body).toEqual({ key: 'value' });
     });
+
+    it('should not transfer keys with context: prefix', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request('http://localhost:3000', {
+          method: 'POST',
+          body: JSON.stringify({
+            'x-s': [['context:key', 'value'], ['foo', 'FOO']],
+          }),
+        }),
+      });
+
+      const transferStore = await transferStoreService(req);
+      transferStore.transferClientStoreToServer();
+
+      expect(req.store as any).toEqual(new Map([['foo', 'FOO']]));
+    })
+
+    it('should not transfer null keys with', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request('http://localhost:3000', {
+          method: 'POST',
+          body: JSON.stringify({
+            'x-s': [[null, 'value'], ['foo', 'FOO']],
+          }),
+        }),
+      });
+
+      const transferStore = await transferStoreService(req);
+      transferStore.transferClientStoreToServer();
+
+      expect(req.store as any).toEqual(new Map([['foo', 'FOO']]));
+    })
+
+    it('should not transfer undefined keys with', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request('http://localhost:3000', {
+          method: 'POST',
+          body: JSON.stringify({
+            'x-s': [[undefined, 'value'], ['foo', 'FOO']],
+          }),
+        }),
+      });
+
+      const transferStore = await transferStoreService(req);
+      transferStore.transferClientStoreToServer();
+
+      expect(req.store as any).toEqual(new Map([['foo', 'FOO']]));
+    })
   });
 
   describe('getTransferedServerStoreToClient', () => {
