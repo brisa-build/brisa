@@ -83,7 +83,7 @@ export default function brisaElement(
     const off = (value as unknown as symbol) === _off;
     const isStyleObj = key === 'style' && isObject(value);
     let serializedValue = isStyleObj
-      ? stylePropsToString(value as JSX.CSSProperties)
+      ? stylePropsToString(value as unknown as JSX.CSSProperties)
       : serialize(value);
 
     const isWithNamespace =

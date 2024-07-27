@@ -18,7 +18,7 @@ const pageWebComponents = {
 };
 
 const i18nCode = 3072;
-const brisaSize = 5861; // TODO: Reduce this size :/
+const brisaSize = 5898; // TODO: Reduce this size :/
 const webComponents = 792;
 const unsuspenseSize = 217;
 const rpcSize = 2478; // TODO: Reduce this size
