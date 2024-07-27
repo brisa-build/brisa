@@ -21,14 +21,11 @@ const ORIGINAL_PREFIX = '__o:';
 const $window = window as any;
 
 // Create a store object only once (keeping SPA behavior)
-const globalStore = ($window._s ??= { Map: new Map() } as Record<
-  string,
-  any
->);
+const globalStore = ($window._s ??= { Map: new Map() } as Record<string, any>);
 
 // Update transfered store in each navigation
 for (const [key, value] of $window._S ?? []) {
-  globalStore.Map.set(key, value)
+  globalStore.Map.set(key, value);
 }
 
 // Create a subscription object only once (keeping SPA behavior)

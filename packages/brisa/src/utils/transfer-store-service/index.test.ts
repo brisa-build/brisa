@@ -118,7 +118,10 @@ describe('utils', () => {
         originalRequest: new Request('http://localhost:3000', {
           method: 'POST',
           body: JSON.stringify({
-            'x-s': [['context:key', 'value'], ['foo', 'FOO']],
+            'x-s': [
+              ['context:key', 'value'],
+              ['foo', 'FOO'],
+            ],
           }),
         }),
       });
@@ -127,14 +130,17 @@ describe('utils', () => {
       transferStore.transferClientStoreToServer();
 
       expect(req.store as any).toEqual(new Map([['foo', 'FOO']]));
-    })
+    });
 
     it('should not transfer null keys with', async () => {
       const req = extendRequestContext({
         originalRequest: new Request('http://localhost:3000', {
           method: 'POST',
           body: JSON.stringify({
-            'x-s': [[null, 'value'], ['foo', 'FOO']],
+            'x-s': [
+              [null, 'value'],
+              ['foo', 'FOO'],
+            ],
           }),
         }),
       });
@@ -143,14 +149,17 @@ describe('utils', () => {
       transferStore.transferClientStoreToServer();
 
       expect(req.store as any).toEqual(new Map([['foo', 'FOO']]));
-    })
+    });
 
     it('should not transfer undefined keys with', async () => {
       const req = extendRequestContext({
         originalRequest: new Request('http://localhost:3000', {
           method: 'POST',
           body: JSON.stringify({
-            'x-s': [[undefined, 'value'], ['foo', 'FOO']],
+            'x-s': [
+              [undefined, 'value'],
+              ['foo', 'FOO'],
+            ],
           }),
         }),
       });
@@ -159,7 +168,7 @@ describe('utils', () => {
       transferStore.transferClientStoreToServer();
 
       expect(req.store as any).toEqual(new Map([['foo', 'FOO']]));
-    })
+    });
   });
 
   describe('getTransferedServerStoreToClient', () => {
