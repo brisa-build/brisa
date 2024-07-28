@@ -8,17 +8,23 @@ export async function injectRPCCode() {
 }
 
 // Should be used via macro
+export async function injectRPCCodeForStaticApp() {
+  return await buildRPC('rpc.ts', true);
+}
+
+// Should be used via macro
 export async function injectRPCLazyCode() {
   return await buildRPC(path.join('resolve-rpc', 'index.ts'));
 }
 
-async function buildRPC(file: string) {
+async function buildRPC(file: string, isStatic = false) {
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [path.join(import.meta.dir, file)],
     target: 'browser',
     minify: true,
     define: {
       __RPC_LAZY_FILE__: `'/_brisa/pages/_rpc-lazy-${constants.VERSION_HASH}.js'`,
+      __IS_STATIC__: isStatic.toString(),
     },
   });
 
