@@ -3,9 +3,11 @@ import { join } from 'node:path';
 
 import { getConstants } from '@/constants';
 import AST from '@/utils/ast';
-import { injectRPCCode, injectRPCLazyCode } from '@/utils/rpc' with {
-  type: 'macro',
-};
+import {
+  injectRPCCode,
+  injectRPCCodeForStaticApp,
+  injectRPCLazyCode,
+} from '@/utils/rpc' with { type: 'macro' };
 import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
   type: 'macro',
 };
@@ -38,10 +40,16 @@ type ClientCodeInPageProps = {
 
 const ASTUtil = AST('tsx');
 const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
-const rpcCode = injectRPCCode() as unknown as string;
 const RPCLazyCode = injectRPCLazyCode() as unknown as string;
 const ENV_VAR_PREFIX = 'BRISA_PUBLIC_';
 const DIRECT_IMPORT = 'import:';
+
+function getRPCCode() {
+  const { IS_PRODUCTION, IS_STATIC_EXPORT } = getConstants();
+  return (IS_STATIC_EXPORT && IS_PRODUCTION
+    ? injectRPCCodeForStaticApp()
+    : injectRPCCode()) as unknown as string;
+}
 
 async function getAstFromPath(path: string) {
   return ASTUtil.parseCodeToAST(
@@ -79,7 +87,7 @@ export default async function getClientCodeInPage({
   }
 
   const unsuspense = useSuspense ? unsuspenseScriptCode : '';
-  const rpc = useActions || useHyperlink ? rpcCode : '';
+  const rpc = useActions || useHyperlink ? getRPCCode() : '';
   const lazyRPC = useActions || useHyperlink ? RPCLazyCode : '';
 
   size += unsuspense.length;
