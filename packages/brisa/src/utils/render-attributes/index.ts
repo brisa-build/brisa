@@ -34,7 +34,8 @@ export default function renderAttributes({
   componentProps?: Props;
   componentID?: string;
 }): string {
-  const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML, I18N_CONFIG } = getConstants();
+  const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML, I18N_CONFIG } =
+    getConstants();
   const { basePath, assetPrefix } = CONFIG;
   const useAssetPrefix = assetPrefix && IS_PRODUCTION;
   const keys = new Set<string>();
@@ -50,7 +51,10 @@ export default function renderAttributes({
     // Add the key to the set to avoid duplicates
     keys.add(key);
 
-    if (PROPS_TO_IGNORE.has(prop) || (I18N_CONFIG && type === 'html' && prop === 'lang'))
+    if (
+      PROPS_TO_IGNORE.has(prop) ||
+      (I18N_CONFIG && type === 'html' && prop === 'lang')
+    )
       continue;
 
     // Add the basePath or assetPrefix to internal assets (img, picture, video, audio, script)
@@ -128,8 +132,9 @@ export default function renderAttributes({
 
     // Example data-test={ bar: "foo" } => <div data-test="{'bar':'foo'}">
     if (typeof value === 'object') {
-      attributes += ` ${key}="${value && key === 'style' ? stylePropsToString(value) : serialize(value)
-        }"`;
+      attributes += ` ${key}="${
+        value && key === 'style' ? stylePropsToString(value) : serialize(value)
+      }"`;
       continue;
     }
 
