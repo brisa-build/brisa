@@ -114,11 +114,18 @@ function spaNavigation(event: any) {
     event.intercept({
       async handler() {
         // We do not validate res.ok because we also want to render 404 or 500 pages.
-        const res = await fetch(event.destination.url, {
-          method,
-          signal: getAbortSignal(),
-          body: bodyWithStore(),
-        });
+        const res = await fetch(
+          event.destination.url,
+          __IS_STATIC__
+            ? {
+                signal: getAbortSignal(),
+              }
+            : {
+                method,
+                signal: getAbortSignal(),
+                body: bodyWithStore(),
+              },
+        );
         await loadRPCResolver();
         await $window._rpc(res, null, renderMode);
         $window.scrollTo(0, 0);

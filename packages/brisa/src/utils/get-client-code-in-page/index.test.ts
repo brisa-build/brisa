@@ -21,7 +21,7 @@ const i18nCode = 3072;
 const brisaSize = 5898; // TODO: Reduce this size :/
 const webComponents = 792;
 const unsuspenseSize = 217;
-const rpcSize = 2478; // TODO: Reduce this size
+const rpcSize = 2479; // TODO: Reduce this size
 const lazyRPCSize = 4188; // TODO: Reduce this size
 // lazyRPC is loaded after user interaction (action, link),
 // so it's not included in the initial size
@@ -81,6 +81,66 @@ describe('utils', () => {
       const pagePath = path.join(pages, 'somepage.tsx');
       const output = await getClientCodeInPage({ pagePath, allWebComponents });
       expect(output!.size).toEqual(0);
+    });
+
+    it('should the RPC with IS_STATIC_EXPORT and IS_PRODUCTION be GET for SPA', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_STATIC_EXPORT: true,
+        IS_PRODUCTION: true,
+      };
+      const pagePath = path.join(pages, 'index.tsx');
+      const output = await getClientCodeInPage({
+        pagePath,
+        allWebComponents,
+        pageWebComponents,
+      });
+      expect(output!.rpc).toMatch(
+        new RegExp('fetch(.*destination.url,{signal:.*()})', 'gm'),
+      );
+      expect(output!.rpc).not.toMatch(
+        new RegExp('fetch\\(.*destination.url,{method.*', 'gm'),
+      );
+    });
+
+    it('should the RPC with IS_STATIC_EXPORT and IS_DEVELOPMENT be POST for SPA', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_STATIC_EXPORT: true,
+        IS_PRODUCTION: false,
+      };
+      const pagePath = path.join(pages, 'index.tsx');
+      const output = await getClientCodeInPage({
+        pagePath,
+        allWebComponents,
+        pageWebComponents,
+      });
+      expect(output!.rpc).toMatch(
+        new RegExp('fetch\\(.*destination.url,{method.*', 'gm'),
+      );
+      expect(output!.rpc).not.toMatch(
+        new RegExp('fetch(.*destination.url,{signal:.*()})', 'gm'),
+      );
+    });
+
+    it('should the RPC WITHOUT IS_STATIC_EXPORT and IS_PRODUCTION be POST for SPA', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_STATIC_EXPORT: false,
+        IS_PRODUCTION: true,
+      };
+      const pagePath = path.join(pages, 'index.tsx');
+      const output = await getClientCodeInPage({
+        pagePath,
+        allWebComponents,
+        pageWebComponents,
+      });
+      expect(output!.rpc).toMatch(
+        new RegExp('fetch\\(.*destination.url,{method.*', 'gm'),
+      );
+      expect(output!.rpc).not.toMatch(
+        new RegExp('fetch(.*destination.url,{signal:.*()})', 'gm'),
+      );
     });
 
     it('should return client code in page with suspense and rpc', async () => {
