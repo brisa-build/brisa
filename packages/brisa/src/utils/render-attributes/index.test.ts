@@ -38,7 +38,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -200,7 +200,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -235,7 +235,7 @@ describe('utils', () => {
           },
         },
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -261,7 +261,7 @@ describe('utils', () => {
           defaultLocale: 'en',
           pages: {},
         },
-      }
+      };
 
       request.i18n = {
         locale: 'ru',
@@ -269,7 +269,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -293,7 +293,7 @@ describe('utils', () => {
           defaultLocale: 'en',
           pages: {},
         },
-      }
+      };
 
       request.i18n = {
         locale: 'ru',
@@ -301,7 +301,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -338,7 +338,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -398,7 +398,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const hrefOfATag = (href: string) =>
@@ -457,7 +457,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const hrefOfATag = (href: string) =>
@@ -522,7 +522,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -548,7 +548,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const attributes = renderAttributes({
@@ -595,7 +595,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const hrefOfPrefetch = (href: string) =>
@@ -659,7 +659,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const hrefOfPrefetch = (href: string) =>
@@ -757,7 +757,7 @@ describe('utils', () => {
         defaultLocale: 'en',
         pages: {},
         t: () => '' as any,
-        overrideMessages: () => { },
+        overrideMessages: () => {},
       };
 
       const hrefOfATag = (href: string) =>
@@ -1031,7 +1031,7 @@ describe('utils', () => {
 
       const attributes = renderAttributes({
         elementProps: {
-          onClick: () => { },
+          onClick: () => {},
         },
         request,
         type: 'div',
@@ -1045,7 +1045,7 @@ describe('utils', () => {
       const request = extendRequestContext({
         originalRequest: new Request('https://example.com'),
       });
-      const action = () => { };
+      const action = () => {};
 
       const attributes = renderAttributes({
         elementProps: {
@@ -1064,7 +1064,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onClick = () => { };
+      const onClick = () => {};
       onClick.actionId = 'a1_1';
 
       const attributes = renderAttributes({
@@ -1083,7 +1083,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onClick = () => { };
+      const onClick = () => {};
       onClick.actionId = 'a1_1';
 
       const attributes = renderAttributes({
@@ -1106,7 +1106,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onClick = () => { };
+      const onClick = () => {};
       onClick.actionId = 'a1_1';
 
       const attributes = renderAttributes({
@@ -1130,7 +1130,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onClick = () => { };
+      const onClick = () => {};
       onClick.actionId = 'a1_1';
 
       const attributes = renderAttributes({
@@ -1138,7 +1138,7 @@ describe('utils', () => {
           foo: 'bar',
           'data-action': true,
           onClick,
-          onDoubleClick: () => { },
+          onDoubleClick: () => {},
           'data-action-onDoubleClick': 'a1_3',
         },
         request,
@@ -1155,7 +1155,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onClick = () => { };
+      const onClick = () => {};
       onClick.actionId = 'a1_1';
       onClick.cid = 'c1';
 
@@ -1165,7 +1165,7 @@ describe('utils', () => {
           'data-action': true,
           'data-cid': 'c2',
           onClick,
-          onDoubleClick: () => { },
+          onDoubleClick: () => {},
           'data-action-onDoubleClick': 'a1_3',
         },
         request,
@@ -1188,7 +1188,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onClick = () => { };
+      const onClick = () => {};
       onClick.actionId = 'a1_1';
       onClick.cid = 'c1';
       onClick.actions = [[['onMouseOver', 'a1_2', 'c2']]];
@@ -1198,7 +1198,7 @@ describe('utils', () => {
           foo: 'bar',
           'data-action': true,
           onClick,
-          onDoubleClick: () => { },
+          onDoubleClick: () => {},
           'data-action-onDoubleClick': 'a1_3',
         },
         request,
@@ -1221,7 +1221,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onClick = () => { };
+      const onClick = () => {};
       onClick.actionId = 'a1_1';
       onClick.actions = [
         [['onClick', 'a1_1', 'c1']],
@@ -1233,7 +1233,7 @@ describe('utils', () => {
           foo: 'bar',
           'data-action': true,
           onClick,
-          onDoubleClick: () => { },
+          onDoubleClick: () => {},
           'data-action-onDoubleClick': 'a1_3',
         },
         request,
@@ -1294,7 +1294,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onSubmit = () => { };
+      const onSubmit = () => {};
       onSubmit.actionId = 'a1';
 
       const attributes = renderAttributes({
@@ -1313,7 +1313,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com?foo=bar'),
       });
 
-      const onSubmit = () => { };
+      const onSubmit = () => {};
       onSubmit.actionId = 'a1';
 
       const attributes = renderAttributes({
@@ -1332,7 +1332,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com?foo=bar'),
       });
 
-      const onSubmit = () => { };
+      const onSubmit = () => {};
       onSubmit.actionId = 'a1';
 
       const attributes = renderAttributes({
@@ -1351,7 +1351,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com?foo=bar'),
       });
 
-      const onSubmit = () => { };
+      const onSubmit = () => {};
       onSubmit.actionId = 'a1';
 
       const attributes = renderAttributes({
@@ -1370,7 +1370,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com?foo=bar'),
       });
 
-      const onSubmit = () => { };
+      const onSubmit = () => {};
       onSubmit.actionId = 'a1';
 
       const attributes = renderAttributes({
@@ -1392,7 +1392,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com'),
       });
 
-      const onClick = () => { };
+      const onClick = () => {};
       onClick.actionId = 'a1_1';
       onClick.cid = '123';
       onClick.actions = [[['onMouseOver', 'a1_2', '987']]];
@@ -1403,7 +1403,7 @@ describe('utils', () => {
           'data-action': true,
           'data-cid': '321',
           onClick,
-          onDoubleClick: () => { },
+          onDoubleClick: () => {},
           'data-action-onDoubleClick': 'a1_3',
         },
         request,
