@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
-const cp = require('child_process');
+const cp = require('node:child_process');
 const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
+const { env, cwd, argv, exit } = require('node:process');
 
 const outPath = path
   .join(import.meta.dir, 'out')
@@ -16,18 +17,18 @@ const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
 
 async function main() {
-  const packageJSON = await import(
-    path.join(process.cwd(), 'package.json')
-  ).then((m) => m.default);
+  const packageJSON = await import(path.join(cwd(), 'package.json')).then(
+    (m) => m.default,
+  );
   const __CRYPTO_KEY__ = crypto.randomBytes(32).toString('hex');
   const __CRYPTO_IV__ = crypto.randomBytes(8).toString('hex');
   const BRISA_BUILD_FOLDER =
-    process.env.BRISA_BUILD_FOLDER || path.join(process.cwd(), 'build');
+    env.BRISA_BUILD_FOLDER || path.join(cwd(), 'build');
 
   const prodOptions = {
     stdio: 'inherit',
     env: {
-      ...process.env,
+      ...env,
       NODE_ENV: 'production',
       BRISA_BUILD_FOLDER,
       __CRYPTO_KEY__,
@@ -37,7 +38,7 @@ async function main() {
   const devOptions = {
     stdio: 'inherit',
     env: {
-      ...process.env,
+      ...env,
       NODE_ENV: 'development',
       BRISA_BUILD_FOLDER,
       __CRYPTO_KEY__,
@@ -52,9 +53,9 @@ async function main() {
 
   // Check if is desktop app
   try {
-    const config = await import(
-      path.join(process.cwd(), 'brisa.config.ts')
-    ).then((m) => m.default);
+    const config = await import(path.join(cwd(), 'brisa.config.ts')).then(
+      (m) => m.default,
+    );
     const hasOutput = typeof config.output === 'string';
 
     if (hasOutput) {
@@ -70,24 +71,24 @@ async function main() {
       BUN_EXEC = 'bun';
       BUNX_EXEC = 'bunx';
     } else {
-      BUN_EXEC = `${process.env.HOME}/.bun/bin/bun`;
-      BUNX_EXEC = `${process.env.HOME}/.bun/bin/bunx`;
+      BUN_EXEC = `${env.HOME}/.bun/bin/bun`;
+      BUNX_EXEC = `${env.HOME}/.bun/bin/bunx`;
     }
 
     // Command: brisa dev
-    if (process.argv[2] === 'dev') {
+    if (argv[2] === 'dev') {
       let PORT = 3000; // default port
       let DEBUG_MODE = false; // default debug mode
 
-      for (let i = 3; i < process.argv.length; i++) {
-        switch (process.argv[i]) {
+      for (let i = 3; i < argv.length; i++) {
+        switch (argv[i]) {
           case '--skip-tauri':
           case '-s':
             IS_TAURI_APP = false;
             break;
           case '-p':
           case '--port':
-            PORT = process.argv[i + 1];
+            PORT = argv[i + 1];
             i++;
             break;
           case '-d':
@@ -103,7 +104,7 @@ async function main() {
               " -s, --skip-tauri Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
             );
             console.log(' --help             Show help');
-            return process.exit(0);
+            return exit(0);
         }
       }
 
@@ -132,11 +133,11 @@ async function main() {
     }
 
     // Command: brisa build
-    else if (process.argv[2] === 'build') {
+    else if (argv[2] === 'build') {
       let env = 'PROD';
 
-      for (let i = 3; i < process.argv.length; i++) {
-        switch (process.argv[i]) {
+      for (let i = 3; i < argv.length; i++) {
+        switch (argv[i]) {
           case '--dev':
           case '-d':
             prodOptions.env.NODE_ENV = 'development';
@@ -154,7 +155,7 @@ async function main() {
               ' -d, --dev        Build for development (useful for custom server)',
             );
             console.log(' --help             Show help');
-            return process.exit(0);
+            return exit(0);
         }
       }
 
@@ -174,14 +175,14 @@ async function main() {
     }
 
     // Command: brisa start
-    else if (process.argv[2] === 'start') {
+    else if (argv[2] === 'start') {
       let PORT = 3000; // default port
 
-      for (let i = 3; i < process.argv.length; i++) {
-        switch (process.argv[i]) {
+      for (let i = 3; i < argv.length; i++) {
+        switch (argv[i]) {
           case '-p':
           case '--port':
-            PORT = process.argv[i + 1];
+            PORT = argv[i + 1];
             i++;
             break;
           case '--help':
@@ -189,7 +190,7 @@ async function main() {
             console.log('Options:');
             console.log(' -p, --port    Specify port');
             console.log(' --help        Show help');
-            return process.exit(0);
+            return exit(0);
         }
       }
 
@@ -201,8 +202,8 @@ async function main() {
     }
 
     // Add integrations like mdx, tailwindcss, etc
-    else if (process.argv[2] === 'add') {
-      const integration = process.argv[3]?.toLowerCase();
+    else if (argv[2] === 'add') {
+      const integration = argv[3]?.toLowerCase();
 
       if (integration === 'mdx') {
         console.log('Installing @mdx-js/esbuild...');
@@ -218,7 +219,7 @@ async function main() {
         console.log(' tailwindcss  Add tailwindcss integration');
         console.log('Options:');
         console.log(' --help       Show help');
-        return process.exit(0);
+        return exit(0);
       }
     }
 
@@ -235,19 +236,15 @@ async function main() {
       console.log(
         ' --port        Specify port (applicable for dev and start commands)',
       );
-      return process.exit(0);
+      return exit(0);
     }
   } catch (error) {
     console.error('Error:', error.message);
-    return process.exit(1);
+    return exit(1);
   }
 
   async function initTauri(options = devOptions, port = 3000) {
-    const tauriConfigPath = path.join(
-      process.cwd(),
-      'src-tauri',
-      'tauri.conf.json',
-    );
+    const tauriConfigPath = path.join(cwd(), 'src-tauri', 'tauri.conf.json');
     const existsTauri = fs.existsSync(tauriConfigPath);
     const isMobile = MOBILE_OUTPUTS.has(OUTPUT);
 
