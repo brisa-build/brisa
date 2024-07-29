@@ -3052,6 +3052,33 @@ describe('utils', () => {
       ]);
     });
 
+    it('should automatic adopt the global styles sheets with link with href from document.styleSheets', () => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'styles.css';
+
+      document.head.appendChild(link);
+
+      const Component = () => {
+        return ['div', {}, ''];
+      };
+
+      customElements.define('style-sheet-component', brisaElement(Component));
+      document.body.innerHTML = '<style-sheet-component />';
+
+      const styleSheetComponent = document.querySelector(
+        'style-sheet-component',
+      ) as HTMLElement;
+
+      const expectedSheet = new CSSStyleSheet();
+
+      expectedSheet.replaceSync('@import url(styles.css);');
+
+      expect(styleSheetComponent?.shadowRoot?.adoptedStyleSheets).toEqual([
+        expectedSheet,
+      ]);
+    });
+
     it('should adopt more than one style sheet from document.styleSheets', async () => {
       const style = document.createElement('style');
       const style2 = document.createElement('style');
