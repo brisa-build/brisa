@@ -23,7 +23,7 @@ async function main() {
   const __CRYPTO_KEY__ = crypto.randomBytes(32).toString('hex');
   const __CRYPTO_IV__ = crypto.randomBytes(8).toString('hex');
   const BRISA_BUILD_FOLDER =
-    env.BRISA_BUILD_FOLDER || path.join(cwd(), 'build');
+    env.BRISA_BUILD_FOLDER || path.resolve(cwd(), 'build');
 
   const prodOptions = {
     stdio: 'inherit',
