@@ -18,13 +18,14 @@ const staticExportOutputOption = new Set([
   'android',
   'ios',
 ]);
-const srcDir = path.join(rootDir, 'src');
-const buildDir = process.env.BRISA_BUILD_FOLDER ?? path.join(rootDir, 'build');
+const srcDir = path.resolve(rootDir, 'src');
+const buildDir =
+  process.env.BRISA_BUILD_FOLDER ?? path.resolve(rootDir, 'build');
 const PAGE_404 = '/_404';
 const PAGE_500 = '/_500';
 const integrations = await importFileIfExists(
   '_integrations',
-  path.join(buildDir, 'web-components'),
+  path.resolve(buildDir, 'web-components'),
 );
 const I18N_CONFIG = (await importFileIfExists('i18n', buildDir))
   ?.default as I18nConfig;
@@ -111,8 +112,8 @@ const constants = {
   BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,
   SRC_DIR: srcDir,
-  ASSETS_DIR: path.join(buildDir, 'public'),
-  PAGES_DIR: path.join(buildDir, 'pages'),
+  ASSETS_DIR: path.resolve(buildDir, 'public'),
+  PAGES_DIR: path.resolve(buildDir, 'pages'),
   I18N_CONFIG,
   LOG_PREFIX: {
     WAIT: cyanLog('[ wait ]') + ' ',
