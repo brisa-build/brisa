@@ -34,8 +34,8 @@ export default function renderAttributes({
   componentProps?: Props;
   componentID?: string;
 }): string {
-  const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML, I18N_CONFIG } =
-    getConstants();
+  const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
+  const locale = request.i18n?.locale;
   const { basePath, assetPrefix } = CONFIG;
   const useAssetPrefix = assetPrefix && IS_PRODUCTION;
   const keys = new Set<string>();
@@ -53,7 +53,7 @@ export default function renderAttributes({
 
     if (
       PROPS_TO_IGNORE.has(prop) ||
-      (I18N_CONFIG && type === 'html' && prop === 'lang')
+      (locale && type === 'html' && prop === 'lang')
     )
       continue;
 
@@ -133,7 +133,9 @@ export default function renderAttributes({
     // Example data-test={ bar: "foo" } => <div data-test="{'bar':'foo'}">
     if (typeof value === 'object') {
       attributes += ` ${key}="${
-        value && key === 'style' ? stylePropsToString(value) : serialize(value)
+        value && key === 'style'
+          ? stylePropsToString(value as JSX.CSSProperties)
+          : serialize(value)
       }"`;
       continue;
     }
@@ -220,11 +222,9 @@ export default function renderAttributes({
     }
   }
 
-  if (type === 'html' && request.i18n?.locale) {
-    attributes += ` lang="${request.i18n?.locale}"`;
-    const { direction } = (
-      new Intl.Locale(request.i18n?.locale) as any
-    ).getTextInfo();
+  if (locale && type === 'html') {
+    attributes += ` lang="${locale}"`;
+    const { direction } = (new Intl.Locale(locale) as any).getTextInfo();
     attributes += ` dir="${direction}"`;
   }
 
