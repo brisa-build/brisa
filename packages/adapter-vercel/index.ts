@@ -1,11 +1,10 @@
-import type { Adapter } from 'brisa';
+import type { Adapter, Configuration } from 'brisa';
 
 export default function vercelAdapter(): Adapter {
-  console.log('TODO: Not implemented yet');
   return {
     name: 'vercel',
-    adapt(builder: any) {
-      console.log('TODO: Not implemented');
+    adapt(config: Configuration) {
+      console.log('TODO: Not implemented', config);
     },
   };
 }
