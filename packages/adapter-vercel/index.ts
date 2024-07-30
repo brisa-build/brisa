@@ -1,4 +1,4 @@
-import type { Adapter, BrisaConstants } from 'brisa';
+import type { Adapter } from 'brisa';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 
@@ -30,7 +30,9 @@ export default function vercelAdapter(): Adapter {
       const pages = Array.from(generatedMap?.values() ?? []).flat();
       const sepSrc = CONFIG.trailingSlash ? '/' : '';
       const sepDest = CONFIG.trailingSlash ? '' : '/';
-      const routes = pages.flatMap((page) => {
+      const routes = pages.flatMap((originalPage) => {
+        const page = originalPage.replace(/^\//, '');
+
         if (page === 'index.html') {
           return [
             {
@@ -61,7 +63,8 @@ export default function vercelAdapter(): Adapter {
 
       const overrides = {};
 
-      for (const page of pages) {
+      for (const originalPage of pages) {
+        const page = originalPage.replace(/^\//, '');
         overrides[page] = {
           path: page.replace(REGEX_INDEX_HTML, ''),
         };
@@ -76,7 +79,11 @@ export default function vercelAdapter(): Adapter {
       // Create the .vercel/output/config.json file
       await fs.writeFile(configPath, JSON.stringify(configJSON, null, 2));
 
-      console.log('Vercel adapter has been adapted');
+      // Move the content of the out folder to .vercel/output/static
+      const outDir = path.join(ROOT_DIR, 'out');
+      const staticDir = path.join(outputFolder, 'static');
+      await fs.mkdir(staticDir);
+      await fs.cp(outDir, staticDir, { recursive: true });
     },
   };
 }
