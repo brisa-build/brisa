@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import build from './build';
 import { getConstants } from '@/constants';
+import type { Configuration } from '@/types';
 
 const defaultResult = {
   success: true,
@@ -236,6 +237,50 @@ describe('cli', () => {
         },
       ]);
       expect(logs).toContain('Generated static pages successfully!');
+    });
+
+    it('should call outputAdapter if defined in the configuration (PROD)', async () => {
+      const mockAdapter = mock((v: any) => v);
+      const config = {
+        output: 'static',
+        outputAdapter: {
+          name: 'my-adapter',
+          adapt: mockAdapter,
+        },
+      } as Configuration;
+
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: true,
+        CONFIG: config,
+      };
+
+      await build();
+      const logs = mockLog.mock.calls.flat().toString();
+      expect(logs).toContain('Adapting output to my-adapter...');
+      expect(mockAdapter).toHaveBeenCalledWith(config);
+    });
+
+    it('should NOT call outputAdapter if defined in the configuration in development', async () => {
+      const mockAdapter = mock((v: any) => v);
+      const config = {
+        output: 'static',
+        outputAdapter: {
+          name: 'my-adapter',
+          adapt: mockAdapter,
+        },
+      } as Configuration;
+
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: false,
+        CONFIG: config,
+      };
+
+      await build();
+      const logs = mockLog.mock.calls.flat().toString();
+      expect(logs).not.toContain('Adapting output to my-adapter...');
+      expect(mockAdapter).not.toHaveBeenCalled();
     });
   });
 });

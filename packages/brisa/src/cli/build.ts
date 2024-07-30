@@ -13,6 +13,7 @@ export default async function build() {
     BUILD_DIR,
     ROOT_DIR,
     IS_STATIC_EXPORT,
+    CONFIG,
   } = getConstants();
   const prebuildPath = path.join(ROOT_DIR, 'prebuild');
 
@@ -96,6 +97,14 @@ export default async function build() {
       `Generated static pages successfully!`,
     );
     console.log(LOG_PREFIX.INFO);
+  }
+
+  if (IS_PRODUCTION && CONFIG.outputAdapter) {
+    console.log(
+      LOG_PREFIX.WAIT,
+      `Adapting output to ${CONFIG.outputAdapter.name}...`,
+    );
+    await CONFIG.outputAdapter.adapt(CONFIG);
   }
 
   const end = Bun.nanoseconds();
