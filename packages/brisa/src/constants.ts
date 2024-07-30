@@ -1,7 +1,7 @@
 import path from 'node:path';
 import type { BunPlugin } from 'bun';
 import { version } from '../package.json';
-import type { Configuration, I18nConfig } from './types';
+import type { BrisaConstants, Configuration, I18nConfig } from './types';
 import importFileIfExists from './utils/import-file-if-exists';
 import {
   blueLog,
@@ -135,7 +135,7 @@ const constants = {
   HEADERS: {
     CACHE_CONTROL,
   },
-};
+} satisfies BrisaConstants;
 
 /**
  * TODO: Remove this function and use directly the constants when Bun supports mock modules.

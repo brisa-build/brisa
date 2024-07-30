@@ -3,11 +3,11 @@
   "version": "0.0.125",
   "license": "MIT",
   "type": "module",
-  "main": "./out/index.js",
-  "module": "./out/index.js",
-  "types": "./out/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "bun build --minify --target=bun --outdir=out index.ts"
+    "build": "bun build --minify --target=bun --outdir=dist index.ts"
   },
   "author": "Aral Roca Gòmez <contact@aralroca.com>",
   "repository": {
@@ -15,9 +15,9 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/adapter-vercel"
   },
-  "files": ["out"],
+  "files": ["dist"],
   "devDependencies": {
-    "brisa": "0.0.125"
+    "brisa": "workspace:*"
   },
   "packageManager": "bun@1.1.20",
   "engines": {
