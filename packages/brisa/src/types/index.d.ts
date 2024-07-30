@@ -25,6 +25,35 @@ declare module 'bun' {
 }
 
 /**
+ * Internal types used by Brisa and output adapters.
+ */
+export type BrisaConstants = {
+  PAGE_404: string;
+  PAGE_500: string;
+  VERSION: string;
+  VERSION_HASH: ReturnType<typeof Bun.hash>;
+  WEB_CONTEXT_PLUGINS: string[];
+  RESERVED_PAGES: string[];
+  IS_PRODUCTION: boolean;
+  IS_DEVELOPMENT: boolean;
+  IS_SERVE_PROCESS: boolean;
+  PORT: number;
+  BUILD_DIR: string;
+  ROOT_DIR: string;
+  SRC_DIR: string;
+  ASSETS_DIR: string;
+  PAGES_DIR: string;
+  I18N_CONFIG: I18nConfig;
+  LOG_PREFIX: Record<string, string>;
+  LOCALES_SET: Set<string>;
+  CONFIG: Configuration;
+  IS_STATIC_EXPORT: boolean;
+  REGEX: Record<string, RegExp>;
+  BOOLEANS_IN_HTML: Set<string>;
+  HEADERS: Record<string, string>;
+};
+
+/**
  * Description:
  *
  * Request context is a set of utilities to use within your server components with the context of the request.
@@ -731,10 +760,6 @@ export type ExtendPlugins = (
   options: ExtendPluginOptions,
 ) => BunPlugin[];
 
-export type Builder = {
-  // TODO
-};
-
 export type Adapter = {
   /**
    * The name of the adapter, using for logging. Will typically correspond to
@@ -743,10 +768,11 @@ export type Adapter = {
   name: string;
   /**
    * This function is called after Brisa has built your app.
-   * @param builder An object provided by Brisa that contains
-   * methods for adapting the app
    */
-  adapt(builder: Builder): void | Promise<void>;
+  adapt(
+    brisaConstants: BrisaConstants,
+    routes?: Map<string, string[]>,
+  ): void | Promise<void>;
 };
 
 export type Configuration = {

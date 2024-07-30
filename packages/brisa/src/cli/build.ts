@@ -6,6 +6,7 @@ import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
 
 export default async function build() {
+  const constants = getConstants();
   const {
     IS_PRODUCTION,
     I18N_CONFIG,
@@ -14,7 +15,7 @@ export default async function build() {
     ROOT_DIR,
     IS_STATIC_EXPORT,
     CONFIG,
-  } = getConstants();
+  } = constants;
   const prebuildPath = path.join(ROOT_DIR, 'prebuild');
 
   console.log(
@@ -44,6 +45,7 @@ export default async function build() {
   }
 
   const { success, pagesSize } = await compileAll();
+  let generated;
 
   if (!success) return process.exit(1);
 
@@ -53,7 +55,7 @@ export default async function build() {
   if (IS_PRODUCTION && IS_STATIC_EXPORT && pagesSize) {
     console.log(LOG_PREFIX.INFO);
     console.log(LOG_PREFIX.WAIT, '📄 Generating static pages...');
-    const [generated] = (await generateStaticExport()) ?? [];
+    [generated] = (await generateStaticExport()) ?? [];
 
     if (!generated) return process.exit(1);
 
@@ -104,7 +106,7 @@ export default async function build() {
       LOG_PREFIX.WAIT,
       `Adapting output to ${CONFIG.outputAdapter.name}...`,
     );
-    await CONFIG.outputAdapter.adapt(CONFIG);
+    await CONFIG.outputAdapter.adapt(constants, generated);
   }
 
   const end = Bun.nanoseconds();
