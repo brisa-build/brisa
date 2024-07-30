@@ -473,7 +473,11 @@ async function enqueueComponent(
   suspenseId?: number,
   isSlottedPosition = false,
 ): Promise<void> {
-  const componentValue = await getValueOfComponent(component, props, request);
+  const componentValue = (await getValueOfComponent(
+    component,
+    props,
+    request,
+  )) as AsyncGenerator;
 
   injectCSS(controller, request, suspenseId);
 
@@ -483,7 +487,7 @@ async function enqueueComponent(
       injectCSS(controller, request, suspenseId);
 
       await enqueueChildren(
-        val,
+        val as JSX.Element,
         request,
         controller,
         suspenseId,
