@@ -12,6 +12,8 @@ import stylePropsToString from '@/utils/style-props-to-string';
 import substituteI18nRouteValues from '@/utils/substitute-i18n-route-values';
 import isAnAction from '@/utils/is-an-action';
 import { addBasePathToStringURL } from '@/utils/base-path';
+import { logError, logWarning } from '@/utils/log/log-build';
+import { boldLog } from '@/utils/log/log-color';
 
 const PROPS_TO_IGNORE = new Set([
   'children',
@@ -66,14 +68,24 @@ export default function renderAttributes({
       value = `${useAssetPrefix ? assetPrefix : basePath}${value}`;
     }
 
+    const isFn = typeof value === 'function';
+
+    // Warn about functions that are not event handlers
+    if (!IS_PRODUCTION && isFn && !key.startsWith('on')) {
+      logWarning(
+        [
+          `The prop "${prop}" is a function and it's not an event handler.`,
+          `It should start with "on" to be considered an event handler`,
+          `Example: ${boldLog('on' + prop[0].toUpperCase() + prop.slice(1))}`,
+        ],
+        `Event handlers docs: https://brisa.build/building-your-application/components-details/web-components#events`,
+      );
+    }
+
     // Manage unregistered actions (useful to use it outside of Brisa to recover the actions)
     // In Brisa, currently it's only useful for the testing API (render method), to recover
     // the actions to test them.
-    if (
-      globalThis.REGISTERED_ACTIONS &&
-      typeof value === 'function' &&
-      !isAnAction(value)
-    ) {
+    if (isFn && globalThis.REGISTERED_ACTIONS && !isAnAction(value)) {
       (value as any).actionId =
         globalThis.REGISTERED_ACTIONS.push(value as Function) - 1;
     }
