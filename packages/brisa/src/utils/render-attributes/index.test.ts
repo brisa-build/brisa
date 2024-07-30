@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, it } from 'bun:test';
+import { afterEach, describe, expect, it, spyOn } from 'bun:test';
 import renderAttributes from '.';
 import { getConstants } from '../../constants';
 import extendRequestContext from '../extend-request-context';
 import type { MatchedRoute } from 'bun';
+import { boldLog } from '@/utils/log/log-color';
 
 describe('utils', () => {
   describe('renderAttributes', () => {
@@ -1505,5 +1506,65 @@ describe('utils', () => {
 
       expect(attributes).toBe('');
     });
+
+    it('should warn when is used a function that not start with the "on" prefix (DEVELOPMENT)', () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: false,
+      };
+
+      const request = extendRequestContext({
+        originalRequest: new Request('https://example.com'),
+      });
+
+      const log = spyOn(console, 'log').mockImplementation(() => {});
+
+      const attributes = renderAttributes({
+        elementProps: {
+          click: () => {},
+        },
+        request,
+        type: 'div',
+      });
+
+      const logs = log.mock.calls.toString();
+
+      expect(attributes).toBe('');
+      expect(log).toHaveBeenCalled();
+
+      log.mockRestore();
+
+      expect(logs).toContain(
+        `The prop "click" is a function and it's not an event handler`,
+      );
+      expect(logs).toContain(
+        `It should start with "on" to be considered an event handler`,
+      );
+      expect(logs).toContain(`Example: ${boldLog('onClick')}`);
+    });
+  });
+
+  it('should NOT warn in PRODUCTION when is used a function that not start with the "on" prefix', () => {
+    globalThis.mockConstants = {
+      ...(getConstants() ?? {}),
+      IS_PRODUCTION: true,
+    };
+
+    const request = extendRequestContext({
+      originalRequest: new Request('https://example.com'),
+    });
+
+    const log = spyOn(console, 'log').mockImplementation(() => {});
+
+    const attributes = renderAttributes({
+      elementProps: {
+        click: () => {},
+      },
+      request,
+      type: 'div',
+    });
+    expect(attributes).toBe('');
+    expect(log).not.toHaveBeenCalled();
+    log.mockRestore();
   });
 });
