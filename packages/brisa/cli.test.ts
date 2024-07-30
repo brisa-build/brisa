@@ -9,9 +9,10 @@ import {
   type Mock,
 } from 'bun:test';
 import * as cli from './cli.cjs';
-import cp from 'child_process';
+import cp from 'node:child_process';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import process from 'node:process';
 
 declare module './cli.cjs' {
   export function main(): Promise<void>;
@@ -36,9 +37,9 @@ const SERVE_PATH = path.join(
 
 let originalArgv: string[];
 let mockSpawnSync: Mock<typeof cp.spawnSync>;
-let mockExit: Mock<typeof process.exit>;
+let mockExit: Mock<typeof exit>;
 let mockLog: Mock<typeof console.log>;
-let mockCwd: Mock<typeof process.cwd>;
+let mockCwd: Mock<typeof cwd>;
 let mockRandomBytes: Mock<typeof crypto.randomBytes>;
 
 const BRISA_BUILD_FOLDER = path.join(FIXTURES, 'build');
