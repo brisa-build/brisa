@@ -6,6 +6,7 @@ _brisa
 **/build/*
 **/out/*
 **/out-*/*
+**/dist/*
 packages/brisa/out
 packages/brisa/jsx-runtime/
 packages/brisa/jsx-dev-runtime/

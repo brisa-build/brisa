@@ -241,24 +241,24 @@ describe('cli', () => {
 
     it('should call outputAdapter if defined in the configuration (PROD)', async () => {
       const mockAdapter = mock((v: any) => v);
-      const config = {
-        output: 'static',
-        outputAdapter: {
-          name: 'my-adapter',
-          adapt: mockAdapter,
-        },
-      } as Configuration;
 
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
-        CONFIG: config,
+        CONFIG: {
+          output: 'static',
+          outputAdapter: {
+            name: 'my-adapter',
+            adapt: mockAdapter,
+          },
+        },
       };
 
       await build();
       const logs = mockLog.mock.calls.flat().toString();
       expect(logs).toContain('Adapting output to my-adapter...');
-      expect(mockAdapter).toHaveBeenCalledWith(config);
+      expect(mockAdapter).toHaveBeenCalledTimes(1);
+      expect(mockAdapter.mock.calls[0][0]).toEqual(globalThis.mockConstants);
     });
 
     it('should NOT call outputAdapter if defined in the configuration in development', async () => {
