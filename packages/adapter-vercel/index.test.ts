@@ -112,6 +112,50 @@ describe('adapter-vercel', () => {
       });
     });
 
+    it('should create .vercel/output/config.json starting the page with "/"', async () => {
+      let generatedMap = await createOutFixture(['index.html', 'about.html']);
+      const entries = Array.from(generatedMap.entries());
+
+      // There are cases, ex; i18n, where the page path starts with "/"
+      for (const page of entries) {
+        page[1] = page[1].map((pagePath) => '/' + pagePath);
+      }
+
+      generatedMap = new Map(entries);
+
+      const { adapt } = vercelAdapter();
+      await adapt(brisaConstants, generatedMap);
+      expect(logError).not.toHaveBeenCalled();
+      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
+        version: 3,
+        routes: [
+          {
+            src: '/',
+            dest: '/index.html',
+          },
+          {
+            src: '/about',
+            dest: '/about/',
+          },
+          {
+            src: '/about/',
+            status: 308,
+            headers: {
+              Location: '/about',
+            },
+          },
+        ],
+        overrides: {
+          'index.html': {
+            path: '',
+          },
+          'about.html': {
+            path: 'about',
+          },
+        },
+      });
+    });
+
     it('should create .vercel/output/index.html taking account CONFIG.trailingSlash', async () => {
       const generatedMap = await createOutFixture([
         'index.html',
@@ -155,6 +199,18 @@ describe('adapter-vercel', () => {
           },
         },
       });
+    });
+
+    it('should move the content of the "out" folder to ".vercel/output/static" folder', async () => {
+      const generatedMap = await createOutFixture(['index.html', 'about.html']);
+      const { adapt } = vercelAdapter();
+      await adapt(brisaConstants, generatedMap);
+      expect(await fs.exists(path.join(vercelDir, 'output', 'static'))).toBe(
+        true,
+      );
+      expect(
+        await fs.readdir(path.join(vercelDir, 'output', 'static')),
+      ).toEqual(['index.html', 'about.html']);
     });
   });
 });
