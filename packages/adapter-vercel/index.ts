@@ -8,6 +8,14 @@ export default function vercelAdapter(): Adapter {
   return {
     name: 'vercel',
     async adapt({ CONFIG, ROOT_DIR }, generatedMap) {
+      // TODO: Support output=server
+      if (CONFIG.output !== 'static') {
+        console.error(
+          'Vercel adapter only supports static output. Please set the output to "static" in the brisa.config.ts file',
+        );
+        return;
+      }
+
       const vercelFolder = path.join(ROOT_DIR, '.vercel');
       const outputFolder = path.join(vercelFolder, 'output');
       const configPath = path.join(outputFolder, 'config.json');
