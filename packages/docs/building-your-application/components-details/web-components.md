@@ -313,7 +313,7 @@ export default ParentComponentUsingSlots;
 
 ### Events via attributes
 
-In Brisa Components there is a convention that events must start with `on` prefix. Ex: `onNext`, `onPrev`. This convention is because it is necessary to distinguish between attributes that are events and those that are not. And as the functions cannot serialize, we came to make this convention. After following this convention you can use events in Web Components as if you were in other frameworks such as React.
+In Brisa Components there is a convention that events must **start** with **`on` prefix**. Ex: `onNext`, `onPrev`. This convention is because it is necessary to distinguish between attributes that are events and those that are not. And as the functions cannot serialize, we came to make this convention. After following this convention you can use events in Web Components as if you were in other frameworks such as React.
 
 `src/web-components/color-selector.tsx`:
 
