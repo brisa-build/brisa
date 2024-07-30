@@ -2,7 +2,7 @@ import type { Adapter, BrisaConstants } from 'brisa';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 
-const REGEX_INDEX_HTML = /(index)?\.html$/;
+const REGEX_INDEX_HTML = /(\/?index)?\.html?$/;
 
 export default function vercelAdapter(): Adapter {
   return {
@@ -20,6 +20,8 @@ export default function vercelAdapter(): Adapter {
       await fs.mkdir(outputFolder);
 
       const pages = Array.from(generatedMap?.values() ?? []).flat();
+      const sepSrc = CONFIG.trailingSlash ? '/' : '';
+      const sepDest = CONFIG.trailingSlash ? '' : '/';
       const routes = pages.flatMap((page) => {
         if (page === 'index.html') {
           return [
@@ -30,8 +32,9 @@ export default function vercelAdapter(): Adapter {
           ];
         }
 
-        const src = `/${page.replace(REGEX_INDEX_HTML, '')}`;
-        const dest = `${src}/`;
+        const pageFile = page.replace(REGEX_INDEX_HTML, '');
+        const src = `/${pageFile}${sepSrc}`;
+        const dest = `/${pageFile}${sepDest}`;
 
         return [
           {
@@ -42,7 +45,7 @@ export default function vercelAdapter(): Adapter {
             headers: {
               Location: src,
             },
-            src: src + '/',
+            src: dest,
             status: 308,
           },
         ];
