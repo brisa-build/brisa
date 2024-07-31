@@ -7,7 +7,7 @@ const REGEX_INDEX_HTML = /(\/?index)?\.html?$/;
 export default function vercelAdapter(): Adapter {
   return {
     name: 'vercel',
-    async adapt({ CONFIG, ROOT_DIR }, generatedMap) {
+    async adapt({ CONFIG, ROOT_DIR, HEADERS }, generatedMap) {
       const vercelFolder = path.join(ROOT_DIR, '.vercel');
       const outputFolder = path.join(vercelFolder, 'output');
       const configPath = path.join(outputFolder, 'config.json');
@@ -36,6 +36,7 @@ export default function vercelAdapter(): Adapter {
         const pages = Array.from(generatedMap?.values() ?? []).flat();
         const sepSrc = CONFIG.trailingSlash ? '/' : '';
         const sepDest = CONFIG.trailingSlash ? '' : '/';
+        const headers = { 'Cache-Control': HEADERS.CACHE_CONTROL };
         const routes = pages.flatMap((originalPage) => {
           const page = originalPage.replace(/^\//, '');
 
@@ -44,6 +45,7 @@ export default function vercelAdapter(): Adapter {
               {
                 src: '/',
                 dest: '/index.html',
+                headers,
               },
             ];
           }
@@ -56,6 +58,7 @@ export default function vercelAdapter(): Adapter {
             {
               src,
               dest,
+              headers,
             },
             {
               headers: {
