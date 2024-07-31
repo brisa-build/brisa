@@ -624,9 +624,9 @@ describe('utils', () => {
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
         const expected = normalizeQuotes(`
-            let Test = function (props) {
+            function Test(props) {
               return ['div', {}, props.children];
-            };
+            }
             export default function MyComponent() {
               return [null, {}, [['div', {}, 'foo'], ['span', {}, 'bar']]];
             }

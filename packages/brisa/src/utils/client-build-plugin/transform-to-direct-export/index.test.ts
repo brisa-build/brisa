@@ -74,7 +74,8 @@ describe('utils', () => {
         const outputAst = transformToDirectExport(ast);
         const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
         const expectedCode = normalizeQuotes(`
-          export default function (props) {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);}
+          function MyComponent(props) {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);}
+          export default MyComponent;
         `);
 
         expect(outputCode).toBe(expectedCode);

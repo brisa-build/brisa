@@ -55,9 +55,9 @@ describe('utils', () => {
           generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
         const expected = normalizeQuotes(`
-          let MyComponent = function () {
+          function MyComponent() {
             return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
-          };
+          }
         `);
         expect(codeOutput).toEqual(expected);
         expect(index).toBe(2);

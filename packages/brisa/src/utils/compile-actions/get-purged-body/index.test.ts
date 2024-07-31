@@ -12,11 +12,7 @@ function expectCodeToPurge(code: string, actionId = 'a1_1') {
     (info) => info.actionId === actionId,
   );
 
-  if (ast.body[0].async) {
-    ast.body[0].body = getPurgedBody(actionInfo!);
-  } else {
-    ast.body[0].declarations[0].init.body = getPurgedBody(actionInfo!);
-  }
+  ast.body[0].body = getPurgedBody(actionInfo!);
 
   return {
     toBe: (expectedCode: string) =>
@@ -40,7 +36,7 @@ describe('utils', () => {
           return <div onClick={() => console.log('purge')} data-action-onClick="a1_1">hello</div>;
         }
       `;
-      const expectedCode = 'let Test = function () {};';
+      const expectedCode = 'function Test() {}';
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
 
@@ -57,7 +53,7 @@ describe('utils', () => {
           return <div onClick={() => console.log(foo)} data-action-onClick="a1_1">hello</div>;
         }
       `;
-      const expectedCode = 'let Test = function () {let foo = "bar";};';
+      const expectedCode = 'function Test() {let foo = "bar";}';
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
 
@@ -76,7 +72,7 @@ describe('utils', () => {
           return <div onClick={() => console.log(foo)} data-action-onClick="a1_1">hello</div>;
         }
       `;
-      const expectedCode = 'let Test = function () {let foo = "bar";};';
+      const expectedCode = 'function Test() {let foo = "bar";}';
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
 
@@ -94,14 +90,14 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function ({someProp}) {
+        function Test({someProp}) {
           let foo = 'bar';
           if (someProp) {
             foo = 'baz';
           } else {
             foo = 'qux';
           }
-        };
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
@@ -120,12 +116,12 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function ({someProp}) {
+        function Test({someProp}) {
           let foo = 'bar';
           if (someProp) {
             foo = 'baz';
           } else {}
-        };
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
@@ -146,14 +142,14 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function ({someProp}) {
+        function Test({someProp}) {
           let foo = 'bar';
           if (someProp) {
             foo = 'baz';
           } else {}
         
         const onClick = () => console.log(foo);
-      };
+      }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
@@ -176,7 +172,7 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function ({someProp}) {
+        function Test({someProp}) {
           let foo = 'bar';
           if (someProp) {
             foo = 'baz';
@@ -185,7 +181,7 @@ describe('utils', () => {
           function onClick() {
               console.log(foo);
           }
-        };
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
@@ -205,13 +201,13 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function ({someProp}) {
+        function Test({someProp}) {
           let foo = 'bar';
         
           function onClick() {
             console.log(foo);
           }
-        };
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
@@ -231,13 +227,13 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function ({someProp}) {
+        function Test({someProp}) {
           let foo = 'bar';
         
           function onClick() {
             console.log(foo);
           }
-        };
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
@@ -340,7 +336,7 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function ({someProp}) {
+        function Test({someProp}) {
           let foo = 'bar';
           if (someProp) {
             foo = 'baz';
@@ -349,7 +345,7 @@ describe('utils', () => {
           const onClick = () => {
             console.log(foo);
           };
-        };
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
@@ -370,14 +366,14 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function ({someProp}) {
+        function Test({someProp}) {
           let foo = 'bar';
           if (someProp) {
             foo = 'baz';
           } else {}
         
           const onClick = () => console.log(foo);
-        };
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
@@ -392,10 +388,10 @@ describe('utils', () => {
         }
       `;
       const expectedCode = `
-        let Test = function () {
+        function Test() {
           let {foo} = {foo: 'bar'};
           const onClick = () => console.log(foo);
-        };
+        }
       `;
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });

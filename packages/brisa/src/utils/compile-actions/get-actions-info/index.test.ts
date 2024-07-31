@@ -13,7 +13,7 @@ describe('utils', () => {
             return <div onClick={() => console.log('click')} data-action-onClick="1" />;
           }
         `) as any;
-        const fn = ast.body[0]?.declarations[0].init;
+        const fn = ast.body[0];
         const props = fn.body.body[0].argument.arguments[1].properties;
 
         const expected: ActionInfo[] = [
@@ -37,7 +37,7 @@ describe('utils', () => {
             return <div onClick={onClick} data-action-onClick="1" />;
           }
         `) as any;
-        const fn = ast.body[0]?.declarations[0].init;
+        const fn = ast.body[0];
 
         const expected: ActionInfo[] = [
           {
@@ -68,7 +68,7 @@ describe('utils', () => {
           }
         `) as any;
 
-        const fn = ast.body[0]?.declarations[0].init;
+        const fn = ast.body[0];
         const props = fn.body.body[1].argument.arguments[1].properties;
         const expected: ActionInfo[] = [
           {
@@ -106,7 +106,7 @@ describe('utils', () => {
         }
       `) as any;
 
-        const fn = ast.body[0]?.declarations[0].init;
+        const fn = ast.body[0];
         const props = fn.body.body[2].argument.arguments[1].properties;
         const expected: ActionInfo[] = [
           {
@@ -144,7 +144,7 @@ describe('utils', () => {
       }
     `) as any;
 
-      const fn = ast.body[0]?.declarations[0].init;
+      const fn = ast.body[0];
       const props = fn.body.body[1].argument.arguments[1].properties;
       const expected: ActionInfo[] = [
         {

@@ -708,17 +708,17 @@ describe('utils', () => {
         const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
 
         const expectedCode = normalizeQuotes(`
-          let Component = function (__b_props__, {derived}) {
+          function Component(__b_props__, {derived}) {
             const foo = derived(() => __b_props__.foo.value ?? "foo");
             return foo.value;
-          };
+          }
           
           export default Component;
         `);
 
         expect(outputCode).toBe(expectedCode);
         expect(out.observedAttributes).toEqual(new Set(['foo']));
-        expect(out.vars).toEqual(new Set(['foo', 'Component']));
+        expect(out.vars).toEqual(new Set(['foo']));
       });
 
       it('should transform the prop if it return the prop without JSX in an async component', () => {
