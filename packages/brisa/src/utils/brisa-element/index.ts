@@ -142,8 +142,14 @@ export default function brisaElement(
       // Add global CSS to apply to the shadowRoot
       const css: string[] = [];
       for (const sheet of $document.styleSheets) {
-        if (sheet.href) css.push(`@import url('${sheet.href}');`);
-        else for (const rule of sheet.cssRules) css.push(rule.cssText);
+        try {
+          for (const rule of sheet.cssRules) css.push(rule.cssText);
+        } catch (e) {
+          // We only want to @import() when there aren't any rules, otherwise
+          // it's a WICG issue:
+          // https://github.com/WICG/construct-stylesheets/issues/119#issuecomment-588352418
+          css.push(`@import url('${sheet.href}');`);
+        }
       }
       sheet.replaceSync(css.join(''));
       shadowRoot.adoptedStyleSheets.push(sheet);
