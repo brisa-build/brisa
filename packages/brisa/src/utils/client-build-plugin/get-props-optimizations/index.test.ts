@@ -448,7 +448,7 @@ describe('AST', () => {
     it(`should transform ${param} to ${expectedArrows.join(', ')}`, () => {
       const patternString = `function test(${param}){}`;
       const ast = parseCodeToAST(patternString) as any;
-      const pattern = ast.body[0].declarations[0].init.params[0];
+      const pattern = ast.body[0].params[0];
       const result = getPropsOptimizations(pattern, DERIVED_FN_NAME);
 
       expect(result.map(normalizeQuotes)).toEqual(expectedArrows);

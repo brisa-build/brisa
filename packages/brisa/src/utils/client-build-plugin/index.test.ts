@@ -175,9 +175,9 @@ describe('utils', () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            let Test = function (props) {
+            function Test(props) {
               return ['div', {}, props.anotherName];
-            };
+            }
 
             function MyComponent(props) {
               return ['div', {}, () => props.someProp.value];
@@ -331,9 +331,9 @@ describe('utils', () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            let Test = function (props) {
+            function Test(props) {
               return [null, {}, [['div', {}, props.bla], ['span', {}, props.another]]];
-            };
+            }
 
             function MyComponent(props) {
               return [null, {}, [['div', {}, () => props.foo.value], ['span', {}, () => props.bar.value]]];
@@ -375,9 +375,9 @@ describe('utils', () => {
         const expected = toInline(`
             import {brisaElement, _on, _off} from "brisa/client";
 
-            let Test = function (props) {
+            function Test(props) {
               return ['div', {}, props.children];
-            };
+            }
 
             function MyComponent(props) {
               return [null, {}, [['div', {}, () => props.foo.value], ['span', {}, () => props.bar.value]]];

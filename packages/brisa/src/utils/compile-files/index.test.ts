@@ -369,8 +369,8 @@ describe('utils', () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 222 B     | ${greenLog('3 kB')}  
-    ${info}Δ /layout       | 705 B     |
+    ${info}λ /pages/index  | 217 B     | ${greenLog('3 kB')}  
+    ${info}Δ /layout       | 694 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -458,8 +458,8 @@ describe('utils', () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 222 B     | ${greenLog('3 kB')}  
-    ${info}Δ /layout       | 484 B     |
+    ${info}λ /pages/index  | 217 B     | ${greenLog('3 kB')}  
+    ${info}Δ /layout       | 479 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -529,8 +529,8 @@ describe('utils', () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 222 B     | ${greenLog('187 B')}  
-    ${info}Δ /layout       | 568 B     |
+    ${info}λ /pages/index  | 217 B     | ${greenLog('187 B')}  
+    ${info}Δ /layout       | 563 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -637,8 +637,8 @@ describe('utils', () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 222 B     | ${greenLog('4 kB')}  
-    ${info}Δ /layout       | 738 B     |
+    ${info}λ /pages/index  | 217 B     | ${greenLog('4 kB')}  
+    ${info}Δ /layout       | 727 B     |
     ${info}Ω /i18n         | 257 B     |
     ${info}
     ${info}λ Server entry-points
@@ -775,8 +775,8 @@ describe('utils', () => {
       const expected = minifyText(`
     ${info}Route                        | JS server | JS client (gz)  
     ${info}-------------------------------------------------------
-    ${info}λ /pages/index               | 222 B   | ${greenLog('0 B')}
-    ${info}λ /pages/pokemon/[slug]      | 290 B   | ${greenLog('0 B')}
+    ${info}λ /pages/index               | 217 B   | ${greenLog('0 B')}
+    ${info}λ /pages/pokemon/[slug]      | 285 B   | ${greenLog('0 B')}
     ${info}| ○ /pokemon/charizard       | 0 B     | ${greenLog('0 B')}
     ${info}| ○ /pokemon/pikachu         | 0 B     | ${greenLog('0 B')}
     ${info}
@@ -845,7 +845,7 @@ describe('utils', () => {
     ${info}Route                        | JS server | JS client (gz)  
     ${info}-------------------------------------------------------
     ${info}○ /pages/index               | 0 B     | ${greenLog('0 B')}
-    ${info}λ /pages/pokemon/[slug]      | 290 B   | ${greenLog('0 B')}
+    ${info}λ /pages/pokemon/[slug]      | 285 B   | ${greenLog('0 B')}
     ${info}| ○ /pokemon/charizard       | 0 B     | ${greenLog('0 B')}
     ${info}| ○ /pokemon/pikachu         | 0 B     | ${greenLog('0 B')}
     ${info}
@@ -914,7 +914,7 @@ describe('utils', () => {
   ${info}
   ${info}Route                                | JS server | JS client (gz)  
   ${info}-------------------------------------------------------------------
-  ${info}λ /pages/page-without-web-component  | 222 B     | ${greenLog('0 B')}  
+  ${info}λ /pages/page-without-web-component  | 217 B     | ${greenLog('0 B')}  
   ${info}λ /pages/index                       | 1 kB      | ${greenLog('3 kB')}  
   ${info}
   ${info}λ Server entry-points

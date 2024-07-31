@@ -97,8 +97,9 @@ describe('utils', () => {
         );
 
         const expected = normalizeQuotes(`
-          let Error = function () {return "error";}, Suspense = function () {return "suspense";};
           export default function Component() {return "Hello";}
+          function Error() {return "Error";}
+          function Suspense() {return "Suspense";}
           Component.error = Error;
           Component.suspense = Suspense;
         `);
@@ -191,8 +192,9 @@ describe('utils', () => {
         );
 
         const expected = normalizeQuotes(`
-          let Error = function () {return "error";}, Suspense = function () {return "suspense";};
           export default function Component() {return "Hello";}
+          function Error() {return "Error";}
+          function Suspense() {return "Suspense";}
           Object.assign(Component, {error: Error,suspense: Suspense});
         `);
 

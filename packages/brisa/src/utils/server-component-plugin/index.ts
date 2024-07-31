@@ -154,6 +154,23 @@ export default function serverComponentPlugin(
       });
     }
 
+    if (
+      isActionsFlag &&
+      FN_DECLARATIONS.has(value?.type) &&
+      Array.isArray(this)
+    ) {
+      return markActionsFlag({
+        value,
+        declaration: {
+          init: value,
+          id: { type: 'Identifier', name: value.id?.name },
+        },
+        parent: this,
+        declarations,
+        imports,
+      });
+    }
+
     // Register each JSX action id
     if (analyzeAction && isJSX && !isWebComponent) {
       const actionProperties = [];
