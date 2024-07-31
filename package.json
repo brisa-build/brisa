@@ -21,7 +21,6 @@
     "docs:build": "bun run --cwd packages/docs build",
     "docs:dev": "bun run --cwd packages/docs dev",
     "docs:preview": "bun run --cwd packages/docs preview",
-    "prepare": "bun install @biomejs/biome@1.8.3 --no-save --ignore-scripts",
     "format": "bun run biome format --write .",
     "lint": "bun run biome lint --write .",
     "release-all": "bun run release-brisa && bun run release-create-brisa && bun run release-adapter-vercel",
@@ -46,5 +45,8 @@
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3"
   }
 }
