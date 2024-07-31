@@ -9,9 +9,6 @@ const brisaConstants = {
   CONFIG: {
     output: 'static',
   },
-  HEADERS: {
-    CACHE_CONTROL: 'public, max-age=31536000, immutable',
-  },
 } as BrisaConstants;
 
 const outDir = path.join(brisaConstants.ROOT_DIR, 'out');
@@ -91,16 +88,10 @@ describe('adapter-vercel', () => {
           {
             src: '/',
             dest: '/index.html',
-            headers: {
-              'Cache-Control': 'public, max-age=31536000, immutable',
-            },
           },
           {
             src: '/about',
             dest: '/about/',
-            headers: {
-              'Cache-Control': 'public, max-age=31536000, immutable',
-            },
           },
           {
             src: '/about/',
@@ -141,16 +132,10 @@ describe('adapter-vercel', () => {
           {
             src: '/',
             dest: '/index.html',
-            headers: {
-              'Cache-Control': 'public, max-age=31536000, immutable',
-            },
           },
           {
             src: '/about',
             dest: '/about/',
-            headers: {
-              'Cache-Control': 'public, max-age=31536000, immutable',
-            },
           },
           {
             src: '/about/',
@@ -192,16 +177,10 @@ describe('adapter-vercel', () => {
           {
             src: '/',
             dest: '/index.html',
-            headers: {
-              'Cache-Control': 'public, max-age=31536000, immutable',
-            },
           },
           {
             src: '/about/',
             dest: '/about',
-            headers: {
-              'Cache-Control': 'public, max-age=31536000, immutable',
-            },
           },
           {
             src: '/about',
