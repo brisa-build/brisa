@@ -6,6 +6,10 @@ description: Learn how to build and deploy
 
 To deploy to Vercel, use [adapter-vercel](https://github.com/brisa-build/brisa/blob/main/packages/adapter-vercel).
 
+> [!WARNING]
+>
+> TODO: for now only `output=static` is supported. The `output=server` is not supported yet, but it's in the roadmap, this documentation is not really accurate yet.
+
 > [!IMPORTANT]
 >
 > In Vercel instead of using [Bun](https://bun.sh/) runtime is going to use the [Node.js](https://nodejs.org) and/or [Edge](https://vercel.com/docs/concepts/functions/edge-functions) runtime.
