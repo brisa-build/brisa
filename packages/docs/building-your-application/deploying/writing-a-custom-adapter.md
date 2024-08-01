@@ -4,6 +4,8 @@ title: Writing a custom adapter
 
 # Writing a custom adapter
 
+[Adapters](/building-your-application/configuring/output-adapter) are useful to don't write [IaC](https://en.wikipedia.org/wiki/Infrastructure_as_code) code, just plug and play. In Brisa, we offer adapters for some Cloud Providers, but you can write your own and share it with the community.
+
 If an adapter for your preferred environment doesn't yet exist, you can build your own. We recommend [looking at the source for an adapter](https://github.com/brisa-build/brisa/tree/main/packages) to a platform similar to yours and copying it as a starting point.
 
 > [!TIP]
