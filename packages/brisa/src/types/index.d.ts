@@ -44,13 +44,22 @@ export type BrisaConstants = {
   ASSETS_DIR: string;
   PAGES_DIR: string;
   I18N_CONFIG: I18nConfig;
-  LOG_PREFIX: Record<string, string>;
+  LOG_PREFIX: {
+    WAIT: string;
+    READY: string;
+    INFO: string;
+    ERROR: string;
+    WARN: string;
+    TICK: string;
+  };
   LOCALES_SET: Set<string>;
   CONFIG: Configuration;
   IS_STATIC_EXPORT: boolean;
   REGEX: Record<string, RegExp>;
   BOOLEANS_IN_HTML: Set<string>;
-  HEADERS: Record<string, string>;
+  HEADERS: {
+    CACHE_CONTROL: string;
+  };
 };
 
 /**

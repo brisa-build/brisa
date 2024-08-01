@@ -29,3 +29,7 @@ fly launch --now
 That's all 🥳.
 
 After executing this command you will have access to the URL of your Brisa app.
+
+> [!NOTE]
+>
+> It is not necessary to configure any additional settings like an [`outputAdapter`](/building-your-application/configuring/output-adapter), as Fly.io is compatible with Brisa's default output.
