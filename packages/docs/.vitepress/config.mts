@@ -322,6 +322,33 @@ export default defineConfig({
             ],
           },
           {
+            text: '🔨 Building',
+            collapsed: true,
+            link: '/building-your-application/building/index',
+            items: [
+              {
+                text: 'Web Service App',
+                link: '/building-your-application/building/web-service-app',
+              },
+              {
+                text: 'Static Site App',
+                link: '/building-your-application/building/static-site-app',
+              },
+              {
+                text: 'Desktop app',
+                link: '/building-your-application/building/desktop-app',
+              },
+              {
+                text: 'Android app',
+                link: '/building-your-application/building/android-app',
+              },
+              {
+                text: 'iOS app',
+                link: '/building-your-application/building/ios-app',
+              },
+            ],
+          },
+          {
             text: '🚀 Deploying',
             collapsed: true,
             link: '/building-your-application/deploying/index',
@@ -329,14 +356,6 @@ export default defineConfig({
               {
                 text: 'Fly io',
                 link: '/building-your-application/deploying/fly-io',
-              },
-              {
-                text: 'Vercel',
-                link: '/building-your-application/deploying/vercel',
-              },
-              {
-                text: 'Netlify',
-                link: '/building-your-application/deploying/netlify',
               },
               {
                 text: 'AWS',
@@ -347,28 +366,20 @@ export default defineConfig({
                 link: '/building-your-application/deploying/render-com',
               },
               {
-                text: 'Docker',
-                link: '/building-your-application/deploying/docker',
+                text: 'Vercel',
+                link: '/building-your-application/deploying/vercel',
               },
               {
-                text: 'Static exports',
-                link: '/building-your-application/deploying/static-exports',
-              },
-              {
-                text: 'Desktop app',
-                link: '/building-your-application/deploying/desktop-app',
-              },
-              {
-                text: 'Android app',
-                link: '/building-your-application/deploying/android-app',
-              },
-              {
-                text: 'iOS app',
-                link: '/building-your-application/deploying/ios-app',
+                text: 'Netlify',
+                link: '/building-your-application/deploying/netlify',
               },
               {
                 text: 'Writing a custom adapter',
                 link: '/building-your-application/deploying/writing-a-custom-adapter',
+              },
+              {
+                text: 'Docker',
+                link: '/building-your-application/deploying/docker',
               },
             ],
           },

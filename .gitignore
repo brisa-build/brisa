@@ -4,6 +4,7 @@ _brisa
 
 # Build output
 **/build/*
+!**/docs/**/build/*
 **/out/*
 **/out-*/*
 **/dist/*

@@ -2,7 +2,7 @@
 description: Learn how build a static site in Brisa
 ---
 
-# Static exports
+# Static Site App
 
 Brisa enables starting as a static site.
 
