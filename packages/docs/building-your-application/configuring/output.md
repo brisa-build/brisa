@@ -66,7 +66,7 @@ Once activated you can call `brisa dev` to work locally with hotreloading in the
 
 > [!NOTE]
 >
-> Lean how to [deploy a desktop app here](/building-your-application/deploying/desktop-app).
+> Lean how to [build a desktop app here](/building-your-application/building/desktop-app).
 
 ### 4. Android Output (`android`)
 
@@ -97,7 +97,7 @@ Once activated you can call `brisa dev` to work locally with hotreloading in the
 
 > [!NOTE]
 >
-> Lean how to [deploy a android app here](/building-your-application/deploying/android-app).
+> Lean how to [build a android app here](/building-your-application/building/android-app).
 
 ### 5. iOS Output (`ios`)
 
@@ -128,7 +128,7 @@ Once activated you can call `brisa dev` to work locally with hotreloading in the
 
 > [!NOTE]
 >
-> Lean how to [deploy a iOS app here](/building-your-application/deploying/ios-app).
+> Lean how to [build a iOS app here](/building-your-application/building/ios-app).
 
 ## Additional Considerations
 
@@ -138,7 +138,7 @@ To view the changes in the output, run the `brisa build` command. In the case of
 
 > [!NOTE]
 >
-> Learn more details about static export [here](/building-your-application/deploying/static-exports).
+> Learn more details about static export [here](/building-your-application/building/static-site-app).
 
 > [!TIP]
 >
