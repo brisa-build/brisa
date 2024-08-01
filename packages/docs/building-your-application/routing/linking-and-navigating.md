@@ -135,7 +135,7 @@ By default it is already native in these cases:
 
 > [!TIP]
 >
-> To have the URL `params` as a signal, take a look this [example](/api-reference/components/web-context.md#example-reactive-url-params).
+> To have the URL `params` as a signal, take a look this [example](/api-reference/components/web-context#example-reactive-url-params).
 
 ## Navigation to dynamic paths
 
