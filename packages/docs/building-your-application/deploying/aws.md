@@ -15,11 +15,20 @@ Depending on your [`output`](/building-your-application/configuring/output) stra
 
 To deploy a Brisa application as a static website on AWS, you can use [Amazon S3](https://aws.amazon.com/s3/) to host your static assets and [Amazon CloudFront](https://aws.amazon.com/cloudfront/) to serve your content globally with low latency.
 
+For static site, you need to modify the [`brisa.config.ts`](/building-your-application/configuring/brisa-config-js) file as follows:
+
+```ts
+import type { Configuration } from "brisa";
+
+export default {
+  output: "static",
+} satisfies Configuration;
+```
+
 Here are the steps to deploy your Brisa application as a static website on AWS:
 
-1. **Build your Brisa application**: Run the `bun run build` command to build your Brisa application for production. This command generates a `out` folder with the static assets of your application.
-2. **Create an S3 bucket**: Create an S3 bucket to store your static assets. You can create an S3 bucket using the AWS Management Console or the AWS CLI.
-3. **Upload your static assets**: Upload the contents of the `out` folder to your S3 bucket. You can use the AWS Management Console, the AWS CLI, or an S3 client to upload your static assets.
+1. **Create an S3 bucket**: Create an S3 bucket to store your static assets. You can create an S3 bucket using the AWS Management Console or the AWS CLI.
+2. **Upload your static assets**: Upload the contents of the `out` folder to your S3 bucket. You can use the AWS Management Console, the AWS CLI, or an S3 client to upload your static assets.
 
 Once you have uploaded your static assets to your S3 bucket, you can configure Amazon CloudFront to serve your content globally with low latency. You can create a [CloudFront](https://aws.amazon.com/cloudfront/) distribution that points to your S3 bucket and configure it to cache your content at edge locations around the world.
 
@@ -58,5 +67,5 @@ To upload assets to your S3 bucket, you can follow these steps:
 
 1. **Create an S3 bucket**: Create an S3 bucket to store your assets. You can create an S3 bucket using the AWS Management Console or the AWS CLI.
 2. **Upload assets**: Upload your assets to the S3 bucket using the AWS Management Console, the AWS CLI, or an S3 client.
-3. **Configure assets from CDN**: You need to modify the `brisa.config.ts` to add an [`assetPrefix`](/building-your-application/configuring/asset-prefix), pointing to the CDN URL of your S3 bucket. This ensures that your Brisa application loads assets from the CDN.
+3. **Configure assets from CDN**: You need to modify the [`brisa.config.ts`](/building-your-application/configuring/brisa-config-js) to add an [`assetPrefix`](/building-your-application/configuring/asset-prefix), pointing to the CDN URL of your S3 bucket. This ensures that your Brisa application loads assets from the CDN.
 
