@@ -44,6 +44,12 @@ Build a Desktop, Android or iOS Brisa application.
 - [Build a Android App](/building-your-application/deploying/android-app)
 - [Build a iOS App](/building-your-application/deploying/ios-app)
 
+## Custom Adapters
+
+[Adapters](/building-your-application/configuring/output-adapter) are useful to don't write [IaC](https://en.wikipedia.org/wiki/Infrastructure_as_code) code, just plug and play. In Brisa, we offer adapters for some Cloud Providers, but you can write your own and share it with the community.
+
+- [Writing a Custom Adapter](/building-your-application/deploying/writing-a-custom-adapter)
+
 ## Learn more
 
 - [Docker](/building-your-application/deploying/docker) - Learn how to containerize a Brisa application with Docker.
