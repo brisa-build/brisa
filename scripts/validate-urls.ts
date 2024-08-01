@@ -12,7 +12,8 @@ async function validateBrisaURLs(directory: string) {
       if (
         !filePath.startsWith('packages') ||
         filePath.startsWith('packages/docs/.vitepress/cache') ||
-        filePath.startsWith('packages/docs/.vitepress/dist')
+        filePath.startsWith('packages/docs/.vitepress/dist') ||
+        filePath.startsWith('packages/docs/node_modules')
       ) {
         continue;
       }

@@ -18,4 +18,4 @@ export default {
 
 With this option set, urls like `/about` will redirect to `/about/`.
 
-When used with [`output: "static"`](/building-your-application/deploying/static-exports) configuration, the `/about` page will output `/about/index.html` (instead of the default `/about.html`).
+When used with [`output: "static"`](/building-your-application/building/static-site-app) configuration, the `/about` page will output `/about/index.html` (instead of the default `/about.html`).
