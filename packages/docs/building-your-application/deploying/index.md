@@ -1,5 +1,11 @@
 ---
 description: Learn how to deploy your Brisa app to production
+prev:
+  text: 'iOS App'
+  link: '/building-your-application/building/ios-app'
+next:
+  text: 'Fly.io'
+  link: '/building-your-application/deploying/fly-io'
 ---
 
 # Deploying
