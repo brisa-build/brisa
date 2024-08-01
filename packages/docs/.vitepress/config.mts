@@ -366,6 +366,10 @@ export default defineConfig({
                 text: 'iOS app',
                 link: '/building-your-application/deploying/ios-app',
               },
+              {
+                text: 'Writing a custom adapter',
+                link: '/building-your-application/deploying/writing-a-custom-adapter',
+              },
             ],
           },
         ],
