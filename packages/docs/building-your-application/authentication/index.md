@@ -1,5 +1,11 @@
 ---
 description: Learn how to implement authentication in Brisa covering best practices, securing routes, authorization techniques, and session management.
+prev:
+  text: 'Testing API'
+  link: '/building-your-application/testing/test-api'
+next:
+  text: 'Authentication'
+  link: '/building-your-application/authentication/authentication'
 ---
 
 # Authentication

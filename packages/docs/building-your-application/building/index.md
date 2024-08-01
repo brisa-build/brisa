@@ -1,5 +1,11 @@
 ---
 description: Learn how to build your Brisa app to production
+prev:
+  text: 'Integrating Tailwind CSS'
+  link: '/building-your-application/integrations/tailwind-css'
+next:
+  text: 'Web Service App'
+  link: '/building-your-application/building/web-service-app'
 ---
 
 # Building

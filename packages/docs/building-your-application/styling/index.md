@@ -1,5 +1,11 @@
 ---
 description: Learn the different ways you can style your Brisa application.
+prev:
+  text: 'Server Actions'
+  link: '/building-your-application/data-management/server-actions'
+next:
+  text: 'Global styles'
+  link: '/building-your-application/styling/global-styles'
 ---
 
 # Styling
