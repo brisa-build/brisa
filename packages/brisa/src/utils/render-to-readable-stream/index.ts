@@ -342,6 +342,16 @@ async function enqueueDuringRendering(
       props.shadowrootmode === 'open' &&
       !props.__skipGlobalCSS
     ) {
+      // _globalStyle is an internal property, this is why is not in the types
+      const injectedStyle = (request as any)._globalStyle;
+
+      if (injectedStyle) {
+        controller.enqueue(
+          `<style>${toInline(injectedStyle)}</style>`,
+          suspenseId,
+        );
+      }
+
       controller.enqueue(controller.styleSheetsChunks.join(''), suspenseId);
     }
 
