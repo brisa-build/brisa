@@ -132,6 +132,8 @@ export default function brisaElement(
       return attributesLowercase;
     }
 
+    static formAssociated = true;
+
     async [CONNECTED_CALLBACK]() {
       const self = this;
       const shadowRoot = self.shadowRoot ?? self.attachShadow({ mode: 'open' });

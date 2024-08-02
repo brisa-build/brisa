@@ -3079,6 +3079,13 @@ describe('utils', () => {
       ]);
     });
 
+    it('should formAssociated static property be defined as true by default', () => {
+      const Component = () => ['input', {}, ''];
+      const customElementInstance = brisaElement(Component);
+
+      expect(customElementInstance.formAssociated).toBeTrue();
+    });
+
     it('should adopt more than one style sheet from document.styleSheets', async () => {
       const style = document.createElement('style');
       const style2 = document.createElement('style');

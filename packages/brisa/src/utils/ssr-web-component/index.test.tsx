@@ -702,5 +702,25 @@ describe('utils', () => {
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
       expect(output.props.children[0].props.__skipGlobalCSS).toBe(false);
     });
+
+    it('should be possible to use self.attachInternals in SSR', async () => {
+      const Component = ({}, { self }: WebContext) => {
+        self.attachInternals();
+        return <div>hello world</div>;
+      };
+      const selector = 'my-component';
+
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].type).toBe('template');
+      expect(output.props.children[0].props.shadowrootmode).toBe('open');
+    });
   });
 });
