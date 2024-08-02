@@ -3552,6 +3552,44 @@ describe('utils', () => {
       );
     });
 
+    it('should add global style inside the declarative shadow DOM using css template in server-side', async () => {
+      const WebComponent = () => <div>test</div>;
+
+      function ServerComponent({}, { css }: RequestContext) {
+        css`body{background-color:red;}`;
+        return <div>Server component</div>;
+      }
+
+      const stream = renderToReadableStream(
+        <html>
+          <head></head>
+          <body>
+            <ServerComponent />
+            <SSRWebComponent Component={WebComponent} selector="test" />
+          </body>
+        </html>,
+        testOptions,
+      );
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(normalizeQuotes(result)).toBe(
+        normalizeQuotes(`<html>
+            <head>
+            </head>
+            <body>
+              <style>body{background-color:red;}</style>
+              <div>Server component</div>
+              <test>
+                <template shadowrootmode="open">
+                  <style>body{background-color:red;}</style>
+                  <div>test</div>
+                </template>
+              </test>
+            </body>
+          </html>`),
+      );
+    });
+
     it("should NOT add a global style inside the declarative shadow DOM with 'self.shadowRoot.adoptedStyleSheets = []'", async () => {
       const Component = ({}, { self }: WebContext) => {
         self.shadowRoot!.adoptedStyleSheets = [];

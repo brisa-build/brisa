@@ -298,6 +298,56 @@ describe('brisa core', () => {
       );
     });
 
+    it('should accomulate the _globalStyle even cleaning the _style', () => {
+      const request = new Request('https://example.com');
+      const route = {
+        path: '/',
+      } as any;
+
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+      });
+
+      const { css } = requestContext;
+
+      css`
+        body {
+          color: red;
+        }
+      `;
+
+      css`
+        body {
+          background: blue;
+        }
+      `;
+
+      expect(toInline((requestContext as any)._style)).toBe(
+        toInline('body {color: red;}body {background: blue;}'),
+      );
+
+      (requestContext as any)._style = '';
+
+      css`
+        body {
+          color: yellow;
+        }
+      `;
+
+      expect(toInline((requestContext as any)._style)).toBe(
+        toInline('body {color: yellow;}'),
+      );
+
+      expect(toInline((requestContext as any)._globalStyle)).toBe(
+        toInline(`
+          body {color: red;}
+          body {background: blue;}
+          body {color: yellow;}
+        `),
+      );
+    });
+
     it('should have renderInitiator as "INITIAL_REQUEST" by default', () => {
       const request = new Request('https://example.com');
       const route = {

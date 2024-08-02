@@ -95,11 +95,14 @@ export default function extendRequestContext({
 
   // css
   originalRequest._style = '';
+  originalRequest._globalStyle = '';
   originalRequest.css = (
     template: TemplateStringsArray,
     ...values: string[]
   ) => {
-    originalRequest._style += String.raw(template, ...values);
+    const rawCSS = String.raw(template, ...values);
+    originalRequest._style += rawCSS;
+    originalRequest._globalStyle += rawCSS;
   };
 
   // Default value of renderInitiator (can change the value outside of this function)
