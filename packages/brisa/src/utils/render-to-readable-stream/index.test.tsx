@@ -3590,6 +3590,43 @@ describe('utils', () => {
       );
     });
 
+    it('should be possible to return null on an async Head component', async () => {
+      async function Component() {
+        return <div>test</div>;
+      }
+
+      async function Layout({ children }: any) {
+        return (
+          <html>
+            <head></head>
+            <body>{children}</body>
+          </html>
+        );
+      }
+
+      async function Head() {
+        return null;
+      }
+
+      const stream = renderToReadableStream(
+        <Layout>
+          <Component />
+        </Layout>,
+        { request: testOptions.request, isPage: true, head: Head },
+      );
+
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(normalizeQuotes(result)).toBe(
+        normalizeQuotes(`
+          <html>
+            <head></head>
+            <body><div>test</div></body>
+          </html>
+        `),
+      );
+    });
+
     it("should NOT add a global style inside the declarative shadow DOM with 'self.shadowRoot.adoptedStyleSheets = []'", async () => {
       const Component = ({}, { self }: WebContext) => {
         self.shadowRoot!.adoptedStyleSheets = [];
