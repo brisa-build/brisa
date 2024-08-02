@@ -492,7 +492,7 @@ async function enqueueComponent(
   injectCSS(controller, request, suspenseId);
 
   // Async generator list
-  if (typeof componentValue.next === 'function') {
+  if (typeof componentValue?.next === 'function') {
     for await (const val of componentValue) {
       injectCSS(controller, request, suspenseId);
 
