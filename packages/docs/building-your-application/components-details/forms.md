@@ -199,3 +199,75 @@ export default function Page() {
 > [!CAUTION]
 >
 > Controlled forms introduce additional complexity and more client-side JavaScript code. Developers should carefully weigh these factors when choosing between controlled and uncontrolled forms. The Brisa team recommends using controlled forms primarily when providing instant feedback to users for each modification during form interactions. Otherwise, it is advisable to opt for uncontrolled forms with a server component.
+
+### Associate Web Component to outside Form
+
+#### Problem Statement
+
+In scenarios where a form is implemented within a server component due to the static nature of most fields, an exception arises when a dynamic field is included through a Web Component. Since Web Components use a separate Shadow DOM, the value of this dynamic field, encapsulated within the Shadow DOM, is not automatically included when capturing `FormData` from the parent form.
+
+#### Associated Web Component
+
+To address this issue, the [`ElementInternals`](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals) API must be employed within Brisa to ensure that the Web Component is properly integrated as a form field. This approach allows the Web Component to be recognized as part of the form, ensuring that its value is included when `FormData` is collected from the form.
+
+Example:
+
+```tsx
+import type { WebContext } from "brisa";
+
+// After attachInternals, the Web Component is recognized as a form field, 
+// so it support attributes like name, required, disabled, named, etc.
+type Props = { name: string; required: boolean };
+
+export default function SomeDynamicInput({ }: Props, { self }: WebContext) {
+  const internals = self.attachInternals();
+
+  function onInput(e) {
+    internals.setFormValue(e.target.value);
+  }
+
+  return <input type="text" onInput={onInput} />
+}
+```
+
+Doing `internals.setFormValue(e.target.value)` we are setting the value of the Web Component to the form field. This way, the value of the dynamic field will be included when capturing `FormData` from the parent form.
+
+> [!TIP]
+>
+> `self.attachInternals()` can be used without an `effect`, it is supported on SSR without any problem.
+
+#### Usage in a Form
+
+After attaching the Web Component to the form, the value of the dynamic field will be included when capturing `FormData` from the parent form.
+
+Example of usage on a Server Component:
+
+```tsx
+export default function Page() {
+  return (
+    <form onSubmit={(e) => {
+      console.log("Username:", e,formData.get("username"));
+      // The dynamic field is included in the FormData
+      console.log("Dynamic:", e.formData.get("dynamic"));
+    }}>
+      <label>
+        Username:
+        <input type="text" name="username" />
+      </label>
+      <some-dynamic-input name="dynamic" required />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+> [!IMPORTANT]
+>
+> The `name` attribute is required in the Web Component to be recognized as a form field.
+
+> [!NOTE]
+>
+> For more information on the `ElementInternals` API, take a look these docs:
+> - [ElementInternals MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals)
+> - [Form-associated custom elements](https://html.spec.whatwg.org/multipage/custom-elements.html#form-associated-custom-elements)
+> - [ElementInternals and Form-Associated Custom Elements](https://webkit.org/blog/13711/elementinternals-and-form-associated-custom-elements/)
