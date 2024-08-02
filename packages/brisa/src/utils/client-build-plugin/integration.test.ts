@@ -5664,6 +5664,42 @@ describe('integration', () => {
       expect(fooComponent?.shadowRoot?.innerHTML).toBe('<div>foobaz</div>');
     });
 
+    // TODO: This test should work after this happydom feat about ElementInternals
+    // https://github.com/capricorn86/happy-dom/issues/1419
+    it.todo('it should work associating a form to the custom element', () => {
+      const code = `
+        export default function DynamicInput({}, { self }) {
+          const internals = self.attachInternals();
+
+          function onInput(e) {
+            internals.setFormValue('foo ' + e.target.value);
+          }
+
+          return (
+            <input type="text" onInput={onInput} />
+          );
+        }
+      `;
+
+      defineBrisaWebComponent(code, 'src/web-components/dynamic-input.tsx');
+
+      document.body.innerHTML = `
+        <form>
+          <dynamic-input name="dynamic-value" required />
+        </form>
+      `;
+
+      const dynamicInput = document.body.querySelector('dynamic-input')!;
+      const input = dynamicInput.shadowRoot?.querySelector('input')!;
+
+      input.value = 'bar';
+
+      const form = document.querySelector('form') as HTMLFormElement;
+      const formData = new FormData(form);
+
+      expect(formData.get('dynamic-value')).toBe('foo bar');
+    });
+
     // TODO: This test should work after this happydom issue about assignedSlot
     // https://github.com/capricorn86/happy-dom/issues/583
     it.todo(
