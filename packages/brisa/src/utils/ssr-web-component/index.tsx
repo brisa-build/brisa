@@ -21,7 +21,7 @@ export default async function SSRWebComponent(
 ) {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
-  const self = { shadowRoot: {} } as any;
+  const self = { shadowRoot: {}, attachInternals: voidFn } as any;
   let style = '';
   const Selector = selector;
 
