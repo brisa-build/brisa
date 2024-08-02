@@ -200,9 +200,7 @@ export default function Page() {
 >
 > Controlled forms introduce additional complexity and more client-side JavaScript code. Developers should carefully weigh these factors when choosing between controlled and uncontrolled forms. The Brisa team recommends using controlled forms primarily when providing instant feedback to users for each modification during form interactions. Otherwise, it is advisable to opt for uncontrolled forms with a server component.
 
-### Associate Web Component to outside Form
-
-#### Problem Statement
+## Mixing controlled and uncontrolled fields
 
 In scenarios where a form is implemented within a server component due to the static nature of most fields, an exception arises when a dynamic field is included through a Web Component. Since Web Components use a separate Shadow DOM, the value of this dynamic field, encapsulated within the Shadow DOM, is not automatically included when capturing `FormData` from the parent form.
 
@@ -212,14 +210,10 @@ To address this issue, the [`ElementInternals`](https://developer.mozilla.org/en
 
 Example:
 
-```tsx
+```tsx 4,7
 import type { WebContext } from "brisa";
 
-// After attachInternals, the Web Component is recognized as a form field, 
-// so it support attributes like name, required, disabled, named, etc.
-type Props = { name: string; required: boolean };
-
-export default function SomeDynamicInput({ }: Props, { self }: WebContext) {
+export default function SomeDynamicInput({ }, { self }: WebContext) {
   const internals = self.attachInternals();
 
   function onInput(e) {
@@ -242,7 +236,7 @@ After attaching the Web Component to the form, the value of the dynamic field wi
 
 Example of usage on a Server Component:
 
-```tsx
+```tsx 12
 export default function Page() {
   return (
     <form onSubmit={(e) => {
