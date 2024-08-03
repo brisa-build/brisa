@@ -3225,7 +3225,7 @@ describe('utils', () => {
           `<!--o:0-->
             <!--o:1-->
               <!--o:2-->
-                <button data-action-onclick="a1_1" data-action data-cid="2" data-actions="[[["onClickAction","a1_1","0"]]]">
+                <button data-action-onclick="a1_1" data-action data-cid="2" data-actions='[[["onClickAction","a1_1","0"]]]'>
                 TEST
                </button>
               <!--c:2-->
@@ -3289,7 +3289,7 @@ describe('utils', () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        `<p data-action-onclick="a1_1" data-action data-actions="[[["onClick","a1_1","1"]]]">bar</p>`,
+        `<p data-action-onclick="a1_1" data-action data-actions='[[["onClick","a1_1","1"]]]'>bar</p>`,
       );
     });
 

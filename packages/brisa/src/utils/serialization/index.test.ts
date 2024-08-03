@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { deserialize, serialize } from '.';
+import { serializeServer } from '@/utils/serialization/server';
 
 const UNDEFINED = '_|U|_';
 
@@ -87,6 +88,14 @@ describe('utils', () => {
       expect(deserialized).toEqual({ foo: "bar'baz" });
     });
 
+    it('should serialize and deserialize objects with strings containing double quotes', () => {
+      const serialized = serialize({ foo: 'bar"baz' });
+      expect(serialized).toBe(`{\"foo\":\"bar\\"baz\"}`);
+
+      const deserialized = deserialize(serialized);
+      expect(deserialized).toEqual({ foo: 'bar"baz' });
+    });
+
     it('should serialize and deserialize entries with undefined as value', () => {
       const map = new Map<string, undefined>();
       map.set('foo', undefined);
@@ -100,6 +109,15 @@ describe('utils', () => {
 
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual(entries);
+    });
+  });
+  describe('server serialization', () => {
+    it('should transform single quotes to unicode to avoid conflicts with attribute single quotes', () => {
+      const serialized = serializeServer({ foo: "bar'baz" });
+      expect(serialized).toBe(`{\"foo\":\"bar\\u0027baz\"}`);
+
+      const deserialized = deserialize(serialized);
+      expect(deserialized).toEqual({ foo: "bar'baz" });
     });
   });
 });
