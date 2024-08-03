@@ -1180,7 +1180,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-cid="c2" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[["onClick","a1_1","c1"]]]"`,
+        ` foo="bar" data-action data-cid="c2" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions='[[["onClick","a1_1","c1"]]]'`,
       );
     });
 
@@ -1213,7 +1213,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[["onClick","a1_1","c1"]],[["onMouseOver","a1_2","c2"]]]"`,
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions='[[["onClick","a1_1","c1"]],[["onMouseOver","a1_2","c2"]]]'`,
       );
     });
 
@@ -1248,7 +1248,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[["onClick","a1_1","c1"]],[["onMouseOver","a1_2","c2"]]]"`,
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions='[[["onClick","a1_1","c1"]],[["onMouseOver","a1_2","c2"]]]'`,
       );
     });
 
@@ -1421,7 +1421,7 @@ describe('utils', () => {
       const attributes2 = renderAttributes(attributesConfig);
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-cid="321" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[["onClick","a1_1","123"]],[["onMouseOver","a1_2","987"]]]"`,
+        ` foo="bar" data-action data-cid="321" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions='[[["onClick","a1_1","123"]],[["onMouseOver","a1_2","987"]]]'`,
       );
       expect(attributes2).toBe(attributes);
     });
