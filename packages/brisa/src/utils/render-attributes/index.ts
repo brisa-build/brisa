@@ -7,7 +7,7 @@ import type {
   Translations,
 } from '@/types';
 import routeMatchPathname from '@/utils/route-match-pathname';
-import { serialize } from '@/utils/serialization';
+import { serializeServer } from '@/utils/serialization/server';
 import stylePropsToString from '@/utils/style-props-to-string';
 import substituteI18nRouteValues from '@/utils/substitute-i18n-route-values';
 import isAnAction from '@/utils/is-an-action';
@@ -121,7 +121,7 @@ export default function renderAttributes({
     // Simplify indicator signals
     if (key === 'indicator') {
       const arr = Array.isArray(value) ? value : [value];
-      value = serialize(arr.map((a) => a.id));
+      value = serializeServer(arr.map((a) => a.id));
     }
     // `indicate` attribute
     if (
@@ -147,7 +147,7 @@ export default function renderAttributes({
       attributes += ` ${key}='${
         value && key === 'style'
           ? stylePropsToString(value as JSX.CSSProperties)
-          : serialize(value)
+          : serializeServer(value)
       }'`;
       continue;
     }
@@ -210,7 +210,8 @@ export default function renderAttributes({
     const hasDeps = hasEntries || dependencies.length > 0;
 
     if (hasEntries) dependencies.unshift(entries);
-    if (hasDeps) attributes += ` data-actions="${serialize(dependencies)}"`;
+    if (hasDeps)
+      attributes += ` data-actions='${serializeServer(dependencies)}'`;
   }
 
   // Form action - Add "action" and "method" if not present
