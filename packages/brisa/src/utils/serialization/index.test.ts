@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'bun:test';
 import { deserialize, serialize } from '.';
 
+const UNDEFINED = '_|U|_';
+
 describe('utils', () => {
   describe('serialization: serialize + deserialize', () => {
     it('should not transform an string', () => {
@@ -13,7 +15,7 @@ describe('utils', () => {
 
     it('should transform an object', () => {
       const serialized = serialize({ foo: 'bar' });
-      expect(serialized).toBe("{'foo':'bar'}");
+      expect(serialized).toBe('{"foo":"bar"}');
 
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual({ foo: 'bar' });
@@ -29,7 +31,7 @@ describe('utils', () => {
 
     it('should transform an nested object', () => {
       const serialized = serialize({ foo: { bar: 'baz' } });
-      expect(serialized).toBe("{'foo':{'bar':'baz'}}");
+      expect(serialized).toBe('{"foo":{"bar":"baz"}}');
 
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual({ foo: { bar: 'baz' } });
@@ -37,7 +39,7 @@ describe('utils', () => {
 
     it('should transform an object without replacing the " character inside the string', () => {
       const serialized = serialize({ foo: 'bar"baz' });
-      expect(serialized).toBe(`{'foo':'bar\\'baz"}`);
+      expect(serialized).toBe(`{\"foo\":\"bar\\"baz\"}`);
 
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual({ foo: 'bar"baz' });
@@ -45,7 +47,7 @@ describe('utils', () => {
 
     it('should transform an object without replacing multiple " character inside the string', () => {
       const serialized = serialize({ foo: 'bar"""baz' });
-      expect(serialized).toBe(`{'foo':'bar\\'\\'\\'baz"}`);
+      expect(serialized).toBe(`{\"foo\":\"bar\\"\\"\\"baz\"}`);
 
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual({ foo: 'bar"""baz' });
@@ -58,7 +60,7 @@ describe('utils', () => {
       const entries = [...map];
 
       const serialized = serialize(entries);
-      expect(serialized).toBe("[['foo',''],['bar','']]");
+      expect(serialized).toBe('[["foo",""],["bar",""]]');
 
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual(entries);
@@ -71,28 +73,33 @@ describe('utils', () => {
       const entries = [...map];
 
       const serialized = serialize(entries);
-      expect(serialized).toBe("[['foo',null],['bar',null]]");
+      expect(serialized).toBe('[["foo",null],["bar",null]]');
 
       const deserialized = deserialize(serialized);
       expect(deserialized).toEqual(entries);
     });
 
-    // For now is converted to "null" by JSON.stringify, it would be nice to fix
-    // this case: https://github.com/brisa-build/brisa/issues/279
-    it.todo(
-      'should serialize and deserialize entries with undefined as value',
-      () => {
-        const map = new Map<string, undefined>();
-        map.set('foo', undefined);
-        map.set('bar', undefined);
-        const entries = [...map];
+    it('should serialize and deserialize objects with strings containing single quotes', () => {
+      const serialized = serialize({ foo: "bar'baz" });
+      expect(serialized).toBe(`{\"foo\":\"bar'baz\"}`);
 
-        const serialized = serialize(entries);
-        expect(serialized).toBe("[['foo'],['bar']]");
+      const deserialized = deserialize(serialized);
+      expect(deserialized).toEqual({ foo: "bar'baz" });
+    });
 
-        const deserialized = deserialize(serialized);
-        expect(deserialized).toEqual(entries);
-      },
-    );
+    it('should serialize and deserialize entries with undefined as value', () => {
+      const map = new Map<string, undefined>();
+      map.set('foo', undefined);
+      map.set('bar', undefined);
+      const entries = [...map];
+
+      const serialized = serialize(entries);
+      expect(serialized).toBe(
+        `[[\"foo\",\"${UNDEFINED}\"],[\"bar\",\"${UNDEFINED}\"]]`,
+      );
+
+      const deserialized = deserialize(serialized);
+      expect(deserialized).toEqual(entries);
+    });
   });
 });

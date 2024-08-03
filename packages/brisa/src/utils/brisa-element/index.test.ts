@@ -320,7 +320,7 @@ describe('utils', () => {
       }
 
       document.body.innerHTML = `
-        <sliding-carousel images="['https://picsum.photos/200/300', 'https://picsum.photos/200/300?grayscale']" />
+        <sliding-carousel images='["https://picsum.photos/200/300", "https://picsum.photos/200/300?grayscale"]' />
       `;
 
       customElements.define(
@@ -381,7 +381,7 @@ describe('utils', () => {
       }
 
       document.body.innerHTML = `
-        <carousel-images images="[{'url':'https://picsum.photos/200/300'},{'url':'https://picsum.photos/200/300?grayscale'}]" />
+        <carousel-images images='[{"url":"https://picsum.photos/200/300"},{"url":"https://picsum.photos/200/300?grayscale"}]' />
       `;
 
       customElements.define(
@@ -750,7 +750,7 @@ describe('utils', () => {
       }
 
       document.body.innerHTML = `
-        <todo-list todos="['todo 1', 'todo 2', 'todo 3']" />
+        <todo-list todos='["todo 1", "todo 2", "todo 3"]' />
       `;
 
       customElements.define(
@@ -2135,14 +2135,14 @@ describe('utils', () => {
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        `<web-component user="{'name':'Aral'}"></web-component>`,
+        `<web-component user="{"name":"Aral"}"></web-component>`,
       );
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Aral</div>`);
 
       webComponent.setAttribute('user', serialize({ name: 'Barbara' }));
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        `<web-component user="{'name':'Barbara'}"></web-component>`,
+        `<web-component user="{"name":"Barbara"}"></web-component>`,
       );
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Barbara</div>`);
     });
