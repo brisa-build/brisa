@@ -39,7 +39,7 @@ const emptyI18n = {
 } as I18n;
 
 const FIXTURES_PATH = path.join(import.meta.dir, '..', '..', '__fixtures__');
-
+const UNDEFINED = '_|U|_';
 const testRequest = extendRequestContext({
   originalRequest: new Request('http://test.com/'),
 });
@@ -1805,7 +1805,7 @@ describe('utils', () => {
       const element = <div data-test={{ a: 1, b: 2 }} />;
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
-      expect(result).toBe(`<div data-test="{'a':1,'b':2}"></div>`);
+      expect(result).toBe(`<div data-test='{"a":1,"b":2}'></div>`);
     });
 
     it('should work context with "useContext" hook without context-provider', async () => {
@@ -1844,7 +1844,7 @@ describe('utils', () => {
 
       expect(result).toBe(
         toInline(
-          `<context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo'}">
+          `<context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo"}'>
           <div>foo</div>
         </context-provider>
       `,
@@ -1875,19 +1875,19 @@ describe('utils', () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        toInline(`<context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo0'}">
+        toInline(`<context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo0"}'>
           <div>foo0</div>
         </context-provider>
-        <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo1'}">
+        <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo1"}'>
           <div>foo1</div>
         </context-provider>
-        <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo2'}">
+        <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo2"}'>
           <div>foo2</div>
         </context-provider>
-        <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo3'}">
+        <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo3"}'>
           <div>foo3</div>
         </context-provider>
-        <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo4'}">
+        <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo4"}'>
           <div>foo4</div>
         </context-provider>`),
       );
@@ -1917,28 +1917,28 @@ describe('utils', () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        toInline(`<context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo0'}">
-          <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo20'}">
+        toInline(`<context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo0"}'>
+          <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo20"}'>
             <div>foo20</div>
           </context-provider>
         </context-provider>
-        <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo1'}">
-          <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo21'}">
+        <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo1"}'>
+          <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo21"}'>
             <div>foo21</div>
           </context-provider>
         </context-provider>
-        <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo2'}">
-          <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo22'}">
+        <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo2"}'>
+          <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo22"}'>
             <div>foo22</div>
           </context-provider>
         </context-provider>
-        <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo3'}">
-          <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo23'}">
+        <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo3"}'>
+          <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo23"}'>
             <div>foo23</div>
           </context-provider>
         </context-provider>
-        <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo4'}">
-          <context-provider context="{'defaultValue':{'name':'bar'}}" value="{'name':'foo24'}">
+        <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo4"}'>
+          <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"name":"bar"}}' value='{"name":"foo24"}'>
             <div>foo24</div>
           </context-provider>
         </context-provider>`),
@@ -1975,7 +1975,7 @@ describe('utils', () => {
       const result = Bun.readableStreamToText(stream);
 
       expect(result).resolves.toBe(
-        `<context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}"><div>red</div></context-provider>`,
+        `<context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'><div>red</div></context-provider>`,
       );
     });
 
@@ -2019,7 +2019,7 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
                 <slot></slot>
               </context-provider>
             </template>
@@ -2078,7 +2078,7 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
                 <slot name="with-theme"></slot>
               </context-provider>
               <slot></slot>
@@ -2145,7 +2145,7 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
                 <slot name="with-theme"></slot>
               </context-provider>
               <slot></slot>
@@ -2227,14 +2227,14 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
                 <slot name="with-theme"></slot>
               </context-provider>
               <slot></slot>
             </template>
             <theme-provider color="blue">
               <template shadowrootmode="open">
-                <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'blue'}">
+                <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"blue"}'>
                   <slot name="with-theme"></slot>
                 </context-provider>
                 <slot></slot>
@@ -2312,7 +2312,7 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
                 <slot name="with-theme"></slot>
               </context-provider>
               <slot></slot>
@@ -2384,7 +2384,7 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
                 <slot name="with-theme"></slot>
               </context-provider>
               <slot></slot>
@@ -2454,7 +2454,7 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
                 <slot name="with-theme"></slot>
               </context-provider>
               <slot></slot>
@@ -2527,7 +2527,7 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
                 <slot name="with-theme"></slot>
               </context-provider>
               <slot></slot>
@@ -2593,8 +2593,8 @@ describe('utils', () => {
         toInline(`
           <theme-provider color="red">
             <template shadowrootmode="open">
-              <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'red'}">
-                <context-provider context="{'defaultValue':{'color':'yellow'}}" value="{'color':'blue'}">
+              <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"red"}'>
+                <context-provider context='{"id":"${UNDEFINED}","defaultValue":{"color":"yellow"}}' value='{"color":"blue"}'>
                   <child-component>
                     <template shadowrootmode="open">
                       <div>blue</div>
@@ -3225,7 +3225,7 @@ describe('utils', () => {
           `<!--o:0-->
             <!--o:1-->
               <!--o:2-->
-                <button data-action-onclick="a1_1" data-action data-cid="2" data-actions="[[['onClickAction','a1_1','0']]]">
+                <button data-action-onclick="a1_1" data-action data-cid="2" data-actions="[[["onClickAction","a1_1","0"]]]">
                 TEST
                </button>
               <!--c:2-->
@@ -3289,7 +3289,7 @@ describe('utils', () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        "<p data-action-onclick=\"a1_1\" data-action data-actions=\"[[['onClick','a1_1','1']]]\">bar</p>",
+        `<p data-action-onclick="a1_1" data-action data-actions="[[["onClick","a1_1","1"]]]">bar</p>`,
       );
     });
 
