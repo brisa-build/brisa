@@ -309,7 +309,7 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a1_1',
-            'x-actions': "[[['onClick', 'a1_2']]]",
+            'x-actions': JSON.stringify([[['onClick', 'a1_2']]]),
           },
           body: JSON.stringify({
             args: [
@@ -339,7 +339,7 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a1_1',
-            'x-actions': "[[['onClick', 'a2_1']]]",
+            'x-actions': JSON.stringify([[['onClick', 'a2_1']]]),
           },
           body: JSON.stringify({
             args: [
@@ -369,7 +369,10 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a1_1',
-            'x-actions': "[[['onClick', 'a2_1']], [['onAction', 'a2_2']]]",
+            'x-actions': JSON.stringify([
+              [['onClick', 'a2_1']],
+              [['onAction', 'a2_2']],
+            ]),
           },
           body: JSON.stringify({
             args: [
@@ -420,7 +423,10 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a3_1',
-            'x-actions': "[[['onAction2', 'a3_2']], [['onAction3', 'a3_3']]]",
+            'x-actions': JSON.stringify([
+              [['onAction2', 'a3_2']],
+              [['onAction3', 'a3_3']],
+            ]),
           },
           body: JSON.stringify({
             args: [],
@@ -451,7 +457,10 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a3_1',
-            'x-actions': "[[['onAction2', 'a3_2']], [['onAction3', 'a3_3']]]",
+            'x-actions': JSON.stringify([
+              [['onAction2', 'a3_2']],
+              [['onAction3', 'a3_3']],
+            ]),
           },
           body: JSON.stringify({
             args: [withAwait],
@@ -481,7 +490,7 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a3_4',
-            'x-actions': "[[['onAction5', 'a3_5']]]",
+            'x-actions': JSON.stringify([[['onAction5', 'a3_5']]]),
           },
           body: JSON.stringify({
             args: [],
@@ -505,7 +514,7 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a3_4',
-            'x-actions': "[[['onAction5', 'a3_5']]]",
+            'x-actions': JSON.stringify([[['onAction5', 'a3_5']]]),
           },
           body: JSON.stringify({
             args: [],
@@ -526,7 +535,7 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a3_4',
-            'x-actions': "[[['onAction5', 'a3_5']]]",
+            'x-actions': JSON.stringify([[['onAction5', 'a3_5']]]),
           },
           body: JSON.stringify({
             args: [withAwait],
@@ -546,7 +555,7 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a3_6',
-            'x-actions': "[[['onAction7', 'a3_7']]]",
+            'x-actions': JSON.stringify([[['onAction7', 'a3_7']]]),
           },
           body: JSON.stringify({
             args: [],
@@ -568,7 +577,7 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a3_6',
-            'x-actions': "[[['onAction7', 'a3_7']]]",
+            'x-actions': JSON.stringify([[['onAction7', 'a3_7']]]),
           },
           body: JSON.stringify({
             args: [withAwait],
@@ -798,7 +807,7 @@ describe('utils', () => {
           headers: {
             'content-type': 'application/json',
             'x-action': 'a1_1',
-            'x-actions': "[[['onClick', 'a1_2']]]",
+            'x-actions': JSON.stringify([[['onClick', 'a1_2']]]),
           },
           body: JSON.stringify({
             args: [],

@@ -929,7 +929,7 @@ describe('utils', () => {
         type: 'div',
       });
 
-      expect(attributes).toBe(" foo=\"{'bar':'baz'}\"");
+      expect(attributes).toBe(` foo='{"bar":"baz"}'`);
     });
 
     it('should transform style prop from obj to string in the "style" attribute', () => {
@@ -952,7 +952,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ' style="color:red;background-color:blue;padding:10px;margin:10px;border:1px solid black;"',
+        " style='color:red;background-color:blue;padding:10px;margin:10px;border:1px solid black;'",
       );
     });
 
@@ -985,7 +985,7 @@ describe('utils', () => {
         type: 'div',
       });
 
-      expect(attributes).toBe(` indicator="['__ind:increment']"`);
+      expect(attributes).toBe(` indicator="["__ind:increment"]"`);
     });
 
     it('should simplify multi indicatorSignals to indicatorIds inside "indicator" attribute', () => {
@@ -1005,7 +1005,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ` indicator="['__ind:increment','__ind:decrement']"`,
+        ` indicator="["__ind:increment","__ind:decrement"]"`,
       );
     });
 
@@ -1180,7 +1180,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-cid="c2" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1','c1']]]"`,
+        ` foo="bar" data-action data-cid="c2" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[["onClick","a1_1","c1"]]]"`,
       );
     });
 
@@ -1213,7 +1213,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1','c1']],[['onMouseOver','a1_2','c2']]]"`,
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[["onClick","a1_1","c1"]],[["onMouseOver","a1_2","c2"]]]"`,
       );
     });
 
@@ -1248,7 +1248,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1','c1']],[['onMouseOver','a1_2','c2']]]"`,
+        ` foo="bar" data-action data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[["onClick","a1_1","c1"]],[["onMouseOver","a1_2","c2"]]]"`,
       );
     });
 
@@ -1421,7 +1421,7 @@ describe('utils', () => {
       const attributes2 = renderAttributes(attributesConfig);
 
       expect(attributes).toBe(
-        ` foo="bar" data-action data-cid="321" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[['onClick','a1_1','123']],[['onMouseOver','a1_2','987']]]"`,
+        ` foo="bar" data-action data-cid="321" data-action-onclick="a1_1" data-action-ondoubleclick="a1_3" data-actions="[[["onClick","a1_1","123"]],[["onMouseOver","a1_2","987"]]]"`,
       );
       expect(attributes2).toBe(attributes);
     });

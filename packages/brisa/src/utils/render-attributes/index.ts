@@ -12,7 +12,7 @@ import stylePropsToString from '@/utils/style-props-to-string';
 import substituteI18nRouteValues from '@/utils/substitute-i18n-route-values';
 import isAnAction from '@/utils/is-an-action';
 import { addBasePathToStringURL } from '@/utils/base-path';
-import { logError, logWarning } from '@/utils/log/log-build';
+import { logWarning } from '@/utils/log/log-build';
 import { boldLog } from '@/utils/log/log-color';
 
 const PROPS_TO_IGNORE = new Set([
@@ -144,11 +144,11 @@ export default function renderAttributes({
 
     // Example data-test={ bar: "foo" } => <div data-test="{'bar':'foo'}">
     if (typeof value === 'object') {
-      attributes += ` ${key}="${
+      attributes += ` ${key}='${
         value && key === 'style'
           ? stylePropsToString(value as JSX.CSSProperties)
           : serialize(value)
-      }"`;
+      }'`;
       continue;
     }
 

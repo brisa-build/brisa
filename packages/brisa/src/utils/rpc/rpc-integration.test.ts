@@ -353,7 +353,7 @@ describe('utils', () => {
         string
       >;
       expect(headers['x-action']).toBe('a1_1');
-      expect(headers['x-actions']).toBe("[['onClick','a1_2']]");
+      expect(headers['x-actions']).toBe(JSON.stringify([['onClick', 'a1_2']]));
     });
 
     it('should not add the x-actions header when no data-actions', async () => {

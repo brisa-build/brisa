@@ -1,14 +1,16 @@
-export function serialize(value: unknown): string {
-  if (typeof value !== 'object') return value as string;
+const UNDEFINED = '_|U|_';
 
-  return JSON.stringify(value).replace(/"([^"]*)"/g, "'$1'");
+export function serialize(value: unknown): string {
+  return typeof value !== 'object'
+    ? (value as string)
+    : JSON.stringify(value, (_, v) => (v === undefined ? UNDEFINED : v));
 }
 
 export function deserialize(str: string | null) {
   if (!str) return str;
 
   try {
-    return JSON.parse(str.replace(/'([^']*)'/g, '"$1"'));
+    return JSON.parse(str, (_, v) => (v === UNDEFINED ? undefined : v));
   } catch (e) {
     return str;
   }

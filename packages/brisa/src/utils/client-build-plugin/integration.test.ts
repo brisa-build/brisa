@@ -145,7 +145,7 @@ describe('integration', () => {
 
       defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
 
-      document.body.innerHTML = `<test-component items="['1','2','3']"" />`;
+      document.body.innerHTML = `<test-component items='["1","2","3"]' />`;
 
       const testComponent = document.querySelector(
         'test-component',
@@ -155,7 +155,7 @@ describe('integration', () => {
         '<span>1</span><span>2</span><span>3</span>',
       );
 
-      testComponent.setAttribute('items', "['1','2','3','4','5']");
+      testComponent.setAttribute('items', '["1","2","3","4","5"]');
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>',
@@ -745,7 +745,7 @@ describe('integration', () => {
       }`;
 
       document.body.innerHTML = `
-        <sliding-carousel images="['https://picsum.photos/200/300', 'https://picsum.photos/200/300?grayscale']" />
+        <sliding-carousel images='["https://picsum.photos/200/300", "https://picsum.photos/200/300?grayscale"]' />
       `;
 
       defineBrisaWebComponent(code, 'src/web-components/sliding-carousel.tsx');
@@ -795,7 +795,7 @@ describe('integration', () => {
       }`;
 
       document.body.innerHTML = `
-        <carousel-images images="[{'url':'https://picsum.photos/200/300'},{'url':'https://picsum.photos/200/300?grayscale'}]" />
+        <carousel-images images='[{"url":"https://picsum.photos/200/300"},{"url":"https://picsum.photos/200/300?grayscale"}]' />
       `;
 
       defineBrisaWebComponent(code, 'src/web-components/carousel-images.tsx');
@@ -997,7 +997,7 @@ describe('integration', () => {
       }`;
 
       document.body.innerHTML = `
-        <todo-list todos="['todo 1', 'todo 2', 'todo 3']" />
+        <todo-list todos='["todo 1", "todo 2", "todo 3"]' />
       `;
 
       defineBrisaWebComponent(code, 'src/web-components/todo-list.tsx');
@@ -2048,7 +2048,7 @@ describe('integration', () => {
 
       runtimeLog.setAttribute(
         'error',
-        "{ 'stack': 'stack', 'message': 'message' }",
+        '{ "stack": "stack", "message": "message" }',
       );
 
       expect(runtimeLog?.shadowRoot?.innerHTML).toBe(
@@ -2234,14 +2234,14 @@ describe('integration', () => {
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        `<web-component user="{'name':'Aral'}"></web-component>`,
+        `<web-component user="{"name":"Aral"}"></web-component>`,
       );
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Aral</div>`);
 
       webComponent.setAttribute('user', serialize({ name: 'Barbara' }));
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        `<web-component user="{'name':'Barbara'}"></web-component>`,
+        `<web-component user="{"name":"Barbara"}"></web-component>`,
       );
       expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Barbara</div>`);
     });
@@ -2947,7 +2947,7 @@ describe('integration', () => {
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>No user</div>');
 
-      testComponent.setAttribute('user', "{ 'name': 'Aral' }");
+      testComponent.setAttribute('user', '{ "name": "Aral" }');
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>Aral</div>');
     });
@@ -3131,7 +3131,7 @@ describe('integration', () => {
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('EMPTY');
 
-      testComponent.setAttribute('user', "{ 'name': 'Aral' }");
+      testComponent.setAttribute('user', '{ "name": "Aral" }');
 
       expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
       expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
@@ -3184,7 +3184,7 @@ describe('integration', () => {
 
       testComponent.setAttribute(
         'user',
-        "{ 'emails': ['contact@aralroca.com'] }",
+        '{ "emails": ["contact@aralroca.com"] }',
       );
 
       expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
@@ -3440,7 +3440,7 @@ describe('integration', () => {
         '<img class="avatar" src="some-image.jpg" width="300" height="300"><img class="avatar" src="another-url.jpg" width="300" height="300">',
       );
 
-      userImages.setAttribute('urls', "['foo.jpg', 'bar.jpg', 'baz.jpg']");
+      userImages.setAttribute('urls', '["foo.jpg", "bar.jpg", "baz.jpg"]');
 
       expect(userImages?.shadowRoot?.innerHTML).toBe(
         '<img class="avatar" src="foo.jpg" width="300" height="300"><img class="avatar" src="bar.jpg" width="300" height="300"><img class="avatar" src="baz.jpg" width="300" height="300">',
@@ -4297,7 +4297,7 @@ describe('integration', () => {
       ) as HTMLElement;
 
       expect(parent.shadowRoot?.innerHTML).toBe(
-        "<context-provider context=\"{'id':'0:0','defaultValue':{'foo':'foo'}}\" value=\"{'foo':'bar'}\" cid=\"0:0\" pid=\"0\"><child-component></child-component></context-provider>",
+        `<context-provider context="{"id":"0:0","defaultValue":{"foo":"foo"}}" value="{"foo":"bar"}" cid="0:0" pid="0"><child-component></child-component></context-provider>`,
       );
       expect(child.shadowRoot?.innerHTML).toBe('<div>bar</div>');
     });
@@ -4414,10 +4414,10 @@ describe('integration', () => {
 
       expect(parent.shadowRoot?.innerHTML).toBe(
         toInline(`
-        <context-provider context="{'id':'0:0','defaultValue':{}}" value="{'foo':'bar'}" cid="0:0" pid="1">
+        <context-provider context="{"id":"0:0","defaultValue":{}}" value="{"foo":"bar"}" cid="0:0" pid="1">
           <child-component></child-component>
         </context-provider>
-        <context-provider context="{'id':'0:1','defaultValue':{}}" value="{'bar':'baz'}" cid="0:1" pid="2">
+        <context-provider context="{"id":"0:1","defaultValue":{}}" value="{"bar":"baz"}" cid="0:1" pid="2">
           <child-component></child-component>
         </context-provider>
       `),
@@ -4487,8 +4487,8 @@ describe('integration', () => {
 
       expect(parent.shadowRoot?.innerHTML).toBe(
         toInline(`
-        <context-provider context="{'id':'0:0','defaultValue':{'foo':'foo'}}" value="{'foo':'bar'}" cid="0:0" pid="1">
-          <context-provider context="{'id':'0:1','defaultValue':{'foo':'foo'}}" value="{'bar':'baz'}" cid="0:1" pid="2">
+        <context-provider context="{"id":"0:0","defaultValue":{"foo":"foo"}}" value="{"foo":"bar"}" cid="0:0" pid="1">
+          <context-provider context="{"id":"0:1","defaultValue":{"foo":"foo"}}" value="{"bar":"baz"}" cid="0:1" pid="2">
             <child-component></child-component>
           </context-provider>
         </context-provider>
@@ -5174,7 +5174,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = `<iterating-value value="['foo', 'bar']" />`;
+      document.body.innerHTML = `<iterating-value value='["foo", "bar"]' />`;
       defineBrisaWebComponent(code, 'src/web-components/iterating-value.tsx');
 
       await Bun.sleep(0);
@@ -5202,7 +5202,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = `<nested-iterating-value value="['foo', 'bar']" />`;
+      document.body.innerHTML = `<nested-iterating-value value='["foo", "bar"]' />`;
       const compiledCode = defineBrisaWebComponent(
         code,
         'src/web-components/nested-iterating-value.tsx',
@@ -5319,7 +5319,7 @@ describe('integration', () => {
       }
       `;
 
-      document.body.innerHTML = `<input-component value="['foo']" />`;
+      document.body.innerHTML = `<input-component value='["foo"]' />`;
 
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
@@ -5379,7 +5379,7 @@ describe('integration', () => {
       }
       `;
 
-      document.body.innerHTML = `<input-component value="['foo']" />`;
+      document.body.innerHTML = `<input-component value='["foo"]' />`;
 
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
@@ -5438,7 +5438,7 @@ describe('integration', () => {
       }
       `;
 
-      document.body.innerHTML = `<input-component value="['foo']" />`;
+      document.body.innerHTML = `<input-component value='["foo"]' />`;
 
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
@@ -5497,7 +5497,7 @@ describe('integration', () => {
       }
       `;
 
-      document.body.innerHTML = `<input-component value="['foo']" />`;
+      document.body.innerHTML = `<input-component value='["foo"]' />`;
 
       defineBrisaWebComponent(code, 'src/web-components/input-component.tsx');
 
