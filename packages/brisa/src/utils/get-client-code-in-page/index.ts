@@ -248,10 +248,8 @@ export async function transformToWebComponents({
               {
                 filter: new RegExp(
                   `(.*/src/web-components/(?!_integrations).*\\.(tsx|jsx|js|ts)|${webComponentsPath
-                    .join(
-                      '|',
-                      // These replaces are to fix the regex in Windows
-                    )
+                    .join('|')
+                    // These replaces are to fix the regex in Windows
                     .replace(/\\/g, '\\\\')})$`.replace(/\//g, '[\\\\/]'),
                 ),
               },
