@@ -27,6 +27,18 @@
   border: solid 1px var(--vp-c-bg-soft-1) !important;
 }
 
+.showcase {
+  display: flex;
+  gap: 30px;
+  margin: 20px 0;
+}
+
+@media screen and (max-width: 768px) {
+  .showcase {
+    flex-direction: column;
+  }
+}
+
 .showcase-item {
   overflow: hidden;
   border-radius: 4px;

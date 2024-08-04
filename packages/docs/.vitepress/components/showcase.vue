@@ -15,10 +15,7 @@ const { theme } = useData();
     ">
       Showcase
     </h2>
-    <p class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-2xl">
-      The framework of choice when it matters
-    </p>
-    <div style="display: flex; gap: 30px;">
+    <div class="showcase">
       <a style='--showcase-title:"zenettechnology.com"' class="showcase-item" href="https://zenettechnology.com/en"
         target="_blank" title="zenettechnology.com">
         <img style="border-radius: 4px;" width="280" height="155" src="/assets/zenettechnology.avif" />
@@ -28,5 +25,8 @@ const { theme } = useData();
         <img style="border-radius: 4px;" width="280" height="155" src="/assets/aralroca-blog.avif" />
       </a>
     </div>
+    <p class="text-xl md:text-2xl leading-relaxed text-gray-400 text-left md:text-center w-full max-w-2xl">
+      The framework of choice when it matters
+    </p>
   </section>
 </template>
