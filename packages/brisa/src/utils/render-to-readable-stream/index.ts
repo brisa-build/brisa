@@ -408,7 +408,7 @@ async function enqueueDuringRendering(
       }
 
       const clientFile = request.route?.filePath
-        ?.replace('/pages', '/pages-client')
+        ?.replace(path.sep + 'pages', path.sep + 'pages-client')
         ?.replace('.js', '.txt');
 
       // Transfer store to client
