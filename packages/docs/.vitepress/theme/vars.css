@@ -64,9 +64,12 @@
   transform: translate(-50%, -50%);
 }
 
-.showcase-item img:hover {
+.showcase-item:hover {
   transform: scale(1.05);
-  filter: blur(2px);
+
+  img {
+    filter: blur(2px);
+  }
 }
 
 .dark {
