@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect, spyOn } from 'bun:test';
 import path from 'node:path';
 import getEntrypoints from '.';
 
@@ -28,8 +28,8 @@ describe('utils', () => {
         'page-with-web-component.tsx',
         'somepage.tsx',
         'somepage-with-context.tsx',
-        '/index.tsx',
-        'user/[username].tsx',
+        path.sep + 'index.tsx',
+        'user' + path.sep + '[username].tsx',
       ].map((route) => path.join(pagesDir, route));
       expect(entrypoints).toEqual(expected);
     });
@@ -51,6 +51,31 @@ describe('utils', () => {
         path.join(mdxPagesDir, route),
       );
       expect(entrypoints).toEqual(expected);
+    });
+
+    it('should return the routes with the correct path separator', () => {
+      const separator = '\\';
+      const entrypoints = getEntrypoints(pagesDir, separator);
+
+      const expected = [
+        '_404.tsx',
+        '_500.tsx',
+        'foo.tsx',
+        'page-with-web-component.tsx',
+        'somepage.tsx',
+        'somepage-with-context.tsx',
+        'index.tsx',
+        'user\\[username].tsx',
+      ].map((route) => pagesDir.replaceAll('/', '\\') + '\\' + route);
+
+      expect(entrypoints).toEqual(expected);
+
+      const otherSeparator = '/';
+      const otherEntrypoints = getEntrypoints(pagesDir, otherSeparator);
+
+      expect(otherEntrypoints).toEqual(
+        expected.map((route) => route.replace(/\\/g, '/')),
+      );
     });
   });
 });

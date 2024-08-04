@@ -93,7 +93,7 @@ export default async function getClientCodeInPage({
   size += unsuspense.length;
   size += rpc.length;
 
-  if (!Object.keys(pageWebComponents).length)
+  if (!Object.keys(pageWebComponents).length) {
     return {
       code,
       unsuspense,
@@ -104,6 +104,7 @@ export default async function getClientCodeInPage({
       useI18n: false,
       i18nKeys: new Set<string>(),
     };
+  }
 
   const transformedCode = await transformToWebComponents({
     webComponentsList: pageWebComponents,
