@@ -102,5 +102,18 @@ describe('utils', () => {
       );
       expect(route).not.toBe(null);
     });
+
+    it('should work with different path separator', () => {
+      const { match } = getRouteMatcher(PAGES_DIR, [], undefined, '\\');
+      const { route } = match(
+        extendRequestContext({
+          originalRequest: new Request('https://example.com/somepage'),
+        }),
+      );
+      expect(route?.filePath).toEndWith('\\pages\\somepage.tsx');
+      expect(route?.name).toBe('/somepage');
+      expect(route?.pathname).toBe('/somepage');
+      expect(route?.src).toBe('somepage.tsx');
+    });
   });
 });
