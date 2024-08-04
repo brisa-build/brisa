@@ -43,12 +43,13 @@
   overflow: hidden;
   border-radius: 4px;
   position: relative;
+  transition: 0.2s;
 }
 
 .showcase-item img {
-  transition: 0.2s;
   opacity: 0.9;
   transform: scale(1.01);
+  transition: 0.2s;
 }
 
 .showcase-item:hover::before {
