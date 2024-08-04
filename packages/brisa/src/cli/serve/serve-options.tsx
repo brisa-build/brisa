@@ -101,11 +101,12 @@ export async function getServeOptions() {
         let file = url.searchParams.get('file');
         const line = url.searchParams.get('line');
         const column = url.searchParams.get('column');
+        const brisaPages = path.sep + '_brisa' + path.sep + 'pages';
 
-        if (file?.startsWith('/_brisa/pages')) {
+        if (file?.startsWith(brisaPages)) {
           file = path.join(
             BUILD_DIR,
-            file.replace(/^\/_brisa\/pages/, '/pages-client'),
+            file.replace(brisaPages, path.sep + 'pages-client'),
           );
         }
 
