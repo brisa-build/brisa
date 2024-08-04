@@ -33,6 +33,7 @@ export default async function compileActions({
   const res = await Bun.build({
     entrypoints: actionsEntrypoints,
     outdir: join(BUILD_DIR, 'actions'),
+    external: ['brisa'],
     sourcemap: IS_PRODUCTION ? undefined : 'inline',
     root: rawActionsDir,
     target: 'bun',
@@ -56,7 +57,13 @@ function actionPlugin({
 }: {
   actionsEntrypoints: string[];
 }) {
-  const filter = new RegExp(`(${actionsEntrypoints.join('|')})$`);
+  // These replaces are to fix the regex in Windows
+  const filter = new RegExp(
+    `(${actionsEntrypoints.join('|').replace(/\\/g, '\\\\')})$`.replace(
+      /\//g,
+      '[\\\\/]',
+    ),
+  );
 
   return {
     name: 'action-plugin',
