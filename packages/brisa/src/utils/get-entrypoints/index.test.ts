@@ -1,4 +1,4 @@
-import { describe, it, expect, spyOn } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import path from 'node:path';
 import getEntrypoints from '.';
 
