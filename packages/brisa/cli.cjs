@@ -22,8 +22,7 @@ async function main() {
   ).then((m) => m.default);
   const __CRYPTO_KEY__ = crypto.randomBytes(32).toString('hex');
   const __CRYPTO_IV__ = crypto.randomBytes(8).toString('hex');
-  const BRISA_BUILD_FOLDER =
-    process.env.BRISA_BUILD_FOLDER || path.resolve(process.cwd(), 'build');
+  const BRISA_BUILD_FOLDER = process.env.BRISA_BUILD_FOLDER;
 
   const prodOptions = {
     stdio: 'inherit',
