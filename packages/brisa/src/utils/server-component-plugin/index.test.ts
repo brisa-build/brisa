@@ -1722,15 +1722,40 @@ describe('utils', () => {
       );
     });
 
+    it('should not add _hasActions on arrow fn without name created inside the component', () => {
+      const code = `
+        export default function ServerComponent() {
+          return [1,2,3].map(() => <Component onClick={() => console.log('clicked')} />);
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(out.dependencies).toBeEmpty();
+      expect(normalizeQuotes(out.code)).toBe(
+        toExpected(`
+        export default function ServerComponent() {
+          return [1,2,3].map(() => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />);
+        }
+
+        ServerComponent._hasActions = true;
+      `),
+      );
+    });
+
     it.todo(
       'should solve identifiers from imports when no actions in the component',
       () => {
         const code = `
-        import { getEl } from './el.ts';
+      import { getEl } from './el.ts';
 
-        export default function Component({text}) {
-          return getEl(text);
-        }
+      export default function Component({ text }) {
+        return getEl(text);
+      }
       `;
 
         const out = serverComponentPlugin(code, {
@@ -1744,13 +1769,13 @@ describe('utils', () => {
         );
         expect(normalizeQuotes(out.code)).toBe(
           toExpected(`
-        import { getEl } from './el.ts';
+      import { getEl } from './el.ts';
 
-        export default function Component({text}) {
-          return getEl(text);
-        }
+      export default function Component({ text }) {
+        return getEl(text);
+      }
 
-        Component._hasActions = getEl?._hasActions;
+      Component._hasActions = getEl?._hasActions;
       `),
         );
       },
@@ -1760,13 +1785,13 @@ describe('utils', () => {
       'should solve different identifiers from imports when no actions in the component',
       () => {
         const code = `
-        import getEl from './el.ts';
-        import { getEl2 } from './el2.ts';
-        import { getEl3 } from './el3.ts';
+      import getEl from './el.ts';
+      import { getEl2 } from './el2.ts';
+      import { getEl3 } from './el3.ts';
 
-        export default function Component({text}) {
-          return getEl(text) + getEl2(text) + getEl3(text);
-        }
+      export default function Component({ text }) {
+        return getEl(text) + getEl2(text) + getEl3(text);
+      }
       `;
 
         const out = serverComponentPlugin(code, {
@@ -1784,15 +1809,15 @@ describe('utils', () => {
         );
         expect(normalizeQuotes(out.code)).toBe(
           toExpected(`
-        import getEl from './el.ts';
-        import { getEl2 } from './el2.ts';
-        import { getEl3 } from './el3.ts';
+      import getEl from './el.ts';
+      import { getEl2 } from './el2.ts';
+      import { getEl3 } from './el3.ts';
 
-        export default function Component({text}) {
-          return getEl(text) + getEl2(text) + getEl3(text);
-        }
+      export default function Component({ text }) {
+        return getEl(text) + getEl2(text) + getEl3(text);
+      }
 
-        Component._hasActions = getEl?._hasActions ?? getEl2?._hasActions ?? getEl3?._hasActions;
+      Component._hasActions = getEl?._hasActions ?? getEl2?._hasActions ?? getEl3?._hasActions;
       `),
         );
       },
@@ -1802,15 +1827,15 @@ describe('utils', () => {
       'should NOT solve identifiers from imports not used in the component',
       () => {
         const code = `
-        import getEl from './el.ts';
-        import { getEl2 } from './el2.ts';
-        import { getEl3 } from './el3.ts';
+      import getEl from './el.ts';
+      import { getEl2 } from './el2.ts';
+      import { getEl3 } from './el3.ts';
 
-        export default function Component({text}) {
-          return getEl(text) + getEl3(text);
-        }
+      export default function Component({ text }) {
+        return getEl(text) + getEl3(text);
+      }
 
-        console.log(getEl2);
+      console.log(getEl2);
       `;
 
         const out = serverComponentPlugin(code, {
@@ -1828,17 +1853,17 @@ describe('utils', () => {
         );
         expect(normalizeQuotes(out.code)).toBe(
           toExpected(`
-        import getEl from './el.ts';
-        import { getEl2 } from './el2.ts';
-        import { getEl3 } from './el3.ts';
+      import getEl from './el.ts';
+      import { getEl2 } from './el2.ts';
+      import { getEl3 } from './el3.ts';
 
-        export default function Component({text}) {
-          return getEl(text) + getEl3(text);
-        }
+      export default function Component({ text }) {
+        return getEl(text) + getEl3(text);
+      }
 
-        console.log(getEl2);
+      console.log(getEl2);
 
-        Component._hasActions = getEl?._hasActions ?? getEl3?._hasActions;
+      Component._hasActions = getEl?._hasActions ?? getEl3?._hasActions;
       `),
         );
       },

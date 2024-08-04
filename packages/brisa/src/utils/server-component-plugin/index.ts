@@ -486,8 +486,14 @@ function markActionsFlag({
   // Stop the propagation of the _hasActions property to the parent
   value._hasActions = false;
 
-  if (declaration?.id) {
+  if (declaration?.id && declaration?.id?.name) {
     markComponentHasActions(declaration?.id?.name, parent);
+    return value;
+  }
+
+  // In case it is an arrow function without a name, we propagate to the parent
+  else if (declaration?.id) {
+    parent._hasActions = true;
     return value;
   }
 
