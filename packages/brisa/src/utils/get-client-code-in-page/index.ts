@@ -1,5 +1,5 @@
 import { rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 
 import { getConstants } from '@/constants';
 import AST from '@/utils/ast';
@@ -154,11 +154,13 @@ export async function transformToWebComponents({
   const webComponentsPath = Object.values(webComponentsList);
   let useWebContextPlugins = false;
   const entries = Object.entries(webComponentsList);
+
+  // Note: JS imports in Windows have / instead of \, so we need to replace it
   let imports = entries
     .map(([name, path]) =>
       path.startsWith(DIRECT_IMPORT)
-        ? `import "${path.replace(DIRECT_IMPORT, '')}";`
-        : `import ${snakeToCamelCase(name)} from "${path}";`,
+        ? `import "${path.replace(DIRECT_IMPORT, '').replaceAll(sep, '/')}";`
+        : `import ${snakeToCamelCase(name)} from "${path.replaceAll(sep, '/')}";`,
     )
     .join('\n');
 
@@ -245,9 +247,12 @@ export async function transformToWebComponents({
             build.onLoad(
               {
                 filter: new RegExp(
-                  `(.*/src/web-components/(?!_integrations).*\\.(tsx|jsx|js|ts)|${webComponentsPath.join(
-                    '|',
-                  )})$`,
+                  `(.*/src/web-components/(?!_integrations).*\\.(tsx|jsx|js|ts)|${webComponentsPath
+                    .join(
+                      '|',
+                      // These replaces are to fix the regex in Windows
+                    )
+                    .replace(/\\/g, '\\\\')})$`.replace(/\//g, '[\\\\/]'),
                 ),
               },
               async ({ path, loader }) => {
