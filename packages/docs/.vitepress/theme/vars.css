@@ -23,7 +23,38 @@
 }
 
 .VPFeature {
+  border-radius: 4px;
   border: solid 1px var(--vp-c-bg-soft-1) !important;
+}
+
+.showcase-item {
+  overflow: hidden;
+  border-radius: 4px;
+  position: relative;
+}
+
+.showcase-item img {
+  transition: 0.2s;
+  opacity: 0.9;
+  transform: scale(1.01);
+}
+
+.showcase-item:hover::before {
+  content: var(--showcase-title);
+  position: absolute;
+  background-color: var(--vp-code-block-bg);
+  z-index: 1;
+  padding: 0.5rem;
+  border-radius: 4px;
+  top: 50%;
+  left: 50%;
+  color: var(--vp-c-text-1);
+  transform: translate(-50%, -50%);
+}
+
+.showcase-item img:hover {
+  transform: scale(1.05);
+  filter: blur(2px);
 }
 
 .dark {
