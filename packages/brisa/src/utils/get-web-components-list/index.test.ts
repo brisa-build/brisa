@@ -235,5 +235,47 @@ describe('utils', () => {
         '--------------------------',
       ]);
     });
+
+    it('should work with different separator', async () => {
+      const separator = '\\';
+      const result = await getWebComponentsList(fixturesDir, null, separator);
+      const modifiedJoin = (...args: string[]) =>
+        path.join(...args).replaceAll('/', separator);
+
+      expect(result).toEqual({
+        'custom-counter': modifiedJoin(
+          fixturesDir,
+          'web-components',
+          'custom-counter.tsx',
+        ),
+        'custom-slot': modifiedJoin(
+          fixturesDir,
+          'web-components',
+          'custom-slot.tsx',
+        ),
+        'native-some-example': modifiedJoin(
+          fixturesDir,
+          'web-components',
+          '_native',
+          'some-example.tsx',
+        ),
+        'web-component': modifiedJoin(
+          fixturesDir,
+          'web-components',
+          'web',
+          'component.tsx',
+        ),
+        'with-context': modifiedJoin(
+          fixturesDir,
+          'web-components',
+          'with-context.tsx',
+        ),
+        'with-link': modifiedJoin(
+          fixturesDir,
+          'web-components',
+          'with-link.tsx',
+        ),
+      });
+    });
   });
 });

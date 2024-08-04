@@ -1,4 +1,5 @@
 import { getConstants } from '@/constants';
+import path from 'node:path';
 
 type DependenciesMap = Map<string, Set<string>>;
 
@@ -6,6 +7,7 @@ export default function getWebComponentsPerEntryPoints(
   webComponentsPerFile: Record<string, Record<string, string>>,
   dependenciesPerFile: DependenciesMap,
   entrypoints: string[],
+  separator = path.sep,
 ) {
   const entryPointsSet = new Set(entrypoints);
   const webComponentsPerEntryPoint: Record<string, Record<string, string>> = {};
@@ -28,6 +30,7 @@ export default function getWebComponentsPerEntryPoints(
         dependenciesPerFile,
         webComponentFilePath,
         entryPointsSet,
+        separator,
       );
 
       for (const entryPoint of entryPoints) {
@@ -44,14 +47,17 @@ export default function getWebComponentsPerEntryPoints(
   return webComponentsPerEntryPoint;
 }
 
+const IMPORT_REGEX = /^import:/;
+
 function findEntryPoints(
   dependencies: DependenciesMap,
   file: string,
   entryPoints: Set<string>,
+  separator = path.sep,
 ) {
   const entryPointSet = new Set<string>();
   const visited = new Set<string>();
-  const stack = [file.replace(/^import:/, '')];
+  const stack = [file.replace(IMPORT_REGEX, '').replaceAll('/', separator)];
 
   while (stack.length) {
     const currentFile = stack.pop();
