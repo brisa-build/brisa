@@ -13,6 +13,7 @@ const CONTEXT_PROVIDER = 'context-provider';
 export default async function getWebComponentsList(
   dir: string,
   integrationsPath?: string | null,
+  separator = path.sep,
 ): Promise<Record<string, string>> {
   const webDir = path.join(dir, 'web-components');
 
@@ -51,6 +52,7 @@ export default async function getWebComponentsList(
       )
       .map(([key, path]) => {
         const selector = key.replace(/^\/(_)?/g, '').replaceAll('/', '-');
+        const fixedPath = path.replaceAll('/', separator);
 
         if (selector === CONTEXT_PROVIDER) {
           logError({
@@ -76,7 +78,7 @@ export default async function getWebComponentsList(
           existingSelectors.add(selector);
         }
 
-        return [selector, path];
+        return [selector, fixedPath];
       }),
   );
 

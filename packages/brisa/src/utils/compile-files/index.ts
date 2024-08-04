@@ -1,4 +1,4 @@
-import { gzipSync, type BuildArtifact } from 'bun';
+import { gzipSync, write, type BuildArtifact } from 'bun';
 import { brotliCompressSync } from 'node:zlib';
 import fs from 'node:fs';
 import { join, sep } from 'node:path';
@@ -16,6 +16,8 @@ import getI18nClientMessages from '@/utils/get-i18n-client-messages';
 import compileActions from '@/utils/compile-actions';
 import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/ast/get-webcomponents-per-entrypoints';
+
+const TS_REGEX = /\.tsx?$/;
 
 export default async function compileFiles() {
   const {
@@ -251,6 +253,7 @@ async function compileClientCodePage(
   const pagesClientPath = join(BUILD_DIR, 'pages-client');
   const internalPath = join(BUILD_DIR, '_brisa');
   const layoutBuildPath = layoutPath ? getBuildPath(layoutPath) : '';
+  const writes = [];
 
   // During hotreloading it is important to clean pages-client because
   // new client files are generated with hash, this hash can change
@@ -348,12 +351,14 @@ async function compileClientCodePage(
     clientSizesPerPage[route] += addExtraChunk(unsuspense, '_unsuspense', {
       pagesClientPath,
       pagePath,
+      writes,
     });
 
     // create _rpc-[versionhash].js and _rpc.txt (list of pages with actions)
     clientSizesPerPage[route] += addExtraChunk(rpc, '_rpc', {
       pagesClientPath,
       pagePath,
+      writes,
     });
 
     // create _rpc-lazy-[versionhash].js
@@ -361,6 +366,7 @@ async function compileClientCodePage(
       pagesClientPath,
       pagePath,
       skipList: true,
+      writes,
     });
 
     if (!code) continue;
@@ -372,29 +378,35 @@ async function compileClientCodePage(
         const messages = getI18nClientMessages(locale, i18nKeys);
         const i18nCode = `window.i18nMessages=${JSON.stringify(messages)};`;
 
-        Bun.write(i18nPagePath, i18nCode);
+        writes.push(Bun.write(i18nPagePath, i18nCode));
 
         // Compression in production
         if (IS_PRODUCTION) {
-          Bun.write(
-            `${i18nPagePath}.gz`,
-            gzipSync(new TextEncoder().encode(i18nCode)),
+          writes.push(
+            Bun.write(
+              `${i18nPagePath}.gz`,
+              gzipSync(new TextEncoder().encode(i18nCode)),
+            ),
           );
-          Bun.write(`${i18nPagePath}.br`, brotliCompressSync(i18nCode));
+          writes.push(
+            Bun.write(`${i18nPagePath}.br`, brotliCompressSync(i18nCode)),
+          );
         }
       }
     }
 
     // create page file
-    Bun.write(clientPagePath.replace('.js', '.txt'), hash.toString());
-    Bun.write(clientPage, code);
+    writes.push(
+      Bun.write(clientPagePath.replace('.js', '.txt'), hash.toString()),
+    );
+    writes.push(Bun.write(clientPage, code));
 
     // Compression in production
     if (IS_PRODUCTION) {
       const gzipClientPage = gzipSync(new TextEncoder().encode(code));
 
-      Bun.write(`${clientPage}.gz`, gzipClientPage);
-      Bun.write(`${clientPage}.br`, brotliCompressSync(code));
+      writes.push(Bun.write(`${clientPage}.gz`, gzipClientPage));
+      writes.push(Bun.write(`${clientPage}.br`, brotliCompressSync(code)));
       clientSizesPerPage[route] += gzipClientPage.length;
     }
   }
@@ -408,7 +420,12 @@ async function compileClientCodePage(
     .join('\n')}
 }`;
 
-  Bun.write(join(internalPath, 'types.ts'), intrinsicCustomElements);
+  writes.push(
+    Bun.write(join(internalPath, 'types.ts'), intrinsicCustomElements),
+  );
+
+  // Although on Mac it can work without await, on Windows it does not and it is mandatory
+  await Promise.all(writes);
 
   return clientSizesPerPage;
 }
@@ -420,7 +437,13 @@ function addExtraChunk(
     pagesClientPath,
     pagePath,
     skipList = false,
-  }: { pagesClientPath: string; pagePath: string; skipList?: boolean },
+    writes,
+  }: {
+    pagesClientPath: string;
+    pagePath: string;
+    skipList?: boolean;
+    writes: Promise<any>[];
+  },
 ) {
   const { BUILD_DIR, VERSION_HASH, IS_PRODUCTION } = getConstants();
   const jsFilename = `${filename}-${VERSION_HASH}.js`;
@@ -430,30 +453,38 @@ function addExtraChunk(
   if (!skipList && fs.existsSync(join(pagesClientPath, jsFilename))) {
     const listPath = join(pagesClientPath, `${filename}.txt`);
 
-    Bun.write(
-      listPath,
-      `${fs.readFileSync(listPath).toString()}\n${pagePath.replace(BUILD_DIR, '')}`,
+    writes.push(
+      Bun.write(
+        listPath,
+        `${fs.readFileSync(listPath).toString()}\n${pagePath.replace(BUILD_DIR, '')}`,
+      ),
     );
 
     return 0;
   }
 
-  Bun.write(join(pagesClientPath, jsFilename), code);
+  writes.push(Bun.write(join(pagesClientPath, jsFilename), code));
 
   if (!skipList) {
-    Bun.write(
-      join(pagesClientPath, `${filename}.txt`),
-      pagePath.replace(BUILD_DIR, ''),
+    writes.push(
+      Bun.write(
+        join(pagesClientPath, `${filename}.txt`),
+        pagePath.replace(BUILD_DIR, ''),
+      ),
     );
   }
 
   if (IS_PRODUCTION) {
     const gzipUnsuspense = gzipSync(new TextEncoder().encode(code));
 
-    Bun.write(join(pagesClientPath, `${jsFilename}.gz`), gzipUnsuspense);
-    Bun.write(
-      join(pagesClientPath, `${jsFilename}.br`),
-      brotliCompressSync(code),
+    writes.push(
+      Bun.write(join(pagesClientPath, `${jsFilename}.gz`), gzipUnsuspense),
+    );
+    writes.push(
+      Bun.write(
+        join(pagesClientPath, `${jsFilename}.br`),
+        brotliCompressSync(code),
+      ),
     );
     return gzipUnsuspense.length;
   }
@@ -463,5 +494,5 @@ function addExtraChunk(
 
 function getBuildPath(path: string) {
   const { SRC_DIR, BUILD_DIR } = getConstants();
-  return path.replace(SRC_DIR, BUILD_DIR).replace(/\.tsx?$/, '.js');
+  return path.replace(SRC_DIR, BUILD_DIR).replace(TS_REGEX, '.js');
 }

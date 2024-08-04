@@ -122,6 +122,35 @@ describe('utils', () => {
           },
         });
       });
+
+      it('should work with different path separator when webComponentPerFile arrives with import:/', () => {
+        const separator = '\\';
+        const webComponentsPerFile = {
+          '\\path\\to\\file.tsx': {
+            'web-component': 'import:/path/to/web-component.tsx',
+          },
+        };
+
+        const dependenciesPerFile = new Map<string, Set<string>>([
+          ['\\path\\to\\file.tsx', new Set(['\\path\\to\\foo.tsx'])],
+          ['\\path\\to\\foo.tsx', new Set(['\\path\\to\\web-component.tsx'])],
+        ]);
+
+        const entrypoints = ['\\path\\to\\file.tsx'];
+
+        const result = getWebComponentsPerEntryPoints(
+          webComponentsPerFile,
+          dependenciesPerFile,
+          entrypoints,
+          separator,
+        );
+
+        expect(result).toEqual({
+          '\\path\\to\\file.js': {
+            'web-component': 'import:/path/to/web-component.tsx',
+          },
+        });
+      });
     });
   });
 });
