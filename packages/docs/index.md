@@ -31,3 +31,13 @@ features:
   - title: 📲 Change the output
     details: You can change your web from server to static, to desktop, android or ios app with just one configuration command.
 ---
+
+<script setup>
+import Standards from '.vitepress/components/standards.vue'
+import Showcase from '.vitepress/components/showcase.vue'
+
+</script>
+
+<Standards />
+<Showcase />
+

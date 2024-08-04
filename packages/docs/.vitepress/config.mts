@@ -10,7 +10,16 @@ export default defineConfig({
   ignoreDeadLinks: true,
   lastUpdated: true,
   cleanUrls: true,
-  head: [['link', { rel: 'icon', href: '/assets/brisa.svg' }]],
+  head: [
+    ['link', { rel: 'icon', href: '/assets/brisa.svg' }],
+    [
+      'link',
+      {
+        rel: 'stylesheet',
+        href: 'https://unpkg.com/tailwindcss@2.0.4/dist/tailwind.min.css',
+      },
+    ],
+  ],
   markdown: {
     config(md) {
       md.use(tabsMarkdownPlugin);
