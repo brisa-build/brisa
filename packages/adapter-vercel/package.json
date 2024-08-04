@@ -1,6 +1,6 @@
 {
   "name": "brisa-adapter-vercel",
-  "version": "0.0.141",
+  "version": "0.0.142",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
