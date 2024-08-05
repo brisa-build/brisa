@@ -2,8 +2,10 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { version } = require('./package.json');
 const { execSync } = require('node:child_process');
 const readline = require('node:readline');
+const BRISA_VERSION = version;
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -28,7 +30,6 @@ rl.question('Enter project name: ', (PROJECT_NAME) => {
 
   process.chdir(PROJECT_NAME);
 
-  const BRISA_VERSION = '0.0.122';
 
   console.log('\n🛠️  Installing brisa...\n');
 
