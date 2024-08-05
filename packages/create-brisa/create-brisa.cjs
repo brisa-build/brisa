@@ -30,7 +30,6 @@ rl.question('Enter project name: ', (PROJECT_NAME) => {
 
   process.chdir(PROJECT_NAME);
 
-
   console.log('\n🛠️  Installing brisa...\n');
 
   const packageJsonContent = {
