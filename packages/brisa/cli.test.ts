@@ -42,7 +42,7 @@ let mockLog: Mock<typeof console.log>;
 let mockCwd: Mock<typeof cwd>;
 let mockRandomBytes: Mock<typeof crypto.randomBytes>;
 
-const BRISA_BUILD_FOLDER = path.join(FIXTURES, 'build');
+const BRISA_BUILD_FOLDER = undefined;
 
 let prodOptions: any;
 let devOptions: any;
