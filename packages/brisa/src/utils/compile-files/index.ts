@@ -375,7 +375,7 @@ async function compileClientCodePage(
       for (const locale of I18N_CONFIG?.locales ?? []) {
         const i18nPagePath = clientPage.replace('.js', `-${locale}.js`);
         const messages = getI18nClientMessages(locale, i18nKeys);
-        const i18nCode = `window.i18nMessages=${JSON.stringify(messages)};`;
+        const i18nCode = `window.i18nMessages={...window.i18nMessages,...(${JSON.stringify(messages)})};`;
 
         writes.push(Bun.write(i18nPagePath, i18nCode));
 

@@ -918,7 +918,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head></head>
             <body>
-              <script>window.i18nMessages={"clientOne":"foo"}</script>
+              <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
               <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
@@ -981,7 +981,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head basepath="/test"></head>
             <body>
-              <script>window.i18nMessages={"clientOne":"foo"}</script>
+              <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
               <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
