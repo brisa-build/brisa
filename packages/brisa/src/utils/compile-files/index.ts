@@ -151,8 +151,8 @@ export default async function compileFiles() {
       success: false,
       logs: [
         { message: 'Error compiling web components' } as
-          | BuildMessage
-          | ResolveMessage,
+        | BuildMessage
+        | ResolveMessage,
       ],
       pagesSize,
     };
@@ -273,11 +273,11 @@ async function compileClientCodePage(
   const layoutWebComponents = webComponentsPerEntrypoint[layoutBuildPath];
   const layoutCode = layoutBuildPath
     ? await getClientCodeInPage({
-        pagePath: layoutBuildPath,
-        allWebComponents,
-        pageWebComponents: layoutWebComponents,
-        integrationsPath,
-      })
+      pagePath: layoutBuildPath,
+      allWebComponents,
+      pageWebComponents: layoutWebComponents,
+      integrationsPath,
+    })
     : null;
 
   for (const page of pages) {
@@ -371,7 +371,7 @@ async function compileClientCodePage(
 
     if (!code) continue;
 
-    // create i18n page content files
+    console.log({ useI18n, i18nKeys, I18N_CONFIG });
     if (useI18n && i18nKeys.size && I18N_CONFIG?.messages) {
       for (const locale of I18N_CONFIG?.locales ?? []) {
         const i18nPagePath = clientPage.replace('.js', `-${locale}.js`);
@@ -413,11 +413,11 @@ async function compileClientCodePage(
 
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
   ${Object.entries(allWebComponents)
-    .map(
-      ([name, location]) =>
-        `'${name}': JSX.WebComponentAttributes<typeof import("${location}").default>;`,
-    )
-    .join('\n')}
+      .map(
+        ([name, location]) =>
+          `'${name}': JSX.WebComponentAttributes<typeof import("${location}").default>;`,
+      )
+      .join('\n')}
 }`;
 
   writes.push(
