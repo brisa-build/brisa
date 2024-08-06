@@ -371,7 +371,6 @@ async function compileClientCodePage(
 
     if (!code) continue;
 
-    console.log({ useI18n, i18nKeys, I18N_CONFIG });
     if (useI18n && i18nKeys.size && I18N_CONFIG?.messages) {
       for (const locale of I18N_CONFIG?.locales ?? []) {
         const i18nPagePath = clientPage.replace('.js', `-${locale}.js`);
