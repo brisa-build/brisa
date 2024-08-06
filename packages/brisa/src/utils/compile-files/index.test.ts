@@ -575,13 +575,13 @@ describe('utils', () => {
       // Check i18n content depending the locale
       expect(await englishFile.text()).toBe(
         toInline(`
-          window.i18nMessages={"client-key":"Hello client!"};
+          window.i18nMessages={...window.i18nMessages,...({"client-key":"Hello client!"})};
       `),
       );
 
       expect(await frenchFile.text()).toBe(
         toInline(`
-          window.i18nMessages={"client-key":"Bonjour client !"};
+          window.i18nMessages={...window.i18nMessages,...({"client-key":"Bonjour client !"})};
       `),
       );
 

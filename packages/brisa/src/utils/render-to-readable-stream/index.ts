@@ -447,7 +447,7 @@ async function enqueueDuringRendering(
                 ),
               );
 
-              script = `<script>window.i18nMessages=${scriptContent}</script>`;
+              script = `<script>window.i18nMessages={...window.i18nMessages,...(${scriptContent})}</script>`;
             }
 
             controller.enqueue(script, suspenseId);
