@@ -11,6 +11,9 @@ import {
   yellowLog,
 } from './utils/log/log-color';
 
+const IS_SERVE_PROCESS = Bun.main.endsWith(
+  path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
+);
 const rootDir = process.cwd();
 const staticExportOutputOption = new Set([
   'static',
@@ -21,13 +24,14 @@ const staticExportOutputOption = new Set([
 const srcDir = path.resolve(rootDir, 'src');
 const buildDir =
   process.env.BRISA_BUILD_FOLDER ?? path.resolve(rootDir, 'build');
+const WORKSPACE = IS_SERVE_PROCESS ? buildDir : srcDir;
 const PAGE_404 = '/_404';
 const PAGE_500 = '/_500';
 const integrations = await importFileIfExists(
   '_integrations',
   path.resolve(buildDir, 'web-components'),
 );
-const I18N_CONFIG = (await importFileIfExists('i18n', buildDir))
+const I18N_CONFIG = (await importFileIfExists('i18n', WORKSPACE))
   ?.default as I18nConfig;
 const CONFIG =
   (await importFileIfExists('brisa.config', rootDir))?.default ?? {};
@@ -105,9 +109,7 @@ const constants = {
   IS_PRODUCTION,
   IS_DEVELOPMENT:
     process.argv.some((t) => t === 'DEV') || NODE_ENV === 'development',
-  IS_SERVE_PROCESS: Bun.main.endsWith(
-    path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
-  ),
+  IS_SERVE_PROCESS,
   PORT: Number.parseInt(process.argv[2]) || 0,
   BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,
