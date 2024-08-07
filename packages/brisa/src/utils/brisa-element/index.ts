@@ -92,9 +92,13 @@ export default function brisaElement(
 
     // Handle base path
     // This code is removed by the bundler when basePath is not used
-    if (__BASE_PATH__) {
+    if (__BASE_PATH__ || __TRAILING_SLASH__) {
       if ((key === 'src' || key === 'href') && !URL.canParse(value)) {
-        serializedValue = __BASE_PATH__ + serializedValue;
+        if (__BASE_PATH__) serializedValue = __BASE_PATH__ + serializedValue;
+        if (__TRAILING_SLASH__) {
+          if (key === 'href' && !serializedValue.endsWith('/'))
+            serializedValue += '/';
+        }
       }
     }
 

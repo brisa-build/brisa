@@ -237,6 +237,7 @@ export async function transformToWebComponents({
       __DEV__: (!IS_PRODUCTION).toString(),
       __WEB_CONTEXT_PLUGINS__: useWebContextPlugins.toString(),
       __BASE_PATH__: JSON.stringify(CONFIG.basePath),
+      __TRAILING_SLASH__: Boolean(CONFIG.trailingSlash).toString(),
       ...envVar,
     },
     plugins: extendPlugins(

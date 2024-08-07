@@ -52,6 +52,7 @@ export default async function compileFiles() {
   const define = {
     __DEV__: (!IS_PRODUCTION).toString(),
     __BASE_PATH__: JSON.stringify(CONFIG.basePath),
+    __TRAILING_SLASH__: Boolean(CONFIG.trailingSlash).toString(),
   };
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
 

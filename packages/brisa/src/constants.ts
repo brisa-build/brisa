@@ -161,6 +161,7 @@ declare global {
   var __WEB_CONTEXT_PLUGINS__: boolean;
   var __RPC_LAZY_FILE__: string;
   var __BASE_PATH__: string;
+  var __TRAILING_SLASH__: boolean;
 }
 
 export default constants;
