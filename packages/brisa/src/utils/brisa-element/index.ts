@@ -57,11 +57,22 @@ export default function brisaElement(
     );
   };
 
-  // Expose enhancePath function to the window object (to be used in navigate fn)
-  if (__BASE_PATH__ || __TRAILING_SLASH__) {
+  // Change the path to the correct one, taking into account:
+  // - Trailing slash
+  // - i18n locale
+  //
+  // Note: These flags are replaced by the bundler,
+  //       if they are not used they are removed.
+  if (__TRAILING_SLASH__ || __I18N_LOCALE__) {
     window.enhancePath ??= (path: string) => {
-      if (__TRAILING_SLASH__ && !path.endsWith('/')) return path + '/';
-      return path;
+      let res = path;
+      if (__TRAILING_SLASH__ && !path.endsWith('/')) res = path + '/';
+      if (__I18N_LOCALE__) {
+        const { locales, locale } = window.i18n;
+        const langInPath = path.split('/')[1];
+        res = locales.includes(langInPath) ? path : '/' + locale + path;
+      }
+      return res;
     };
   }
 
@@ -99,13 +110,13 @@ export default function brisaElement(
       (key.startsWith('xlink:') || key === 'href');
 
     // This code is removed by the bundler when flags are not used
-    if (__BASE_PATH__ || __TRAILING_SLASH__) {
+    if (__BASE_PATH__ || __TRAILING_SLASH__ || __I18N_LOCALE__) {
       if ((key === 'src' || key === 'href') && !URL.canParse(value)) {
         // Handle BASE_PATH
         if (__BASE_PATH__) serializedValue = __BASE_PATH__ + serializedValue;
 
         // Handle trailing slash + i18n locale + i18n pages
-        if (__TRAILING_SLASH__ && key === 'href') {
+        if ((__TRAILING_SLASH__ || __I18N_LOCALE__) && key === 'href') {
           serializedValue = window.enhancePath(serializedValue);
         }
       }
