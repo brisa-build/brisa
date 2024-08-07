@@ -162,7 +162,7 @@ declare global {
   var __RPC_LAZY_FILE__: string;
   var __BASE_PATH__: string;
   var __TRAILING_SLASH__: boolean;
-  var __I18N_LOCALE__: boolean;
+  var __USE_LOCALE__: boolean;
 }
 
 export default constants;

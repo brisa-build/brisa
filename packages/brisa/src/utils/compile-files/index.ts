@@ -54,7 +54,7 @@ export default async function compileFiles() {
     __DEV__: (!IS_PRODUCTION).toString(),
     __BASE_PATH__: JSON.stringify(CONFIG.basePath),
     __TRAILING_SLASH__: Boolean(CONFIG.trailingSlash).toString(),
-    __I18N_LOCALE__: Boolean(I18N_CONFIG?.defaultLocale).toString(),
+    __USE_LOCALE__: Boolean(I18N_CONFIG?.defaultLocale).toString(),
   };
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
 
