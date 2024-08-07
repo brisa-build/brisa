@@ -5459,6 +5459,300 @@ describe('integration', () => {
       expect(inputElement?.value).toBe('bar');
     });
 
+    it('should render a dynamic href attribute with the i18n locale', () => {
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'en',
+        locales: ['en', 'es'],
+      };
+      const code = `
+        const PATHS = ['/foo', '/bar', '/'];
+
+        export default function Component({}, { state }) {
+          const path = state(PATHS[0]);
+
+          return (
+            <>
+              <a href={path.value}>Link</a>
+              <button onClick={() => { path.value = PATHS[1] }}>Change to 1</button>
+              <button onClick={() => { path.value = PATHS[2] }}>Change to 2</button>
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = '<test-component />';
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const [button1, button2] = testComponent?.shadowRoot?.querySelectorAll(
+        'button',
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(a?.href).toBe('/en/foo');
+      button1.click();
+      expect(a?.href).toBe('/en/bar');
+      button2.click();
+      expect(a?.href).toBe('/en');
+    });
+
+    it('should render a dynamic href attribute with the trailing slash', () => {
+      window.__TRAILING_SLASH__ = true;
+      const code = `
+        const PATHS = ['/foo', '/bar', '/'];
+
+        export default function Component({}, { state }) {
+          const path = state(PATHS[0]);
+
+          return (
+            <>
+              <a href={path.value}>Link</a>
+              <button onClick={() => { path.value = PATHS[1] }}>Change to 1</button>
+              <button onClick={() => { path.value = PATHS[2] }}>Change to 2</button>
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = '<test-component />';
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const [button1, button2] = testComponent?.shadowRoot?.querySelectorAll(
+        'button',
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(a?.href).toBe('/foo/');
+      button1.click();
+      expect(a?.href).toBe('/bar/');
+      button2.click();
+      expect(a?.href).toBe('/');
+    });
+
+    it('should render a dynamic href attribute with basePath', () => {
+      window.__BASE_PATH__ = '/base-path';
+      const code = `
+        const PATHS = ['/foo', '/bar', '/'];
+
+        export default function Component({}, { state }) {
+          const path = state(PATHS[0]);
+
+          return (
+            <>
+              <a href={path.value}>Link</a>
+              <button onClick={() => { path.value = PATHS[1] }}>Change to 1</button>
+              <button onClick={() => { path.value = PATHS[2] }}>Change to 2</button>
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = '<test-component />';
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const [button1, button2] = testComponent?.shadowRoot?.querySelectorAll(
+        'button',
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(a?.href).toBe('/base-path/foo');
+      button1.click();
+      expect(a?.href).toBe('/base-path/bar');
+      button2.click();
+      expect(a?.href).toBe('/base-path/');
+    });
+
+    it('should render a dynamic href attribute with the i18n locale and trailingSlash', () => {
+      window.__USE_LOCALE__ = true;
+      window.__TRAILING_SLASH__ = true;
+      window.i18n = {
+        locale: 'en',
+        locales: ['en', 'es'],
+      };
+      const code = `
+        const PATHS = ['/foo', '/bar', '/'];
+
+        export default function Component({}, { state }) {
+          const path = state(PATHS[0]);
+
+          return (
+            <>
+              <a href={path.value}>Link</a>
+              <button onClick={() => { path.value = PATHS[1] }}>Change to 1</button>
+              <button onClick={() => { path.value = PATHS[2] }}>Change to 2</button>
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = '<test-component />';
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const [button1, button2] = testComponent?.shadowRoot?.querySelectorAll(
+        'button',
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(a?.href).toBe('/en/foo/');
+      button1.click();
+      expect(a?.href).toBe('/en/bar/');
+      button2.click();
+      expect(a?.href).toBe('/en/');
+    });
+
+    it('should render a dynamic href attribute with basePath and trailingSlash', () => {
+      window.__BASE_PATH__ = '/base-path';
+      window.__TRAILING_SLASH__ = true;
+      const code = `
+        const PATHS = ['/foo', '/bar', '/'];
+
+        export default function Component({}, { state }) {
+          const path = state(PATHS[0]);
+
+          return (
+            <>
+              <a href={path.value}>Link</a>
+              <button onClick={() => { path.value = PATHS[1] }}>Change to 1</button>
+              <button onClick={() => { path.value = PATHS[2] }}>Change to 2</button>
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = '<test-component />';
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const [button1, button2] = testComponent?.shadowRoot?.querySelectorAll(
+        'button',
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(a?.href).toBe('/base-path/foo/');
+      button1.click();
+      expect(a?.href).toBe('/base-path/bar/');
+      button2.click();
+      expect(a?.href).toBe('/base-path/');
+    });
+
+    it('should render a dynamic href attribute with basePath and i18n locale', () => {
+      window.__BASE_PATH__ = '/base-path';
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'en',
+        locales: ['en', 'es'],
+      };
+      const code = `
+        const PATHS = ['/foo', '/bar', '/'];
+
+        export default function Component({}, { state }) {
+          const path = state(PATHS[0]);
+
+          return (
+            <>
+              <a href={path.value}>Link</a>
+              <button onClick={() => { path.value = PATHS[1] }}>Change to 1</button>
+              <button onClick={() => { path.value = PATHS[2] }}>Change to 2</button>
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = '<test-component />';
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const [button1, button2] = testComponent?.shadowRoot?.querySelectorAll(
+        'button',
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(a?.href).toBe('/base-path/en/foo');
+      button1.click();
+      expect(a?.href).toBe('/base-path/en/bar');
+      button2.click();
+      expect(a?.href).toBe('/base-path/en');
+    });
+
+    it('should render a dynamic href attribute with basePath, i18n locale and trailingSlash', () => {
+      window.__BASE_PATH__ = '/base-path';
+      window.__USE_LOCALE__ = true;
+      window.__TRAILING_SLASH__ = true;
+      window.i18n = {
+        locale: 'en',
+        locales: ['en', 'es'],
+      };
+      const code = `
+        const PATHS = ['/foo', '/bar', '/'];
+
+        export default function Component({}, { state }) {
+          const path = state(PATHS[0]);
+
+          return (
+            <>
+              <a href={path.value}>Link</a>
+              <button onClick={() => { path.value = PATHS[1] }}>Change to 1</button>
+              <button onClick={() => { path.value = PATHS[2] }}>Change to 2</button>
+            </>
+          )
+        }
+      `;
+
+      document.body.innerHTML = '<test-component />';
+      defineBrisaWebComponent(code, 'src/web-components/test-component.tsx');
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const [button1, button2] = testComponent?.shadowRoot?.querySelectorAll(
+        'button',
+      ) as NodeListOf<HTMLButtonElement>;
+
+      expect(a?.href).toBe('/base-path/en/foo/');
+      button1.click();
+      expect(a?.href).toBe('/base-path/en/bar/');
+      button2.click();
+      expect(a?.href).toBe('/base-path/en/');
+    });
+
     it('should work consuming e.target.value without issues with props', () => {
       const code = `
       export default function Component(props, { state }) {

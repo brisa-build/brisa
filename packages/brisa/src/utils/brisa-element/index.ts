@@ -69,9 +69,9 @@ export default function brisaElement(
       if (__USE_LOCALE__) {
         const { locales, locale } = window.i18n;
         const langInPath = path.split('/')[1];
-        res = locales.includes(langInPath) ? path : '/' + locale + path;
+        res = locales.includes(langInPath) ? res : '/' + locale + res;
       }
-      if (__TRAILING_SLASH__ && !path.endsWith('/')) res = path + '/';
+      if (__TRAILING_SLASH__ && !path.endsWith('/')) res = res + '/';
       if (!__TRAILING_SLASH__) res = res.replace(/\/$/, '');
       return res;
     };
@@ -113,13 +113,13 @@ export default function brisaElement(
     // This code is removed by the bundler when flags are not used
     if (__BASE_PATH__ || __TRAILING_SLASH__ || __USE_LOCALE__) {
       if ((key === 'src' || key === 'href') && !URL.canParse(value)) {
-        // Handle BASE_PATH
-        if (__BASE_PATH__) serializedValue = __BASE_PATH__ + serializedValue;
-
         // Handle trailing slash + i18n locale + i18n pages
         if ((__TRAILING_SLASH__ || __USE_LOCALE__) && key === 'href') {
           serializedValue = window.fPath(serializedValue);
         }
+
+        // Handle BASE_PATH
+        if (__BASE_PATH__) serializedValue = __BASE_PATH__ + serializedValue;
       }
     }
 
