@@ -22,6 +22,7 @@ describe('utils', () => {
       GlobalRegistrator.register();
       window.__WEB_CONTEXT_PLUGINS__ = false;
       window.__BASE_PATH__ = '';
+      window.__TRAILING_SLASH__ = false;
       const module = await import('.');
       brisaElement = module.default;
       _on = module._on;
@@ -30,6 +31,7 @@ describe('utils', () => {
     afterEach(() => {
       window.__WEB_CONTEXT_PLUGINS__ = false;
       window.__BASE_PATH__ = '';
+      window.__TRAILING_SLASH__ = false;
       GlobalRegistrator.unregister();
     });
     it('should work props and state with a counter', () => {
@@ -1589,6 +1591,68 @@ describe('utils', () => {
 
       expect(a.getAttribute('href')).toBe('https://example.com/test');
       expect(img.getAttribute('src')).toBe('https://example.com/image.png');
+    });
+
+    it('should render the attribute href and src with the trailing slash when __TRAILING_SLASH__', () => {
+      window.__TRAILING_SLASH__ = true;
+      function Test() {
+        return [
+          'div',
+          {},
+          [
+            ['a', { href: '/test' }, 'link'],
+            ['img', { src: '/image.png' }, ''],
+          ],
+        ];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
+
+      expect(a.getAttribute('href')).toBe('/test/');
+      expect(img.getAttribute('src')).toBe('/image.png');
+    });
+
+    it('should render the attribute href and src with the trailing slash when __TRAILING_SLASH__ and already have it the trailing slash', () => {
+      window.__TRAILING_SLASH__ = true;
+      function Test() {
+        return [
+          'div',
+          {},
+          [
+            ['a', { href: '/test/' }, 'link'],
+            ['img', { src: '/image.png' }, ''],
+          ],
+        ];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
+
+      expect(a.getAttribute('href')).toBe('/test/');
+      expect(img.getAttribute('src')).toBe('/image.png');
     });
 
     it('should work multi conditionals renders', () => {
