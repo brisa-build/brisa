@@ -905,6 +905,73 @@ The key of each page item will be the name of the route. It works also with dyna
 
 It will automatically be taken into account in redirects, navigation and the `hrefLang` generation (see [here](#activate-automatic-hreflang) how to active `hrefLang`).
 
+> [!IMPORTANT]
+>
+> Brisa automatically corrects links in the HTML of Server Components to solve these page translations, this means that you can use `/about-us` in the `href` of the `a` tag and it will be automatically corrected to `/es/sobre-nosotros` if the user is in the `es` locale.
+However, this automatic correction **does not apply to Web Components** by default, you have to activate it via [configuration](#activate-page-pathname-translation-in-web-components).
+
+### Activate page pathname translation in Web Components
+
+To activate the automatic correction of links in Web Components you need to add the `pages.config.transferToClient` property:
+
+```js filename="src/i18n.js"
+export default {
+  locales: ["en-US", "es"],
+  defaultLocale: "en-US",
+  pages: {
+    config: {
+      transferToClient: true,
+    },
+    "/about-us": {
+      es: "/sobre-nosotros",
+    },
+    "/user/[username]": {
+      es: "/usuario/[username]",
+    },
+  },
+};
+```
+
+This will automatically correct **ALL** the links in the HTML of Web Components.
+
+> [!CAUTION]
+>
+> Activating this feature is going to increase the size of the client bundle because it needs to include the page translations.
+
+If you want to correct **only some paths**, you can provide an array of paths:
+
+```js filename="src/i18n.js"
+export default {
+  locales: ["en-US", "es"],
+  defaultLocale: "en-US",
+  pages: {
+    config: {
+      transferToClient: ["/about-us"],
+    },
+    "/about-us": {
+      es: "/sobre-nosotros",
+    },
+    "/user/[username]": {
+      es: "/usuario/[username]",
+    },
+  },
+};
+```
+
+### Types:
+
+```ts
+export type i18nPages = {
+  [path: `/${string}`]: {
+    [K: ISOLocale]: string;
+  };
+} & {
+  config?: {
+    transferToClient?: boolean | `/${string}`[];
+  };
+};
+```
+
 ## Navigation
 
 During navigation you do **not** have to add the locale in the `href` of the `a` tag, if you add it it will not do any conversion.

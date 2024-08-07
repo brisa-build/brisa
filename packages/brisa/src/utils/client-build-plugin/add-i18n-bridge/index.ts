@@ -1,6 +1,7 @@
 import constants from '@/constants';
 import AST from '@/utils/ast';
 import { TRANSLATE_CORE_IMPORT } from '@/utils/client-build-plugin/constants';
+import transferTranslatedPagePaths from '@/utils/transfer-translated-page-paths';
 import type { ESTree } from 'meriyah';
 
 const { parseCodeToAST } = AST('tsx');
@@ -32,6 +33,7 @@ export default function addI18nBridge(
   const i18nConfig = JSON.stringify({
     ...constants.I18N_CONFIG,
     messages: undefined,
+    pages: transferTranslatedPagePaths(constants.I18N_CONFIG?.pages),
   });
   let body = ast.body;
 
