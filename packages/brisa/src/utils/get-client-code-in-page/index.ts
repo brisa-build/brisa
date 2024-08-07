@@ -140,6 +140,7 @@ export async function transformToWebComponents({
     SRC_DIR,
     BUILD_DIR,
     CONFIG,
+    I18N_CONFIG,
     LOG_PREFIX,
     IS_DEVELOPMENT,
     IS_PRODUCTION,
@@ -238,6 +239,7 @@ export async function transformToWebComponents({
       __WEB_CONTEXT_PLUGINS__: useWebContextPlugins.toString(),
       __BASE_PATH__: JSON.stringify(CONFIG.basePath),
       __TRAILING_SLASH__: Boolean(CONFIG.trailingSlash).toString(),
+      __I18N_LOCALE__: Boolean(I18N_CONFIG?.defaultLocale).toString(),
       ...envVar,
     },
     plugins: extendPlugins(
