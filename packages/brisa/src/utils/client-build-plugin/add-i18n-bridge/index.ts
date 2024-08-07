@@ -32,7 +32,6 @@ export default function addI18nBridge(
   const i18nConfig = JSON.stringify({
     ...constants.I18N_CONFIG,
     messages: undefined,
-    pages: undefined,
   });
   let body = ast.body;
 

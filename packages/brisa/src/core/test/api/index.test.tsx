@@ -318,6 +318,44 @@ describe('test api', () => {
       expect(span.innerHTML).toBe('Hello World');
     });
 
+    it('should component access to i18n pages', async () => {
+      const pages = {
+        '/about-us': {
+          en: '/about-us/',
+          es: '/sobre-nosotros/',
+        },
+      };
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        SRC_DIR: BUILD_DIR,
+        BUILD_DIR,
+        I18N_CONFIG: {
+          defaultLocale: 'en',
+          locales: ['en', 'es'],
+          messages: {
+            en: {
+              'hello-world': 'Hello World',
+            },
+          },
+          pages,
+        },
+      };
+
+      function ServerComponent({}, { i18n }: RequestContext) {
+        return (
+          <div>
+            <span>{JSON.stringify(i18n.pages)}</span>
+          </div>
+        );
+      }
+
+      // @ts-ignore
+      const { container } = await render(<ServerComponent />, { locale: 'en' });
+      const span = container.querySelector('span')!;
+
+      expect(JSON.parse(span.innerHTML)).toEqual(pages);
+    });
+
     it('should be possible to use overrideMessages inside a server component', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
