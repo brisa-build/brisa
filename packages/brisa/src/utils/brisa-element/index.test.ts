@@ -23,8 +23,8 @@ describe('utils', () => {
       window.__WEB_CONTEXT_PLUGINS__ = false;
       window.__BASE_PATH__ = '';
       window.__TRAILING_SLASH__ = false;
-      window.__I18N_LOCALE__ = false;
-      window.enhancePath = undefined;
+      window.__USE_LOCALE__ = false;
+      window.fPath = undefined;
       const module = await import('.');
       brisaElement = module.default;
       _on = module._on;
@@ -34,8 +34,8 @@ describe('utils', () => {
       window.__WEB_CONTEXT_PLUGINS__ = false;
       window.__BASE_PATH__ = '';
       window.__TRAILING_SLASH__ = false;
-      window.__I18N_LOCALE__ = false;
-      window.enhancePath = undefined;
+      window.__USE_LOCALE__ = false;
+      window.fPath = undefined;
       GlobalRegistrator.unregister();
     });
     it('should work props and state with a counter', () => {
@@ -1691,8 +1691,28 @@ describe('utils', () => {
       expect(img.getAttribute('src')).toBe('/base-path/image.png');
     });
 
-    it('should render the attribute href with the locale when __I18N_LOCALE__', () => {
-      window.__I18N_LOCALE__ = true;
+    it('should NOT render the attribute href with the locale when __USE_LOCALE__ is false', () => {
+      window.__USE_LOCALE__ = false;
+      window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
+
+      function Test() {
+        return ['a', { href: '/test' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/test">link</a>',
+      );
+    });
+
+    it('should render the attribute href with the locale when __USE_LOCALE__', () => {
+      window.__USE_LOCALE__ = true;
       window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
 
       function Test() {
@@ -1708,6 +1728,66 @@ describe('utils', () => {
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<a href="/pt-BR/test">link</a>',
+      );
+    });
+
+    it('should render the attribute href with the locale when __USE_LOCALE__ when the path is the home', () => {
+      window.__USE_LOCALE__ = true;
+      window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
+
+      function Test() {
+        return ['a', { href: '/' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR">link</a>',
+      );
+    });
+
+    it('should render the attribute href with the locale when __USE_LOCALE__ keeping the existing locale', () => {
+      window.__USE_LOCALE__ = true;
+      window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
+
+      function Test() {
+        return ['a', { href: '/en-US/test' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/en-US/test">link</a>',
+      );
+    });
+
+    it('should render the attribute href with the locale when __USE_LOCALE__ keeping the existing locale when the path is the home', () => {
+      window.__USE_LOCALE__ = true;
+      window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
+
+      function Test() {
+        return ['a', { href: '/en-US' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/en-US">link</a>',
       );
     });
 
