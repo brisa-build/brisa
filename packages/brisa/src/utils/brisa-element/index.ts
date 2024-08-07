@@ -57,6 +57,14 @@ export default function brisaElement(
     );
   };
 
+  // Expose enhancePath function to the window object (to be used in navigate fn)
+  if (__BASE_PATH__ || __TRAILING_SLASH__) {
+    window.enhancePath ??= (path: string) => {
+      if (__TRAILING_SLASH__ && !path.endsWith('/')) return path + '/';
+      return path;
+    };
+  }
+
   const isObject = (o: unknown) => typeof o === 'object';
   const isReactiveArray = (a: any) => a?.some?.(isObject);
   const arr = Array.from;
@@ -90,14 +98,15 @@ export default function brisaElement(
       el.namespaceURI === SVG_NAMESPACE &&
       (key.startsWith('xlink:') || key === 'href');
 
-    // Handle base path
-    // This code is removed by the bundler when basePath is not used
+    // This code is removed by the bundler when flags are not used
     if (__BASE_PATH__ || __TRAILING_SLASH__) {
       if ((key === 'src' || key === 'href') && !URL.canParse(value)) {
+        // Handle BASE_PATH
         if (__BASE_PATH__) serializedValue = __BASE_PATH__ + serializedValue;
-        if (__TRAILING_SLASH__) {
-          if (key === 'href' && !serializedValue.endsWith('/'))
-            serializedValue += '/';
+
+        // Handle trailing slash + i18n locale + i18n pages
+        if (__TRAILING_SLASH__ && key === 'href') {
+          serializedValue = window.enhancePath(serializedValue);
         }
       }
     }

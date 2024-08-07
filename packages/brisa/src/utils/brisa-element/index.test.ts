@@ -1655,6 +1655,38 @@ describe('utils', () => {
       expect(img.getAttribute('src')).toBe('/image.png');
     });
 
+    it('should work with __BASE_PATH__ and __TRAILING_SLASH__ together', () => {
+      window.__BASE_PATH__ = '/base-path';
+      window.__TRAILING_SLASH__ = true;
+      function Test() {
+        return [
+          'div',
+          {},
+          [
+            ['a', { href: '/test' }, 'link'],
+            ['img', { src: '/image.png' }, ''],
+          ],
+        ];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
+
+      expect(a.getAttribute('href')).toBe('/base-path/test/');
+      expect(img.getAttribute('src')).toBe('/base-path/image.png');
+    });
+
     it('should work multi conditionals renders', () => {
       type Props = { count: { value: number } };
       function Test({ count }: Props) {
