@@ -1791,6 +1791,49 @@ describe('utils', () => {
       );
     });
 
+    it('should work with __USE_LOCALE__ and __TRAILING_SLASH__ together', () => {
+      window.__USE_LOCALE__ = true;
+      window.__TRAILING_SLASH__ = true;
+      window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
+
+      function Test() {
+        return ['a', { href: '/test' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/test/">link</a>',
+      );
+    });
+
+    it('should work with __USE_LOCALE__, __BASE_PATH__ and __TRAILING_SLASH__ together', () => {
+      window.__USE_LOCALE__ = true;
+      window.__BASE_PATH__ = '/base-path';
+      window.__TRAILING_SLASH__ = true;
+      window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
+
+      function Test() {
+        return ['a', { href: '/test' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/base-path/pt-BR/test/">link</a>',
+      );
+    });
+
     it('should work multi conditionals renders', () => {
       type Props = { count: { value: number } };
       function Test({ count }: Props) {
