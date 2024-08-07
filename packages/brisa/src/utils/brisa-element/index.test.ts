@@ -23,6 +23,8 @@ describe('utils', () => {
       window.__WEB_CONTEXT_PLUGINS__ = false;
       window.__BASE_PATH__ = '';
       window.__TRAILING_SLASH__ = false;
+      window.__I18N_LOCALE__ = false;
+      window.enhancePath = undefined;
       const module = await import('.');
       brisaElement = module.default;
       _on = module._on;
@@ -32,6 +34,8 @@ describe('utils', () => {
       window.__WEB_CONTEXT_PLUGINS__ = false;
       window.__BASE_PATH__ = '';
       window.__TRAILING_SLASH__ = false;
+      window.__I18N_LOCALE__ = false;
+      window.enhancePath = undefined;
       GlobalRegistrator.unregister();
     });
     it('should work props and state with a counter', () => {
@@ -1593,7 +1597,7 @@ describe('utils', () => {
       expect(img.getAttribute('src')).toBe('https://example.com/image.png');
     });
 
-    it('should render the attribute href and src with the trailing slash when __TRAILING_SLASH__', () => {
+    it('should render the attribute href with the trailing slash when __TRAILING_SLASH__', () => {
       window.__TRAILING_SLASH__ = true;
       function Test() {
         return [
@@ -1624,7 +1628,7 @@ describe('utils', () => {
       expect(img.getAttribute('src')).toBe('/image.png');
     });
 
-    it('should render the attribute href and src with the trailing slash when __TRAILING_SLASH__ and already have it the trailing slash', () => {
+    it('should render the attribute href with the trailing slash when __TRAILING_SLASH__ and already have it the trailing slash', () => {
       window.__TRAILING_SLASH__ = true;
       function Test() {
         return [
@@ -1685,6 +1689,26 @@ describe('utils', () => {
 
       expect(a.getAttribute('href')).toBe('/base-path/test/');
       expect(img.getAttribute('src')).toBe('/base-path/image.png');
+    });
+
+    it('should render the attribute href with the locale when __I18N_LOCALE__', () => {
+      window.__I18N_LOCALE__ = true;
+      window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
+
+      function Test() {
+        return ['a', { href: '/test' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/test">link</a>',
+      );
     });
 
     it('should work multi conditionals renders', () => {
