@@ -61,9 +61,11 @@ describe('utils', () => {
       beforeEach(() => {
         GlobalRegistrator.register();
         window.__BASE_PATH__ = basePath;
+        window.fPath = undefined;
       });
       afterEach(() => {
         window.__BASE_PATH__ = '';
+        window.fPath = undefined;
         GlobalRegistrator.unregister();
       });
 
@@ -85,6 +87,15 @@ describe('utils', () => {
           'https://test.com/some',
         );
         expect(mockEventListener).toHaveBeenCalled();
+      });
+
+      it('should use window.fPath if it is defined', () => {
+        window.fPath = (url: string) => '/prefix' + url;
+        const mockLocationAssign = spyOn(location, 'assign');
+        expect(() => navigate('/some')).toThrow(`/prefix${basePath}/some`);
+        expect(mockLocationAssign).toHaveBeenCalledWith(
+          `/prefix${basePath}/some`,
+        );
       });
     });
   });
