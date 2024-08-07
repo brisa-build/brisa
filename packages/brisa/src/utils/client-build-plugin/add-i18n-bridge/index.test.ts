@@ -49,7 +49,8 @@ describe('utils', () => {
 
           const i18nConfig = {
             defaultLocale: "en",
-            locales: ["en", "pt"]
+            locales: ["en", "pt"],
+            pages: {}
           };
 
           window.i18n = {
@@ -81,7 +82,7 @@ describe('utils', () => {
           const a = 1;
 
           Object.assign(window.i18n, {
-            get t() {return translateCore(this.locale, {...{defaultLocale: "en",locales: ["en", "pt"]},messages: this.messages});},
+            get t() {return translateCore(this.locale, {...{defaultLocale: "en",locales: ["en", "pt"],pages: {}},messages: this.messages});},
             get messages() {return {[this.locale]: window.i18nMessages};},
             overrideMessages(callback) {
               const p = callback(window.i18nMessages);
@@ -115,7 +116,8 @@ describe('utils', () => {
 
           const i18nConfig = {
             defaultLocale: "en",
-            locales: ["en", "pt"]
+            locales: ["en", "pt"],
+            pages: {}
           };
 
           window.i18n = {
@@ -143,7 +145,8 @@ describe('utils', () => {
         const expectedCode = normalizeQuotes(`
           const i18nConfig = {
             defaultLocale: "en",
-            locales: ["en", "pt"]
+            locales: ["en", "pt"],
+            pages: {}
           };
 
           window.i18n = {
@@ -166,7 +169,8 @@ describe('utils', () => {
 
           const i18nConfig = {
             defaultLocale: "en",
-            locales: ["en", "pt"]
+            locales: ["en", "pt"],
+            pages: {}
           };
 
           window.i18n = {
