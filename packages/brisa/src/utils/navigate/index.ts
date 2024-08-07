@@ -13,12 +13,17 @@ export default function navigate(
 
   if (typeof window !== 'undefined') {
     window._xm = mode;
+
+    if (window.fPath) url = window.fPath(url);
+
     location.assign(url);
+
     const errorFn = (e: ErrorEvent) => {
       e.preventDefault();
       e.stopPropagation();
       window.removeEventListener('error', errorFn);
     };
+
     window.addEventListener('error', errorFn);
   }
 
