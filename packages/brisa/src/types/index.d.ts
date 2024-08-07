@@ -1000,23 +1000,29 @@ export interface TranslationQuery {
   [name: string]: any;
 }
 
-export type Translations = {
-  [locale: string]: string;
-};
-
 export type I18nDomainConfig = {
   defaultLocale: string;
   protocol?: 'http' | 'https';
   dev?: boolean;
 };
 
-type i18nPages = {
-  [pageName: string]: Translations;
+type ISO2 = `${Lowercase<string>}${Lowercase<string>}`; // Ex: 'es'
+type ISO4 = `${ISO2}-${Uppercase<string>}${Uppercase<string>}`; // Ex: 'es-MX'
+type ISOLocale = ISO2 | ISO4;
+
+export type i18nPages = {
+  [path: `/${string}`]: {
+    [K: ISOLocale]: string;
+  };
+} & {
+  config?: {
+    transferToClient?: boolean | `/${string}`[];
+  };
 };
 
 export type I18nConfig<T = I18nDictionary> = {
-  defaultLocale: string;
-  locales: string[];
+  defaultLocale: ISOLocale;
+  locales: ISOLocale[];
   domains?: Record<string, I18nDomainConfig>;
   messages?: Record<string, T>;
   interpolation?: {
@@ -1027,7 +1033,11 @@ export type I18nConfig<T = I18nDictionary> = {
   allowEmptyStrings?: boolean;
   keySeparator?: string;
   pages?: i18nPages;
-  hrefLangOrigin?: string | Translations;
+  hrefLangOrigin?:
+    | string
+    | {
+        [locale: ISOLocale]: string;
+      };
 };
 
 type RouterType = {

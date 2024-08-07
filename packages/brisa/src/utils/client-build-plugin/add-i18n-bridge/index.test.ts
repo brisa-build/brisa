@@ -3,6 +3,7 @@ import { describe, it, expect, mock, beforeEach, afterEach } from 'bun:test';
 import addI18nBridge from '.';
 import { normalizeQuotes } from '@/helpers';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
+import type { I18nConfig } from '@/types';
 
 const I18N_CONFIG = {
   defaultLocale: 'en',
@@ -26,6 +27,11 @@ const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 const emptyAst = parseCodeToAST('');
 
 describe('utils', () => {
+  beforeEach(() => {
+    mock.module('@/constants', () => ({
+      default: { I18N_CONFIG },
+    }));
+  });
   describe('client-build-plugin', () => {
     describe('add-i18n-bridge', () => {
       it('should add the code at the bottom', () => {
@@ -49,8 +55,7 @@ describe('utils', () => {
 
           const i18nConfig = {
             defaultLocale: "en",
-            locales: ["en", "pt"],
-            pages: {}
+            locales: ["en", "pt"]
           };
 
           window.i18n = {
@@ -82,7 +87,7 @@ describe('utils', () => {
           const a = 1;
 
           Object.assign(window.i18n, {
-            get t() {return translateCore(this.locale, {...{defaultLocale: "en",locales: ["en", "pt"],pages: {}},messages: this.messages});},
+            get t() {return translateCore(this.locale, {...{defaultLocale: "en",locales: ["en", "pt"]},messages: this.messages});},
             get messages() {return {[this.locale]: window.i18nMessages};},
             overrideMessages(callback) {
               const p = callback(window.i18nMessages);
@@ -116,8 +121,7 @@ describe('utils', () => {
 
           const i18nConfig = {
             defaultLocale: "en",
-            locales: ["en", "pt"],
-            pages: {}
+            locales: ["en", "pt"]
           };
 
           window.i18n = {
@@ -145,8 +149,7 @@ describe('utils', () => {
         const expectedCode = normalizeQuotes(`
           const i18nConfig = {
             defaultLocale: "en",
-            locales: ["en", "pt"],
-            pages: {}
+            locales: ["en", "pt"]
           };
 
           window.i18n = {
@@ -169,8 +172,7 @@ describe('utils', () => {
 
           const i18nConfig = {
             defaultLocale: "en",
-            locales: ["en", "pt"],
-            pages: {}
+            locales: ["en", "pt"]
           };
 
           window.i18n = {
@@ -327,6 +329,112 @@ describe('utils', () => {
         expect(window.i18n.messages).toEqual({ pt: window.i18nMessages });
         expect(window.i18nMessages).toEqual({ hello: 'Olááá {{name}}' });
         expect(window.i18n.t('hello', { name: 'John' })).toBe('Olááá John');
+      });
+
+      it('should import the i18n pages when config.transferToClient is true', () => {
+        mock.module('@/constants', () => ({
+          default: {
+            I18N_CONFIG: {
+              ...I18N_CONFIG,
+              pages: {
+                config: {
+                  transferToClient: true,
+                },
+                '/about-us': {
+                  en: '/about-us/',
+                  es: '/sobre-nosotros/',
+                },
+                '/user/[username]': {
+                  en: '/user/[username]',
+                  es: '/usuario/[username]',
+                },
+                '/somepage': {
+                  en: '/somepage',
+                  es: '/alguna-pagina',
+                },
+              },
+            } as I18nConfig,
+          },
+        }));
+
+        const ast = addI18nBridge(emptyAst, {
+          usei18nKeysLogic: false,
+          i18nAdded: false,
+          isTranslateCoreAdded: false,
+        });
+
+        let output = generateCodeFromAST(ast);
+        const script = document.createElement('script');
+
+        script.innerHTML = output;
+
+        document.body.appendChild(script);
+
+        expect(window.i18n.pages).toEqual({
+          '/about-us': {
+            en: '/about-us/',
+            es: '/sobre-nosotros/',
+          },
+          '/user/[username]': {
+            en: '/user/[username]',
+            es: '/usuario/[username]',
+          },
+          '/somepage': {
+            en: '/somepage',
+            es: '/alguna-pagina',
+          },
+        });
+      });
+
+      it('should import the i18n pages when config.transferToClient is an array', () => {
+        mock.module('@/constants', () => ({
+          default: {
+            I18N_CONFIG: {
+              ...I18N_CONFIG,
+              pages: {
+                config: {
+                  transferToClient: ['/about-us', '/user/[username]'],
+                },
+                '/about-us': {
+                  en: '/about-us/',
+                  es: '/sobre-nosotros/',
+                },
+                '/user/[username]': {
+                  en: '/user/[username]',
+                  es: '/usuario/[username]',
+                },
+                '/somepage': {
+                  en: '/somepage',
+                  es: '/alguna-pagina',
+                },
+              },
+            } as I18nConfig,
+          },
+        }));
+
+        const ast = addI18nBridge(emptyAst, {
+          usei18nKeysLogic: false,
+          i18nAdded: false,
+          isTranslateCoreAdded: false,
+        });
+
+        let output = generateCodeFromAST(ast);
+        const script = document.createElement('script');
+
+        script.innerHTML = output;
+
+        document.body.appendChild(script);
+
+        expect(window.i18n.pages).toEqual({
+          '/about-us': {
+            en: '/about-us/',
+            es: '/sobre-nosotros/',
+          },
+          '/user/[username]': {
+            en: '/user/[username]',
+            es: '/usuario/[username]',
+          },
+        });
       });
     });
   });
