@@ -24,6 +24,7 @@ describe('utils', () => {
       window.__BASE_PATH__ = '';
       window.__TRAILING_SLASH__ = false;
       window.__USE_LOCALE__ = false;
+      window.__USE_PAGE_TRANSLATION__ = false;
       window.fPath = undefined;
       const module = await import('.');
       brisaElement = module.default;
@@ -35,6 +36,7 @@ describe('utils', () => {
       window.__BASE_PATH__ = '';
       window.__TRAILING_SLASH__ = false;
       window.__USE_LOCALE__ = false;
+      window.__USE_PAGE_TRANSLATION__ = false;
       window.fPath = undefined;
       GlobalRegistrator.unregister();
     });
@@ -1831,6 +1833,148 @@ describe('utils', () => {
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<a href="/base-path/pt-BR/test/">link</a>',
+      );
+    });
+
+    it('should work with __USE_LOCALE__, __BASE_PATH__ and __TRAILING_SLASH__ together when the path is the home', () => {
+      window.__USE_LOCALE__ = true;
+      window.__BASE_PATH__ = '/base-path';
+      window.__TRAILING_SLASH__ = true;
+      window.i18n = { locale: 'pt-BR', locales: ['pt-BR', 'en-US'] };
+
+      function Test() {
+        return ['a', { href: '/' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/base-path/pt-BR/">link</a>',
+      );
+    });
+
+    it('should translate pages when __USE_PAGE_TRANSLATION__ is true', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/about-us': {
+            'pt-BR': '/sobre-nos',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/about-us' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/sobre-nos">link</a>',
+      );
+    });
+
+    it('should translate home page when __USE_PAGE_TRANSLATION__ is true', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/': {
+            'pt-BR': '/inicio',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/inicio">link</a>',
+      );
+    });
+
+    it('should translate pages with locale in the href and __USE_PAGE_TRANSLATION__ is true', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/about-us': {
+            'pt-BR': '/sobre-nos',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/en-US/about-us' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/en-US/sobre-nos">link</a>',
+      );
+    });
+
+    it('should translate pages with dynamic routes and __USE_PAGE_TRANSLATION__', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/user/[username]': {
+            'pt-BR': '/usuario/[username]',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/user/john-doe' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/usuario/john-doe">link</a>',
       );
     });
 

@@ -46,6 +46,7 @@ describe('integration', () => {
       window.__BASE_PATH__ = '';
       window.__TRAILING_SLASH__ = false;
       window.__USE_LOCALE__ = false;
+      window.__USE_PAGE_TRANSLATION__ = false;
       window.brisaElement = module.default;
       window._on = module._on;
       window._off = module._off;

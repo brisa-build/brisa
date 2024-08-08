@@ -164,6 +164,7 @@ declare global {
   var __TRAILING_SLASH__: boolean;
   var __USE_LOCALE__: boolean;
   var __IS_STATIC__: boolean;
+  var __USE_PAGE_TRANSLATION__: boolean;
 }
 
 export default constants;

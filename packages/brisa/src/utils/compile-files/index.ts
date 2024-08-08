@@ -16,6 +16,7 @@ import getI18nClientMessages from '@/utils/get-i18n-client-messages';
 import compileActions from '@/utils/compile-actions';
 import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/ast/get-webcomponents-per-entrypoints';
+import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 
 const TS_REGEX = /\.tsx?$/;
 
@@ -55,6 +56,9 @@ export default async function compileFiles() {
     __BASE_PATH__: JSON.stringify(CONFIG.basePath),
     __TRAILING_SLASH__: Boolean(CONFIG.trailingSlash).toString(),
     __USE_LOCALE__: Boolean(I18N_CONFIG?.defaultLocale).toString(),
+    __USE_PAGE_TRANSLATION__: shouldTransferTranslatedPagePaths(
+      I18N_CONFIG?.pages,
+    ).toString(),
   };
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
 
