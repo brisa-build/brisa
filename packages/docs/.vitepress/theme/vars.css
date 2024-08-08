@@ -84,6 +84,11 @@
   --vp-c-bg-alt: #0a0c0f;
 }
 
+.dark .main img {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+
 :root {
   --vp-button-brand-border: var(--vp-c-brand-light);
   --vp-button-brand-text: var(--vp-c-white);

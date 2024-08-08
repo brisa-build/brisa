@@ -46,6 +46,10 @@ export default function MyComponent({ text = "foo" }: { text: string }) {
 }
 ```
 
+> [!NOTE]
+>
+> See the differences between "Action Signals" and `rerenderInAction` in [this documentation](/building-your-application/data-management/server-actions#action-signals-vs-rerenderinaction).
+
 #### Types:
 
 ```ts
