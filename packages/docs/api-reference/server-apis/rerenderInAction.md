@@ -14,7 +14,7 @@ inside a server action. Outside of an action, it throws an error.
 `rerenderInAction` needs to be called outside of the `try/catch` block:
 
 ```tsx
-import { rerenderInAction } from "brisa";
+import { rerenderInAction } from "brisa/server";
 
 // Inside a server action
 function handleEvent() {
@@ -45,6 +45,10 @@ export default function MyComponent({ text = "foo" }: { text: string }) {
   );
 }
 ```
+
+> [!NOTE]
+>
+> See the differences between "Action Signals" and `rerenderInAction` in [this documentation](/building-your-application/data-management/server-actions#action-signals-vs-rerenderinaction).
 
 #### Types:
 
