@@ -548,7 +548,7 @@ For these cases, you can use the [**action signals**](#action-signals) through t
 
 ```tsx filename="src/pages/index.tsx"
 import type { RequestContext } from "brisa";
-import { RenderInitiator } from "brisa/server";
+import { RenderInitiator, rerenderInAction } from "brisa/server";
 
 export default function Page(
   {},
@@ -567,14 +567,27 @@ export default function Page(
     // ..
     // set communication action-client:
     store.set("foo", Math.random());
+    // rerender this component:
+    rerenderInAction(); 
   }
 
   return (
     <button onClick={onClick}>
-      {/* display "render" and "action" value */}
+      {/* display "initial render" and "rerender" value */}
       {store.get("foo")}
+      <web-component />
     </button>
   );
+}
+```
+
+Imagine inside the `web-component` you have a `store` property that is the same as the `foo` value. After the action, the `web-component` will react to the changes of the `foo` value. The Web Component is not necessary to be inside the same component, it can be in any part of the page.
+
+```tsx filename="src/web-components/web-component.tsx"
+import type { WebContext } from "brisa";
+
+export default function WebComponent({}, { store }: WebContext) {
+  return <div>{store.get("foo")}</div>;
 }
 ```
 
