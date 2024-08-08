@@ -148,7 +148,8 @@ We recommend using HTML validation like `required` and `type="email"` for basic 
 For more advanced server-side validation, you can use a library like [zod](https://zod.dev/) to validate the form fields before mutating the data, together with [Action Signals (store)](#action-signals).
 
 ```tsx
-import { rerenderInAction, type RequestContext } from "brisa";
+import type { RequestContext } from "brisa";
+import { rerenderInAction } from "brisa/server";
 import { z } from "zod";
 
 const schema = z.object({
@@ -377,7 +378,7 @@ inside a server action. Outside of an action, it throws an error.
 `rerenderInAction` needs to be called outside of the `try/catch` block:
 
 ```tsx
-import { rerenderInAction } from "brisa";
+import { rerenderInAction } from "brisa/server";
 
 // Inside a server action
 function handleEvent() {
@@ -459,7 +460,8 @@ You should treat Server Actions as you would public-facing API endpoints, and en
 
 ```tsx
 import { Database } from "bun:sqlite";
-import { rerenderInAction, type RequestContext } from "brisa";
+import type { RequestContext } from "brisa";
+import { rerenderInAction} from "brisa/server";
 import validateToken from "@/auth/validate-token";
 
 const db = new Database("mydb.sqlite");
