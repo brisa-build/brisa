@@ -1,5 +1,7 @@
 import type { i18nPages } from '@/types';
-import transferTranslatedPagePaths from '@/utils/transfer-translated-page-paths';
+import transferTranslatedPagePaths, {
+  shouldTransferTranslatedPagePaths,
+} from '@/utils/transfer-translated-page-paths';
 import { expect, it, describe } from 'bun:test';
 
 describe('transferTranslatedPagePaths', () => {
@@ -31,6 +33,7 @@ describe('transferTranslatedPagePaths', () => {
 
     const result = transferTranslatedPagePaths(pages);
 
+    expect(shouldTransferTranslatedPagePaths(pages)).toBeFalse();
     expect(result).toBeUndefined();
   });
 
@@ -55,6 +58,7 @@ describe('transferTranslatedPagePaths', () => {
 
     const result = transferTranslatedPagePaths(pages);
 
+    expect(shouldTransferTranslatedPagePaths(pages)).toBeFalse();
     expect(result).toBeUndefined();
   });
 
@@ -79,6 +83,7 @@ describe('transferTranslatedPagePaths', () => {
 
     const result = transferTranslatedPagePaths(pages);
 
+    expect(shouldTransferTranslatedPagePaths(pages)).toBeFalse();
     expect(result).toBeUndefined();
   });
 
@@ -103,6 +108,7 @@ describe('transferTranslatedPagePaths', () => {
 
     const result = transferTranslatedPagePaths(pages);
 
+    expect(shouldTransferTranslatedPagePaths(pages)).toBeTrue();
     expect(result).toEqual({
       '/about-us': {
         en: '/about-us/',
@@ -140,6 +146,7 @@ describe('transferTranslatedPagePaths', () => {
 
     const result = transferTranslatedPagePaths(pages);
 
+    expect(shouldTransferTranslatedPagePaths(pages)).toBeTrue();
     expect(result).toEqual({
       '/user/[username]': {
         en: '/user/[username]',

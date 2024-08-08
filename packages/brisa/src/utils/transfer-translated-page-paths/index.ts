@@ -21,3 +21,7 @@ export default function transferTranslatedPagePaths(pages?: i18nPages) {
     );
   }
 }
+
+export function shouldTransferTranslatedPagePaths(pages?: i18nPages) {
+  return Object.keys(transferTranslatedPagePaths(pages) ?? {}).length > 0;
+}
