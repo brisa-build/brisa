@@ -7,6 +7,8 @@ import type { RequestContext } from '@/types';
 import { logError } from '@/utils/log/log-build';
 import { redirect } from '@/utils/redirect';
 
+const TRAILING_SLASH_REGEX = /\/$/;
+
 export default function handleI18n(req: RequestContext): {
   response?: Response;
   pagesRouter?: ReturnType<typeof getRouteMatcher>;
@@ -28,7 +30,7 @@ export default function handleI18n(req: RequestContext): {
   const locale = getLocaleFromRequest(req);
   const url = new URL(req.finalURL);
   const [, localeFromUrl] = url.pathname.split('/');
-  const pathname = url.pathname.replace(/\/$/, '');
+  const pathname = url.pathname.replace(TRAILING_SLASH_REGEX, '');
 
   const routers = {
     pagesRouter: getRouteMatcher(PAGES_DIR, RESERVED_PAGES, locale),

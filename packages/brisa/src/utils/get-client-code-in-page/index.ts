@@ -22,6 +22,7 @@ import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import snakeToCamelCase from '@/utils/snake-to-camelcase';
 import analyzeServerAst from '@/utils/analyze-server-ast';
 import { logBuildError } from '@/utils/log/log-build';
+import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
@@ -240,6 +241,9 @@ export async function transformToWebComponents({
       __BASE_PATH__: JSON.stringify(CONFIG.basePath),
       __TRAILING_SLASH__: Boolean(CONFIG.trailingSlash).toString(),
       __USE_LOCALE__: Boolean(I18N_CONFIG?.defaultLocale).toString(),
+      __USE_PAGE_TRANSLATION__: shouldTransferTranslatedPagePaths(
+        I18N_CONFIG?.pages,
+      ).toString(),
       ...envVar,
     },
     plugins: extendPlugins(

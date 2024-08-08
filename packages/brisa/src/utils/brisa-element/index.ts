@@ -63,14 +63,24 @@ export default function brisaElement(
   // - i18n locale
   //
   // Note: These flags are replaced by the bundler,
-  //       if they are not used they are removed.
-  if (__TRAILING_SLASH__ || __USE_LOCALE__) {
+  //       if they are not used their code is removed.
+  if (__TRAILING_SLASH__ || __USE_LOCALE__ || __USE_PAGE_TRANSLATION__) {
     $window.fPath ??= (path: string) => {
       let res = path;
-      if (__USE_LOCALE__) {
-        const { locales, locale } = $window.i18n;
+      if (__USE_LOCALE__ || __USE_PAGE_TRANSLATION__) {
+        const { locales, locale, pages } = $window.i18n;
         const langInPath = path.split('/')[1];
-        res = locales.includes(langInPath) ? res : '/' + locale + res;
+        const includesLocale = locales.includes(langInPath);
+
+        if (__USE_PAGE_TRANSLATION__) {
+          const pathWithoutLocale = includesLocale
+            ? res.replace(`/${langInPath}`, '')
+            : res;
+          res = pages?.[pathWithoutLocale]?.[locale] ?? res;
+          if (includesLocale) res = '/' + langInPath + res;
+        }
+
+        res = includesLocale ? res : '/' + locale + res;
       }
       if (__TRAILING_SLASH__ && !path.endsWith('/')) res = res + '/';
       if (!__TRAILING_SLASH__) res = res.replace(/\/$/, '');
@@ -112,10 +122,18 @@ export default function brisaElement(
       (key.startsWith('xlink:') || key === 'href');
 
     // This code is removed by the bundler when flags are not used
-    if (__BASE_PATH__ || __TRAILING_SLASH__ || __USE_LOCALE__) {
+    if (
+      __BASE_PATH__ ||
+      __TRAILING_SLASH__ ||
+      __USE_LOCALE__ ||
+      __USE_PAGE_TRANSLATION__
+    ) {
       if ((key === 'src' || key === 'href') && !URL.canParse(value)) {
         // Handle trailing slash + i18n locale + i18n pages
-        if ((__TRAILING_SLASH__ || __USE_LOCALE__) && key === 'href') {
+        if (
+          (__TRAILING_SLASH__ || __USE_LOCALE__ || __USE_PAGE_TRANSLATION__) &&
+          key === 'href'
+        ) {
           serializedValue = $window.fPath(serializedValue);
         }
 
