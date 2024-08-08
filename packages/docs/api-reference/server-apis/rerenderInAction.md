@@ -14,7 +14,7 @@ inside a server action. Outside of an action, it throws an error.
 `rerenderInAction` needs to be called outside of the `try/catch` block:
 
 ```tsx
-import { rerenderInAction } from "brisa";
+import { rerenderInAction } from "brisa/server";
 
 // Inside a server action
 function handleEvent() {
