@@ -372,7 +372,7 @@ inside a server action. Outside of an action, it throws an error.
 
 #### Params:
 
-- `type`: The type of the rerender. It can be `component` or `page`. By default, it is `component`.
+- `type`: The type of the rerender. It can be `targetComponent`, `currentComponent` or `page`. By default, it is `currentComponent`.
 - `mode`: The type of the rerender. It can be `reactivity` or `transition`. By default, it is `reactivity`.
 
 `rerenderInAction` needs to be called outside of the `try/catch` block:
@@ -393,13 +393,9 @@ function handleEvent() {
 }
 ```
 
-### Is mandatory to use `rerenderInAction` on server actions?
-
-No, it depends on the type of communication you want. If you want:
-
-- Communicate with the web components only: You **don't need** to use `rerenderInAction`, you can use the [`store` as action signal](#store-as-action-signal) instead.
-- Communicate with the server components: You need to use `rerenderInAction`.
-- Communicate with the server components and web components: You need to use `rerenderInAction` and the web components will react to the changes to their attributes.
+> [!NOTE]
+>
+> See the differences between "Action Signals" and `rerenderInAction` in [this documentation](#action-signals-vs-rerenderinaction).
 
 ## `navigate`
 
@@ -666,6 +662,16 @@ export default function WebCounter({}, { store }: WebContext) {
 ```
 
 This example shows a counter shared between the server and the client. It can be incremented from the action (server component) or from the browser event (web component), and the store value will always be synchronized between the two.
+
+## Action Signals vs `rerenderInAction`
+
+It depends on the type of communication you want. If you want:
+
+- Communicate with the web components only: You **don't need** to use `rerenderInAction`, you can use the [`store` as action signal](#store-as-action-signal) instead.
+- Communicate with the server components: You need to use `rerenderInAction`.
+- Communicate with the server components and web components: You need to use `rerenderInAction` and the web components will react to the changes to their attributes.
+
+![Action Signals and rerenderInAction](/assets/actionsignals.svg)
 
 ## Transfer sensitive data
 
