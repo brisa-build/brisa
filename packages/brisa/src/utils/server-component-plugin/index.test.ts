@@ -235,6 +235,34 @@ describe('utils', () => {
       );
     });
 
+    it('should add the __key property when key exists', () => {
+      const code = `
+        export default function ServerComponent() {
+          return <web-component key="foo" />;
+        }
+      `;
+      const allWebComponents = {
+        'web-component': webComponentPath,
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+
+      expect(outputCode).toBe(
+        toExpected(`
+        import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
+        import _Brisa_WC1 from "${webComponentPath}";
+
+        export default function ServerComponent() {
+          return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" __key="foo" key="foo" />;
+        }
+      `),
+      );
+    });
+
     it('should register different action ids for each event of a server-component', () => {
       const code = `
         export default function ServerComponent() {
