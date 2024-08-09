@@ -361,10 +361,14 @@ export default function serverComponentPlugin(
         return value;
       }
 
+      const key = value.arguments[2];
+      const hasKey = key.name !== 'undefined' || key.value;
+
       value.arguments[0] = {
         type: 'Identifier',
         name: '_Brisa_SSRWebComponent',
       };
+      console.dir({ props: value.arguments }, { depth: 10 });
       value.arguments[1] = {
         type: 'ObjectExpression',
         properties: [
@@ -399,6 +403,22 @@ export default function serverComponentPlugin(
             shorthand: false,
           },
           ...(value.arguments[1]?.properties ?? []),
+          ...(hasKey
+            ? [
+                {
+                  type: 'Property',
+                  key: {
+                    type: 'Identifier',
+                    name: '__key',
+                  },
+                  value: key,
+                  kind: 'init',
+                  computed: false,
+                  method: false,
+                  shorthand: false,
+                },
+              ]
+            : []),
         ],
       };
     }

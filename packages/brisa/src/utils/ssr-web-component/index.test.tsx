@@ -722,5 +722,20 @@ describe('utils', () => {
       expect(output.props.children[0].type).toBe('template');
       expect(output.props.children[0].props.shadowrootmode).toBe('open');
     });
+
+    it('should add props and key prop as attribute to the web component', async () => {
+      const Component = () => <div>hello world</div>;
+      const selector = 'my-component';
+      const __key = 'some-key';
+
+      const output = (await SSRWebComponent(
+        { Component, selector, foo: 'bar', __key },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.foo).toBe('bar');
+      expect(output.props.key).toBe(__key);
+    });
   });
 });
