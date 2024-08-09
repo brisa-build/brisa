@@ -28,6 +28,10 @@ import { createPortal } from "brisa";
 
 A portal only changes the physical placement of the DOM node. In every other way, the JSX you render into a portal acts as a child node of the Brisa component that renders it.
 
+> [!TIP]
+>
+> We recommend cleanup the portal when the component is unmounted. You can do this by using the [`cleanup`](/building-your-application/components-details/web-components#clean-effects-cleanup-method) function inside the Web Context API.
+
 #### Parameters:
 
 - `children`: Anything that can be rendered with Brisa, such as a piece of JSX (e.g. `<div />` or `<SomeComponent />`), a Fragment (`<>...</>`), a string or a number, or an array of these.
