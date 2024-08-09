@@ -16,7 +16,7 @@ type Props = {
 const voidFn = () => {};
 
 export default async function SSRWebComponent(
-  { Component, selector, ...props }: Props,
+  { Component, selector, __key, ...props }: Props,
   { store, useContext, i18n, indicate }: RequestContext,
 ) {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
@@ -73,7 +73,7 @@ export default async function SSRWebComponent(
   }
 
   return (
-    <Selector {...props} __isWebComponent>
+    <Selector key={__key} {...props} __isWebComponent>
       {showContent && (
         <template
           shadowrootmode="open"
