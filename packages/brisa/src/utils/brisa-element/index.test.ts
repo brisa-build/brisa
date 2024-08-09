@@ -1861,6 +1861,7 @@ describe('utils', () => {
     it('should translate pages when __USE_PAGE_TRANSLATION__ is true', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
+      document.documentElement.dataset.page = '/about-us';
       window.i18n = {
         locale: 'pt-BR',
         locales: ['pt-BR', 'en-US'],
@@ -1891,6 +1892,7 @@ describe('utils', () => {
     it('should translate home page when __USE_PAGE_TRANSLATION__ is true', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
+      document.documentElement.dataset.page = '/';
       window.i18n = {
         locale: 'pt-BR',
         locales: ['pt-BR', 'en-US'],
@@ -1921,6 +1923,7 @@ describe('utils', () => {
     it('should translate pages with locale in the href and __USE_PAGE_TRANSLATION__ is true', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
+      document.documentElement.dataset.page = '/about-us';
       window.i18n = {
         locale: 'pt-BR',
         locales: ['pt-BR', 'en-US'],
@@ -1951,6 +1954,7 @@ describe('utils', () => {
     it('should translate pages with dynamic routes and __USE_PAGE_TRANSLATION__', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
+      document.documentElement.dataset.page = '/user/[username]';
       window.i18n = {
         locale: 'pt-BR',
         locales: ['pt-BR', 'en-US'],
@@ -1977,6 +1981,30 @@ describe('utils', () => {
         '<a href="/pt-BR/usuario/john-doe">link</a>',
       );
     });
+
+    it.todo(
+      'should translate pages with multi dynamic routes and __USE_PAGE_TRANSLATION__',
+    );
+
+    it.todo(
+      'should translate pages with catchAll and __USE_PAGE_TRANSLATION__',
+    );
+
+    it.todo('should translate pages with params and __USE_PAGE_TRANSLATION__');
+
+    it.todo('should translate pages with hash and __USE_PAGE_TRANSLATION__');
+
+    it.todo(
+      'should translate pages with params + hash and __USE_PAGE_TRANSLATION__',
+    );
+
+    it.todo(
+      'should translate pages with params + hash + dynamic route and __USE_PAGE_TRANSLATION__',
+    );
+
+    it.todo(
+      'should translate pages with params + hash + catchAll route and __USE_PAGE_TRANSLATION__',
+    );
 
     it('should work multi conditionals renders', () => {
       type Props = { count: { value: number } };
