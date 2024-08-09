@@ -73,10 +73,8 @@ export default function brisaElement(
         const includesLocale = locales.includes(langInPath);
 
         if (__USE_PAGE_TRANSLATION__) {
-          const pathWithoutLocale = includesLocale
-            ? res.replace(`/${langInPath}`, '')
-            : res;
-          res = pages?.[pathWithoutLocale]?.[locale] ?? res;
+          const route = $document.documentElement.dataset.page;
+          res = pages?.[route!]?.[locale] ?? res;
           if (includesLocale) res = '/' + langInPath + res;
         }
 
