@@ -419,6 +419,12 @@ async function enqueueDuringRendering(
         const hash = await Bun.file(clientFile).text();
         const filename = request.route.src.replace('.js', `-${hash}.js`);
         const { locale } = request.i18n;
+        const route = JSON.stringify({
+          name: request.route?.name,
+          pathname: request.route?.pathname,
+          query: request.route?.query,
+          params: request.route?.params,
+        });
 
         // Script to load the i18n page content (messages and translated pages to navigate)
         if (locale) {
@@ -455,6 +461,7 @@ async function enqueueDuringRendering(
         }
 
         controller.areSignalsInjected = true;
+        controller.enqueue(`<script>window.r=${route}</script>`, suspenseId);
         controller.enqueue(
           `<script async fetchpriority="high" src="${compiledPagesPath}/${filename}"></script>`,
           suspenseId,

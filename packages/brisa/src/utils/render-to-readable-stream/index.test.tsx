@@ -782,6 +782,10 @@ describe('utils', () => {
             'pages',
             'page-with-web-component.js',
           ),
+          name: '/page-with-web-component',
+          pathname: '/page-with-web-component',
+          params: {},
+          query: {},
         } as MatchedRoute,
       });
 
@@ -802,6 +806,7 @@ describe('utils', () => {
             <head></head>
             <body>
               <script src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
               <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
@@ -839,6 +844,10 @@ describe('utils', () => {
             'pages',
             'page-with-web-component.js',
           ),
+          name: '/page-with-web-component',
+          pathname: '/page-with-web-component',
+          params: {},
+          query: {},
         } as MatchedRoute,
       });
 
@@ -859,6 +868,7 @@ describe('utils', () => {
             <head basepath="/test"></head>
             <body>
               <script src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
               <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
@@ -894,6 +904,10 @@ describe('utils', () => {
             'pages',
             'page-with-web-component.js',
           ),
+          name: '/page-with-web-component',
+          pathname: '/page-with-web-component',
+          params: {},
+          query: {},
         } as MatchedRoute,
       });
 
@@ -919,6 +933,7 @@ describe('utils', () => {
             <head></head>
             <body>
               <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
+              <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
               <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
@@ -957,6 +972,10 @@ describe('utils', () => {
             'pages',
             'page-with-web-component.js',
           ),
+          name: '/page-with-web-component',
+          pathname: '/page-with-web-component',
+          params: {},
+          query: {},
         } as MatchedRoute,
       });
 
@@ -982,6 +1001,7 @@ describe('utils', () => {
             <head basepath="/test"></head>
             <body>
               <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
+              <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
               <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
@@ -3659,6 +3679,48 @@ describe('utils', () => {
               </test>
             </body>
           </html>`),
+      );
+    });
+
+    it('should include window.r with the route without i18n', () => {
+      const request = extendRequestContext({
+        originalRequest: extendRequestContext({
+          originalRequest: new Request('http://test.com/en'),
+        }),
+        route: {
+          src: 'page-with-web-component.js',
+          filePath: path.join(
+            FIXTURES_PATH,
+            'pages',
+            'page-with-web-component.js',
+          ),
+          name: '/page-with-web-component',
+          pathname: '/page-with-web-component',
+          params: {},
+          query: {},
+        } as MatchedRoute,
+      });
+
+      const stream = renderToReadableStream(
+        <html>
+          <head></head>
+          <body></body>
+        </html>,
+        { request },
+      );
+
+      const result = Bun.readableStreamToText(stream);
+
+      expect(result).resolves.toBe(
+        toInline(`
+          <html>
+            <head></head>
+            <body>
+              <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
+              <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
+            </body>
+          </html>
+      `),
       );
     });
   });

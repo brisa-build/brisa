@@ -6,9 +6,18 @@ import createContext from '@/utils/create-context';
 import translateCore from '@/utils/translate-core';
 import { getConstants } from '@/constants';
 import { Fragment } from '@/jsx-runtime';
+import type { MatchedRoute } from 'bun';
 
 const requestContext = extendRequestContext({
   originalRequest: new Request('http://localhost'),
+  route: {
+    name: '/',
+    pathname: '/',
+    params: {},
+    query: {},
+    filePath: '/index.js',
+    kind: 'page',
+  } as unknown as MatchedRoute,
 });
 
 describe('utils', () => {
@@ -736,6 +745,102 @@ describe('utils', () => {
       expect(output.type).toBe(selector);
       expect(output.props.foo).toBe('bar');
       expect(output.props.key).toBe(__key);
+    });
+
+    it('should be possible to access to route.name in SSR', async () => {
+      const Component = ({}, { route }: WebContext) => {
+        return <div>{route.name}</div>;
+      };
+      const selector = 'my-component';
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        '/',
+      );
+    });
+
+    it('should be possible to access to route.pathname in SSR', async () => {
+      const Component = ({}, { route }: WebContext) => {
+        return <div>{route.pathname}</div>;
+      };
+      const selector = 'my-component';
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        '/',
+      );
+    });
+
+    it('should be possible to access to route.params in SSR', async () => {
+      const Component = ({}, { route }: WebContext) => {
+        return <div>{JSON.stringify(route.params)}</div>;
+      };
+      const selector = 'my-component';
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        '{}',
+      );
+    });
+
+    it('should be possible to access to route.query in SSR', async () => {
+      const Component = ({}, { route }: WebContext) => {
+        return <div>{JSON.stringify(route.query)}</div>;
+      };
+      const selector = 'my-component';
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        '{}',
+      );
+    });
+
+    it('should NOT be possible to access to route.filePath in SSR', async () => {
+      const Component = ({}, { route }: WebContext) => {
+        // @ts-ignore
+        return <div>{route.filePath}</div>;
+      };
+      const selector = 'my-component';
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(
+        output.props.children[0].props.children[0].props.children,
+      ).toBeUndefined();
     });
   });
 });
