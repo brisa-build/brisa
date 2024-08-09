@@ -3370,5 +3370,30 @@ describe('utils', () => {
         expectedSheet,
       ]);
     });
+
+    it('should be possible to access route via web context', () => {
+      window.r = {
+        name: '/user/[username]',
+        pathname: '/user/aral',
+        params: { username: 'aral' },
+        query: {},
+      };
+
+      const Component = ({}, { route }: WebContext) => {
+        return ['div', {}, route.pathname];
+      };
+
+      customElements.define('route-component', brisaElement(Component));
+
+      document.body.innerHTML = '<route-component />';
+
+      const routeComponent = document.querySelector(
+        'route-component',
+      ) as HTMLElement;
+
+      expect(routeComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>/user/aral</div>',
+      );
+    });
   });
 });

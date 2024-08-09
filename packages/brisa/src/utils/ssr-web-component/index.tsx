@@ -17,7 +17,7 @@ const voidFn = () => {};
 
 export default async function SSRWebComponent(
   { Component, selector, __key, ...props }: Props,
-  { store, useContext, i18n, indicate }: RequestContext,
+  { store, useContext, i18n, indicate, route }: RequestContext,
 ) {
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
@@ -45,6 +45,12 @@ export default async function SSRWebComponent(
         template,
         ...values.map((v: unknown) => (typeof v === 'function' ? v() : v)),
       );
+    },
+    route: {
+      name: route?.name,
+      pathname: route?.pathname,
+      params: route?.params,
+      query: route?.query,
     },
   } as unknown as RequestContext;
 

@@ -392,6 +392,30 @@ export interface BaseWebContext {
   /**
    * Description:
    *
+   * The route of the page: name, pathname, query and params.
+   *
+   * **Note**: Fields like "filePath" are not available in the web context.
+   *
+   * Example:
+   *
+   * ```tsx
+   * <div>{route.pathname}</div>
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `route`](https://brisa.build/api-reference/components/web-context#route)
+   */
+  route: {
+    name: MatchedRoute['name'];
+    pathname: MatchedRoute['pathname'];
+    query: MatchedRoute['query'];
+    params: MatchedRoute['params'];
+  };
+
+  /**
+   * Description:
+   *
    * The state is under a signal. This means that to consume it you have to use the `.value` clause.
    *
    * Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
