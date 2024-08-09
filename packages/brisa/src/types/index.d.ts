@@ -344,6 +344,13 @@ type TransferOptions = {
   encrypt?: boolean;
 };
 
+type Route = {
+  name: MatchedRoute['name'];
+  pathname: MatchedRoute['pathname'];
+  query: MatchedRoute['query'];
+  params: MatchedRoute['params'];
+};
+
 export interface BaseWebContext {
   /**
    * Description:
@@ -406,12 +413,7 @@ export interface BaseWebContext {
    *
    * - [How to use `route`](https://brisa.build/api-reference/components/web-context#route)
    */
-  route: {
-    name: MatchedRoute['name'];
-    pathname: MatchedRoute['pathname'];
-    query: MatchedRoute['query'];
-    params: MatchedRoute['params'];
-  };
+  route: Route;
 
   /**
    * Description:
