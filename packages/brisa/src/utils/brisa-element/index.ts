@@ -49,6 +49,7 @@ export default function brisaElement(
   observedAttributes: string[] = [],
 ) {
   const $document = document;
+  const $window = window;
 
   const createTextNode = (text: Children) => {
     if ((text as any) === false) text = '';
@@ -64,10 +65,10 @@ export default function brisaElement(
   // Note: These flags are replaced by the bundler,
   //       if they are not used they are removed.
   if (__TRAILING_SLASH__ || __USE_LOCALE__) {
-    window.fPath ??= (path: string) => {
+    $window.fPath ??= (path: string) => {
       let res = path;
       if (__USE_LOCALE__) {
-        const { locales, locale } = window.i18n;
+        const { locales, locale } = $window.i18n;
         const langInPath = path.split('/')[1];
         res = locales.includes(langInPath) ? res : '/' + locale + res;
       }
@@ -115,7 +116,7 @@ export default function brisaElement(
       if ((key === 'src' || key === 'href') && !URL.canParse(value)) {
         // Handle trailing slash + i18n locale + i18n pages
         if ((__TRAILING_SLASH__ || __USE_LOCALE__) && key === 'href') {
-          serializedValue = window.fPath(serializedValue);
+          serializedValue = $window.fPath(serializedValue);
         }
 
         // Handle BASE_PATH
@@ -389,13 +390,14 @@ export default function brisaElement(
           css(template: TemplateStringsArray, ...values: any[]) {
             cssStyles.push([template, ...values]);
           },
-          i18n: window.i18n,
+          i18n: $window.i18n,
+          route: $window.r,
           self,
         } as unknown as WebContext;
 
         // This code is removed by the bundler when plugins are not used
         if (__WEB_CONTEXT_PLUGINS__) {
-          for (const plugin of window._P) {
+          for (const plugin of $window._P) {
             Object.assign(webContext, plugin(webContext));
           }
         }

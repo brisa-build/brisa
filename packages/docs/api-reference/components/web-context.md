@@ -31,6 +31,10 @@ export default function WebComponent(props, webContext: WebContext) {
     // Consume translations and control internationalization
     i18n,
 
+    // Access to the name, pathname, params, and query of the current
+    // page route (also available in SSR)
+    route,
+
     // Access to the web component DOM element
     self,
   } = webContext;
@@ -266,6 +270,22 @@ return <div>{t("hello-world")}</div>;
 ```
 
 For more details, refer to the [i18n](/building-your-application/routing/internationalization) documentation.
+
+## `route`
+
+`route: Route`
+
+The `route` object provides access to the current route's `name`, `pathname`, `params`, and `query`. 
+
+Example:
+
+```tsx
+const { name, pathname, params, query } = route;
+```
+
+> [!TIP]
+>
+> The `route` object is available in both server-side rendering (SSR) and client-side rendering (CSR).
 
 ## `self`
 
