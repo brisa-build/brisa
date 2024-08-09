@@ -404,19 +404,19 @@ export default function serverComponentPlugin(
           ...(value.arguments[1]?.properties ?? []),
           ...(hasKey
             ? [
-              {
-                type: 'Property',
-                key: {
-                  type: 'Identifier',
-                  name: '__key',
+                {
+                  type: 'Property',
+                  key: {
+                    type: 'Identifier',
+                    name: '__key',
+                  },
+                  value: key,
+                  kind: 'init',
+                  computed: false,
+                  method: false,
+                  shorthand: false,
                 },
-                value: key,
-                kind: 'init',
-                computed: false,
-                method: false,
-                shorthand: false,
-              },
-            ]
+              ]
             : []),
         ],
       };
