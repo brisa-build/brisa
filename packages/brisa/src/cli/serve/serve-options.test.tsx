@@ -15,6 +15,7 @@ import { getConstants } from '@/constants';
 import type { ServerWebSocket } from 'bun';
 import type { RequestContext } from '@/types';
 import { RenderInitiator } from '@/public-constants';
+import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -1620,5 +1621,61 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     expect(response.status).toBe(404);
     expect(mockOpenInEditor).not.toHaveBeenCalled();
+  });
+
+  it('should work declarative shadow DOM on server actions when is form call without RPC', async () => {
+    const mockResponseAction = mock((req: RequestContext) => {});
+
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    mock.module('@/utils/response-action', () => ({
+      default: (req: RequestContext) => mockResponseAction(req),
+    }));
+
+    await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage?_aid=2`, {
+        method: 'POST',
+        headers: {
+          'x-action': 'a1_1',
+        },
+      }),
+    );
+
+    expect(
+      mockResponseAction.mock.calls[0][0].store.has(
+        AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
+      ),
+    ).toBeFalse();
+  });
+
+  it('should avoid declarative shadow DOM on server actions', async () => {
+    const mockResponseAction = mock((req: RequestContext) => {});
+
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    mock.module('@/utils/response-action', () => ({
+      default: (req: RequestContext) => mockResponseAction(req),
+    }));
+
+    await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage`, {
+        method: 'POST',
+        headers: {
+          'x-action': 'a1_1',
+        },
+      }),
+    );
+
+    expect(
+      mockResponseAction.mock.calls[0][0].store.get(
+        AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
+      ),
+    ).toBeTrue();
   });
 });

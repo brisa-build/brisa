@@ -163,6 +163,7 @@ declare global {
   var __BASE_PATH__: string;
   var __TRAILING_SLASH__: boolean;
   var __USE_LOCALE__: boolean;
+  var __IS_STATIC__: boolean;
 }
 
 export default constants;

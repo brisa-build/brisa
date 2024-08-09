@@ -19,6 +19,7 @@ import responseRenderedPage from '@/utils/response-rendered-page';
 import { removeBasePathFromStringURL } from '@/utils/base-path';
 import { isNavigateThrowable } from '@/utils/navigate/utils';
 import { RenderInitiator } from '@/public-constants';
+import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 
 export async function getServeOptions() {
   // This is necessary in case of Custom Server using the getServeOptions outside
@@ -262,6 +263,12 @@ export async function getServeOptions() {
       const isPOST = req.method === 'POST';
 
       if (isPOST) {
+        const isFormCallWithoutRPC = url.searchParams.has('_aid');
+
+        if (!isFormCallWithoutRPC) {
+          req.store.set(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL, true);
+        }
+
         // Actions
         if (req.headers.has('x-action')) {
           req.renderInitiator = RenderInitiator.SERVER_ACTION;

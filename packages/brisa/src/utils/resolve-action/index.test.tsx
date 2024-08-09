@@ -166,62 +166,6 @@ describe('utils', () => {
       );
     });
 
-    it('should rerender the page with reactivity without declarative shadow DOM', async () => {
-      const error = new Error(
-        PREFIX_MESSAGE +
-          JSON.stringify({ type: 'page', renderMode: 'reactivity' }) +
-          SUFFIX_MESSAGE,
-      );
-      error.name = 'rerender';
-
-      const req = getReq();
-      const response = await resolveAction({
-        req,
-        error,
-        actionId: 'a1_1',
-        component: () => <div />,
-      });
-      const expectedHeaders = new Headers({
-        'Content-Type': 'text/html; charset=utf-8',
-        'Transfer-Encoding': 'chunked',
-        vary: 'Accept-Encoding',
-        'X-Mode': 'reactivity',
-        'X-Type': 'page',
-      });
-
-      expect(response.status).toBe(200);
-      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
-      expect(response.headers).toEqual(expectedHeaders);
-      expect(await response.text()).toContain(
-        '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
-      );
-    });
-
-    it('should rerender the page with reactivity with declarative shadow DOM if is called without JS', async () => {
-      const error = new Error(
-        PREFIX_MESSAGE +
-          JSON.stringify({ type: 'page', renderMode: 'reactivity' }) +
-          SUFFIX_MESSAGE,
-      );
-      error.name = 'rerender';
-
-      const req = getReq('http://localhost?_aid=1');
-      req.headers.delete('x-action');
-      const response = await resolveAction({
-        req,
-        error,
-        actionId: 'a1_1',
-        component: () => <div />,
-      });
-
-      expect(response.status).toBe(200);
-      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(false);
-      expect(response.headers.get('X-Mode')).toBe('reactivity');
-      expect(await response.text()).toContain(
-        '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
-      );
-    });
-
     it('should rerender the page with reactivity and store', async () => {
       const error = new Error(
         PREFIX_MESSAGE +
@@ -242,7 +186,6 @@ describe('utils', () => {
       });
 
       expect(response.status).toBe(200);
-      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get('X-Mode')).toBe('reactivity');
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
@@ -266,7 +209,6 @@ describe('utils', () => {
       });
 
       expect(response.status).toBe(200);
-      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get('X-Mode')).toBe('transition');
       expect(await response.text()).toContain(
         '<!DOCTYPE html><html><head><title id="title">CUSTOM LAYOUT</title></head>',
@@ -324,7 +266,6 @@ describe('utils', () => {
 
       expect(response.status).toBe(200);
       expect(await response.text()).toBe('<div>Test</div>');
-      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get('Content-Type')).toBe(
         'text/html; charset=utf-8',
       );
@@ -385,7 +326,6 @@ describe('utils', () => {
 
       expect(response.status).toBe(200);
       expect(await response.text()).toBe('<div>Test</div>');
-      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get('Content-Type')).toBe(
         'text/html; charset=utf-8',
       );
@@ -426,7 +366,6 @@ describe('utils', () => {
 
       expect(response.status).toBe(200);
       expect(await response.text()).toBe('<div>Test</div>');
-      expect(req.store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL)).toBe(true);
       expect(response.headers.get('Content-Type')).toBe(
         'text/html; charset=utf-8',
       );
@@ -464,6 +403,7 @@ describe('utils', () => {
       const req = getReq();
       // @ts-ignore
       req._originalActionId = 'a1_1';
+      req.store.set(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL, true);
       req.store.set('foo', 'bar');
       (req as any).webStore.set('foo', 'bar');
 

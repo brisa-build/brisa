@@ -33,13 +33,6 @@ export default async function resolveAction({
 }: ResolveActionParams) {
   const { PAGES_DIR, RESERVED_PAGES } = getConstants();
   const url = new URL(req.headers.get('referer') ?? '', req.url);
-  const actionCallFromJS =
-    req.headers.get('x-action') && !url.searchParams.has('_aid');
-
-  // Avoid declarative shadow dom
-  if (actionCallFromJS) {
-    req.store.set(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL, true);
-  }
 
   // Navigate to another page
   if (isNavigateThrowable(error)) {
