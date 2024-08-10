@@ -74,14 +74,12 @@ export default function adaptClientToPageTranslations(
       return getTranslationWithDynamicParts();
     }
 
-    for (const translation of Object.values(translations)) {
-      const newTranslation = join(
-        split(translation).filter(removeDynamicSlides),
-      );
-
-      if (newPathname === newTranslation) {
-        return getTranslationWithDynamicParts();
-      }
+    if (
+      Object.values(translations).some(
+        (tr) => join(split(tr).filter(removeDynamicSlides)) === newPathname,
+      )
+    ) {
+      return getTranslationWithDynamicParts();
     }
   }
 
