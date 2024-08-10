@@ -52,7 +52,7 @@ describe('utils', () => {
       );
     });
 
-    it('should return null if no route was matched', () => {
+    it('should return undefined if no route was matched', () => {
       const pages = {
         '/about': {
           en: '/about',
@@ -69,7 +69,7 @@ describe('utils', () => {
       };
       expect(
         adaptClientToPageTranslations(pages, '/not-found', 'pt'),
-      ).toBeNull();
+      ).toBeUndefined();
     });
 
     it('should work with [...rest]', () => {
