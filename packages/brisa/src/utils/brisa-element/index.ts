@@ -1,4 +1,5 @@
 import type { WebContext, BrisaContext, IndicatorSignal } from '@/types';
+import adaptClientToPageTranslations from '@/utils/adapt-client-to-page-translations';
 import getProviderId from '@/utils/get-provider-id';
 import { deserialize, serialize } from '@/utils/serialization';
 import signals from '@/utils/signals';
@@ -73,9 +74,12 @@ export default function brisaElement(
         const includesLocale = locales.includes(langInPath);
 
         if (__USE_PAGE_TRANSLATION__) {
-          const route = $document.documentElement.dataset.page;
-          res = pages?.[route!]?.[locale] ?? res;
-          if (includesLocale) res = '/' + langInPath + res;
+          const translation = adaptClientToPageTranslations(
+            pages,
+            path,
+            includesLocale ? langInPath : locale,
+          );
+          if (translation) res = translation;
         }
 
         res = includesLocale ? res : '/' + locale + res;
