@@ -101,5 +101,101 @@ describe('utils', () => {
         adaptClientToPageTranslations(pages, '/usuario/john/doe', 'en'),
       ).toBe('/user/john/doe');
     });
+
+    it('shoukd work with a mix of dynamic routes and [...rest]', () => {
+      const pages = {
+        '/user/[id]/[...rest]': {
+          en: '/user/[id]/[...rest]',
+          pt: '/usuario/[id]/[...rest]',
+        },
+      };
+      expect(adaptClientToPageTranslations(pages, '/user/john/doe', 'pt')).toBe(
+        '/usuario/john/doe',
+      );
+      expect(
+        adaptClientToPageTranslations(pages, '/usuario/john/doe', 'en'),
+      ).toBe('/user/john/doe');
+    });
+
+    it('should work with a mix of dynamic routes + static text + [...rest]', () => {
+      const pages = {
+        '/user/[id]/foo/bar/baz/[...rest]': {
+          pt: '/usuario/[id]/foop/barp/bazp/[...rest]',
+        },
+      };
+      expect(
+        adaptClientToPageTranslations(
+          pages,
+          '/user/john/foo/bar/baz/doe',
+          'pt',
+        ),
+      ).toBe('/usuario/john/foop/barp/bazp/doe');
+      expect(
+        adaptClientToPageTranslations(
+          pages,
+          '/usuario/john/foop/barp/bazp/doe',
+          'en',
+        ),
+      ).toBe('/user/john/foo/bar/baz/doe');
+    });
+
+    it('should work with a mix of dynamic routes and [[...catchAll]]', () => {
+      const pages = {
+        '/user/[id]/[[...catchAll]]': {
+          en: '/user/[id]/[[...catchAll]]',
+          pt: '/usuario/[id]/[[...catchAll]]',
+        },
+      };
+      expect(adaptClientToPageTranslations(pages, '/user/john/doe', 'pt')).toBe(
+        '/usuario/john/doe',
+      );
+      expect(
+        adaptClientToPageTranslations(pages, '/usuario/john/doe', 'en'),
+      ).toBe('/user/john/doe');
+    });
+
+    it('should work with a mix of dynamic routes + static text + [[...catchAll]]', () => {
+      const pages = {
+        '/user/[id]/foo/bar/baz/[[...catchAll]]': {
+          pt: '/usuario/[id]/foop/barp/bazp/[[...catchAll]]',
+        },
+      };
+      expect(
+        adaptClientToPageTranslations(
+          pages,
+          '/user/john/foo/bar/baz/doe',
+          'pt',
+        ),
+      ).toBe('/usuario/john/foop/barp/bazp/doe');
+      expect(
+        adaptClientToPageTranslations(
+          pages,
+          '/usuario/john/foop/barp/bazp/doe',
+          'en',
+        ),
+      ).toBe('/user/john/foo/bar/baz/doe');
+    });
+
+    it('should work with a mix of MULTI dynamic routes + static text + [[...catchAll]]', () => {
+      const pages = {
+        '/user/[id]/foo/[bar]/baz/[[...catchAll]]': {
+          pt: '/usuario/[id]/foop/[bar]/bazp/[[...catchAll]]',
+        },
+      };
+      expect(
+        adaptClientToPageTranslations(
+          pages,
+          '/user/john/foo/test/baz/doe',
+          'pt',
+        ),
+      ).toBe('/usuario/john/foop/test/bazp/doe');
+      expect(
+        adaptClientToPageTranslations(
+          pages,
+          '/usuario/john/foop/test/bazp/doe',
+          'en',
+        ),
+      ).toBe('/user/john/foo/test/baz/doe');
+    });
   });
 });
