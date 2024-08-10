@@ -81,6 +81,4 @@ export default function adaptClientToPageTranslations(
       return getTranslationWithDynamicParts();
     }
   }
-
-  return null;
 }
