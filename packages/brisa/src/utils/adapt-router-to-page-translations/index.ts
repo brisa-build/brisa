@@ -29,11 +29,12 @@ export default function adaptRouterToPageTranslations(
       .replace(regexTrailingSlash, '');
 
     for (const translation in translations) {
-      const { route, locale } = translations[translation];
+      const { route, locale }: { route: string; locale: string } =
+        translations[translation];
 
       if (locale !== userLocale) continue;
 
-      const hasLocale = userLocale && pages?.[route][userLocale];
+      const hasLocale = userLocale && (pages as any)?.[route]?.[userLocale];
       const translationIsDifferentFromPage = translation !== route;
 
       if (
