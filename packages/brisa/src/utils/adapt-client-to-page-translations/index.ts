@@ -1,3 +1,5 @@
+const join = (arr: any = []) => arr.join('/');
+
 /**
  * This code is WITHOUT Bun.FileSystemRouter to be used on client side.
  *
@@ -53,30 +55,30 @@ export default function adaptClientToPageTranslations(
     function getTranslationWithDynamicParts() {
       const langTranslation = translations[lang] ?? route;
       const dynamicParts = pathnameGroups.r ?? [];
-      const trans = langTranslation
-        .split('/')
-        .map((part, index) =>
-          dynamicSlices.has(index) ? dynamicParts.shift() : part,
-        )
-        .join('/');
+      const trans = join(
+        langTranslation
+          .split('/')
+          .map((part, index) =>
+            dynamicSlices.has(index) ? dynamicParts.shift() : part,
+          ),
+      );
 
       return isCatchAllOrRest && pathnameLength > routeLength
-        ? `${trans}/${splittedPathname.slice(routeLength, pathnameLength).join('/')}`
+        ? `${trans}/${join(splittedPathname.slice(routeLength, pathnameLength))}`
         : trans;
     }
 
-    const newPathname = (pathnameGroups.k ?? []).join('/');
-    const newRoute = splittedRoute.filter(removeDynamicSlides).join('/');
+    const newPathname = join(pathnameGroups.k);
+    const newRoute = join(splittedRoute.filter(removeDynamicSlides));
 
     if (newPathname === newRoute) {
       return getTranslationWithDynamicParts();
     }
 
     for (const translation of Object.values(translations)) {
-      const newTranslation = translation
-        .split('/')
-        .filter(removeDynamicSlides)
-        .join('/');
+      const newTranslation = join(
+        translation.split('/').filter(removeDynamicSlides),
+      );
 
       if (newPathname === newTranslation) {
         return getTranslationWithDynamicParts();
