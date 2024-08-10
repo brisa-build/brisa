@@ -13,6 +13,12 @@ import cp from 'node:child_process';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import process from 'node:process';
+import { yellowLog } from '@/utils/log/log-color';
+
+const options = {
+  currentBunVersion: '1.1.1',
+  brisaPackageManager: 'bun@1.1.1',
+};
 
 declare module './cli.cjs' {
   export function main(): Promise<void>;
@@ -108,7 +114,7 @@ describe('Brisa CLI', () => {
   it('should display the --help options', async () => {
     process.argv = ['bun', 'brisa', '--help'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -128,7 +134,7 @@ describe('Brisa CLI', () => {
   it('should display --help when the command is not found', async () => {
     process.argv = ['bun', 'brisa', 'not-found'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -148,7 +154,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa dev" command with default options', async () => {
     process.argv = ['bun', 'brisa', 'dev'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -170,7 +176,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa dev" command with custom port', async () => {
     process.argv = ['bun', 'brisa', 'dev', '--port', '5000'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -192,7 +198,7 @@ describe('Brisa CLI', () => {
   it('should return the help of "brisa dev" command', async () => {
     process.argv = ['bun', 'brisa', 'dev', '--help'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -211,7 +217,7 @@ describe('Brisa CLI', () => {
   it('should debug "brisa dev" command', async () => {
     process.argv = ['bun', 'brisa', 'dev', '--debug'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -233,7 +239,7 @@ describe('Brisa CLI', () => {
   it('should build a web app in development with the flag --dev', async () => {
     process.argv = ['bun', 'brisa', 'build', '--dev'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
     expect(mockSpawnSync.mock.calls[0]).toEqual([
@@ -258,7 +264,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -313,7 +319,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -368,7 +374,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -390,7 +396,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa build" command with default options', async () => {
     process.argv = ['bun', 'brisa', 'build'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -407,7 +413,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa build --help" command', async () => {
     process.argv = ['bun', 'brisa', 'build', '--help'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -430,7 +436,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -485,7 +491,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -508,7 +514,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -563,7 +569,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -586,7 +592,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -641,7 +647,7 @@ describe('Brisa CLI', () => {
       },
     }));
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync.mock.calls[0]).toEqual([
       'bun',
@@ -658,7 +664,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa start" command with default options', async () => {
     process.argv = ['bun', 'brisa', 'start'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
     expect(mockSpawnSync.mock.calls[0]).toEqual([
@@ -676,7 +682,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa start --help" command', async () => {
     process.argv = ['bun', 'brisa', 'start', '--help'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
@@ -692,7 +698,7 @@ describe('Brisa CLI', () => {
   it('should execute "brisa start" command with custom port', async () => {
     process.argv = ['bun', 'brisa', 'start', '--port', '5000'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
     expect(mockSpawnSync.mock.calls[0]).toEqual([
@@ -714,7 +720,7 @@ describe('Brisa CLI', () => {
 
     process.argv = ['bun', 'brisa', 'start'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(2); // bun --version
 
@@ -737,7 +743,7 @@ describe('Brisa CLI', () => {
   it('should "brisa add mdx" command integrate MDX', async () => {
     process.argv = ['bun', 'brisa', 'add', 'mdx'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(3);
     expect(mockSpawnSync.mock.calls[0]).toEqual([
@@ -760,7 +766,7 @@ describe('Brisa CLI', () => {
   it('should "brisa add --help" command provide help', async () => {
     process.argv = ['bun', 'brisa', 'add', '--help'];
 
-    await cli.main();
+    await cli.main(options);
 
     expect(mockSpawnSync).toHaveBeenCalledTimes(1);
     expect(mockLog.mock.calls).toEqual([
@@ -772,5 +778,59 @@ describe('Brisa CLI', () => {
       ['Options:'],
       [' --help       Show help'],
     ]);
+  });
+
+  it('should warn when Bun.version is older than the required version', async () => {
+    process.argv = ['bun', 'brisa'];
+
+    await cli.main({
+      currentBunVersion: '1.0.0',
+      brisaPackageManager: 'bun@999.999.999',
+    });
+
+    expect(mockLog.mock.calls[0][0]).toBe(
+      yellowLog(
+        'Warning: Your current Bun version is not supported by the current version of Brisa. Please upgrade to 999.999.999 or later.\n',
+      ),
+    );
+    expect(mockLog.mock.calls[1][0]).toBe(
+      yellowLog('You can upgrade Bun by running:\n'),
+    );
+  });
+
+  it('should NOT warn when Bun.version is the same than the required version', async () => {
+    process.argv = ['bun', 'brisa'];
+
+    await cli.main({
+      currentBunVersion: '1.0.0',
+      brisaPackageManager: 'bun@1.0.0',
+    });
+
+    expect(mockLog.mock.calls[0][0]).not.toBe(
+      yellowLog(
+        'Warning: Your current Bun version is not supported by the current version of Brisa. Please upgrade to 999.999.999 or later.\n',
+      ),
+    );
+    expect(mockLog.mock.calls[1][0]).not.toBe(
+      yellowLog('You can upgrade Bun by running:\n'),
+    );
+  });
+
+  it('should NOT warn when Bun.version is newer than the required version', async () => {
+    process.argv = ['bun', 'brisa'];
+
+    await cli.main({
+      currentBunVersion: '1.0.0',
+      brisaPackageManager: 'bun@0.1.0',
+    });
+
+    expect(mockLog.mock.calls[0][0]).not.toBe(
+      yellowLog(
+        'Warning: Your current Bun version is not supported by the current version of Brisa. Please upgrade to 999.999.999 or later.\n',
+      ),
+    );
+    expect(mockLog.mock.calls[1][0]).not.toBe(
+      yellowLog('You can upgrade Bun by running:\n'),
+    );
   });
 });
