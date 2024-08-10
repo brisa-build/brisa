@@ -21,7 +21,10 @@ const options = {
 };
 
 declare module './cli.cjs' {
-  export function main(): Promise<void>;
+  export function main({
+    currentBunVersion,
+    brisaPackageManager,
+  }: typeof options): Promise<void>;
 }
 
 const FIXTURES = path.join(import.meta.dir, 'src', '__fixtures__');
