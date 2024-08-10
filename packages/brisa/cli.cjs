@@ -4,7 +4,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const process = require('node:process');
-
+const brisaPackageJSON = require('./package.json');
 const outPath = path
   .join(import.meta.dir, 'out')
   // There are some cases where the CLI is executed from the node_modules/.bin folder
@@ -16,13 +16,30 @@ const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
 
-async function main() {
+async function main({ currentBunVersion, brisaPackageManager }) {
   const packageJSON = await import(
     path.resolve(process.cwd(), 'package.json')
   ).then((m) => m.default);
   const __CRYPTO_KEY__ = crypto.randomBytes(32).toString('hex');
   const __CRYPTO_IV__ = crypto.randomBytes(8).toString('hex');
   const BRISA_BUILD_FOLDER = process.env.BRISA_BUILD_FOLDER;
+  const SUPPORTED_BUN_VERSION = brisaPackageManager?.replace?.('bun@', '');
+
+  if (!Bun.semver.satisfies(currentBunVersion, '>=' + SUPPORTED_BUN_VERSION)) {
+    const isWindows = process.platform === 'win32';
+    const command = isWindows
+      ? `iex "& {$(irm https://bun.sh/install.ps1)} -Version ${currentBunVersion}"`
+      : `curl -fsSL https://bun.sh/install | bash -s "bun-v${currentBunVersion}"`;
+
+    console.log(
+      yellowLog(
+        `Warning: Your current Bun version is not supported by the current version of Brisa. Please upgrade to ${SUPPORTED_BUN_VERSION} or later.\n`,
+      ),
+    );
+    console.log(yellowLog('You can upgrade Bun by running:\n'));
+    console.log(yellowLog(command));
+    console.log(yellowLog('\nAfter upgrading, you can run Brisa again'));
+  }
 
   const prodOptions = {
     stdio: 'inherit',
@@ -299,4 +316,11 @@ async function main() {
 
 module.exports.main = main;
 
-if (import.meta.main) main();
+if (import.meta.main)
+  main({
+    currentBunVersion: Bun.version,
+    brisaPackageManager: brisaPackageJSON.packageManager,
+  });
+
+const yellowLog = (text) =>
+  Bun.enableANSIColors ? `\x1b[33m${text}\x1b[0m` : text;
