@@ -914,7 +914,7 @@ However, this automatic correction **does not apply to Web Components** by defau
 
 To activate the automatic correction of links in Web Components you need to add the `pages.config.transferToClient` property:
 
-```js filename="src/i18n.js"
+```js 5-7
 export default {
   locales: ["en-US", "es"],
   defaultLocale: "en-US",
@@ -934,13 +934,9 @@ export default {
 
 This will automatically correct **ALL** the links in the HTML of Web Components.
 
-> [!CAUTION]
->
-> Activating this feature is going to increase the size of the client bundle because it needs to include the page translations.
-
 If you want to correct **only some paths**, you can provide an array of paths:
 
-```js filename="src/i18n.js"
+```js 5-7
 export default {
   locales: ["en-US", "es"],
   defaultLocale: "en-US",
@@ -957,6 +953,19 @@ export default {
   },
 };
 ```
+
+> [!IMPORTANT]
+>
+> Changing the page's language setting (`locale`) won’t automatically update the `href` links that have already been rendered, as these links don’t react to `locale` changes. To properly change the language, you have two options:
+>
+> 1. **Use `renderMode="native"`**: This method ensures that the page is rendered in the new language, updating all the content including the links. For more details, refer to the [Native Rendering](/building-your-application/routing/linking-and-navigating#navigation-in-native-way) documentation.
+>
+> 2. **Update the `key` Attribute**: If you update the `key` attribute of the web component, it will force the component to be recreated with the new language setting. For more information on how to use the `key` attribute, see the [Key Property](/building-your-application/components-details/web-components#key-property) documentation.
+
+> [!CAUTION]
+>
+> Activating this feature is going to **increase the client bundle size** because it needs to include the page translations and the logic to correct the links (_~630 bytes_).
+
 
 ### Types:
 
