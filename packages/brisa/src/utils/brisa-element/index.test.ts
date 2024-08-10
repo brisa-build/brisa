@@ -1861,7 +1861,6 @@ describe('utils', () => {
     it('should translate pages when __USE_PAGE_TRANSLATION__ is true', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
-      document.documentElement.dataset.page = '/about-us';
       window.i18n = {
         locale: 'pt-BR',
         locales: ['pt-BR', 'en-US'],
@@ -1892,7 +1891,6 @@ describe('utils', () => {
     it('should translate home page when __USE_PAGE_TRANSLATION__ is true', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
-      document.documentElement.dataset.page = '/';
       window.i18n = {
         locale: 'pt-BR',
         locales: ['pt-BR', 'en-US'],
@@ -1920,10 +1918,9 @@ describe('utils', () => {
       );
     });
 
-    it('should translate pages with locale in the href and __USE_PAGE_TRANSLATION__ is true', () => {
+    it('should keep pages with locale in the href and __USE_PAGE_TRANSLATION__ is true', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
-      document.documentElement.dataset.page = '/about-us';
       window.i18n = {
         locale: 'pt-BR',
         locales: ['pt-BR', 'en-US'],
@@ -1947,14 +1944,13 @@ describe('utils', () => {
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        '<a href="/en-US/sobre-nos">link</a>',
+        '<a href="/en-US/about-us">link</a>',
       );
     });
 
     it('should translate pages with dynamic routes and __USE_PAGE_TRANSLATION__', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
-      document.documentElement.dataset.page = '/user/[username]';
       window.i18n = {
         locale: 'pt-BR',
         locales: ['pt-BR', 'en-US'],
