@@ -29,7 +29,8 @@ export default function adaptClientToPageTranslations(
   pathname: string,
   lang: string,
 ) {
-  const splittedPathname = split(pathname);
+  const url = new URL(pathname, 'http://l');
+  const splittedPathname = split(url.pathname);
 
   for (const [route, translations] of Object.entries(pages)) {
     const splittedRoute = split(route);
@@ -61,9 +62,13 @@ export default function adaptClientToPageTranslations(
         ),
       );
 
-      return isCatchAllOrRest && splittedPathname.length > routeLength
-        ? `${trans}/${join(splittedPathname.slice(routeLength))}`
-        : trans;
+      return (
+        (isCatchAllOrRest && splittedPathname.length > routeLength
+          ? `${trans}/${join(splittedPathname.slice(routeLength))}`
+          : trans) +
+        url.search +
+        url.hash
+      );
     }
 
     const newPathname = join(pathnameGroups.k);
