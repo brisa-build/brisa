@@ -1,4 +1,5 @@
 const join = (arr: any = []) => arr.join('/');
+const split = (str: string) => str.split('/');
 
 /**
  * This code is WITHOUT Bun.FileSystemRouter to be used on client side.
@@ -28,11 +29,11 @@ export default function adaptClientToPageTranslations(
   pathname: string,
   lang: string,
 ) {
-  const splittedPathname = pathname.split('/');
+  const splittedPathname = split(pathname);
   const pathnameLength = splittedPathname.length;
 
   for (const [route, translations] of Object.entries(pages)) {
-    const splittedRoute = route.split('/');
+    const splittedRoute = split(route);
     const isCatchAllOrRest = splittedRoute.at(-1)?.includes('[...');
     const dynamicSlices = new Set<number>();
     const routeLength = splittedRoute.length;
@@ -56,11 +57,9 @@ export default function adaptClientToPageTranslations(
       const langTranslation = translations[lang] ?? route;
       const dynamicParts = pathnameGroups.r ?? [];
       const trans = join(
-        langTranslation
-          .split('/')
-          .map((part, index) =>
-            dynamicSlices.has(index) ? dynamicParts.shift() : part,
-          ),
+        split(langTranslation).map((part, index) =>
+          dynamicSlices.has(index) ? dynamicParts.shift() : part,
+        ),
       );
 
       return isCatchAllOrRest && pathnameLength > routeLength
@@ -77,7 +76,7 @@ export default function adaptClientToPageTranslations(
 
     for (const translation of Object.values(translations)) {
       const newTranslation = join(
-        translation.split('/').filter(removeDynamicSlides),
+        split(translation).filter(removeDynamicSlides),
       );
 
       if (newPathname === newTranslation) {
