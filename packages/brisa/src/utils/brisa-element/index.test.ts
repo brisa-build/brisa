@@ -1661,6 +1661,37 @@ describe('utils', () => {
       expect(img.getAttribute('src')).toBe('/image.png');
     });
 
+    it('should work with __TRAILING_SLASH__ and params', () => {
+      window.__TRAILING_SLASH__ = true;
+      function Test() {
+        return [
+          'div',
+          {},
+          [
+            ['a', { href: '/test?param=1' }, 'link'],
+            ['img', { src: '/image.png' }, ''],
+          ],
+        ];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
+
+      expect(a.getAttribute('href')).toBe('/test/?param=1');
+      expect(img.getAttribute('src')).toBe('/image.png');
+    });
+
     it('should work with __BASE_PATH__ and __TRAILING_SLASH__ together', () => {
       window.__BASE_PATH__ = '/base-path';
       window.__TRAILING_SLASH__ = true;
@@ -1945,6 +1976,186 @@ describe('utils', () => {
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<a href="/en-US/about-us">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__ and params', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/user': {
+            'pt-BR': '/usuario',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/user?foo=bar' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/usuario?foo=bar">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__ and hash', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/user': {
+            'pt-BR': '/usuario',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/user#foo' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/usuario#foo">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__ params and hash', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/user': {
+            'pt-BR': '/usuario',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/user?foo=bar#baz' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/usuario?foo=bar#baz">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__, dynamic routes and params', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/user/[username]': {
+            'pt-BR': '/usuario/[username]',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/user/john-doe?foo=bar' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/usuario/john-doe?foo=bar">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__, dynamic routes and hash', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/user/[username]': {
+            'pt-BR': '/usuario/[username]',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/user/john-doe#foo' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/usuario/john-doe#foo">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__,dynamic routes, params and hash', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {
+          '/user/[username]': {
+            'pt-BR': '/usuario/[username]',
+          },
+        },
+      };
+
+      function Test() {
+        return ['a', { href: '/user/john-doe?foo=bar#baz' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR/usuario/john-doe?foo=bar#baz">link</a>',
       );
     });
 

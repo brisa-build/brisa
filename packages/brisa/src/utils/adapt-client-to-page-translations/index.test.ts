@@ -197,5 +197,39 @@ describe('utils', () => {
         ),
       ).toBe('/user/john/foo/test/baz/doe');
     });
+
+    it('should match a route with different path segments', () => {
+      const pages = {
+        '/blog/[year]/[month]': {
+          en: '/blog/[year]/[month]',
+          pt: '/blog/[ano]/[mes]',
+        },
+      };
+      expect(adaptClientToPageTranslations(pages, '/blog/2023/08', 'pt')).toBe(
+        '/blog/2023/08',
+      );
+      expect(adaptClientToPageTranslations(pages, '/blog/2023/08', 'en')).toBe(
+        '/blog/2023/08',
+      );
+    });
+
+    it('should handle routes with query parameters', () => {
+      const pages = {
+        '/search': {
+          en: '/search',
+          pt: '/buscar',
+        },
+        '/search/[query]': {
+          en: '/search/[query]',
+          pt: '/buscar/[query]',
+        },
+      };
+      expect(
+        adaptClientToPageTranslations(pages, '/search?query=test', 'pt'),
+      ).toBe('/buscar?query=test');
+      expect(
+        adaptClientToPageTranslations(pages, '/buscar?query=test', 'en'),
+      ).toBe('/search?query=test');
+    });
   });
 });

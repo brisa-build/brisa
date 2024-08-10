@@ -70,13 +70,13 @@ export default function brisaElement(
       let res = path;
       if (__USE_LOCALE__ || __USE_PAGE_TRANSLATION__) {
         const { locales, locale, pages } = $window.i18n;
-        const langInPath = path.split('/')[1];
+        const langInPath = res.split('/')[1];
         const includesLocale = locales.includes(langInPath);
 
         if (__USE_PAGE_TRANSLATION__) {
           const translation = adaptClientToPageTranslations(
             pages,
-            path,
+            res,
             includesLocale ? langInPath : locale,
           );
           if (translation) res = translation;
@@ -84,8 +84,13 @@ export default function brisaElement(
 
         res = includesLocale ? res : '/' + locale + res;
       }
-      if (__TRAILING_SLASH__ && !path.endsWith('/')) res = res + '/';
-      if (!__TRAILING_SLASH__) res = res.replace(/\/$/, '');
+      const TRAILING_SLASH_REGEX = /\/\?|\/$/;
+      if (__TRAILING_SLASH__ && !path.match(TRAILING_SLASH_REGEX)) {
+        const replaced = res.replace('?', '/?');
+        if (replaced !== res) res = replaced;
+        else res += '/';
+      }
+      if (!__TRAILING_SLASH__) res = res.replace(TRAILING_SLASH_REGEX, '');
       return res;
     };
   }
