@@ -231,5 +231,58 @@ describe('utils', () => {
         adaptClientToPageTranslations(pages, '/buscar?query=test', 'en'),
       ).toBe('/search?query=test');
     });
+
+    it('should handle routes with hash fragments', () => {
+      const pages = {
+        '/home': {
+          en: '/home',
+          pt: '/inicio',
+        },
+        '/user/[id]': {
+          en: '/user/[id]',
+          pt: '/usuario/[id]',
+        },
+      };
+
+      expect(adaptClientToPageTranslations(pages, '/home#section1', 'pt')).toBe(
+        '/inicio#section1',
+      );
+      expect(
+        adaptClientToPageTranslations(pages, '/inicio#section1', 'en'),
+      ).toBe('/home#section1');
+      expect(
+        adaptClientToPageTranslations(pages, '/user/john#details', 'pt'),
+      ).toBe('/usuario/john#details');
+      expect(
+        adaptClientToPageTranslations(pages, '/usuario/john#details', 'en'),
+      ).toBe('/user/john#details');
+    });
+
+    it('should handle routes with query parameters and hash fragments', () => {
+      const pages = {
+        '/search': {
+          en: '/search',
+          pt: '/buscar',
+        },
+        '/search/[query]': {
+          en: '/search/[query]',
+          pt: '/buscar/[query]',
+        },
+      };
+      expect(
+        adaptClientToPageTranslations(
+          pages,
+          '/search?query=test#section1',
+          'pt',
+        ),
+      ).toBe('/buscar?query=test#section1');
+      expect(
+        adaptClientToPageTranslations(
+          pages,
+          '/buscar?query=test#section1',
+          'en',
+        ),
+      ).toBe('/search?query=test#section1');
+    });
   });
 });
