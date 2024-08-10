@@ -30,7 +30,6 @@ export default function adaptClientToPageTranslations(
   lang: string,
 ) {
   const splittedPathname = split(pathname);
-  const pathnameLength = splittedPathname.length;
 
   for (const [route, translations] of Object.entries(pages)) {
     const splittedRoute = split(route);
@@ -62,8 +61,8 @@ export default function adaptClientToPageTranslations(
         ),
       );
 
-      return isCatchAllOrRest && pathnameLength > routeLength
-        ? `${trans}/${join(splittedPathname.slice(routeLength, pathnameLength))}`
+      return isCatchAllOrRest && splittedPathname.length > routeLength
+        ? `${trans}/${join(splittedPathname.slice(routeLength))}`
         : trans;
     }
 
