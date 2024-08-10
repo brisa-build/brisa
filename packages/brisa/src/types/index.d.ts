@@ -1020,6 +1020,10 @@ export type i18nPages = {
   };
 };
 
+export type Translations = {
+  [locale: ISOLocale]: string;
+};
+
 export type I18nConfig<T = I18nDictionary> = {
   defaultLocale: ISOLocale;
   locales: ISOLocale[];
@@ -1033,11 +1037,7 @@ export type I18nConfig<T = I18nDictionary> = {
   allowEmptyStrings?: boolean;
   keySeparator?: string;
   pages?: i18nPages;
-  hrefLangOrigin?:
-    | string
-    | {
-        [locale: ISOLocale]: string;
-      };
+  hrefLangOrigin?: string | Translations;
 };
 
 type RouterType = {

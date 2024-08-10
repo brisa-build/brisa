@@ -26,14 +26,15 @@ export default function adaptClientToPageTranslations(
   pathname: string,
   lang: string,
 ) {
+  const splittedPathname = pathname.split('/');
+  const pathnameLength = splittedPathname.length;
+
   for (const [route, translations] of Object.entries(pages)) {
     const splittedRoute = route.split('/');
     const isCatchAllOrRest = splittedRoute.at(-1)?.includes('[...');
     const dynamicSlices = new Set<number>();
     const routeLength = splittedRoute.length;
     const lastIndex = routeLength - 1;
-    const splittedPathname = pathname.split('/');
-    const pathnameLength = splittedPathname.length;
 
     for (let i = 0; i < routeLength; i++) {
       if (splittedRoute[i].startsWith('[')) dynamicSlices.add(i);
@@ -45,6 +46,9 @@ export default function adaptClientToPageTranslations(
         ? 'r'
         : 'k',
     );
+
+    const removeDynamicSlides = (_: unknown, index: number) =>
+      !dynamicSlices.has(index);
 
     function getTranslationWithDynamicParts() {
       const langTranslation = translations[lang] ?? route;
@@ -62,9 +66,7 @@ export default function adaptClientToPageTranslations(
     }
 
     const newPathname = (pathnameGroups.k ?? []).join('/');
-    const newRoute = splittedRoute
-      .filter((_, index) => !dynamicSlices.has(index))
-      .join('/');
+    const newRoute = splittedRoute.filter(removeDynamicSlides).join('/');
 
     if (newPathname === newRoute) {
       return getTranslationWithDynamicParts();
@@ -73,7 +75,7 @@ export default function adaptClientToPageTranslations(
     for (const translation of Object.values(translations)) {
       const newTranslation = translation
         .split('/')
-        .filter((_, index) => !dynamicSlices.has(index))
+        .filter(removeDynamicSlides)
         .join('/');
 
       if (newPathname === newTranslation) {
