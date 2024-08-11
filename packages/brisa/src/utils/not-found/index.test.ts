@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import notFound, { isNotFoundError } from '.';
+import notFound from '.';
 
 describe('utils', () => {
   describe('not-found', () => {
