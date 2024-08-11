@@ -441,6 +441,10 @@ export default defineConfig({
                 text: 'notFound',
                 link: '/api-reference/functions/notFound',
               },
+              {
+                text: 'isThrowable',
+                link: '/api-reference/functions/isThrowable',
+              },
             ],
           },
           {
