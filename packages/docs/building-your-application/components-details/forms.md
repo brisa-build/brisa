@@ -230,6 +230,12 @@ Doing `internals.setFormValue(e.target.value)` we are setting the value of the W
 >
 > `self.attachInternals()` can be used without an `effect`, it is supported on SSR without any problem.
 
+Think when you are using `self.attachInternals()` you are extending a default Element Internals class. And therefore default values are set. For example if you try to use an input type="email" or required={true}, no actions will happen from the browser unless you define Validity.
+
+> [!NOTE]
+>
+> You are not limited by the default validities anymore. "May the Force be with you."
+
 #### Usage in a Form
 
 After attaching the Web Component to the form, the value of the dynamic field will be included when capturing `FormData` from the parent form.
@@ -262,6 +268,7 @@ export default function Page() {
 > [!NOTE]
 >
 > For more information on the `ElementInternals` API, take a look these docs:
+>
 > - [ElementInternals MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals)
 > - [Form-associated custom elements](https://html.spec.whatwg.org/multipage/custom-elements.html#form-associated-custom-elements)
 > - [ElementInternals and Form-Associated Custom Elements](https://webkit.org/blog/13711/elementinternals-and-form-associated-custom-elements/)
