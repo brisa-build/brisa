@@ -60,15 +60,28 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   afterEach(() => {
     globalThis.__BASE_PATH__ = '';
+    process.env.__CRYPTO_KEY__ = undefined;
+    process.env.__CRYPTO_IV__ = undefined;
+    process.env.BRISA_BUILD_FOLDER = '';
     globalThis.mockConstants = undefined;
     jest.restoreAllMocks();
   });
 
   it('should set the env variables when they are not set for a custom server', async () => {
-    await (await import('./serve-options')).getServeOptions();
+    await (await import('./serve-options')).setUpEnvVars(false);
 
     expect(process.env.__CRYPTO_KEY__).toBeDefined();
     expect(process.env.__CRYPTO_IV__).toBeDefined();
+    expect(process.env.BRISA_BUILD_FOLDER).toBe(
+      path.join(process.cwd(), 'build'),
+    );
+  });
+
+  it('should BRISA_BUILD_FOLDER env variable be defined always (to use prebuild)', async () => {
+    await (await import('./serve-options')).setUpEnvVars(true);
+
+    expect(process.env.__CRYPTO_KEY__).not.toBeDefined();
+    expect(process.env.__CRYPTO_IV__).not.toBeDefined();
     expect(process.env.BRISA_BUILD_FOLDER).toBe(
       path.join(process.cwd(), 'build'),
     );
