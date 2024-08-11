@@ -810,6 +810,85 @@ export type Adapter = {
   ): void | Promise<void>;
 };
 
+interface IsThrowable extends Function {
+  (error: Error): boolean;
+  /**
+   * Description:
+   *
+   * The `rerender` method is used to check if an error is a Brisa throwable **rerender** from `rerenderInAction`.
+   *
+   * Example:
+   *
+   * ```ts
+   * if (isThrowable.rerender(error)) throw error;
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `isThrowable`](https://brisa.build/api-reference/functions/isThrowable)
+   */
+  rerender: (error: Error) => boolean;
+  /**
+   * Description:
+   *
+   * The `navigate` method is used to check if an error is a Brisa throwable **navigate**.
+   *
+   * Example:
+   *
+   * ```ts
+   * if (isThrowable.navigate(error)) throw error;
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `isThrowable`](https://brisa.build/api-reference/functions/isThrowable)
+   */
+  navigate: (error: Error) => boolean;
+  /**
+   * Description:
+   *
+   * The `notFound` method is used to check if an error is a Brisa throwable **notFound**.
+   *
+   * Example:
+   *
+   * ```ts
+   * if (isThrowable.notFound(error)) throw error;
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `isThrowable`](https://brisa.build/api-reference/functions/isThrowable)
+   */
+  notFound: (error: Error) => boolean;
+}
+
+/**
+ * Description:
+ *
+ * The `isThrowable` method is used to check if an error is a Brisa throwable:
+ *
+ * **rerender** from `rerenderInAction`, **navigate** or **notFound**.
+ *
+ * You can also use the `rerender`, `navigate` and `notFound` properties to check for specific throwables.
+ *
+ * Example with `isThrowable`:
+ *
+ * ```ts
+ * if (isThrowable(error)) throw error;
+ * ```
+ *
+ * Example with `rerender`:
+ *
+ * ```ts
+ * if (isThrowable.rerender(error)) throw error;
+ * ```
+ *
+ * Docs:
+ *
+ * - [How to use `isThrowable`](https://brisa.build/api-reference/functions/isThrowable)
+ */
+export const isThrowable: IsThrowable;
+
 export type Configuration = {
   /**
    * Description:

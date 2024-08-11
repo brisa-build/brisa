@@ -1,14 +1,18 @@
 import type { RequestContext } from '@/types';
-import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from '@/utils/rerender-in-action';
+import {
+  PREFIX_MESSAGE,
+  SUFFIX_MESSAGE,
+  isRerenderThrowable,
+} from '@/utils/rerender-in-action';
 import responseRenderedPage from '@/utils/response-rendered-page';
 import getRouteMatcher from '@/utils/get-route-matcher';
 import { getConstants } from '@/constants';
 import { logError } from '@/utils/log/log-build';
-import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import { getNavigateMode, isNavigateThrowable } from '@/utils/navigate/utils';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
 import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers';
 import { getTransferedServerStoreToClient } from '@/utils/transfer-store-service';
+import { isNotFoundError } from '@/utils/not-found';
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -47,7 +51,7 @@ export default async function resolveAction({
   }
 
   // Redirect to 404 page
-  if (error.name === 'NotFoundError') {
+  if (isNotFoundError(error)) {
     url.searchParams.set('_not-found', '1');
 
     return new Response(resolveStore(req), {
@@ -60,7 +64,7 @@ export default async function resolveAction({
   }
 
   // Error not caught
-  if (error.name !== 'rerender') {
+  if (!isRerenderThrowable(error)) {
     logError({
       stack: error.stack,
       messages: [
