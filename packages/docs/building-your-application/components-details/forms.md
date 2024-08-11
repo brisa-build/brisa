@@ -244,13 +244,14 @@ export default function WebComponent({ }, { self }: WebContext) {
       required
       onInput={(e) => {
         const input = e.currentTarget;
-        // Updates the validation of the internal element (input):
+        // Updates the validation of the internal element (input)
         internals.setValidity(input.validity, input.validationMessage);
         console.log('isValid', internals.checkValidity());
       }}
     />
   );
 }
+```
 
 > [!NOTE]
 >
