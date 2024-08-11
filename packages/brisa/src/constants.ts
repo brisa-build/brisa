@@ -161,6 +161,7 @@ declare global {
   var __WEB_CONTEXT_PLUGINS__: boolean;
   var __RPC_LAZY_FILE__: string;
   var __BASE_PATH__: string;
+  var __ASSET_PREFIX__: string;
   var __TRAILING_SLASH__: boolean;
   var __USE_LOCALE__: boolean;
   var __IS_STATIC__: boolean;

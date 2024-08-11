@@ -25,6 +25,7 @@ describe('utils', () => {
       window.__TRAILING_SLASH__ = false;
       window.__USE_LOCALE__ = false;
       window.__USE_PAGE_TRANSLATION__ = false;
+      window.__ASSET_PREFIX__ = '';
       window.fPath = undefined;
       const module = await import('.');
       brisaElement = module.default;
@@ -34,6 +35,7 @@ describe('utils', () => {
     afterEach(() => {
       window.__WEB_CONTEXT_PLUGINS__ = false;
       window.__BASE_PATH__ = '';
+      window.__ASSET_PREFIX__ = '';
       window.__TRAILING_SLASH__ = false;
       window.__USE_LOCALE__ = false;
       window.__USE_PAGE_TRANSLATION__ = false;
@@ -1865,6 +1867,83 @@ describe('utils', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
         '<a href="/base-path/pt-BR/test/">link</a>',
       );
+    });
+
+    it('should add assetPrefix to the src attribute', () => {
+      window.__ASSET_PREFIX__ = 'https://example.com';
+      function Test() {
+        return ['img', { src: '/image.png' }, ''];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
+
+      expect(img.getAttribute('src')).toBe('https://example.com/image.png');
+    });
+
+    it('should add only assetPrefix without basePath (it has more priority on src)', () => {
+      window.__ASSET_PREFIX__ = 'https://example.com';
+      window.__BASE_PATH__ = '/base-path';
+      function Test() {
+        return ['img', { src: '/image.png' }, ''];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
+
+      expect(img.getAttribute('src')).toBe('https://example.com/image.png');
+    });
+
+    it('should not add assetPrefix to the src attribute when it is a full URL', () => {
+      window.__ASSET_PREFIX__ = 'https://example.com';
+      function Test() {
+        return ['img', { src: 'https://example.com/image.png' }, ''];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const img = testComponent?.shadowRoot?.querySelector(
+        'img',
+      ) as HTMLImageElement;
+
+      expect(img.getAttribute('src')).toBe('https://example.com/image.png');
+    });
+
+    it('should not add assetPrefix to the href attribute', () => {
+      window.__ASSET_PREFIX__ = 'https://example.com';
+      function Test() {
+        return ['a', { href: '/test' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+      const a = testComponent?.shadowRoot?.querySelector(
+        'a',
+      ) as HTMLAnchorElement;
+
+      expect(a.getAttribute('href')).toBe('/test');
     });
 
     it('should work with __USE_LOCALE__, __BASE_PATH__ and __TRAILING_SLASH__ together when the path is the home', () => {
