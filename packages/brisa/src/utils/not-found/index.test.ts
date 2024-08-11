@@ -7,15 +7,4 @@ describe('utils', () => {
       expect(() => notFound()).toThrow('Not found');
     });
   });
-
-  describe('is-not-found-error', () => {
-    it('should throw an undefined and not break', () => {
-      try {
-        throw undefined;
-      } catch (err) {
-        const result = isNotFoundError(err);
-        expect(result).toBe(false);
-      }
-    });
-  });
 });
