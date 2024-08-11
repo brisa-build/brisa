@@ -1,9 +1,5 @@
 import type { RequestContext } from '@/types';
-import {
-  PREFIX_MESSAGE,
-  SUFFIX_MESSAGE,
-  isRerenderThrowable,
-} from '@/utils/rerender-in-action';
+import { PREFIX_MESSAGE, SUFFIX_MESSAGE } from '@/utils/rerender-in-action';
 import responseRenderedPage from '@/utils/response-rendered-page';
 import getRouteMatcher from '@/utils/get-route-matcher';
 import { getConstants } from '@/constants';
@@ -13,6 +9,7 @@ import renderToReadableStream from '@/utils/render-to-readable-stream';
 import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers';
 import { getTransferedServerStoreToClient } from '@/utils/transfer-store-service';
 import { isNotFoundError } from '@/utils/not-found';
+import { isRerenderThrowable } from '@/utils/rerender-in-action/is-rerender-throwable';
 
 type ResolveActionParams = {
   req: RequestContext;
