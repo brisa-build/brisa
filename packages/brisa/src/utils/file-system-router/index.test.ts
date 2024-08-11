@@ -1,12 +1,12 @@
-import { FileSystemRouter } from '@/utils/file-system-router';
+import { fileSystemRouter } from '@/utils/file-system-router';
 import { describe, it, expect } from 'bun:test';
 import path from 'node:path';
 
 describe('utils', () => {
-  describe('FileSystemRouter', () => {
+  describe('fileSystemRouter', () => {
     it('should resolve tsx routes in the "nextjs" style', () => {
       const dir = path.join(import.meta.dirname, '__fixtures__', 'tsx-pages');
-      const router = new FileSystemRouter({
+      const router = fileSystemRouter({
         dir,
         fileExtensions: ['.tsx'],
       });
