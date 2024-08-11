@@ -1,4 +1,4 @@
-import { gzipSync, write, type BuildArtifact } from 'bun';
+import { gzipSync, type BuildArtifact } from 'bun';
 import { brotliCompressSync } from 'node:zlib';
 import fs from 'node:fs';
 import { join, sep } from 'node:path';
