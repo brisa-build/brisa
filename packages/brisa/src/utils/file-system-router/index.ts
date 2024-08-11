@@ -12,8 +12,8 @@ export type MatchedBrisaRoute = {
   kind: 'exact' | 'catch-all' | 'optional-catch-all' | 'dynamic';
   name: string;
   pathname: string;
-  params?: Record<string, string>;
-  query?: Record<string, string>;
+  params?: Record<string, string | string[]>;
+  query?: Record<string, string | string[]>;
 };
 
 const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
@@ -28,7 +28,6 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
 
     for (const [name, filePath] of Object.entries(routes)) {
       const kind = getRouteKind(name);
-      const params = getRouteParams(name, pathname);
 
       if (kind === 'exact' && name === pathname) {
         return {
@@ -36,7 +35,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
           kind,
           name,
           pathname,
-          params,
+          ...getParamsAndQuery(name, pathname, url),
         };
       }
 
@@ -52,8 +51,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
           const part = routeParts[i];
 
           if (part.startsWith('[')) {
-            pathnameParts.splice(i, 1);
-            routeParts.splice(i, 1);
+            pathnameParts[i] = routeParts[i];
           }
 
           if (part.includes('...')) {
@@ -69,7 +67,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
             kind,
             name,
             pathname,
-            params,
+            ...getParamsAndQuery(name, pathname, url),
           };
         }
       }
@@ -88,28 +86,26 @@ function getRouteKind(route: string): MatchedBrisaRoute['kind'] {
   return 'exact';
 }
 
-function getRouteParams(
-  route: string,
-  pathname: string,
-): Record<string, string | string[]> | undefined {
-  if (route.includes('[')) {
-    const routeParts = route.split('/');
-    const pathnameParts = pathname.split('/');
+function getParamsAndQuery(route: string, pathname: string, url: URL) {
+  const routeParts = route.split('/');
+  const pathnameParts = pathname.split('/');
+  const params = routeParts.reduce(
+    (acc, part, index) => {
+      if (part.startsWith('[')) {
+        const key = part.replace(/\[|\]|\./g, '');
+        acc[key] = part.includes('...')
+          ? pathnameParts.slice(index)
+          : pathnameParts[index];
+      }
 
-    return routeParts.reduce(
-      (acc, part, index) => {
-        if (part.startsWith('[')) {
-          const key = part.replace(/\[|\]|\./g, '');
-          acc[key] = part.includes('...')
-            ? pathnameParts.slice(index)
-            : pathnameParts[index];
-        }
+      return acc;
+    },
+    {} as Record<string, string | string[]>,
+  );
 
-        return acc;
-      },
-      {} as Record<string, string | string[]>,
-    );
-  }
+  const query = { ...params, ...Object.fromEntries(url.searchParams) };
+
+  return { params, query };
 }
 
 function resolveRoutes({ dir, fileExtensions }: FileSystemRouterOptions) {
