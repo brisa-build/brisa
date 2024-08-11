@@ -17,7 +17,6 @@ export type MatchedBrisaRoute = {
 };
 
 const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
-const ROUTES_CACHE = new Map<string, Record<string, string>>();
 
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
@@ -114,8 +113,6 @@ function getRouteParams(
 }
 
 function resolveRoutes({ dir, fileExtensions }: FileSystemRouterOptions) {
-  if (ROUTES_CACHE.has(dir)) return ROUTES_CACHE.get(dir)!;
-
   const routes: Record<string, string> = {};
   const files = fs.readdirSync(dir, {
     withFileTypes: true,
@@ -139,8 +136,6 @@ function resolveRoutes({ dir, fileExtensions }: FileSystemRouterOptions) {
 
     routes[route] = filePath;
   }
-
-  ROUTES_CACHE.set(dir, routes);
 
   return routes;
 }
