@@ -121,152 +121,53 @@ describe('utils', () => {
   });
 
   describe('fileSystemRouter > match', () => {
-    const BATTERY_TESTS = [
-      [
-        '/',
-        {
-          filePath: path.join(dir, 'index.tsx'),
-          kind: 'exact',
-          name: '/',
-          pathname: '/',
-        },
-      ],
-      [
-        '/about-us',
-        {
-          filePath: path.join(dir, 'about-us.tsx'),
-          kind: 'exact',
-          name: '/about-us',
-          pathname: '/about-us',
-        },
-      ],
-      [
-        '/user/john',
-        {
-          filePath: path.join(dir, 'user', '[username].tsx'),
-          kind: 'dynamic',
-          name: '/user/[username]',
-          pathname: '/user/john',
-          params: {
-            username: 'john',
-          },
-        },
-      ],
-      [
-        '/foo/bar',
-        {
-          filePath: path.join(dir, 'foo', '[bar]', 'index.tsx'),
-          kind: 'dynamic',
-          name: '/foo/[bar]',
-          pathname: '/foo/bar',
-          params: {
-            bar: 'bar',
-          },
-        },
-      ],
-      [
-        '/rest/a/b/c',
-        {
-          filePath: path.join(dir, 'rest', '[...s].tsx'),
-          kind: 'catch-all',
-          name: '/rest/[...s]',
-          pathname: '/rest/a/b/c',
-          params: {
-            s: ['a', 'b', 'c'],
-          },
-        },
-      ],
-      [
-        '/rest2/a/b/c',
-        {
-          filePath: path.join(dir, 'rest2', '[...s]', 'index.tsx'),
-          kind: 'catch-all',
-          name: '/rest2/[...s]',
-          pathname: '/rest2/a/b/c',
-          params: {
-            s: ['a', 'b', 'c'],
-          },
-        },
-      ],
-      [
-        '/catchall/a/b/c',
-        {
-          filePath: path.join(dir, 'catchall', '[[...catchAll]].tsx'),
-          kind: 'optional-catch-all',
-          name: '/catchall/[[...catchAll]]',
-          pathname: '/catchall/a/b/c',
-          params: {
-            catchAll: ['a', 'b', 'c'],
-          },
-        },
-      ],
-      [
-        '/catchall2/a/b/c',
-        {
-          filePath: path.join(dir, 'catchall2', '[[...catchAll]]', 'index.tsx'),
-          kind: 'optional-catch-all',
-          name: '/catchall2/[[...catchAll]]',
-          pathname: '/catchall2/a/b/c',
-          params: {
-            catchAll: ['a', 'b', 'c'],
-          },
-        },
-        '/nested/john/foo/bar/baz/quux',
-        {
-          filePath: path.join(
-            dir,
-            'nested',
-            '[user]',
-            '[foo]',
-            '[bar]',
-            '[baz]',
-            '[quux]',
-            'index.js',
-          ),
-          kind: 'dynamic',
-          name: '/nested/[user]/[foo]/[bar]/[baz]/[quux]',
-          pathname: '/nested/john/foo/bar/baz/quux',
-          params: {
-            user: 'john',
-            foo: 'foo',
-            bar: 'bar',
-            baz: 'baz',
-            quux: 'quux',
-          },
-        },
-        '/nested2/john/foo/bar/baz/quux',
-        {
-          filePath: path.join(
-            dir,
-            'nested',
-            '[user]',
-            '[foo]',
-            '[bar]',
-            '[baz]',
-            '[quux].jsx',
-          ),
-          kind: 'dynamic',
-          name: '/nested2/[user]/[foo]/[bar]/[baz]/[quux]',
-          pathname: '/nested2/john/foo/bar/baz/quux',
-          params: {
-            user: 'john',
-            foo: 'foo',
-            bar: 'bar',
-            baz: 'baz',
-            quux: 'quux',
-          },
-        },
-      ],
-    ] as [string, MatchedBrisaRoute][];
+    const SAME_AS_BUN_FILESYSTEMROUTER = [
+      '/',
+      '/user/john',
+      '/foo/bar',
+      '/rest/a/b/c',
+      '/rest2/a/b/c',
+      '/catchall/a/b/c',
+      '/catchall2/a/b/c',
+      '/nested/john/foo/bar/baz/quux',
+      '/nested2/john/foo/bar/baz/quux',
+    ];
 
-    describe.each(BATTERY_TESTS)('match: %s', (filePath, expected) => {
-      it(`should return ${expected.name}`, () => {
-        const router = fileSystemRouter({
+    const fixBunParams = (obj: Record<string, string>) =>
+      Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [
+          key,
+          value.includes('/') ? value.split('/') : value,
+        ]),
+      );
+
+    it.each(SAME_AS_BUN_FILESYSTEMROUTER)(
+      'should match: %s with Bun.FileSystemRouter',
+      (filePath) => {
+        const options = {
           dir,
           fileExtensions: ['.tsx', '.js', '.jsx'],
+        };
+        const router = fileSystemRouter(options);
+        const output = router.match(filePath);
+        const bunRouter = new Bun.FileSystemRouter({
+          style: 'nextjs',
+          ...options,
         });
-        expect(router.match(filePath)).toEqual(expected as any);
-      });
-    });
+        const expectedMatch = bunRouter.match(filePath);
+        const expected = expectedMatch
+          ? {
+              filePath: expectedMatch.filePath,
+              kind: expectedMatch.kind,
+              name: expectedMatch.name,
+              pathname: expectedMatch.pathname,
+              params: fixBunParams(expectedMatch.params),
+              query: fixBunParams(expectedMatch.query),
+            }
+          : null;
+
+        expect(output).toEqual(expected);
+      },
+    );
   });
 });
