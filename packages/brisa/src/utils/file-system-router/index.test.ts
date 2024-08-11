@@ -131,6 +131,16 @@ describe('utils', () => {
       '/catchall2/a/b/c',
       '/nested/john/foo/bar/baz/quux',
       '/nested2/john/foo/bar/baz/quux',
+      // With trailing slash:
+      '/',
+      '/user/john/',
+      '/foo/bar/',
+      '/rest/a/b/c/',
+      '/rest2/a/b/c/',
+      '/catchall/a/b/c/',
+      '/catchall2/a/b/c/',
+      '/nested/john/foo/bar/baz/quux/',
+      '/nested2/john/foo/bar/baz/quux/',
     ];
 
     const fixBunParams = (obj: Record<string, string>) =>
