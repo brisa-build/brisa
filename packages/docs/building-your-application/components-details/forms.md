@@ -230,7 +230,27 @@ Doing `internals.setFormValue(e.target.value)` we are setting the value of the W
 >
 > `self.attachInternals()` can be used without an `effect`, it is supported on SSR without any problem.
 
-Think when you are using `self.attachInternals()` you are extending a default Element Internals class. And therefore default values are set. For example if you try to use an input type="email" or required={true}, no actions will happen from the browser unless you define Validity.
+Think when you are using `self.attachInternals()` you are extending a default [Element Internals](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals) class. And therefore default values are set. For example, if you try to use an input `type="email"` or `required`, no actions will happen from the browser unless you define [Validity](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals/validity).
+
+```tsx
+import type { WebContext } from "brisa";
+
+export default function WebComponent({ }, { self }: WebContext) {
+  const internals = self.attachInternals();
+
+  return (
+    <input
+      type="text"
+      required
+      onInput={(e) => {
+        const input = e.currentTarget;
+        // Updates the validation of the internal element (input):
+        internals.setValidity(input.validity, input.validationMessage);
+        console.log('isValid', internals.checkValidity());
+      }}
+    />
+  );
+}
 
 > [!NOTE]
 >
