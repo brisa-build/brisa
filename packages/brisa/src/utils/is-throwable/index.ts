@@ -1,6 +1,6 @@
 import { isNavigateThrowable } from '@/utils/navigate/utils';
 import { isNotFoundError } from '@/utils/not-found';
-import { isRerenderThrowable } from '@/utils/rerender-in-action';
+import { isRerenderThrowable } from '@/utils/rerender-in-action/is-rerender-throwable';
 
 export default function isThrowable(error: Error) {
   return (

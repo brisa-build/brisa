@@ -6,8 +6,6 @@ export const SUFFIX_MESSAGE = `\n\nPlease use the 'rerenderInAction' function in
   'https://brisa.build/api-reference/server-apis/rerenderInAction#rerenderinaction',
 )}`;
 
-const RERENDER_THROWABLE_NAME = 'rerender';
-
 export default function rerenderInAction<T>(
   config: RerenderInActionProps<T> = {},
 ) {
@@ -23,11 +21,7 @@ export default function rerenderInAction<T>(
     throwable[Symbol.for('props')] = config.props ?? {};
   }
 
-  throwable.name = RERENDER_THROWABLE_NAME;
+  throwable.name = 'rerender';
 
   throw throwable;
-}
-
-export function isRerenderThrowable(error: Error) {
-  return error.name === RERENDER_THROWABLE_NAME;
 }
