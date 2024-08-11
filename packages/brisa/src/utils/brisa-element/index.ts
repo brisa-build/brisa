@@ -135,9 +135,10 @@ export default function brisaElement(
       __BASE_PATH__ ||
       __TRAILING_SLASH__ ||
       __USE_LOCALE__ ||
-      __USE_PAGE_TRANSLATION__
+      __USE_PAGE_TRANSLATION__ ||
+      __ASSET_PREFIX__
     ) {
-      if ((key === 'src' || key === 'href') && !URL.canParse(value)) {
+      if ((key === 'src' || key === 'href') && !URL.canParse(serializedValue)) {
         // Handle trailing slash + i18n locale + i18n pages
         if (
           (__TRAILING_SLASH__ || __USE_LOCALE__ || __USE_PAGE_TRANSLATION__) &&
@@ -146,8 +147,15 @@ export default function brisaElement(
           serializedValue = $window.fPath(serializedValue);
         }
 
+        // Handle asset prefix
+        if (__ASSET_PREFIX__ && key === 'src') {
+          serializedValue = __ASSET_PREFIX__ + serializedValue;
+        }
+
         // Handle BASE_PATH
-        if (__BASE_PATH__) serializedValue = __BASE_PATH__ + serializedValue;
+        if (__BASE_PATH__ && !URL.canParse(serializedValue)) {
+          serializedValue = __BASE_PATH__ + serializedValue;
+        }
       }
     }
 
