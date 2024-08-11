@@ -11,6 +11,11 @@ export class NotFoundError extends Error {
   }
 }
 
-export function isNotFoundError(error: Error) {
-  return error.name === NOT_FOUND_ERROR_NAME;
+export function isNotFoundError(error: unknown) {
+  return (
+    error &&
+    typeof error === 'object' &&
+    'name' in error &&
+    error.name === NOT_FOUND_ERROR_NAME
+  );
 }
