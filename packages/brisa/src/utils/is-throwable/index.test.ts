@@ -1,108 +1,108 @@
-import isThrowable from '@/utils/is-throwable';
+import throwable from '@/utils/is-throwable';
 import { describe, it, expect } from 'bun:test';
 
 describe('utils', () => {
-  describe('isThrowable', () => {
+  describe('throwable.is', () => {
     it('should return true if the error is rerender throwable', () => {
       const error = new Error('rerender');
       error.name = 'rerender';
-      expect(isThrowable(error)).toBeTrue();
+      expect(throwable.is(error)).toBeTrue();
     });
 
     it('should return true if the error is navigate throwable', () => {
       const error = new Error('navigate');
       error.name = 'navigate:';
-      expect(isThrowable(error)).toBeTrue();
+      expect(throwable.is(error)).toBeTrue();
     });
 
     it('should return true if the error is not found', () => {
       const error = new Error('not found');
       error.name = 'NotFoundError';
-      expect(isThrowable(error)).toBeTrue();
+      expect(throwable.is(error)).toBeTrue();
     });
 
     it('should return false if the error is not rerender, navigate or not found', () => {
       const error = new Error('error');
       error.name = 'error';
-      expect(isThrowable(error)).toBeFalse();
+      expect(throwable.is(error)).toBeFalse();
     });
   });
 
-  describe('isThrowable.rerender', () => {
+  describe('throwable.isRerender', () => {
     it('should return true if the error is rerender throwable', () => {
       const error = new Error('rerender');
       error.name = 'rerender';
-      expect(isThrowable.rerender(error)).toBeTrue();
+      expect(throwable.isRerender(error)).toBeTrue();
     });
 
     it('should return true if the error is navigate throwable', () => {
       const error = new Error('navigate');
       error.name = 'navigate:';
-      expect(isThrowable.rerender(error)).toBeFalse();
+      expect(throwable.isRerender(error)).toBeFalse();
     });
 
     it('should return true if the error is not found', () => {
       const error = new Error('not found');
       error.name = 'NotFoundError';
-      expect(isThrowable.rerender(error)).toBeFalse();
+      expect(throwable.isRerender(error)).toBeFalse();
     });
 
     it('should return false if the error is not rerender, navigate or not found', () => {
       const error = new Error('error');
       error.name = 'error';
-      expect(isThrowable.rerender(error)).toBeFalse();
+      expect(throwable.isRerender(error)).toBeFalse();
     });
   });
 
-  describe('isThrowable.navigate', () => {
+  describe('throwable.isNavigate', () => {
     it('should return true if the error is rerender throwable', () => {
       const error = new Error('rerender');
       error.name = 'rerender';
-      expect(isThrowable.navigate(error)).toBeFalse();
+      expect(throwable.isNavigate(error)).toBeFalse();
     });
 
     it('should return true if the error is navigate throwable', () => {
       const error = new Error('navigate');
       error.name = 'navigate:';
-      expect(isThrowable.navigate(error)).toBeTrue();
+      expect(throwable.isNavigate(error)).toBeTrue();
     });
 
     it('should return true if the error is not found', () => {
       const error = new Error('not found');
       error.name = 'NotFoundError';
-      expect(isThrowable.navigate(error)).toBeFalse();
+      expect(throwable.isNavigate(error)).toBeFalse();
     });
 
     it('should return false if the error is not rerender, navigate or not found', () => {
       const error = new Error('error');
       error.name = 'error';
-      expect(isThrowable.navigate(error)).toBeFalse();
+      expect(throwable.isNavigate(error)).toBeFalse();
     });
   });
 
-  describe('isThrowable.notFound', () => {
+  describe('throwable.isNotFound', () => {
     it('should return true if the error is rerender throwable', () => {
       const error = new Error('rerender');
       error.name = 'rerender';
-      expect(isThrowable.notFound(error)).toBeFalse();
+      expect(throwable.isNotFound(error)).toBeFalse();
     });
 
     it('should return true if the error is navigate throwable', () => {
       const error = new Error('navigate');
       error.name = 'navigate:';
-      expect(isThrowable.notFound(error)).toBeFalse();
+      expect(throwable.isNotFound(error)).toBeFalse();
     });
 
     it('should return true if the error is not found', () => {
       const error = new Error('not found');
       error.name = 'NotFoundError';
-      expect(isThrowable.notFound(error)).toBeTrue();
+      expect(throwable.isNotFound(error)).toBeTrue();
     });
 
     it('should return false if the error is not rerender, navigate or not found', () => {
       const error = new Error('error');
       error.name = 'error';
-      expect(isThrowable.notFound(error)).toBeFalse();
+      expect(throwable.isNotFound(error)).toBeFalse();
     });
   });
 });

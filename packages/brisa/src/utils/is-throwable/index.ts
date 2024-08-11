@@ -2,7 +2,7 @@ import { isNavigateThrowable } from '@/utils/navigate/utils';
 import { isNotFoundError } from '@/utils/not-found';
 import { isRerenderThrowable } from '@/utils/rerender-in-action/is-rerender-throwable';
 
-export default function isThrowable(error: Error) {
+function isThrowable(error: Error) {
   return (
     isRerenderThrowable(error) ||
     isNavigateThrowable(error) ||
@@ -10,6 +10,11 @@ export default function isThrowable(error: Error) {
   );
 }
 
-isThrowable.rerender = isRerenderThrowable;
-isThrowable.navigate = isNavigateThrowable;
-isThrowable.notFound = isNotFoundError;
+const throwable = {
+  is: isThrowable,
+  isRerender: isRerenderThrowable,
+  isNavigate: isNavigateThrowable,
+  isNotFound: isNotFoundError,
+};
+
+export default throwable;
