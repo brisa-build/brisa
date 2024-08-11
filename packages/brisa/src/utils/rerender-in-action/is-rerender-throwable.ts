@@ -1,3 +1,8 @@
-export function isRerenderThrowable(error: Error) {
-  return error.name === 'rerender';
+export function isRerenderThrowable(error: unknown) {
+  return (
+    error &&
+    typeof error === 'object' &&
+    'name' in error &&
+    error.name === 'rerender'
+  );
 }
