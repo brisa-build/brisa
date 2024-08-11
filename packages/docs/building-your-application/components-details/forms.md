@@ -232,7 +232,7 @@ Doing `internals.setFormValue(e.target.value)` we are setting the value of the W
 
 Think when you are using `self.attachInternals()` you are extending a default [Element Internals](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals) class. And therefore default values are set. For example, if you try to use an input `type="email"` or `required`, no actions will happen from the browser unless you define [Validity](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals/validity).
 
-```tsx
+```tsx 13-14
 import type { WebContext } from "brisa";
 
 export default function WebComponent({ }, { self }: WebContext) {
@@ -255,7 +255,7 @@ export default function WebComponent({ }, { self }: WebContext) {
 
 > [!NOTE]
 >
-> You are not limited by the default validities anymore. "May the Force be with you."
+> The `ValidityState` object is used to represent the validity states of an element. It contains properties that indicate whether the element meets its validation criteria, and the reason why it doesn't.
 
 #### Usage in a Form
 
