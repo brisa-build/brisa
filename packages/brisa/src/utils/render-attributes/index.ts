@@ -39,7 +39,6 @@ export default function renderAttributes({
   const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
   const locale = request.i18n?.locale;
   const { basePath, assetPrefix } = CONFIG;
-  const useAssetPrefix = assetPrefix && IS_PRODUCTION;
   const keys = new Set<string>();
   let attributes = '';
   let submitAction = elementProps['data-action-onsubmit'];
@@ -62,10 +61,10 @@ export default function renderAttributes({
     // Add the basePath or assetPrefix to internal assets (img, picture, video, audio, script)
     if (
       prop === 'src' &&
-      (useAssetPrefix || basePath) &&
+      (assetPrefix || basePath) &&
       !URL.canParse(value as string)
     ) {
-      value = `${useAssetPrefix ? assetPrefix : basePath}${value}`;
+      value = `${assetPrefix ? assetPrefix : basePath}${value}`;
     }
 
     const isFn = typeof value === 'function';
