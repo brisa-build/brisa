@@ -16,9 +16,7 @@
     "url": "https://github.com/brisa-build/brisa.git",
     "directory": "packages/create-brisa"
   },
-  "files": [
-    "create-brisa.cjs"
-  ],
+  "files": ["create-brisa.cjs"],
   "bin": {
     "create-brisa": "./create-brisa.cjs"
   },
