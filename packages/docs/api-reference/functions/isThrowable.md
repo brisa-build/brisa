@@ -116,4 +116,4 @@ interface IsThrowable extends Function {
 }
 
 export const isThrowable: IsThrowable;
-```å
+```
