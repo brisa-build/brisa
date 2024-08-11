@@ -95,7 +95,7 @@ describe('utils', () => {
       expect(attributes).toBe(' src="/base/about"');
     });
 
-    it('should render the src attribute without the basePath, but with assetPrefix in PRODUCTION', () => {
+    it('should render the src attribute without the basePath, but with assetPrefix (priority)', () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
@@ -118,7 +118,7 @@ describe('utils', () => {
       expect(attributes).toBe(' src="https://cdn.test.com/about"');
     });
 
-    it('should render the src attribute without the assetPrefix, but with basePath in DEVELOPMENT', () => {
+    it('should render the src attribute without the basePath, but with assetPrefix in DEVELOPMENT', () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: false,
@@ -138,7 +138,7 @@ describe('utils', () => {
         type: 'img',
       });
 
-      expect(attributes).toBe(' src="/base/about"');
+      expect(attributes).toBe(' src="https://cdn.test.com/about"');
     });
 
     it('should render the "a" href attribute without the basePath when is a full URL', () => {
@@ -839,7 +839,7 @@ describe('utils', () => {
       );
     });
 
-    it('should NOT add the assetPrefix to the "src" attribute for internal src (DEVELOPMENT)', () => {
+    it('should also add the assetPrefix to the "src" attribute for internal src in DEVELOPMENT', () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: false,
@@ -873,13 +873,17 @@ describe('utils', () => {
         ' src="https://example.com/some-image.png"',
       );
 
-      expect(imgSrc('/some-image.png')).toBe(' src="/some-image.png"');
+      expect(imgSrc('/some-image.png')).toBe(
+        ' src="https://cdn.test.com/some-image.png"',
+      );
 
       expect(scriptSrc('https://example.com/some-script.js')).toBe(
         ' src="https://example.com/some-script.js"',
       );
 
-      expect(scriptSrc('/some-script.js')).toBe(' src="/some-script.js"');
+      expect(scriptSrc('/some-script.js')).toBe(
+        ' src="https://cdn.test.com/some-script.js"',
+      );
     });
 
     it('should add "open" attribute to the "dialog" tag without the boolean content when open=true', () => {

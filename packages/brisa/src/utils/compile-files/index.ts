@@ -53,8 +53,8 @@ export default async function compileFiles() {
   const actionsEntrypoints: string[] = [];
   const define = {
     __DEV__: (!IS_PRODUCTION).toString(),
-    __BASE_PATH__: JSON.stringify(CONFIG.basePath),
-    __ASSET_PREFIX__: JSON.stringify(CONFIG.assetPrefix),
+    __BASE_PATH__: JSON.stringify(CONFIG.basePath ?? ''),
+    __ASSET_PREFIX__: JSON.stringify(CONFIG.assetPrefix ?? ''),
     __TRAILING_SLASH__: Boolean(CONFIG.trailingSlash).toString(),
     __USE_LOCALE__: Boolean(I18N_CONFIG?.defaultLocale).toString(),
     __USE_PAGE_TRANSLATION__: shouldTransferTranslatedPagePaths(
