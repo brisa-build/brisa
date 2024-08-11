@@ -2039,6 +2039,110 @@ describe('utils', () => {
       );
     });
 
+    it('should work with __USE_PAGE_TRANSLATION__ with home +  hash', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {},
+      };
+
+      function Test() {
+        return ['a', { href: '/#foo' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR#foo">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__ with home +  params', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {},
+      };
+
+      function Test() {
+        return ['a', { href: '/?foo=bar' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR?foo=bar">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__ with home + existing locale and hash', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {},
+      };
+
+      function Test() {
+        return ['a', { href: '/pt-BR#foo' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR#foo">link</a>',
+      );
+    });
+
+    it('should work with __USE_PAGE_TRANSLATION__ with home + existing locale and params', () => {
+      window.__USE_PAGE_TRANSLATION__ = true;
+      window.__USE_LOCALE__ = true;
+      window.i18n = {
+        locale: 'pt-BR',
+        locales: ['pt-BR', 'en-US'],
+        pages: {},
+      };
+
+      function Test() {
+        return ['a', { href: '/pt-BR?foo=bar' }, 'link'];
+      }
+
+      customElements.define('test-component', brisaElement(Test));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<a href="/pt-BR?foo=bar">link</a>',
+      );
+    });
+
     it('should work with __USE_PAGE_TRANSLATION__ params and hash', () => {
       window.__USE_PAGE_TRANSLATION__ = true;
       window.__USE_LOCALE__ = true;
