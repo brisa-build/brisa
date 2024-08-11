@@ -84,14 +84,15 @@ export default function brisaElement(
 
         res = includesLocale ? res : '/' + locale + res;
       }
-      const TRAILING_SLASH_REGEX = /\/\?|\/#|\/$/;
-      if (__TRAILING_SLASH__ && !path.match(TRAILING_SLASH_REGEX)) {
-        const replaced = res.replace('?', '/?').replace('#', '/#');
-        if (replaced !== res) res = replaced;
-        else res += '/';
+      const TRAILING_SLASH_REGEX = /\/(?=\?|#|$)/;
+
+      if (__TRAILING_SLASH__) {
+        res = res.replace(/([^/])([?#])/, '$1/$2');
+        if (!res.match(TRAILING_SLASH_REGEX)) res += '/';
+      } else {
+        res = res.replace(TRAILING_SLASH_REGEX, '');
       }
-      if (!__TRAILING_SLASH__)
-        res = res.replace(/\/$/, '').replace('/?', '?').replace('/#', '#');
+
       return res;
     };
   }
