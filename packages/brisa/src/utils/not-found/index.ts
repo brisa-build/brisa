@@ -12,10 +12,5 @@ export class NotFoundError extends Error {
 }
 
 export function isNotFoundError(error: unknown) {
-  return (
-    error &&
-    typeof error === 'object' &&
-    'name' in error &&
-    error.name === NOT_FOUND_ERROR_NAME
-  );
+  return error instanceof Error && error.name === NOT_FOUND_ERROR_NAME;
 }
