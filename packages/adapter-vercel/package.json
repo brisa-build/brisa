@@ -15,9 +15,7 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/adapter-vercel"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "devDependencies": {
     "brisa": "workspace:*"
   },

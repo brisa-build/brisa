@@ -22,9 +22,7 @@ import { RenderInitiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 
 export async function getServeOptions() {
-  // This is necessary in case of Custom Server using the getServeOptions outside
-  // the Brisa environment, otherwise this is set from the CLI.
-  if (!import.meta.main) setUpEnvVars();
+  setUpEnvVars(import.meta.main);
 
   const {
     IS_PRODUCTION,
@@ -338,13 +336,18 @@ export async function getServeOptions() {
   }
 }
 
-function setUpEnvVars() {
-  if (!process.env.__CRYPTO_KEY__) {
-    process.env.__CRYPTO_KEY__ = crypto.randomBytes(32).toString('hex');
+export function setUpEnvVars(isMainFile: boolean = import.meta.main) {
+  // This is necessary in case of Custom Server using the getServeOptions outside
+  // the Brisa environment, otherwise this is set from the CLI.
+  if (!isMainFile) {
+    if (!process.env.__CRYPTO_KEY__) {
+      process.env.__CRYPTO_KEY__ = crypto.randomBytes(32).toString('hex');
+    }
+    if (!process.env.__CRYPTO_IV__) {
+      process.env.__CRYPTO_IV__ = crypto.randomBytes(8).toString('hex');
+    }
   }
-  if (!process.env.__CRYPTO_IV__) {
-    process.env.__CRYPTO_IV__ = crypto.randomBytes(8).toString('hex');
-  }
+  // This is necessary always to allow "prebuild" folder to be used
   if (!process.env.BRISA_BUILD_FOLDER) {
     process.env.BRISA_BUILD_FOLDER = path.join(process.cwd(), 'build');
   }
