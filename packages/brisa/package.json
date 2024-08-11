@@ -87,9 +87,9 @@
   "peerDependencies": {
     "typescript": "5.5.4"
   },
-  "packageManager": "bun@1.1.21",
+  "packageManager": "bun@1.1.22",
   "engines": {
-    "bun": ">= 1.1.21",
+    "bun": ">= 1.1.22",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
