@@ -1,6 +1,6 @@
 {
   "name": "brisa-adapter-vercel",
-  "version": "0.0.151",
+  "version": "0.0.152",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -15,7 +15,9 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/adapter-vercel"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "brisa": "workspace:*"
   },
