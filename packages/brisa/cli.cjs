@@ -33,7 +33,9 @@ async function main({ currentBunVersion, brisaPackageManager }) {
 
     console.log(
       yellowLog(
-        `Warning: Your current Bun version is not supported by the current version of Brisa. Please upgrade to ${SUPPORTED_BUN_VERSION} or later.\n`,
+        `Warning: Your current Bun version is not supported by the current version of Brisa, 
+        but you can still use older ones.\n
+        Please upgrade to ${SUPPORTED_BUN_VERSION} or later to use latest version of Brisa.\n`,
       ),
     );
     console.log(yellowLog('You can upgrade Bun by running:\n'));
