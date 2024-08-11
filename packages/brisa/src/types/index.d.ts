@@ -810,84 +810,110 @@ export type Adapter = {
   ): void | Promise<void>;
 };
 
-interface IsThrowable extends Function {
-  (error: Error): boolean;
+interface Throwable {
   /**
    * Description:
    *
-   * The `rerender` method is used to check if an error is a Brisa throwable **rerender** from `rerenderInAction`.
+   * The `is` method is used to check if an error is a Brisa throwable:
    *
-   * Example:
+   * **rerender** from `rerenderInAction`, **navigate** or **notFound**.
+   *
+   * You can also use the `isRerender`, `isNavigate`, and `isNotFound` properties to check for specific throwables.
+   *
+   * Example with `is`:
    *
    * ```ts
-   * if (isThrowable.rerender(error)) throw error;
+   * if (throwable.is(error)) throw error;
+   * ```
+   *
+   * Example with `isRerender`:
+   *
+   * ```ts
+   * if (throwable.isRerender(error)) throw error;
    * ```
    *
    * Docs:
    *
-   * - [How to use `isThrowable`](https://brisa.build/api-reference/functions/isThrowable)
+   * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
    */
-  rerender: (error: Error) => boolean;
+  is: (error: Error) => boolean;
+
   /**
    * Description:
    *
-   * The `navigate` method is used to check if an error is a Brisa throwable **navigate**.
+   * The `isRerender` method is used to check if an error is a Brisa throwable **rerender** from `rerenderInAction`.
    *
    * Example:
    *
    * ```ts
-   * if (isThrowable.navigate(error)) throw error;
+   * if (throwable.isRerender(error)) throw error;
    * ```
    *
    * Docs:
    *
-   * - [How to use `isThrowable`](https://brisa.build/api-reference/functions/isThrowable)
+   * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
    */
-  navigate: (error: Error) => boolean;
+  isRerender: (error: Error) => boolean;
+
   /**
    * Description:
    *
-   * The `notFound` method is used to check if an error is a Brisa throwable **notFound**.
+   * The `isNavigate` method is used to check if an error is a Brisa throwable **navigate**.
    *
    * Example:
    *
    * ```ts
-   * if (isThrowable.notFound(error)) throw error;
+   * if (throwable.isNavigate(error)) throw error;
    * ```
    *
    * Docs:
    *
-   * - [How to use `isThrowable`](https://brisa.build/api-reference/functions/isThrowable)
+   * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
    */
-  notFound: (error: Error) => boolean;
+  isNavigate: (error: Error) => boolean;
+
+  /**
+   * Description:
+   *
+   * The `isNotFound` method is used to check if an error is a Brisa throwable **notFound**.
+   *
+   * Example:
+   *
+   * ```ts
+   * if (throwable.isNotFound(error)) throw error;
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
+   */
+  isNotFound: (error: Error) => boolean;
 }
 
 /**
  * Description:
  *
- * The `isThrowable` method is used to check if an error is a Brisa throwable:
+ * The `throwable` object provides methods to check if an error is a Brisa throwable.
+ * You can use `is` for a general check, or use `isRerender`, `isNavigate`, and `isNotFound`
+ * for specific types of errors.
  *
- * **rerender** from `rerenderInAction`, **navigate** or **notFound**.
- *
- * You can also use the `rerender`, `navigate` and `notFound` properties to check for specific throwables.
- *
- * Example with `isThrowable`:
+ * Example with `is`:
  *
  * ```ts
- * if (isThrowable(error)) throw error;
+ * if (throwable.is(error)) throw error;
  * ```
  *
- * Example with `rerender`:
+ * Example with `isRerender`:
  *
  * ```ts
- * if (isThrowable.rerender(error)) throw error;
+ * if (throwable.isRerender(error)) throw error;
  * ```
  *
  * Docs:
  *
- * - [How to use `isThrowable`](https://brisa.build/api-reference/functions/isThrowable)
+ * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
  */
-export const isThrowable: IsThrowable;
+export const throwable: Throwable;
 
 export type Configuration = {
   /**
