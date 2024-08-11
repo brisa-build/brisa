@@ -4,46 +4,38 @@ import fs from 'node:fs';
 const finalSlashIndex = new RegExp(`${path.sep}index$`);
 
 // Inspired on Bun.FileSystemRouter, but runtime-agnostic.
-export class FileSystemRouter {
+export function fileSystemRouter({
+  dir,
+  fileExtensions,
+}: {
   dir: string;
   fileExtensions: string[];
-  routes: Record<string, string> = {};
+}) {
+  const routes: Record<string, string> = {};
+  const files = fs.readdirSync(dir, {
+    withFileTypes: true,
+    recursive: true,
+  });
 
-  constructor({
-    dir,
-    fileExtensions,
-  }: {
-    dir: string;
-    fileExtensions: string[];
-  }) {
-    this.dir = dir;
-    this.fileExtensions = fileExtensions;
-    this.routes = this.getRoutes();
+  for (const file of files) {
+    if (file.isDirectory()) continue;
+
+    const ext = path.extname(file.name);
+
+    if (!fileExtensions.includes(ext)) continue;
+
+    const filePath = path.resolve(file.parentPath, file.name);
+    let route = filePath
+      .replace(ext, '')
+      .replace(dir, '')
+      .replace(finalSlashIndex, '');
+
+    if (route === '') route = '/';
+
+    routes[route] = filePath;
   }
 
-  private getRoutes() {
-    const routes: Record<string, string> = {};
-    const files = fs.readdirSync(this.dir, {
-      withFileTypes: true,
-      recursive: true,
-    });
-
-    for (const file of files) {
-      if (file.isDirectory()) continue;
-      const ext = path.extname(file.name);
-      if (!this.fileExtensions.includes(ext)) continue;
-
-      const filePath = path.resolve(file.parentPath, file.name);
-      let route = filePath
-        .replace(ext, '')
-        .replace(this.dir, '')
-        .replace(finalSlashIndex, '');
-
-      if (route === '') route = '/';
-
-      routes[route] = filePath;
-    }
-
-    return routes;
-  }
+  return {
+    routes,
+  };
 }
