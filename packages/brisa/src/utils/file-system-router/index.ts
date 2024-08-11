@@ -25,17 +25,18 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
   function match(routeToMatch: string) {
     const url = new URL(routeToMatch, 'http://l');
     const pathname = url.pathname;
+    const fixedPathname = pathname.replace(/\/$/, '') || '/';
 
     for (const [name, filePath] of Object.entries(routes)) {
       const kind = getRouteKind(name);
 
-      if (kind === 'exact' && name === pathname) {
+      if (kind === 'exact' && name === fixedPathname) {
         return {
           filePath,
           kind,
           name,
           pathname,
-          ...getParamsAndQuery(name, pathname, url),
+          ...getParamsAndQuery(name, fixedPathname, url),
         };
       }
 
@@ -45,7 +46,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
         kind === 'optional-catch-all'
       ) {
         const routeParts = name.split('/');
-        const pathnameParts = pathname.split('/');
+        const pathnameParts = fixedPathname.split('/');
 
         for (let i = 0; i < routeParts.length; i++) {
           const part = routeParts[i];
@@ -67,7 +68,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
             kind,
             name,
             pathname,
-            ...getParamsAndQuery(name, pathname, url),
+            ...getParamsAndQuery(name, fixedPathname, url),
           };
         }
       }
