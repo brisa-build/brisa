@@ -31,7 +31,7 @@ async function main({ currentBunVersion, brisaPackageManager }) {
       ? `iex "& {$(irm https://bun.sh/install.ps1)} -Version ${currentBunVersion}"`
       : `curl -fsSL https://bun.sh/install | bash -s "bun-v${currentBunVersion}"`;
 
-    console.log(yellowLog(`Warning: Your current Bun version is not supported by the current version of Brisa, but you can still use older versions from Brisa. Please upgrade to ${SUPPORTED_BUN_VERSION} or later to use latest version of Brisa.\n`));
+    console.log(yellowLog(`Warning: Your current Bun version is not supported by the current version of Brisa, but you can still use older versions from Brisa. Please upgrade Bun to ${SUPPORTED_BUN_VERSION} or later to use latest version of Brisa.\n`));
     console.log(yellowLog('You can upgrade Bun by running:\n'));
     console.log(yellowLog(command));
     console.log(yellowLog('\nAfter upgrading, you can run Brisa again'));
