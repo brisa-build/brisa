@@ -793,8 +793,7 @@ describe('Brisa CLI', () => {
 
     expect(mockLog.mock.calls[0][0]).toBe(
       yellowLog(
-        'Warning: Your current Bun version is not supported by the current version of Brisa. Please upgrade to 999.999.999 or later.\n',
-      ),
+        'Warning: Your current Bun version is not supported by the current version of Brisa, but you can still use older versions from Brisa. Please upgrade Bun to 999.999.999 or later to use latest version of Brisa.\n'),
     );
     expect(mockLog.mock.calls[1][0]).toBe(
       yellowLog('You can upgrade Bun by running:\n'),
