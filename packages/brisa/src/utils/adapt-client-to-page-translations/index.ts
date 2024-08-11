@@ -2,7 +2,7 @@ const join = (arr: any = []) => arr.join('/');
 const split = (str: string) => str.split('/');
 
 /**
- * This code is WITHOUT Bun.FileSystemRouter to be used on client side.
+ * This code is WITHOUT FileSystemRouter to be used on client side.
  *
  * @param pages - The pages to be used during the translations,
  *     ex:
