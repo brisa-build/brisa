@@ -20,7 +20,10 @@ Running `brisa build` generates an optimized version of your application for pro
 
 Brisa can be deployed to any hosting provider that supports Bun. Ensure your `package.json` has the `"build"` and `"start"` scripts:
 
-```json filename="package.json"
+:::tabs key:language
+==package.json
+
+```json
 {
   "scripts": {
     "dev": "brisa dev",
@@ -29,6 +32,8 @@ Brisa can be deployed to any hosting provider that supports Bun. Ensure your `pa
   }
 }
 ```
+
+:::
 
 Then, run `bun run build` to build your application. Finally, run `bun run start` to start the Bun server. This server supports all Brisa features.
 

@@ -14,7 +14,10 @@ Use the file `middleware.ts` (or `.js`) inside the `src` folder of your project 
 
 ## Example
 
-```ts filename="middleware.ts" switcher
+:::tabs key:language
+==middleware.ts
+
+```ts
 import { type RequestContext } from "brisa";
 
 // This function can be without `async` if you are not using `await` inside
@@ -37,7 +40,9 @@ export default async function middleware({
 }
 ```
 
-```js filename="middleware.js" switcher
+==middleware.js
+
+```js
 // This function can be without `async` if you are not using `await` inside
 export default async function middleware({ i18n, route, headers }) {
   const { locale } = i18n;
@@ -54,9 +59,15 @@ export default async function middleware({ i18n, route, headers }) {
 }
 ```
 
+:::
+
 Only is possible to access to `route` property inside `api routes` and `pages routes`. This is to support handling of dynamic routes, catch-all, etc in a simple way. In the case of `assets` you can look it up through the request:
 
-```ts filename="middleware.ts" switcher
+:::tabs key:language
+
+==middleware.ts
+
+```ts
 import { type RequestContext } from "brisa";
 
 export default async function middleware(
@@ -79,7 +90,9 @@ export default async function middleware(
 }
 ```
 
-```js filename="middleware.js" switcher
+==middleware.js
+
+```js
 export default async function middleware(request) {
   const url = new URL(request.url);
 
@@ -98,6 +111,8 @@ export default async function middleware(request) {
 }
 ```
 
+:::
+
 However, this is not the best way to serve assets. You can put the static files directly inside the `public` folder. More information [here](/building-your-application/routing/static-assets).
 
 ## Cookies & Headers
@@ -106,7 +121,10 @@ However, this is not the best way to serve assets. You can put the static files 
 
 Cookies are regular headers. On a `Request`, they are stored in the `Cookie` header.
 
-```ts filename="middleware.ts" switcher
+:::tabs key:language
+==middleware.ts
+
+```ts
 import { type RequestContext } from "brisa";
 
 export default async function middleware(request: RequestContext) {
@@ -117,7 +135,9 @@ export default async function middleware(request: RequestContext) {
 }
 ```
 
-```js filename="middleware.js" switcher
+==middleware.js
+
+```js
 export default async function middleware(request) {
   const cookies = request.headers.get("cookie");
   const headers = request.headers.get("x-example");
@@ -125,6 +145,8 @@ export default async function middleware(request) {
   // ... do something with cookies and headers
 }
 ```
+
+:::
 
 ### On Response
 
@@ -136,7 +158,10 @@ All responseHeaders will be mixed in this order:
 2. `layout` response headers (can crush the middleware response headers)
 3. `page` response headers (both middleware and layout response headers can be mixed).
 
-```ts filename="middleware.ts" switcher
+:::tabs key:language
+==middleware.ts
+
+```ts
 import { type RequestContext } from "brisa";
 
 export function responseHeaders(
@@ -150,7 +175,9 @@ export function responseHeaders(
 }
 ```
 
-```js filename="middleware.js" switcher
+==middleware.js
+
+```js
 export function responseHeaders(request, responseStatus) {
   return {
     "Cache-Control": "public, max-age=3600",
@@ -158,6 +185,8 @@ export function responseHeaders(request, responseStatus) {
   };
 }
 ```
+
+:::
 
 ## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders`
 
