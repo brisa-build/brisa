@@ -362,7 +362,7 @@ export default function serverComponentPlugin(
       }
 
       const key = value.arguments[2];
-      const hasKey = key.name !== 'undefined' || key.value;
+      const hasKey = key?.name !== 'undefined' || key?.value;
 
       value.arguments[0] = {
         type: 'Identifier',
