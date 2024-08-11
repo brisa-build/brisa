@@ -26,6 +26,10 @@ describe('utils', () => {
       error.name = 'error';
       expect(throwable.is(error)).toBeFalse();
     });
+
+    it('should return false and not break when returning non-object', () => {
+      expect(throwable.is(undefined)).toBeFalse();
+    });
   });
 
   describe('throwable.isRerender', () => {
@@ -51,6 +55,10 @@ describe('utils', () => {
       const error = new Error('error');
       error.name = 'error';
       expect(throwable.isRerender(error)).toBeFalse();
+    });
+
+    it('should return false and not break when returning non-object', () => {
+      expect(throwable.isRerender(undefined)).toBeFalse();
     });
   });
 
@@ -78,6 +86,10 @@ describe('utils', () => {
       error.name = 'error';
       expect(throwable.isNavigate(error)).toBeFalse();
     });
+
+    it('should return false and not break when returning non-object', () => {
+      expect(throwable.isNavigate(undefined)).toBeFalse();
+    });
   });
 
   describe('throwable.isNotFound', () => {
@@ -103,6 +115,10 @@ describe('utils', () => {
       const error = new Error('error');
       error.name = 'error';
       expect(throwable.isNotFound(error)).toBeFalse();
+    });
+
+    it('should return false and not break when returning non-object', () => {
+      expect(throwable.isNotFound(undefined)).toBeFalse();
     });
   });
 });
