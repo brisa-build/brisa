@@ -177,6 +177,10 @@ In Spanish:
 
 - `/about` → `/es/sobre-nosotros` → `src/pages/about.js`
 
+> [!IMPORTANT]
+>
+> For pathname translations, we recommend using server components to avoid the need for client-side translations, however, if you need to use client-side translations, you can use the [`pages.config.transferToClient`](/building-your-application/routing/internationalization#activate-page-pathname-translation-in-web-components) configuration property to transfer the needed page pathnames translations to the client.
+
 ### Navigate to another locale
 
 It is always possible to force a specific route in case you want to change the locale to another one:
@@ -187,7 +191,9 @@ export default function Home() {
 }
 ```
 
-TODO: Confirm the TIP after implement this task: https://github.com/brisa-build/brisa/issues/55
+> [!TIP]
+>
+> If you are changing the current page locale and you have translations in the client-side, to avoid any issues with the translations, we recommend using the [`renderMode="native"`](#navigation-in-native-way) attribute to force to reload all the translations and `href` links that are setted on client-side _(they are not reactive with signals)_.
 
 ## `navigate` function
 
