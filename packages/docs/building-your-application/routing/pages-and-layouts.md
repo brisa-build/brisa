@@ -143,7 +143,10 @@ All `responseHeaders` will be mixed in this order:
 2. `layout` response headers (can crush the middleware response headers)
 3. `page` response headers (both middleware and layout response headers can be mixed).
 
-```ts filename="middleware.ts" switcher
+:::tabs key:language
+==ts
+
+```ts
 import { type RequestContext } from "brisa";
 
 export function responseHeaders(
@@ -158,7 +161,9 @@ export function responseHeaders(
 }
 ```
 
-```js filename="middleware.js" switcher
+==js
+
+```js
 export function responseHeaders(request, responseStatus) {
   return {
     "Cache-Control": "public, max-age=3600",
@@ -167,6 +172,8 @@ export function responseHeaders(request, responseStatus) {
   };
 }
 ```
+
+:::
 
 ## Head
 
