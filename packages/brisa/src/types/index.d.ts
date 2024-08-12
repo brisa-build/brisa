@@ -836,7 +836,7 @@ interface Throwable {
    *
    * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
    */
-  is: (error: Error) => boolean;
+  is: (error: unknown) => boolean;
 
   /**
    * Description:
@@ -853,7 +853,7 @@ interface Throwable {
    *
    * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
    */
-  isRerender: (error: Error) => boolean;
+  isRerender: (error: unknown) => boolean;
 
   /**
    * Description:
@@ -870,7 +870,7 @@ interface Throwable {
    *
    * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
    */
-  isNavigate: (error: Error) => boolean;
+  isNavigate: (error: unknown) => boolean;
 
   /**
    * Description:
@@ -887,7 +887,7 @@ interface Throwable {
    *
    * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
    */
-  isNotFound: (error: Error) => boolean;
+  isNotFound: (error: unknown) => boolean;
 }
 
 /**
