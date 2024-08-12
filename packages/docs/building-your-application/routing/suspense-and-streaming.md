@@ -32,7 +32,7 @@ In this example we are registering `suspense` to display a loading state meanwhi
 ==ts
 
 ```ts
-//src/components/some-component.tsx
+// src/components/some-component.tsx
 import { type RequestContext } from "brisa";
 
 // If it does not have the suspense, it waits to show the content, otherwise, it puts it in suspense and is displayed once is available

@@ -54,18 +54,20 @@ The request that arrives is an extension of the native [Request](https://develop
 You can read the `Request` body using the standard Web API methods:
 
 :::tabs key:language
-==src/api/items/route.ts
+==ts
 
 ```ts
+//src/api/items/route.ts
 export async function POST(request: RequestContext) {
   const res = await request.json();
   return new Response(JSON.stringify({ res }));
 }
 ```
 
-==src/api/items/route.js
+==js
 
 ```js
+//src/api/items/route.js
 export async function POST(request) {
   const res = await request.json();
   return new Response(JSON.stringify({ res }));
@@ -79,9 +81,10 @@ export async function POST(request) {
 You can read the `FormData` using the standard Web API methods:
 
 :::tabs key:language
-==src/api/items/route.ts
+==ts
 
 ```ts
+//src/api/items/route.ts
 export async function POST(request: RequestContext) {
   const formData = await request.formData();
   const name = formData.get("name");
@@ -90,9 +93,10 @@ export async function POST(request: RequestContext) {
 }
 ```
 
-==src/api/items/route.js
+==js
 
 ```js
+//src/api/items/route.js
 export async function POST(request) {
   const formData = await request.formData();
   const name = formData.get("name");

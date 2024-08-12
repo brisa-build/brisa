@@ -144,7 +144,7 @@ All `responseHeaders` will be mixed in this order:
 3. `page` response headers (both middleware and layout response headers can be mixed).
 
 :::tabs key:language
-==middleware.ts
+==ts
 
 ```ts
 import { type RequestContext } from "brisa";
@@ -161,7 +161,7 @@ export function responseHeaders(
 }
 ```
 
-==middleware.js
+==js
 
 ```js
 export function responseHeaders(request, responseStatus) {

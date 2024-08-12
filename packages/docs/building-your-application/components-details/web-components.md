@@ -862,9 +862,10 @@ Within the web components you can use other web components by writing them as if
 Example consuming a Web Component inside a Web Component:
 
 :::tabs key:language
-== tsx
+== ts
 
-```tsx filename="src/web-components/using-web-component.tsx"
+```tsx
+//src/web-components/using-web-component.tsx
 import { WebContext } from "brisa";
 
 type Props = { name: string };
@@ -882,9 +883,10 @@ export function ServerComponent(
 }
 ```
 
-==jsx
+==js
 
-```jsx filename="src/web-components/using-web-component.js"
+```jsx
+//src/web-components/using-web-component.js
 import { WebContext } from "brisa";
 
 export function ServerComponent({ name, children }, webContext) {
@@ -906,9 +908,10 @@ We are not going to use any import, we can consume it directly as another HTML t
 Example consuming a Web Component inside a Server Component:
 
 :::tabs key:language
-== tsx
+== ts
 
-```tsx filename="src/components/using-web-component.tsx"
+```tsx
+//src/components/using-web-component.tsx
 import { RequestContext } from "brisa";
 import AnotherServerComponent from "./another";
 
@@ -929,9 +932,10 @@ export function ServerComponent(
 }
 ```
 
-== jsx
+== js
 
-```jsx filename="src/components/using-web-component.js" switcher
+```jsx
+//src/components/using-web-component.js
 import AnotherServerComponent from "./another";
 
 export function ServerComponent({ name }, requestContext) {
@@ -1122,9 +1126,10 @@ All native web components can be located inside `web-components/_native` and con
 Example:
 
 :::tabs key:language
-==web-components/\_native/some-native.ts
+==ts
 
 ```tsx
+//web-components/\_native/some-native.ts
 export default class SomeNative extends HTMLElement {
   constructor() {
     super();
