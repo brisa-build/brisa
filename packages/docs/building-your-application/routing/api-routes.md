@@ -53,25 +53,38 @@ The request that arrives is an extension of the native [Request](https://develop
 
 You can read the `Request` body using the standard Web API methods:
 
-```ts filename="src/api/items/route.ts" switcher
+:::tabs key:language
+==ts
+
+```ts
+//src/api/items/route.ts
 export async function POST(request: RequestContext) {
   const res = await request.json();
   return new Response(JSON.stringify({ res }));
 }
 ```
 
-```js filename="src/api/items/route.js" switcher
+==js
+
+```js
+//src/api/items/route.js
 export async function POST(request) {
   const res = await request.json();
   return new Response(JSON.stringify({ res }));
 }
 ```
+
+:::
 
 ## Request Body FormData
 
 You can read the `FormData` using the standard Web API methods:
 
-```ts filename="src/api/items/route.ts" switcher
+:::tabs key:language
+==ts
+
+```ts
+//src/api/items/route.ts
 export async function POST(request: RequestContext) {
   const formData = await request.formData();
   const name = formData.get("name");
@@ -80,7 +93,10 @@ export async function POST(request: RequestContext) {
 }
 ```
 
-```js filename="src/api/items/route.js" switcher
+==js
+
+```js
+//src/api/items/route.js
 export async function POST(request) {
   const formData = await request.formData();
   const name = formData.get("name");
@@ -88,6 +104,8 @@ export async function POST(request) {
   return new Response(JSON.stringify({ name, email }));
 }
 ```
+
+:::
 
 Since `formData` data are all strings, you may want to use [`zod-form-data`](https://www.npmjs.com/zod-form-data) to validate the request and retrieve data in the format you prefer (e.g. `number`).
 
