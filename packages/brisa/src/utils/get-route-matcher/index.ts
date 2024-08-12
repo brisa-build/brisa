@@ -7,10 +7,8 @@ export default function getRouteMatcher(
   dir: string,
   reservedPathnames: string[] = [],
   locale?: string,
-  separator = path.sep,
 ): RouterType {
   const router = fileSystemRouter({ dir });
-  const isDifferentSeparator = separator !== '/';
   const reservedPathnamesSet = new Set(reservedPathnames);
   const routeMatcher = (req: RequestContext) => {
     const url = new URL(req.finalURL);
@@ -21,20 +19,8 @@ export default function getRouteMatcher(
 
     let route = router.match(url.toString());
 
-    if (isTestFile(route?.name) || url.pathname.endsWith(separator + 'index')) {
+    if (isTestFile(route?.name) || url.pathname.endsWith(path.sep + 'index')) {
       return { route: null, isReservedPathname: false };
-    }
-
-    // Fix in Windows to use the correct path separator inside the filePath
-    if (isDifferentSeparator && route?.filePath) {
-      route = {
-        filePath: route.filePath.replaceAll('/', separator),
-        kind: route.kind,
-        name: route.name,
-        params: route.params,
-        pathname: route.pathname,
-        query: route.query,
-      };
     }
 
     return {

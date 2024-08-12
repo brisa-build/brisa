@@ -22,13 +22,13 @@ describe('utils', () => {
     it('should return an array', () => {
       const entrypoints = getEntrypoints(pagesDir);
       const expected = [
-        '_404.tsx',
-        '_500.tsx',
-        'foo.tsx',
-        'page-with-web-component.tsx',
-        'somepage.tsx',
-        'somepage-with-context.tsx',
         path.sep + 'index.tsx',
+        'page-with-web-component.tsx',
+        'somepage-with-context.tsx',
+        '_500.tsx',
+        'somepage.tsx',
+        '_404.tsx',
+        'foo.tsx',
         'user' + path.sep + '[username].tsx',
       ].map((route) => path.join(pagesDir, route));
       expect(entrypoints).toEqual(expected);
@@ -51,31 +51,6 @@ describe('utils', () => {
         path.join(mdxPagesDir, route),
       );
       expect(entrypoints).toEqual(expected);
-    });
-
-    it('should return the routes with the correct path separator', () => {
-      const separator = '\\';
-      const entrypoints = getEntrypoints(pagesDir, separator);
-
-      const expected = [
-        '_404.tsx',
-        '_500.tsx',
-        'foo.tsx',
-        'page-with-web-component.tsx',
-        'somepage.tsx',
-        'somepage-with-context.tsx',
-        'index.tsx',
-        'user\\[username].tsx',
-      ].map((route) => pagesDir.replaceAll('/', '\\') + '\\' + route);
-
-      expect(entrypoints).toEqual(expected);
-
-      const otherSeparator = '/';
-      const otherEntrypoints = getEntrypoints(pagesDir, otherSeparator);
-
-      expect(otherEntrypoints).toEqual(
-        expected.map((route) => route.replace(/\\/g, '/')),
-      );
     });
   });
 });

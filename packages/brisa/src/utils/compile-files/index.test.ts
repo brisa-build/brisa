@@ -914,8 +914,8 @@ describe('utils', () => {
   ${info}
   ${info}Route                                | JS server | JS client (gz)  
   ${info}-------------------------------------------------------------------
-  ${info}λ /pages/page-without-web-component  | 217 B     | ${greenLog('0 B')}  
   ${info}λ /pages/index                       | 1 kB      | ${greenLog('3 kB')}  
+  ${info}λ /pages/page-without-web-component  | 217 B     | ${greenLog('0 B')}  
   ${info}
   ${info}λ Server entry-points
   ${info}Φ JS shared by all
