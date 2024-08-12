@@ -311,6 +311,24 @@ describe('utils', () => {
       '/admin/1/providers/2/edit',
       '/admin/1/providers/create',
 
+      // With http://localhost:3000:
+      'http://localhost:3000',
+      'http://localhost:3000/user/john',
+      'http://localhost:3000/foo/bar',
+      'http://localhost:3000/rest/a/b/c',
+      'http://localhost:3000/rest2/a/b/c',
+      'http://localhost:3000/catchall/a/b/c',
+      'http://localhost:3000/catchall/a/b/cc/dd/eee',
+      'http://localhost:3000/catchall2/a/b/c',
+      'http://localhost:3000/nested/john/foo/bar/baz/quux',
+      'http://localhost:3000/nested2/john/foo/bar/baz/quux',
+      'http://localhost:3000/admin',
+      'http://localhost:3000/admin/1',
+      'http://localhost:3000/admin/1/providers',
+      'http://localhost:3000/admin/1/providers/2/delete',
+      'http://localhost:3000/admin/1/providers/2/edit',
+      'http://localhost:3000/admin/1/providers/create',
+
       // With trailing slash:
       '/user/john/',
       '/foo/bar/',
