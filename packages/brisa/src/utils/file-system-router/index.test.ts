@@ -419,10 +419,86 @@ describe('utils', () => {
       '//',
       '//user/john',
       '//foo/bar',
+
+      // Without trim spaces:
+      '/user/john ',
+      '/foo/bar ',
+      '/rest/a/b/c ',
+      '/rest2/a/b/c ',
+      '/catchall/a/b/c ',
+      '/catchall/a/b/cc/dd/eee ',
+      '/catchall2/a/b/c ',
+      '/nested/john/foo/bar/baz/quux ',
+      '/nested2/john/foo/bar/baz/quux ',
+      '/admin ',
+      '/admin/1 ',
+      '/admin/1/providers ',
+      '/admin/1/providers/2/delete ',
+      '/admin/1/providers/2/edit ',
+      '/admin/1/providers/create ',
+
+      // With special characters:
+      '/user/john%20doe',
+      '/foo/bar%20baz',
+      '/rest/a%20b/c',
+      '/rest2/a%20b/c',
+      '/catchall/a%20b/c',
+      '/catchall/a%20b/cc/dd/eee',
+      '/catchall2/a%20b/c',
+      '/nested/john/foo/bar/baz/a%20b',
+      '/nested2/john/foo/bar/baz/a%20b',
+
+      // With special characters in the query:
+      '/?test=1%202%203',
+      '/user/john?test=1%202%203',
+      '/foo/bar?test=1%202%203',
+      '/rest/a/b/c?test=1%202%203',
+      '/rest2/a/b/c?test=1%202%203',
+      '/catchall/a/b/c?test=1%202%203',
+      '/catchall/a/b/cc/dd/eee?test=1%202%203',
+      '/catchall2/a/b/c?test=1%202%203',
+      '/nested/john/foo/bar/baz/quux?test=1%202%203',
+      '/nested2/john/foo/bar/baz/quux?test=1%202%203',
+      '/admin/?test=1%202%203',
+      '/admin/1?test=1%202%203',
+      '/admin/1/providers?test=1%202%203',
+      '/admin/1/providers/2/delete?test=1%202%203',
+      '/admin/1/providers/2/edit?test=1%202%203',
+      '/admin/1/providers/create?test=1%202%203',
+
+      // With special characters in the hash:
+      '/?test=1#hash%20this',
+      '/user/john?test=1#hash%20this',
+      '/foo/bar?test=1#hash%20this',
+      '/rest/a/b/c?test=1#hash%20this',
+      '/rest2/a/b/c?test=1#hash%20this',
+      '/catchall/a/b/c?test=1#hash%20this',
+      '/catchall/a/b/cc/dd/eee?test=1#hash%20this',
+      '/catchall2/a/b/c?test=1#hash%20this',
+      '/nested/john/foo/bar/baz/quux?test=1#hash%20this',
+      '/nested2/john/foo/bar/baz/quux?test=1#hash%20this',
+      '/admin/?test=1#hash%20this',
+      '/admin/1?test=1#hash%20this',
+      '/admin/1/providers?test=1#hash%20this',
+      '/admin/1/providers/2/delete?test=1#hash%20this',
+      '/admin/1/providers/2/edit?test=1#hash%20this',
+      '/admin/1/providers/create?test=1#hash%20this',
+
+      // With special characters in path, the query and hash:
+      '/user/john%20doe?test=1%202%203#hash%20this',
+      '/foo/bar%20baz?test=1%202%203#hash%20this',
+      '/rest/a%20b/c?test=1%202%203#hash%20this',
+      '/rest2/a%20b/c?test=1%202%203#hash%20this',
+      '/catchall/a%20b/c?test=1%202%203#hash%20this',
+      '/catchall/a%20b/cc/dd/eee?test=1%202%203#hash%20this',
+      '/catchall2/a%20b/c?test=1%202%203#hash%20this',
+      '/nested/john/foo/bar/baz/a%20b?test=1%202%203#hash%20this',
+      '/nested2/john/foo/bar/baz/a%20b?test=1%202%203#hash%20this',
     ];
 
     const SHOULD_RETURN_NULL = ['/admin/1/b/c/d/e', '/user/john/a/b/c'];
 
+    // Most of them are bugs that are not fixed in the Bun.FileSystemRouter
     const DIFFERENT_THAN_BUN_FILESYSTEMROUTER = [
       [
         '/fdsgsdfg/a',
@@ -438,6 +514,153 @@ describe('utils', () => {
             test: 'fdsgsdfg',
           },
           src: path.join('[test]', 'a', 'index.js'),
+        },
+      ],
+      [
+        '/admin/1/providers/create%20',
+        {
+          filePath: path.join(
+            dir,
+            'admin',
+            '[businessId]',
+            'providers',
+            'create.tsx',
+          ),
+          kind: 'dynamic',
+          name: '/admin/[businessId]/providers/create',
+          params: {
+            businessId: '1',
+          },
+          pathname: '/admin/1/providers/create ',
+          query: {
+            businessId: '1',
+          },
+          src: 'admin/[businessId]/providers/create.tsx',
+        },
+      ],
+      [
+        '/admin/1/providers/2/edit%20',
+        {
+          filePath: path.join(
+            dir,
+            'admin',
+            '[businessId]',
+            'providers',
+            '[providerId]',
+            'edit.tsx',
+          ),
+          kind: 'dynamic',
+          name: '/admin/[businessId]/providers/[providerId]/edit',
+          pathname: '/admin/1/providers/2/edit ',
+          src: 'admin/[businessId]/providers/[providerId]/edit.tsx',
+          params: {
+            businessId: '1',
+            providerId: '2',
+          },
+          query: {
+            businessId: '1',
+            providerId: '2',
+          },
+        },
+      ],
+      [
+        '/admin/1/providers/2/delete%20',
+        {
+          filePath: path.join(
+            dir,
+            'admin',
+            '[businessId]',
+            'providers',
+            '[providerId]',
+            'delete.tsx',
+          ),
+          kind: 'dynamic',
+          name: '/admin/[businessId]/providers/[providerId]/delete',
+          pathname: '/admin/1/providers/2/delete ',
+          src: 'admin/[businessId]/providers/[providerId]/delete.tsx',
+          params: {
+            businessId: '1',
+            providerId: '2',
+          },
+          query: {
+            businessId: '1',
+            providerId: '2',
+          },
+        },
+      ],
+      [
+        '/admin/1/providers/create%20?test=1%202%203#hash%20this',
+        {
+          filePath: path.join(
+            dir,
+            'admin',
+            '[businessId]',
+            'providers',
+            'create.tsx',
+          ),
+          kind: 'dynamic',
+          name: '/admin/[businessId]/providers/create',
+          params: {
+            businessId: '1',
+          },
+          pathname: '/admin/1/providers/create ?test=1 2 3#hash this',
+          query: {
+            businessId: '1',
+            test: '1 2 3',
+          },
+          src: 'admin/[businessId]/providers/create.tsx',
+        },
+      ],
+      [
+        '/admin/1/providers/2/edit%20?test=1%202%203#hash%20this',
+        {
+          filePath: path.join(
+            dir,
+            'admin',
+            '[businessId]',
+            'providers',
+            '[providerId]',
+            'edit.tsx',
+          ),
+          kind: 'dynamic',
+          name: '/admin/[businessId]/providers/[providerId]/edit',
+          params: {
+            businessId: '1',
+            providerId: '2',
+          },
+          pathname: '/admin/1/providers/2/edit ?test=1 2 3#hash this',
+          query: {
+            businessId: '1',
+            providerId: '2',
+            test: '1 2 3',
+          },
+          src: 'admin/[businessId]/providers/[providerId]/edit.tsx',
+        },
+      ],
+      [
+        '/admin/1/providers/2/delete%20?test=1%202%203#hash%20this',
+        {
+          filePath: path.join(
+            dir,
+            'admin',
+            '[businessId]',
+            'providers',
+            '[providerId]',
+            'delete.tsx',
+          ),
+          kind: 'dynamic',
+          name: '/admin/[businessId]/providers/[providerId]/delete',
+          pathname: '/admin/1/providers/2/delete ?test=1 2 3#hash this',
+          src: 'admin/[businessId]/providers/[providerId]/delete.tsx',
+          params: {
+            businessId: '1',
+            providerId: '2',
+          },
+          query: {
+            businessId: '1',
+            providerId: '2',
+            test: '1 2 3',
+          },
         },
       ],
     ] as [string, MatchedBrisaRoute][];
@@ -477,7 +700,7 @@ describe('utils', () => {
           style: 'nextjs',
           ...options,
         });
-        const expectedMatch = bunRouter.match(filePath);
+        const expectedMatch = bunRouter.match(filePath.trim());
         const expected = expectedMatch
           ? {
               filePath: expectedMatch.filePath,

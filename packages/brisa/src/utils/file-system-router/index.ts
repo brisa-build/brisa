@@ -16,8 +16,10 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
 
   function match(routeToMatch: string): MatchedBrisaRoute | null {
     const url = new URL(routeToMatch.replace(/\/+/g, '/'), 'http://l');
-    const pathname = url.pathname + url.search + url.hash;
-    const fixedPathname = url.pathname.replace(/\/$/, '') || '/';
+    const pathname = decodeURIComponent(url.pathname + url.search + url.hash);
+    const fixedPathname = decodeURIComponent(
+      url.pathname.replace(/\/$/, '') || '/',
+    ).trim();
 
     for (const [name, filePath] of Object.entries(routes)) {
       const kind = getRouteKind(name);
