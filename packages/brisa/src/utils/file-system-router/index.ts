@@ -22,7 +22,7 @@ const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
 export function fileSystemRouter(options: FileSystemRouterOptions) {
   const routes = resolveRoutes(options);
 
-  function match(routeToMatch: string) {
+  function match(routeToMatch: string): MatchedBrisaRoute | null {
     const url = new URL(routeToMatch, 'http://l');
     const pathname = url.pathname;
     const fixedPathname = pathname.replace(/\/$/, '') || '/';
