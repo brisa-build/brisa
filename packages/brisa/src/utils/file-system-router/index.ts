@@ -15,9 +15,9 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
   const routes = resolveRoutes(options);
 
   function match(routeToMatch: string): MatchedBrisaRoute | null {
-    const url = new URL(routeToMatch, 'http://l');
-    const pathname = url.pathname;
-    const fixedPathname = pathname.replace(/\/$/, '') || '/';
+    const url = new URL(routeToMatch.replace(/\/+/g, '/'), 'http://l');
+    const pathname = url.pathname + url.search + url.hash;
+    const fixedPathname = url.pathname.replace(/\/$/, '') || '/';
 
     for (const [name, filePath] of Object.entries(routes)) {
       const kind = getRouteKind(name);
@@ -90,8 +90,8 @@ function getParamsAndQuery(route: string, pathname: string, url: URL) {
       if (part.startsWith('[')) {
         const key = part.replace(/\[|\]|\./g, '');
         acc[key] = part.includes('...')
-          ? pathnameParts.slice(index)
-          : pathnameParts[index];
+          ? pathnameParts.slice(index) ?? ''
+          : pathnameParts[index] ?? '';
       }
 
       return acc;
