@@ -5,6 +5,7 @@ import renderToString from '@/utils/render-to-string';
 import rerenderInAction from '@/utils/rerender-in-action';
 import { getServeOptions } from '@/cli/serve/serve-options';
 import { RenderInitiator } from '@/public-constants';
+import { fileSystemRouter } from '@/utils/file-system-router';
 
 export {
   SSRWebComponent,
@@ -14,4 +15,5 @@ export {
   rerenderInAction,
   getServeOptions,
   RenderInitiator,
+  fileSystemRouter,
 };
