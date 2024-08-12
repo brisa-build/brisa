@@ -9,7 +9,7 @@ type FileSystemRouterOptions = {
 
 const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
 const DEFAULT_EXTENSIONS = ['.tsx', '.jsx', '.ts', '.mjs', '.cjs', '.js'];
-const MULTI_SLASH_REGEX = /\/+/g;
+const MULTI_SLASH_REGEX = /(?<!:)\/{2,}/g;
 const TRAILING_SLASH_REGEX = /\/$/;
 const EXTRACT_PARAM_KEY_REGEX = /\[|\]|\./g;
 
