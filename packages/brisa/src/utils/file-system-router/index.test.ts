@@ -304,6 +304,7 @@ describe('utils', () => {
       '/catchall2/a/b/c',
       '/nested/john/foo/bar/baz/quux',
       '/nested2/john/foo/bar/baz/quux',
+      '/admin',
       '/admin/1',
       '/admin/1/providers',
       '/admin/1/providers/2/delete',
@@ -320,12 +321,107 @@ describe('utils', () => {
       '/catchall2/a/b/c/',
       '/nested/john/foo/bar/baz/quux/',
       '/nested2/john/foo/bar/baz/quux/',
+      '/admin/',
       '/admin/1/',
       '/admin/1/providers/',
       '/admin/1/providers/2/delete/',
       '/admin/1/providers/2/edit/',
       '/admin/1/providers/create/',
+
+      // With query:
+      '/?test=1',
+      '/user/john?test=1',
+      '/foo/bar?test=1',
+      '/rest/a/b/c?test=1',
+      '/rest2/a/b/c?test=1',
+      '/catchall/a/b/c?test=1',
+      '/catchall/a/b/cc/dd/eee?test=1',
+      '/catchall2/a/b/c?test=1',
+      '/nested/john/foo/bar/baz/quux?test=1',
+      '/nested2/john/foo/bar/baz/quux?test=1',
+      '/admin/?test=1',
+      '/admin/1?test=1',
+      '/admin/1/providers?test=1',
+      '/admin/1/providers/2/delete?test=1',
+      '/admin/1/providers/2/edit?test=1',
+      '/admin/1/providers/create?test=1',
+
+      // With query with slashes:
+      '/?test=1/2/3',
+      '/user/john?test=1/2/3',
+      '/foo/bar?test=1/2/3',
+      '/rest/a/b/c?test=1/2/3',
+      '/rest2/a/b/c?test=1/2/3',
+      '/catchall/a/b/c?test=1/2/3',
+      '/catchall/a/b/cc/dd/eee?test=1/2/3',
+      '/catchall2/a/b/c?test=1/2/3',
+      '/nested/john/foo/bar/baz/quux?test=1/2/3',
+      '/nested2/john/foo/bar/baz/quux?test=1/2/3',
+      '/admin/?test=1/2/3',
+      '/admin/1?test=1/2/3',
+      '/admin/1/providers?test=1/2/3',
+      '/admin/1/providers/2/delete?test=1/2/3',
+      '/admin/1/providers/2/edit?test=1/2/3',
+      '/admin/1/providers/create?test=1/2/3',
+
+      // With query and trailing slash:
+      '/user/john/?test=1',
+      '/foo/bar/?test=1',
+      '/rest/a/b/c/?test=1',
+      '/rest2/a/b/c/?test=1',
+      '/catchall/a/b/c/?test=1',
+      '/catchall/a/b/cc/dd/eee/?test=1',
+      '/catchall2/a/b/c/?test=1',
+      '/nested/john/foo/bar/baz/quux/?test=1',
+      '/nested2/john/foo/bar/baz/quux/?test=1',
+      '/admin/?test=1',
+      '/admin/1/?test=1',
+      '/admin/1/providers/?test=1',
+      '/admin/1/providers/2/delete/?test=1',
+      '/admin/1/providers/2/edit/?test=1',
+      '/admin/1/providers/create/?test=1',
+
+      // With query and hash:
+      '/?test=1#hash',
+      '/user/john?test=1#hash',
+      '/foo/bar?test=1#hash',
+      '/rest/a/b/c?test=1#hash',
+      '/rest2/a/b/c?test=1#hash',
+      '/catchall/a/b/c?test=1#hash',
+      '/catchall/a/b/cc/dd/eee?test=1#hash',
+      '/catchall2/a/b/c?test=1#hash',
+      '/nested/john/foo/bar/baz/quux?test=1#hash',
+      '/nested2/john/foo/bar/baz/quux?test=1#hash',
+      '/admin/?test=1#hash',
+      '/admin/1?test=1#hash',
+      '/admin/1/providers?test=1#hash',
+      '/admin/1/providers/2/delete?test=1#hash',
+      '/admin/1/providers/2/edit?test=1#hash',
+      '/admin/1/providers/create?test=1#hash',
+
+      // With query, hash and trailing slash:
+      '/user/john/?test=1#hash',
+      '/foo/bar/?test=1#hash',
+      '/rest/a/b/c/?test=1#hash',
+      '/rest2/a/b/c/?test=1#hash',
+      '/catchall/a/b/c/?test=1#hash',
+      '/catchall/a/b/cc/dd/eee/?test=1#hash',
+      '/catchall2/a/b/c/?test=1#hash',
+      '/nested/john/foo/bar/baz/quux/?test=1#hash',
+      '/nested2/john/foo/bar/baz/quux/?test=1#hash',
+      '/admin/1/?test=1#hash',
+      '/admin/1/providers/?test=1#hash',
+      '/admin/1/providers/2/delete/?test=1#hash',
+      '/admin/1/providers/2/edit/?test=1#hash',
+      '/admin/1/providers/create/?test=1#hash',
+
+      // With double slash:
+      '//',
+      '//user/john',
+      '//foo/bar',
     ];
+
+    const SHOULD_RETURN_NULL = ['/admin/1/b/c/d/e', '/user/john/a/b/c'];
 
     const DIFFERENT_THAN_BUN_FILESYSTEMROUTER = [
       [
@@ -348,10 +444,15 @@ describe('utils', () => {
 
     // There are some bugs in the Bun.FileSystemRouter that we need to fix
     // https://github.com/oven-sh/bun/issues/12206
-    const fixBunParams = (obj: Record<string, string>) =>
-      Object.fromEntries(
+    function fixBunParams(obj: Record<string, string>, filePath: string) {
+      const url = new URL(filePath.replace(/\/+/g, '/'), 'http://localhost');
+      const test = url.searchParams.get('test');
+
+      return Object.fromEntries(
         Object.entries(obj).map(([key, value]) => {
-          let val = value.includes('/') ? value.split('/') : value;
+          if (value.includes('#')) value = value.split('#')[0];
+          let val =
+            value.includes('/') && value !== test ? value.split('/') : value;
 
           if (Array.isArray(val) && val.length > 1) {
             const sameItems = val.every((v) => v === val[0]);
@@ -361,6 +462,7 @@ describe('utils', () => {
           return [key, val];
         }),
       );
+    }
 
     it.each(SAME_AS_BUN_FILESYSTEMROUTER)(
       'should match: %s with Bun.FileSystemRouter',
@@ -381,9 +483,9 @@ describe('utils', () => {
               filePath: expectedMatch.filePath,
               kind: expectedMatch.kind,
               name: expectedMatch.name,
-              pathname: expectedMatch.pathname,
-              params: fixBunParams(expectedMatch.params),
-              query: fixBunParams(expectedMatch.query),
+              pathname: expectedMatch.pathname.replace(/\/+/g, '/'),
+              params: fixBunParams(expectedMatch.params, filePath),
+              query: fixBunParams(expectedMatch.query, filePath),
               src: expectedMatch.src,
             }
           : null;
@@ -391,6 +493,17 @@ describe('utils', () => {
         expect(output).toEqual(expected);
       },
     );
+
+    it.each(SHOULD_RETURN_NULL)('should return null for: %s', (filePath) => {
+      const options = {
+        dir,
+        fileExtensions: ['.tsx', '.js', '.jsx'],
+      };
+      const router = fileSystemRouter(options);
+      const output = router.match(filePath);
+
+      expect(output).toBeNull();
+    });
 
     it.each(DIFFERENT_THAN_BUN_FILESYSTEMROUTER)(
       'should match: %s with some Bun.FileSystemRouter differences',
