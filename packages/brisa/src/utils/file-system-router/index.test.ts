@@ -20,6 +20,14 @@ describe('utils', () => {
         '/about-us': path.join(dir, 'about-us.tsx'),
         '/user/[username]': path.join(dir, 'user', '[username].tsx'),
         '/foo/[bar]': path.join(dir, 'foo', '[bar]', 'index.tsx'),
+        '/[test]/a': path.join(dir, '[test]', 'a', 'index.js'),
+        '/[test]/a/[test2]/lala': path.join(
+          dir,
+          '[test]',
+          'a',
+          '[test2]',
+          'lala.js',
+        ),
         '/rest/[...s]': path.join(dir, 'rest', '[...s].tsx'),
         '/rest2/[...s]': path.join(dir, 'rest2', '[...s]', 'index.tsx'),
         '/admin/[businessId]/providers/[providerId]/delete': path.join(
@@ -159,6 +167,14 @@ describe('utils', () => {
       });
 
       expect(router.routes).toEqual({
+        '/[test]/a': path.join(dir, '[test]', 'a', 'index.js'),
+        '/[test]/a/[test2]/lala': path.join(
+          dir,
+          '[test]',
+          'a',
+          '[test2]',
+          'lala.js',
+        ),
         '/nested/[user]/[foo]/[bar]/[baz]/[quux]': path.join(
           dir,
           'nested',
@@ -227,6 +243,24 @@ describe('utils', () => {
       '/admin/1/providers/create/',
     ];
 
+    const DIFFERENT_THAN_BUN_FILESYSTEMROUTER = [
+      [
+        '/fdsgsdfg/a',
+        {
+          filePath: path.join(dir, '[test]', 'a', 'index.js'),
+          kind: 'dynamic',
+          name: '/[test]/a',
+          pathname: '/fdsgsdfg/a',
+          params: {
+            test: 'fdsgsdfg',
+          },
+          query: {
+            test: 'fdsgsdfg',
+          },
+        },
+      ],
+    ] as [string, MatchedBrisaRoute][];
+
     // There are some bugs in the Bun.FileSystemRouter that we need to fix
     // https://github.com/oven-sh/bun/issues/12206
     const fixBunParams = (obj: Record<string, string>) =>
@@ -267,6 +301,20 @@ describe('utils', () => {
               query: fixBunParams(expectedMatch.query),
             }
           : null;
+
+        expect(output).toEqual(expected);
+      },
+    );
+
+    it.each(DIFFERENT_THAN_BUN_FILESYSTEMROUTER)(
+      'should match: %s with some Bun.FileSystemRouter differences',
+      (filePath, expected) => {
+        const options = {
+          dir,
+          fileExtensions: ['.tsx', '.js', '.jsx'],
+        };
+        const router = fileSystemRouter(options);
+        const output = router.match(filePath);
 
         expect(output).toEqual(expected);
       },
