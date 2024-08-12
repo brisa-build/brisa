@@ -1,3 +1,4 @@
+import type { MatchedBrisaRoute } from '@/types';
 import type { ServeOptions } from 'bun';
 
 export type Options = {
@@ -19,6 +20,20 @@ export type RerenderInActionProps<T> =
       type?: 'page';
       renderMode?: RenderMode;
     };
+
+export type FileSystemRouterOptions = {
+  dir: string;
+  fileExtensions?: string[];
+};
+
+export type FileSystemRouter = {
+  routes: Record<string, string>;
+  match: (routeToMatch: string) => MatchedBrisaRoute | null;
+};
+
+export function fileSystemRouter(
+  options: FileSystemRouterOptions,
+): FileSystemRouter;
 
 /**
  * `renderToReadableStream`

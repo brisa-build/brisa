@@ -507,6 +507,10 @@ export default defineConfig({
                 text: 'getServeOptions',
                 link: '/api-reference/server-apis/getServeOptions',
               },
+              {
+                text: 'fileSystemRouter',
+                link: '/api-reference/server-apis/fileSystemRouter',
+              },
             ],
           },
         ],
