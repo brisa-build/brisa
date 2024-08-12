@@ -1,12 +1,11 @@
 import { getConstants } from '@/constants';
-import type { RequestContext } from '@/types';
+import type { MatchedBrisaRoute, RequestContext } from '@/types';
 import importFileIfExists from '@/utils/import-file-if-exists';
 import processPageRoute from '@/utils/process-page-route';
-import type { MatchedRoute } from 'bun';
 
 type Params = {
   req: RequestContext;
-  route: MatchedRoute;
+  route: MatchedBrisaRoute;
   status?: number;
   error?: Error;
   headers?: Record<string, string>;

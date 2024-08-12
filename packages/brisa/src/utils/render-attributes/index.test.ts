@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it, spyOn } from 'bun:test';
 import renderAttributes from '.';
 import { getConstants } from '../../constants';
 import extendRequestContext from '../extend-request-context';
-import type { MatchedRoute } from 'bun';
 import { boldLog } from '@/utils/log/log-color';
+import type { MatchedBrisaRoute } from '@/types';
 
 describe('utils', () => {
   describe('renderAttributes', () => {
@@ -223,7 +223,7 @@ describe('utils', () => {
           params: {
             id: 'aral',
           },
-        } as unknown as MatchedRoute,
+        } as unknown as MatchedBrisaRoute,
       });
 
       request.i18n = {

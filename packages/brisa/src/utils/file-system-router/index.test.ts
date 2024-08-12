@@ -9,7 +9,93 @@ const dir = path.join(import.meta.dirname, '__fixtures__');
 
 describe('utils', () => {
   describe('fileSystemRouter > resolve routes', () => {
-    it('should resolve routes in the "nextjs" style', () => {
+    it('should resolve tsx, js and jsx by default without fileExtensions', () => {
+      const router = fileSystemRouter({ dir });
+
+      expect(router.routes).toEqual({
+        '/': path.join(dir, 'index.tsx'),
+        '/about-us': path.join(dir, 'about-us.tsx'),
+        '/user/[username]': path.join(dir, 'user', '[username].tsx'),
+        '/foo/[bar]': path.join(dir, 'foo', '[bar]', 'index.tsx'),
+        '/[test]/a': path.join(dir, '[test]', 'a', 'index.js'),
+        '/[test]/a/[test2]/lala': path.join(
+          dir,
+          '[test]',
+          'a',
+          '[test2]',
+          'lala.js',
+        ),
+        '/rest/[...s]': path.join(dir, 'rest', '[...s].tsx'),
+        '/rest2/[...s]': path.join(dir, 'rest2', '[...s]', 'index.tsx'),
+        '/admin/[businessId]/providers/[providerId]/delete': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          '[providerId]',
+          'delete.tsx',
+        ),
+        '/admin/[businessId]/providers/[providerId]/edit': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          '[providerId]',
+          'edit.tsx',
+        ),
+        '/admin/[businessId]/providers/create': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          'create.tsx',
+        ),
+        '/admin/[businessId]': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'index.tsx',
+        ),
+        '/admin/[businessId]/providers': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          'index.tsx',
+        ),
+        '/catchall/[[...catchAll]]': path.join(
+          dir,
+          'catchall',
+          '[[...catchAll]].tsx',
+        ),
+        '/catchall2/[[...catchAll]]': path.join(
+          dir,
+          'catchall2',
+          '[[...catchAll]]/index.tsx',
+        ),
+        '/nested/[user]/[foo]/[bar]/[baz]/[quux]': path.join(
+          dir,
+          'nested',
+          '[user]',
+          '[foo]',
+          '[bar]',
+          '[baz]',
+          '[quux]',
+          'index.js',
+        ),
+        '/nested2/[user]/[foo]/[bar]/[baz]/[quux]': path.join(
+          dir,
+          'nested2',
+          '[user]',
+          '[foo]',
+          '[bar]',
+          '[baz]',
+          '[quux].jsx',
+        ),
+      });
+    });
+
+    it('should resolve routes using fileExtensions', () => {
       const router = fileSystemRouter({
         dir,
         fileExtensions: ['.tsx', '.js', '.jsx'],

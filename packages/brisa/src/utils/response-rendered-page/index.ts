@@ -1,5 +1,4 @@
-import type { RequestContext } from '@/types';
-import type { MatchedRoute } from 'bun';
+import type { MatchedBrisaRoute, RequestContext } from '@/types';
 import path from 'node:path';
 import fs from 'node:fs';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
@@ -10,7 +9,7 @@ import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers
 
 type Params = {
   req: RequestContext;
-  route: MatchedRoute;
+  route: MatchedBrisaRoute;
   status?: number;
   error?: Error;
   headers?: Record<string, string>;
@@ -54,7 +53,7 @@ export default async function responseRenderedPage({
   return new Response(htmlStream, responseOptions);
 }
 
-function getPrerenderedPage(route: MatchedRoute) {
+function getPrerenderedPage(route: MatchedBrisaRoute) {
   const { BUILD_DIR, CONFIG } = getConstants();
   const { pathname } = new URL(route.pathname, 'http://localhost');
   const filePath = path.join(
