@@ -22,6 +22,42 @@ describe('utils', () => {
         '/foo/[bar]': path.join(dir, 'foo', '[bar]', 'index.tsx'),
         '/rest/[...s]': path.join(dir, 'rest', '[...s].tsx'),
         '/rest2/[...s]': path.join(dir, 'rest2', '[...s]', 'index.tsx'),
+        '/admin/[businessId]/providers/[providerId]/delete': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          '[providerId]',
+          'delete.tsx',
+        ),
+        '/admin/[businessId]/providers/[providerId]/edit': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          '[providerId]',
+          'edit.tsx',
+        ),
+        '/admin/[businessId]/providers/create': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          'create.tsx',
+        ),
+        '/admin/[businessId]': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'index.tsx',
+        ),
+        '/admin/[businessId]/providers': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          'index.tsx',
+        ),
         '/catchall/[[...catchAll]]': path.join(
           dir,
           'catchall',
@@ -67,6 +103,42 @@ describe('utils', () => {
         '/foo/[bar]': path.join(dir, 'foo', '[bar]', 'index.tsx'),
         '/rest/[...s]': path.join(dir, 'rest', '[...s].tsx'),
         '/rest2/[...s]': path.join(dir, 'rest2', '[...s]', 'index.tsx'),
+        '/admin/[businessId]/providers/[providerId]/delete': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          '[providerId]',
+          'delete.tsx',
+        ),
+        '/admin/[businessId]/providers/[providerId]/edit': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          '[providerId]',
+          'edit.tsx',
+        ),
+        '/admin/[businessId]/providers/create': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          'create.tsx',
+        ),
+        '/admin/[businessId]': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'index.tsx',
+        ),
+        '/admin/[businessId]/providers': path.join(
+          dir,
+          'admin',
+          '[businessId]',
+          'providers',
+          'index.tsx',
+        ),
         '/catchall/[[...catchAll]]': path.join(
           dir,
           'catchall',
@@ -128,27 +200,47 @@ describe('utils', () => {
       '/rest/a/b/c',
       '/rest2/a/b/c',
       '/catchall/a/b/c',
+      '/catchall/a/b/cc/dd/eee',
       '/catchall2/a/b/c',
       '/nested/john/foo/bar/baz/quux',
       '/nested2/john/foo/bar/baz/quux',
+      '/admin/1',
+      '/admin/1/providers',
+      '/admin/1/providers/2/delete',
+      '/admin/1/providers/2/edit',
+      '/admin/1/providers/create',
+
       // With trailing slash:
-      '/',
       '/user/john/',
       '/foo/bar/',
       '/rest/a/b/c/',
       '/rest2/a/b/c/',
       '/catchall/a/b/c/',
+      '/catchall/a/b/cc/dd/eee/',
       '/catchall2/a/b/c/',
       '/nested/john/foo/bar/baz/quux/',
       '/nested2/john/foo/bar/baz/quux/',
+      '/admin/1/',
+      '/admin/1/providers/',
+      '/admin/1/providers/2/delete/',
+      '/admin/1/providers/2/edit/',
+      '/admin/1/providers/create/',
     ];
 
+    // There are some bugs in the Bun.FileSystemRouter that we need to fix
+    // https://github.com/oven-sh/bun/issues/12206
     const fixBunParams = (obj: Record<string, string>) =>
       Object.fromEntries(
-        Object.entries(obj).map(([key, value]) => [
-          key,
-          value.includes('/') ? value.split('/') : value,
-        ]),
+        Object.entries(obj).map(([key, value]) => {
+          let val = value.includes('/') ? value.split('/') : value;
+
+          if (Array.isArray(val) && val.length > 1) {
+            const sameItems = val.every((v) => v === val[0]);
+            if (sameItems) val = val[0];
+          }
+
+          return [key, val];
+        }),
       );
 
     it.each(SAME_AS_BUN_FILESYSTEMROUTER)(
