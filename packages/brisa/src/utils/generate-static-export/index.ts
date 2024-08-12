@@ -4,7 +4,6 @@ import { getConstants } from '@/constants';
 import { getServeOptions } from './utils';
 import { toInline } from '@/helpers';
 import { logWarning } from '@/utils/log/log-build';
-import type { FileSystemRouter } from 'bun';
 import isTestFile from '@/utils/is-test-file';
 import get404ClientScript from '@/utils/not-found/client-script';
 import { getEntrypointsRouter } from '@/utils/get-entrypoints';
