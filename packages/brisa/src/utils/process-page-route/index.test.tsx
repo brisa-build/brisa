@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import path from 'node:path';
-import type { MatchedRoute } from 'bun';
 
 import { getConstants } from '@/constants';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
@@ -8,7 +7,7 @@ import extendRequestContext from '@/utils/extend-request-context';
 import processPageRoute from '.';
 import { toInline } from '@/helpers';
 import translateCore from '@/utils/translate-core';
-import type { RequestContext } from '@/types';
+import type { MatchedBrisaRoute, RequestContext } from '@/types';
 
 const FIXTURES = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const HOMEPAGE = path.join(FIXTURES, 'pages', 'index.tsx');
@@ -30,7 +29,7 @@ const testOptions = {
   request,
 };
 
-const routeHomepage = { filePath: HOMEPAGE } as unknown as MatchedRoute;
+const routeHomepage = { filePath: HOMEPAGE } as unknown as MatchedBrisaRoute;
 
 describe('utils', () => {
   beforeEach(() => {

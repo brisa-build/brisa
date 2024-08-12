@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import type { MatchedRoute } from 'bun';
 import path from 'node:path';
 
-import type { Translate } from '@/types';
+import type { MatchedBrisaRoute, Translate } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
 import responseRenderedPage from '.';
 import { getConstants } from '@/constants';
@@ -51,7 +50,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'page-with-web-component.tsx'),
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
         headers: {
           'X-Mode': 'reactivity',
         },
@@ -73,7 +72,7 @@ describe('utils', () => {
         route: {
           filePath: path.join(PAGES_DIR, 'foo.tsx'),
           pathname: '/foo',
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
         headers: {
           'X-Mode': 'reactivity',
         },
@@ -101,7 +100,7 @@ describe('utils', () => {
         route: {
           filePath: path.join(PAGES_DIR, 'foo.tsx'),
           pathname: '/foo/',
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
         headers: {
           'X-Mode': 'reactivity',
         },
@@ -130,7 +129,7 @@ describe('utils', () => {
         route: {
           filePath: path.join(PAGES_DIR, 'foo.tsx'),
           pathname: '/foo',
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
         headers: {
           'X-Mode': 'reactivity',
         },
@@ -165,7 +164,7 @@ describe('utils', () => {
         route: {
           filePath: path.join(PAGES_DIR, 'foo.tsx'),
           pathname: '/foo/',
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
         headers: {
           'X-Mode': 'reactivity',
         },
@@ -193,7 +192,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'somepage.tsx'),
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
       const html = await response.text();
       expect(response.status).toBe(200);
@@ -211,7 +210,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'somepage.tsx'),
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       expect(response.headers.get('X-Test')).toBe('test');
@@ -225,7 +224,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'index.tsx'),
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       expect(response.headers.get('X-Test')).toBe('success');
@@ -244,7 +243,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'index.tsx'),
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       expect(await response.text()).toContain('window._S=[["key","value"]]');
@@ -264,7 +263,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'index.tsx'),
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       expect(await response.text()).not.toContain(

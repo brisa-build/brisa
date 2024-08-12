@@ -1,22 +1,14 @@
 import path from 'node:path';
 import fs from 'node:fs';
+import type { MatchedBrisaRoute } from '@/types';
 
 type FileSystemRouterOptions = {
   dir: string;
-  fileExtensions: string[];
-};
-
-// TODO: move to index.d.ts
-export type MatchedBrisaRoute = {
-  filePath: string;
-  kind: 'exact' | 'catch-all' | 'optional-catch-all' | 'dynamic';
-  name: string;
-  pathname: string;
-  params?: Record<string, string | string[]>;
-  query?: Record<string, string | string[]>;
+  fileExtensions?: string[];
 };
 
 const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
+const DEFAULT_EXTENSIONS = ['.tsx', '.jsx', '.ts', '.mjs', '.cjs', '.js'];
 
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
@@ -109,7 +101,10 @@ function getParamsAndQuery(route: string, pathname: string, url: URL) {
   return { params, query };
 }
 
-function resolveRoutes({ dir, fileExtensions }: FileSystemRouterOptions) {
+function resolveRoutes({
+  dir,
+  fileExtensions = DEFAULT_EXTENSIONS,
+}: FileSystemRouterOptions) {
   const routes: Record<string, string> = {};
   const files = fs.readdirSync(dir, {
     withFileTypes: true,
