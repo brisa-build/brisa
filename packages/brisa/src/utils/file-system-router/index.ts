@@ -1,11 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import type { MatchedBrisaRoute } from '@/types';
-
-type FileSystemRouterOptions = {
-  dir: string;
-  fileExtensions?: string[];
-};
+import type { FileSystemRouterOptions } from '@/types/server';
 
 const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
 const DEFAULT_EXTENSIONS = ['.tsx', '.jsx', '.ts', '.mjs', '.cjs', '.js'];
