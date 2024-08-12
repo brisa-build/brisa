@@ -13,7 +13,7 @@ The `notFound` function allows you to render the [`404 page`](#404-page) within 
 Invoking the `notFound()` function throws a `NotFoundError` error and terminates rendering of the route segment in which it was thrown.
 
 :::tabs key:language
-==jsx
+==JavaScript
 
 ```jsx
 //src/pages/user/[id].jsx
@@ -37,7 +37,7 @@ export default async function UserProfile({}, req) {
 }
 ```
 
-==tsx
+==TypeScript
 
 ```tsx
 //src/pages/user/[id].tsx

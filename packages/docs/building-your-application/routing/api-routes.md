@@ -54,7 +54,7 @@ The request that arrives is an extension of the native [Request](https://develop
 You can read the `Request` body using the standard Web API methods:
 
 :::tabs key:language
-==Typescript
+==TypeScript
 
 ```ts
 //src/api/items/route.ts
@@ -64,7 +64,7 @@ export async function POST(request: RequestContext) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```js
 //src/api/items/route.js
@@ -81,7 +81,7 @@ export async function POST(request) {
 You can read the `FormData` using the standard Web API methods:
 
 :::tabs key:language
-==Typescript
+==TypeScript
 
 ```ts
 //src/api/items/route.ts
@@ -93,7 +93,7 @@ export async function POST(request: RequestContext) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```js
 //src/api/items/route.js

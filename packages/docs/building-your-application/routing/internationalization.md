@@ -22,7 +22,7 @@ If user locale is `nl-BE` and it is not listed in your configuration, they will 
 If you don't plan to support all regions of a country, it is therefore a good practice to include country locales that will act as fallbacks.
 
 :::tabs key:language
-==Typescript
+==TypeScript
 
 ```ts
 // filename="src/i18n.ts
@@ -50,7 +50,7 @@ const i18nConfig: I18nConfig = {
 export default i18nConfig;
 ```
 
-==Javascript
+==JavaScript
 
 ```js
 // filename="src/i18n.js
@@ -152,7 +152,7 @@ Example in a page:
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```tsx
 // src/pages/index.tsx
@@ -177,7 +177,7 @@ export default function Home({ name }: Props, requestContext: RequestContext) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```jsx
 // src/pages/index.jsx
@@ -234,7 +234,7 @@ Brisa supports to consume translations inspired by libraries such as [i18next](h
 In order to consume translations, you need first to define the `messages` property in `src/i18n.(js|ts)` file:
 
 :::tabs key:language
-==Typescript
+==TypeScript
 
 ```ts
 // src/i18n/index.ts
@@ -252,7 +252,7 @@ const i18nConfig: I18nConfig<typeof en> = {
 export default i18nConfig;
 ```
 
-==Javascript
+==JavaScript
 
 ```js
 // src/i18n/index.js
@@ -295,7 +295,7 @@ The generic `I18nConfig<typeof en>` allows you to activate type-safe consuming t
 Example in a component:
 
 :::tabs key:language
-==Typescript
+==TypeScript
 
 ```tsx
 // src/components/hello.tsx
@@ -315,7 +315,7 @@ export default function Hello({ name }: Props, { i18n }: RequestContext) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```jsx
 // src/components/hello.jsx
@@ -355,7 +355,7 @@ In situations where pages are connected to external i18n services and there is a
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```tsx
 // src/pages/index.tsx
@@ -372,7 +372,7 @@ export default async function Page({}, { i18n }: RequestContext) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```jsx
 // src/pages/index.jsx
@@ -393,7 +393,7 @@ Consider the following middleware example for scenarios where a language is spec
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```ts
 // src/middleware.ts
@@ -416,7 +416,7 @@ export default async function middleware(request: RequestContext) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```js
 // src/middleware.js
@@ -444,7 +444,7 @@ export default async function middleware(request) {
 Consider scenarios where you want to use it in web components to load a dynamically dictionary:
 
 :::tabs key:language
-==Typescript
+==TypeScript
 
 ```tsx
 import type { WebContext } from "brisa";
@@ -482,7 +482,7 @@ export default async function DynamicDictionary(
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```jsx
 export default async function DynamicDictionary({}, { state, i18n }) {
@@ -592,7 +592,7 @@ Sample adding the `number` format:
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```ts
 // src/i18n.ts
@@ -616,7 +616,7 @@ const i18nConfig: I18nConfig = {
 export default i18nConfig;
 ```
 
-==Javascript
+==JavaScript
 
 ```js
 // src/i18n.js
@@ -860,7 +860,7 @@ If passed as `false`, returns the key name itself.
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```ts
 // src/i18n/index.ts
@@ -879,7 +879,7 @@ const i18nConfig: I18nConfig<typeof en> = {
 export default i18nConfig;
 ```
 
-==Javascript
+==JavaScript
 
 ```js
 // src/i18n/index.js
@@ -1009,7 +1009,7 @@ The fact of not adding the locale Brisa takes care of transforming the link:
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```ts
 function MyComponent({}, { i18n: { t } }) {
@@ -1017,7 +1017,7 @@ function MyComponent({}, { i18n: { t } }) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```js
 function MyComponent({}, { i18n }) {
@@ -1039,7 +1039,7 @@ As long as you do not put the locale in the `href` of `a` tag, then no conversio
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```tsx
 // src/components/change-locale.tsx
@@ -1066,7 +1066,7 @@ export function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```jsx
 // src/components/change-locale.js
@@ -1153,7 +1153,7 @@ For example, if the user enters to `/es/sobre-nosotros/` the `finalURL` can be `
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```tsx
 export default function SomeComponent(
@@ -1165,7 +1165,7 @@ export default function SomeComponent(
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```jsx
 export default function SomeComponent({}, { i18n, finalURL, route }) {
@@ -1184,7 +1184,7 @@ Brisa intelligently identifies and imports only the necessary translation keys r
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```tsx
 export default function WebComponent({}, { i18n }: WebContext) {
@@ -1192,7 +1192,7 @@ export default function WebComponent({}, { i18n }: WebContext) {
 }
 ```
 
-==Javascript
+==JavaScript
 
 ```jsx
 export default function WebComponent({}, { i18n }) {
@@ -1210,7 +1210,7 @@ Consider the example below:
 
 :::tabs key:language
 
-==Typescript
+==TypeScript
 
 ```tsx
 export default function Item({ itemId }, { i18n: { t } }: WebContext) {
@@ -1226,7 +1226,7 @@ export default function Item({ itemId }, { i18n: { t } }: WebContext) {
 Item.i18nKeys = [/item.*(title|description)/];
 ```
 
-==Javascript
+==JavaScript
 
 ```jsx
 export default function Item({ itemId }, { i18n }) {
