@@ -1,7 +1,5 @@
-import {
-  fileSystemRouter,
-  type MatchedBrisaRoute,
-} from '@/utils/file-system-router';
+import type { MatchedBrisaRoute } from '@/types';
+import { fileSystemRouter } from '@/utils/file-system-router';
 import { describe, it, expect } from 'bun:test';
 import path from 'node:path';
 
@@ -343,6 +341,7 @@ describe('utils', () => {
           query: {
             test: 'fdsgsdfg',
           },
+          src: path.join('[test]', 'a', 'index.js'),
         },
       ],
     ] as [string, MatchedBrisaRoute][];
@@ -385,6 +384,7 @@ describe('utils', () => {
               pathname: expectedMatch.pathname,
               params: fixBunParams(expectedMatch.params),
               query: fixBunParams(expectedMatch.query),
+              src: expectedMatch.src,
             }
           : null;
 

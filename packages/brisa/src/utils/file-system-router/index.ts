@@ -21,6 +21,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
 
     for (const [name, filePath] of Object.entries(routes)) {
       const kind = getRouteKind(name);
+      const src = filePath.replace(options.dir + path.sep, '');
 
       if (kind === 'exact' && name === fixedPathname) {
         return {
@@ -28,6 +29,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
           kind,
           name,
           pathname,
+          src,
           ...getParamsAndQuery(name, fixedPathname, url),
         };
       }
@@ -60,6 +62,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
             kind,
             name,
             pathname,
+            src,
             ...getParamsAndQuery(name, fixedPathname, url),
           };
         }
