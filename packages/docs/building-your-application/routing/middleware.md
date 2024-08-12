@@ -15,7 +15,7 @@ Use the file `middleware.ts` (or `.js`) inside the `src` folder of your project 
 ## Example
 
 :::tabs key:language
-==ts
+==Typescript
 
 ```ts
 // middleware.ts
@@ -41,7 +41,7 @@ export default async function middleware({
 }
 ```
 
-==js
+==Javascript
 
 ```js
 // middleware.js
@@ -67,7 +67,7 @@ Only is possible to access to `route` property inside `api routes` and `pages ro
 
 :::tabs key:language
 
-==ts
+==Typescript
 
 ```ts
 import { type RequestContext } from "brisa";
@@ -92,7 +92,7 @@ export default async function middleware(
 }
 ```
 
-==js
+==Javascript
 
 ```js
 export default async function middleware(request) {
@@ -124,7 +124,7 @@ However, this is not the best way to serve assets. You can put the static files 
 Cookies are regular headers. On a `Request`, they are stored in the `Cookie` header.
 
 :::tabs key:language
-==ts
+==Typescript
 
 ```ts
 import { type RequestContext } from "brisa";
@@ -137,7 +137,7 @@ export default async function middleware(request: RequestContext) {
 }
 ```
 
-==js
+==Javascript
 
 ```js
 export default async function middleware(request) {
@@ -161,7 +161,7 @@ All responseHeaders will be mixed in this order:
 3. `page` response headers (both middleware and layout response headers can be mixed).
 
 :::tabs key:language
-==ts
+==Typescript
 
 ```ts
 import { type RequestContext } from "brisa";
@@ -177,7 +177,7 @@ export function responseHeaders(
 }
 ```
 
-==js
+==Javascript
 
 ```js
 export function responseHeaders(request, responseStatus) {
