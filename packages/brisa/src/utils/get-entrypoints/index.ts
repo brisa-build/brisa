@@ -1,3 +1,4 @@
+import { fileSystemRouter } from '@/utils/file-system-router';
 import isTestFile from '@/utils/is-test-file';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -20,5 +21,5 @@ export default function getEntrypoints(dir: string, separator = path.sep) {
 }
 
 export function getEntrypointsRouter(dir: string) {
-  return new Bun.FileSystemRouter({ style: 'nextjs', dir, fileExtensions });
+  return fileSystemRouter({ dir, fileExtensions });
 }

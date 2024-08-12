@@ -1,10 +1,10 @@
-import type { MatchedRoute, ServerWebSocket, Serve } from 'bun';
+import type { ServerWebSocket, Serve } from 'bun';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
 
 import { getConstants } from '@/constants';
-import type { RequestContext } from '@/types';
+import type { MatchedBrisaRoute, RequestContext } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import getRouteMatcher from '@/utils/get-route-matcher';
@@ -239,7 +239,7 @@ export async function getServeOptions() {
     const isApi = pathname.startsWith(locale ? `/${locale}/api/` : '/api/');
     const api = isApi ? rootRouter.match(req) : null;
 
-    req.route = (isApi ? api?.route : route) as MatchedRoute;
+    req.route = (isApi ? api?.route : route) as MatchedBrisaRoute;
 
     // Middleware
     if (customMiddleware) {

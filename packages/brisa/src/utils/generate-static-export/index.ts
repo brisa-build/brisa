@@ -4,10 +4,12 @@ import { getConstants } from '@/constants';
 import { getServeOptions } from './utils';
 import { toInline } from '@/helpers';
 import { logWarning } from '@/utils/log/log-build';
-import type { FileSystemRouter, MatchedRoute } from 'bun';
+import type { FileSystemRouter } from 'bun';
 import isTestFile from '@/utils/is-test-file';
 import get404ClientScript from '@/utils/not-found/client-script';
 import { getEntrypointsRouter } from '@/utils/get-entrypoints';
+import type { MatchedBrisaRoute } from '@/types';
+import type { fileSystemRouter } from '@/utils/file-system-router';
 
 const fakeServer = { upgrade: () => null } as any;
 const fakeOrigin = 'http://localhost';
@@ -156,16 +158,19 @@ export default async function generateStaticExport(): Promise<
   return [prerenderedRoutes, outDir];
 }
 
-async function formatRoutes(routes: string[], router: FileSystemRouter) {
+async function formatRoutes(
+  routes: string[],
+  router: ReturnType<typeof fileSystemRouter>,
+) {
   const { I18N_CONFIG, CONFIG, IS_STATIC_EXPORT } = getConstants();
   const trailingSlash = CONFIG.trailingSlash;
   const locales = I18N_CONFIG?.locales?.length ? I18N_CONFIG.locales : [''];
-  const newRoutes: [string, MatchedRoute | null][] = [];
+  const newRoutes: [string, MatchedBrisaRoute | null][] = [];
 
   const addPathname = (
     pathname: string,
     locale: string,
-    route: MatchedRoute | null,
+    route: MatchedBrisaRoute | null,
   ) => {
     let newRoute = `${locale ? `/${locale}` : ''}${pathname}`;
     const endsWithTrailingSlash = newRoute.endsWith('/');

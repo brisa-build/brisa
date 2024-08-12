@@ -1,9 +1,9 @@
 import { describe, it, expect, mock, afterEach } from 'bun:test';
-import type { MatchedRoute } from 'bun';
 
 import generateHrefLang from '.';
 import { getConstants } from '@/constants';
 import extendRequestContext from '@/utils/extend-request-context';
+import type { MatchedBrisaRoute } from '@/types';
 
 const BASE_PATHS = ['', '/base-path', '/base/path'];
 const warn = console.warn.bind(console);
@@ -43,7 +43,7 @@ describe('utils', () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request('https://www.example.com/somepage'),
-        route: { name: '/somepage' } as MatchedRoute,
+        route: { name: '/somepage' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -79,7 +79,7 @@ describe('utils', () => {
       console.warn = mockWarn;
       const input = extendRequestContext({
         originalRequest: new Request('https://www.example.com/somepage'),
-        route: { name: '/somepage' } as MatchedRoute,
+        route: { name: '/somepage' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -111,7 +111,7 @@ describe('utils', () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request('https://www.example.com/somepage'),
-        route: { name: '/somepage' } as MatchedRoute,
+        route: { name: '/somepage' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -142,7 +142,7 @@ describe('utils', () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request('https://www.example.com/somepage/1'),
-        route: { name: '/somepage/[id]' } as MatchedRoute,
+        route: { name: '/somepage/[id]' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -174,7 +174,7 @@ describe('utils', () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request('https://www.example.com/somepage/1'),
-        route: { name: '/somepage/[id]' } as MatchedRoute,
+        route: { name: '/somepage/[id]' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -205,7 +205,7 @@ describe('utils', () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request('https://www.example.com/somepage'),
-        route: { name: '/somepage' } as MatchedRoute,
+        route: { name: '/somepage' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -235,7 +235,7 @@ describe('utils', () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request('https://www.example.com/somepage/1/2/3'),
-        route: { name: '/somepage/[[...catchAll]]' } as MatchedRoute,
+        route: { name: '/somepage/[[...catchAll]]' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -269,7 +269,9 @@ describe('utils', () => {
         originalRequest: new Request(
           'https://www.example.com/somepage/1/settings/2/3',
         ),
-        route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
+        route: {
+          name: '/somepage/[id]/settings/[...rest]',
+        } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -304,7 +306,7 @@ describe('utils', () => {
       };
       const input = extendRequestContext({
         originalRequest: new Request('https://www.example.com/somepage'),
-        route: { name: '/somepage' } as MatchedRoute,
+        route: { name: '/somepage' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -347,7 +349,9 @@ describe('utils', () => {
         originalRequest: new Request(
           'https://www.example.com/somepage/1/settings/2/3',
         ),
-        route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
+        route: {
+          name: '/somepage/[id]/settings/[...rest]',
+        } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -395,7 +399,9 @@ describe('utils', () => {
         originalRequest: new Request(
           'https://www.example.com/en/somepage/1/settings/2/3',
         ),
-        route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
+        route: {
+          name: '/somepage/[id]/settings/[...rest]',
+        } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -449,7 +455,7 @@ describe('utils', () => {
 
       const input = extendRequestContext({
         originalRequest: new Request('https://test.com/es/sobre-nosotros'),
-        route: { name: '/a' } as MatchedRoute,
+        route: { name: '/a' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -486,7 +492,7 @@ describe('utils', () => {
 
       const input = extendRequestContext({
         originalRequest: new Request('https://test.com/es/not-found'),
-        route: { name: '/_404' } as MatchedRoute,
+        route: { name: '/_404' } as MatchedBrisaRoute,
       });
       input.i18n = {
         ...emptyI18n,
@@ -536,23 +542,27 @@ describe('utils', () => {
       };
       const home = extendRequestContext({
         originalRequest: new Request('https://www.example.com/en/'),
-        route: { name: '/' } as MatchedRoute,
+        route: { name: '/' } as MatchedBrisaRoute,
       });
       const homeWithoutTrailingSlash = extendRequestContext({
         originalRequest: new Request('https://www.example.com/en'),
-        route: { name: '/' } as MatchedRoute,
+        route: { name: '/' } as MatchedBrisaRoute,
       });
       const withTrailingSlash = extendRequestContext({
         originalRequest: new Request(
           'https://www.example.com/en/somepage/1/settings/2/3/',
         ),
-        route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
+        route: {
+          name: '/somepage/[id]/settings/[...rest]',
+        } as MatchedBrisaRoute,
       });
       const withoutTrailingSlash = extendRequestContext({
         originalRequest: new Request(
           'https://www.example.com/en/somepage/1/settings/2/3',
         ),
-        route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
+        route: {
+          name: '/somepage/[id]/settings/[...rest]',
+        } as MatchedBrisaRoute,
       });
 
       home.i18n = i18n;
@@ -623,23 +633,27 @@ describe('utils', () => {
       };
       const home = extendRequestContext({
         originalRequest: new Request('https://www.example.com/en/'),
-        route: { name: '/' } as MatchedRoute,
+        route: { name: '/' } as MatchedBrisaRoute,
       });
       const homeWithoutTrailingSlash = extendRequestContext({
         originalRequest: new Request('https://www.example.com/en'),
-        route: { name: '/' } as MatchedRoute,
+        route: { name: '/' } as MatchedBrisaRoute,
       });
       const withTrailingSlash = extendRequestContext({
         originalRequest: new Request(
           'https://www.example.com/en/somepage/1/settings/2/3/',
         ),
-        route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
+        route: {
+          name: '/somepage/[id]/settings/[...rest]',
+        } as MatchedBrisaRoute,
       });
       const withoutTrailingSlash = extendRequestContext({
         originalRequest: new Request(
           'https://www.example.com/en/somepage/1/settings/2/3',
         ),
-        route: { name: '/somepage/[id]/settings/[...rest]' } as MatchedRoute,
+        route: {
+          name: '/somepage/[id]/settings/[...rest]',
+        } as MatchedBrisaRoute,
       });
 
       home.i18n = i18n;

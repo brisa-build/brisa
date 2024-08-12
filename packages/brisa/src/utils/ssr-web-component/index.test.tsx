@@ -1,12 +1,16 @@
 import { describe, expect, it, afterEach } from 'bun:test';
 import SSRWebComponent, { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '.';
-import type { WebContext, WebContextPlugin } from '@/types';
+import type {
+  I18nConfig,
+  MatchedBrisaRoute,
+  WebContext,
+  WebContextPlugin,
+} from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
 import createContext from '@/utils/create-context';
 import translateCore from '@/utils/translate-core';
 import { getConstants } from '@/constants';
 import { Fragment } from '@/jsx-runtime';
-import type { MatchedRoute } from 'bun';
 
 const requestContext = extendRequestContext({
   originalRequest: new Request('http://localhost'),
@@ -17,7 +21,7 @@ const requestContext = extendRequestContext({
     query: {},
     filePath: '/index.js',
     kind: 'page',
-  } as unknown as MatchedRoute,
+  } as unknown as MatchedBrisaRoute,
 });
 
 describe('utils', () => {
@@ -476,7 +480,7 @@ describe('utils', () => {
             key_1: 'hello {{name}}',
           },
         },
-      };
+      } as I18nConfig;
 
       const request = extendRequestContext({
         originalRequest: new Request('http://localhost'),

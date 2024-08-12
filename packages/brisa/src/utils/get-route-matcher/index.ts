@@ -1,7 +1,7 @@
-import type { MatchedRoute } from 'bun';
 import path from 'node:path';
-import type { RequestContext, RouterType } from '@/types';
+import type { MatchedBrisaRoute, RequestContext, RouterType } from '@/types';
 import isTestFile from '@/utils/is-test-file';
+import { fileSystemRouter } from '@/utils/file-system-router';
 
 export default function getRouteMatcher(
   dir: string,
@@ -9,10 +9,7 @@ export default function getRouteMatcher(
   locale?: string,
   separator = path.sep,
 ): RouterType {
-  const router = new Bun.FileSystemRouter({
-    style: 'nextjs',
-    dir,
-  });
+  const router = fileSystemRouter({ dir });
   const isDifferentSeparator = separator !== '/';
   const reservedPathnamesSet = new Set(reservedPathnames);
   const routeMatcher = (req: RequestContext) => {
@@ -37,7 +34,6 @@ export default function getRouteMatcher(
         params: route.params,
         pathname: route.pathname,
         query: route.query,
-        src: route.src,
       };
     }
 
@@ -52,7 +48,7 @@ export default function getRouteMatcher(
       all[pathname] = router.match(pathname);
       return all;
     },
-    {} as Record<string, MatchedRoute | null>,
+    {} as Record<string, MatchedBrisaRoute | null>,
   );
 
   return { match: routeMatcher, reservedRoutes };

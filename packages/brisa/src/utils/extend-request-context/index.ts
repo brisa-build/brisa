@@ -1,16 +1,19 @@
 // @ts-nocheck
-import type { MatchedRoute } from 'bun';
-import type { I18n, RequestContext, TransferOptions } from '@/types';
+import type {
+  I18n,
+  MatchedBrisaRoute,
+  RequestContext,
+  TransferOptions,
+} from '@/types';
 import {
   CURRENT_PROVIDER_ID,
   CONTEXT_STORE_ID,
 } from '@/utils/context-provider/server';
-import { encrypt } from '@/utils/crypto';
 import { RenderInitiator } from '@/core/server';
 
 type ExtendRequestContext = {
   originalRequest: Request;
-  route?: MatchedRoute;
+  route?: MatchedBrisaRoute;
   store?: RequestContext['store'];
   i18n?: I18n;
   finalURL?: string;

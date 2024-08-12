@@ -1,4 +1,3 @@
-import type { MatchedRoute } from 'bun';
 import path from 'node:path';
 import {
   setSystemTime,
@@ -16,6 +15,7 @@ import { normalizeQuotes, toInline } from '@/helpers';
 import type {
   ComponentType,
   I18n,
+  MatchedBrisaRoute,
   RequestContext,
   Translate,
   WebContext,
@@ -641,7 +641,7 @@ describe('utils', () => {
         originalRequest: new Request(testRequest),
         route: {
           filePath: '/index.js',
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       globalThis.mockConstants = {
@@ -671,7 +671,7 @@ describe('utils', () => {
         originalRequest: new Request(testRequest),
         route: {
           filePath: '/index.js',
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       globalThis.mockConstants = {
@@ -704,7 +704,7 @@ describe('utils', () => {
         originalRequest: new Request(testRequest),
         route: {
           filePath: '/somepage.js',
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       globalThis.mockConstants = {
@@ -734,7 +734,7 @@ describe('utils', () => {
         originalRequest: new Request(testRequest),
         route: {
           filePath: '/somepage.js',
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       globalThis.mockConstants = {
@@ -786,7 +786,7 @@ describe('utils', () => {
           pathname: '/page-with-web-component',
           params: {},
           query: {},
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       const element = (
@@ -848,7 +848,7 @@ describe('utils', () => {
           pathname: '/page-with-web-component',
           params: {},
           query: {},
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       const element = (
@@ -908,7 +908,7 @@ describe('utils', () => {
           pathname: '/page-with-web-component',
           params: {},
           query: {},
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       const element = (
@@ -976,7 +976,7 @@ describe('utils', () => {
           pathname: '/page-with-web-component',
           params: {},
           query: {},
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       const element = (
@@ -1296,7 +1296,7 @@ describe('utils', () => {
       testRequest.route = {
         name: '/about-us',
         pathname: '/about-us',
-      } as MatchedRoute;
+      } as MatchedBrisaRoute;
 
       function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
         const { locales, locale, pages, t } = i18n;
@@ -1357,7 +1357,7 @@ describe('utils', () => {
         params: {
           username: 'aralroca',
         },
-      } as unknown as MatchedRoute;
+      } as unknown as MatchedBrisaRoute;
 
       function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
         const { locales, locale, pages, t } = i18n;
@@ -1426,7 +1426,7 @@ describe('utils', () => {
         params: {
           username: 'aralroca',
         },
-      } as unknown as MatchedRoute;
+      } as unknown as MatchedBrisaRoute;
 
       function ChangeLocale(props: {}, { i18n, route }: RequestContext) {
         const { locales, locale, pages, t } = i18n;
@@ -3698,7 +3698,7 @@ describe('utils', () => {
           pathname: '/page-with-web-component',
           params: {},
           query: {},
-        } as MatchedRoute,
+        } as MatchedBrisaRoute,
       });
 
       const stream = renderToReadableStream(

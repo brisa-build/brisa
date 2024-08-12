@@ -4,7 +4,7 @@
 /// <reference lib="dom.iterable" />
 
 import type { IntrinsicCustomElements } from '@/../build/_brisa/types';
-import type { BunPlugin, MatchedRoute, ServerWebSocket, TLSOptions } from 'bun';
+import type { BunPlugin, ServerWebSocket, TLSOptions } from 'bun';
 import type * as CSS from 'csstype';
 
 declare module 'bun' {
@@ -200,7 +200,7 @@ export interface RequestContext extends Request {
    *
    * - [How to use `route`](https://brisa.build/api-reference/components/request-context#route)
    */
-  route: MatchedRoute;
+  route: MatchedBrisaRoute;
 
   /**
    * Description:
@@ -344,11 +344,16 @@ type TransferOptions = {
   encrypt?: boolean;
 };
 
+/**
+ * Description:
+ *
+ * Client route is a partial of the matched route of the request.
+ */
 type Route = {
-  name: MatchedRoute['name'];
-  pathname: MatchedRoute['pathname'];
-  query: MatchedRoute['query'];
-  params: MatchedRoute['params'];
+  name: MatchedBrisaRoute['name'];
+  pathname: MatchedBrisaRoute['pathname'];
+  query: MatchedBrisaRoute['query'];
+  params: MatchedBrisaRoute['params'];
 };
 
 export interface BaseWebContext {
@@ -1147,10 +1152,10 @@ export type I18nConfig<T = I18nDictionary> = {
 
 type RouterType = {
   match: (req: RequestContext) => {
-    route: MatchedRoute | null;
+    route: MatchedBrisaRoute | null;
     isReservedPathname: boolean;
   };
-  reservedRoutes: Record<string, MatchedRoute | null>;
+  reservedRoutes: Record<string, MatchedBrisaRoute | null>;
 };
 
 type RemovePlural<Key extends string> = Key extends `${infer Prefix}${
@@ -1234,6 +1239,15 @@ export type ContextProvider<T> = {
   value: T;
   store: Map<string | symbol, any>;
   webComponentSymbol?: symbol;
+};
+
+export type MatchedBrisaRoute = {
+  filePath: string;
+  kind: 'exact' | 'catch-all' | 'optional-catch-all' | 'dynamic';
+  name: string;
+  pathname: string;
+  params?: Record<string, string | string[]>;
+  query?: Record<string, string | string[]>;
 };
 
 export type BrisaContext<T> = {

@@ -1,7 +1,7 @@
 import { getConstants } from '@/constants';
+import type { MatchedBrisaRoute } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
 import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers';
-import type { MatchedRoute } from 'bun';
 import { describe, expect, it, beforeEach, afterEach } from 'bun:test';
 import { join } from 'node:path';
 
@@ -36,7 +36,9 @@ describe('utils', () => {
     });
 
     it('should return PageComponent, pageModule and pageHeaders', async () => {
-      const route = { filePath: join(PAGES_DIR, 'foo.tsx') } as MatchedRoute;
+      const route = {
+        filePath: join(PAGES_DIR, 'foo.tsx'),
+      } as MatchedBrisaRoute;
       const error = new Error('error');
       const headers = { header: 'value' };
       const result = await getPageComponentWithHeaders({
@@ -60,7 +62,9 @@ describe('utils', () => {
 
     it('should return PageComponent, pageModule and pageHeaders with x-test responseHeaders as fail', async () => {
       const exectedPageResponseHeaders = { 'x-test': 'fail' };
-      const route = { filePath: join(PAGES_DIR, 'index.tsx') } as MatchedRoute;
+      const route = {
+        filePath: join(PAGES_DIR, 'index.tsx'),
+      } as MatchedBrisaRoute;
       const error = new Error('error');
       const status = 500;
       const headers = { header: 'value' };
@@ -87,7 +91,9 @@ describe('utils', () => {
 
     it('should return PageComponent, pageModule and pageHeaders with x-test responseHeaders as success', async () => {
       const exectedPageResponseHeaders = { 'x-test': 'success' };
-      const route = { filePath: join(PAGES_DIR, 'index.tsx') } as MatchedRoute;
+      const route = {
+        filePath: join(PAGES_DIR, 'index.tsx'),
+      } as MatchedBrisaRoute;
       const result = await getPageComponentWithHeaders({ req, route });
       expect(result.PageComponent).toBeTypeOf('function');
       expect(result.pageModule.responseHeaders).toBeTypeOf('function');
