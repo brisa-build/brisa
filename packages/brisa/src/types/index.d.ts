@@ -1248,6 +1248,7 @@ export type MatchedBrisaRoute = {
   pathname: string;
   params?: Record<string, string | string[]>;
   query?: Record<string, string | string[]>;
+  src: string;
 };
 
 export type BrisaContext<T> = {
