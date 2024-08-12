@@ -9,16 +9,22 @@ type FileSystemRouterOptions = {
 
 const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
 const DEFAULT_EXTENSIONS = ['.tsx', '.jsx', '.ts', '.mjs', '.cjs', '.js'];
+const MULTI_SLASH_REGEX = /\/+/g;
+const TRAILING_SLASH_REGEX = /\/$/;
+const EXTRACT_PARAM_KEY_REGEX = /\[|\]|\./g;
 
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
   const routes = resolveRoutes(options);
 
   function match(routeToMatch: string): MatchedBrisaRoute | null {
-    const url = new URL(routeToMatch.replace(/\/+/g, '/'), 'http://l');
+    const url = new URL(
+      routeToMatch.replace(MULTI_SLASH_REGEX, '/'),
+      'http://l',
+    );
     const pathname = decodeURIComponent(url.pathname + url.search + url.hash);
     const fixedPathname = decodeURIComponent(
-      url.pathname.replace(/\/$/, '') || '/',
+      url.pathname.replace(TRAILING_SLASH_REGEX, '') || '/',
     ).trim();
 
     for (const [name, filePath] of Object.entries(routes)) {
@@ -90,7 +96,7 @@ function getParamsAndQuery(route: string, pathname: string, url: URL) {
   const params = routeParts.reduce(
     (acc, part, index) => {
       if (part.startsWith('[')) {
-        const key = part.replace(/\[|\]|\./g, '');
+        const key = part.replace(EXTRACT_PARAM_KEY_REGEX, '');
         acc[key] = part.includes('...')
           ? pathnameParts.slice(index) ?? ''
           : pathnameParts[index] ?? '';
