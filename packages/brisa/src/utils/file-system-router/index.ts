@@ -8,6 +8,7 @@ const DEFAULT_EXTENSIONS = ['.tsx', '.jsx', '.ts', '.mjs', '.cjs', '.js'];
 const MULTI_SLASH_REGEX = /(?<!:)\/{2,}/g;
 const TRAILING_SLASH_REGEX = /\/$/;
 const EXTRACT_PARAM_KEY_REGEX = /\[|\]|\./g;
+const WINDOWS_PATH_REGEX = /\\/g;
 
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
@@ -129,11 +130,11 @@ function resolveRoutes({
     let route = filePath
       .replace(ext, '')
       .replace(dir, '')
-      .replace(ENDS_WITH_SLASH_INDEX_REGEX, '');
+      .replace(ENDS_WITH_SLASH_INDEX_REGEX, '')
+      .replace(WINDOWS_PATH_REGEX, '/');
 
     if (route === '') route = '/';
 
-    console.log({ route, filePath });
     routes[route] = filePath;
   }
 
