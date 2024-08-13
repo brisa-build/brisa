@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { BunPlugin } from 'bun';
+import { argv, type BunPlugin } from 'bun';
 import { version } from '../package.json';
 import type { BrisaConstants, Configuration, I18nConfig } from './types';
 import importFileIfExists from './utils/import-file-if-exists';
@@ -11,7 +11,7 @@ import {
   yellowLog,
 } from './utils/log/log-color';
 
-const IS_SERVE_PROCESS = Bun.main.endsWith(
+const IS_SERVE_PROCESS = argv[1].endsWith(
   path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
 );
 const rootDir = process.cwd();
