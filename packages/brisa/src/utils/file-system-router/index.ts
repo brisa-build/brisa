@@ -133,6 +133,7 @@ function resolveRoutes({
 
     if (route === '') route = '/';
 
+    console.log({ route, filePath });
     routes[route] = filePath;
   }
 
