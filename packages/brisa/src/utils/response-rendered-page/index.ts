@@ -59,7 +59,7 @@ function getPrerenderedPage(route: MatchedBrisaRoute) {
   const filePath = path.join(
     BUILD_DIR,
     'prerendered-pages',
-    CONFIG.trailingSlash ? `${pathname}/index.html` : `${pathname}.html`,
+    CONFIG.trailingSlash ? `${pathname}${path.sep}index.html` : `${pathname}.html`,
   );
 
   return fs.existsSync(filePath) ? Bun.file(filePath).stream() : null;
