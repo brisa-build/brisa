@@ -883,7 +883,7 @@ export function ServerComponent(
 }
 ```
 
-==js
+==JavaScript
 
 ```jsx
 //src/web-components/using-web-component.js
@@ -1126,7 +1126,7 @@ All native web components can be located inside `web-components/_native` and con
 Example:
 
 :::tabs key:language
-==ts
+==TypeScript
 
 ```tsx
 //web-components/\_native/some-native.ts
