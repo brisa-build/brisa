@@ -1,4 +1,5 @@
 import type { ESTree } from 'meriyah';
+import { fileURLToPath } from 'node:url';
 
 const SPECIFIERS = new Set(['ImportDefaultSpecifier', 'ImportSpecifier']);
 const AVOIDED_DEPENDENCIES = new Set(['brisa', 'brisa/server', 'brisa/client']);
@@ -37,6 +38,6 @@ function resolve(path: string, base: string) {
     // throws an exception if the file does not exist, but
     // import.meta.resolve does not check if it exists and resolves
     // the absolute path without resolving the format (.js|.ts|.tsx...)
-    return Bun.fileURLToPath(import.meta.resolve(path, base));
+    return fileURLToPath(import.meta.resolve(path, base));
   }
 }
