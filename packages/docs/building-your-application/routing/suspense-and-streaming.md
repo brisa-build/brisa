@@ -29,7 +29,7 @@ If **some** component has `suspense`:
 In this example we are registering `suspense` to display a loading state meanwhile the user of `SomeComponent` is not loaded. After add the `suspense` it does not block and keeps sending more chunks of the HTML while the component is loading. Once the component is loaded then the fallback will be replaced by the original content. In case it fails, we could also display another type of content using the `error` component extension.
 
 :::tabs key:language
-==ts
+==TypeScript
 
 ```ts
 // src/components/some-component.tsx
@@ -59,7 +59,7 @@ SomeComponent.error = ({ error }) => {
 }
 ```
 
-==js
+==JavaScript
 
 ```js
 // src/components/some-component.jsx

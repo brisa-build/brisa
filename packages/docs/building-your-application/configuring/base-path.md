@@ -9,7 +9,7 @@ To deploy a Brisa application under a sub-path of a domain you can use the `base
 `basePath` allows you to set a path prefix for the application. For example, to use `/docs` instead of `''` (an empty string, the default), open `brisa.config.ts` and add the `basePath` config:
 
 :::tabs key:language
-==ts
+==TypeScript
 
 ```ts
 //brisa.config.ts
