@@ -27,5 +27,5 @@ tsconfig.tsbuildinfo
 .idea
 
 # Deployment
-.vercel*
-.vercel
+# .vercel*
+# .vercel
