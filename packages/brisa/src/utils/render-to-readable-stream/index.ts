@@ -24,6 +24,7 @@ import { logError } from '@/utils/log/log-build';
 import { getNavigateMode, isNavigateThrowable } from '@/utils/navigate/utils';
 import { RenderInitiator } from '@/public-constants';
 import get404ClientScript from '@/utils/not-found/client-script';
+import escapeHTML from '@/utils/escape-html';
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -147,7 +148,7 @@ async function enqueueDuringRendering(
   for (const elementContent of elements) {
     if (elementContent === false || elementContent == null) continue;
     if (ALLOWED_PRIMARIES.has(typeof elementContent)) {
-      controller.enqueue(Bun.escapeHTML(elementContent.toString()), suspenseId);
+      controller.enqueue(escapeHTML(elementContent.toString()), suspenseId);
       continue;
     }
 
@@ -517,7 +518,7 @@ async function enqueueComponent(
 
   if (ALLOWED_PRIMARIES.has(typeof componentValue)) {
     return controller.enqueue(
-      Bun.escapeHTML(componentValue.toString()),
+      escapeHTML(componentValue.toString()),
       suspenseId,
     );
   }
@@ -570,7 +571,7 @@ async function enqueueChildren(
       componentProps,
     );
   } else if (typeof children?.toString === 'function') {
-    await controller.enqueue(Bun.escapeHTML(children.toString()), suspenseId);
+    await controller.enqueue(escapeHTML(children.toString()), suspenseId);
   }
 }
 
