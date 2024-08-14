@@ -46,7 +46,7 @@
   "module": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
   "bin": {
-    "brisa": "./bin/cli.js"
+    "brisa": "./cli.js"
   },
   "files": [
     "out",
@@ -55,12 +55,12 @@
     "client",
     "server",
     "test",
-    "bin"
+    "cli.js"
   ],
   "workspaces": ["packages/*"],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-test",
-    "build:cli": "bun build --minify --target=bun --outdir=bin cli.ts && bun run build:cli-utils",
+    "build:cli": "bun build --minify --target=bun --outdir=./ cli.ts && bun run build:cli-utils",
     "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/serve/index.tsx src/cli/integrations/mdx.ts",
     "build:core": "bun build --minify --outdir=out/core src/core/index.ts && bun run build:cli && cp src/types/index.d.ts out/core/index.d.ts",
     "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:cli",
@@ -68,7 +68,7 @@
     "build:core-test": "bun build --minify --target=bun --outdir=test src/core/test/index.ts && bun run build:cli && cp src/types/test.d.ts test/index.d.ts",
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
     "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-runtime/index.d.ts",
-    "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli client bin",
+    "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli client cli.js",
     "release": "bun run build && npm publish && bun run clean",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",
     "test": "bun test",
