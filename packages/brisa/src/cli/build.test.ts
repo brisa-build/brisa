@@ -12,7 +12,6 @@ import path from 'node:path';
 import build from './build';
 import { getConstants } from '@/constants';
 import type { Configuration } from '@/types';
-import supportsBasicColor from '@/utils/supports-basic-color';
 
 const defaultResult = {
   success: true,
@@ -35,9 +34,8 @@ const mockGenerateStaticExport = mock(async () => [
   new Map<string, string[]>(),
 ]);
 const mockLog = mock((...logs: string[]) => {});
-const enableANSIColors = supportsBasicColor();
 const green = (text: string) =>
-  enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
+  Bun.enableANSIColors ? `\x1b[32m${text}\x1b[0m` : text;
 
 describe('cli', () => {
   describe('build', () => {
