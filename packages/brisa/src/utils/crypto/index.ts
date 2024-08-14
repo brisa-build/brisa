@@ -1,10 +1,11 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
+import process from 'node:process';
 
 const getAlorithm = () =>
   [
     'aes-256-cbc',
-    Buffer.from(Bun.env.__CRYPTO_KEY__ ?? '', 'hex'),
-    Bun.env.__CRYPTO_IV__ ?? '',
+    Buffer.from(process.env.__CRYPTO_KEY__ ?? '', 'hex'),
+    process.env.__CRYPTO_IV__ ?? '',
   ] satisfies [string, Buffer, string];
 
 export const ENCRYPT_PREFIX = '__encrypted:';
