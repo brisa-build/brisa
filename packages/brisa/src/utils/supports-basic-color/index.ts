@@ -24,4 +24,5 @@ export default function isANSIColorsSupported() {
   return env.TERM !== 'dumb';
 }
 
+// Similar than Bun.enableANSIColors but also available in Node.js
 export const enableANSIColors = isANSIColorsSupported();
