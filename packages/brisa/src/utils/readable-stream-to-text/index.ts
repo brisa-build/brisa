@@ -1,19 +1,26 @@
 // Version of Bun.readableStreamToText but more runtime agnostic
 export async function agnosticReadableStreamToText(
-  stream: ReadableStream<ArrayBufferView | ArrayBuffer>,
+  stream: ReadableStream<Uint8Array | ArrayBuffer | string>,
 ) {
+  const reader = stream.getReader();
   let result = '';
-  const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
 
   while (true) {
     const { done, value } = await reader.read();
-
-    if (done || !value || !value?.length) break;
-
-    result += value;
+    if (done) break;
+    result += decodeChunk(value);
   }
 
   return result;
+}
+
+function decodeChunk(chunk: Uint8Array | ArrayBuffer | string): string {
+  if (typeof chunk === 'string') {
+    return chunk;
+  } else {
+    const decoder = new TextDecoder();
+    return decoder.decode(chunk, { stream: true });
+  }
 }
 
 export default typeof Bun !== 'undefined'
