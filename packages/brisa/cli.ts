@@ -1,10 +1,12 @@
 #!/usr/bin/env bun
+
+const { yellowLog } = require('@/utils/log/log-color');
 const cp = require('child_process');
 const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const process = require('node:process');
-const brisaPackageJSON = require('./package.json');
+const { packageManager } = require('./package.json');
 const outPath = path
   .join(import.meta.dir, 'out')
   // There are some cases where the CLI is executed from the node_modules/.bin folder
@@ -16,7 +18,13 @@ const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
 
-async function main({ currentBunVersion, brisaPackageManager }) {
+async function main({
+  currentBunVersion,
+  brisaPackageManager,
+}: {
+  currentBunVersion: string;
+  brisaPackageManager: string;
+}) {
   const packageJSON = await import(
     path.resolve(process.cwd(), 'package.json')
   ).then((m) => m.default);
@@ -62,8 +70,8 @@ async function main({ currentBunVersion, brisaPackageManager }) {
     },
   };
 
-  let BUN_EXEC;
-  let BUNX_EXEC;
+  let BUN_EXEC: string;
+  let BUNX_EXEC: string;
   let IS_TAURI_APP = false; // default value depends on brisa.config.ts
   let OUTPUT = 'server';
 
@@ -104,7 +112,7 @@ async function main({ currentBunVersion, brisaPackageManager }) {
             break;
           case '-p':
           case '--port':
-            PORT = process.argv[i + 1];
+            PORT = +process.argv[i + 1];
             i++;
             break;
           case '-d':
@@ -198,7 +206,7 @@ async function main({ currentBunVersion, brisaPackageManager }) {
         switch (process.argv[i]) {
           case '-p':
           case '--port':
-            PORT = process.argv[i + 1];
+            PORT = +process.argv[i + 1];
             i++;
             break;
           case '--help':
@@ -254,7 +262,7 @@ async function main({ currentBunVersion, brisaPackageManager }) {
       );
       return process.exit(0);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error:', error.message);
     return process.exit(1);
   }
@@ -319,8 +327,5 @@ module.exports.main = main;
 if (import.meta.main)
   main({
     currentBunVersion: Bun.version,
-    brisaPackageManager: brisaPackageJSON.packageManager,
+    brisaPackageManager: packageManager,
   });
-
-const yellowLog = (text) =>
-  Bun.enableANSIColors ? `\x1b[33m${text}\x1b[0m` : text;
