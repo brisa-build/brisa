@@ -8,7 +8,7 @@ import {
   mock,
   type Mock,
 } from 'bun:test';
-import * as cli from './cli.cjs';
+import * as cli from './cli.ts';
 import cp from 'node:child_process';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -20,7 +20,7 @@ const options = {
   brisaPackageManager: 'bun@1.1.1',
 };
 
-declare module './cli.cjs' {
+declare module './cli.ts' {
   export function main({
     currentBunVersion,
     brisaPackageManager,

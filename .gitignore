@@ -8,6 +8,7 @@ _brisa
 **/out/*
 **/out-*/*
 **/dist/*
+packages/brisa/bin
 packages/brisa/out
 packages/brisa/jsx-runtime/
 packages/brisa/jsx-dev-runtime/
