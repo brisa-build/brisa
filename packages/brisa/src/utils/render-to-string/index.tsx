@@ -1,3 +1,4 @@
+import readableStreamToText from '@/utils/readable-stream-to-text';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
 
 export default async function renderToString(
@@ -7,7 +8,7 @@ export default async function renderToString(
     applySuspense = false,
   }: { request?: Request; applySuspense?: boolean } = {},
 ): Promise<string> {
-  return await Bun.readableStreamToText(
+  return await readableStreamToText(
     renderToReadableStream(element, { request, isPage: false, applySuspense }),
   );
 }
