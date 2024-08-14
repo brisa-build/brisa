@@ -18,7 +18,7 @@ jobs:
       - name: Bunjs
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.22
+          bun-version: 1.1.24
       - name: Install dependencies
         run: bun install
       - run: bun run build
