@@ -1,7 +1,8 @@
-import { type ServerWebSocket, type Serve, argv } from 'bun';
+import { type ServerWebSocket, type Serve } from 'bun';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
+import process from 'node:process';
 
 import { getConstants } from '@/constants';
 import type { MatchedBrisaRoute, RequestContext } from '@/types';
