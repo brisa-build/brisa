@@ -5,6 +5,7 @@ import dangerHTML from '@/utils/danger-html';
 import compileAll from '@/utils/compile-all';
 import { toInline } from '@/helpers';
 import { logError } from '@/utils/log/log-build';
+import { hash } from '@/utils/wyhash';
 
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
 const LIVE_RELOAD_WEBSOCKET_PATH = '__brisa_live_reload__';
@@ -23,16 +24,16 @@ export async function activateHotReload() {
 
       if (event !== 'change' && file.size !== 0) return;
 
-      const hash = (await file.exists())
-        ? Bun.hash(await file.arrayBuffer())
+      const hashNum = (await file.exists())
+        ? hash(await file.arrayBuffer())
         : null;
 
       // Related with:
       // - https://github.com/brisa-build/brisa/issues/227
       // - https://github.com/brisa-build/brisa/issues/228
-      if (!hash || hashSet.has(hash)) return;
+      if (!hashNum || hashSet.has(hashNum)) return;
       if (hashSet.size > MAX_HASHES) hashSet.clear();
-      hashSet.add(hash);
+      hashSet.add(hashNum);
 
       console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
       if (semaphore) waitFilename = filename as string;
