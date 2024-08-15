@@ -1,6 +1,11 @@
 type Input = string | ArrayBufferView | ArrayBuffer | SharedArrayBuffer;
 type Seed = number | bigint | undefined;
 
+/**
+ * Hashes the input using the wyhash algorithm.
+ *
+ * It is an alternative to the `Bun.hash` function to be used in environments where `Bun` is not available.
+ */
 export function hash(input: Input = '', seed: Seed = 0) {
   if (typeof Bun !== 'undefined') return Bun.hash(input, seed);
 
