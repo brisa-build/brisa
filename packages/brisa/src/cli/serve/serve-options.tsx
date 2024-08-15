@@ -1,4 +1,4 @@
-import type { ServerWebSocket, Serve } from 'bun';
+import { type ServerWebSocket, type Serve, argv } from 'bun';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
@@ -22,7 +22,7 @@ import { RenderInitiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 
 export async function getServeOptions() {
-  setUpEnvVars(import.meta.main);
+  setUpEnvVars();
 
   const {
     IS_PRODUCTION,
@@ -336,10 +336,16 @@ export async function getServeOptions() {
   }
 }
 
-export function setUpEnvVars(isMainFile: boolean = import.meta.main) {
+export function setUpEnvVars(
+  isCLI: boolean = Boolean(
+    process.argv[1].includes(
+      path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
+    ),
+  ),
+) {
   // This is necessary in case of Custom Server using the getServeOptions outside
   // the Brisa environment, otherwise this is set from the CLI.
-  if (!isMainFile) {
+  if (!isCLI) {
     if (!process.env.__CRYPTO_KEY__) {
       process.env.__CRYPTO_KEY__ = crypto.randomBytes(32).toString('hex');
     }
