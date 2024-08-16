@@ -15,8 +15,7 @@ const MAX_HASHES = 100;
 
 // Similar than Bun.nanoseconds, but also working with Node.js
 function nanoseconds() {
-  const [seconds, nanoseconds] = process.hrtime();
-  return seconds * 1e9 + nanoseconds;
+  return Number(process.hrtime.bigint());
 }
 
 export async function activateHotReload() {
