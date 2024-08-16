@@ -1,4 +1,6 @@
-<!-- .vitepress/theme/Layout.vue -->
+---
+layout: doc
+---
 <template>
   <div>
     <HeaderBanner />
@@ -12,10 +14,17 @@ import HeaderBanner from '../components/header-banner.vue'
 
 const { Layout } = DefaultTheme
 const Content = Layout
+
 </script>
 
 <style>
 #brisa-content > header{
-  margin: 13px 0;
+margin-top: 20px;
+}
+#brisa-content > .VPSidebar{
+margin-top: 20px;
+}
+#brisa-content > .VPLocalNav > .container{
+margin-top: 20px;
 }
 </style>
