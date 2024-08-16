@@ -13,6 +13,12 @@ const LIVE_RELOAD_COMMAND = 'reload';
 const hashSet = new Set();
 const MAX_HASHES = 100;
 
+// Similar than Bun.nanoseconds, but also working with Node.js
+function nanoseconds() {
+  const [seconds, nanoseconds] = process.hrtime();
+  return seconds * 1e9 + nanoseconds;
+}
+
 export async function activateHotReload() {
   let semaphore = false;
   let waitFilename = '';
@@ -52,9 +58,9 @@ export async function activateHotReload() {
     semaphore = true;
     globalThis.Loader.registry.clear();
 
-    const nsStart = Bun.nanoseconds();
+    const nsStart = nanoseconds();
     const success = await compileAll();
-    const nsEnd = Bun.nanoseconds();
+    const nsEnd = nanoseconds();
     const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
 
     if (!success) {
