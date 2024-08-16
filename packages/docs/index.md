@@ -35,9 +35,10 @@ features:
 <script setup>
 import Standards from '.vitepress/components/standards.vue'
 import Showcase from '.vitepress/components/showcase.vue'
-
+import HeaderBanner from '.vitepress/components/header-banner.vue'
 </script>
 
+<HeaderBanner />
 <Standards />
 <Showcase />
 
