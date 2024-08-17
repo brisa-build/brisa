@@ -6,6 +6,7 @@ const { version } = require('./package.json');
 const { execSync } = require('node:child_process');
 const readline = require('node:readline');
 const BRISA_VERSION = version;
+const isPowerShell = process.env.PSModulePath !== undefined;
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -218,5 +219,7 @@ export default function Counter(
   process.chdir('..');
 
   console.log('\n✨ Project created successfully\n');
-  console.log(`📀 Run: cd ${PROJECT_NAME} && bun dev`);
+  console.log(
+    `📀 Run: cd ${PROJECT_NAME}${isPowerShell ? ';' : ' &&'} bun dev`,
+  );
 });
