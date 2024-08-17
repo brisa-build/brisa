@@ -57,7 +57,9 @@
     "test",
     "cli.js"
   ],
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-test",
     "build:cli": "bun build --minify --target=bun --outdir=./ cli.ts && bun run build:cli-utils",
@@ -83,7 +85,8 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "14.12.3",
-    "@types/bun": "1.1.6"
+    "@types/bun": "1.1.6",
+    "brisa": "latest"
   },
   "peerDependencies": {
     "typescript": "5.5.4"
