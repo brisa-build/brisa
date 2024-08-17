@@ -98,6 +98,7 @@ describe('utils', () => {
       globalThis.mockConstants = {
         ...constants,
         PAGES_DIR,
+        IS_SERVE_PROCESS: false,
         BUILD_DIR,
         CONFIG: {
           ...constants.CONFIG,
@@ -141,7 +142,7 @@ describe('utils', () => {
       expect(mockExtendPlugins.mock.calls[1][1]).toEqual({
         dev: false,
         isServer: false,
-        entrypoint: path.join(BUILD_DIR, 'pages', '_404.js'),
+        entrypoint: path.join(BUILD_DIR, 'pages', 'page-with-web-component.js'),
       });
       expect(mockExtendPlugins.mock.calls[2][1]).toEqual({
         dev: false,
@@ -151,7 +152,7 @@ describe('utils', () => {
       expect(mockExtendPlugins.mock.calls[3][1]).toEqual({
         dev: false,
         isServer: false,
-        entrypoint: path.join(BUILD_DIR, 'pages', 'page-with-web-component.js'),
+        entrypoint: path.join(BUILD_DIR, 'pages', '_404.js'),
       });
 
       const files = fs
@@ -162,31 +163,26 @@ describe('utils', () => {
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
         minifyText(`
           export interface IntrinsicCustomElements {
-            'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/_native/some-example.tsx").default>;
             'web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx").default>;
             'with-context': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/with-context.tsx").default>;
+            'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/_native/some-example.tsx").default>;
             'foo-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/lib/foo.tsx").default>;
-          }`),
+          }
+            
+          export type PageRoute = "/" | "/page-with-web-component" | "/somepage-with-context" | "/somepage" | "/user/abc-123";`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
-      expect(files).toHaveLength(17);
+      expect(files).toHaveLength(10);
       expect(files[0]).toBe('_brisa');
       expect(files[1]).toBe('actions');
       expect(files[2]).toBe('api');
-      expect(files[3]).toStartWith('chunk-');
-      expect(files[4]).toStartWith('chunk-');
-      expect(files[5]).toStartWith('chunk-');
-      expect(files[6]).toStartWith('chunk-');
-      expect(files[7]).toStartWith('chunk-');
-      expect(files[8]).toStartWith('chunk-');
-      expect(files[9]).toStartWith('chunk-');
-      expect(files[10]).toBe('i18n.js');
-      expect(files[11]).toBe('layout.js');
-      expect(files[12]).toBe('middleware.js');
-      expect(files[13]).toBe('pages');
-      expect(files[14]).toBe('pages-client');
-      expect(files[15]).toBe('web-components');
-      expect(files[16]).toBe('websocket.js');
+      expect(files[3]).toBe('i18n.js');
+      expect(files[4]).toBe('layout.js');
+      expect(files[5]).toBe('middleware.js');
+      expect(files[6]).toBe('pages');
+      expect(files[7]).toBe('pages-client');
+      expect(files[8]).toBe('web-components');
+      expect(files[9]).toBe('websocket.js');
 
       // Test actions
       const homePageContent = await Bun.file(
@@ -253,7 +249,7 @@ describe('utils', () => {
         await Bun.file(path.join(pagesClientPath, `_404-${HASH}-en.js`)).text(),
       ).toBe(
         toInline(`
-          window.i18nMessages={"hello":"Hello {{name}}"};
+          window.i18nMessages={...window.i18nMessages,...({"hello":"Hello {{name}}"})};
       `),
       );
 
@@ -261,7 +257,7 @@ describe('utils', () => {
         await Bun.file(path.join(pagesClientPath, `_404-${HASH}-pt.js`)).text(),
       ).toBe(
         toInline(`
-          window.i18nMessages={"hello":"Olá {{name}}"};
+          window.i18nMessages={...window.i18nMessages,...({"hello":"Olá {{name}}"})};
       `),
       );
 
@@ -278,16 +274,16 @@ describe('utils', () => {
     ${info}
     ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
-    ${info}λ /pages/_404                    | 641 B     | ${greenLog('4 kB')} 
-    ${info}λ /pages/_500                    | 647 B     | ${greenLog('4 kB')} 
-    ${info}λ /pages/page-with-web-component | 580 B     | ${greenLog('4 kB')} 
-    ${info}λ /pages/somepage                | 396 B     | ${greenLog('0 B')} 
-    ${info}λ /pages/somepage-with-context   | 324 B     | ${greenLog('0 B')} 
-    ${info}λ /pages/index                   | 550 B     | ${greenLog('3 kB')}  
-    ${info}λ /pages/user/[username]         | 183 B     | ${greenLog('0 B')}
-    ${info}ƒ /middleware                    | 738 B     |
+    ${info}λ /pages/index                   | 594 B     | ${greenLog('3 kB')}
+    ${info}λ /pages/page-with-web-component | 633 B     | ${greenLog('5 kB')}
+    ${info}λ /pages/somepage-with-context   | 836 B     | ${greenLog('0 B')}  
+    ${info}λ /pages/_500                    | 700 B     | ${greenLog('5 kB')}
+    ${info}λ /pages/somepage                | 908 B     | ${greenLog('0 B')}
+    ${info}λ /pages/_404                    | 694 B     | ${greenLog('5 kB')} 
+    ${info}λ /pages/user/[username]         | 210 B     | ${greenLog('0 B')}
+    ${info}ƒ /middleware                    | 828 B     |
     ${info}λ /api/example                   | 283 B     |
-    ${info}Δ /layout                        | 350 B     |
+    ${info}Δ /layout                        | 377 B     |
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 103 B     |
@@ -722,8 +718,8 @@ describe('utils', () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 190 B     | ${greenLog('3 kB')}  
-    ${info}Δ /layout       | 868 B     |
+    ${info}λ /pages/index  | 217 B     | ${greenLog('3 kB')}  
+    ${info}Δ /layout       | 921 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
