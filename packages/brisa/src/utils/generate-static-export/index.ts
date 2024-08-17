@@ -48,7 +48,6 @@ export default async function generateStaticExport(): Promise<
   const routes = await formatRoutes(Object.keys(router.routes), router);
   const prerenderedRoutes = new Map<string, string[]>();
 
-  console.dir({ routes, original: router.routes });
   await Promise.all(
     routes.map(async ([routeName, route]) => {
       // Prerender when "export default prerender = true"
@@ -189,7 +188,7 @@ async function formatRoutes(
   for (const pageName of routes) {
     for (const locale of locales) {
       const route = router.match(pageName);
-
+      console.dir({ route, pageName, locale });
       const pathname = locale
         ? I18N_CONFIG.pages?.[pageName]?.[locale] ?? pageName
         : pageName;
