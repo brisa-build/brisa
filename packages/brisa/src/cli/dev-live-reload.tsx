@@ -62,6 +62,12 @@ export async function activateHotReload() {
     }
 
     const nsStart = nanoseconds();
+
+    // Note: we are using spawnSync instead of executing directly the build because
+    // we prefer to separate both processes. In this way, serve can be executed in
+    // different runtimes, like Node.js or Bun, however, the build process is always
+    // executed in Bun.
+    // https://github.com/brisa-build/brisa/issues/404
     const { error } = spawnSync(
       process.execPath,
       [path.join(process.argv[1], '..', '..', 'build.js')],
@@ -70,6 +76,7 @@ export async function activateHotReload() {
         stdio: ['inherit', 'inherit', 'pipe'],
       },
     );
+
     const nsEnd = nanoseconds();
     const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
 
