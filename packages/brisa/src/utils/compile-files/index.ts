@@ -6,7 +6,7 @@ import { join, sep } from 'node:path';
 import { getConstants } from '@/constants';
 import byteSizeToString from '@/utils/byte-size-to-string';
 import getClientCodeInPage from '@/utils/get-client-code-in-page';
-import getEntrypoints from '@/utils/get-entrypoints';
+import getEntrypoints, { getEntrypointsRouter } from '@/utils/get-entrypoints';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import getWebComponentsList from '@/utils/get-web-components-list';
 import { logTable } from '@/utils/log/log-build';
@@ -17,6 +17,7 @@ import compileActions from '@/utils/compile-actions';
 import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/ast/get-webcomponents-per-entrypoints';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
+import generateDynamicTypes from '@/utils/generate-dynamic-types';
 
 const TS_REGEX = /\.tsx?$/;
 
@@ -33,7 +34,8 @@ export default async function compileFiles() {
   const webComponentsDir = join(SRC_DIR, 'web-components');
   const pagesDir = join(SRC_DIR, 'pages');
   const apiDir = join(SRC_DIR, 'api');
-  const pagesEntrypoints = getEntrypoints(pagesDir);
+  const pagesRoutes = getEntrypointsRouter(pagesDir);
+  const pagesEntrypoints = Object.values(pagesRoutes.routes);
   const apiEntrypoints = getEntrypoints(apiDir);
   const middlewarePath = getImportableFilepath('middleware', SRC_DIR);
   const websocketPath = getImportableFilepath('websocket', SRC_DIR);
@@ -152,6 +154,7 @@ export default async function compileFiles() {
     ),
     integrationsPath,
     layoutPath,
+    pagesRoutes,
   });
 
   if (!pagesSize) {
@@ -250,11 +253,13 @@ async function compileClientCodePage(
     webComponentsPerEntrypoint,
     integrationsPath,
     layoutPath,
+    pagesRoutes,
   }: {
     allWebComponents: Record<string, string>;
     webComponentsPerEntrypoint: Record<string, Record<string, string>>;
     integrationsPath?: string | null;
     layoutPath?: string | null;
+    pagesRoutes: ReturnType<typeof getEntrypointsRouter>;
   },
 ) {
   const { BUILD_DIR, I18N_CONFIG, IS_PRODUCTION } = getConstants();
@@ -418,17 +423,11 @@ async function compileClientCodePage(
     }
   }
 
-  const intrinsicCustomElements = `export interface IntrinsicCustomElements {
-  ${Object.entries(allWebComponents)
-    .map(
-      ([name, location]) =>
-        `'${name}': JSX.WebComponentAttributes<typeof import("${location}").default>;`,
-    )
-    .join('\n')}
-}`;
-
   writes.push(
-    Bun.write(join(internalPath, 'types.ts'), intrinsicCustomElements),
+    Bun.write(
+      join(internalPath, 'types.ts'),
+      generateDynamicTypes({ allWebComponents, pagesRoutes }),
+    ),
   );
 
   // Although on Mac it can work without await, on Windows it does not and it is mandatory

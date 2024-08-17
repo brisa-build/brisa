@@ -341,7 +341,10 @@ describe('utils', () => {
         minifyText(`
           export interface IntrinsicCustomElements {
             'layout-web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/layout-web-component.tsx").default>;
-          }`),
+          }
+            
+          export type PageRoute = "/";
+        `),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toEqual(['_brisa', 'layout.js', 'pages', 'pages-client']);
@@ -411,7 +414,9 @@ describe('utils', () => {
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
-        minifyText(`export interface IntrinsicCustomElements { }`),
+        minifyText(
+          `export interface IntrinsicCustomElements { } export type PageRoute = "/";`,
+        ),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toEqual([
@@ -500,7 +505,9 @@ describe('utils', () => {
 
       expect(fs.existsSync(TYPES)).toBe(true);
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
-        minifyText(`export interface IntrinsicCustomElements { }`),
+        minifyText(
+          `export interface IntrinsicCustomElements { } export type PageRoute = "/";`,
+        ),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toEqual(['_brisa', 'layout.js', 'pages', 'pages-client']);
@@ -596,7 +603,10 @@ describe('utils', () => {
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
         minifyText(`export interface IntrinsicCustomElements { 
           'layout-web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/layout-web-component.tsx").default>;
-         }`),
+         }
+         
+         export type PageRoute = "/";
+        `),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toEqual([
@@ -797,6 +807,7 @@ describe('utils', () => {
       const BUILD_DIR = path.join(SRC_DIR, 'out');
       const PAGES_DIR = path.join(BUILD_DIR, 'pages');
       const ASSETS_DIR = path.join(BUILD_DIR, 'public');
+      const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
       const constants = getConstants();
       globalThis.mockConstants = {
         ...constants,
@@ -855,7 +866,13 @@ describe('utils', () => {
     ${info}
   `);
       expect(logOutput).toContain(expected);
-
+      expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
+        minifyText(
+          `export interface IntrinsicCustomElements { }
+          export type PageRoute = "/" | "/pokemon/abc-123";
+          `,
+        ),
+      );
       expect(logOutput).toContain('/index.html prerendered');
       expect(logOutput).toContain('/pokemon/charizard.html prerendered');
       expect(logOutput).toContain('/pokemon/pikachu.html prerendered');
@@ -900,7 +917,10 @@ describe('utils', () => {
           SRC_DIR,
           'web-components',
           'some-counter.tsx',
-        )}").default>; }`,
+        )}").default>; }
+        
+        export type PageRoute = "/" | "/page-without-web-component";
+        `,
       ),
     );
     expect(mockConsoleLog).toHaveBeenCalled();

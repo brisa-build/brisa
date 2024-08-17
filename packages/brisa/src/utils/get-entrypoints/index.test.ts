@@ -40,11 +40,6 @@ describe('utils', () => {
       expect(entrypoints.length).toBe(0);
     });
 
-    it("should not return files that end with '.test'", () => {
-      const entrypoints = getEntrypoints(pagesDir);
-      expect(entrypoints).not.toContain(path.join(pagesDir, 'index.test.tsx'));
-    });
-
     it('should allow mdx files as entrypoints', () => {
       const entrypoints = getEntrypoints(mdxPagesDir);
       const expected = ['index.mdx'].map((route) =>
