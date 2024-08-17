@@ -3,7 +3,10 @@
 /// <reference lib="dom" />
 /// <reference lib="dom.iterable" />
 
-import type { IntrinsicCustomElements } from '@/../build/_brisa/types';
+import type {
+  IntrinsicCustomElements,
+  PageRoute,
+} from '@/../build/_brisa/types';
 import type { BunPlugin, ServerWebSocket, TLSOptions } from 'bun';
 import type * as CSS from 'csstype';
 
@@ -1354,6 +1357,8 @@ export type NavigateOptions = {
   renderMode?: RenderMode;
 };
 
+export type RouteToNavigate = PageRoute | (string & {});
+
 /**
  * Description:
  *
@@ -1371,7 +1376,10 @@ export type NavigateOptions = {
  *
  * - [How to use `navigate`](https://brisa.build/api-reference/functions/navigate)
  */
-export function navigate(page: string, options?: NavigateOptions): never;
+export function navigate(
+  page: RouteToNavigate,
+  options?: NavigateOptions,
+): never;
 
 type DangerHTMLOutput = {
   type: 'HTML';
@@ -8071,7 +8079,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href)
        */
-      href?: string | undefined;
+      href?: RouteToNavigate | undefined;
       /**
        * The `hrefLang` attribute is a string attribute that is present on the `<a>`, `<area>`, and `<link>` elements to specify the language of the linked resource.
        *

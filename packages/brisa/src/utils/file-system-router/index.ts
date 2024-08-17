@@ -2,6 +2,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import type { MatchedBrisaRoute } from '@/types';
 import type { FileSystemRouterOptions } from '@/types/server';
+import isTestFile from '@/utils/is-test-file';
 
 const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
 const DEFAULT_EXTENSIONS = ['.tsx', '.jsx', '.ts', '.mjs', '.cjs', '.js'];
@@ -120,7 +121,7 @@ function resolveRoutes({
   });
 
   for (const file of files) {
-    if (file.isDirectory()) continue;
+    if (file.isDirectory() || isTestFile(file.name, true)) continue;
 
     const ext = path.extname(file.name);
 
