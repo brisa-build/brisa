@@ -27,8 +27,8 @@ describe('integrateMDX', () => {
 
   afterEach(() => {
     globalThis.mockConstants = undefined;
-    jest.restoreAllMocks();
     fs.rmdirSync(ROOT_DIR, { recursive: true });
+    jest.restoreAllMocks();
   });
 
   it('should create a default brisa.config.ts', () => {

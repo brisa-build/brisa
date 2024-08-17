@@ -20,10 +20,11 @@
   height: 24px;
   font-size: 12px;
   top: 0;
-  left:0;
+  left: 0;
   width: 100vw;
   position: fixed;
   z-index: 1000;
+  background-color: var(--banner-bg);
 }
 
 .header-banner-content {

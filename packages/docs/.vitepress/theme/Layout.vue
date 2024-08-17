@@ -9,12 +9,11 @@ layout: doc
 </template>
 
 <script setup>
-import DefaultTheme from 'vitepress/theme'
-import HeaderBanner from '../components/header-banner.vue'
+import DefaultTheme from 'vitepress/theme';
+import HeaderBanner from '../components/header-banner.vue';
 
-const { Layout } = DefaultTheme
-const Content = Layout
-
+const { Layout } = DefaultTheme;
+const Content = Layout;
 </script>
 
 <style>
