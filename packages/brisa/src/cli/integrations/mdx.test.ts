@@ -13,10 +13,10 @@ import integrateMDX from '@/cli/integrations/mdx';
 import { getConstants } from '@/constants';
 import { normalizeQuotes } from '@/helpers';
 
-const constants = getConstants();
-const ROOT_DIR = path.join(import.meta.dir, 'out');
-
 describe('integrateMDX', () => {
+  const constants = getConstants();
+  const ROOT_DIR = path.join(import.meta.dirname, 'out');
+
   beforeEach(() => {
     fs.mkdirSync(ROOT_DIR);
     globalThis.mockConstants = {
