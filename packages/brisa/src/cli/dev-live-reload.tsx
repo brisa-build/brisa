@@ -56,7 +56,10 @@ export async function activateHotReload() {
 
   async function recompile(filename: string) {
     semaphore = true;
-    globalThis.Loader.registry.clear();
+
+    if (typeof Bun !== 'undefined') {
+      globalThis.Loader.registry.clear();
+    }
 
     const nsStart = nanoseconds();
     const { error } = spawnSync(
