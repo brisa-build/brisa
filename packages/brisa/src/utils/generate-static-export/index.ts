@@ -48,7 +48,7 @@ export default async function generateStaticExport(): Promise<
   const routes = await formatRoutes(Object.keys(router.routes), router);
   const prerenderedRoutes = new Map<string, string[]>();
 
-  console.log({ routes });
+  console.dir({ routes, original: router.routes });
   await Promise.all(
     routes.map(async ([routeName, route]) => {
       // Prerender when "export default prerender = true"
