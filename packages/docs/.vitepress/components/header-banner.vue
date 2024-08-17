@@ -16,56 +16,14 @@
 
 <style>
 .header-banner {
-  color: #3f4041;
   text-align: center;
   height: 24px;
-  font-size: 11px;
+  font-size: 12px;
   top: 0;
   left:0;
   width: 100vw;
   position: fixed;
   z-index: 1000;
-
-  background: linear-gradient(267deg, #2cebcf, #ffffff);
-  background-size: 400% 400%;
-
-  -webkit-animation: brisaBackground 20s ease infinite;
-  -moz-animation: brisaBackground 20s ease infinite;
-  animation: brisaBackground 20s ease infinite;
-}
-
-@-webkit-keyframes brisaBackground {
-  0% {
-    background-position: 0% 58%;
-  }
-  50% {
-    background-position: 100% 43%;
-  }
-  100% {
-    background-position: 0% 58%;
-  }
-}
-@-moz-keyframes brisaBackground {
-  0% {
-    background-position: 0% 58%;
-  }
-  50% {
-    background-position: 100% 43%;
-  }
-  100% {
-    background-position: 0% 58%;
-  }
-}
-@keyframes brisaBackground {
-  0% {
-    background-position: 0% 58%;
-  }
-  50% {
-    background-position: 100% 43%;
-  }
-  100% {
-    background-position: 0% 58%;
-  }
 }
 
 .header-banner-content {
