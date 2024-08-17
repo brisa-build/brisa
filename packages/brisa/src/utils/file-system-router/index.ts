@@ -31,7 +31,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
       const kind = getRouteKind(name);
       const src = filePath.replace(options.dir + path.sep, '');
 
-      console.dir({ name, kind, filePath, src });
+      console.dir({ name, fixedPathname, routeToMatch, pathname, kind, filePath, src });
       if (kind === 'exact' && name === fixedPathname) {
         return {
           filePath,
