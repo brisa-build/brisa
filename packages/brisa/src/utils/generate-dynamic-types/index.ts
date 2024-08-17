@@ -1,3 +1,4 @@
+import { getConstants } from '@/constants';
 import type { getEntrypointsRouter } from '@/utils/get-entrypoints';
 
 const DYNAMIC_ROUTE_REGEX = /\[{1,2}\.*[^\[\]]+\]{1,2}/g;
@@ -11,6 +12,7 @@ export default function generateDynamicTypes({
   allWebComponents: Record<string, string>;
   pagesRoutes: ReturnType<typeof getEntrypointsRouter>;
 }) {
+  const { CONFIG } = getConstants();
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
     ${Object.entries(allWebComponents)
       .map(
@@ -28,7 +30,12 @@ export default function generateDynamicTypes({
 
     if (ROUTES_TO_IGNORE.has(route)) continue;
 
-    const normalizedRoute = route.replace(DYNAMIC_ROUTE_REGEX, DYNAMIC_SLUG);
+    let normalizedRoute = route.replace(DYNAMIC_ROUTE_REGEX, DYNAMIC_SLUG);
+
+    if (CONFIG.trailingSlash && !normalizedRoute.endsWith('/')) {
+      normalizedRoute += '/';
+    }
+
     const separator = i > 0 ? ' | ' : '';
     routes += `${separator}"${normalizedRoute}"`;
   }

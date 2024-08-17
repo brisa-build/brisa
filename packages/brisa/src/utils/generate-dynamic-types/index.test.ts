@@ -1,9 +1,13 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it, afterEach } from 'bun:test';
 import { normalizeQuotes } from '@/helpers';
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
+import { getConstants } from '@/constants';
 
 describe('utils', () => {
   describe('generateDynamicTypes', () => {
+    afterEach(() => {
+      globalThis.mockConstants = undefined;
+    });
     it('should generate the correct types', () => {
       const allWebComponents = {
         'my-component': 'src/components/my-component.tsx',
@@ -108,6 +112,42 @@ describe('utils', () => {
       }
       
       export type PageRoute = "/" | "/about" | "/blog/abc-123" | "/blog/abc-123/abc-123" | "/blog/abc-123" | "/optional/abc-123";`),
+      );
+    });
+
+    it('should generate routes with trailing slash when it is present in the config', () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          trailingSlash: true,
+        },
+      };
+
+      const allWebComponents = {
+        'my-component': 'src/components/my-component.tsx',
+        'my-other-component': 'src/components/my-other-component.tsx',
+      };
+
+      const pagesRoutes = {
+        routes: {
+          '/': {},
+          '/about/': {},
+          '/blog/[slug]': {},
+          '/blog/[slug]/[id]': {},
+          '/blog/[...slug]': {},
+          '/optional/[[...slug]]': {},
+        },
+      } as any;
+
+      const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
+
+      expect(normalizeQuotes(result)).toBe(
+        normalizeQuotes(`export interface IntrinsicCustomElements {
+          'my-component': JSX.WebComponentAttributes<typeof import("src/components/my-component.tsx").default>;
+          'my-other-component': JSX.WebComponentAttributes<typeof import("src/components/my-other-component.tsx").default>;
+        }
+      
+       export type PageRoute = "/" | "/about/" | "/blog/abc-123/" | "/blog/abc-123/abc-123/" | "/blog/abc-123/" | "/optional/abc-123/";`),
       );
     });
   });
