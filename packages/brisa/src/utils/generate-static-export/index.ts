@@ -4,7 +4,6 @@ import { getConstants } from '@/constants';
 import { getServeOptions } from './utils';
 import { toInline } from '@/helpers';
 import { logWarning } from '@/utils/log/log-build';
-import isTestFile from '@/utils/is-test-file';
 import get404ClientScript from '@/utils/not-found/client-script';
 import { getEntrypointsRouter } from '@/utils/get-entrypoints';
 import type { MatchedBrisaRoute } from '@/types';
@@ -49,6 +48,7 @@ export default async function generateStaticExport(): Promise<
   const routes = await formatRoutes(Object.keys(router.routes), router);
   const prerenderedRoutes = new Map<string, string[]>();
 
+  console.log({ routes })
   await Promise.all(
     routes.map(async ([routeName, route]) => {
       // Prerender when "export default prerender = true"
@@ -187,7 +187,6 @@ async function formatRoutes(
   };
 
   for (const pageName of routes) {
-    if (isTestFile(pageName)) continue;
     for (const locale of locales) {
       const route = router.match(pageName);
 
