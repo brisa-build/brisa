@@ -14,6 +14,7 @@
   --vp-c-brand-2: var(--vp-c-brand-light);
   --home-bg: #a2d5cf;
   --vp-code-block-bg: var(--vp-sidebar-bg-color);
+  --banner-bg: #ebfffc;
 }
 
 .VPContent.is-home {
@@ -82,6 +83,7 @@
   --vp-c-bg-soft: #1b1c22;
   --vp-sidebar-bg-color: #000019;
   --vp-c-bg-alt: #0a0c0f;
+  --banner-bg: #052863;
 }
 
 .dark .main img {
