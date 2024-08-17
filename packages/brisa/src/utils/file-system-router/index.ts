@@ -15,6 +15,8 @@ const WINDOWS_PATH_REGEX = /\\/g;
 export function fileSystemRouter(options: FileSystemRouterOptions) {
   const routes = resolveRoutes(options);
 
+  console.dir({ routes }, { depth: null });
+
   function match(routeToMatch: string): MatchedBrisaRoute | null {
     const url = new URL(
       routeToMatch.replace(MULTI_SLASH_REGEX, '/'),
@@ -29,6 +31,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
       const kind = getRouteKind(name);
       const src = filePath.replace(options.dir + path.sep, '');
 
+      console.dir({ name, kind, filePath, src });
       if (kind === 'exact' && name === fixedPathname) {
         return {
           filePath,

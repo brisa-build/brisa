@@ -188,7 +188,6 @@ async function formatRoutes(
   for (const pageName of routes) {
     for (const locale of locales) {
       const route = router.match(pageName);
-      console.dir({ route, pageName, locale });
       const pathname = locale
         ? I18N_CONFIG.pages?.[pageName]?.[locale] ?? pageName
         : pageName;
