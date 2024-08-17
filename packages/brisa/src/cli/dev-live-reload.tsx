@@ -1,8 +1,9 @@
 import { watch } from 'node:fs';
 import path from 'node:path';
+import process from 'node:process';
+import { spawnSync } from 'node:child_process';
 import constants from '@/constants';
 import dangerHTML from '@/utils/danger-html';
-import compileAll from '@/utils/compile-all';
 import { toInline } from '@/helpers';
 import { logError } from '@/utils/log/log-build';
 import { hash } from '@/utils/wyhash';
@@ -58,12 +59,23 @@ export async function activateHotReload() {
     globalThis.Loader.registry.clear();
 
     const nsStart = nanoseconds();
-    const success = await compileAll();
+    const { error } = spawnSync(
+      process.execPath,
+      [path.join(process.argv[1], '..', '..', 'build.js')],
+      {
+        env: process.env,
+        stdio: ['inherit', 'inherit', 'pipe'],
+      },
+    );
     const nsEnd = nanoseconds();
     const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
 
-    if (!success) {
-      console.log(LOG_PREFIX.ERROR, `failed to recompile ${filename}`);
+    if (error) {
+      console.log(
+        LOG_PREFIX.ERROR,
+        `failed to recompile ${filename}`,
+        error.toString(),
+      );
       semaphore = false;
       return;
     }
