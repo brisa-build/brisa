@@ -20,10 +20,8 @@ hero:
       link: https://github.com/brisa-build/brisa
 
 features:
-  - title: ⚛️ Everything you need
+  - title: 🚀 Fast & everything you need
     details: JSX, TS, server/web components, server actions, optimistic updates, SSR, streaming, suspense, signals, websockets, middleware, layouts...
-  - title: 🚀 Speed
-    details: Brisa is designed to start, build, test, deploy and run fast.
   - title: 🌍 i18n support
     details: text translation and routing carrying only the translations you consume.
   - title: 📦 Tiny
@@ -36,9 +34,11 @@ features:
 import Standards from '.vitepress/components/standards.vue'
 import Showcase from '.vitepress/components/showcase.vue'
 import HeaderBanner from '.vitepress/components/header-banner.vue'
+import CodeSections from '.vitepress/code-sections/index.md'
 </script>
 
 <HeaderBanner />
+<CodeSections />
 <Standards />
 <Showcase />
 
