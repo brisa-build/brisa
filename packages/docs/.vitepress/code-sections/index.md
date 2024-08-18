@@ -5,12 +5,32 @@ if(typeof window !== 'undefined') {
 </script>
 
 <style>
-.code-section:nth-child(even) h2 {
-    background-image: linear-gradient(120deg, #2cebcf 30%, #2cc5e2);
+.code-section:nth-child(even) {
+    h2 {
+      background-image: linear-gradient(120deg, #2cebcf 30%, #2cc5e2);
+    }
+
+    a.nav {
+        background-image: linear-gradient(120deg, #2cebcf 30%, #2cc5e2);
+    }
+
+    a.nav:hover {
+        background-image: linear-gradient(120deg, #2cebcf 60%, #2cc5e2);
+    }
 }
 
-.code-section:nth-child(odd) h2 {
-    background-image: linear-gradient(to right, rgb(69 177 228), rgb(96 108 226));
+.code-section:nth-child(odd)  {
+    h2 {
+      background-image: linear-gradient(to right, rgb(69 177 228), rgb(96 108 226));
+    }
+
+    a.nav {
+        background-image: linear-gradient(to right, rgb(69 177 228), rgb(96 108 226));
+    }
+
+    a.nav:hover {
+        background-image: linear-gradient(to right, rgb(69 177 228), rgb(96 108 226 / 0.8));
+    }
 }
 
 .code-section {
@@ -66,13 +86,11 @@ a.nav {
   border-radius: 5px;
   margin-top: 20px;
   color: black !important;
-  background-image: linear-gradient(120deg, #2cebcf 30%, #2cc5e2);
   opacity: 0.8;
   text-decoration: none;
 }
 
 a.nav:hover {
-  background-image: linear-gradient(120deg, #2cebcf 60%, #2cc5e2);
   color: #000000bb !important;
 }
 
@@ -167,6 +185,43 @@ In Brisa everything by default runs only on the server, except the `src/web-comp
 <a class="nav" href="/building-your-application/components-details/web-components">
 Learn more about Web Components
 </a>
+
+</div>
+
+</div>
+
+<div class="code-section">
+
+<div class="info">
+
+## 🌐 Full i18n support
+
+Brisa has a built-in internationalization (i18n) support that allows you to translate your text and routing, carrying only the translations you consume.
+
+<a class="nav" href="/building-your-application/routing/internationalization">
+Learn more about i18n
+</a>
+
+</div>
+
+<div class="code">
+
+```tsx
+// src/pages/index.tsx
+export default function HomePage() {
+  return <I18nExample />;
+}
+
+function I18nExample({}, { i18n: { t, lang } }) {
+  console.log(lang); // en-US
+  return (
+    <p>
+      {/* Hello, Brisa! */}
+      {t('hello-key', { name: 'Brisa' })}
+    </p> 
+  );
+}
+```
 
 </div>
 
