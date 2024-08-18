@@ -15,8 +15,6 @@ const WINDOWS_PATH_REGEX = /\\/g;
 export function fileSystemRouter(options: FileSystemRouterOptions) {
   const routes = resolveRoutes(options);
 
-  console.dir({ routes }, { depth: null });
-
   function match(routeToMatch: string): MatchedBrisaRoute | null {
     const url = new URL(
       routeToMatch.replace(MULTI_SLASH_REGEX, '/'),
@@ -31,7 +29,6 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
       const kind = getRouteKind(name);
       const src = filePath.replace(options.dir + path.sep, '');
 
-      console.dir({ name, fixedPathname, routeToMatch, pathname, kind, filePath, src });
       if (kind === 'exact' && name === fixedPathname) {
         return {
           filePath,
@@ -118,10 +115,12 @@ function resolveRoutes({
   fileExtensions = DEFAULT_EXTENSIONS,
 }: FileSystemRouterOptions) {
   const routes: Record<string, string> = {};
-  const files = fs.readdirSync(dir, {
-    withFileTypes: true,
-    recursive: true,
-  });
+  const files = fs
+    .readdirSync(dir, {
+      withFileTypes: true,
+      recursive: true,
+    })
+    .sort(naturalOrderCompare);
 
   for (const file of files) {
     if (file.isDirectory() || isTestFile(file.name, true)) continue;
@@ -143,4 +142,18 @@ function resolveRoutes({
   }
 
   return routes;
+}
+
+// Be sure in all OS the order is the same
+function naturalOrderCompare(a: fs.Dirent, b: fs.Dirent) {
+  const nameA = a.name.toLowerCase();
+  const nameB = b.name.toLowerCase();
+
+  if (nameA.startsWith('index') && !nameB.startsWith('index')) return -1;
+  if (!nameA.startsWith('index') && nameB.startsWith('index')) return 1;
+
+  if (nameA.startsWith('[') && !nameB.startsWith('[')) return -1;
+  if (!nameA.startsWith('[') && nameB.startsWith('[')) return 1;
+
+  return nameA.localeCompare(nameB);
 }
