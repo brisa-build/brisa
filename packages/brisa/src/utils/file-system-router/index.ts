@@ -146,6 +146,8 @@ function resolveRoutes({
 
 // Be sure in all OS the order is the same
 function naturalOrderCompare(a: fs.Dirent, b: fs.Dirent) {
+  if (a.isDirectory() && !b.isDirectory()) return 1;
+
   const nameA = a.name.toLowerCase();
   const nameB = b.name.toLowerCase();
 
