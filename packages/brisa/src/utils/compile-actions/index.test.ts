@@ -17,14 +17,9 @@ function compileActions(code: string) {
   return normalizeQuotes(transformToActionCode(modifiedCode));
 }
 
-const brisaServerFile = path.join(
-  import.meta.dirname,
-  '..',
-  '..',
-  '..',
-  'server',
-  'index.js',
-);
+const brisaServerFile = path
+  .join(import.meta.dirname, '..', '..', '..', 'server', 'index.js')
+  .replace(/\\/g, '\\\\');
 
 describe('utils', () => {
   afterEach(() => {
