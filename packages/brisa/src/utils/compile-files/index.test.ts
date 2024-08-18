@@ -142,7 +142,7 @@ describe('utils', () => {
       expect(mockExtendPlugins.mock.calls[1][1]).toEqual({
         dev: false,
         isServer: false,
-        entrypoint: path.join(BUILD_DIR, 'pages', 'page-with-web-component.js'),
+        entrypoint: path.join(BUILD_DIR, 'pages', '_404.js'),
       });
       expect(mockExtendPlugins.mock.calls[2][1]).toEqual({
         dev: false,
@@ -152,7 +152,7 @@ describe('utils', () => {
       expect(mockExtendPlugins.mock.calls[3][1]).toEqual({
         dev: false,
         isServer: false,
-        entrypoint: path.join(BUILD_DIR, 'pages', '_404.js'),
+        entrypoint: path.join(BUILD_DIR, 'pages', 'page-with-web-component.js'),
       });
 
       const files = fs
@@ -169,7 +169,7 @@ describe('utils', () => {
             'foo-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/lib/foo.tsx").default>;
           }
             
-          export type PageRoute = "/" | "/page-with-web-component" | "/somepage-with-context" | "/somepage" | "/user/abc-123";`),
+          export type PageRoute = "/" | "/user/abc-123" | "/page-with-web-component" | "/somepage-with-context" | "/somepage";`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toHaveLength(10);
@@ -275,12 +275,12 @@ describe('utils', () => {
     ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
     ${info}λ /pages/index                   | 594 B     | ${greenLog('3 kB')}
+    ${info}λ /pages/user/[username]         | 210 B     | ${greenLog('0 B')}
+    ${info}λ /pages/_404                    | 694 B     | ${greenLog('5 kB')}
+    ${info}λ /pages/_500                    | 700 B     | ${greenLog('5 kB')}
     ${info}λ /pages/page-with-web-component | 633 B     | ${greenLog('5 kB')}
     ${info}λ /pages/somepage-with-context   | 836 B     | ${greenLog('0 B')}  
-    ${info}λ /pages/_500                    | 700 B     | ${greenLog('5 kB')}
     ${info}λ /pages/somepage                | 908 B     | ${greenLog('0 B')}
-    ${info}λ /pages/_404                    | 694 B     | ${greenLog('5 kB')} 
-    ${info}λ /pages/user/[username]         | 210 B     | ${greenLog('0 B')}
     ${info}ƒ /middleware                    | 828 B     |
     ${info}λ /api/example                   | 283 B     |
     ${info}Δ /layout                        | 377 B     |

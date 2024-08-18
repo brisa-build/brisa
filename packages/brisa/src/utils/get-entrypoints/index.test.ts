@@ -23,13 +23,13 @@ describe('utils', () => {
       const entrypoints = getEntrypoints(pagesDir);
       const expected = [
         path.sep + 'index.tsx',
+        'user' + path.sep + '[username].tsx',
+        '_404.tsx',
+        '_500.tsx',
+        'foo.tsx',
         'page-with-web-component.tsx',
         'somepage-with-context.tsx',
-        '_500.tsx',
         'somepage.tsx',
-        '_404.tsx',
-        'foo.tsx',
-        'user' + path.sep + '[username].tsx',
       ].map((route) => path.join(pagesDir, route));
       expect(entrypoints).toEqual(expected);
     });
