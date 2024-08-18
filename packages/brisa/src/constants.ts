@@ -147,7 +147,7 @@ const constants = {
  * refactor to use directly the constants without the need of this function and replace
  * it in all the codebase and implement the mock modules in the tests.
  */
-export const getConstants = () =>
+export const getConstants = (): BrisaConstants =>
   globalThis.mockConstants
     ? (globalThis.mockConstants as typeof constants)
     : constants;

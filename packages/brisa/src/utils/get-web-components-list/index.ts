@@ -7,6 +7,7 @@ import {
 } from '@/utils/client-build-plugin/constants';
 import isTestFile from '@/utils/is-test-file';
 import { getEntrypointsRouter } from '@/utils/get-entrypoints';
+import resolveImportSync from '@/utils/resolve-import-sync';
 
 const CONTEXT_PROVIDER = 'context-provider';
 
@@ -29,7 +30,7 @@ export default async function getWebComponentsList(
         Object.entries<string>(
           await import(integrationsPath).then((m) => m.default ?? {}),
         ).map(async ([key, value]) => {
-          const libPath = import.meta.resolveSync(value, integrationsPath);
+          const libPath = resolveImportSync(value, integrationsPath);
           const hasDefaultExport = (await Bun.file(libPath).text()).includes(
             'export default',
           );
