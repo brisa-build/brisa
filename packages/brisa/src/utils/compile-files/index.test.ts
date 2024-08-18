@@ -163,10 +163,10 @@ describe('utils', () => {
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
         minifyText(`
           export interface IntrinsicCustomElements {
-            'web-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/web/component.tsx").default>;
-            'with-context': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/with-context.tsx").default>;
-            'native-some-example': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/web-components/_native/some-example.tsx").default>;
-            'foo-component': JSX.WebComponentAttributes<typeof import("${SRC_DIR}/lib/foo.tsx").default>;
+            'web-component': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'web-components', 'web', 'component.tsx')}").default>;
+            'with-context': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'web-components', 'with-context.tsx')}").default>;
+            'native-some-example': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'web-components', '_native', 'some-example.tsx')}").default>;
+            'foo-component': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'lib', 'foo.tsx')}").default>;
           }
             
           export type PageRoute = "/" | "/user/abc-123" | "/page-with-web-component" | "/somepage-with-context" | "/somepage";`),
