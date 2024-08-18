@@ -5,7 +5,7 @@ if(typeof window !== 'undefined') {
 </script>
 
 <style>
-.code-section:nth-child(even) {
+.code-section:nth-child(odd) {
     h2 {
       background-image: linear-gradient(120deg, #2cebcf 30%, #2cc5e2);
     }
@@ -19,7 +19,7 @@ if(typeof window !== 'undefined') {
     }
 }
 
-.code-section:nth-child(odd)  {
+.code-section:nth-child(even)  {
     h2 {
       background-image: linear-gradient(to right, rgb(69 177 228), rgb(96 108 226));
     }
@@ -50,11 +50,24 @@ if(typeof window !== 'undefined') {
     margin-bottom: 30px;
   }
 
-  .code {
+  .code:not(.start) {
     margin-top: 70px;
   }
 
-  .code .language-tsx, .demo{
+  .start {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+
+    a.nav {
+      padding: 20px;
+      margin: 0;
+      box-shadow: 1px 1px 5px 0 var(--shadow-color);
+    }
+  }
+
+  .code .language-tsx, .code .language-sh, .demo{
     box-shadow: 1px 1px 5px 0 var(--shadow-color);
   }
 
@@ -88,6 +101,7 @@ a.nav {
   color: black !important;
   opacity: 0.8;
   text-decoration: none;
+  text-wrap: nowrap;
 }
 
 a.nav:hover {
@@ -112,8 +126,13 @@ custom-counter {
   .info {
     order: -1;
   }
+
+  .start {
+    flex-direction: column;
+  }
 }
 </style>
+
 
 <div class="code-section">
 
