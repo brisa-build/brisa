@@ -18,16 +18,6 @@ hero:
     - theme: alt
       text: View on Github
       link: https://github.com/brisa-build/brisa
-
-features:
-  - title: 🚀 Fast & everything you need
-    details: JSX, TS, server/web components, server actions, optimistic updates, SSR, streaming, suspense, signals, websockets, middleware, layouts...
-  - title: 🌍 i18n support
-    details: text translation and routing carrying only the translations you consume.
-  - title: 📦 Tiny
-    details: 0B by default, 2kB when you use server actions (RPC size), and 3kb when you need web components.
-  - title: 📲 Change the output
-    details: You can change your web from server to static, to desktop, android or ios app with just one configuration command.
 ---
 
 <script setup>
