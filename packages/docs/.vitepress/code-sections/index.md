@@ -98,6 +98,12 @@ custom-counter {
   font-weight: bold;
 }
 
+.bytes {
+  font-size: 0.8em;
+  font-weight: bold;
+  text-align: right;
+}
+
 @media (max-width: 768px) {
   .code-section {
     flex-direction: column;
@@ -126,11 +132,11 @@ Simple to write; fast to run.
 ```tsx
 // src/pages/index.tsx
 export default function HomePage() {
-  return (
-    <p>Server-rendered Brisa page</p>
-  );
+  return <p>Server-rendered Brisa page</p>;
 }
 ```
+
+<p class="bytes">0 bytes</p>
 
 </div>
 
@@ -143,9 +149,7 @@ export default function HomePage() {
 ```tsx
 // src/pages/index.tsx
 export default function HomePage() {
-  return (
-    <custom-counter start={5} />
-  );
+  return <custom-counter start={5} />;
 }
 ```
 
@@ -164,11 +168,14 @@ function CustomCounter(props, { state }) {
         Decrement
       </button>
     </>
-  )
+  );
 }
 
 export default CustomCounter;
 ```
+
+<p class="bytes">+3 KB</p>
+
 
 </div>
 
@@ -194,15 +201,45 @@ Learn more about Web Components
 
 <div class="info">
 
-## 🌐 Full i18n support
+## 📲 Browser-events on Server
 
-Brisa has a built-in internationalization (i18n) support that allows you to translate your text and routing, carrying only the translations you consume.
+Brisa mixes ideas from React's "Server Actions" and HTMX concepts. With Brisa, you can handle all browser events on the server, such as forms, click events, etc. In addition, we offer some extra HTML attributes to manage debounces, optimistic updates, etc.
 
-<a class="nav" href="/building-your-application/routing/internationalization">
-Learn more about i18n
+The idea is that if you want you can create a SPA without Web Components, only with the weight of the Brisa RPC to make the connection with the server.
+
+<a class="nav" href="/building-your-application/data-management/server-actions">
+Learn more about Server Actions
 </a>
 
 </div>
+
+<div class="code">
+
+```tsx
+// src/pages/index.tsx
+export default function HomePage() {
+  function handleInput(event) {
+    // This console.log will run on the server
+    console.log(event.target.value);
+  }
+
+  return (
+    <input 
+      type="text" 
+      onInput={handleInput} 
+      debounceInput={400} 
+    />
+  );
+}
+```
+
+<p class="bytes">+2 KB <small>(RPC code)</small></p>
+
+</div>
+
+</div>
+
+<div class="code-section">
 
 <div class="code">
 
@@ -217,11 +254,26 @@ function I18nExample({}, { i18n: { t, lang } }) {
   return (
     <p>
       {/* Hello, Brisa! */}
-      {t('hello-key', { name: 'Brisa' })}
-    </p> 
+      {t("hello-key", { name: "Brisa" })}
+    </p>
   );
 }
 ```
+
+<p class="bytes">+0 B <small>(Server Components)</small><br /> +800 B <small>(Web Components)</small></p>
+
+
+</div>
+
+<div class="info">
+
+## 🌐 Full i18n support
+
+Brisa has a built-in internationalization (i18n) support that allows you to translate your text and routing, carrying only the translations you consume.
+
+<a class="nav" href="/building-your-application/routing/internationalization">
+Learn more about i18n
+</a>
 
 </div>
 
