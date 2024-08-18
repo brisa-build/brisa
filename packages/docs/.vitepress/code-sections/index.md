@@ -1,5 +1,7 @@
 <script>
-import './custom-counter.js';
+if(typeof window !== 'undefined') {
+  import('./custom-counter.js');
+}
 </script>
 
 <style>
