@@ -15,6 +15,7 @@
   --home-bg: #a2d5cf;
   --vp-code-block-bg: var(--vp-sidebar-bg-color);
   --banner-bg: #ebfffc;
+  --shadow-color: hsla(0, 0%, 40%, .5);
 }
 
 .VPContent.is-home {
@@ -84,6 +85,7 @@
   --vp-sidebar-bg-color: #000019;
   --vp-c-bg-alt: #0a0c0f;
   --banner-bg: #052863;
+  --shadow-color: #052863;
 }
 
 .dark .main img {
