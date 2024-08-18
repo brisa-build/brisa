@@ -33,6 +33,8 @@ describe('utils', () => {
           '[providerId]',
           'delete.tsx',
         ),
+        '/blog': path.join(dir, 'blog', 'index.js'),
+        '/blog/[slug]': path.join(dir, 'blog', '[slug].js'),
         '/admin/[businessId]/providers/[providerId]/edit': path.join(
           dir,
           'admin',
@@ -179,6 +181,8 @@ describe('utils', () => {
           '[baz]',
           '[quux].jsx',
         ),
+        '/blog': path.join(dir, 'blog', 'index.js'),
+        '/blog/[slug]': path.join(dir, 'blog', '[slug].js'),
       });
     });
 
@@ -269,6 +273,8 @@ describe('utils', () => {
           '[quux]',
           'index.js',
         ),
+        '/blog': path.join(dir, 'blog', 'index.js'),
+        '/blog/[slug]': path.join(dir, 'blog', '[slug].js'),
       });
     });
 
@@ -310,6 +316,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete',
       '/admin/1/providers/2/edit',
       '/admin/1/providers/create',
+      '/blog',
+      '/blog/abc-123',
 
       // With http://localhost:3000:
       'http://localhost:3000',
@@ -328,6 +336,8 @@ describe('utils', () => {
       'http://localhost:3000/admin/1/providers/2/delete',
       'http://localhost:3000/admin/1/providers/2/edit',
       'http://localhost:3000/admin/1/providers/create',
+      'http://localhost:3000/blog',
+      'http://localhost:3000/blog/abc-123',
 
       // With trailing slash:
       '/user/john/',
@@ -345,6 +355,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete/',
       '/admin/1/providers/2/edit/',
       '/admin/1/providers/create/',
+      '/blog/',
+      '/blog/abc-123/',
 
       // With query:
       '/?test=1',
@@ -363,6 +375,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete?test=1',
       '/admin/1/providers/2/edit?test=1',
       '/admin/1/providers/create?test=1',
+      '/blog?test=1',
+      '/blog/abc-123?test=1',
 
       // With query with slashes:
       '/?test=1/2/3',
@@ -381,6 +395,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete?test=1/2/3',
       '/admin/1/providers/2/edit?test=1/2/3',
       '/admin/1/providers/create?test=1/2/3',
+      '/blog?test=1/2/3',
+      '/blog/abc-123?test=1/2/3',
 
       // With query and trailing slash:
       '/user/john/?test=1',
@@ -398,6 +414,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete/?test=1',
       '/admin/1/providers/2/edit/?test=1',
       '/admin/1/providers/create/?test=1',
+      '/blog/?test=1',
+      '/blog/abc-123/?test=1',
 
       // With query and hash:
       '/?test=1#hash',
@@ -416,6 +434,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete?test=1#hash',
       '/admin/1/providers/2/edit?test=1#hash',
       '/admin/1/providers/create?test=1#hash',
+      '/blog?test=1#hash',
+      '/blog/abc-123?test=1#hash',
 
       // With query, hash and trailing slash:
       '/user/john/?test=1#hash',
@@ -432,6 +452,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete/?test=1#hash',
       '/admin/1/providers/2/edit/?test=1#hash',
       '/admin/1/providers/create/?test=1#hash',
+      '/blog/?test=1#hash',
+      '/blog/abc-123/?test=1#hash',
 
       // With double slash:
       '//',
@@ -454,6 +476,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete ',
       '/admin/1/providers/2/edit ',
       '/admin/1/providers/create ',
+      '/blog ',
+      '/blog/abc-123 ',
 
       // With special characters:
       '/user/john%20doe',
@@ -465,6 +489,7 @@ describe('utils', () => {
       '/catchall2/a%20b/c',
       '/nested/john/foo/bar/baz/a%20b',
       '/nested2/john/foo/bar/baz/a%20b',
+      '/blog/abc-123%20',
 
       // With special characters in the query:
       '/?test=1%202%203',
@@ -483,6 +508,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete?test=1%202%203',
       '/admin/1/providers/2/edit?test=1%202%203',
       '/admin/1/providers/create?test=1%202%203',
+      '/blog?test=1%202%203',
+      '/blog/abc-123?test=1%202%203',
 
       // With special characters in the hash:
       '/?test=1#hash%20this',
@@ -501,6 +528,8 @@ describe('utils', () => {
       '/admin/1/providers/2/delete?test=1#hash%20this',
       '/admin/1/providers/2/edit?test=1#hash%20this',
       '/admin/1/providers/create?test=1#hash%20this',
+      '/blog?test=1#hash%20this',
+      '/blog/abc-123?test=1#hash%20this',
 
       // With special characters in path, the query and hash:
       '/user/john%20doe?test=1%202%203#hash%20this',
@@ -512,6 +541,14 @@ describe('utils', () => {
       '/catchall2/a%20b/c?test=1%202%203#hash%20this',
       '/nested/john/foo/bar/baz/a%20b?test=1%202%203#hash%20this',
       '/nested2/john/foo/bar/baz/a%20b?test=1%202%203#hash%20this',
+      '/admin?test=1%202%203#hash%20this',
+      '/admin/1?test=1%202%203#hash%20this',
+      '/admin/1/providers?test=1%202%203#hash%20this',
+      '/admin/1/providers/2/delete?test=1%202%203#hash%20this',
+      '/admin/1/providers/2/edit?test=1%202%203#hash%20this',
+      '/admin/1/providers/create?test=1%202%203#hash%20this',
+      '/blog?test=1%202%203#hash%20this',
+      '/blog/abc-123%20?test=1%202%203#hash%20this',
     ];
 
     const SHOULD_RETURN_NULL = ['/admin/1/b/c/d/e', '/user/john/a/b/c'];
@@ -696,8 +733,12 @@ describe('utils', () => {
             value.includes('/') && value !== test ? value.split('/') : value;
 
           if (Array.isArray(val) && val.length > 1) {
-            const sameItems = val.every((v) => v === val[0]);
-            if (sameItems) val = val[0];
+            const sameItems = val.every((v) => v === val[0].trim());
+            if (sameItems) val = val[0].trim();
+          }
+
+          if (typeof val === 'string') {
+            val = val.trim();
           }
 
           return [key, val];
