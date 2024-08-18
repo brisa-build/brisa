@@ -1,5 +1,6 @@
 import type { ESTree } from 'meriyah';
 import { logError } from '@/utils/log/log-build';
+import resolveImportSync from '@/utils/resolve-import-sync';
 
 /**
  * It is necessary when we create entrypoints on the fly during compilation,
@@ -14,8 +15,7 @@ export default function replaceAstImportsToAbsolute(
     try {
       // "import something from '../some/path'" => "import something from '/absolute/some/path'"
       if (value?.type === 'ImportDeclaration') {
-        // TODO: Migrate to no deprecated method
-        value.source.value = import.meta.resolveSync(value.source.value, path);
+        value.source.value = resolveImportSync(value.source.value, path);
       }
 
       // "require('../some/path')" => "require('/absolute/some/path')"
@@ -26,7 +26,7 @@ export default function replaceAstImportsToAbsolute(
         value.arguments = [
           {
             type: 'Literal',
-            value: import.meta.resolveSync(value.arguments[0].value, path),
+            value: resolveImportSync(value.arguments[0].value, path),
           },
         ];
       }
@@ -36,7 +36,7 @@ export default function replaceAstImportsToAbsolute(
         value?.type === 'ImportExpression' &&
         value?.source?.type === 'Literal'
       ) {
-        value.source.value = import.meta.resolveSync(value.source.value, path);
+        value.source.value = resolveImportSync(value.source.value, path);
       }
     } catch (error) {
       logError({

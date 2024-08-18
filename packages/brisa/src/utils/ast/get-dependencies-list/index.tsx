@@ -1,3 +1,4 @@
+import resolveImportSync from '@/utils/resolve-import-sync';
 import type { ESTree } from 'meriyah';
 import { fileURLToPath } from 'node:url';
 
@@ -30,7 +31,7 @@ export default function getDependenciesList(
 function resolve(path: string, base: string) {
   if (AVOIDED_DEPENDENCIES.has(path)) return;
   try {
-    return import.meta.resolveSync(path, base);
+    return resolveImportSync(path, base);
   } catch {
     // It is not exactly the same, it is only the same if it has
     // the format, otherwise it does not put the format, but
