@@ -632,6 +632,20 @@ describe('Brisa CLI', () => {
     ]);
   });
 
+  it('should displays an error log using -c and -w flags together', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-c', '-w'];
+
+    await cli.main(options);
+
+    expect(mockLog.mock.calls).toEqual([
+      [
+        redLog(
+          'Ops!: You can only use --component (-c) or --web-component (-w), not both.',
+        ),
+      ],
+    ]);
+  });
+
   it('should build a desktop app with "brisa build" command and output=desktop', async () => {
     process.argv = ['bun', 'brisa', 'build'];
 
