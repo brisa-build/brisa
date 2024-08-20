@@ -163,13 +163,13 @@ describe('utils', () => {
       expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
         minifyText(`
           export interface IntrinsicCustomElements {
+            'native-some-example': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'web-components', '_native', 'some-example.tsx')}").default>;
             'web-component': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'web-components', 'web', 'component.tsx')}").default>;
             'with-context': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'web-components', 'with-context.tsx')}").default>;
-            'native-some-example': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'web-components', '_native', 'some-example.tsx')}").default>;
             'foo-component': JSX.WebComponentAttributes<typeof import("${path.join(SRC_DIR, 'lib', 'foo.tsx')}").default>;
           }
             
-          export type PageRoute = "/" | "/user/abc-123" | "/page-with-web-component" | "/somepage-with-context" | "/somepage";`),
+          export type PageRoute = "/" | "/page-with-web-component" | "/somepage" | "/somepage-with-context" | "/user/abc-123";`),
       );
       expect(mockConsoleLog).toHaveBeenCalled();
       expect(files).toHaveLength(10);
@@ -275,12 +275,12 @@ describe('utils', () => {
     ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
     ${info}λ /pages/index                   | 594 B     | ${greenLog('3 kB')}
-    ${info}λ /pages/user/[username]         | 210 B     | ${greenLog('0 B')}
     ${info}λ /pages/_404                    | 694 B     | ${greenLog('5 kB')}
     ${info}λ /pages/_500                    | 700 B     | ${greenLog('5 kB')}
     ${info}λ /pages/page-with-web-component | 633 B     | ${greenLog('5 kB')}
-    ${info}λ /pages/somepage-with-context   | 836 B     | ${greenLog('0 B')}  
     ${info}λ /pages/somepage                | 908 B     | ${greenLog('0 B')}
+    ${info}λ /pages/somepage-with-context   | 836 B     | ${greenLog('0 B')}  
+    ${info}λ /pages/user/[username]         | 210 B     | ${greenLog('0 B')}
     ${info}ƒ /middleware                    | 828 B     |
     ${info}λ /api/example                   | 283 B     |
     ${info}Δ /layout                        | 377 B     |
