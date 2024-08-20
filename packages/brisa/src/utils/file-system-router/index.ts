@@ -14,6 +14,7 @@ const WINDOWS_PATH_REGEX = /\\/g;
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
   const routes = resolveRoutes(options);
+  const routesArr = Object.entries(routes).sort(naturalOrderCompare);
 
   function match(routeToMatch: string): MatchedBrisaRoute | null {
     const url = new URL(
@@ -25,7 +26,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
       url.pathname.replace(TRAILING_SLASH_REGEX, '') || '/',
     ).trim();
 
-    for (const [name, filePath] of Object.entries(routes)) {
+    for (const [name, filePath] of routesArr) {
       const kind = getRouteKind(name);
       const src = filePath.replace(options.dir + path.sep, '');
 
@@ -115,12 +116,10 @@ function resolveRoutes({
   fileExtensions = DEFAULT_EXTENSIONS,
 }: FileSystemRouterOptions) {
   const routes: Record<string, string> = {};
-  const files = fs
-    .readdirSync(dir, {
-      withFileTypes: true,
-      recursive: true,
-    })
-    .sort(naturalOrderCompare);
+  const files = fs.readdirSync(dir, {
+    withFileTypes: true,
+    recursive: true,
+  });
 
   for (const file of files) {
     if (file.isDirectory() || isTestFile(file.name, true)) continue;
@@ -145,11 +144,9 @@ function resolveRoutes({
 }
 
 // Be sure in all OS the order is the same
-function naturalOrderCompare(a: fs.Dirent, b: fs.Dirent) {
-  if (a.isDirectory() && !b.isDirectory()) return 1;
-
-  const nameA = a.name.toLowerCase();
-  const nameB = b.name.toLowerCase();
+function naturalOrderCompare([a]: [string, string], [b]: [string, string]) {
+  const nameA = a.toLowerCase();
+  const nameB = b.toLowerCase();
 
   if (nameA.startsWith('index') && !nameB.startsWith('index')) return -1;
   if (!nameA.startsWith('index') && nameB.startsWith('index')) return 1;
