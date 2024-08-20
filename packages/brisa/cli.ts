@@ -158,7 +158,8 @@ async function main({
 
     // Command: brisa build
     else if (process.argv[2] === 'build') {
-      let wcFile = '';
+      let file = '';
+      let fileType = 'SC';
       let env = 'PROD';
 
       for (let i = 3; i < process.argv.length; i++) {
@@ -168,18 +169,28 @@ async function main({
             prodOptions.env.NODE_ENV = 'development';
             env = 'DEV';
             break;
+          case '--component':
+          case '-c':
           case '--web-component':
           case '-w':
-            wcFile = process.argv[i + 1];
-            if (!wcFile || !fs.existsSync(wcFile)) {
+            fileType = process.argv[i].includes('w') ? 'WC' : 'SC';
+            file = process.argv[i + 1];
+
+            if (!file || !fs.existsSync(file)) {
+              const isWebComponent = fileType === 'WC';
+              const commandMsg = isWebComponent
+                ? '--web-component (-w)'
+                : '--component (-c)';
+              const exampleFileName = isWebComponent
+                ? '-w some/web-component.tsx'
+                : '-c some/server-component.tsx';
+
               console.log(
                 redLog(
-                  'Ops!: using --web-component (-w) flag you need to specify a file.',
+                  `Ops!: using ${commandMsg} flag you need to specify a file.`,
                 ),
               );
-              console.log(
-                redLog('Example: brisa build -w some/web-component.tsx'),
-              );
+              console.log(redLog(`Example: brisa build ${exampleFileName}`));
               return process.exit(0);
             }
             break;
@@ -194,6 +205,7 @@ async function main({
               " -s, --skip-tauri    Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
               ' -d, --dev           Build for development (useful for custom server)',
               ' -w, --web-component Build standalone web component to create a library',
+              ' -c, --component     Build standalone server component to create a library',
             );
             console.log(' --help             Show help');
             return process.exit(0);
@@ -202,7 +214,10 @@ async function main({
 
       const commands = [buildFilepath, env];
 
-      if (wcFile) commands.push(wcFile);
+      if (file) {
+        commands.push(fileType);
+        commands.push(file);
+      }
 
       if (IS_TAURI_APP) {
         const tauriCommand = ['tauri', 'build'];
