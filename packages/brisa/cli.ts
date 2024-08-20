@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-const { yellowLog } = require('@/utils/log/log-color');
+const { yellowLog, redLog } = require('@/utils/log/log-color');
 const cp = require('child_process');
 const path = require('node:path');
 const fs = require('node:fs');
@@ -158,6 +158,7 @@ async function main({
 
     // Command: brisa build
     else if (process.argv[2] === 'build') {
+      let wcFile = '';
       let env = 'PROD';
 
       for (let i = 3; i < process.argv.length; i++) {
@@ -167,6 +168,21 @@ async function main({
             prodOptions.env.NODE_ENV = 'development';
             env = 'DEV';
             break;
+          case '--web-component':
+          case '-w':
+            wcFile = process.argv[i + 1];
+            if (!wcFile || !fs.existsSync(wcFile)) {
+              console.log(
+                redLog(
+                  'Ops!: using --web-component (-w) flag you need to specify a file.',
+                ),
+              );
+              console.log(
+                redLog('Example: brisa build -w some/web-component.tsx'),
+              );
+              return process.exit(0);
+            }
+            break;
           case '--skip-tauri':
           case '-s':
             IS_TAURI_APP = false;
@@ -175,13 +191,18 @@ async function main({
             console.log('Usage: brisa build [options]');
             console.log('Options:');
             console.log(
-              " -s, --skip-tauri Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
-              ' -d, --dev        Build for development (useful for custom server)',
+              " -s, --skip-tauri    Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
+              ' -d, --dev           Build for development (useful for custom server)',
+              ' -w, --web-component Build standalone web component to create a library',
             );
             console.log(' --help             Show help');
             return process.exit(0);
         }
       }
+
+      const commands = [buildFilepath, env];
+
+      if (wcFile) commands.push(wcFile);
 
       if (IS_TAURI_APP) {
         const tauriCommand = ['tauri', 'build'];
@@ -191,10 +212,10 @@ async function main({
         }
 
         await initTauri(prodOptions);
-        cp.spawnSync(BUN_EXEC, [buildFilepath, env], prodOptions);
+        cp.spawnSync(BUN_EXEC, commands, prodOptions);
         cp.spawnSync(BUNX_EXEC, tauriCommand, prodOptions);
       } else {
-        cp.spawnSync(BUN_EXEC, [buildFilepath, env], prodOptions);
+        cp.spawnSync(BUN_EXEC, commands, prodOptions);
       }
     }
 
