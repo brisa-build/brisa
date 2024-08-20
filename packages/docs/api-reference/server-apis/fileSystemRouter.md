@@ -87,7 +87,11 @@ The `MatchedBrisaRoute` object has the following properties:
 
 ## `routes` property
 
-The `routes` property is a record with the routes and file paths.
+The `routes` property is the entries of routes and file paths.
+
+> [!NOTE]
+>
+> `routes` entries are in alphabetical order
 
 ```tsx
 import { fileSystemRouter } from 'brisa/server';
@@ -97,13 +101,13 @@ const router = fileSystemRouter({
 });
 
 console.log(router.routes);
-// {
-//   '/': 'pages/index.tsx',
-//   '/settings': 'pages/settings.tsx',
-//   '/blog/[slug]': 'pages/blog/[slug].tsx',
-//   '/blog': 'pages/blog/index.tsx',
-//   '/[[...catchall]]': 'pages/[[...catchall]].tsx',
-// }
+// [
+//   ['/', 'pages/index.tsx'],
+//   ['/[[...catchall]]', 'pages/[[...catchall]].tsx'],
+//   ['/blog', 'pages/blog/index.tsx'],
+//   ['/blog/[slug]', 'pages/blog/[slug].tsx'],
+//   ['/settings', 'pages/settings.tsx'],
+// ]
 ```
 
 
