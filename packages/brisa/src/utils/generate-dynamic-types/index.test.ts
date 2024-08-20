@@ -15,11 +15,11 @@ describe('utils', () => {
       };
 
       const pagesRoutes = {
-        routes: {
-          '/': {},
-          '/about': {},
-          '/blog/[slug]': {},
-        },
+        routes: [
+          ['/', {}],
+          ['/about', {}],
+          ['/blog/[slug]', {}],
+        ],
       } as any;
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
@@ -41,7 +41,7 @@ describe('utils', () => {
       };
 
       const pagesRoutes = {
-        routes: {},
+        routes: [],
       } as any;
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
@@ -62,14 +62,14 @@ describe('utils', () => {
       };
 
       const pagesRoutes = {
-        routes: {
-          '/': {},
-          '/about': {},
-          '/blog/[slug]': {},
-          '/blog/[slug]/[id]': {},
-          '/blog/[...slug]': {},
-          '/optional/[[...slug]]': {},
-        },
+        routes: [
+          ['/', {}],
+          ['/about', {}],
+          ['/blog/[slug]', {}],
+          ['/blog/[slug]/[id]', {}],
+          ['/blog/[...slug]', {}],
+          ['/optional/[[...slug]]', {}],
+        ],
       } as any;
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
@@ -91,16 +91,16 @@ describe('utils', () => {
       };
 
       const pagesRoutes = {
-        routes: {
-          '/': {},
-          '/about': {},
-          '/blog/[slug]': {},
-          '/blog/[slug]/[id]': {},
-          '/blog/[...slug]': {},
-          '/optional/[[...slug]]': {},
-          '/_404': {},
-          '/_500': {},
-        },
+        routes: [
+          ['/', {}],
+          ['/about', {}],
+          ['/blog/[slug]', {}],
+          ['/blog/[slug]/[id]', {}],
+          ['/blog/[...slug]', {}],
+          ['/optional/[[...slug]]', {}],
+          ['/_404', {}],
+          ['/_500', {}],
+        ],
       } as any;
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
@@ -129,14 +129,14 @@ describe('utils', () => {
       };
 
       const pagesRoutes = {
-        routes: {
-          '/': {},
-          '/about/': {},
-          '/blog/[slug]': {},
-          '/blog/[slug]/[id]': {},
-          '/blog/[...slug]': {},
-          '/optional/[[...slug]]': {},
-        },
+        routes: [
+          ['/', {}],
+          ['/about/', {}],
+          ['/blog/[slug]', {}],
+          ['/blog/[slug]/[id]', {}],
+          ['/blog/[...slug]', {}],
+          ['/optional/[[...slug]]', {}],
+        ],
       } as any;
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });

@@ -45,7 +45,8 @@ export default async function generateStaticExport(): Promise<
   }
 
   const router = getEntrypointsRouter(path.join(BUILD_DIR, 'pages'));
-  const routes = await formatRoutes(Object.keys(router.routes), router);
+  const routeKeys = router.routes.map((a) => a[0]);
+  const routes = await formatRoutes(routeKeys, router);
   const prerenderedRoutes = new Map<string, string[]>();
 
   await Promise.all(

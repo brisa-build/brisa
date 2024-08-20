@@ -35,7 +35,7 @@ export default async function compileFiles() {
   const pagesDir = join(SRC_DIR, 'pages');
   const apiDir = join(SRC_DIR, 'api');
   const pagesRoutes = getEntrypointsRouter(pagesDir);
-  const pagesEntrypoints = Object.values(pagesRoutes.routes);
+  const pagesEntrypoints = pagesRoutes.routes.map((a) => a[1]);
   const apiEntrypoints = getEntrypoints(apiDir);
   const middlewarePath = getImportableFilepath('middleware', SRC_DIR);
   const websocketPath = getImportableFilepath('websocket', SRC_DIR);
