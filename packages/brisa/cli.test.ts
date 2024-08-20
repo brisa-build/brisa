@@ -492,6 +492,21 @@ describe('Brisa CLI', () => {
   });
 
   it('should displays an error log using -w flag without the file', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-w'];
+
+    await cli.main(options);
+
+    expect(mockLog.mock.calls).toEqual([
+      [
+        redLog(
+          'Ops!: using --web-component (-w) flag you need to specify a file.',
+        ),
+      ],
+      [redLog('Example: brisa build -w some/web-component.tsx')],
+    ]);
+  });
+
+  it('should displays an error log using -w flag without the file + another flag', async () => {
     process.argv = ['bun', 'brisa', 'build', '-w', '-d'];
     mockExistsSync.mockImplementation(() => false);
 
@@ -506,7 +521,6 @@ describe('Brisa CLI', () => {
       [redLog('Example: brisa build -w some/web-component.tsx')],
     ]);
   });
-
   it('should build a standalone web component in DEV using -w flag + -d in different order', async () => {
     process.argv = ['bun', 'brisa', 'build', '-w', '/some/file.tsx', '-d'];
 
