@@ -432,6 +432,7 @@ describe('Brisa CLI', () => {
         " -s, --skip-tauri    Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
         ' -d, --dev           Build for development (useful for custom server)',
         ' -w, --web-component Build standalone web component to create a library',
+        ' -c, --component     Build standalone server component to create a library',
       ],
       [' --help             Show help'],
     ]);
@@ -453,6 +454,7 @@ describe('Brisa CLI', () => {
       [
         path.join(import.meta.dir, 'out', 'cli', 'build.js'),
         'PROD',
+        'WC',
         '/some/file.tsx',
       ],
       prodOptions,
@@ -469,6 +471,7 @@ describe('Brisa CLI', () => {
       [
         path.join(import.meta.dir, 'out', 'cli', 'build.js'),
         'PROD',
+        'WC',
         '/some/file.tsx',
       ],
       prodOptions,
@@ -485,6 +488,7 @@ describe('Brisa CLI', () => {
       [
         path.join(import.meta.dir, 'out', 'cli', 'build.js'),
         'DEV',
+        'WC',
         '/some/file.tsx',
       ],
       devOptions,
@@ -531,6 +535,97 @@ describe('Brisa CLI', () => {
       [
         path.join(import.meta.dir, 'out', 'cli', 'build.js'),
         'DEV',
+        'WC',
+        '/some/file.tsx',
+      ],
+      devOptions,
+    ]);
+  });
+
+  it('should build a standalone server component using --component flag', async () => {
+    process.argv = ['bun', 'brisa', 'build', '--component', '/some/file.tsx'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        'PROD',
+        'SC',
+        '/some/file.tsx',
+      ],
+      prodOptions,
+    ]);
+  });
+
+  it('should build a standalone server component using -c flag', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-c', '/some/file.tsx'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        'PROD',
+        'SC',
+        '/some/file.tsx',
+      ],
+      prodOptions,
+    ]);
+  });
+
+  it('should build a standalone server component in DEV using -c flag + -d', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-d', '-c', '/some/file.tsx'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        'DEV',
+        'SC',
+        '/some/file.tsx',
+      ],
+      devOptions,
+    ]);
+  });
+
+  it('should displays an error log using -c flag without the file', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-c'];
+
+    await cli.main(options);
+
+    expect(mockLog.mock.calls).toEqual([
+      [redLog('Ops!: using --component (-c) flag you need to specify a file.')],
+      [redLog('Example: brisa build -c some/server-component.tsx')],
+    ]);
+  });
+
+  it('should displays an error log using -c flag without the file + another flag', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-c', '-d'];
+    mockExistsSync.mockImplementation(() => false);
+
+    await cli.main(options);
+
+    expect(mockLog.mock.calls).toEqual([
+      [redLog('Ops!: using --component (-c) flag you need to specify a file.')],
+      [redLog('Example: brisa build -c some/server-component.tsx')],
+    ]);
+  });
+  it('should build a standalone web component in DEV using -c flag + -d in different order', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-c', '/some/file.tsx', '-d'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        'DEV',
+        'SC',
         '/some/file.tsx',
       ],
       devOptions,
