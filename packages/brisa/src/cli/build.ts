@@ -26,9 +26,19 @@ export default async function build() {
   );
 
   const start = Bun.nanoseconds();
+  const standaloneFileType = process.argv[3];
 
   if (fs.existsSync(BUILD_DIR)) {
     fs.rmSync(BUILD_DIR, { recursive: true });
+  }
+
+  if (standaloneFileType) {
+    const standaloneFilePath = path.resolve(ROOT_DIR, process.argv[4]);
+    // TODO
+    console.log('TODO: standalone build', {
+      standaloneFileType,
+      standaloneFilePath,
+    });
   }
 
   // Copy prebuild folder inside build

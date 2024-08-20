@@ -37,9 +37,9 @@
       "import": "./test/index.js",
       "require": "./test/index.js"
     },
-    "./cli.cjs": {
-      "import": "./cli.cjs",
-      "require": "./cli.cjs"
+    "./cli.js": {
+      "import": "./cli.js",
+      "require": "./cli.js"
     }
   },
   "main": "./out/core/index.js",
