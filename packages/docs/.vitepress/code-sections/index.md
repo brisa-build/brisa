@@ -38,6 +38,7 @@ if(typeof window !== 'undefined') {
   position: relative;
   height: 100%;
   gap: 20px;
+  flex-wrap: wrap;
   margin: 50px 0;
   font-size: 18px;
 
@@ -90,6 +91,7 @@ if(typeof window !== 'undefined') {
   background-color: oklch(from var(--home-bg) l c h / 0.1);
   padding: 20px;
   border-radius: 5px;
+  max-width: max-content;
 }
 
 a.nav {
@@ -118,7 +120,7 @@ custom-counter {
   text-align: right;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 922px) {
   .code-section {
     flex-direction: column;
   }
@@ -209,7 +211,7 @@ In Brisa everything by default runs only on the server, except the `src/web-comp
 </div>
 
 <a class="nav" href="/building-your-application/components-details/web-components">
-Learn more about Web Components
+More about Web Components
 </a>
 
 </div>
@@ -227,7 +229,7 @@ Brisa mixes ideas from React's "Server Actions" and HTMX concepts. With Brisa, y
 The idea is that if you want you can create a SPA without Web Components, only with the weight of the Brisa RPC to make the connection with the server.
 
 <a class="nav" href="/building-your-application/data-management/server-actions">
-Learn more about Server Actions
+More about Server Actions
 </a>
 
 </div>
@@ -291,7 +293,7 @@ function I18nExample({}, { i18n: { t, lang } }) {
 Brisa has a built-in internationalization (i18n) support that allows you to translate your text and routing, carrying only the translations you consume.
 
 <a class="nav" href="/building-your-application/routing/internationalization">
-Learn more about i18n
+ More about i18n
 </a>
 
 </div>

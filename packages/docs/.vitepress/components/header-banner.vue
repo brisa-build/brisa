@@ -23,7 +23,7 @@
   left: 0;
   width: 100vw;
   position: fixed;
-  z-index: 1000;
+  z-index: 99;
   background-color: var(--banner-bg);
 }
 
