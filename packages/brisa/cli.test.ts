@@ -12,8 +12,9 @@ import * as cli from './cli.ts';
 import cp from 'node:child_process';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import fs from 'node:fs';
 import process from 'node:process';
-import { yellowLog } from '@/utils/log/log-color';
+import { redLog, yellowLog } from '@/utils/log/log-color';
 
 const options = {
   currentBunVersion: '1.1.1',
@@ -49,6 +50,7 @@ let mockSpawnSync: Mock<typeof cp.spawnSync>;
 let mockExit: Mock<typeof exit>;
 let mockLog: Mock<typeof console.log>;
 let mockCwd: Mock<typeof cwd>;
+let mockExistsSync: Mock<typeof fs.existsSync>;
 let mockRandomBytes: Mock<typeof crypto.randomBytes>;
 
 const BRISA_BUILD_FOLDER = undefined;
@@ -61,6 +63,9 @@ describe('Brisa CLI', () => {
     mockCwd = spyOn(process, 'cwd').mockImplementation(() => FIXTURES);
     mockLog = spyOn(console, 'log').mockImplementation(() => null as any);
     mockExit = spyOn(process, 'exit').mockImplementation(() => null as never);
+    mockExistsSync = spyOn(fs, 'existsSync').mockImplementation(
+      (p) => typeof p === 'string' && !p.includes('tauri'),
+    );
     mockRandomBytes = spyOn(crypto, 'randomBytes').mockImplementation(
       (bytes) => {
         if (bytes === 32)
@@ -110,6 +115,7 @@ describe('Brisa CLI', () => {
     mockExit.mockRestore();
     mockSpawnSync.mockRestore();
     mockCwd.mockRestore();
+    mockExistsSync.mockRestore();
     mockRandomBytes.mockRestore();
     process.argv = originalArgv.slice();
   });
@@ -423,10 +429,97 @@ describe('Brisa CLI', () => {
       ['Usage: brisa build [options]'],
       ['Options:'],
       [
-        " -s, --skip-tauri Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
-        ' -d, --dev        Build for development (useful for custom server)',
+        " -s, --skip-tauri    Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
+        ' -d, --dev           Build for development (useful for custom server)',
+        ' -w, --web-component Build standalone web component to create a library',
       ],
       [' --help             Show help'],
+    ]);
+  });
+
+  it('should build a standalone web component using --web-component flag', async () => {
+    process.argv = [
+      'bun',
+      'brisa',
+      'build',
+      '--web-component',
+      '/some/file.tsx',
+    ];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        'PROD',
+        '/some/file.tsx',
+      ],
+      prodOptions,
+    ]);
+  });
+
+  it('should build a standalone web component using -w flag', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-w', '/some/file.tsx'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        'PROD',
+        '/some/file.tsx',
+      ],
+      prodOptions,
+    ]);
+  });
+
+  it('should build a standalone web component in DEV using -w flag + -d', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-d', '-w', '/some/file.tsx'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        'DEV',
+        '/some/file.tsx',
+      ],
+      devOptions,
+    ]);
+  });
+
+  it('should displays an error log using -w flag without the file', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-w', '-d'];
+    mockExistsSync.mockImplementation(() => false);
+
+    await cli.main(options);
+
+    expect(mockLog.mock.calls).toEqual([
+      [
+        redLog(
+          'Ops!: using --web-component (-w) flag you need to specify a file.',
+        ),
+      ],
+      [redLog('Example: brisa build -w some/web-component.tsx')],
+    ]);
+  });
+
+  it('should build a standalone web component in DEV using -w flag + -d in different order', async () => {
+    process.argv = ['bun', 'brisa', 'build', '-w', '/some/file.tsx', '-d'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        'DEV',
+        '/some/file.tsx',
+      ],
+      devOptions,
     ]);
   });
 
