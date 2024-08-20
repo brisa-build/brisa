@@ -23,10 +23,10 @@ export default function generateDynamicTypes({
   }`;
 
   let routes = '';
-  const keys = Object.keys(pagesRoutes.routes);
+  const keysLength = pagesRoutes.routes.length;
 
-  for (let i = 0; i < keys.length; i++) {
-    const route = keys[i];
+  for (let i = 0; i < keysLength; i++) {
+    const route = pagesRoutes.routes[i][0];
 
     if (ROUTES_TO_IGNORE.has(route)) continue;
 

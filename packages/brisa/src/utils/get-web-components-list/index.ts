@@ -22,7 +22,7 @@ export default async function getWebComponentsList(
 
   const webRouter = getEntrypointsRouter(webDir);
   const existingSelectors = new Set<string>();
-  const entries = Object.entries(webRouter.routes);
+  const entries = webRouter.routes;
 
   if (integrationsPath) {
     entries.push(

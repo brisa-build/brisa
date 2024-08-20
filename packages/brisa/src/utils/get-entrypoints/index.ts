@@ -7,7 +7,7 @@ const fileExtensions = ['.tsx', '.ts', '.js', '.jsx', '.cjs', '.mjs', '.mdx'];
 export default function getEntrypoints(dir: string) {
   if (!fs.existsSync(dir)) return [];
   const router = getEntrypointsRouter(dir);
-  return Object.values(router.routes);
+  return router.routes.map((a) => a[1]);
 }
 
 export function getEntrypointsRouter(dir: string) {

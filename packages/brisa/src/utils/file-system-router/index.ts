@@ -13,8 +13,9 @@ const WINDOWS_PATH_REGEX = /\\/g;
 
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
-  const routes = resolveRoutes(options);
-  const routesArr = Object.entries(routes).sort(naturalOrderCompare);
+  const routes = Object.entries(resolveRoutes(options)).sort(
+    naturalOrderCompare,
+  );
 
   function match(routeToMatch: string): MatchedBrisaRoute | null {
     const url = new URL(
@@ -26,7 +27,7 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
       url.pathname.replace(TRAILING_SLASH_REGEX, '') || '/',
     ).trim();
 
-    for (const [name, filePath] of routesArr) {
+    for (const [name, filePath] of routes) {
       const kind = getRouteKind(name);
       const src = filePath.replace(options.dir + path.sep, '');
 
