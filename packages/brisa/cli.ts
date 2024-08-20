@@ -174,6 +174,16 @@ async function main({
           case '--web-component':
           case '-w':
             fileType = process.argv[i].includes('w') ? 'WC' : 'SC';
+
+            if (file) {
+              console.log(
+                redLog(
+                  'Ops!: You can only use --component (-c) or --web-component (-w), not both.',
+                ),
+              );
+              return process.exit(0);
+            }
+
             file = process.argv[i + 1];
 
             if (!file || !fs.existsSync(file)) {
