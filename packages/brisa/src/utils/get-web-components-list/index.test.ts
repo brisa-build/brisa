@@ -8,7 +8,7 @@ import {
   type Mock,
 } from 'bun:test';
 import path from 'node:path';
-import getWebComponentsList from '.';
+import getWebComponentsList, { getWebComponentListFromFilePaths } from '.';
 import { getConstants } from '@/constants';
 import { boldLog } from '@/utils/log/log-color';
 
@@ -18,14 +18,14 @@ const { LOG_PREFIX } = getConstants();
 let mockConsoleLog: Mock<typeof console.log>;
 
 describe('utils', () => {
-  describe('getWebComponentsList', () => {
-    beforeEach(() => {
-      mockConsoleLog = spyOn(console, 'log');
-    });
-    afterEach(() => {
-      mockConsoleLog.mockClear();
-    });
+  beforeEach(() => {
+    mockConsoleLog = spyOn(console, 'log');
+  });
+  afterEach(() => {
+    mockConsoleLog.mockClear();
+  });
 
+  describe('getWebComponentsList', () => {
     it('should return a list of web components', async () => {
       const result = await getWebComponentsList(fixturesDir);
 
@@ -235,47 +235,158 @@ describe('utils', () => {
         '--------------------------',
       ]);
     });
+  });
 
-    it('should work with different separator', async () => {
-      const separator = '\\';
-      const result = await getWebComponentsList(fixturesDir, null, separator);
-      const modifiedJoin = (...args: string[]) =>
-        path.join(...args).replaceAll('/', separator);
+  describe('getWebComponentListFromFilePaths', () => {
+    it('should return a list of web components from file paths', () => {
+      const filePaths = [
+        path.join(fixturesDir, 'web-components', 'custom-counter.tsx'),
+        path.join(fixturesDir, 'web-components', 'custom-slot.tsx'),
+        path.join(fixturesDir, 'web-components', '_native', 'some-example.tsx'),
+        path.join(fixturesDir, 'web-components', 'web', 'component.tsx'),
+        path.join(fixturesDir, 'web-components', 'with-context.tsx'),
+        path.join(fixturesDir, 'web-components', 'with-link.tsx'),
+      ];
+      const result = getWebComponentListFromFilePaths(filePaths);
 
       expect(result).toEqual({
-        'custom-counter': modifiedJoin(
+        'custom-counter': path.join(
           fixturesDir,
           'web-components',
           'custom-counter.tsx',
         ),
-        'custom-slot': modifiedJoin(
+        'custom-slot': path.join(
           fixturesDir,
           'web-components',
           'custom-slot.tsx',
         ),
-        'native-some-example': modifiedJoin(
+        'native-some-example': path.join(
           fixturesDir,
           'web-components',
           '_native',
           'some-example.tsx',
         ),
-        'web-component': modifiedJoin(
+        'web-component': path.join(
           fixturesDir,
           'web-components',
           'web',
           'component.tsx',
         ),
-        'with-context': modifiedJoin(
+        'with-context': path.join(
           fixturesDir,
           'web-components',
           'with-context.tsx',
         ),
-        'with-link': modifiedJoin(
-          fixturesDir,
-          'web-components',
-          'with-link.tsx',
-        ),
+        'with-link': path.join(fixturesDir, 'web-components', 'with-link.tsx'),
       });
+    });
+    it('should take only the filename when is not inside the web-components folder', () => {
+      const filePaths = [
+        path.join(fixturesDir, 'custom-counter.tsx'),
+        path.join(fixturesDir, 'custom-slot.tsx'),
+        path.join(fixturesDir, '_native', 'some-example.tsx'),
+        path.join(fixturesDir, 'web', 'component.tsx'),
+        path.join(fixturesDir, 'with-context.tsx'),
+        path.join(fixturesDir, 'with-link.tsx'),
+      ];
+      const result = getWebComponentListFromFilePaths(filePaths);
+
+      expect(result).toEqual({
+        'custom-counter': path.join(fixturesDir, 'custom-counter.tsx'),
+        'custom-slot': path.join(fixturesDir, 'custom-slot.tsx'),
+        'some-example': path.join(fixturesDir, '_native', 'some-example.tsx'),
+        component: path.join(fixturesDir, 'web', 'component.tsx'),
+        'with-context': path.join(fixturesDir, 'with-context.tsx'),
+        'with-link': path.join(fixturesDir, 'with-link.tsx'),
+      });
+    });
+
+    it('should alert if there is a web component with the same name, taking one the first one', () => {
+      const filePaths = [
+        path.join(fixturesDir, 'web-components', 'web-component.tsx'),
+        path.join(fixturesDir, 'web-components', 'web-component.tsx'),
+      ];
+      getWebComponentListFromFilePaths(filePaths);
+
+      expect(mockConsoleLog.mock.calls[0]).toEqual([
+        LOG_PREFIX.ERROR,
+        'Ops! Error:',
+      ]);
+      expect(mockConsoleLog.mock.calls[1]).toEqual([
+        LOG_PREFIX.ERROR,
+        '--------------------------',
+      ]);
+      expect(mockConsoleLog.mock.calls[2]).toEqual([
+        LOG_PREFIX.ERROR,
+        boldLog(
+          'You have more than one web-component with the same name: "web-component"',
+        ),
+      ]);
+      expect(mockConsoleLog.mock.calls[3]).toEqual([
+        LOG_PREFIX.ERROR,
+        'Please, rename one of them to avoid conflicts.',
+      ]);
+      expect(mockConsoleLog.mock.calls[4]).toEqual([
+        LOG_PREFIX.ERROR,
+        '--------------------------',
+      ]);
+    });
+
+    it('should alert if there is a web component with the same name as a reserved name', () => {
+      const filePaths = [path.join(reservedNamesDir, 'context-provider.tsx')];
+      getWebComponentListFromFilePaths(filePaths);
+
+      expect(mockConsoleLog.mock.calls[0]).toEqual([
+        LOG_PREFIX.ERROR,
+        'Ops! Error:',
+      ]);
+      expect(mockConsoleLog.mock.calls[1]).toEqual([
+        LOG_PREFIX.ERROR,
+        '--------------------------',
+      ]);
+      expect(mockConsoleLog.mock.calls[2]).toEqual([
+        LOG_PREFIX.ERROR,
+        boldLog(`You can't use the reserved name "context-provider"`),
+      ]);
+      expect(mockConsoleLog.mock.calls[3]).toEqual([
+        LOG_PREFIX.ERROR,
+        'Please, rename it to avoid conflicts.',
+      ]);
+      expect(mockConsoleLog.mock.calls[4]).toEqual([
+        LOG_PREFIX.ERROR,
+        '--------------------------',
+      ]);
+    });
+
+    it('should alert a web component without the kebab-case', () => {
+      const filePaths = [path.join(fixturesDir, 'web', 'component.tsx')];
+
+      getWebComponentListFromFilePaths(filePaths);
+
+      expect(mockConsoleLog.mock.calls[0]).toEqual([
+        LOG_PREFIX.ERROR,
+        'Ops! Error:',
+      ]);
+
+      expect(mockConsoleLog.mock.calls[1]).toEqual([
+        LOG_PREFIX.ERROR,
+        '--------------------------',
+      ]);
+
+      expect(mockConsoleLog.mock.calls[2]).toEqual([
+        LOG_PREFIX.ERROR,
+        boldLog('You have a web component without kebab-case: "component"'),
+      ]);
+
+      expect(mockConsoleLog.mock.calls[3]).toEqual([
+        LOG_PREFIX.ERROR,
+        'Please, rename it to avoid conflicts with the rest of HTML elements.',
+      ]);
+
+      expect(mockConsoleLog.mock.calls[4]).toEqual([
+        LOG_PREFIX.ERROR,
+        '--------------------------',
+      ]);
     });
   });
 });

@@ -7,7 +7,7 @@ export default async function buildStandalone(
   standaloneWC: string[],
   standaloneSC: string[],
 ) {
-  const { BUILD_DIR, IS_PRODUCTION, LOG_PREFIX } = getConstants();
+  const { BUILD_DIR, LOG_PREFIX } = getConstants();
   const start = Bun.nanoseconds();
 
   if (fs.existsSync(BUILD_DIR)) {
@@ -19,17 +19,12 @@ export default async function buildStandalone(
     process.exit(1);
   }
 
-  // TODO: Implement
-  console.log(LOG_PREFIX.INFO, 'Building standalone components...', {
-    standaloneSC,
-    standaloneWC,
-  });
+  console.log(LOG_PREFIX.WAIT, `🚀 building your standalone components...`);
 
   const end = Bun.nanoseconds();
   const ms = ((end - start) / 1e6).toFixed(2);
 
-  if (IS_PRODUCTION) console.log(LOG_PREFIX.INFO, `✨  Done in ${ms}ms.`);
-  else console.log(LOG_PREFIX.INFO, `compiled successfully in ${ms}ms.`);
+  console.log(LOG_PREFIX.INFO, `✨  Done in ${ms}ms.`);
 }
 
 if (import.meta.main) {

@@ -399,8 +399,9 @@ async function main({
 
 module.exports.main = main;
 
-if (import.meta.main)
+if (import.meta.main) {
   main({
     currentBunVersion: Bun.version,
     brisaPackageManager: packageManager,
   });
+}

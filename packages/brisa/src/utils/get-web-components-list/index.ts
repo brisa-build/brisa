@@ -10,18 +10,19 @@ import { getEntrypointsRouter } from '@/utils/get-entrypoints';
 import resolveImportSync from '@/utils/resolve-import-sync';
 
 const CONTEXT_PROVIDER = 'context-provider';
+const separator = path.sep === '\\' ? '\\\\' : '/';
+const ALLOWED_SEPARATORS_REGEX = new RegExp(`^${separator}(_)?`, 'g');
+const EXTENSION_REGEX = /\.[^/.]+$/;
 
 export default async function getWebComponentsList(
   dir: string,
   integrationsPath?: string | null,
-  separator = path.sep,
 ): Promise<Record<string, string>> {
   const webDir = path.join(dir, 'web-components');
 
   if (!fs.existsSync(webDir)) return {};
 
   const webRouter = getEntrypointsRouter(webDir);
-  const existingSelectors = new Set<string>();
   const entries = webRouter.routes;
 
   if (integrationsPath) {
@@ -44,7 +45,27 @@ export default async function getWebComponentsList(
     );
   }
 
-  const result = Object.fromEntries(
+  return routesEntriesToWebComponents(entries);
+}
+
+export function getWebComponentListFromFilePaths(
+  filePaths: string[],
+): Record<string, string> {
+  return routesEntriesToWebComponents(
+    filePaths.map((path) => {
+      const filename = path.split('/').pop() ?? path;
+      const route = path.split('web-components')[1] ?? filename;
+      return [route.replace(EXTENSION_REGEX, ''), path];
+    }),
+  );
+}
+
+export function routesEntriesToWebComponents(
+  entries: [string, string][],
+): Record<string, string> {
+  const existingSelectors = new Set<string>();
+
+  return Object.fromEntries(
     entries
       .filter(
         ([key]) =>
@@ -52,8 +73,9 @@ export default async function getWebComponentsList(
           key.includes(NATIVE_FOLDER),
       )
       .map(([key, path]) => {
-        const selector = key.replace(/^\/(_)?/g, '').replaceAll('/', '-');
-        const fixedPath = path.replaceAll('/', separator);
+        const selector = key
+          .replace(ALLOWED_SEPARATORS_REGEX, '')
+          .replaceAll('/', '-');
 
         if (selector === CONTEXT_PROVIDER) {
           logError({
@@ -75,13 +97,21 @@ export default async function getWebComponentsList(
             docLink:
               'https://brisa.build/building-your-application/components-details/web-components',
           });
+        } else if (!selector.includes('-')) {
+          logError({
+            messages: [
+              `You have a web component without kebab-case: "${selector}"`,
+              'Please, rename it to avoid conflicts with the rest of HTML elements.',
+            ],
+            docTitle: 'Documentation about web-components',
+            docLink:
+              'https://brisa.build/building-your-application/components-details/web-components',
+          });
         } else {
           existingSelectors.add(selector);
         }
 
-        return [selector, fixedPath];
+        return [selector, path];
       }),
   );
-
-  return result;
 }
