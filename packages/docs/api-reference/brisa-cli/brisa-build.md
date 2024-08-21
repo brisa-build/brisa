@@ -89,10 +89,9 @@ The output will be:
 ```sh
 [ info ]   Web component created successfully!
 [ info ]
-[ info ]   Files:
+[ info ]   Standalone components:
 [ info ]   - custom-counter.client.js (2 kB)
 [ info ]   - custom-counter.server.ts (2 kB)
-[ info ]   - brisa-element.js (3 kB)
 [ info ]
 [ info ]   ✨  Done in 153.72ms.
 ```
@@ -108,12 +107,11 @@ After running the command, you will have a `web-component1.client.js`, `web-comp
 ```sh
 [ info ]   Web component created successfully!
 [ info ]
-[ info ]   Files:
+[ info ]   Standalone components:
 [ info ]   - web-component1.client.js (2 kB)
 [ info ]   - web-component1.server.ts (2 kB)
 [ info ]   - web-component2.client.js (2 kB)
 [ info ]   - web-component2.server.ts (2 kB)
-[ info ]   - brisa-element.js (3 kB)
 [ info ]
 [ info ]   ✨  Done in 153.72ms.
 ```
@@ -122,11 +120,10 @@ After running the command, you will have a `web-component1.client.js`, `web-comp
 
 - ***.client.js**: The client-side code of the web component.
 - ***.server.ts**: The server-side code of the web component, used for SSR.
-- **brisa-element.js**: The web component is a custom element that extends the `HTMLElement` class. This file `brisa-element` is necessary to use the web component in your application using a different framework or vanilla JavaScript.
 
 ### Client-side code usage
 
-Example using this web component in Vanilla JavaScript:
+Example using these web components in Vanilla JavaScript:
 
 ```html
 <!DOCTYPE html>
@@ -134,8 +131,14 @@ Example using this web component in Vanilla JavaScript:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Custom Counter</title>
-  <script type="module" src="brisa-element.js"></script>
+  <title>Example</title>
+   <script type="importmap">
+    {
+      "imports": {
+        "brisa/client": "https://unpkg.com/brisa@latest/client-simplified/index.js"
+      }
+    }
+  </script>
   <script type="module" src="web-component1.client.js"></script>
   <script type="module" src="web-component2.client.js"></script>
 </head>
@@ -148,17 +151,19 @@ Example using this web component in Vanilla JavaScript:
 
 > [!NOTE]
 >
-> Using a Brisa Web Component in Brisa you **don't need** to use the **`brisa-element.js`** file. See here how to [use a Brisa Web Component library in Brisa](/building-your-application/components-details/external-libraries#web-components-dependencies).
+> The import map is necessary outside of the Brisa framework to map `brisa/client` to **`brisa/client-simplified`**. This is because the Brisa client is internally used by the Brisa framework and we did a simplified version to be used outside of the framework.
 
 ### SSR of Web Component
 
-Example server-side rendering the web component in a different JSX framework:
+Example server-side rendering these web components in a different JSX framework:
 
 ```tsx
 import { rerenderToString } from 'brisa/server';
-import CustomCounter from './custom-counter.server.ts';
+import WebComponent1 from './web-component1.server.ts';
+import WebComponent2 from './web-component1.server.ts';
 
-const html = rerenderToString(<CustomCounter start={5} />);
+const htmlWC1 = rerenderToString(<WebComponent1 foo="bar" />);
+const htmlWC2 = rerenderToString(<WebComponent2 foo="bar" />);
 ```
 
 In the case of incompatibilties with the jsx-runtime, you can use the `jsx` function:
@@ -166,9 +171,16 @@ In the case of incompatibilties with the jsx-runtime, you can use the `jsx` func
 ```tsx
 import { rerenderToString } from 'brisa/server';
 import { jsx } from 'brisa/jsx-runtime';
+import WebComponent1 from './web-component1.server.ts';
+import WebComponent2 from './web-component1.server.ts';
 
-const html = rerenderToString(jsx(CustomCounter, { start: 5 }));
+const htmlWC1 = rerenderToString(jsx(WebComponent1, { foo: "bar" }));
+const htmlWC2 = rerenderToString(jsx(WebComponent2, { foo: "bar" }));
 ```
+
+> [!NOTE]
+>
+> The Web Components during SSR are transformed into [Declarative Shadow DOM](https://web.dev/articles/declarative-shadow-dom).
 
 TODO: Verify that the examples work.
 
