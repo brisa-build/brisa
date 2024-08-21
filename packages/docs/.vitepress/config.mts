@@ -513,6 +513,10 @@ export default defineConfig({
               },
             ],
           },
+          {
+            text: '🛠️ Brisa CLI',
+            link: '/api-reference/brisa-cli/',
+          },
         ],
       },
     ],
