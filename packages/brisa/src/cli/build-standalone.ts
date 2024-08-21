@@ -8,6 +8,8 @@ import clientBuildPlugin from '@/utils/client-build-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import serverComponentPlugin from '@/utils/server-component-plugin';
 
+const filter = /\.(tsx|jsx|mdx)$/;
+
 export default async function buildStandalone(
   standaloneWC: string[],
   standaloneSC: string[],
@@ -69,33 +71,30 @@ async function compileStandaloneServerComponents(
         {
           name: 'standalone-server-components',
           setup(build) {
-            build.onLoad(
-              { filter: /\.(tsx|jsx|mdx)$/ },
-              async ({ path, loader }) => {
-                let code = await Bun.file(path).text();
+            build.onLoad({ filter }, async ({ path, loader }) => {
+              let code = await Bun.file(path).text();
 
-                try {
-                  const result = serverComponentPlugin(code, {
-                    path,
-                    allWebComponents,
-                    fileID: '',
-                  });
-                  if (result.hasActions) {
-                    // TODO: log error (actions are not allowed in standalone)
-                  }
-
-                  code = result.code;
-                } catch (error) {
-                  console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
-                  console.log(LOG_PREFIX.ERROR, (error as Error).message);
+              try {
+                const result = serverComponentPlugin(code, {
+                  path,
+                  allWebComponents,
+                  fileID: '',
+                });
+                if (result.hasActions) {
+                  // TODO: log error (actions are not allowed in standalone)
                 }
 
-                return {
-                  contents: code,
-                  loader,
-                };
-              },
-            );
+                code = result.code;
+              } catch (error) {
+                console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
+                console.log(LOG_PREFIX.ERROR, (error as Error).message);
+              }
+
+              return {
+                contents: code,
+                loader,
+              };
+            });
           },
         },
         createContextPlugin(),
@@ -126,7 +125,7 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
           setup(build) {
             build.onLoad(
               {
-                filter: /\.(tsx|jsx|mdx)$/,
+                filter,
               },
               async ({ path, loader }) => {
                 let code = await Bun.file(path).text();
