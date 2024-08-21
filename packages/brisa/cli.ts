@@ -14,6 +14,11 @@ const outPath = path
 
 const mdxIntegrationPath = path.join(outPath, 'cli', 'integrations', 'mdx.js');
 const buildFilepath = path.join(outPath, 'cli', 'build.js');
+const buildStandaloneFilePath = path.join(
+  outPath,
+  'cli',
+  'build-standalone.js',
+);
 const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
@@ -158,8 +163,8 @@ async function main({
 
     // Command: brisa build
     else if (process.argv[2] === 'build') {
-      let file = '';
-      let fileType = 'SC';
+      const wcFiles = new Set<string>();
+      const scFiles = new Set<string>();
       let env = 'PROD';
 
       for (let i = 3; i < process.argv.length; i++) {
@@ -173,21 +178,10 @@ async function main({
           case '-c':
           case '--web-component':
           case '-w':
-            fileType = process.argv[i].includes('w') ? 'WC' : 'SC';
+            const isWebComponent = process.argv[i].includes('w');
+            const filePath = process.argv[i + 1];
 
-            if (file) {
-              console.log(
-                redLog(
-                  'Ops!: You can only use --component (-c) or --web-component (-w), not both.',
-                ),
-              );
-              return process.exit(0);
-            }
-
-            file = process.argv[i + 1];
-
-            if (!file || !fs.existsSync(file)) {
-              const isWebComponent = fileType === 'WC';
+            if (!filePath || !fs.existsSync(filePath)) {
               const commandMsg = isWebComponent
                 ? '--web-component (-w)'
                 : '--component (-c)';
@@ -202,6 +196,10 @@ async function main({
               );
               console.log(redLog(`Example: brisa build ${exampleFileName}`));
               return process.exit(0);
+            } else if (isWebComponent) {
+              wcFiles.add(filePath);
+            } else {
+              scFiles.add(filePath);
             }
             break;
           case '--skip-tauri':
@@ -230,12 +228,37 @@ async function main({
 
       const commands = [buildFilepath, env];
 
-      if (file) {
-        commands.push(fileType);
-        commands.push(file);
+      if (wcFiles.intersection(scFiles).size > 0) {
+        console.log(
+          redLog(
+            'Error: The --web-component flag automatically builds both client and server. Using the same file for both --component (-c) and --web-component (-w) flags is not allowed.',
+          ),
+        );
+        console.log(
+          redLog(
+            'Suggestion: Use only the --web-component flag instead: brisa build -w /some/file.tsx',
+          ),
+        );
+        process.exit(1);
       }
 
-      if (IS_TAURI_APP) {
+      // Standalone component build
+      if (wcFiles.size || scFiles.size) {
+        commands[0] = buildStandaloneFilePath;
+
+        for (const file of wcFiles) {
+          commands.push('WC');
+          commands.push(file);
+        }
+
+        for (const file of scFiles) {
+          commands.push('SC');
+          commands.push(file);
+        }
+        cp.spawnSync(BUN_EXEC, commands, prodOptions);
+      }
+      // App build
+      else if (IS_TAURI_APP) {
         const tauriCommand = ['tauri', 'build'];
 
         if (MOBILE_OUTPUTS.has(OUTPUT)) {
