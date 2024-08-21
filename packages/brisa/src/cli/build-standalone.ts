@@ -3,7 +3,7 @@ import path from 'node:path';
 import { getConstants } from '@/constants';
 import { logError } from '@/utils/log/log-build';
 import { getWebComponentListFromFilePaths } from '@/utils/get-web-components-list';
-import getDefinedEnvVar from '@/utils/client-build-plugin/get-defined-env-var';
+import getDefinedEnvVar from '@/utils/get-defined-env-var';
 import clientBuildPlugin from '@/utils/client-build-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import serverComponentPlugin from '@/utils/server-component-plugin';

@@ -23,7 +23,7 @@ import snakeToCamelCase from '@/utils/snake-to-camelcase';
 import analyzeServerAst from '@/utils/analyze-server-ast';
 import { logBuildError } from '@/utils/log/log-build';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
-import getDefinedEnvVar from '../client-build-plugin/get-defined-env-var';
+import getDefinedEnvVar from '../get-defined-env-var';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
