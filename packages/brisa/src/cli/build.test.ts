@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import build from './build';
 import { getConstants } from '@/constants';
-import type { Configuration } from '@/types';
+import type { BrisaConstants, Configuration } from '@/types';
 import { enableANSIColors } from '@/utils/supports-basic-color';
 
 const defaultResult = {
