@@ -743,6 +743,36 @@ describe('Brisa CLI', () => {
     ]);
   });
 
+  it('should log using multiple files for standalone web component and standalone server component', async () => {
+    process.argv = [
+      'bun',
+      'brisa',
+      'build',
+      '-w',
+      '/some/file.tsx',
+      '-c',
+      '/some/file.tsx',
+      '-w',
+      '/some/another-file.tsx',
+      '-c',
+      '/some/another-file.tsx',
+    ];
+    await cli.main(options);
+
+    expect(mockLog.mock.calls).toEqual([
+      [
+        redLog(
+          'Error: The --web-component flag automatically builds both client and server. Using the same file for both --component (-c) and --web-component (-w) flags is not allowed.',
+        ),
+      ],
+      [
+        redLog(
+          'Suggestion: Use only the --web-component flag instead: brisa build -w /some/file.tsx -w /some/another-file.tsx',
+        ),
+      ],
+    ]);
+  });
+
   it('should build a desktop app with "brisa build" command and output=desktop', async () => {
     process.argv = ['bun', 'brisa', 'build'];
 
