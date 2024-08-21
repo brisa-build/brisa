@@ -128,14 +128,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
       ['Command not found'],
-      ['Usage: brisa <command> [options]'],
+      ['Usage: brisa [options] <command>'],
+      ['Options:'],
+      [' --help        Show help'],
       ['Commands:'],
       [' dev           Start development server'],
       [' build         Build for production'],
       [' start         Start production server'],
-      ['Options:'],
-      [' --help        Show help'],
-      [' --port        Specify port (applicable for dev and start commands)'],
     ]);
     expect(mockExit).toHaveBeenCalledWith(0);
   });
@@ -148,14 +147,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync).toHaveBeenCalledTimes(1); // bun --version
     expect(mockLog.mock.calls).toEqual([
       ['Command not found'],
-      ['Usage: brisa <command> [options]'],
+      ['Usage: brisa [options] <command>'],
+      ['Options:'],
+      [' --help        Show help'],
       ['Commands:'],
       [' dev           Start development server'],
       [' build         Build for production'],
       [' start         Start production server'],
-      ['Options:'],
-      [' --help        Show help'],
-      [' --port        Specify port (applicable for dev and start commands)'],
     ]);
     expect(mockExit).toHaveBeenCalledWith(0);
   });
@@ -216,7 +214,7 @@ describe('Brisa CLI', () => {
       [' -p, --port         Specify port'],
       [' -d, --debug        Enable debug mode'],
       [
-        " -s, --skip-tauri Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+        " -s, --skip-tauri   Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
       ],
       [' --help             Show help'],
     ]);
@@ -428,13 +426,17 @@ describe('Brisa CLI', () => {
     expect(mockLog.mock.calls).toEqual([
       ['Usage: brisa build [options]'],
       ['Options:'],
+      [' -d, --dev           Build for development (useful for custom server)'],
       [
-        " -s, --skip-tauri    Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
-        ' -d, --dev           Build for development (useful for custom server)',
         ' -w, --web-component Build standalone web component to create a library',
+      ],
+      [
         ' -c, --component     Build standalone server component to create a library',
       ],
-      [' --help             Show help'],
+      [
+        " -s, --skip-tauri    Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
+      ],
+      [' --help              Show help'],
     ]);
   });
 

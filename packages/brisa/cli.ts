@@ -125,7 +125,7 @@ async function main({
             console.log(' -p, --port         Specify port');
             console.log(' -d, --debug        Enable debug mode');
             console.log(
-              " -s, --skip-tauri Skip open desktop app when 'output': 'desktop' in brisa.config.ts",
+              " -s, --skip-tauri   Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
             );
             console.log(' --help             Show help');
             return process.exit(0);
@@ -212,12 +212,18 @@ async function main({
             console.log('Usage: brisa build [options]');
             console.log('Options:');
             console.log(
-              " -s, --skip-tauri    Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
               ' -d, --dev           Build for development (useful for custom server)',
+            );
+            console.log(
               ' -w, --web-component Build standalone web component to create a library',
+            );
+            console.log(
               ' -c, --component     Build standalone server component to create a library',
             );
-            console.log(' --help             Show help');
+            console.log(
+              " -s, --skip-tauri    Skip open tauri app when 'output': 'desktop' | 'android' | 'ios' in brisa.config.ts",
+            );
+            console.log(' --help              Show help');
             return process.exit(0);
         }
       }
@@ -296,16 +302,13 @@ async function main({
     // Command: brisa --help
     else {
       console.log('Command not found');
-      console.log('Usage: brisa <command> [options]');
+      console.log('Usage: brisa [options] <command>');
+      console.log('Options:');
+      console.log(' --help        Show help');
       console.log('Commands:');
       console.log(' dev           Start development server');
       console.log(' build         Build for production');
       console.log(' start         Start production server');
-      console.log('Options:');
-      console.log(' --help        Show help');
-      console.log(
-        ' --port        Specify port (applicable for dev and start commands)',
-      );
       return process.exit(0);
     }
   } catch (error: any) {
