@@ -77,7 +77,7 @@ describe('utils', () => {
             }
           `;
         const output = toInline(
-          clientBuildPlugin(input, '/src/web-components/my-component.tsx', {
+          clientBuildPlugin(input, '/src/components/my-component.tsx', {
             forceTranspilation: true,
           }).code,
         );
@@ -91,7 +91,7 @@ describe('utils', () => {
         expect(output).toBe(expected);
       });
 
-      it('should transform and define as custom element with config.forceTranspilation and config.defineAsCustomElement as true', () => {
+      it('should define as custom element with config.defineAsCustomElement as true', () => {
         const input = `
         export default function MyComponent() {
           return <div>foo</div>
@@ -99,19 +99,64 @@ describe('utils', () => {
       `;
         const output = toInline(
           clientBuildPlugin(input, '/src/web-components/my-component.tsx', {
-            forceTranspilation: true,
             customElementSelectorToDefine: 'my-component',
           }).code,
         );
         const expected = toInline(`
-      import {brisaElement, _on, _off} from "brisa/client";
-      
-      function MyComponent() {return ["div", {}, "foo"];}
-      
-      if (!customElements.get('my-component')) {
-        customElements.define('my-component', brisaElement(MyComponent));
-      }
-    `);
+        import {brisaElement, _on, _off} from "brisa/client";
+        
+        function MyComponent() {return ["div", {}, "foo"];}
+        
+        if (!customElements.get('my-component')) {
+          customElements.define('my-component', brisaElement(MyComponent));
+        }
+      `);
+        expect(output).toBe(expected);
+      });
+
+      it('should define as custom element with config.defineAsCustomElement as true as true with separate export default', () => {
+        const input = `
+        function Component() {
+          return <div>foo</div>
+        }
+
+        export default Component;
+      `;
+        const output = toInline(
+          clientBuildPlugin(input, '/src/web-components/my-component.tsx', {
+            customElementSelectorToDefine: 'my-component',
+          }).code,
+        );
+        const expected = toInline(`
+        import {brisaElement, _on, _off} from "brisa/client";
+        
+        function Component() {return ["div", {}, "foo"];}
+        
+        if (!customElements.get('my-component')) {
+          customElements.define('my-component', brisaElement(Component));
+        }
+      `);
+        expect(output).toBe(expected);
+      });
+
+      it('should define as custom element with config.defineAsCustomElement as true with export default of arrow fn', () => {
+        const input = `
+        export default () => <div>foo</div>
+      `;
+        const output = toInline(
+          clientBuildPlugin(input, '/src/web-components/my-component.tsx', {
+            customElementSelectorToDefine: 'my-component',
+          }).code,
+        );
+        const expected = toInline(`
+        import {brisaElement, _on, _off} from "brisa/client";
+        
+        function Component() {return ["div", {}, "foo"];}
+        
+        if (!customElements.get('my-component')) {
+          customElements.define('my-component', brisaElement(Component));
+        }
+      `);
         expect(output).toBe(expected);
       });
 
