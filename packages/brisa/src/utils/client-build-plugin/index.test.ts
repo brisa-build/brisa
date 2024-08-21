@@ -70,7 +70,7 @@ describe('utils', () => {
         expect(output).toBe(expected);
       });
 
-      it('should transform if has config.forceBuild as true', () => {
+      it('should transform if has config.forceTranspilation as true', () => {
         const input = `
             export default function MyComponent() {
               return <div>foo</div>
@@ -78,7 +78,7 @@ describe('utils', () => {
           `;
         const output = toInline(
           clientBuildPlugin(input, '/src/web-components/my-component.tsx', {
-            forceBuild: true,
+            forceTranspilation: true,
           }).code,
         );
         const expected = toInline(`
@@ -88,6 +88,30 @@ describe('utils', () => {
           
           export default brisaElement(MyComponent);
         `);
+        expect(output).toBe(expected);
+      });
+
+      it('should transform and define as custom element with config.forceTranspilation and config.defineAsCustomElement as true', () => {
+        const input = `
+        export default function MyComponent() {
+          return <div>foo</div>
+        }
+      `;
+        const output = toInline(
+          clientBuildPlugin(input, '/src/web-components/my-component.tsx', {
+            forceTranspilation: true,
+            customElementSelectorToDefine: 'my-component',
+          }).code,
+        );
+        const expected = toInline(`
+      import {brisaElement, _on, _off} from "brisa/client";
+      
+      function MyComponent() {return ["div", {}, "foo"];}
+      
+      if (!customElements.get('my-component')) {
+        customElements.define('my-component', brisaElement(MyComponent));
+      }
+    `);
         expect(output).toBe(expected);
       });
 

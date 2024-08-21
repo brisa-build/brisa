@@ -18,7 +18,8 @@ import addI18nBridge from './add-i18n-bridge';
 type ClientBuildPluginConfig = {
   isI18nAdded?: boolean;
   isTranslateCoreAdded?: boolean;
-  forceBuild?: boolean;
+  forceTranspilation?: boolean;
+  customElementSelectorToDefine?: null | string;
 };
 
 type ClientBuildPluginResult = {
@@ -32,7 +33,8 @@ const BRISA_INTERNAL_PATH = '__BRISA_CLIENT__';
 const DEFAULT_CONFIG: ClientBuildPluginConfig = {
   isI18nAdded: false,
   isTranslateCoreAdded: false,
-  forceBuild: false,
+  forceTranspilation: false,
+  customElementSelectorToDefine: null,
 };
 
 export default function clientBuildPlugin(
@@ -42,7 +44,11 @@ export default function clientBuildPlugin(
 ): ClientBuildPluginResult {
   const isInternal = path.startsWith(BRISA_INTERNAL_PATH);
 
-  if (path.includes(NATIVE_FOLDER) && !isInternal && !config.forceBuild) {
+  if (
+    path.includes(NATIVE_FOLDER) &&
+    !isInternal &&
+    !config.forceTranspilation
+  ) {
     return { code, useI18n: false, i18nKeys: new Set<string>() };
   }
 
@@ -52,8 +58,8 @@ export default function clientBuildPlugin(
   if (useI18n) {
     ast = addI18nBridge(ast, {
       usei18nKeysLogic: i18nKeys.size > 0,
-      i18nAdded: config.isI18nAdded,
-      isTranslateCoreAdded: config.isTranslateCoreAdded,
+      i18nAdded: Boolean(config.isI18nAdded),
+      isTranslateCoreAdded: Boolean(config.isTranslateCoreAdded),
     });
   }
 
@@ -66,7 +72,9 @@ export default function clientBuildPlugin(
 
   if (
     !componentBranch ||
-    (WEB_COMPONENT_ALTERNATIVE_REGEX.test(path) && !isInternal)
+    (WEB_COMPONENT_ALTERNATIVE_REGEX.test(path) &&
+      !isInternal &&
+      !config.forceTranspilation)
   ) {
     return {
       code: generateCodeFromAST(reactiveAst),
@@ -133,6 +141,31 @@ export default function clientBuildPlugin(
       useI18n,
       i18nKeys,
     };
+  }
+
+  // Replace the export default to define the custom element (optional)
+  // This is used for standalone components (library components)
+  // Replace:
+  //     export default brisaElement(Component)
+  // To:
+  //     if(!customElements.get(name)) {
+  //       customElements.define('my-component', brisaElement(MyComponent))
+  //     }
+  if (config.customElementSelectorToDefine) {
+    // Define the custom element
+    const definition = parseCodeToAST(`
+      if(!customElements.get('${config.customElementSelectorToDefine}')) {
+        customElements.define('${config.customElementSelectorToDefine}', ${generateCodeFromAST(brisaElement as any)})
+      }`).body[0];
+    reactiveAst.body.push(definition);
+
+    // Remove the export default
+    for (let i = 0; i < reactiveAst.body.length; i++) {
+      if (reactiveAst.body[i].type === 'ExportDefaultDeclaration') {
+        reactiveAst.body.splice(i, 1);
+        break;
+      }
+    }
   }
 
   return { code: generateCodeFromAST(reactiveAst), useI18n, i18nKeys };
