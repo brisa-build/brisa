@@ -51,7 +51,8 @@ async function compileStandaloneServerComponents(
     getConstants();
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
   const entrypoints = [...standaloneSC, ...standaloneWC];
-  const webComponentSet = new Set(standaloneWC);
+  const webComponentsSelector = invertRecord(allWebComponents);
+
   return Bun.build({
     entrypoints,
     outdir: BUILD_DIR,
@@ -109,7 +110,9 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
   const { BUILD_DIR, LOG_PREFIX, SRC_DIR, IS_PRODUCTION, CONFIG } =
     getConstants();
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
-  const webComponentSet = new Set(standaloneWC);
+  const webComponentsSelector = invertRecord(
+    getWebComponentListFromFilePaths(standaloneWC),
+  );
 
   return Bun.build({
     entrypoints: [...standaloneWC],
@@ -135,7 +138,7 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
                 try {
                   const res = clientBuildPlugin(code, path, {
                     forceTranspilation: true,
-                    defineAsCustomElement: webComponentSet.has(path),
+                    customElementSelectorToDefine: webComponentsSelector[path],
                   });
                   code = res.code;
                 } catch (error) {
@@ -172,6 +175,12 @@ function getDefine() {
     __USE_PAGE_TRANSLATION__: 'false',
     ...getDefinedEnvVar(),
   };
+}
+
+function invertRecord(record: Record<string, string>) {
+  return Object.fromEntries(
+    Object.entries(record).map(([key, value]) => [value, key]),
+  );
 }
 
 if (import.meta.main) {
