@@ -51,6 +51,7 @@ async function compileStandaloneServerComponents(
     getConstants();
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
   const entrypoints = [...standaloneSC, ...standaloneWC];
+  const webComponentSet = new Set(standaloneWC);
   return Bun.build({
     entrypoints,
     outdir: BUILD_DIR,
@@ -108,6 +109,7 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
   const { BUILD_DIR, LOG_PREFIX, SRC_DIR, IS_PRODUCTION, CONFIG } =
     getConstants();
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
+  const webComponentSet = new Set(standaloneWC);
 
   return Bun.build({
     entrypoints: [...standaloneWC],
@@ -132,7 +134,8 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
 
                 try {
                   const res = clientBuildPlugin(code, path, {
-                    forceBuild: true,
+                    forceTranspilation: true,
+                    defineAsCustomElement: webComponentSet.has(path),
                   });
                   code = res.code;
                 } catch (error) {
