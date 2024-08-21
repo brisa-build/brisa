@@ -70,6 +70,27 @@ describe('utils', () => {
         expect(output).toBe(expected);
       });
 
+      it('should transform if has config.forceBuild as true', () => {
+        const input = `
+            export default function MyComponent() {
+              return <div>foo</div>
+            }
+          `;
+        const output = toInline(
+          clientBuildPlugin(input, '/src/web-components/my-component.tsx', {
+            forceBuild: true,
+          }).code,
+        );
+        const expected = toInline(`
+          import {brisaElement, _on, _off} from "brisa/client";
+          
+          function MyComponent() {return ["div", {}, "foo"];}
+          
+          export default brisaElement(MyComponent);
+        `);
+        expect(output).toBe(expected);
+      });
+
       it('should transform JSX to an array if is a variable', () => {
         const input = `
             const element = <div>foo</div>

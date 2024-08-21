@@ -16,8 +16,9 @@ import { WEB_COMPONENT_ALTERNATIVE_REGEX, NATIVE_FOLDER } from './constants';
 import addI18nBridge from './add-i18n-bridge';
 
 type ClientBuildPluginConfig = {
-  isI18nAdded: boolean;
-  isTranslateCoreAdded: boolean;
+  isI18nAdded?: boolean;
+  isTranslateCoreAdded?: boolean;
+  forceBuild?: boolean;
 };
 
 type ClientBuildPluginResult = {
@@ -31,6 +32,7 @@ const BRISA_INTERNAL_PATH = '__BRISA_CLIENT__';
 const DEFAULT_CONFIG: ClientBuildPluginConfig = {
   isI18nAdded: false,
   isTranslateCoreAdded: false,
+  forceBuild: false,
 };
 
 export default function clientBuildPlugin(
@@ -40,7 +42,7 @@ export default function clientBuildPlugin(
 ): ClientBuildPluginResult {
   const isInternal = path.startsWith(BRISA_INTERNAL_PATH);
 
-  if (path.includes(NATIVE_FOLDER) && !isInternal) {
+  if (path.includes(NATIVE_FOLDER) && !isInternal && !config.forceBuild) {
     return { code, useI18n: false, i18nKeys: new Set<string>() };
   }
 
