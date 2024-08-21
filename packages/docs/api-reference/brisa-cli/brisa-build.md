@@ -97,11 +97,32 @@ The output will be:
 [ info ]   ✨  Done in 153.72ms.
 ```
 
+In the case that you need to build more than one web component, you can use the `--web-component` flag multiple times:
+
+```sh
+brisa build -w path/web-component1.tsx -w path/web-component2.tsx
+```
+
+After running the command, you will have a `web-component1.client.js`, `web-component1.server.ts`, `web-component2.client.js`, and `web-component2.server.ts` file.
+
+```sh
+[ info ]   Web component created successfully!
+[ info ]
+[ info ]   Files:
+[ info ]   - web-component1.client.js (2 kB)
+[ info ]   - web-component1.server.ts (2 kB)
+[ info ]   - web-component2.client.js (2 kB)
+[ info ]   - web-component2.server.ts (2 kB)
+[ info ]   - brisa-element.js (3 kB)
+[ info ]
+[ info ]   ✨  Done in 153.72ms.
+```
+
 **Why theses files?**
 
-- **custom-counter.client.js**: The client-side code of the web component.
-- **custom-counter.server.ts**: The server-side code of the web component, used for SSR.
-- **brisa-element.js**: The `custom-counter` web component is a custom element that extends the `HTMLElement` class. This file `brisa-element` is necessary to use the web component in your application using a different framework or vanilla JavaScript.
+- ***.client.js**: The client-side code of the web component.
+- ***.server.ts**: The server-side code of the web component, used for SSR.
+- **brisa-element.js**: The web component is a custom element that extends the `HTMLElement` class. This file `brisa-element` is necessary to use the web component in your application using a different framework or vanilla JavaScript.
 
 ### Client-side code usage
 
@@ -115,10 +136,12 @@ Example using this web component in Vanilla JavaScript:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Custom Counter</title>
   <script type="module" src="brisa-element.js"></script>
-  <script type="module" src="custom-counter.client.js"></script>
+  <script type="module" src="web-component1.client.js"></script>
+  <script type="module" src="web-component2.client.js"></script>
 </head>
 <body>
-  <custom-counter></custom-counter>
+  <web-component1></web-component1>
+  <web-component2></web-component2>
 </body>
 </html>
 ```
@@ -158,6 +181,24 @@ TODO: Verify that the examples work.
 [ info ]
 [ info ]   Files:
 [ info ]   - component.server.ts (2 kB)
+[ info ]
+[ info ]   ✨  Done in 153.72ms.
+```
+
+In the case that you need to build more than one component, you can use the `--component` flag multiple times:
+
+```sh
+brisa build -c path/component1.ts -c path/component2.ts
+```
+
+After running the command, you will have a `component1.server.ts` and a `component2.server.ts` file.
+
+```sh
+[ info ]   Server component created successfully!
+[ info ]
+[ info ]   Files:
+[ info ]   - component1.server.ts (2 kB)
+[ info ]   - component2.server.ts (2 kB)
 [ info ]
 [ info ]   ✨  Done in 153.72ms.
 ```
