@@ -227,8 +227,10 @@ async function main({
       }
 
       const commands = [buildFilepath, env];
+      const intersection = wcFiles.intersection(scFiles);
 
-      if (wcFiles.intersection(scFiles).size > 0) {
+      if (intersection.size > 0) {
+        const flags = Array.from(intersection.values()).join(' -w ');
         console.log(
           redLog(
             'Error: The --web-component flag automatically builds both client and server. Using the same file for both --component (-c) and --web-component (-w) flags is not allowed.',
@@ -236,7 +238,7 @@ async function main({
         );
         console.log(
           redLog(
-            'Suggestion: Use only the --web-component flag instead: brisa build -w /some/file.tsx',
+            `Suggestion: Use only the --web-component flag instead: brisa build -w ${flags}`,
           ),
         );
         process.exit(1);
