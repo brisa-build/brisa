@@ -23,6 +23,7 @@ import snakeToCamelCase from '@/utils/snake-to-camelcase';
 import analyzeServerAst from '@/utils/analyze-server-ast';
 import { logBuildError } from '@/utils/log/log-build';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
+import getDefinedEnvVar from '../client-build-plugin/get-defined-env-var';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
@@ -42,7 +43,6 @@ type ClientCodeInPageProps = {
 const ASTUtil = AST('tsx');
 const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
 const RPCLazyCode = injectRPCLazyCode() as unknown as string;
-const ENV_VAR_PREFIX = 'BRISA_PUBLIC_';
 const DIRECT_IMPORT = 'import:';
 
 function getRPCCode() {
@@ -220,13 +220,7 @@ export async function transformToWebComponents({
 
   await writeFile(webEntrypoint, code);
 
-  const envVar: Record<string, string> = {};
-
-  for (const envKey in Bun.env) {
-    if (envKey.startsWith(ENV_VAR_PREFIX)) {
-      envVar[`process.env.${envKey}`] = Bun.env[envKey] ?? '';
-    }
-  }
+  const envVar = getDefinedEnvVar();
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints: [webEntrypoint],
