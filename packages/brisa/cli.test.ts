@@ -456,7 +456,7 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
         'PROD',
         'WC',
         '/some/file.tsx',
@@ -473,7 +473,7 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
         'PROD',
         'WC',
         '/some/file.tsx',
@@ -490,7 +490,7 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
         'DEV',
         'WC',
         '/some/file.tsx',
@@ -537,7 +537,7 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
         'DEV',
         'WC',
         '/some/file.tsx',
@@ -554,7 +554,7 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
         'PROD',
         'SC',
         '/some/file.tsx',
@@ -571,7 +571,7 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
         'PROD',
         'SC',
         '/some/file.tsx',
@@ -588,7 +588,7 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
         'DEV',
         'SC',
         '/some/file.tsx',
@@ -627,7 +627,7 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build.js'),
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
         'DEV',
         'SC',
         '/some/file.tsx',
@@ -636,15 +636,108 @@ describe('Brisa CLI', () => {
     ]);
   });
 
-  it('should displays an error log using -c and -w flags together', async () => {
-    process.argv = ['bun', 'brisa', 'build', '-c', '-w'];
+  it('should build multi standalone server components using multi -c flag', async () => {
+    process.argv = [
+      'bun',
+      'brisa',
+      'build',
+      '-c',
+      '/some/file.tsx',
+      '-c',
+      '/some/other-file.tsx',
+    ];
 
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        'PROD',
+        'SC',
+        '/some/file.tsx',
+        'SC',
+        '/some/other-file.tsx',
+      ],
+      prodOptions,
+    ]);
+  });
+
+  it('should build multi standalone web components using multi -w flag', async () => {
+    process.argv = [
+      'bun',
+      'brisa',
+      'build',
+      '-w',
+      '/some/file.tsx',
+      '-w',
+      '/some/other-file.tsx',
+    ];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        'PROD',
+        'WC',
+        '/some/file.tsx',
+        'WC',
+        '/some/other-file.tsx',
+      ],
+      prodOptions,
+    ]);
+  });
+
+  it('should be possible to build a standalone web component and a standalone server component together', async () => {
+    process.argv = [
+      'bun',
+      'brisa',
+      'build',
+      '-w',
+      '/some/file.tsx',
+      '-c',
+      '/some/other-file.tsx',
+    ];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [
+        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        'PROD',
+        'WC',
+        '/some/file.tsx',
+        'SC',
+        '/some/other-file.tsx',
+      ],
+      prodOptions,
+    ]);
+  });
+
+  it('should log using the same file for standalone web component and standalone server component', async () => {
+    process.argv = [
+      'bun',
+      'brisa',
+      'build',
+      '-w',
+      '/some/file.tsx',
+      '-c',
+      '/some/file.tsx',
+    ];
     await cli.main(options);
 
     expect(mockLog.mock.calls).toEqual([
       [
         redLog(
-          'Ops!: You can only use --component (-c) or --web-component (-w), not both.',
+          'Error: The --web-component flag automatically builds both client and server. Using the same file for both --component (-c) and --web-component (-w) flags is not allowed.',
+        ),
+      ],
+      [
+        redLog(
+          'Suggestion: Use only the --web-component flag instead: brisa build -w /some/file.tsx',
         ),
       ],
     ]);
