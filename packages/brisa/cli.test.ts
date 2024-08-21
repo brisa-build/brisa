@@ -135,6 +135,7 @@ describe('Brisa CLI', () => {
       [' dev           Start development server'],
       [' build         Build for production'],
       [' start         Start production server'],
+      [' add           Add integrations (e.g., mdx, tailwindcss)'],
     ]);
     expect(mockExit).toHaveBeenCalledWith(0);
   });
@@ -154,6 +155,7 @@ describe('Brisa CLI', () => {
       [' dev           Start development server'],
       [' build         Build for production'],
       [' start         Start production server'],
+      [' add           Add integrations (e.g., mdx, tailwindcss)'],
     ]);
     expect(mockExit).toHaveBeenCalledWith(0);
   });

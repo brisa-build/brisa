@@ -309,6 +309,7 @@ async function main({
       console.log(' dev           Start development server');
       console.log(' build         Build for production');
       console.log(' start         Start production server');
+      console.log(' add           Add integrations (e.g., mdx, tailwindcss)');
       return process.exit(0);
     }
   } catch (error: any) {

@@ -514,8 +514,27 @@ export default defineConfig({
             ],
           },
           {
+            collapsed: true,
             text: '🛠️ Brisa CLI',
-            link: '/api-reference/brisa-cli/',
+            link: '/api-reference/brisa-cli',
+            items: [
+              {
+                text: 'brisa dev',
+                link: '/api-reference/brisa-cli/brisa-dev',
+              },
+              {
+                text: 'brisa build',
+                link: '/api-reference/brisa-cli/brisa-build',
+              },
+              {
+                text: 'brisa start',
+                link: '/api-reference/brisa-cli/brisa-start',
+              },
+              {
+                text: 'brisa add',
+                link: '/api-reference/brisa-cli/brisa-add',
+              },
+            ],
           },
         ],
       },
