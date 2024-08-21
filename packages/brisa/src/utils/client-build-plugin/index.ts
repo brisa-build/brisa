@@ -153,11 +153,66 @@ export default function clientBuildPlugin(
   //     }
   if (config.customElementSelectorToDefine) {
     // Define the custom element
-    const definition = parseCodeToAST(`
-      if(!customElements.get('${config.customElementSelectorToDefine}')) {
-        customElements.define('${config.customElementSelectorToDefine}', ${generateCodeFromAST(brisaElement as any)})
-      }`).body[0];
-    reactiveAst.body.push(definition);
+    reactiveAst.body.push({
+      type: 'IfStatement',
+      test: {
+        type: 'UnaryExpression',
+        operator: '!',
+        argument: {
+          type: 'CallExpression',
+          callee: {
+            type: 'MemberExpression',
+            object: {
+              type: 'Identifier',
+              name: 'customElements',
+            },
+            computed: false,
+            property: {
+              type: 'Identifier',
+              name: 'get',
+            },
+          },
+          arguments: [
+            {
+              type: 'Literal',
+              value: config.customElementSelectorToDefine,
+            },
+          ],
+        },
+        prefix: true,
+      },
+      consequent: {
+        type: 'BlockStatement',
+        body: [
+          {
+            type: 'ExpressionStatement',
+            expression: {
+              type: 'CallExpression',
+              callee: {
+                type: 'MemberExpression',
+                object: {
+                  type: 'Identifier',
+                  name: 'customElements',
+                },
+                computed: false,
+                property: {
+                  type: 'Identifier',
+                  name: 'define',
+                },
+              },
+              arguments: [
+                {
+                  type: 'Literal',
+                  value: config.customElementSelectorToDefine,
+                },
+                brisaElement,
+              ],
+            },
+          },
+        ],
+      },
+      alternate: null,
+    });
 
     // Remove the export default
     for (let i = 0; i < reactiveAst.body.length; i++) {
