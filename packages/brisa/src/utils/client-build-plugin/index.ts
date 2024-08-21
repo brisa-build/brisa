@@ -14,6 +14,7 @@ import processClientAst from './process-client-ast';
 import getReactiveReturnStatement from './get-reactive-return-statement';
 import { WEB_COMPONENT_ALTERNATIVE_REGEX, NATIVE_FOLDER } from './constants';
 import addI18nBridge from './add-i18n-bridge';
+import defineCustomElementToAST from './define-custom-element-to-ast';
 
 type ClientBuildPluginConfig = {
   isI18nAdded?: boolean;
@@ -143,84 +144,12 @@ export default function clientBuildPlugin(
     };
   }
 
-  // Replace the export default to define the custom element (optional)
-  // This is used for standalone components (library components)
-  // Replace:
-  //     export default brisaElement(Component)
-  // To:
-  //     if(!customElements.get(name)) {
-  //       customElements.define('my-component', brisaElement(MyComponent))
-  //     }
+  // This is used for standalone component builds (library components)
   if (config.customElementSelectorToDefine) {
-    // Define the custom element
-    reactiveAst.body.push({
-      type: 'IfStatement',
-      test: {
-        type: 'UnaryExpression',
-        operator: '!',
-        argument: {
-          type: 'CallExpression',
-          callee: {
-            type: 'MemberExpression',
-            object: {
-              type: 'Identifier',
-              name: 'customElements',
-            },
-            computed: false,
-            property: {
-              type: 'Identifier',
-              name: 'get',
-            },
-          },
-          arguments: [
-            {
-              type: 'Literal',
-              value: config.customElementSelectorToDefine,
-            },
-          ],
-        },
-        prefix: true,
-      },
-      consequent: {
-        type: 'BlockStatement',
-        body: [
-          {
-            type: 'ExpressionStatement',
-            expression: {
-              type: 'CallExpression',
-              callee: {
-                type: 'MemberExpression',
-                object: {
-                  type: 'Identifier',
-                  name: 'customElements',
-                },
-                computed: false,
-                property: {
-                  type: 'Identifier',
-                  name: 'define',
-                },
-              },
-              arguments: [
-                {
-                  type: 'Literal',
-                  value: config.customElementSelectorToDefine,
-                },
-                brisaElement,
-              ],
-            },
-          },
-        ],
-      },
-      alternate: null,
+    defineCustomElementToAST(reactiveAst, {
+      selector: config.customElementSelectorToDefine,
+      content: brisaElement,
     });
-
-    // Remove the export default
-    for (let i = 0; i < reactiveAst.body.length; i++) {
-      if (reactiveAst.body[i].type === 'ExportDefaultDeclaration') {
-        reactiveAst.body.splice(i, 1);
-        break;
-      }
-    }
   }
 
   return { code: generateCodeFromAST(reactiveAst), useI18n, i18nKeys };
