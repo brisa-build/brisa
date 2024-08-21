@@ -47,9 +47,9 @@ const SERVE_PATH = path.join(
 
 let originalArgv: string[];
 let mockSpawnSync: Mock<typeof cp.spawnSync>;
-let mockExit: Mock<typeof exit>;
+let mockExit: Mock<typeof process.exit>;
 let mockLog: Mock<typeof console.log>;
-let mockCwd: Mock<typeof cwd>;
+let mockCwd: Mock<typeof process.cwd>;
 let mockExistsSync: Mock<typeof fs.existsSync>;
 let mockRandomBytes: Mock<typeof crypto.randomBytes>;
 
