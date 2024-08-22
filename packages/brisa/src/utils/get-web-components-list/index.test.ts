@@ -208,6 +208,10 @@ describe('utils', () => {
         ),
         'some-lib':
           '{"client":"' + path.join(fixturesDir, 'lib', 'some-lib.js') + '"}',
+        'different-name':
+          '{"client":"' + path.join(fixturesDir, 'lib', 'some-lib.js') + '"}',
+        'different-name-string-path':
+          '{"client":"' + path.join(fixturesDir, 'lib', 'some-lib.js') + '"}',
         'native-some-example': path.join(
           fixturesDir,
           'web-components',
@@ -227,6 +231,23 @@ describe('utils', () => {
         ),
         'with-link': path.join(fixturesDir, 'web-components', 'with-link.tsx'),
       });
+    });
+
+    it('should log warning when a native library has different selector name', async () => {
+      const integrationsPath = path.join(
+        fixturesDir,
+        'web-components',
+        '_integrations4.tsx',
+      );
+
+      await getWebComponentsList(fixturesDir, integrationsPath);
+
+      expect(mockConsoleLog.mock.calls.flat().join('\n')).toContain(
+        'The selector "different-name" from _integrations file looks that is defined inside the library with a different selector name.',
+      );
+      expect(mockConsoleLog.mock.calls.flat().join('\n')).toContain(
+        'The selector "different-name-string-path" from _integrations file looks that is defined inside the library with a different selector name.',
+      );
     });
 
     it('should alert if there is a web component with the same name, taking one the first one', async () => {

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { logError } from '@/utils/log/log-build';
+import { logError, logWarning } from '@/utils/log/log-build';
 import {
   ALTERNATIVE_PREFIX,
   NATIVE_FOLDER,
@@ -32,13 +32,18 @@ export default async function getWebComponentsList(
         Object.entries<WebComponentIntegrations>(
           await import(integrationsPath).then((m) => m.default ?? {}),
         ).map(async ([key, value]) => {
+          const warnMsg = `The selector "${key}" from _integrations file looks that is defined inside the library with a different selector name.`;
           let fixedPathname = '';
 
           if (typeof value === 'string') {
             const libPath = resolveImportSync(value, integrationsPath);
-            const hasDefaultExport = (await Bun.file(libPath).text()).includes(
-              'export default',
-            );
+            const code = await Bun.file(libPath).text();
+            const hasDefaultExport = code.includes('export default');
+
+            if (!hasDefaultExport && !code.includes(key)) {
+              logWarning([warnMsg]);
+            }
+
             fixedPathname = hasDefaultExport
               ? libPath
               : JSON.stringify({ client: libPath });
@@ -53,6 +58,10 @@ export default async function getWebComponentsList(
 
             if (typeof value.types === 'string') {
               obj.types = resolveImportSync(value.types, integrationsPath);
+            }
+
+            if (!(await Bun.file(obj.client as string).text()).includes(key)) {
+              logWarning([warnMsg]);
             }
 
             fixedPathname = JSON.stringify(obj);
