@@ -157,10 +157,12 @@ export async function transformToWebComponents({
   const entries = Object.entries(webComponentsList);
 
   // Note: JS imports in Windows have / instead of \, so we need to replace it
+  // Note: Using "require" for component dependencies not move the execution
+  // on top avoiding missing global variables as window._P
   let imports = entries
     .map(([name, path]) =>
       path[0] === '{'
-        ? `import "${normalizePath(path)}";`
+        ? `require("${normalizePath(path)}");`
         : `import ${snakeToCamelCase(name)} from "${path.replaceAll(sep, '/')}";`,
     )
     .join('\n');
@@ -208,13 +210,12 @@ export async function transformToWebComponents({
     code += brisaDialogErrorCode;
   }
 
-  code += `${imports}\n`;
-
   // Inject web context plugins to window to be used inside web components
   if (useWebContextPlugins) {
     code += 'window._P=webContextPlugins;\n';
   }
 
+  code += `${imports}\n`;
   code += `${defineElement}\n${customElementsDefinitions};`;
 
   await writeFile(webEntrypoint, code);
@@ -238,6 +239,8 @@ export async function transformToWebComponents({
       __USE_PAGE_TRANSLATION__: shouldTransferTranslatedPagePaths(
         I18N_CONFIG?.pages,
       ).toString(),
+      // For security:
+      'import.meta.dirname': '',
       ...envVar,
     },
     plugins: extendPlugins(

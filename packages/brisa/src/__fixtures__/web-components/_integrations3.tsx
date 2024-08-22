@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 export default {
-  'emoji-picker': `${import.meta.dir}/../lib/emoji-picker.tsx`,
+  'emoji-picker': `${import.meta.dirname}${path.sep}..${path.sep}lib${path.sep}emoji-picker.tsx`,
 };
