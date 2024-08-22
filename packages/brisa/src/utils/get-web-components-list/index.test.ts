@@ -207,9 +207,7 @@ describe('utils', () => {
           'custom-slot.tsx',
         ),
         'some-lib':
-          '{"client":"' +
-          path.join(fixturesDir, 'lib', 'emoji-picker.tsx') +
-          '"}',
+          '{"client":"' + path.join(fixturesDir, 'lib', 'some-lib.js') + '"}',
         'native-some-example': path.join(
           fixturesDir,
           'web-components',

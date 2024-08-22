@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import fs from 'node:fs';
 import path from 'node:path';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
 
 import getClientCodeInPage from '.';
 import { getConstants } from '@/constants';
@@ -327,6 +328,39 @@ describe('utils', () => {
         integrationsPath,
       });
       expect(output!.code).toContain('<div class="emoji-picker">');
+    });
+
+    it('should integrate some-lib with web context plugins', async () => {
+      const pagePath = path.join(pages, 'page-with-web-component.tsx');
+      const integrationsPath = path.join(
+        webComponentsDir,
+        '_integrations4.tsx',
+      );
+
+      const output = await getClientCodeInPage({
+        pagePath,
+        allWebComponents,
+        pageWebComponents: {
+          ...pageWebComponents,
+          'some-lib':
+            '{"client":"' + path.join(src, 'lib', 'some-lib.js') + '"}',
+        },
+        integrationsPath,
+      });
+      const contentOfLib = '()=>`has ${window._P.length} web context plugin`';
+
+      expect(output!.code).toContain('window._P=');
+      expect(output!.code).toContain(contentOfLib);
+
+      GlobalRegistrator.register();
+
+      document.body.innerHTML = `<some-lib></some-lib>`;
+      console.log(output!.code);
+      eval(output!.code);
+      const someLibEl = document.querySelector('some-lib');
+      expect(someLibEl?.shadowRoot?.innerHTML).toBe('has 1 web context plugin');
+
+      GlobalRegistrator.unregister();
     });
   });
 });
