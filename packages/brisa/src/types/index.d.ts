@@ -1186,6 +1186,16 @@ export type Paths<T> = RemovePlural<
   }[Extract<keyof T, string>]
 >;
 
+export type WebComponentIntegrations = {
+  [key: string]:
+    | string
+    | {
+        client: string;
+        server?: string;
+        types?: string;
+      };
+};
+
 type ExtendedWebContext =
   typeof import('@/web-components/_integrations').ExtendedWebContext;
 
