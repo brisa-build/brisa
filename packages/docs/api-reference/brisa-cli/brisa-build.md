@@ -182,8 +182,6 @@ const htmlWC2 = await renderToString(jsx(WebComponent2, { foo: "bar" }));
 >
 > The Web Components during SSR are transformed into [Declarative Shadow DOM](https://web.dev/articles/declarative-shadow-dom).
 
-TODO: Verify that the examples work.
-
 ## Component build
 
 `brisa build -c path/component.ts` creates a standalone server component to create a library. The path to the file can be relative or absolute. The output will be:
