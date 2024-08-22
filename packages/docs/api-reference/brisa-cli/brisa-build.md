@@ -158,24 +158,24 @@ Example using these web components in Vanilla JavaScript:
 Example server-side rendering these web components in a different JSX framework:
 
 ```tsx
-import { rerenderToString } from 'brisa/server';
+import { renderToString } from 'brisa/server';
 import WebComponent1 from './web-component1.server.ts';
 import WebComponent2 from './web-component1.server.ts';
 
-const htmlWC1 = rerenderToString(<WebComponent1 foo="bar" />);
-const htmlWC2 = rerenderToString(<WebComponent2 foo="bar" />);
+const htmlWC1 = await renderToString(<WebComponent1 foo="bar" />);
+const htmlWC2 = await renderToString(<WebComponent2 foo="bar" />);
 ```
 
 In the case of incompatibilties with the jsx-runtime, you can use the `jsx` function:
 
 ```tsx
-import { rerenderToString } from 'brisa/server';
+import { renderToString } from 'brisa/server';
 import { jsx } from 'brisa/jsx-runtime';
 import WebComponent1 from './web-component1.server.ts';
 import WebComponent2 from './web-component1.server.ts';
 
-const htmlWC1 = rerenderToString(jsx(WebComponent1, { foo: "bar" }));
-const htmlWC2 = rerenderToString(jsx(WebComponent2, { foo: "bar" }));
+const htmlWC1 = await renderToString(jsx(WebComponent1, { foo: "bar" }));
+const htmlWC2 = await renderToString(jsx(WebComponent2, { foo: "bar" }));
 ```
 
 > [!NOTE]
@@ -220,19 +220,19 @@ After running the command, you will have a `component1.server.ts` and a `compone
 Example using this server component in a different framework:
 
 ```tsx
-import { rerenderToString } from 'brisa/server';
+import { renderToString } from 'brisa/server';
 import { Component } from 'path/component.server.ts';
 
-const html = rerenderToString(<Component foo="bar" />);
+const html = await renderToString(<Component foo="bar" />);
 ```
 
 In the case of incompatibilties with the jsx-runtime, you can use the `jsx` function:
 
 ```tsx
-import { rerenderToString } from 'brisa/server';
+import { renderToString } from 'brisa/server';
 import { jsx } from 'brisa/jsx-runtime';
 
-const html = rerenderToString(jsx(Component, { foo: 'bar' }));
+const html = await renderToString(jsx(Component, { foo: 'bar' }));
 ```
 
 ## Skip open Tauri app
