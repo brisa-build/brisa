@@ -70,6 +70,20 @@ describe('cli/buildStandalone', () => {
 
     expect(mockLog.mock.calls[6][0]).toBe(constants.LOG_PREFIX.INFO);
     expect(mockLog.mock.calls[6][1]).toContain('✨  Done in');
+
+    const wcClientPath = path.resolve(
+      BUILD_DIR,
+      'web-components',
+      'custom-counter.client.js',
+    );
+    const wcServerPath = path.resolve(
+      BUILD_DIR,
+      'web-components',
+      'custom-counter.server.js',
+    );
+
+    expectFileIsWebComponentClient(wcClientPath);
+    expectFileIsWebComponentServer(wcServerPath);
   });
 
   it('should build standalone server components', async () => {
@@ -95,6 +109,9 @@ describe('cli/buildStandalone', () => {
 
     expect(mockLog.mock.calls[5][0]).toBe(constants.LOG_PREFIX.INFO);
     expect(mockLog.mock.calls[5][1]).toContain('✨  Done in');
+
+    const scPath = path.resolve(BUILD_DIR, 'lib', 'foo.server.js');
+    expectFileIsServerComponent(scPath);
   });
 
   it('should build standalone web and server components', async () => {
@@ -132,5 +149,39 @@ describe('cli/buildStandalone', () => {
 
     expect(mockLog.mock.calls[7][0]).toBe(constants.LOG_PREFIX.INFO);
     expect(mockLog.mock.calls[7][1]).toContain('✨  Done in');
+
+    const scPath = path.resolve(BUILD_DIR, 'lib', 'foo.server.js');
+    const wcClientPath = path.resolve(
+      BUILD_DIR,
+      'web-components',
+      'custom-counter.client.js',
+    );
+    const wcServerPath = path.resolve(
+      BUILD_DIR,
+      'web-components',
+      'custom-counter.server.js',
+    );
+
+    expectFileIsServerComponent(scPath);
+    expectFileIsWebComponentClient(wcClientPath);
+    expectFileIsWebComponentServer(wcServerPath);
   });
 });
+
+function expectFileIsWebComponentClient(filePath: string) {
+  const code = fs.readFileSync(filePath, 'utf-8');
+  expect(code).not.toContain('SSRWebComponent');
+  expect(code).toContain('customElements.define');
+}
+
+function expectFileIsWebComponentServer(filePath: string) {
+  const code = fs.readFileSync(filePath, 'utf-8');
+  expect(code).toContain('SSRWebComponent');
+  expect(code).not.toContain('customElements.define');
+}
+
+function expectFileIsServerComponent(filePath: string) {
+  const code = fs.readFileSync(filePath, 'utf-8');
+  expect(code).not.toContain('SSRWebComponent');
+  expect(code).not.toContain('customElements.define');
+}
