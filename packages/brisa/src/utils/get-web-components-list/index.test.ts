@@ -162,7 +162,9 @@ describe('utils', () => {
           'custom-slot.tsx',
         ),
         'emoji-picker':
-          'import:' + path.join(fixturesDir, 'lib', 'emoji-picker.tsx'),
+          '{"client":"' +
+          path.join(fixturesDir, 'lib', 'emoji-picker.tsx') +
+          '"}',
         'native-some-example': path.join(
           fixturesDir,
           'web-components',

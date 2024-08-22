@@ -39,7 +39,9 @@ export default async function getWebComponentsList(
             const hasDefaultExport = (await Bun.file(libPath).text()).includes(
               'export default',
             );
-            fixedPathname = hasDefaultExport ? libPath : `import:${libPath}`;
+            fixedPathname = hasDefaultExport
+              ? libPath
+              : JSON.stringify({ client: libPath });
           } else if (typeof value.client === 'string') {
             const obj: WebComponentIntegrations = {
               client: resolveImportSync(value.client, integrationsPath),
