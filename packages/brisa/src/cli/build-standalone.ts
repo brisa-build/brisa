@@ -7,6 +7,8 @@ import getDefinedEnvVar from '@/utils/get-defined-env-var';
 import clientBuildPlugin from '@/utils/client-build-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import serverComponentPlugin from '@/utils/server-component-plugin';
+import type { BuildOutput } from 'bun';
+import byteSizeToString from '@/utils/byte-size-to-string';
 
 const filter = /\.(tsx|jsx|mdx)$/;
 
@@ -32,9 +34,11 @@ export default async function buildStandalone(
     standaloneSC,
     standaloneWC,
   );
+
   const clientRes = await compileStandaloneWebComponents(standaloneWC);
 
-  console.dir({ clientRes, serverRes }, { depth: null });
+  logWhenError(serverRes, clientRes);
+  logWhenSuccess(serverRes, clientRes);
 
   const end = Bun.nanoseconds();
   const ms = ((end - start) / 1e6).toFixed(2);
@@ -177,6 +181,43 @@ function getDefine() {
     __USE_PAGE_TRANSLATION__: 'false',
     ...getDefinedEnvVar(),
   };
+}
+
+function logWhenError(...outputs: BuildOutput[]) {
+  const logs: string[] = [];
+
+  for (const output of outputs) {
+    if (!output.success) {
+      logs.push(...output.logs.map((log) => log.message));
+    }
+  }
+
+  if (logs.length) {
+    logError({ messages: ['Error compiling standalone components', ...logs] });
+  }
+}
+
+function logWhenSuccess(...buildOutputs: BuildOutput[]) {
+  const { LOG_PREFIX, ROOT_DIR } = getConstants();
+  const logs: string[] = [];
+
+  for (const buildOutput of buildOutputs) {
+    for (const output of buildOutput.outputs) {
+      const pathname = path.relative(ROOT_DIR, output.path);
+      logs.push(`- ${pathname} (${byteSizeToString(output.size)})`);
+    }
+  }
+
+  if (logs.length) {
+    console.log(LOG_PREFIX.INFO);
+    console.log(LOG_PREFIX.INFO, 'Standalone components:');
+
+    logs
+      .sort((a, b) => a.localeCompare(b))
+      .forEach((log) => console.log(LOG_PREFIX.INFO, log));
+
+    console.log(LOG_PREFIX.INFO);
+  }
 }
 
 function invertRecord(record: Record<string, string>) {
