@@ -3,11 +3,13 @@ import AST from '@/utils/ast';
 import replaceAstImportsToAbsolute from '@/utils/replace-ast-imports-to-absolute';
 import { logWarning } from '@/utils/log/log-build';
 import getDependenciesList from '@/utils/ast/get-dependencies-list';
+import wrapDefaultExportWithSSRWebComponent from './wrap-default-export-with-ssr-web-component';
 
 type ServerComponentPluginOptions = {
   allWebComponents: Record<string, string>;
   fileID: string;
   path: string;
+  selectorToWrapDeclarativeShadowDom?: string;
 };
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
@@ -40,7 +42,12 @@ Fragment.__isFragment = true;
 
 export default function serverComponentPlugin(
   code: string,
-  { allWebComponents, fileID, path }: ServerComponentPluginOptions,
+  {
+    allWebComponents,
+    fileID,
+    path,
+    selectorToWrapDeclarativeShadowDom,
+  }: ServerComponentPluginOptions,
 ) {
   const { IS_PRODUCTION, CONFIG } = getConstants();
   const ast = parseCodeToAST(code);
@@ -469,7 +476,7 @@ export default function serverComponentPlugin(
   );
 
   // Add: import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server"
-  if (usedWebComponents.size) {
+  if (usedWebComponents.size || selectorToWrapDeclarativeShadowDom) {
     modifiedAst.body.unshift({
       type: 'ImportDeclaration',
       specifiers: [
@@ -481,6 +488,14 @@ export default function serverComponentPlugin(
       ],
       source: { type: 'Literal', value: 'brisa/server' },
     });
+  }
+
+  // When the file is a standalone web component (for libraries)
+  if (selectorToWrapDeclarativeShadowDom) {
+    wrapDefaultExportWithSSRWebComponent(
+      modifiedAst,
+      selectorToWrapDeclarativeShadowDom,
+    );
   }
 
   return {
