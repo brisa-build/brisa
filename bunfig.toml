@@ -1,2 +1,3 @@
 [test]
 preload = ["./packages/brisa/src/test-setup.ts"]
+root = "./packages"
