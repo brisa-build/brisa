@@ -14,7 +14,6 @@ type ServerComponentPluginOptions = {
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 const JSX_NAME = new Set(['jsx', 'jsxDEV', 'jsxs']);
-const DIRECT_IMPORT = 'import:';
 const WEB_COMPONENT_REGEX = /.*\/web-components\/.*/;
 const FN_EXPRESSIONS = new Set([
   'ArrowFunctionExpression',
@@ -339,6 +338,7 @@ export default function serverComponentPlugin(
     ) {
       const selector = value?.arguments?.[0]?.value;
       const componentPath = allWebComponents[selector];
+      const wcRef = getWCReference(componentPath);
 
       detectedWebComponents[selector] = componentPath;
 
@@ -352,19 +352,19 @@ export default function serverComponentPlugin(
             prop?.key?.name === 'skipSSR' && prop?.value?.value !== false,
         )
       ) {
-        webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ''));
+        webComponentsWithoutSSR.add(wcRef.client);
         return value;
       }
 
       let ComponentName = usedWebComponents.get(componentPath);
 
-      if (!ComponentName && !componentPath.startsWith(DIRECT_IMPORT)) {
+      if (!ComponentName && componentPath[0] !== '{') {
         ComponentName = `_Brisa_WC${count++}`;
       }
 
       if (ComponentName) usedWebComponents.set(componentPath, ComponentName);
       else {
-        webComponentsWithoutSSR.add(componentPath.replace(DIRECT_IMPORT, ''));
+        webComponentsWithoutSSR.add(wcRef.client);
         return value;
       }
 
@@ -648,4 +648,13 @@ function transformActionIdentifierAttributeToArrow(attribute: any) {
     method: false,
     shorthand: false,
   };
+}
+
+export function getWCReference(rawPath: string) {
+  try {
+    if (rawPath?.[0] === '{') return JSON.parse(rawPath);
+  } catch {
+    /* ignore */
+  }
+  return { client: rawPath };
 }

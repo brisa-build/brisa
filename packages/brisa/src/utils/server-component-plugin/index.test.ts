@@ -687,9 +687,8 @@ describe('utils', () => {
           );
         }
       `;
-      const DIRECT_IMPORT_PREFIX = 'import:';
       const allWebComponents = {
-        'web-component': DIRECT_IMPORT_PREFIX + webComponentPath,
+        'web-component': JSON.stringify({ client: webComponentPath }),
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
@@ -718,9 +717,8 @@ describe('utils', () => {
           );
         }
       `;
-      const DIRECT_IMPORT_PREFIX = 'import:';
       const allWebComponents = {
-        'web-component': DIRECT_IMPORT_PREFIX + webComponentPath,
+        'web-component': JSON.stringify({ client: webComponentPath }),
       };
       const out = serverComponentPlugin(code, {
         allWebComponents,
