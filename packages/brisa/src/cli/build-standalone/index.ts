@@ -113,6 +113,10 @@ async function compileStandaloneServerComponents(
 }
 
 async function compileStandaloneWebComponents(standaloneWC: string[]) {
+  if (!standaloneWC.length) {
+    return { success: true, outputs: [], logs: [] } satisfies BuildOutput;
+  }
+
   const { BUILD_DIR, LOG_PREFIX, SRC_DIR, IS_PRODUCTION, CONFIG } =
     getConstants();
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
@@ -121,7 +125,7 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
   );
 
   return Bun.build({
-    entrypoints: [...standaloneWC],
+    entrypoints: standaloneWC,
     root: SRC_DIR,
     outdir: BUILD_DIR,
     target: 'browser',
