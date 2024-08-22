@@ -28,10 +28,10 @@ describe('utils', () => {
         });
       });
 
-      it('should relationate correctly a web component path with "import:" prefix and a dependency path without "import:" prefix', () => {
+      it('should relationate correctly a web component path with JSON dependency path', () => {
         const webComponentsPerFile = {
           '/path/to/file.tsx': {
-            'web-component': 'import:/path/to/web-component.tsx',
+            'web-component': '{"client":"/path/to/web-component.tsx"}',
           },
         };
         const dependenciesPerFile = new Map<string, Set<string>>([
@@ -47,7 +47,7 @@ describe('utils', () => {
 
         expect(result).toEqual({
           '/path/to/file.js': {
-            'web-component': 'import:/path/to/web-component.tsx',
+            'web-component': '{"client":"/path/to/web-component.tsx"}',
           },
         });
       });
@@ -123,11 +123,11 @@ describe('utils', () => {
         });
       });
 
-      it('should work with different path separator when webComponentPerFile arrives with import:/', () => {
+      it('should work with different path separator when webComponentPerFile arrives in strigified JSON', () => {
         const separator = '\\';
         const webComponentsPerFile = {
           '\\path\\to\\file.tsx': {
-            'web-component': 'import:/path/to/web-component.tsx',
+            'web-component': '{"client":"/path/to/web-component.tsx"}',
           },
         };
 
@@ -147,7 +147,7 @@ describe('utils', () => {
 
         expect(result).toEqual({
           '\\path\\to\\file.js': {
-            'web-component': 'import:/path/to/web-component.tsx',
+            'web-component': '{"client":"/path/to/web-component.tsx"}',
           },
         });
       });

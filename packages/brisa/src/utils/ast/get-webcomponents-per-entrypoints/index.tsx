@@ -47,8 +47,6 @@ export default function getWebComponentsPerEntryPoints(
   return webComponentsPerEntryPoint;
 }
 
-const IMPORT_REGEX = /^import:/;
-
 function findEntryPoints(
   dependencies: DependenciesMap,
   file: string,
@@ -57,7 +55,7 @@ function findEntryPoints(
 ) {
   const entryPointSet = new Set<string>();
   const visited = new Set<string>();
-  const stack = [file.replace(IMPORT_REGEX, '').replaceAll('/', separator)];
+  const stack = [getClientPath(file, separator)];
 
   while (stack.length) {
     const currentFile = stack.pop();
@@ -75,4 +73,11 @@ function findEntryPoints(
   }
 
   return entryPointSet;
+}
+
+function getClientPath(rawPathname: string, separator = path.sep) {
+  const pathname =
+    rawPathname[0] === '{' ? JSON.parse(rawPathname).client : rawPathname;
+
+  return pathname.replaceAll('/', separator);
 }
