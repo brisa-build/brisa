@@ -96,4 +96,41 @@ describe('cli/buildStandalone', () => {
     expect(mockLog.mock.calls[5][0]).toBe(constants.LOG_PREFIX.INFO);
     expect(mockLog.mock.calls[5][1]).toContain('✨  Done in');
   });
+
+  it('should build standalone web and server components', async () => {
+    const standaloneWC = [
+      path.resolve(WEB_COMPONENTS_PATH, 'custom-counter.tsx'),
+    ];
+    const standaloneSC = [path.resolve(FIXTURES, 'lib', 'foo.tsx')];
+
+    await buildStandalone(standaloneWC, standaloneSC);
+
+    expect(mockLog.mock.calls[0][0]).toBe(constants.LOG_PREFIX.WAIT);
+    expect(mockLog.mock.calls[0][1]).toBe(
+      `🚀 building your standalone components...`,
+    );
+
+    expect(mockLog.mock.calls[1][0]).toBe(constants.LOG_PREFIX.INFO);
+
+    expect(mockLog.mock.calls[2][0]).toBe(constants.LOG_PREFIX.INFO);
+    expect(mockLog.mock.calls[2][1]).toBe(`Standalone components:`);
+
+    expect(mockLog.mock.calls[3][0]).toBe(constants.LOG_PREFIX.INFO);
+    expect(mockLog.mock.calls[3][1]).toContain('foo.server.js');
+
+    expect(mockLog.mock.calls[4][0]).toBe(constants.LOG_PREFIX.INFO);
+    expect(mockLog.mock.calls[4][1]).toContain(
+      path.join('web-components', 'custom-counter.client.js'),
+    );
+
+    expect(mockLog.mock.calls[5][0]).toBe(constants.LOG_PREFIX.INFO);
+    expect(mockLog.mock.calls[5][1]).toContain(
+      path.join('web-components', 'custom-counter.server.js'),
+    );
+
+    expect(mockLog.mock.calls[6][0]).toBe(constants.LOG_PREFIX.INFO);
+
+    expect(mockLog.mock.calls[7][0]).toBe(constants.LOG_PREFIX.INFO);
+    expect(mockLog.mock.calls[7][1]).toContain('✨  Done in');
+  });
 });
