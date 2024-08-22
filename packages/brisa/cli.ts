@@ -17,7 +17,8 @@ const buildFilepath = path.join(outPath, 'cli', 'build.js');
 const buildStandaloneFilePath = path.join(
   outPath,
   'cli',
-  'build-standalone.js',
+  'build-standalone',
+  'index.js',
 );
 const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
