@@ -87,13 +87,13 @@ The good thing is that if you are on Windows, it will use the native Windows stu
 The output will be:
 
 ```sh
-[ info ]   Web component created successfully!
+[ wait ]  🚀 building your standalone components...
 [ info ]
 [ info ]   Standalone components:
-[ info ]   - custom-counter.client.js (2 kB)
-[ info ]   - custom-counter.server.ts (2 kB)
+[ info ]   - build/custom-counter.server.js (646.00 B)
+[ info ]   - build/custom-counter.client.js (425.00 B)
 [ info ]
-[ info ]   ✨  Done in 153.72ms.
+[ info ]   ✨  Done in 59.78ms.
 ```
 
 In the case that you need to build more than one web component, you can use the `--web-component` flag multiple times:
@@ -105,13 +105,13 @@ brisa build -w path/web-component1.tsx -w path/web-component2.tsx
 After running the command, you will have a `web-component1.client.js`, `web-component1.server.ts`, `web-component2.client.js`, and `web-component2.server.ts` file.
 
 ```sh
-[ info ]   Web component created successfully!
+[ wait ]  🚀 building your standalone components...
 [ info ]
 [ info ]   Standalone components:
-[ info ]   - web-component1.client.js (2 kB)
-[ info ]   - web-component1.server.ts (2 kB)
-[ info ]   - web-component2.client.js (2 kB)
-[ info ]   - web-component2.server.ts (2 kB)
+[ info ]   - build/web-component1.server.js (646.00 B)
+[ info ]   - build/web-component1.client.js (425.00 B)
+[ info ]   - build/web-component2.server.js (646.00 B)
+[ info ]   - build/web-component2.client.js (425.00 B)
 [ info ]
 [ info ]   ✨  Done in 153.72ms.
 ```
@@ -187,12 +187,12 @@ const htmlWC2 = await renderToString(jsx(WebComponent2, { foo: "bar" }));
 `brisa build -c path/component.ts` creates a standalone server component to create a library. The path to the file can be relative or absolute. The output will be:
 
 ```sh
-[ info ]   Server component created successfully!
+[ wait ]  🚀 building your standalone components...
 [ info ]
-[ info ]   Files:
-[ info ]   - component.server.ts (2 kB)
+[ info ]   Standalone components:
+[ info ]   - build/component.server.js (446.00 B)
 [ info ]
-[ info ]   ✨  Done in 153.72ms.
+[ info ]   ✨  Done in 53.71ms.
 ```
 
 In the case that you need to build more than one component, you can use the `--component` flag multiple times:
@@ -204,13 +204,13 @@ brisa build -c path/component1.ts -c path/component2.ts
 After running the command, you will have a `component1.server.ts` and a `component2.server.ts` file.
 
 ```sh
-[ info ]   Server component created successfully!
+[ wait ]  🚀 building your standalone components...
 [ info ]
-[ info ]   Files:
-[ info ]   - component1.server.ts (2 kB)
-[ info ]   - component2.server.ts (2 kB)
+[ info ]   Standalone components:
+[ info ]   - build/component1.server.js (446.00 B)
+[ info ]   - build/component2.server.js (426.00 B)
 [ info ]
-[ info ]   ✨  Done in 153.72ms.
+[ info ]   ✨  Done in 72.31ms.
 ```
 
 ### How to use the server component
