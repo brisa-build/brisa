@@ -1,6 +1,11 @@
 import { getConstants } from '@/constants';
 import type { ESTree } from 'meriyah';
 
+const DECLARATION_TYPES_TO_REMOVE = new Set([
+  'Identifier',
+  'ArrowFunctionExpression',
+]);
+
 export default function wrapDefaultExportWithSSRWebComponent(
   ast: ESTree.Program,
   selector: string,
@@ -77,7 +82,7 @@ export default function wrapDefaultExportWithSSRWebComponent(
     },
   };
 
-  if (exportDefaultDeclaration.type === 'Identifier') {
+  if (DECLARATION_TYPES_TO_REMOVE.has(exportDefaultDeclaration.type)) {
     ast.body.splice(exportDefaultIndex, 1);
   } else {
     ast.body[exportDefaultIndex] = exportDefaultDeclaration as any;
