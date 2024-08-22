@@ -51,4 +51,24 @@ describe('utils/server-component-plugin/wrap-default-export-with-ssr-web-compone
 			`),
     );
   });
+
+  it('should work with export default of an arrow function', () => {
+    const ast = parseCodeToAST(`
+			export default () => 'hello';
+		`);
+
+    wrapDefaultExportWithSSRWebComponent(ast, 'web-component');
+
+    expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
+      normalizeQuotes(`
+			export default function (props) {
+				return jsxDEV(_Brisa_SSRWebComponent, {
+						Component: () => 'hello',
+						selector: "web-component",
+						...props
+				});
+			}
+			`),
+    );
+  });
 });
