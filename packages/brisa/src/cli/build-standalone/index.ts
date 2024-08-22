@@ -12,6 +12,18 @@ import byteSizeToString from '@/utils/byte-size-to-string';
 
 const filter = /\.(tsx|jsx|mdx)$/;
 
+/**
+ * This build function is used to compile standalone components.
+ *
+ * This is useful for library authors that want to distribute
+ * their components as standalone files.
+ *
+ * Brisa is more than a web framework, it's a set of tools to
+ * help you build web applications. One of these tools is the
+ * ability to build standalone components to facilitate the
+ * distribution of your components and use them in other
+ * frameworks, in Vanilla.js, or plain Node.js/Bun.js for SSR.
+ */
 export default async function buildStandalone(
   standaloneWC: string[],
   standaloneSC: string[],
