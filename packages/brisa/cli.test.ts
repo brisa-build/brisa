@@ -456,7 +456,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'PROD',
         'WC',
         '/some/file.tsx',
@@ -473,7 +479,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'PROD',
         'WC',
         '/some/file.tsx',
@@ -490,7 +502,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'DEV',
         'WC',
         '/some/file.tsx',
@@ -537,7 +555,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'DEV',
         'WC',
         '/some/file.tsx',
@@ -554,7 +578,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'PROD',
         'SC',
         '/some/file.tsx',
@@ -571,7 +601,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'PROD',
         'SC',
         '/some/file.tsx',
@@ -588,7 +624,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'DEV',
         'SC',
         '/some/file.tsx',
@@ -627,7 +669,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'DEV',
         'SC',
         '/some/file.tsx',
@@ -652,7 +700,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'PROD',
         'SC',
         '/some/file.tsx',
@@ -679,7 +733,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'PROD',
         'WC',
         '/some/file.tsx',
@@ -706,7 +766,13 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [
-        path.join(import.meta.dir, 'out', 'cli', 'build-standalone.js'),
+        path.join(
+          import.meta.dir,
+          'out',
+          'cli',
+          'build-standalone',
+          'index.js',
+        ),
         'PROD',
         'WC',
         '/some/file.tsx',
