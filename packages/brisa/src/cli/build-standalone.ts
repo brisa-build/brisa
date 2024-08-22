@@ -81,6 +81,8 @@ async function compileStandaloneServerComponents(
                   path,
                   allWebComponents,
                   fileID: '',
+                  selectorToWrapDeclarativeShadowDom:
+                    webComponentsSelector[path],
                 });
                 if (result.hasActions) {
                   // TODO: log error (actions are not allowed in standalone)

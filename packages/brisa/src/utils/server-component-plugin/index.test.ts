@@ -37,7 +37,7 @@ describe('utils', () => {
       expect(out.dependencies).toBeEmpty();
     });
 
-    it('should not add the action if is a web-component"', () => {
+    it('should not add the action if is a web-component', () => {
       const code = `
         export default function WebComponent() {
           return <button onClick={() => console.log('clicked')}>click</button>;
@@ -54,6 +54,43 @@ describe('utils', () => {
       });
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
+    });
+
+    it('should wrap the web-component to SSR wrapper when selectorToWrapDeclarativeShadowDom is true', () => {
+      const code = `
+        export default function WebComponent() {
+          return 'hello';
+        }
+      `;
+      const allWebComponents = {
+        'web-component': webComponentPath,
+      };
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: 'a1',
+        path: webComponentPath,
+        selectorToWrapDeclarativeShadowDom: 'web-component',
+      });
+      expect(normalizeQuotes(out.code)).toBe(
+        normalizeQuotes(
+          `
+        import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
+
+        function WebComponent() {
+          return 'hello';
+        }
+        
+        export default function (props) {
+          return jsxDEV(_Brisa_SSRWebComponent, {
+           Component: WebComponent,
+           selector: "web-component",
+           ...props
+         });
+        }
+        ` + workaroundText,
+        ),
+      );
     });
 
     it('should add the attribute "data-action-onclick" when a server-component has an event defined', () => {
