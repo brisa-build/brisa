@@ -8,6 +8,7 @@ import {
 import isTestFile from '@/utils/is-test-file';
 import { getEntrypointsRouter } from '@/utils/get-entrypoints';
 import resolveImportSync from '@/utils/resolve-import-sync';
+import type { WebComponentIntegrations } from '@/types';
 
 const CONTEXT_PROVIDER = 'context-provider';
 const separator = path.sep === '\\' ? '\\\\' : '/';
@@ -28,18 +29,34 @@ export default async function getWebComponentsList(
   if (integrationsPath) {
     entries.push(
       ...(await Promise.all(
-        Object.entries<string>(
+        Object.entries<WebComponentIntegrations>(
           await import(integrationsPath).then((m) => m.default ?? {}),
         ).map(async ([key, value]) => {
-          const libPath = resolveImportSync(value, integrationsPath);
-          const hasDefaultExport = (await Bun.file(libPath).text()).includes(
-            'export default',
-          );
+          let fixedPathname = '';
 
-          return [
-            key,
-            hasDefaultExport ? libPath : `import:${libPath}`,
-          ] satisfies [string, string];
+          if (typeof value === 'string') {
+            const libPath = resolveImportSync(value, integrationsPath);
+            const hasDefaultExport = (await Bun.file(libPath).text()).includes(
+              'export default',
+            );
+            fixedPathname = hasDefaultExport ? libPath : `import:${libPath}`;
+          } else if (typeof value.client === 'string') {
+            const obj: WebComponentIntegrations = {
+              client: resolveImportSync(value.client, integrationsPath),
+            };
+
+            if (typeof value.server === 'string') {
+              obj.server = resolveImportSync(value.server, integrationsPath);
+            }
+
+            if (typeof value.types === 'string') {
+              obj.types = resolveImportSync(value.types, integrationsPath);
+            }
+
+            fixedPathname = JSON.stringify(obj);
+          }
+
+          return [key, fixedPathname] satisfies [string, string];
         }),
       )),
     );

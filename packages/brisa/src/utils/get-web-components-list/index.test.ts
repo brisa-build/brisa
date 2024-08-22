@@ -184,6 +184,51 @@ describe('utils', () => {
       });
     });
 
+    it('should return a list of web components with an integration of multi direct imports', async () => {
+      const integrationsPath = path.join(
+        fixturesDir,
+        'web-components',
+        '_integrations4.tsx',
+      );
+
+      const result = await getWebComponentsList(fixturesDir, integrationsPath);
+
+      expect(result).toEqual({
+        'custom-counter': path.join(
+          fixturesDir,
+          'web-components',
+          'custom-counter.tsx',
+        ),
+        'custom-slot': path.join(
+          fixturesDir,
+          'web-components',
+          'custom-slot.tsx',
+        ),
+        'some-lib':
+          '{"client":"' +
+          path.join(fixturesDir, 'lib', 'emoji-picker.tsx') +
+          '"}',
+        'native-some-example': path.join(
+          fixturesDir,
+          'web-components',
+          '_native',
+          'some-example.tsx',
+        ),
+        'web-component': path.join(
+          fixturesDir,
+          'web-components',
+          'web',
+          'component.tsx',
+        ),
+        'with-context': path.join(
+          fixturesDir,
+          'web-components',
+          'with-context.tsx',
+        ),
+        'with-link': path.join(fixturesDir, 'web-components', 'with-link.tsx'),
+      });
+    });
+
     it('should alert if there is a web component with the same name, taking one the first one', async () => {
       await getWebComponentsList(fixturesDir);
 
