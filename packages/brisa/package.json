@@ -66,7 +66,7 @@
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-test",
     "build:cli": "bun build --minify --target=bun --outdir=./ cli.ts && bun run build:cli-utils",
-    "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/build-standalone.ts src/cli/serve/index.tsx src/cli/integrations/mdx.ts",
+    "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/build-standalone/index.ts src/cli/serve/index.tsx src/cli/integrations/mdx.ts",
     "build:core": "bun build --minify --outdir=out/core src/core/index.ts && bun run build:cli && cp src/types/index.d.ts out/core/index.d.ts",
     "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:core-client-simplified && bun run build:cli",
     "build:core-client-simplified": "bun build --minify --outdir=client-simplified src/core/client/index.ts --define '__TRAILING_SLASH__=false' --define '__WEB_CONTEXT_PLUGINS__=false' --define '__BASE_PATH__=\"\"' --define '__ASSET_PREFIX__=\"\"' --define '__USE_LOCALE__=false' --define '__USE_PAGE_TRANSLATION__=false'",

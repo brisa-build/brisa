@@ -25,7 +25,7 @@ export default async function buildStandalone(
 
   if (!standaloneSC.length && !standaloneWC.length) {
     logError({ messages: ['No standalone components provided'] });
-    process.exit(1);
+    return process.exit(1);
   }
 
   console.log(LOG_PREFIX.WAIT, `🚀 building your standalone components...`);
@@ -213,7 +213,7 @@ function logWhenSuccess(...buildOutputs: BuildOutput[]) {
     console.log(LOG_PREFIX.INFO, 'Standalone components:');
 
     logs
-      .sort((a, b) => a.localeCompare(b))
+      .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
       .forEach((log) => console.log(LOG_PREFIX.INFO, log));
 
     console.log(LOG_PREFIX.INFO);

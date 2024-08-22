@@ -153,7 +153,7 @@ export const getConstants = (): BrisaConstants =>
     : constants;
 
 declare global {
-  var mockConstants: Partial<typeof constants> | undefined;
+  var mockConstants: Partial<BrisaConstants> | undefined;
   var REGISTERED_ACTIONS: Function[] | undefined;
   var FORCE_SUSPENSE_DEFAULT: boolean | undefined;
   var BrisaRegistry: Map<string, number>;
