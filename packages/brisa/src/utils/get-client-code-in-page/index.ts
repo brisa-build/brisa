@@ -43,7 +43,6 @@ type ClientCodeInPageProps = {
 const ASTUtil = AST('tsx');
 const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
 const RPCLazyCode = injectRPCLazyCode() as unknown as string;
-const DIRECT_IMPORT = 'import:';
 
 function getRPCCode() {
   const { IS_PRODUCTION, IS_STATIC_EXPORT } = getConstants();
@@ -54,7 +53,7 @@ function getRPCCode() {
 
 async function getAstFromPath(path: string) {
   return ASTUtil.parseCodeToAST(
-    path.startsWith(DIRECT_IMPORT) ? '' : await Bun.file(path).text(),
+    path[0] === '{' ? '' : await Bun.file(path).text(),
   );
 }
 
@@ -160,8 +159,8 @@ export async function transformToWebComponents({
   // Note: JS imports in Windows have / instead of \, so we need to replace it
   let imports = entries
     .map(([name, path]) =>
-      path.startsWith(DIRECT_IMPORT)
-        ? `import "${path.replace(DIRECT_IMPORT, '').replaceAll(sep, '/')}";`
+      path[0] === '{'
+        ? `import "${normalizePath(path)}";`
         : `import ${snakeToCamelCase(name)} from "${path.replaceAll(sep, '/')}";`,
     )
     .join('\n');
@@ -179,7 +178,7 @@ export async function transformToWebComponents({
     'const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);';
 
   const customElementKeys = entries
-    .filter(([_, path]) => !path.startsWith(DIRECT_IMPORT))
+    .filter(([_, path]) => path[0] !== '{')
     .map(([k]) => k);
 
   if (useContextProvider) {
@@ -298,4 +297,11 @@ export async function transformToWebComponents({
     useI18n,
     i18nKeys,
   };
+}
+
+export function normalizePath(rawPathname: string, separator = sep) {
+  const pathname =
+    rawPathname[0] === '{' ? JSON.parse(rawPathname).client : rawPathname;
+
+  return pathname.replaceAll(separator, '/');
 }

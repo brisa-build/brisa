@@ -1,4 +1,4 @@
-import getWebComponentsPerEntryPoints from '@/utils/ast/get-webcomponents-per-entrypoints';
+import getWebComponentsPerEntryPoints from '@/utils/get-webcomponents-per-entrypoints';
 import { it, describe, expect } from 'bun:test';
 
 describe('utils', () => {
