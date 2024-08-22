@@ -321,7 +321,8 @@ describe('utils', () => {
         allWebComponents,
         pageWebComponents: {
           ...pageWebComponents,
-          'emoji-picker': 'import:' + path.join(src, 'lib', 'emoji-picker.tsx'),
+          'emoji-picker':
+            '{"client":"' + path.join(src, 'lib', 'emoji-picker.tsx') + '"}',
         },
         integrationsPath,
       });

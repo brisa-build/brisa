@@ -55,7 +55,7 @@ function findEntryPoints(
 ) {
   const entryPointSet = new Set<string>();
   const visited = new Set<string>();
-  const stack = [getClientPath(file, separator)];
+  const stack = [getWebComponentClientPath(file, separator)];
 
   while (stack.length) {
     const currentFile = stack.pop();
@@ -75,7 +75,10 @@ function findEntryPoints(
   return entryPointSet;
 }
 
-function getClientPath(rawPathname: string, separator = path.sep) {
+export function getWebComponentClientPath(
+  rawPathname: string,
+  separator = path.sep,
+) {
   const pathname =
     rawPathname[0] === '{' ? JSON.parse(rawPathname).client : rawPathname;
 

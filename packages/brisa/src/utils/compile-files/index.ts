@@ -15,7 +15,7 @@ import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import getI18nClientMessages from '@/utils/get-i18n-client-messages';
 import compileActions from '@/utils/compile-actions';
 import generateStaticExport from '@/utils/generate-static-export';
-import getWebComponentsPerEntryPoints from '@/utils/ast/get-webcomponents-per-entrypoints';
+import getWebComponentsPerEntryPoints from '@/utils/get-webcomponents-per-entrypoints';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
 
