@@ -10,6 +10,11 @@ const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
 const FIXTURES = join(import.meta.dir, '..', '..', '__fixtures__');
 const webComponentPath = join(FIXTURES, 'web-components', 'web-component.tsx');
+const webComponent2Path = join(
+  FIXTURES,
+  'web-components',
+  'custom-counter.tsx',
+);
 const serverComponentPath = join(FIXTURES, 'pages', 'index.tsx');
 
 const toExpected = (s: string) =>
@@ -742,6 +747,139 @@ describe('utils', () => {
           );
         }
       `);
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
+      expect(outputCode).toEqual(expected);
+    });
+
+    it('should use the "server" integrated web-component using different name when _C1 already exists', () => {
+      const code = `
+        const _C1 = 'foo';
+        const _C2 = 'bar';
+        export default function ServerComponent() {
+          return (
+            <>
+            {Array.from({ length: 3 }, (_, i) => (
+              <web-component name={'Hello'+i}>
+                <b> Child </b>
+              </web-component>
+            ))}
+            </>
+          );
+        }
+      `;
+      const allWebComponents = {
+        'web-component': JSON.stringify({ server: webComponentPath }),
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+      const expected = toExpected(`
+        import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
+        import _C3 from "${webComponentPath}";
+
+        const _C1 = 'foo';
+        const _C2 = 'bar';
+
+        export default function ServerComponent() {
+          return (
+            <>
+            {Array.from({ length: 3 }, (_, i) => (
+              <_C3 name={'Hello'+i}>
+                <b> Child </b>
+              </_C3>
+            ))}
+            </>
+          );
+        }
+      `);
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
+      expect(outputCode).toEqual(expected);
+    });
+
+    it('should reuse the same path when 2 external WC has the same lib path', () => {
+      const code = `
+        export default function ServerComponent() {
+          return (
+            <>
+              <web-component1 name="Hello1" />
+              <web-component2 name="Hello2" />
+            </>
+          );
+        }
+      `;
+      const allWebComponents = {
+        'web-component1': JSON.stringify({ server: webComponentPath }),
+        'web-component2': JSON.stringify({ server: webComponent2Path }),
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+      const expected = toExpected(`
+        import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
+        import _C1 from "${webComponentPath}";
+        import _C2 from "${webComponent2Path}";
+
+        export default function ServerComponent() {
+          return (
+            <>
+              <_C1 name="Hello1" />
+              <_C2 name="Hello2" />
+            </>
+          );
+        }
+      `);
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(
+        new Set([webComponentPath, webComponent2Path]),
+      );
+      expect(outputCode).toEqual(expected);
+    });
+
+    it('should use different names when 2 external WC has the different lib path', () => {
+      const code = `
+      export default function ServerComponent() {
+        return (
+          <>
+            <web-component1 name="Hello1" />
+            <web-component2 name="Hello2" />
+          </>
+        );
+      }
+    `;
+      const allWebComponents = {
+        'web-component1': JSON.stringify({ server: webComponentPath }),
+        'web-component2': JSON.stringify({ server: webComponentPath }),
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+      const expected = toExpected(`
+      import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
+      import _C1 from "${webComponentPath}";
+
+      export default function ServerComponent() {
+        return (
+          <>
+            <_C1 name="Hello1" />
+            <_C1 name="Hello2" />
+          </>
+        );
+      }
+    `);
 
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toEqual(new Set([webComponentPath]));

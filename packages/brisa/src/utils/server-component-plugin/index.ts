@@ -59,7 +59,8 @@ export default function serverComponentPlugin(
   const imports = new Set<string>();
   const webComponentsWithoutSSR = new Set<string>();
   let actionIdCount = 1;
-  let count = 1;
+  let brisaWCCount = 1;
+  let libraryCount = 1;
   let hasActions = false;
 
   /**
@@ -342,8 +343,17 @@ export default function serverComponentPlugin(
 
       detectedWebComponents[selector] = componentPath;
 
+      // Add Web Component compiled by Brisa Web Component Compiler
+      // https://brisa.build/building-your-application/building/#web-component-compiler
       if (wcRef.server) {
-        const name = '_C1'; // TODO: Generate a unique name for each one
+        const exisingName = usedWebComponents.get(wcRef.server);
+        let name = exisingName ?? '_C1';
+
+        while (!exisingName && (declarations.has(name) || imports.has(name))) {
+          name = `_C${libraryCount++}`;
+        }
+
+        imports.add(name);
         usedWebComponents.set(wcRef.server, name);
         value.arguments[0] = {
           type: 'Identifier',
@@ -368,7 +378,7 @@ export default function serverComponentPlugin(
       let ComponentName = usedWebComponents.get(componentPath);
 
       if (!ComponentName && componentPath[0] !== '{') {
-        ComponentName = `_Brisa_WC${count++}`;
+        ComponentName = `_Brisa_WC${brisaWCCount++}`;
       }
 
       if (ComponentName) usedWebComponents.set(componentPath, ComponentName);
