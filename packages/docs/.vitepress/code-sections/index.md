@@ -45,8 +45,8 @@ if(typeof window !== 'undefined') {
   h2 {
     font-size: 2.25rem;
     line-height: 2.5rem;
-    font-weight: 700; 
-    background-clip: text; 
+    font-weight: 700;
+    background-clip: text;
     color: rgba(0, 0, 0, 0);
     margin-bottom: 30px;
   }
@@ -75,11 +75,13 @@ if(typeof window !== 'undefined') {
   .code,
   .info {
     flex: 1;
+    max-width: 90%;
   }
 
   .info {
     position: sticky;
     padding: 20px;
+    margin-left: 25px;
   }
 }
 
@@ -133,8 +135,27 @@ custom-counter {
     flex-direction: column;
   }
 }
-</style>
 
+@media  (max-width: 900px) {
+  .code-section {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: pre-wrap; /* Allows code to wrap within the container */
+    word-wrap: break-word; /* Break long words to fit within the container */
+  }
+
+  .info,
+  .code {
+    padding: 5px;
+  }
+
+  .vp-doc div[class*='language-']{
+    margin-left:1px;
+    font-size: 0.9rem;
+  }
+}
+
+</style>
 
 <div class="code-section">
 
@@ -197,7 +218,6 @@ export default CustomCounter;
 
 <p class="bytes">+3 KB</p>
 
-
 </div>
 
 <div class="info">
@@ -207,7 +227,7 @@ export default CustomCounter;
 In Brisa everything by default runs only on the server, except the `src/web-components` folder that also runs on the client. Web components are rendered on the server (SSR) and hydrated on the client using native Web APIs, as they are transformed into Web Components with Signals.
 
 <div class="demo">
-<custom-counter start="5"></custom-counter>
+  <custom-counter start="5"></custom-counter>
 </div>
 
 <a class="nav" href="/building-your-application/components-details/web-components">
@@ -229,7 +249,7 @@ Brisa mixes ideas from React's "Server Actions" and HTMX concepts. With Brisa, y
 The idea is that if you want you can create a SPA without Web Components, only with the weight of the Brisa RPC to make the connection with the server.
 
 <a class="nav" href="/building-your-application/data-management/server-actions">
-More about Server Actions
+  More about Server Actions
 </a>
 
 </div>
@@ -282,7 +302,6 @@ function I18nExample({}, { i18n: { t, lang } }) {
 ```
 
 <p class="bytes">+0 B <small>(Server Components)</small><br /> +800 B <small>(Web Components)</small></p>
-
 
 </div>
 
