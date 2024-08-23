@@ -123,3 +123,13 @@ export default function CustomCounter({ start }: { start?: number }): JSX.Elemen
 ```
 
 By following these guidelines, you can ensure that your Brisa Web Components are fully typed and compatible with TypeScript.
+
+## Example
+
+You can use this example library to create your own web components with Brisa:
+
+- [Simple Counter as Web Component Example](https://github.com/aralroca/counter-wc)
+
+If you use the Brisa compiler to create your own web components, add this badge:
+
+[![made with Brisa](https://img.shields.io/badge/made_with-Brisa-606ce2)](https://brisa.build)
