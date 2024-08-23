@@ -108,7 +108,7 @@ It **only do SSR** in the case of **Brisa web components without any transpilati
 
 However, there is a solution. 
 
-Brisa is more than a framework, it is also a [tool to create Web Component libraries](/api-reference/brisa-cli/brisa-build), so all web components created with this Brisa tool can be used in any framework or VanillaJS, and apart, you can use the file with the suffix `.server.js` to do SSR of the web components. So all web components made with Brisa can be imported with this other declaration:
+Brisa is more than a framework, it is also a [tool to create Web Component libraries](/building-your-application/building/web-component-compiler), so all web components created with this Brisa tool can be used in any framework or VanillaJS, and apart, you can use the file with the suffix `.server.js` to do SSR of the web components. So all web components made with Brisa can be imported with this other declaration:
 
 ```ts 6
 import type { WebComponentIntegrations } from "brisa";
