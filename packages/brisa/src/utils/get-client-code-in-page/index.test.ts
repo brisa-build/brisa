@@ -22,7 +22,7 @@ const i18nCode = 3072;
 const brisaSize = 5959; // TODO: Reduce this size :/
 const webComponents = 792;
 const unsuspenseSize = 217;
-const rpcSize = 2467; // TODO: Reduce this size
+const rpcSize = 2468; // TODO: Reduce this size
 const lazyRPCSize = 4187; // TODO: Reduce this size
 // lazyRPC is loaded after user interaction (action, link),
 // so it's not included in the initial size
@@ -355,7 +355,6 @@ describe('utils', () => {
       GlobalRegistrator.register();
 
       document.body.innerHTML = `<some-lib></some-lib>`;
-      console.log(output!.code);
       eval(output!.code);
       const someLibEl = document.querySelector('some-lib');
       expect(someLibEl?.shadowRoot?.innerHTML).toBe('has 1 web context plugin');

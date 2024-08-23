@@ -15,10 +15,20 @@ export default function generateDynamicTypes({
   const { CONFIG } = getConstants();
   const intrinsicCustomElements = `export interface IntrinsicCustomElements {
     ${Object.entries(allWebComponents)
-      .map(
-        ([name, location]) =>
-          `'${name}': JSX.WebComponentAttributes<typeof import("${location}").default>;`,
-      )
+      .map(([name, location]) => {
+        let typePath = location;
+
+        if (typePath[0] === '{') {
+          const types = JSON.parse(typePath).types;
+          if (types) {
+            typePath = types;
+          } else {
+            return `'${name}': any;`;
+          }
+        }
+
+        return `'${name}': JSX.WebComponentAttributes<typeof import("${typePath}").default>;`;
+      })
       .join('\n')}
   }`;
 

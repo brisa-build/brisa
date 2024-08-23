@@ -34,6 +34,60 @@ describe('utils', () => {
       );
     });
 
+    it('should use the "type" field when the location is JSON stringified', () => {
+      const allWebComponents = {
+        'my-component':
+          '{"client":"src/components/my-component.tsx", "types":"src/types/my-component.ts"}',
+        'my-other-component':
+          '{"client":"src/components/other-component.tsx", "types":"src/types/other-component.ts"}',
+      };
+
+      const pagesRoutes = {
+        routes: [
+          ['/', {}],
+          ['/about', {}],
+          ['/blog/[slug]', {}],
+        ],
+      } as any;
+
+      const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
+
+      expect(normalizeQuotes(result)).toBe(
+        normalizeQuotes(`export interface IntrinsicCustomElements {
+        'my-component': JSX.WebComponentAttributes<typeof import("src/types/my-component.ts").default>;
+        'my-other-component': JSX.WebComponentAttributes<typeof import("src/types/other-component.ts").default>;
+      }
+      
+      export type PageRoute = "/" | "/about" | "/blog/abc-123";`),
+      );
+    });
+
+    it('should return "any" when the location is JSON stringified and not have the "types" field', () => {
+      const allWebComponents = {
+        'my-component': '{"client":"src/components/my-component.tsx"}',
+        'my-other-component': '{"client":"src/components/other-component.tsx"}',
+      };
+
+      const pagesRoutes = {
+        routes: [
+          ['/', {}],
+          ['/about', {}],
+          ['/blog/[slug]', {}],
+        ],
+      } as any;
+
+      const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
+
+      expect(normalizeQuotes(result)).toBe(
+        normalizeQuotes(`export interface IntrinsicCustomElements {
+        'my-component': any;
+        'my-other-component': any;
+      }
+      
+      export type PageRoute = "/" | "/about" | "/blog/abc-123";`),
+      );
+    });
+
     it('should NOT generate PageRoute with no routes', () => {
       const allWebComponents = {
         'my-component': 'src/components/my-component.tsx',
