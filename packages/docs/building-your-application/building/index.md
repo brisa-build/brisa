@@ -46,3 +46,9 @@ Brisa supports multiple [output](/building-your-application/configuring/output) 
 - [Build a Desktop App](/building-your-application/building/desktop-app)
 - [Build a Android App](/building-your-application/building/android-app)
 - [Build a iOS App](/building-your-application/building/ios-app)
+
+## Web Component Compiler
+
+Brisa is more than a framework; it is a **Web Component Compiler**. You can create web components using Brisa and build them to create a library.
+
+- [Web Component Compiler](/building-your-application/building/web-component-compiler)
