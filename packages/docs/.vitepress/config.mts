@@ -355,6 +355,10 @@ export default defineConfig({
                 text: 'iOS app',
                 link: '/building-your-application/building/ios-app',
               },
+              {
+                text: 'Web Component Compiler',
+                link: '/building-your-application/building/web-component-compiler',
+              },
             ],
           },
           {

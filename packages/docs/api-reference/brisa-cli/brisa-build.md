@@ -77,6 +77,8 @@ The good thing is that if you are on Windows, it will use the native Windows stu
 
 ## Web component build
 
+Brisa is more than a framework; it is a [Web Component Compiler](/building-your-application/building/web-component-compiler). You can create web components using Brisa and build them to create a library.
+
 `brisa build -w path/web-component.tsx` creates a standalone web component to create a library. The path to the file can be relative or absolute. The output will be:
 
 > [!IMPORTANT]

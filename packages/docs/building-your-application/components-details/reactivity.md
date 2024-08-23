@@ -4,7 +4,7 @@ description: Understand how to use signals and reactivity in Brisa.
 
 # Reactivity
 
-The reactivity in Brisa is based on signals. The signals are the state, the props, the store, the derived and the context. The signals are reactive, that is, when they change, they automatically update the parts of the DOM where they are used.
+The reactivity in Brisa is based on signals. The signals are the [state](/api-reference/components/web-context#state), the [props](/building-your-application/components-details/web-components#props), the [store](/api-reference/components/web-context#store), the [derived](/api-reference/components/web-context#derived) and the context. The signals are reactive, that is, when they change, they automatically update the parts of the DOM where they are used.
 
 In order to don't break the reactivity, you have to use the `.value` clause when you want to consume the signal. For example:
 
