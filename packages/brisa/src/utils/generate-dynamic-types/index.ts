@@ -19,12 +19,8 @@ export default function generateDynamicTypes({
         let typePath = location;
 
         if (typePath[0] === '{') {
-          const types = JSON.parse(typePath).types;
-          if (types) {
-            typePath = types;
-          } else {
-            return `'${name}': any;`;
-          }
+          typePath = getIntegrationTypePath(typePath);
+          if (!typePath) return `'${name}': any;`;
         }
 
         return `'${name}': JSX.WebComponentAttributes<typeof import("${typePath}").default>;`;
@@ -55,4 +51,12 @@ export default function generateDynamicTypes({
     : '';
 
   return intrinsicCustomElements + '\n' + pageRouteType;
+}
+
+function getIntegrationTypePath(location: string) {
+  try {
+    return JSON.parse(location).types ?? null;
+  } catch {
+    return null;
+  }
 }
