@@ -139,7 +139,6 @@ custom-counter {
 @media  (max-width: 900px) {
   .code-section {
     flex-wrap: nowrap;
-    overflow-x: auto;
     white-space: pre-wrap; /* Allows code to wrap within the container */
     word-wrap: break-word; /* Break long words to fit within the container */
     gap: 5px;
