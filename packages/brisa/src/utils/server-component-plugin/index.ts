@@ -342,6 +342,15 @@ export default function serverComponentPlugin(
 
       detectedWebComponents[selector] = componentPath;
 
+      if (wcRef.server) {
+        const name = '_C1'; // TODO: Generate a unique name for each one
+        usedWebComponents.set(wcRef.server, name);
+        value.arguments[0] = {
+          type: 'Identifier',
+          name: name,
+        };
+      }
+
       // Avoid transformation if it is a native web-component
       if (selector?.startsWith('native-')) return value;
 
@@ -352,7 +361,7 @@ export default function serverComponentPlugin(
             prop?.key?.name === 'skipSSR' && prop?.value?.value !== false,
         )
       ) {
-        webComponentsWithoutSSR.add(wcRef.client);
+        webComponentsWithoutSSR.add(wcRef.client ?? wcRef.server);
         return value;
       }
 
@@ -364,7 +373,7 @@ export default function serverComponentPlugin(
 
       if (ComponentName) usedWebComponents.set(componentPath, ComponentName);
       else {
-        webComponentsWithoutSSR.add(wcRef.client);
+        webComponentsWithoutSSR.add(wcRef.client ?? wcRef.server);
         return value;
       }
 
