@@ -673,7 +673,7 @@ describe('utils', () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it('should NOT SSR an integrated web-component with direct import and will be added as dependencies', () => {
+    it('should NOT SSR an integrated web-component without "server" import and will be added as dependencies', () => {
       const code = `
         export default function ServerComponent() {
           return (
@@ -703,7 +703,52 @@ describe('utils', () => {
       expect(outputCode).toEqual(expected);
     });
 
-    it('should NOT SSR an integrated web-component with direct import and skipSSR attribute and will be added as dependencies', () => {
+    it('should use the "server" integrated web-component when is present', () => {
+      const code = `
+        export default function ServerComponent() {
+          return (
+            <>
+            {Array.from({ length: 3 }, (_, i) => (
+              <web-component name={'Hello'+i}>
+                <b> Child </b>
+              </web-component>
+            ))}
+            </>
+          );
+        }
+      `;
+      const allWebComponents = {
+        'web-component': JSON.stringify({ server: webComponentPath }),
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+      const outputCode = normalizeQuotes(out.code);
+      const expected = toExpected(`
+        import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
+        import _C1 from "${webComponentPath}";
+
+        export default function ServerComponent() {
+          return (
+            <>
+            {Array.from({ length: 3 }, (_, i) => (
+              <_C1 name={'Hello'+i}>
+                <b> Child </b>
+              </_C1>
+            ))}
+            </>
+          );
+        }
+      `);
+
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toEqual(new Set([webComponentPath]));
+      expect(outputCode).toEqual(expected);
+    });
+
+    it('should NOT SSR an integrated web-component lib with skipSSR attribute and will be added as dependencies', () => {
       const code = `
         export default function ServerComponent() {
           return (
