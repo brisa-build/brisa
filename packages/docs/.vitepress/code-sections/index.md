@@ -154,6 +154,9 @@ custom-counter {
     .code {
       margin: auto;
       padding: 5px;
+    }
+
+    .code {
       font-size: 0.9rem;
     }
 
