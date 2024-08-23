@@ -134,4 +134,8 @@ If you use the Brisa compiler to create your own web components, add this badge:
 
 [![made with Brisa](https://img.shields.io/badge/made_with-Brisa-606ce2)](https://brisa.build)
 
+```md
+[![made with Brisa](https://img.shields.io/badge/made_with-Brisa-606ce2)](https://brisa.build)
+```
+
 Into your project's README file, let us know, and we will share your library on the Brisa website.
