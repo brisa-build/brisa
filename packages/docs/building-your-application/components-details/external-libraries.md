@@ -23,7 +23,9 @@ Once installed, you can import the library wherever needed in your project and u
 ```ts
 import myLibrary from "<library-name>";
 
-// Use library functions or classes as needed, whether inside web components, server components, middleware, etc.
+// Use library functions or classes as needed,
+// whether inside web components, server
+// components, middleware, etc.
 ```
 
 This addition emphasizes the versatility of standalone libraries, making it clear that developers can utilize them in various parts of their project, depending on the specific needs of each component type.
@@ -155,6 +157,12 @@ export default {
 ```
 
 And create a file with the name `<library-path>.types.d.ts` with the types of the web component.
+
+Example of types for a web component:
+
+```ts
+export default function CustomCounter({ start }: { start?: number }): JSX.Element;
+```
 
 > [!NOTE]
 >
