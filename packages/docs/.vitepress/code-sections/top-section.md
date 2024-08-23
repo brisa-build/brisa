@@ -1,6 +1,6 @@
 <div class="code-section">
 
-<div class="start">
+<div class="start get-started">
 
 <a class="nav" href="/getting-started/quick-start">Get started →</a>
 
