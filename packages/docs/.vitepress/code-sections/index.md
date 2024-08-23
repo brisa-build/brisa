@@ -68,7 +68,7 @@ if(typeof window !== 'undefined') {
     }
   }
 
-  .code .language-tsx, .code .language-sh, .demo{
+  .code .language-tsx, .code .language-sh, .demo, .get-started{
     box-shadow: 1px 1px 5px 0 var(--shadow-color);
   }
 
@@ -142,16 +142,24 @@ custom-counter {
     overflow-x: auto;
     white-space: pre-wrap; /* Allows code to wrap within the container */
     word-wrap: break-word; /* Break long words to fit within the container */
-  }
+    gap: 5px;
+    flex-wrap: wrap;
+    margin: 0;
 
-  .info,
-  .code {
-    padding: 5px;
-  }
+    .code:not(.start) {
+      margin-top: 20px;
+    }
 
-  .vp-doc div[class*='language-']{
-    margin-left:1px;
-    font-size: 0.9rem;
+    .info,
+    .code {
+      margin: auto;
+      padding: 5px;
+      font-size: 0.9rem;
+    }
+
+    a, .demo {
+      margin: 20px auto;
+    }
   }
 }
 
