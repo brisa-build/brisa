@@ -417,7 +417,7 @@ async function enqueueDuringRendering(
 
       // Client file
       if (fs.existsSync(clientFile!)) {
-        const hash = await Bun.file(clientFile).text();
+        const hash = fs.readFileSync(clientFile, 'utf8');
         const filename = request.route.src.replace('.js', `-${hash}.js`);
         const { locale } = request.i18n;
         const route = JSON.stringify({
@@ -435,17 +435,15 @@ async function enqueueDuringRendering(
             'pages-client',
             filenameI18n,
           );
-          const i18nFile = Bun.file(pathPageI18n);
 
-          if (await i18nFile.exists()) {
+          if (fs.existsSync(pathPageI18n)) {
             let script = `<script src="${compiledPagesPath}/${filenameI18n}"></script>`;
 
             // Script to override client translations caused by "overrideMessages" function
             if (request.store.has('_messages')) {
-              const clientI18nMessagesCode = (await i18nFile.text()).replace(
-                /^window.i18nMessages ?=/,
-                'return ',
-              );
+              const clientI18nMessagesCode = fs
+                .readFileSync(pathPageI18n, 'utf-8')
+                .replace(/^window.i18nMessages ?=/, 'return ');
 
               const scriptContent = JSON.stringify(
                 overrideClientTranslations(
@@ -647,8 +645,9 @@ function getValueOfComponent(
 
 async function isInPathList(pathname: string, request: RequestContext) {
   const { BUILD_DIR } = getConstants();
-  const listFile = Bun.file(pathname);
-  const listText = (await listFile.exists()) ? await listFile.text() : '';
+  const listText = fs.existsSync(pathname)
+    ? fs.readFileSync(pathname, 'utf-8')
+    : '';
 
   if (!listText) return false;
 
