@@ -132,10 +132,24 @@ You can use this example library to create your own web components with Brisa:
 
 If you use the Brisa compiler to create your own web components, add this badge:
 
-[![made with Brisa](https://img.shields.io/badge/made_with-Brisa-606ce2)](https://brisa.build)
+<a href="https://brisa.build" target="_blank" rel="noopener noreferrer">
+  <img
+    width="150"
+    height="42"
+    src="https://brisa.build/assets/brisa_badge.svg"
+    alt="Made with Brisa"
+  />
+</a>
 
 ```md
-[![made with Brisa](https://img.shields.io/badge/made_with-Brisa-606ce2)](https://brisa.build)
+<a href="https://brisa.build" target="_blank" rel="noopener noreferrer">
+  <img
+    width="150"
+    height="42"
+    src="https://brisa.build/assets/brisa_badge.svg"
+    alt="Made with Brisa"
+  />
+</a>
 ```
 
 Into your project's README file, let us know, and we will share your library on the Brisa website.
