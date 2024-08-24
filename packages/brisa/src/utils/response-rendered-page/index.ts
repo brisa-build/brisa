@@ -1,6 +1,7 @@
 import type { MatchedBrisaRoute, RequestContext } from '@/types';
 import path from 'node:path';
 import fs from 'node:fs';
+import { pipeline } from 'node:stream';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
 import { getConstants } from '@/constants';
 import transferStoreService from '@/utils/transfer-store-service';
@@ -14,6 +15,8 @@ type Params = {
   error?: Error;
   headers?: Record<string, string>;
 };
+
+const isBunRuntime = typeof Bun !== 'undefined';
 
 export default async function responseRenderedPage({
   req,
@@ -64,5 +67,32 @@ function getPrerenderedPage(route: MatchedBrisaRoute) {
       : `${pathname}.html`,
   );
 
-  return fs.existsSync(filePath) ? Bun.file(filePath).stream() : null;
+  if (!fs.existsSync(filePath)) return null;
+  return getReadableStreamFromPath(filePath);
+}
+
+function getReadableStreamFromPath(filePath: string) {
+  if (isBunRuntime) {
+    return Bun.file(filePath).stream();
+  }
+  const readStream = fs.createReadStream(filePath);
+
+  return new ReadableStream({
+    start(controller) {
+      pipeline(
+        readStream,
+        async function* (source) {
+          for await (const chunk of source) {
+            controller.enqueue(chunk);
+          }
+          controller.close();
+        },
+        (err) => {
+          if (err) {
+            controller.error(err);
+          }
+        },
+      );
+    },
+  });
 }
