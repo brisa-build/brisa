@@ -1,4 +1,4 @@
-import { watch } from 'node:fs';
+import { watch, existsSync, statSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { spawnSync } from 'node:child_process';
@@ -26,13 +26,18 @@ export async function activateHotReload() {
   async function watchSourceListener(event: any, filename: any) {
     try {
       const filePath = path.join(SRC_DIR, filename);
-      const file = Bun.file(filePath);
+      let hashNum = null;
 
-      if (event !== 'change' && file.size !== 0) return;
+      if (event !== 'change' && statSync(filePath).size !== 0) return;
 
-      const hashNum = (await file.exists())
-        ? hash(await file.arrayBuffer())
-        : null;
+      if (existsSync(filePath)) {
+        const buffer = readFileSync(filePath);
+        const arrayBuffer = buffer.buffer.slice(
+          buffer.byteOffset,
+          buffer.byteOffset + buffer.byteLength,
+        );
+        hashNum = hash(arrayBuffer);
+      }
 
       // Related with:
       // - https://github.com/brisa-build/brisa/issues/227
