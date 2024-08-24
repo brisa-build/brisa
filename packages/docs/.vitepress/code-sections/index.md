@@ -68,8 +68,12 @@ if(typeof window !== 'undefined') {
     }
   }
 
-  .code .language-tsx, .code .language-sh, .demo, .get-started .language-sh {
+  .code .language-tsx, .code .language-sh, .demo {
     box-shadow: 1px 1px 5px 0 var(--shadow-color);
+  }
+
+  .get-started .language-sh {
+    box-shadow: 1px 1px 3px 0 var(--shadow-color);
   }
 
   .code,

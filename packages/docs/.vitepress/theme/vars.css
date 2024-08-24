@@ -15,7 +15,7 @@
   --home-bg: #a2d5cf;
   --vp-code-block-bg: var(--vp-sidebar-bg-color);
   --banner-bg: #ebfffc;
-  --shadow-color: hsla(0, 0%, 40%, .5);
+  --shadow-color: hsl(0deg 0% 40% / 16%);
 }
 
 .VPContent.is-home {
