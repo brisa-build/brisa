@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, spyOn, afterEach } from 'bun:test';
 import renderToString from '.';
+import { spawnSync } from 'child_process';
 
 let mockLog: ReturnType<typeof spyOn>;
 
@@ -20,6 +21,21 @@ describe('utils', () => {
 
       // Verify page error logs are not logged in this case
       expect(mockLog).not.toHaveBeenCalled();
+    });
+
+    it('should render to string correctly in Node.js', async () => {
+      const command = spawnSync('node', [
+        '--input-type=module',
+        '-e',
+        `
+            import { jsx } from '${import.meta.dirname}/../../../jsx-runtime/index.js';
+            import { renderToString } from '${import.meta.dirname}/../../../server/index.js';  
+            const element = jsx('div', { children: 'Hello, World!' });
+            renderToString(element).then(console.log);
+        `,
+      ]);
+      expect(command.error).toBeUndefined();
+      expect(command.stdout.toString()).toBe('<div>Hello, World!</div>\n');
     });
 
     it('should render the real content without suspense by default', async () => {

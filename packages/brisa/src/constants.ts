@@ -12,8 +12,10 @@ import {
   yellowLog,
 } from './utils/log/log-color';
 
-const IS_SERVE_PROCESS = process.argv[1].endsWith(
-  path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
+const IS_SERVE_PROCESS = Boolean(
+  process.argv[1]?.endsWith?.(
+    path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
+  ),
 );
 const rootDir = process.cwd();
 const staticExportOutputOption = new Set([
