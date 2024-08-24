@@ -67,11 +67,11 @@ function getPrerenderedPage(route: MatchedBrisaRoute) {
       : `${pathname}.html`,
   );
 
-  if (!fs.existsSync(filePath)) return null;
   return getReadableStreamFromPath(filePath);
 }
 
 function getReadableStreamFromPath(filePath: string) {
+  if (!fs.existsSync(filePath)) return null;
   if (isBunRuntime) {
     return Bun.file(filePath).stream();
   }
