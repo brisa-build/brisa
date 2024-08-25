@@ -157,6 +157,15 @@ async function enqueueDuringRendering(
       continue;
     }
 
+    // Cases that is rendered an object <div>{object}</div>
+    if (
+      typeof elementContent === 'object' &&
+      !isArrawOfJSXContent(elementContent)
+    ) {
+      controller.enqueue(elementContent.toString(), suspenseId);
+      continue;
+    }
+
     const [type, propsWithoutChildren, children] = elementContent as any;
     const props = { ...propsWithoutChildren, children };
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
@@ -192,12 +201,6 @@ async function enqueueDuringRendering(
       controller.setCurrentWebComponentSymbol(webComponentSymbol);
     } else if (isElement) {
       isNextInSlottedPosition = false;
-    }
-
-    // Cases that is rendered an object <div>{object}</div>
-    if (!type && !props) {
-      controller.enqueue(elementContent.toString(), suspenseId);
-      continue;
     }
 
     // Danger HTML content using dangerHTML function
@@ -676,6 +679,6 @@ function injectCSS(
   }
 }
 
-function isArrawOfJSXContent(content: unknown[]): content is JSX.Element {
+function isArrawOfJSXContent(content: any): content is JSX.Element {
   return content?.[Symbol.for('isJSX') as any] === true;
 }
