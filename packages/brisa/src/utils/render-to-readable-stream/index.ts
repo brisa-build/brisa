@@ -139,7 +139,12 @@ async function enqueueDuringRendering(
   componentProps?: Props,
 ): Promise<void> {
   const result = await Promise.resolve().then(() => element);
-  const elements = Array.isArray(result) ? result : [result];
+  let elements = Array.isArray(result) ? result : [result];
+
+  if (isArrawOfJSXContent(elements)) {
+    elements = [elements];
+  }
+
   const { BUILD_DIR, VERSION_HASH, CONFIG, IS_DEVELOPMENT, IS_SERVE_PROCESS } =
     getConstants();
   const basePath = CONFIG.basePath || '';
@@ -152,7 +157,8 @@ async function enqueueDuringRendering(
       continue;
     }
 
-    const { type, props } = elementContent as any;
+    const [type, propsWithoutChildren, children] = elementContent as any;
+    const props = { ...propsWithoutChildren, children };
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
     const isFragment = type?.__isFragment;
     const isTagToIgnore = isFragment || isServerProvider;
@@ -358,7 +364,7 @@ async function enqueueDuringRendering(
 
     // Node Content
     await enqueueChildren(
-      props.children,
+      children,
       request,
       controller,
       suspenseId,
@@ -582,7 +588,7 @@ async function enqueueArrayChildren(
   componentProps?: Props,
 ): Promise<void> {
   for (const child of children) {
-    if (Array.isArray(child)) {
+    if (Array.isArray(child) && !isArrawOfJSXContent(child)) {
       await enqueueArrayChildren(
         child,
         request,
@@ -668,4 +674,12 @@ function injectCSS(
     );
     (request as any)._style = '';
   }
+}
+
+function isArrawOfJSXContent(content: unknown[]): content is JSX.Element {
+  return (
+    content.length === 3 &&
+    typeof content[1] === 'object' &&
+    'key' in content[1]!
+  );
 }
