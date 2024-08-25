@@ -1,3 +1,4 @@
+import { dangerHTML } from '@/core';
 import type { WebContext } from '@/types';
 import { isNavigateThrowable } from '@/utils/navigate/utils';
 
@@ -415,12 +416,7 @@ function printStack(stack?: string) {
 
   return (
     <pre style={{ whiteSpace: 'normal', wordWrap: 'break-word' }}>
-      {{
-        type: 'HTML',
-        props: {
-          html: injectStackLinks(stack),
-        },
-      }}
+      {dangerHTML(injectStackLinks(stack))}
     </pre>
   );
 }
