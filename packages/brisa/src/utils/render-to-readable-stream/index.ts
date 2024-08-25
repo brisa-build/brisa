@@ -677,9 +677,5 @@ function injectCSS(
 }
 
 function isArrawOfJSXContent(content: unknown[]): content is JSX.Element {
-  return (
-    content.length === 3 &&
-    typeof content[1] === 'object' &&
-    'key' in content[1]!
-  );
+  return content?.[Symbol.for('isJSX') as any] === true;
 }

@@ -5,7 +5,7 @@ const createNode = (
   type: Type,
   { children, ...props }: Props,
   key?: string,
-) => [type, { ...props, key }, children];
+) => Object.assign([type, { ...props, key }, children], { [Symbol.for('isJSX')]: true });
 
 Fragment.__isFragment = true;
 
