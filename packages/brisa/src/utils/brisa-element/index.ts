@@ -304,8 +304,8 @@ export default function brisaElement(
         }
 
         // Handle children
-        if ((children as any)?.type === HTML) {
-          (el as any)[INNER_HTML] += (children as any).props.html as string;
+        if ((children as any)?.[0] === HTML) {
+          (el as any)[INNER_HTML] += (children as any)[1].html as string;
         } else if (children === SLOT_TAG) {
           appendChild(el, createElement(SLOT_TAG));
         } else if (isReactiveArray(children)) {
@@ -333,7 +333,7 @@ export default function brisaElement(
               function startEffect(child: Children) {
                 [child, el] = handlePortal(child, el);
 
-                const isDangerHTML = (child as any)?.type === HTML;
+                const isDangerHTML = (child as any)?.[0] === HTML;
 
                 if (isDangerHTML || isReactiveArray(child)) {
                   const currentElNodes = arr(el.childNodes);
@@ -342,8 +342,7 @@ export default function brisaElement(
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {
                     const p = createElement('p');
-                    (p as any)[INNER_HTML] += (child as any).props
-                      .html as string;
+                    (p as any)[INNER_HTML] += (child as any)[1].html as string;
 
                     for (const node of arr(p.childNodes)) {
                       appendChild(fragment, node);
