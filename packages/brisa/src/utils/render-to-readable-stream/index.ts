@@ -556,7 +556,7 @@ async function enqueueChildren(
   isSlottedPosition = false,
   componentProps?: Props,
 ): Promise<void> {
-  if (Array.isArray(children)) {
+  if (Array.isArray(children) && !isArrawOfJSXContent(children)) {
     await enqueueArrayChildren(
       children,
       request,
