@@ -28,7 +28,7 @@ export default function SomeComponent() {
 }
 ```
 
-Another way to use `dangerHTML` is to import an HTML file and inject it into the DOM. For this, you can use the `with` keyword to specify the type of the file you are importing.
+Another way to use `dangerHTML` is to import an HTML file and inject it into the DOM. For this, you can use the `with` keyword to import the file with the type `text`.
 
 ```tsx
 import html from "./file.html" with { type: "text" };
