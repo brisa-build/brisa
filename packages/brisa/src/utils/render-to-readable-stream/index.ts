@@ -157,7 +157,7 @@ async function enqueueDuringRendering(
       continue;
     }
 
-    // Cases that is rendered an object <div>{object}</div>
+    // Cases that is rendered an object <div>{object}</div> -> [object Object]
     if (
       typeof elementContent === 'object' &&
       !isArrawOfJSXContent(elementContent)
