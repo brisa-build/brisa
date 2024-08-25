@@ -33,10 +33,14 @@ Another way to use `dangerHTML` is to import an HTML file and inject it into the
 ```tsx
 import html from "./file.html" with { type: "text" };
 
-export default function SomeComponent() {
+export default function Page() {
   return dangerHTML(html);
 }
 ```
+
+> [!NOTE]
+>
+> A better way to serve static HTML without having to render is by using the Brisa [prerender macro](/api-reference/macros/prerender).
 
 #### Parameters:
 
