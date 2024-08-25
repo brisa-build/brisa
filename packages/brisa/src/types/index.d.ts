@@ -760,9 +760,7 @@ export type ReactiveMap = {
   Map: Map<string, unknown>;
 };
 
-type Props<T extends Record<string, unknown> = Record<string, unknown>> = T & {
-  children?: JSX.Element;
-};
+type Props<T extends Record<string, unknown> = Record<string, unknown>> = T;
 
 export type ResponseHeaders = (
   req: RequestContext,
@@ -1446,12 +1444,7 @@ export function navigate(
   options?: NavigateOptions,
 ): never;
 
-type DangerHTMLOutput = {
-  type: 'HTML';
-  props: {
-    html: string;
-  };
-};
+type DangerHTMLOutput = ['HTML', { html: string }, null];
 
 /**
  * Description:
@@ -1557,18 +1550,12 @@ declare global {
       | Primitives
       | JSX.Element[]
       | AsyncGenerator
-      | {
-          type: Type;
-          props: Props;
-        }
+      | [Type, Props, JSX.Element]
       | Promise<
           | Primitives
           | JSX.Element[]
           | AsyncGenerator
-          | {
-              type: Type;
-              props: Props;
-            }
+          | [Type, Props, JSX.Element]
         >;
 
     interface ElementChildrenAttribute {
