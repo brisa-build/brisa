@@ -162,7 +162,7 @@ async function enqueueDuringRendering(
       typeof elementContent === 'object' &&
       !isArrawOfJSXContent(elementContent)
     ) {
-      controller.enqueue(elementContent.toString(), suspenseId);
+      controller.enqueue(String(elementContent), suspenseId);
       continue;
     }
 
@@ -678,7 +678,6 @@ function injectCSS(
     (request as any)._style = '';
   }
 }
-
-function isArrawOfJSXContent(content: any): content is JSX.Element {
-  return content?.[Symbol.for('isJSX') as any] === true;
+function isArrawOfJSXContent(content: unknown): content is JSX.Element {
+  return Array.isArray(content) && Symbol.for('isJSX') in content;
 }
