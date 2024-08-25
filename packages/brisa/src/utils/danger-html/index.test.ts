@@ -6,11 +6,6 @@ describe('danger-html', () => {
     const html = '<div>test</div>';
     const element = dangerHTML(html);
 
-    expect(element).toEqual({
-      type: 'HTML',
-      props: {
-        html,
-      },
-    });
+    expect(element).toEqual(['HTML', { html }, null]);
   });
 });
