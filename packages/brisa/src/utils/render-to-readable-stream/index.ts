@@ -527,7 +527,7 @@ async function enqueueComponent(
     );
   }
 
-  if (Array.isArray(componentValue)) {
+  if (Array.isArray(componentValue) && !isArrawOfJSXContent(componentValue)) {
     return enqueueChildren(
       componentValue,
       request,
