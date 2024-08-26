@@ -90,7 +90,9 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "15.0.0",
     "@types/bun": "1.1.8",
-    "brisa": "latest"
+    "brisa": "latest",
+    "mime-types": "2.1.35",
+    "@types/mime-types": "2.1.4"
   },
   "peerDependencies": {
     "typescript": "5.5.4"
