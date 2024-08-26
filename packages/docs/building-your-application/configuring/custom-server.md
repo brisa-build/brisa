@@ -60,3 +60,11 @@ By default (without custom server) is:
   }
 }
 ```
+
+> [!WARNING]
+>
+> If you use a custom server you need to handle [clustering](/building-your-application/configuring/clustering) yourself.
+
+> [!CAUTION]
+>
+> If you use a different runtime than Bun, like Node.js, you need to handle the WebSockets, HTTP/2, and other features yourself re-using the  `serveOptions`.

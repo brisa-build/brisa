@@ -78,7 +78,6 @@ function handleError(errorName: string) {
       ],
       stack: e.stack,
     });
-    // throw e; // To display the error message, the stack trace and exit the process
   };
 }
 
