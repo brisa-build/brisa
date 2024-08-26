@@ -21,6 +21,8 @@ import { removeBasePathFromStringURL } from '@/utils/base-path';
 import { isNavigateThrowable } from '@/utils/navigate/utils';
 import { RenderInitiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
+import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
+import getContentTypeFromPath from '@/utils/get-content-type-from-path';
 
 export async function getServeOptions() {
   setUpEnvVars();
@@ -303,10 +305,9 @@ export async function getServeOptions() {
       compressionFormat = 'gz';
     }
 
-    const file = Bun.file(path);
     const responseOptions = {
       headers: {
-        'content-type': file.type,
+        'content-type': getContentTypeFromPath(path),
         'cache-control': CACHE_CONTROL,
         ...(compressionFormat
           ? {
@@ -318,7 +319,9 @@ export async function getServeOptions() {
     };
 
     return new Response(
-      compressionFormat ? Bun.file(`${path}.${compressionFormat}`) : file,
+      compressionFormat
+        ? getReadableStreamFromPath(`${path}.${compressionFormat}`)
+        : getReadableStreamFromPath(path),
       responseOptions,
     );
   }
