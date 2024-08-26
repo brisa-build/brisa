@@ -1,9 +1,11 @@
 import fs from 'node:fs';
 import { pipeline } from 'node:stream';
 
+const defaultIsBunRuntime = typeof Bun !== 'undefined';
+
 export default function getReadableStreamFromPath(
   filePath: string,
-  isBunRuntime = typeof Bun !== 'undefined',
+  isBunRuntime = defaultIsBunRuntime,
 ) {
   if (!fs.existsSync(filePath)) return null;
 
