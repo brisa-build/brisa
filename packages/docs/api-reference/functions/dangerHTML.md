@@ -40,7 +40,11 @@ export default function Page() {
 
 > [!NOTE]
 >
-> A better way to serve static HTML without having to render is by using the Brisa [prerender macro](/api-reference/macros/prerender).
+> By serving the HTML in this way, only 1 chunk will be sent during the streaming of the HTML without having to waste time rendering the JSX.
+
+> [!TIP]
+>
+> A better way to serve static HTML without having to render is [prerendering the page](/building-your-application/configuring/static-pages#prerender-some-pages-in-output-server) or using the [prerender macro](/api-reference/macros/prerender) to prerender only some parts of the page.
 
 #### Parameters:
 
