@@ -2,7 +2,7 @@
 description: Render a JSX element to a readable stream on the server side.
 ---
 
-# renderToReadableSteam
+# renderToReadableStream
 
 ## Reference
 
@@ -46,4 +46,4 @@ console.log(await Bun.readableStreamToText(stream)); // Output: '<div>Hello, wor
 
 > [!CAUTION]
 >
-> In principle you should never use it. We expose it so that our prerender macro can use it. Preferably if you need to use it use the [prerender-macro](/api-reference/macros/prerender) so that it is done in buildtime instead of runtime.
+> In principle you should never use it inside Brisa Framework.

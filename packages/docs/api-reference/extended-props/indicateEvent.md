@@ -42,7 +42,7 @@ For more details, take a look to:
 
 - [`indicate`](/api-reference/components/request-context#indicate) method in server components.
 - [`indicate`](/api-reference/components/web-context#indicate) method in web components.
-- [`indicator`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to use it in any element of server/web components.
+- [`indicator`](/api-reference/extended-props/indicator) HTML extended attribute to use it in any element of server/web components.
 
 ### Support
 

@@ -64,7 +64,7 @@ For more details, take a look to:
 
 - [`indicate`](/api-reference/components/request-context#indicate) method in server components.
 - [`indicate`](/api-reference/components/web-context#indicate) method in web components.
-- [`indicateEvent`](/api-reference/extended-html-attributes/indicator) HTML extended attribute to connect an indicator to a server action.
+- [`indicateEvent`](/api-reference/extended-props/indicator) HTML extended attribute to connect an indicator to a server action.
 
 ### Support
 
