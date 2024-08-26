@@ -58,14 +58,6 @@ if (CONFIG?.basePath && !CONFIG.basePath.startsWith(path.sep)) {
 // in the server side. (For the client-side it's solved during the build process)
 globalThis.__BASE_PATH__ = CONFIG.basePath;
 
-const defaultConfig = {
-  trailingSlash: false,
-  assetPrefix: '',
-  basePath: '',
-  extendPlugins: (plugins: BunPlugin[]) => plugins,
-  output: 'server',
-};
-
 const BOOLEANS_IN_HTML = new Set([
   'allowfullscreen',
   'async',
@@ -95,12 +87,23 @@ const BOOLEANS_IN_HTML = new Set([
 ]);
 
 const { NODE_ENV } = process.env;
+const OS_CAN_LOAD_BALANCE =
+  process.platform !== 'darwin' && process.platform !== 'win32';
 
 const IS_PRODUCTION =
   process.argv.some((t) => t === 'PROD') || NODE_ENV === 'production';
 const CACHE_CONTROL = IS_PRODUCTION
   ? 'public, max-age=31536000, immutable'
   : 'no-store, must-revalidate';
+
+const defaultConfig = {
+  trailingSlash: false,
+  assetPrefix: '',
+  basePath: '',
+  extendPlugins: (plugins: BunPlugin[]) => plugins,
+  output: 'server',
+  clustering: IS_PRODUCTION && OS_CAN_LOAD_BALANCE,
+};
 
 const constants = {
   PAGE_404,

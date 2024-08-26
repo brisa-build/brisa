@@ -1,3 +1,5 @@
+import cluster from 'node:cluster';
+import { cpus } from 'node:os';
 import constants from '@/constants';
 import { getServeOptions } from './serve-options';
 import type { ServeOptions, Server } from 'bun';
@@ -7,14 +9,46 @@ import { logError } from '@/utils/log/log-build';
 const { LOG_PREFIX } = constants;
 
 function init(options: ServeOptions) {
+  if (cluster.isPrimary && constants.CONFIG?.clustering) {
+    console.log(
+      LOG_PREFIX.INFO,
+      `Clustering enabled with ${cpus().length} cpus`,
+    );
+
+    for (let i = 0; i < cpus().length; i++) {
+      cluster.fork();
+    }
+
+    let messageDisplayed = false;
+
+    cluster.on('message', (worker, message) => {
+      if (messageDisplayed) return;
+      messageDisplayed = true;
+      console.log(LOG_PREFIX.INFO, message);
+    });
+
+    cluster.on('exit', (worker, code, signal) => {
+      console.log(LOG_PREFIX.ERROR, `Worker ${worker.process.pid} exited`);
+      console.log(LOG_PREFIX.ERROR, `Code: ${code}`);
+      console.log(LOG_PREFIX.ERROR, `Signal: ${signal}`);
+      console.log(LOG_PREFIX.INFO, 'Starting a new worker');
+      cluster.fork();
+    });
+
+    return;
+  }
+
   try {
     const server = Bun.serve(options);
+    const listeningMsg = `listening on http://${server.hostname}:${server.port}`;
 
     globalThis.brisaServer = server;
-    console.log(
-      LOG_PREFIX.READY,
-      `listening on http://${server.hostname}:${server.port}`,
-    );
+
+    if (!constants.CONFIG?.clustering) {
+      console.log(LOG_PREFIX.INFO, listeningMsg);
+    }
+
+    cluster.worker?.send(listeningMsg);
   } catch (error) {
     const { message } = error as Error;
 
