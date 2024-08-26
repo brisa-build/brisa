@@ -218,11 +218,11 @@ In this example, the `action-error` web component takes an `actionId` prop and u
 
 > [!NOTE]
 >
-> The same `actionId` as the value for the [`indicate[Event]`](/api-reference/extended-html-attributes/indicateEvent) linking the indicator to the corresponding server action. This cohesive association allows developers to seamlessly integrate error handling into their web components, ensuring that meaningful error information is presented to users when server actions encounter issues.
+> The same `actionId` as the value for the [`indicate[Event]`](/api-reference/extended-props/indicateEvent) linking the indicator to the corresponding server action. This cohesive association allows developers to seamlessly integrate error handling into their web components, ensuring that meaningful error information is presented to users when server actions encounter issues.
 
 ## Debounce
 
-Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchStart`...) to allow to [debounce](/api-reference/extended-html-attributes/debounceEvent) the action call by replacing the `on` prefix to `debounce`.
+Brisa extends all the HTML element events (`onInput`, `onMouseOver`, `onTouchStart`...) to allow to [debounce](/api-reference/extended-props/debounceEvent) the action call by replacing the `on` prefix to `debounce`.
 
 ```tsx
 <input

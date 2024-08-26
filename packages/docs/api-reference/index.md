@@ -18,17 +18,15 @@ The Brisa API reference is divided into the following sections:
 - [`navigate`](/api-reference/functions/navigate)
 - [`notFound`](/api-reference/functions/notFound)
 
-## Extended HTML Attributes
+## Extended Properties
 
-- [`debounceEvent`](/api-reference/extended-html-attributes/debounceEvent)
-- [`indicateEvent`](/api-reference/extended-html-attributes/indicateEvent)
-- [`key`](/api-reference/extended-html-attributes/key)
-- [`ref`](/api-reference/extended-html-attributes/ref)
-- [`skipSSR`](/api-reference/extended-html-attributes/skipSSR)
-
-## Macros
-
-- [`prerender`](/api-reference/macros/prerender)
+- [`debounceEvent`](/api-reference/extended-props/debounceEvent)
+- [`indicateEvent`](/api-reference/extended-props/indicateEvent)
+- [`key`](/api-reference/extended-props/key)
+- [`ref`](/api-reference/extended-props/ref)
+- [`skipSSR`](/api-reference/extended-props/skipSSR)
+- [`renderOn`](/api-reference/extended-props/renderOn)
+- [`renderMode`](/api-reference/extended-props/renderMode)
 
 ## Server APIs
 

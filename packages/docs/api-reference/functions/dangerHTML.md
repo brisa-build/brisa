@@ -44,7 +44,7 @@ export default function Page() {
 
 > [!TIP]
 >
-> A better way to serve static HTML without having to render is [prerendering the page](/building-your-application/configuring/static-pages#prerender-some-pages-in-output-server) or using the [prerender macro](/api-reference/macros/prerender) to prerender only some parts of the page.
+> A better way to serve static HTML without having to render is [prerendering the page](/building-your-application/configuring/static-pages#prerender-some-pages-in-output-server) or using the [`renderOn`](/api-reference/extended-props/renderOn) extended property to prerender only some parts of the page.
 
 #### Parameters:
 

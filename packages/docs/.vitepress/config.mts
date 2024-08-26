@@ -465,37 +465,31 @@ export default defineConfig({
             items: [
               {
                 text: 'debounceEvent',
-                link: '/api-reference/extended-html-attributes/debounceEvent',
+                link: '/api-reference/extended-props/debounceEvent',
               },
               {
-                link: '/api-reference/extended-html-attributes/indicateEvent',
+                link: '/api-reference/extended-props/indicateEvent',
                 text: 'indicateEvent',
               },
               {
-                link: '/api-reference/extended-html-attributes/key',
+                link: '/api-reference/extended-props/key',
                 text: 'key',
               },
               {
-                link: '/api-reference/extended-html-attributes/ref',
+                link: '/api-reference/extended-props/ref',
                 text: 'ref',
               },
               {
-                link: '/api-reference/extended-html-attributes/skipSSR',
+                link: '/api-reference/extended-props/skipSSR',
                 text: 'skipSSR',
               },
               {
-                link: '/api-reference/extended-html-attributes/renderMode',
-                text: 'renderMode',
+                link: '/api-reference/extended-props/renderOn',
+                text: 'renderOn',
               },
-            ],
-          },
-          {
-            collapsed: true,
-            text: '🔧 Macros',
-            items: [
               {
-                text: 'prerender',
-                link: '/api-reference/macros/prerender',
+                link: '/api-reference/extended-props/renderMode',
+                text: 'renderMode',
               },
             ],
           },

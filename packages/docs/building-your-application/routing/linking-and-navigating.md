@@ -32,7 +32,7 @@ The example above uses multiple `a` tags. Each one maps a path (`href`) to a kno
 - `/about` → `src/pages/about.js`
 - `/blog/hello-world` → `src/pages/blog/[slug].js`
 
-By default, without the [`renderMode`](/api-reference/extended-html-attributes/renderMode) attribute, it acts with the `reactivity` mode. This means that it does a diff of the DOM between the new document and the current one, thus maintaining the states of the web components that are still visible (either because they are in the layout or because we are navigating to the same page in another language) and the store signal between pages.
+By default, without the [`renderMode`](/api-reference/extended-props/renderMode) attribute, it acts with the `reactivity` mode. This means that it does a diff of the DOM between the new document and the current one, thus maintaining the states of the web components that are still visible (either because they are in the layout or because we are navigating to the same page in another language) and the store signal between pages.
 
 Although it is a DOM diff it works with incremental rendering, that is to say, that if the following page uses suspense, when processing the diff with HTML streaming the suspense mode continues working.
 
@@ -50,7 +50,7 @@ Although it is a DOM diff it works with incremental rendering, that is to say, t
 
 ## Navigation with transition
 
-There are times when we want to make transition animations between one page and another. To achieve this we can use the [`renderMode`](/api-reference/extended-html-attributes/renderMode) attribute of `<a>` to specify that this navigation uses the [View Transition AP](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API).
+There are times when we want to make transition animations between one page and another. To achieve this we can use the [`renderMode`](/api-reference/extended-props/renderMode) attribute of `<a>` to specify that this navigation uses the [View Transition AP](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API).
 
 When using the transitions it still works like the `reactivity` mode, plus the addition of the View Transition API transition. It still works with suspense and HTML streaming.
 
@@ -97,7 +97,7 @@ For example, to change the speed of it:
 
 ## Navigation in native way
 
-If we want to force the navigation to be native (that of the browser, without simulating SPA), we can indicate it with the [`renderMode`](/api-reference/extended-html-attributes/renderMode) attribute:
+If we want to force the navigation to be native (that of the browser, without simulating SPA), we can indicate it with the [`renderMode`](/api-reference/extended-props/renderMode) attribute:
 
 ```tsx
 export default function Home() {
