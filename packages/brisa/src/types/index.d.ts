@@ -1103,6 +1103,27 @@ export type Configuration = {
    * - [How to use `assetCompression`](https://brisa.build/building-your-application/configuring/asset-compression)
    */
   assetCompression?: boolean;
+
+  /**
+   * Description:
+   *
+   * When `clustering` is `true`, Brisa will fork the process for each CPU
+   * core and will load balance the requests.
+   *
+   * The default value is `true` in production and when the operating system
+   * will load balance the requests correctly. Otherwise, the default value is
+   * `false`.
+   *
+   * **Note**: The load balancing is working fine only in Linux. On Windows
+   * and macOS, the operating system does not load balance HTTP connections
+   * as one would expect.
+   *
+   * Docs:
+   *
+   * - [How to use `clustering`](https://brisa.build/building-your-application/configuring/clustering)
+   *
+   */
+  clustering?: boolean;
 };
 
 export interface I18nDictionary {
