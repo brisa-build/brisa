@@ -11,7 +11,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import integrateMDX from '@/cli/integrations/mdx';
 import { getConstants } from '@/constants';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 
 describe('integrateMDX', () => {
   const constants = getConstants();
@@ -42,8 +42,8 @@ describe('integrateMDX', () => {
       path.join(ROOT_DIR, 'brisa.config.ts'),
     );
     expect(fsWriteFileSync.mock.calls[0][0]).toContain('brisa.config.ts');
-    expect(normalizeQuotes(fsWriteFileSync.mock.calls[0][1] as string)).toBe(
-      normalizeQuotes(`import mdx from '@mdx-js/esbuild';
+    expect(normalizeHTML(fsWriteFileSync.mock.calls[0][1] as string)).toBe(
+      normalizeHTML(`import mdx from '@mdx-js/esbuild';
     import type { Configuration } from "brisa";
     import type { BunPlugin } from 'bun';
     

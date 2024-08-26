@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test';
 import { join } from 'node:path';
 
 import clientBuildPlugin from '.';
-import { normalizeQuotes, toInline } from '@/helpers';
+import { normalizeHTML, toInline } from '@/helpers';
 import createPortal from '@/utils/create-portal';
 import dangerHTML from '@/utils/danger-html';
 import { serialize } from '@/utils/serialization';
@@ -19,7 +19,7 @@ declare global {
 function defineBrisaWebComponent(code: string, path: string) {
   const componentName = path.split('/').pop()?.split('.')[0] as string;
 
-  const webComponent = `(() => {${normalizeQuotes(
+  const webComponent = `(() => {${normalizeHTML(
     clientBuildPlugin(code, path).code,
   )
     .replace('import {brisaElement, _on, _off} from "brisa/client";', '')
@@ -1423,7 +1423,7 @@ describe('integration', () => {
       colorSVG.setAttribute('color3', '#00ff00');
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(-70,150)"></circle></g></svg>',
       );
     });
 
@@ -1447,7 +1447,7 @@ describe('integration', () => {
       const colorSVG = document.querySelector('color-svg') as HTMLElement;
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
       );
 
       colorSVG.setAttribute('firstColor', '#0000ff');
@@ -1455,7 +1455,7 @@ describe('integration', () => {
       colorSVG.setAttribute('thirdColor', '#00ff00');
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(-70,150)"></circle></g></svg>',
       );
     });
 
@@ -2237,17 +2237,21 @@ describe('integration', () => {
         'web-component',
       ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+      expect(normalizeHTML(testComponent?.shadowRoot?.innerHTML!)).toBe(
         `<web-component user="{"name":"Aral"}"></web-component>`,
       );
-      expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Aral</div>`);
+      expect(normalizeHTML(webComponent?.shadowRoot?.innerHTML!)).toBe(
+        `<div>Aral</div>`,
+      );
 
       webComponent.setAttribute('user', serialize({ name: 'Barbara' }));
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+      expect(normalizeHTML(testComponent?.shadowRoot?.innerHTML!)).toBe(
         `<web-component user="{"name":"Barbara"}"></web-component>`,
       );
-      expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Barbara</div>`);
+      expect(normalizeHTML(webComponent?.shadowRoot?.innerHTML!)).toBe(
+        `<div>Barbara</div>`,
+      );
     });
 
     it('should work with booleans and numbers in the same way than React', () => {
@@ -2331,8 +2335,8 @@ describe('integration', () => {
         'test-component',
       ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        '<script>alert("test")</script>',
+      expect(normalizeHTML(testComponent?.shadowRoot?.innerHTML!)).toBe(
+        normalizeHTML('<script>alert("test")</script>'),
       );
 
       const script = document.querySelector('script');
@@ -3522,7 +3526,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component>
           <template shadowrootmode="open">
             <div>bar</div>
@@ -3544,7 +3548,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3566,7 +3570,7 @@ describe('integration', () => {
         MyComponent.error = () => <div>Ops!</div>
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3688,7 +3692,7 @@ describe('integration', () => {
         MyComponent.suspense = () => <div>loading...</div>
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3713,7 +3717,7 @@ describe('integration', () => {
         MyComponent.suspense = () => <div>loading...</div>
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3752,7 +3756,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3790,7 +3794,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3828,7 +3832,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3866,7 +3870,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3903,7 +3907,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component></my-component>
       `);
 
@@ -3940,7 +3944,7 @@ describe('integration', () => {
         MyComponent.error = ({ name }) => <div>{name}</div>
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-component name="Aral"></my-component>
       `);
 
@@ -3966,7 +3970,7 @@ describe('integration', () => {
         MyComponent.suspense = ({ name }) => <div>{name}</div>
       `;
 
-      document.body.innerHTML = normalizeQuotes(`
+      document.body.innerHTML = normalizeHTML(`
         <my-suspense name="Aral"></my-suspense>
       `);
 
@@ -4300,8 +4304,10 @@ describe('integration', () => {
         'child-component',
       ) as HTMLElement;
 
-      expect(parent.shadowRoot?.innerHTML).toBe(
-        `<context-provider context="{"id":"0:0","defaultValue":{"foo":"foo"}}" value="{"foo":"bar"}" cid="0:0" pid="0"><child-component></child-component></context-provider>`,
+      expect(normalizeHTML(parent.shadowRoot?.innerHTML!)).toBe(
+        normalizeHTML(
+          `<context-provider context="{"id":"0:0","defaultValue":{"foo":"foo"}}" value="{"foo":"bar"}" cid="0:0" pid="0"><child-component></child-component></context-provider>`,
+        ),
       );
       expect(child.shadowRoot?.innerHTML).toBe('<div>bar</div>');
     });
@@ -4416,8 +4422,8 @@ describe('integration', () => {
 
       const parent = document.querySelector('parent-component') as HTMLElement;
 
-      expect(parent.shadowRoot?.innerHTML).toBe(
-        toInline(`
+      expect(normalizeHTML(parent.shadowRoot?.innerHTML!)).toBe(
+        normalizeHTML(`
         <context-provider context="{"id":"0:0","defaultValue":{}}" value="{"foo":"bar"}" cid="0:0" pid="1">
           <child-component></child-component>
         </context-provider>
@@ -4489,8 +4495,8 @@ describe('integration', () => {
         'child-component',
       ) as HTMLElement;
 
-      expect(parent.shadowRoot?.innerHTML).toBe(
-        toInline(`
+      expect(normalizeHTML(parent.shadowRoot?.innerHTML!)).toBe(
+        normalizeHTML(`
         <context-provider context="{"id":"0:0","defaultValue":{"foo":"foo"}}" value="{"foo":"bar"}" cid="0:0" pid="1">
           <context-provider context="{"id":"0:1","defaultValue":{"foo":"foo"}}" value="{"bar":"baz"}" cid="0:1" pid="2">
             <child-component></child-component>
@@ -4608,7 +4614,7 @@ describe('integration', () => {
           );
         }`;
 
-      document.body.innerHTML = normalizeQuotes('<web-counter />');
+      document.body.innerHTML = normalizeHTML('<web-counter />');
       defineBrisaWebComponent(code, 'src/web-components/web-counter.tsx');
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;
@@ -4657,7 +4663,7 @@ describe('integration', () => {
           );
         }`;
 
-      document.body.innerHTML = normalizeQuotes('<web-counter />');
+      document.body.innerHTML = normalizeHTML('<web-counter />');
       defineBrisaWebComponent(code, 'src/web-components/web-counter.tsx');
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;
@@ -4710,7 +4716,7 @@ describe('integration', () => {
           );
         }`;
 
-      document.body.innerHTML = normalizeQuotes("<web-counter color='red' />");
+      document.body.innerHTML = normalizeHTML("<web-counter color='red' />");
       defineBrisaWebComponent(code, 'src/web-components/web-counter.tsx');
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;
@@ -4764,7 +4770,7 @@ describe('integration', () => {
           );
         }`;
 
-      document.body.innerHTML = normalizeQuotes('<web-counter />');
+      document.body.innerHTML = normalizeHTML('<web-counter />');
       defineBrisaWebComponent(code, 'src/web-components/web-counter.tsx');
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;
@@ -4831,7 +4837,7 @@ describe('integration', () => {
           );
         }`;
 
-      document.body.innerHTML = normalizeQuotes('<web-counter />');
+      document.body.innerHTML = normalizeHTML('<web-counter />');
       defineBrisaWebComponent(code, 'src/web-components/web-counter.tsx');
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;
@@ -4885,7 +4891,7 @@ describe('integration', () => {
         }
       `;
 
-      document.body.innerHTML = normalizeQuotes('<web-counter />');
+      document.body.innerHTML = normalizeHTML('<web-counter />');
       defineBrisaWebComponent(code, 'src/web-components/web-counter.tsx');
 
       const webCounter = document.querySelector('web-counter') as HTMLElement;

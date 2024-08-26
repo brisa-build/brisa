@@ -1,4 +1,4 @@
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 import { describe, expect, it, afterEach, mock } from 'bun:test';
 
@@ -466,7 +466,7 @@ describe('utils', () => {
       }
 
       expect(text).toBe(
-        normalizeQuotes(`
+        normalizeHTML(`
           <html>
             <head></head>
             <body>
@@ -533,7 +533,7 @@ describe('utils', () => {
       }
 
       expect(text).toBe(
-        normalizeQuotes(`
+        normalizeHTML(`
           <html>
             <head></head>
             <body>
@@ -593,7 +593,7 @@ describe('utils', () => {
       }
 
       expect(text).toBe(
-        normalizeQuotes(`
+        normalizeHTML(`
           <html>
             <head></head>
             <body>
@@ -660,7 +660,7 @@ describe('utils', () => {
       }
 
       expect(text).toBe(
-        normalizeQuotes(`
+        normalizeHTML(`
           <html>
             <head></head>
             <body>

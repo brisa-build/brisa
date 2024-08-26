@@ -1,5 +1,5 @@
 import { describe, expect, it, afterEach } from 'bun:test';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
 import { getConstants } from '@/constants';
 
@@ -24,8 +24,8 @@ describe('utils', () => {
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`export interface IntrinsicCustomElements {
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`export interface IntrinsicCustomElements {
         'my-component': JSX.WebComponentAttributes<typeof import("src/components/my-component.tsx").default>;
         'my-other-component': JSX.WebComponentAttributes<typeof import("src/components/my-other-component.tsx").default>;
       }
@@ -52,8 +52,8 @@ describe('utils', () => {
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`export interface IntrinsicCustomElements {
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`export interface IntrinsicCustomElements {
         'my-component': JSX.WebComponentAttributes<typeof import("src/types/my-component.ts").default>;
         'my-other-component': JSX.WebComponentAttributes<typeof import("src/types/other-component.ts").default>;
       }
@@ -78,8 +78,8 @@ describe('utils', () => {
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`export interface IntrinsicCustomElements {
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`export interface IntrinsicCustomElements {
         'my-component': any;
         'my-other-component': any;
       }
@@ -104,8 +104,8 @@ describe('utils', () => {
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`export interface IntrinsicCustomElements {
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`export interface IntrinsicCustomElements {
         'my-component': any;
         'my-other-component': any;
       }
@@ -126,8 +126,8 @@ describe('utils', () => {
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`export interface IntrinsicCustomElements {
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`export interface IntrinsicCustomElements {
         'my-component': JSX.WebComponentAttributes<typeof import("src/components/my-component.tsx").default>;
         'my-other-component': JSX.WebComponentAttributes<typeof import("src/components/my-other-component.tsx").default>;
       }
@@ -154,8 +154,8 @@ describe('utils', () => {
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`export interface IntrinsicCustomElements {
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`export interface IntrinsicCustomElements {
         'my-component': JSX.WebComponentAttributes<typeof import("src/components/my-component.tsx").default>;
         'my-other-component': JSX.WebComponentAttributes<typeof import("src/components/my-other-component.tsx").default>;
       }
@@ -185,8 +185,8 @@ describe('utils', () => {
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`export interface IntrinsicCustomElements {
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`export interface IntrinsicCustomElements {
         'my-component': JSX.WebComponentAttributes<typeof import("src/components/my-component.tsx").default>;
         'my-other-component': JSX.WebComponentAttributes<typeof import("src/components/my-other-component.tsx").default>;
       }
@@ -221,8 +221,8 @@ describe('utils', () => {
 
       const result = generateDynamicTypes({ allWebComponents, pagesRoutes });
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`export interface IntrinsicCustomElements {
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`export interface IntrinsicCustomElements {
           'my-component': JSX.WebComponentAttributes<typeof import("src/components/my-component.tsx").default>;
           'my-other-component': JSX.WebComponentAttributes<typeof import("src/components/my-other-component.tsx").default>;
         }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import type { ESTree } from 'meriyah';
 import getReactiveReturnStatement from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
@@ -19,11 +19,11 @@ describe('utils', () => {
 
         const output = getReactiveReturnStatement(component, 'a');
 
-        const expectedCode = normalizeQuotes(
+        const expectedCode = normalizeHTML(
           `function a(props) {return ['div', {foo: () => props.bar.value}, 'baz'];}`,
         );
 
-        expect(normalizeQuotes(generateCodeFromAST(output as any))).toBe(
+        expect(normalizeHTML(generateCodeFromAST(output as any))).toBe(
           expectedCode,
         );
       });
@@ -39,14 +39,14 @@ describe('utils', () => {
         const component = program.body[0].declarations[0]
           .init as ESTree.FunctionDeclaration;
         const output = getReactiveReturnStatement(component, 'a');
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           function a(props) {
             const foo = ['b', {}, () => props.bar.value];
             return () => foo;
           }
         `);
 
-        expect(normalizeQuotes(generateCodeFromAST(output as any))).toBe(
+        expect(normalizeHTML(generateCodeFromAST(output as any))).toBe(
           expectedCode,
         );
       });

@@ -11,7 +11,7 @@ import {
 } from 'bun:test';
 import renderToReadableStream from '.';
 import { getConstants } from '@/constants';
-import { normalizeQuotes, toInline } from '@/helpers';
+import { normalizeHTML, toInline } from '@/helpers';
 import type {
   ComponentType,
   I18n,
@@ -3505,7 +3505,7 @@ describe('utils', () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        normalizeQuotes(
+        normalizeHTML(
           `
             <!--o:0-->
               <div data-action data-cid="0">bar</div>
@@ -3555,8 +3555,8 @@ describe('utils', () => {
       );
       const result = await Bun.readableStreamToText(stream);
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`<html>
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`<html>
             <head>
               <link rel="stylesheet" href="test.css"></link>
             </head>
@@ -3592,8 +3592,8 @@ describe('utils', () => {
       );
       const result = await Bun.readableStreamToText(stream);
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`<html>
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`<html>
             <head>
             </head>
             <body>
@@ -3637,8 +3637,8 @@ describe('utils', () => {
 
       const result = await Bun.readableStreamToText(stream);
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`
           <html>
             <head></head>
             <body><div>test</div></body>
@@ -3666,8 +3666,8 @@ describe('utils', () => {
       );
       const result = await Bun.readableStreamToText(stream);
 
-      expect(normalizeQuotes(result)).toBe(
-        normalizeQuotes(`<html>
+      expect(normalizeHTML(result)).toBe(
+        normalizeHTML(`<html>
             <head>
               <link rel="stylesheet" href="test.css"></link>
             </head>

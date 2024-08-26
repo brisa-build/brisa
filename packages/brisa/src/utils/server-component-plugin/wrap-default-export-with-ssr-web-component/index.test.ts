@@ -1,4 +1,4 @@
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 import { describe, it, expect } from 'bun:test';
 import wrapDefaultExportWithSSRWebComponent from '.';
@@ -15,8 +15,8 @@ describe('utils/server-component-plugin/wrap-default-export-with-ssr-web-compone
 
     wrapDefaultExportWithSSRWebComponent(ast, 'web-component');
 
-    expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
-      normalizeQuotes(`
+    expect(normalizeHTML(generateCodeFromAST(ast))).toBe(
+      normalizeHTML(`
 			function WebComponent() {
 				return 'hello';
 			}
@@ -39,8 +39,8 @@ describe('utils/server-component-plugin/wrap-default-export-with-ssr-web-compone
 
     wrapDefaultExportWithSSRWebComponent(ast, 'web-component');
 
-    expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
-      normalizeQuotes(`
+    expect(normalizeHTML(generateCodeFromAST(ast))).toBe(
+      normalizeHTML(`
 			export default function (props) {
 				return jsxDEV(_Brisa_SSRWebComponent, {
 						Component: WebComponent,
@@ -59,8 +59,8 @@ describe('utils/server-component-plugin/wrap-default-export-with-ssr-web-compone
 
     wrapDefaultExportWithSSRWebComponent(ast, 'web-component');
 
-    expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
-      normalizeQuotes(`
+    expect(normalizeHTML(generateCodeFromAST(ast))).toBe(
+      normalizeHTML(`
 			export default function (props) {
 				return jsxDEV(_Brisa_SSRWebComponent, {
 						Component: () => 'hello',

@@ -2,7 +2,7 @@ import { describe, expect, it, afterEach, spyOn, jest } from 'bun:test';
 import { join } from 'path';
 
 import serverComponentPlugin, { workaroundText } from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 import { getConstants } from '@/constants';
 
@@ -18,7 +18,7 @@ const webComponent2Path = join(
 const serverComponentPath = join(FIXTURES, 'pages', 'index.tsx');
 
 const toExpected = (s: string) =>
-  normalizeQuotes(generateCodeFromAST(parseCodeToAST(s)) + workaroundText);
+  normalizeHTML(generateCodeFromAST(parseCodeToAST(s)) + workaroundText);
 
 describe('utils', () => {
   afterEach(() => {
@@ -77,8 +77,8 @@ describe('utils', () => {
         path: webComponentPath,
         selectorToWrapDeclarativeShadowDom: 'web-component',
       });
-      expect(normalizeQuotes(out.code)).toBe(
-        normalizeQuotes(
+      expect(normalizeHTML(out.code)).toBe(
+        normalizeHTML(
           `
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
 
@@ -109,7 +109,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
@@ -133,7 +133,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
@@ -154,7 +154,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies.size).toBe(1);
@@ -180,7 +180,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
@@ -206,7 +206,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies.size).toBe(1);
@@ -238,7 +238,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies.size).toBe(1);
@@ -259,7 +259,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toEqual(new Set([webComponentPath]));
@@ -291,7 +291,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(outputCode).toBe(
         toExpected(`
@@ -316,7 +316,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
@@ -347,7 +347,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
@@ -386,7 +386,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent1() {
           return <div onClick={() => console.log('foo')} data-action-onclick="a1_1" data-action />;
@@ -427,7 +427,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent1() {
           return <div onClick={() => console.log('foo')} />;
@@ -528,7 +528,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
       export default function ServerComponent1() {
         return <div onClick={() => console.log('foo')} />;
@@ -618,7 +618,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
         import _Brisa_WC1 from "${webComponentPath}";
@@ -655,7 +655,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
         import _Brisa_WC1 from "${webComponentPath}";
@@ -700,7 +700,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(code);
 
       expect(out.hasActions).toBeFalse();
@@ -730,7 +730,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
         import _C1 from "${webComponentPath}";
@@ -777,7 +777,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
         import _C3 from "${webComponentPath}";
@@ -823,7 +823,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
         import _C1 from "${webComponentPath}";
@@ -866,7 +866,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
       import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
       import _C1 from "${webComponentPath}";
@@ -908,7 +908,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(code);
 
       expect(out.hasActions).toBeFalse();
@@ -930,7 +930,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         export default function ServerComponent() {
           return <web-component skipSSR />;
@@ -956,7 +956,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         export default function ServerComponent() {
           return <native-web-component />;
@@ -982,7 +982,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         export default function ServerComponent() {
           return <web-component skipSSR={true} />;
@@ -1013,7 +1013,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
         import _Brisa_WC1 from "${webComponentPath}";
@@ -1060,7 +1060,7 @@ describe('utils', () => {
         fileID: 'a1',
         path: serverComponentPath,
       });
-      const outputCode = normalizeQuotes(out.code);
+      const outputCode = normalizeHTML(out.code);
       const expected = toExpected(`
         import {SSRWebComponent as _Brisa_SSRWebComponent} from "brisa/server";
         import _Brisa_WC1 from "${webComponentPath}";
@@ -1109,7 +1109,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent() {
           const props = { onClick: () => console.log('clicked') };
@@ -1135,7 +1135,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent({onClick}) {
           return <div onClick={(...args) => onClick(...args)} data-action-onclick="a1_1" data-action />;
@@ -1163,7 +1163,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent({onClick}) {
           return <Component onClick={onClick} data-action-onclick="a1_1" data-action />;
@@ -1189,7 +1189,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent({onClick}) {
           const props = { onClick: (...args) => onClick(...args) };
@@ -1219,7 +1219,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent({onClick}) {
           const props = { onClick };
@@ -1246,7 +1246,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent({onClick}) {
           const props = { onClick: (...args) => onClick(...args) };
@@ -1273,7 +1273,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent({onClick}) {
           const props = { onClick:onClick };
@@ -1301,7 +1301,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent() {
           const bar = {}
@@ -1330,7 +1330,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent() {
           const bar = {}
@@ -1359,7 +1359,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent() {
           const bar = {}
@@ -1388,7 +1388,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent() {
           const bar = {}
@@ -1418,7 +1418,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent() {
           const bar = {}
@@ -1448,7 +1448,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(toExpected(code));
+      expect(normalizeHTML(out.code)).toBe(toExpected(code));
     });
 
     it('should NOT register destructuring events when config.output="static"', () => {
@@ -1473,7 +1473,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeFalse();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(toExpected(code));
+      expect(normalizeHTML(out.code)).toBe(toExpected(code));
     });
 
     it('should add the attribute "data-action-onclick" for deeply nested event properties', () => {
@@ -1499,7 +1499,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent() {
           const props = {
@@ -1538,7 +1538,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export function ServerComponent() {
           return <Component />;
@@ -1568,7 +1568,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         function ServerComponent() {
           return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
@@ -1594,7 +1594,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const Foo = function() {
           return <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
@@ -1618,7 +1618,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />;
         ServerComponent._hasActions = true;
@@ -1640,7 +1640,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />,
         ServerComponent2 = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_2" data-action />;
@@ -1667,7 +1667,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />,
         ServerComponent2 = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_2" data-action />,
@@ -1697,7 +1697,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />;
         const ServerComponent2 = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_2" data-action />;
@@ -1727,7 +1727,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         function ServerComponent() { return <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action /> };
         function ServerComponent2() { return <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_2" data-action /> };
@@ -1757,7 +1757,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const ServerComponent = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_1" data-action />,
         ServerComponent2 = () => <Component onClick={() => console.log('clicked')}  data-action-onclick="a1_2" data-action />;
@@ -1792,7 +1792,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const el = <Component />;
         const el2 = <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
@@ -1832,7 +1832,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const el = () => <Component />;
         const el2 = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
@@ -1873,7 +1873,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         const A = () => <Component />;
         const B = () => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
@@ -1912,7 +1912,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
           const props = {
             onClick: () => console.log('hello world'),
@@ -1952,7 +1952,7 @@ describe('utils', () => {
       expect(out.dependencies).toEqual(
         new Set([join(FIXTURES, 'pages', 'el.ts')]),
       );
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         import { getEl } from './el.ts';
 
@@ -1982,7 +1982,7 @@ describe('utils', () => {
 
       expect(out.hasActions).toBeTrue();
       expect(out.dependencies).toBeEmpty();
-      expect(normalizeQuotes(out.code)).toBe(
+      expect(normalizeHTML(out.code)).toBe(
         toExpected(`
         export default function ServerComponent() {
           return [1,2,3].map(() => <Component onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />);
@@ -2013,7 +2013,7 @@ describe('utils', () => {
         expect(out.dependencies).toEqual(
           new Set([join(FIXTURES, 'pages', 'el.ts')]),
         );
-        expect(normalizeQuotes(out.code)).toBe(
+        expect(normalizeHTML(out.code)).toBe(
           toExpected(`
       import { getEl } from './el.ts';
 
@@ -2053,7 +2053,7 @@ describe('utils', () => {
             join(FIXTURES, 'pages', 'el3.ts'),
           ]),
         );
-        expect(normalizeQuotes(out.code)).toBe(
+        expect(normalizeHTML(out.code)).toBe(
           toExpected(`
       import getEl from './el.ts';
       import { getEl2 } from './el2.ts';
@@ -2097,7 +2097,7 @@ describe('utils', () => {
             join(FIXTURES, 'pages', 'el3.ts'),
           ]),
         );
-        expect(normalizeQuotes(out.code)).toBe(
+        expect(normalizeHTML(out.code)).toBe(
           toExpected(`
       import getEl from './el.ts';
       import { getEl2 } from './el2.ts';

@@ -13,7 +13,7 @@ import responseAction from '.';
 import { getConstants } from '@/constants';
 import { ENCRYPT_NONTEXT_PREFIX, encrypt } from '@/utils/crypto';
 import { boldLog } from '@/utils/log/log-color';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 
 const FIXTURES = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGE = 'http://locahost/es/somepage';
@@ -439,7 +439,7 @@ describe('utils', () => {
       const logs = logMock.mock.calls.toString();
 
       expect(logs).toBe(
-        normalizeQuotes(`
+        normalizeHTML(`
           a3_1 before calling nested action,
             a3_2 before calling nested action,
               processing a3_3,
@@ -473,7 +473,7 @@ describe('utils', () => {
       const logs = logMock.mock.calls.toString();
 
       expect(logs).toBe(
-        normalizeQuotes(`
+        normalizeHTML(`
           a3_1 before calling nested action,
             a3_2 before calling nested action,
               processing a3_3,

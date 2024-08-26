@@ -1,4 +1,4 @@
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 import { describe, it, expect } from 'bun:test';
 import defineCustomElementToAST from '.';
@@ -20,8 +20,8 @@ describe('utils/client-build-plugin/define-custom-element-to-ast', () => {
       },
     });
 
-    expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
-      normalizeQuotes(`
+    expect(normalizeHTML(generateCodeFromAST(ast))).toBe(
+      normalizeHTML(`
 				import {Component} from 'brisa';
 
 				if (!customElements.get('my-component')) {
@@ -53,8 +53,8 @@ describe('utils/client-build-plugin/define-custom-element-to-ast', () => {
       },
     });
 
-    expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
-      normalizeQuotes(`
+    expect(normalizeHTML(generateCodeFromAST(ast))).toBe(
+      normalizeHTML(`
 				import {Component} from 'brisa';
 
 				if (!customElements.get('my-component')) {
@@ -79,8 +79,8 @@ describe('utils/client-build-plugin/define-custom-element-to-ast', () => {
       },
     });
 
-    expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
-      normalizeQuotes(`
+    expect(normalizeHTML(generateCodeFromAST(ast))).toBe(
+      normalizeHTML(`
 				import {Component} from 'brisa';
 				const a = 1;
 				console.log('Hello');

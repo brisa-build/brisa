@@ -133,7 +133,7 @@ describe('utils', () => {
       } = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
 
       expect(event).toEqual({
-        defaultPrevented: true,
+        defaultPrevented: false,
         NONE: 0,
         CAPTURING_PHASE: 1,
         AT_TARGET: 2,

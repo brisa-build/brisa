@@ -2,13 +2,13 @@ import { describe, expect, it, spyOn } from 'bun:test';
 import type { ESTree } from 'meriyah';
 import transformToReactiveArrays from '.';
 import { getConstants } from '@/constants';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 import { boldLog } from '@/utils/log/log-color';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutputCode = (ast: ESTree.Program) =>
-  normalizeQuotes(generateCodeFromAST(ast));
+  normalizeHTML(generateCodeFromAST(ast));
 
 describe('utils', () => {
   describe('client-build-plugin', () => {
@@ -16,7 +16,7 @@ describe('utils', () => {
       it('should transform JSX to an array if is not a web-component', () => {
         const input = parseCodeToAST(`const element = <div>foo</div>`);
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`const element = ['div', {}, 'foo'];`);
+        const expected = normalizeHTML(`const element = ['div', {}, 'foo'];`);
         expect(output).toBe(expected);
       });
 
@@ -25,7 +25,7 @@ describe('utils', () => {
           `export default ({ name = 'foo' }) => <div>{name}</div>`,
         );
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(
+        const expected = normalizeHTML(
           `export default ({name = 'foo'}) => ['div', {}, name];`,
         );
         expect(output).toBe(expected);
@@ -36,7 +36,7 @@ describe('utils', () => {
           `export default () => jsxDEV('div', {}, 'foo', false, false)`,
         );
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(
+        const expected = normalizeHTML(
           `export default () => ['div', {key: 'foo'}, ''];`,
         );
         expect(output).toBe(expected);
@@ -47,7 +47,7 @@ describe('utils', () => {
           `export default () => jsxs('div', {children: 'bar'}, 'foo')`,
         );
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(
+        const expected = normalizeHTML(
           `export default () => ['div', {key: 'foo'}, 'bar'];`,
         );
         expect(output).toBe(expected);
@@ -65,7 +65,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent() {
             return ['div', {}, 'Hello world'];
           }
@@ -88,7 +88,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, [['button', {onClick: () => {count.value += 1;}}, 'Click'], ['span', {}, () => count.value]]];
@@ -113,7 +113,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
             const wrapper = {count};
@@ -137,7 +137,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const bar = state(0);
             return ['some-component', {value: () => ({foo: bar.value})}, 'Hello world'];
@@ -158,7 +158,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {store}) {
             return ['some-component', {value: () => ({foo: store.get('bar')})}, 'Hello world'];
           }
@@ -184,7 +184,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent() {return "Hello world";}
           
           MyComponent.suspense = ({}, {state}) => {
@@ -211,7 +211,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent() {return "Hello world";}
           
           MyComponent.suspense = ({}, {store}) => {
@@ -234,7 +234,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {store}) {
             return ['div', {}, [['button', {onClick: () => store.set('count', store.get('store') + 1)}, 'Click'], ['span', {}, () => store.get('count')]]];
           }
@@ -256,7 +256,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, () => count.value > 0 && ['span', {}, () => count.value]];
@@ -277,7 +277,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {store}) {
             return ['div', {}, () => store.get('count') > 0 && ['span', {}, () => store.get('count')]];
           }
@@ -303,7 +303,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
             function handleClick() {
@@ -329,7 +329,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, () => count.value > 0 ? ['span', {}, () => count.value] : ['span', {}, '0']];
@@ -350,7 +350,7 @@ describe('utils', () => {
         `);
 
         const output = toOutputCode(transformToReactiveArrays(input));
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {store}) {
             return ['div', {}, () => store.get('count') > 0 ? ['span', {}, () => store.get('count')] : ['span', {}, '0']];
           }
@@ -373,7 +373,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, ['span', {title: () => count.value}, '']];
@@ -395,7 +395,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {store}) {
             return ['div', {}, ['span', {title: () => store.get('title')}, '']];
           }
@@ -419,7 +419,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, [['span', {title: () => count.value}, ''], [null, {}, () => count.value]]];
@@ -442,7 +442,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {store}) {
             return ['div', {}, [['span', {title: () => store.get('count')}, ''], [null, {}, () => store.get('count')]]];
           }
@@ -466,7 +466,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {state}) {
             const count = state(0);
             return ['div', {}, [['span', {title: () => count.value}, ''], ['span', {}, () => count.value]]];
@@ -489,7 +489,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent({}, {store}) {
             return ['div', {}, [['span', {title: () => store.get('count')}, ''], ['span', {}, () => store.get('count')]]];
           }
@@ -511,7 +511,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent() {
             return [null, {}, [['div', {}, 'foo'], ['div', {}, 'bar']]];
           }
@@ -533,7 +533,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent() {
             return [null, {}, [[null, {}, "foo"], [null, {}, "bar"]]];
           }
@@ -562,7 +562,7 @@ describe('utils', () => {
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function RuntimeLog({error, warning}) {
             return ['dialog', {open: error ? _on : _off}, [[null, {}, error && \`Error: \${error.message}\`], [null, {}, error && ['pre', {}, error.stack]], [null, {}, warning && \`Warning: \${warning}\`]]];
           }
@@ -592,7 +592,7 @@ describe('utils', () => {
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function RuntimeLog({error, warning}) {
             return ['dialog', {open: error || warning ? _on : _off}, [[null, {}, error && \`Error: \${error.message}\`], [null, {}, error && ['pre', {}, error.stack]], [null, {}, warning && \`Warning: \${warning}\`]]];
           }
@@ -623,7 +623,7 @@ describe('utils', () => {
         logMock.mockImplementation(() => {});
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
             function Test(props) {
               return ['div', {}, props.children];
             }
@@ -672,7 +672,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent() {
             const example = 'example';
             return ['div', {}, [[null, {}, "this"], [null, {}, " "], [null, {}, "is"], [null, {}, " "], [null, {}, 1], [null, {}, " "], [null, {}, example]]];
@@ -690,7 +690,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent() {
             return ['Hello', ' ', 'World'];
           }
@@ -711,7 +711,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
         export default function MyComponent({error}) {
           return [null, {}, [[null, {}, "Test"], [null, {}, () => error.value ? [null, {}, [[null, {}, () => \`Error: \${error.value.message}\`], [null, {}, " "], ["pre", {}, () => error.value.stack]]] : ""]]];
         }
@@ -730,7 +730,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function MyComponent() {
             return ['div', {key: "foo"}, 'foo'];
           }
@@ -753,7 +753,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function TodoList({todos}) {
             return ['ul', {}, () => todos.value.map(todo => ['li', {}, todo])];
           }
@@ -773,7 +773,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function TodoList({todos}) {
             const someEvent = todos => () => window.someEvent(value);
             return ['button', {onClick: e => someEvent(todos.value)(e)}, 'Click'];
@@ -797,7 +797,7 @@ describe('utils', () => {
 
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Test({num}) {
             return ['ul', {}, () => Array.from({length: num.value}).map((_, i) => ['li', {}, i])];
           }
@@ -819,7 +819,7 @@ describe('utils', () => {
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Test({foo}, {css}) {
             css\`color: \${() => foo.value};\`;
             return ['div', {}, 'foo'];
@@ -843,7 +843,7 @@ describe('utils', () => {
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Test({foo}, webContext) {
             (webContext.css)\`color: \${() => foo.value};\`;
             return ['div', {}, 'foo'];

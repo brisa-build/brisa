@@ -1,4 +1,4 @@
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 import getWebComponentAst from '@/utils/client-build-plugin/get-web-component-ast';
 import skipPropTransformation from '@/utils/client-build-plugin/skip-prop-transformation';
@@ -2494,5 +2494,5 @@ function getOutputCodeLines(out: string, byProp: string) {
     return value;
   }
 
-  return skipped.map((node) => normalizeQuotes(generateCodeFromAST(node)));
+  return skipped.map((node) => normalizeHTML(generateCodeFromAST(node)));
 }

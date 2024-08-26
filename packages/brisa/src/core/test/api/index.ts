@@ -242,15 +242,17 @@ export const userEvent = {
   },
   select: (select: HTMLSelectElement, value: string) => {
     select.value = value;
+    // Note: Dispatching 'input' event is also dispatching 'change' event
+    // in Happy-DOM, so we don't need to dispatch 'change' event separately
     select.dispatchEvent(new Event('input', { bubbles: true }));
-    select.dispatchEvent(new Event('change', { bubbles: true }));
   },
   deselect: (selecgt: HTMLSelectElement, value: string) => {
     if (value === selecgt.value) {
       selecgt.value = '';
     }
+    // Note: Dispatching 'input' event is also dispatching 'change' event
+    // in Happy-DOM, so we don't need to dispatch 'change' event separately
     selecgt.dispatchEvent(new Event('input', { bubbles: true }));
-    selecgt.dispatchEvent(new Event('change', { bubbles: true }));
   },
   upload: (input: HTMLInputElement, file: File) => {
     // @ts-ignore

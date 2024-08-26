@@ -1,4 +1,4 @@
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 import getPropsOptimizations from '@/utils/client-build-plugin/get-props-optimizations';
 import { describe, expect, it } from 'bun:test';
@@ -443,7 +443,7 @@ describe('AST', () => {
     ...WITH_DEFAULT_VALUES_FROM_EXTERNAL_IDENTIFIERS,
     ...WITH_RENAMED_PROPS_IN_NESTED_LEVEL,
   ])('getPropsOptimizations', ({ param, expected }) => {
-    const expectedArrows = expected.map(normalizeQuotes);
+    const expectedArrows = expected.map(normalizeHTML);
 
     it(`should transform ${param} to ${expectedArrows.join(', ')}`, () => {
       const patternString = `function test(${param}){}`;
@@ -451,7 +451,7 @@ describe('AST', () => {
       const pattern = ast.body[0].params[0];
       const result = getPropsOptimizations(pattern, DERIVED_FN_NAME);
 
-      expect(result.map(normalizeQuotes)).toEqual(expectedArrows);
+      expect(result.map(normalizeHTML)).toEqual(expectedArrows);
     });
   });
 });

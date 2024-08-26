@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'bun:test';
 import mapComponentStatics from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
-const toOutput = (ast: any) => normalizeQuotes(generateCodeFromAST(ast));
+const toOutput = (ast: any) => normalizeHTML(generateCodeFromAST(ast));
 
 describe('utils', () => {
   describe('client-build-plugin', () => {
@@ -26,7 +26,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           Component.error = () => "error";
           Component.suspense = () => "suspense";
@@ -60,7 +60,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           Component.error = function () {return "error";};
           Component.suspense = function () {return "suspense";};
@@ -96,7 +96,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           function Error() {return "Error";}
           function Suspense() {return "Suspense";}
@@ -126,7 +126,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           const Error = () => "error";
           const Suspense = () => "suspense";
@@ -155,7 +155,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           const Error = () => "error";
           const Suspense = () => "suspense";
@@ -191,7 +191,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           function Error() {return "Error";}
           function Suspense() {return "Suspense";}
@@ -225,7 +225,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           Object.assign(Component, {error: function () {return "error";},suspense: function () {return "suspense";}});
         `);
@@ -249,7 +249,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           Object.assign(Component, {error: () => "error",suspense: () => "suspense"});
         `);
@@ -281,7 +281,7 @@ describe('utils', () => {
           }),
         );
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           export default function Component() {return "Hello";}
           Object.assign(Component, {error() {return "error";},suspense() {return "suspense";}});
         `);

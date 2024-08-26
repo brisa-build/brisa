@@ -1,4 +1,4 @@
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 import { describe, it, expect } from 'bun:test';
 import { getPurgedBody } from '.';
@@ -16,8 +16,8 @@ function expectCodeToPurge(code: string, actionId = 'a1_1') {
 
   return {
     toBe: (expectedCode: string) =>
-      expect(normalizeQuotes(generateCodeFromAST(ast))).toBe(
-        normalizeQuotes(expectedCode),
+      expect(normalizeHTML(generateCodeFromAST(ast))).toBe(
+        normalizeHTML(expectedCode),
       ),
   };
 }

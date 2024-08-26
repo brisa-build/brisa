@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import transformToDirectExport from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
@@ -11,8 +11,8 @@ describe('utils', () => {
       it('should add an "export default null" if there is no default export', () => {
         const ast = parseCodeToAST(`const MyComponent = () => <div>foo</div>;`);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           const MyComponent = () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
           export default null;
         `);
@@ -26,8 +26,8 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           export default props => jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);
         `);
 
@@ -41,8 +41,8 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           export default props => jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);
         `);
 
@@ -56,8 +56,8 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           export default function (props) {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);}
         `);
 
@@ -72,8 +72,8 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           function MyComponent(props) {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);}
           export default MyComponent;
         `);
@@ -89,8 +89,8 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           export default props => {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);};
         `);
 
@@ -102,8 +102,8 @@ describe('utils', () => {
           export default (props) => <div>{props.foo}</div>;
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           export default props => jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);
         `);
 
@@ -116,8 +116,8 @@ describe('utils', () => {
         `);
 
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           export default ({name = "Aral"}) => jsxDEV("div", {children: name}, undefined, false, undefined, this);
         `);
 
@@ -131,8 +131,8 @@ describe('utils', () => {
           }
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           export default props => {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);};
         `);
 
@@ -146,8 +146,8 @@ describe('utils', () => {
           }
         `);
         const outputAst = transformToDirectExport(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           export default function MyComponent(props) {return jsxDEV("div", {children: props.foo}, undefined, false, undefined, this);}
         `);
 

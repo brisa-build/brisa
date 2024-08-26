@@ -5,6 +5,7 @@ import dangerHTML from '@/utils/danger-html';
 import { serialize } from '@/utils/serialization';
 import createContext from '@/utils/create-context';
 import type { BrisaContext, WebContext, WebContextPlugin } from '@/types';
+import { normalizeHTML } from '@/helpers';
 
 let brisaElement: typeof import('.').default;
 let _on: typeof import('.')._on;
@@ -1246,7 +1247,7 @@ describe('utils', () => {
       colorSVG.setAttribute('color3', '#00ff00');
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(-70,150)"></circle></g></svg>',
       );
     });
 
@@ -1321,7 +1322,7 @@ describe('utils', () => {
       const colorSVG = document.querySelector('color-svg') as HTMLElement;
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#00ff00"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#0000ff"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(-70,150)"></circle></g></svg>',
       );
 
       colorSVG.setAttribute('firstColor', '#0000ff');
@@ -1329,7 +1330,7 @@ describe('utils', () => {
       colorSVG.setAttribute('thirdColor', '#00ff00');
 
       expect(colorSVG?.shadowRoot?.innerHTML).toBe(
-        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" transform="translate(0,50)" fill="#0000ff"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(70,150)" fill="#ff0000"></circle><circle cx="6cm" cy="2cm" r="100" transform="translate(-70,150)" fill="#00ff00"></circle></g></svg>',
+        '<svg width="12cm" height="12cm"><g style="fill-opacity:0.7;stroke:black;stroke-width:0.1cm;"><circle cx="6cm" cy="2cm" r="100" fill="#0000ff" transform="translate(0,50)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#ff0000" transform="translate(70,150)"></circle><circle cx="6cm" cy="2cm" r="100" fill="#00ff00" transform="translate(-70,150)"></circle></g></svg>',
       );
     });
 
@@ -2939,17 +2940,21 @@ describe('utils', () => {
         'web-component',
       ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+      expect(normalizeHTML(testComponent?.shadowRoot?.innerHTML!)).toBe(
         `<web-component user="{"name":"Aral"}"></web-component>`,
       );
-      expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Aral</div>`);
+      expect(normalizeHTML(webComponent?.shadowRoot?.innerHTML!)).toBe(
+        `<div>Aral</div>`,
+      );
 
       webComponent.setAttribute('user', serialize({ name: 'Barbara' }));
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+      expect(normalizeHTML(testComponent?.shadowRoot?.innerHTML!)).toBe(
         `<web-component user="{"name":"Barbara"}"></web-component>`,
       );
-      expect(webComponent?.shadowRoot?.innerHTML).toBe(`<div>Barbara</div>`);
+      expect(normalizeHTML(webComponent?.shadowRoot?.innerHTML!)).toBe(
+        `<div>Barbara</div>`,
+      );
     });
 
     it('should work with booleans and numbers in the same way than React', () => {
@@ -3036,7 +3041,7 @@ describe('utils', () => {
         'test-component',
       ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+      expect(normalizeHTML(testComponent?.shadowRoot?.innerHTML!)).toBe(
         '<script>alert("test")</script>',
       );
 

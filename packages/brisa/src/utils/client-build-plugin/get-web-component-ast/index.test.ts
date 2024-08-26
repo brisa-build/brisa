@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import type { ESTree } from 'meriyah';
 import getWebComponentAst from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
@@ -28,10 +28,10 @@ describe('utils', () => {
           }
         `);
         const [ast, index] = getWebComponentAst(input);
-        const output = normalizeQuotes(
+        const output = normalizeHTML(
           generateCodeFromAST(ast as unknown as ESTree.Program),
         );
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           function MyComponent() {
             return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
           }
@@ -51,10 +51,10 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = normalizeQuotes(
+        const codeOutput = normalizeHTML(
           generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           function MyComponent() {
             return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
           }
@@ -74,10 +74,10 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = normalizeQuotes(
+        const codeOutput = normalizeHTML(
           generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           async function MyComponent() {
             return jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
           }
@@ -93,10 +93,10 @@ describe('utils', () => {
           export default () => <div>foo</div>;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = normalizeQuotes(
+        const codeOutput = normalizeHTML(
           generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this)
         `);
         expect(codeOutput).toEqual(expected);
@@ -110,10 +110,10 @@ describe('utils', () => {
           export default (props) => <div>{props.someProp}</div>;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = normalizeQuotes(
+        const codeOutput = normalizeHTML(
           generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           props => jsxDEV("div", {children: props.someProp}, undefined, false, undefined, this)
         `);
 
@@ -130,10 +130,10 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = normalizeQuotes(
+        const codeOutput = normalizeHTML(
           generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           const MyComponent = () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
         `);
         expect(codeOutput).toEqual(expected);
@@ -149,10 +149,10 @@ describe('utils', () => {
           export default MyComponent;
         `);
         const [astOutput, index] = getWebComponentAst(input);
-        const codeOutput = normalizeQuotes(
+        const codeOutput = normalizeHTML(
           generateCodeFromAST(astOutput as unknown as ESTree.Program),
         );
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
           const MyComponent = async () => jsxDEV("div", {children: "foo"}, undefined, false, undefined, this);
         `);
         expect(codeOutput).toEqual(expected);

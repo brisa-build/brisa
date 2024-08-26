@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'bun:test';
 import path from 'node:path';
 import { transformToActionCode } from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import { getConstants } from '@/constants';
 import serverComponentPlugin, {
   workaroundText,
@@ -14,7 +14,7 @@ function compileActions(code: string) {
     path: '',
   }).code.replace(workaroundText, '');
 
-  return normalizeQuotes(transformToActionCode(modifiedCode));
+  return normalizeHTML(transformToActionCode(modifiedCode));
 }
 
 const brisaServerFile = path
@@ -33,7 +33,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -68,7 +68,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component() {
@@ -105,7 +105,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component(props) {
@@ -142,7 +142,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function SomeComponent({foo, ...bar}) {
@@ -177,7 +177,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({initialValue = 0}) {
@@ -213,7 +213,7 @@ describe('utils', () => {
       `;
 
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text: {value = 'foo'}}) {
@@ -248,7 +248,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -284,7 +284,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}, {store}) {
@@ -323,7 +323,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from "brisa/server";
 
         function SomeComponent({text}, requestContext) {
@@ -360,7 +360,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
 
       function Component({foo}) {
@@ -395,7 +395,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
 
       async function Component({foo}) {
@@ -428,7 +428,7 @@ describe('utils', () => {
         export default ({foo}) => <div onClick={() => console.log('hello world')}>{foo}</div>
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
 
       function Component({foo}) {
@@ -461,7 +461,7 @@ describe('utils', () => {
         export default async ({foo}) => <div onClick={() => console.log('hello world')}>{foo}</div>
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
 
       async function Component({foo}) {
@@ -496,7 +496,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         async function Component({text}) {
@@ -541,7 +541,7 @@ describe('utils', () => {
       `;
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from "brisa/server";
 
         function sleep(ms) {return new Promise(resolve => setTimeout(resolve, ms));}
@@ -584,7 +584,7 @@ describe('utils', () => {
         export default Component;
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -621,7 +621,7 @@ describe('utils', () => {
         export default Component;
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -656,7 +656,7 @@ describe('utils', () => {
         export default Component;
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -697,7 +697,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function ComponentA({text}) {
@@ -757,7 +757,7 @@ describe('utils', () => {
       `;
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component() {
@@ -826,7 +826,7 @@ describe('utils', () => {
       `;
 
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component() {
@@ -902,7 +902,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -979,7 +979,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1057,7 +1057,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1132,7 +1132,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1205,8 +1205,8 @@ describe('utils', () => {
           return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
         }
       `;
-      expect(normalizeQuotes(transformToActionCode(code))).toContain(
-        normalizeQuotes(
+      expect(normalizeHTML(transformToActionCode(code))).toContain(
+        normalizeHTML(
           'component: __props => jsx(Component, {text, ...__props})',
         ),
       );
@@ -1222,7 +1222,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         const SOME_CONSTANT = 'hello world';
@@ -1261,7 +1261,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world',FOO: 'foo'};
@@ -1302,7 +1302,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world',FOO: 'foo'};
@@ -1340,7 +1340,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1377,7 +1377,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from "brisa/server";
         
         function Component({text}) {
@@ -1416,7 +1416,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from "brisa/server";
         
         function Component({text}) {
@@ -1476,7 +1476,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1526,7 +1526,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         async function Component({text}) {
@@ -1567,7 +1567,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1607,7 +1607,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1646,7 +1646,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1684,7 +1684,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1723,7 +1723,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1764,7 +1764,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1811,7 +1811,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1855,7 +1855,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1898,7 +1898,7 @@ describe('utils', () => {
         }
       `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -1936,7 +1936,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}, {foo, ...req}) {
@@ -1973,7 +1973,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -2009,7 +2009,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}) {
@@ -2045,7 +2045,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function Component({text}, {foo, ...req2}) {
@@ -2107,7 +2107,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
       import {rerenderInAction} from "${brisaServerFile}";
 
@@ -2199,7 +2199,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
       import {rerenderInAction} from "${brisaServerFile}";
 
@@ -2294,7 +2294,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
       import {rerenderInAction} from "${brisaServerFile}";
 
@@ -2367,7 +2367,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
     import {resolveAction as __resolveAction} from "brisa/server";
 
     const props = {
@@ -2436,7 +2436,7 @@ describe('utils', () => {
       `;
 
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
     import {resolveAction as __resolveAction} from "brisa/server";
 
     function getEl(text) {
@@ -2487,7 +2487,7 @@ describe('utils', () => {
         }
 `;
       const output = compileActions(code);
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from "brisa/server";
 
         function getEl(text) {
@@ -2554,7 +2554,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         const el = jsxDEV("div", {
@@ -2657,7 +2657,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         const el = jsxDEV("div", {
@@ -2728,7 +2728,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         const el = jsxDEV("div", {
@@ -2788,7 +2788,7 @@ describe('utils', () => {
 
         const output = compileActions(code);
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function generator() {
@@ -2850,7 +2850,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function generator() {
@@ -2916,7 +2916,7 @@ describe('utils', () => {
 
         const output = compileActions(code);
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function generator() {
@@ -2982,7 +2982,7 @@ describe('utils', () => {
 
         const output = compileActions(code);
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
         import {resolveAction as __resolveAction} from 'brisa/server';
 
         function gen1() {
@@ -3048,7 +3048,7 @@ describe('utils', () => {
 
       const output = compileActions(code);
 
-      const expected = normalizeQuotes(`
+      const expected = normalizeHTML(`
         import { resolveAction as __resolveAction } from 'brisa/server';
 
         function withAction(Component) {
@@ -3094,7 +3094,7 @@ describe('utils', () => {
 
         const output = compileActions(code);
 
-        const expected = normalizeQuotes(`
+        const expected = normalizeHTML(`
         import { resolveAction as __resolveAction } from 'brisa/server';
 
         const el = jsxDEV("div", { onClick: () => console.log('hello world'), "data-action-onclick": "a1_1", "data-action": true, children: "Click me" }, undefined, false, undefined, this);

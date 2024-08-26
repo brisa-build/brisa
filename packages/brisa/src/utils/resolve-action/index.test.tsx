@@ -8,7 +8,7 @@ import resolveAction from '.';
 import SSRWebComponent, {
   AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
 } from '@/utils/ssr-web-component';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -416,7 +416,7 @@ describe('utils', () => {
 
       expect(response.status).toBe(200);
       expect(await response.text()).toBe(
-        normalizeQuotes(`<div>
+        normalizeHTML(`<div>
           Test <some-web-component-to-transfer-store></some-web-component-to-transfer-store>
         </div>
         <script>window._S=[["foo","bar"]]</script>`),

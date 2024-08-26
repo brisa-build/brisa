@@ -1,7 +1,7 @@
 import AST from '@/utils/ast';
 import { describe, it, expect, mock, beforeEach, afterEach } from 'bun:test';
 import addI18nBridge from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 import type { I18nConfig } from '@/types';
 
@@ -46,8 +46,8 @@ describe('utils', () => {
           i18nAdded: false,
           isTranslateCoreAdded: false,
         });
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           import foo from 'bar';
           import baz from 'qux';
 
@@ -78,8 +78,8 @@ describe('utils', () => {
           i18nAdded: true,
           isTranslateCoreAdded: false,
         });
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           import {translateCore} from "brisa";
           import foo from 'bar';
           import baz from 'qux';
@@ -111,8 +111,8 @@ describe('utils', () => {
           i18nAdded: false,
           isTranslateCoreAdded: false,
         });
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           import {translateCore} from "brisa";
           import foo from 'bar';
           import baz from 'qux';
@@ -145,8 +145,8 @@ describe('utils', () => {
           i18nAdded: false,
           isTranslateCoreAdded: false,
         });
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           const i18nConfig = {
             defaultLocale: "en",
             locales: ["en", "pt"]
@@ -166,8 +166,8 @@ describe('utils', () => {
           i18nAdded: false,
           isTranslateCoreAdded: false,
         });
-        const outputCode = normalizeQuotes(generateCodeFromAST(outputAst));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(outputAst));
+        const expectedCode = normalizeHTML(`
           import {translateCore} from "brisa";
 
           const i18nConfig = {
@@ -218,7 +218,7 @@ describe('utils', () => {
         let output = generateCodeFromAST(ast);
 
         output = output.replace(
-          normalizeQuotes("import {translateCore} from 'brisa';"),
+          normalizeHTML("import {translateCore} from 'brisa';"),
           'const translateCore = () => (k) => "Olá John";',
         );
 
@@ -248,7 +248,7 @@ describe('utils', () => {
         let output = generateCodeFromAST(ast1) + generateCodeFromAST(ast2);
 
         output = output.replace(
-          normalizeQuotes("import {translateCore} from 'brisa';"),
+          normalizeHTML("import {translateCore} from 'brisa';"),
           'const translateCore = () => (k) => "Olá John";',
         );
 
@@ -272,7 +272,7 @@ describe('utils', () => {
         let output = generateCodeFromAST(ast);
 
         output = output.replace(
-          normalizeQuotes("import {translateCore} from 'brisa';"),
+          normalizeHTML("import {translateCore} from 'brisa';"),
           "const translateCore = () => (k) => window.i18nMessages[k].replace('{{name}}', 'John');",
         );
 
@@ -305,7 +305,7 @@ describe('utils', () => {
         let output = generateCodeFromAST(ast);
 
         output = output.replace(
-          normalizeQuotes("import {translateCore} from 'brisa';"),
+          normalizeHTML("import {translateCore} from 'brisa';"),
           "const translateCore = () => (k) => window.i18nMessages[k].replace('{{name}}', 'John');",
         );
 

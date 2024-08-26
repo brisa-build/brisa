@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import transformToReactiveProps from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
@@ -46,9 +46,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           const outsideComponent = props => {
             console.log(props.foo);
             if (props.bar) return props.baz;
@@ -76,9 +76,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component({foo, bar, baz}) {
             console.log(foo.value);
             if (bar.value) return jsxDEV("div", {children: baz.value}, undefined, false, undefined, this);
@@ -99,9 +99,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component({foo: foot, bar: bart, baz: bazt}) {
             console.log(foot.value);
             if (bart.value) return jsxDEV("div", {children: bazt.value}, undefined, false, undefined, this);
@@ -122,9 +122,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component({foo, ...rest}) {
             console.log(foo.value);
             if (rest.bar.value) return jsxDEV("div", {children: rest.baz.value}, undefined, false, undefined, this);
@@ -144,9 +144,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default props => console.log(props.foo.value);
         `);
 
@@ -162,9 +162,9 @@ describe('utils', () => {
 
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default ({foo, ...rest}) => foo.value === "Test" && rest.bar.value && jsxDEV("div", {children: rest.baz.value}, undefined, false, undefined, this);
         `);
 
@@ -185,9 +185,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(props) {
             const foot = props.foo.value;
             const bart = props.bar.value;
@@ -227,9 +227,9 @@ describe('utils', () => {
 
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`export default function Component({}, {state}) {
+        const expectedCode = normalizeHTML(`export default function Component({}, {state}) {
             const stateFoo = state('foo');
             const stateBar = state('bar');
             const stateBaz = state('baz');
@@ -267,9 +267,9 @@ describe('utils', () => {
 
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`export default function Component({}, {state}) {
+        const expectedCode = normalizeHTML(`export default function Component({}, {state}) {
           const stateFoo = state('foo');
           const stateBar = state('bar');
           const stateBaz = state('baz');
@@ -303,9 +303,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(props) {
             const {foo: foot, bar: bart, baz: bazt} = props;
             console.log(foot.value);
@@ -334,9 +334,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           const outsideComponent = props => {
             console.log(props.foo.name);
             if (props.bar.name) return props.baz.name;
@@ -364,9 +364,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component({foo, bar}) {
             return jsxDEV("div", {foo: bar.value,children: "test"}, undefined, false, undefined, this);
           }
@@ -386,9 +386,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {derived}) {
             const {foo} = __b_props__;
             const bar = derived(() => __b_props__.bar.value ?? 'bar');
@@ -411,9 +411,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {derived}) {
             const baz = derived(() => __b_props__.foo.value.bar.baz);
             const bar = derived(() => __b_props__.foo.value.bar);
@@ -433,9 +433,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`export default function Foo(__b_props__, {derived}) {
+        const expectedCode = normalizeHTML(`export default function Foo(__b_props__, {derived}) {
           const baz = derived(() => ((__b_props__.foo.value ?? ({})).bar ?? ({})).baz ?? "bar");
           const quux = derived(() => (__b_props__.foo.value ?? ({})).quux);
           return jsxDEV("div", {children: [quux.value, baz.value]}, undefined, true, undefined, this);
@@ -455,9 +455,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {derived}) {
             const baz = derived(() => __b_props__.foo.value.bar.baz ?? "bar");
             const quux = derived(() => __b_props__.foo.value.quux);
@@ -479,9 +479,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {derived}) {
             const brisa = derived(() => __b_props__.foo.value.bar.baz);
             const bar = derived(() => __b_props__.foo.value.bar);
@@ -503,9 +503,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {derived}) {
             const baz = derived(() => __b_props__.foo.value[0].bar[0].baz);
             const bar = derived(() => __b_props__.foo.value[0].bar);
@@ -527,9 +527,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {derived}) {
             const baz = derived(() => __b_props__.foo.value[0].bar[0].baz ?? "bar");
             const bar = derived(() => __b_props__.foo.value[0].bar);
@@ -551,9 +551,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {derived}) {
             const brisa = derived(() => __b_props__.foo.value[0].bar[0].baz);
             const bar = derived(() => __b_props__.foo.value[0].bar);
@@ -575,9 +575,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component({children}) {
             return jsxDEV("div", {children}, undefined, false, undefined, this);
           }
@@ -597,9 +597,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component({foo, bar: children}) {
             return jsxDEV("div", {children: [foo.value, children.value]}, undefined, true, undefined, this);
           }
@@ -619,9 +619,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           const bar = props => jsxDEV("div", {children: props.baz}, undefined, false, undefined, this);
           export default function Component({foo}) {
             return jsxDEV("div", {children: bar({foo: foo.value})}, undefined, false, undefined, this);
@@ -642,9 +642,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component(props) {
             const {onClick, ...rest} = props;
             return jsxDEV("div", {onClick,children: jsxDEV("div", {onClick: rest.onClickSpan,children: "Click"}, undefined, false, undefined, this)}, undefined, false, undefined, this);
@@ -680,9 +680,9 @@ describe('utils', () => {
 
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
             export default function RuntimeLog({error, warning}) {
               return jsxDEV("dialog", {open: error.value || warning.value,children: [error.value && \`Error: \${error.value.message}\`, error.value && jsxDEV("pre", {children: error.value.stack}, undefined, false, undefined, this), warning.value && \`Warning: \${warning.value}\`]}, undefined, true, undefined, this);
             }
@@ -705,9 +705,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           function Component(__b_props__, {derived}) {
             const foo = derived(() => __b_props__.foo.value ?? "foo");
             return foo.value;
@@ -733,9 +733,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           async function Component({foo}) {
             return foo.value;
           }
@@ -760,9 +760,9 @@ describe('utils', () => {
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
 
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           async function Component(__b_props__, {derived}) {
             const someTestProp = derived(() => __b_props__.someTestProp.value ?? 'foo');
             return someTestProp.value;
@@ -785,9 +785,9 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
           export default function Component({foo}, {derived}) {
             const bar = derived(() => foo.value ?? "bar");
             return jsxDEV("div", {children: bar.value}, undefined, false, undefined, this);
@@ -808,9 +808,9 @@ describe('utils', () => {
 
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`export default function MyComponent({foo, bar}) {
+        const expectedCode = normalizeHTML(`export default function MyComponent({foo, bar}) {
           const baz = foo.value && bar.value;
           return jsxDEV("div", {children: baz ? 'TRUE' : 'FALSE'}, undefined, false, undefined, this);
         }`);
@@ -835,9 +835,9 @@ describe('utils', () => {
 
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
         export default function Component(props, {state}) {
           const inputs = state(props.value.value ?? ['foo']);
           return jsxDEV('div', {children: inputs.value.map(input => jsxDEV("div", {children: input}, input, false, undefined, this))}, undefined, false, undefined, this);
@@ -864,9 +864,9 @@ describe('utils', () => {
 
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
         export default function Component(props, {derived}) {
           const foo = derived(() => props.foo.value ?? ['foo']);
           console.log('Signal:', foo, [foo], ...foo);
@@ -894,9 +894,9 @@ describe('utils', () => {
 
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeQuotes(`
+        const expectedCode = normalizeHTML(`
         export default function Component(props, {derived}) {
           const inputs = derived(() => props.inputs.value ?? ['foo']);
           return jsxDEV('div', {children: inputs.value.map(input => jsxDEV("div", {children: input}, input, false, undefined, this))}, undefined, false, undefined, this);
@@ -912,8 +912,8 @@ describe('utils', () => {
         const code = `export default ({ name = "Aral" }) => <div>{name}</div>;`;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
+        const expectedCode = normalizeHTML(`
           export default (__b_props__, {derived}) => {
             const name = derived(() => __b_props__.name.value ?? "Aral");
             
@@ -934,8 +934,8 @@ describe('utils', () => {
         `;
         const ast = parseCodeToAST(code);
         const out = transformToReactiveProps(ast);
-        const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
-        const expectedCode = normalizeQuotes(`
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
+        const expectedCode = normalizeHTML(`
           const foo = 'foo';
           export default function Component(props) {
             console.log(foo);
@@ -964,9 +964,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component(props, {state}) {
             const example = state(props.foo.value);
 
@@ -999,9 +999,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component(props, {state}) {
             const example = state(props.foo.value);
 
@@ -1034,9 +1034,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component({...props}, {state}) {
             const example = state(props.foo.value);
 
@@ -1069,9 +1069,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component({...props}, {state}) {
             const example = state(props.foo.value);
 
@@ -1104,9 +1104,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component({foo}, {state}) {
             const example = state(foo.value);
 
@@ -1139,9 +1139,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component({foo}, {state}) {
             const example = state(foo.value);
 
@@ -1174,9 +1174,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {state, derived}) {
             const foo = derived(() => __b_props__.foo.value ?? "bar");
             const example = state(foo.value);
@@ -1210,9 +1210,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {state, derived}) {
             const foo = derived(() => __b_props__.foo.value ?? "bar");
             const example = state(foo.value);
@@ -1246,9 +1246,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component({foot: foo}, {state}) {
             const example = state(foo.value);
 
@@ -1281,9 +1281,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component({foot: foo}, {state}) {
             const example = state(foo.value);
 
@@ -1316,9 +1316,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {state, derived}) {
             const foo = derived(() => __b_props__.foot.value.foo);
             const example = state(foo.value);
@@ -1352,9 +1352,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component(__b_props__, {state, derived}) {
             const foo = derived(() => __b_props__.foot.value.foo);
             const example = state(foo.value);
@@ -1389,9 +1389,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component(props, {state}) {
             const foo = props.bar.value;
             const example = state(foo);
@@ -1426,9 +1426,9 @@ describe('utils', () => {
 
           const ast = parseCodeToAST(code);
           const out = transformToReactiveProps(ast);
-          const outputCode = normalizeQuotes(generateCodeFromAST(out.ast));
+          const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-          const expectedCode = normalizeQuotes(`
+          const expectedCode = normalizeHTML(`
           export default function Component(props, {state}) {
             const foo = props.bar.value;
             const example = state(foo);

@@ -2,7 +2,7 @@ import { describe, it, expect, spyOn } from 'bun:test';
 import AST from '@/utils/ast';
 import { join } from 'node:path';
 import replaceAstImportsToAbsolute from '.';
-import { normalizeQuotes } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 const utilsDir = join(import.meta.dir, '..');
@@ -25,8 +25,8 @@ describe('utils', () => {
         ast,
         import.meta.url,
       );
-      const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
-      const expected = normalizeQuotes(`
+      const result = normalizeHTML(generateCodeFromAST(modifiedAst));
+      const expected = normalizeHTML(`
         import createPortal from "${utilsDir}/create-portal/index.ts";
         import dangerHTML from "${utilsDir}/danger-html/index.ts";
         import createContext from "${utilsDir}/create-context/index.ts";
@@ -55,8 +55,8 @@ describe('utils', () => {
         ast,
         import.meta.url,
       );
-      const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
-      const expected = normalizeQuotes(`
+      const result = normalizeHTML(generateCodeFromAST(modifiedAst));
+      const expected = normalizeHTML(`
         const createPortal = require("${utilsDir}/create-portal/index.ts");
         const dangerHTML = require("${utilsDir}/danger-html/index.ts");
         const createContext = require("${utilsDir}/create-context/index.ts");
@@ -83,8 +83,8 @@ describe('utils', () => {
         ast,
         import.meta.url,
       );
-      const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
-      const expected = normalizeQuotes(`
+      const result = normalizeHTML(generateCodeFromAST(modifiedAst));
+      const expected = normalizeHTML(`
         import("${utilsDir}/create-portal/index.ts");
         import("${utilsDir}/danger-html/index.ts");
         import("${utilsDir}/create-context/index.ts");
@@ -106,8 +106,8 @@ describe('utils', () => {
         ast,
         import.meta.url,
       );
-      const result = normalizeQuotes(generateCodeFromAST(modifiedAst));
-      const expected = normalizeQuotes(`
+      const result = normalizeHTML(generateCodeFromAST(modifiedAst));
+      const expected = normalizeHTML(`
         import("@/foo/unknown");
       `);
 
