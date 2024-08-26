@@ -262,6 +262,10 @@ export default defineConfig({
                 link: '/building-your-application/configuring/static-pages',
               },
               {
+                text: 'Clustering',
+                link: '/building-your-application/configuring/clustering',
+              },
+              {
                 text: 'Content Security Policy',
                 link: '/building-your-application/configuring/content-security-policy',
               },
