@@ -2,11 +2,19 @@ import type { ESTree } from 'meriyah';
 
 const JSX_IDENTIFIERS = new Set(['jsxDEV', 'jsx', 'jsxs']);
 
-export default function renderOnBuildTime(ast: ESTree.Program): ESTree.Program {
+export default function renderOnBuildTime() {
   const allImportsWithPath = new Map<string, string>();
   let needsPrerenderImport = false;
 
-  function modifyJSXToPrerenderComponents(this: any, key: string, value: any) {
+  /**
+   * This function should be used during AST traversal to analyze any node and
+   * transform it if necessary.
+   */
+  function step1_modifyJSXToPrerenderComponents(
+    this: any,
+    key: string,
+    value: any,
+  ) {
     if (value?.type === 'ImportDeclaration') {
       for (const specifier of value.specifiers) {
         allImportsWithPath.set(specifier.local.name, value.source.value);
@@ -80,34 +88,39 @@ export default function renderOnBuildTime(ast: ESTree.Program): ESTree.Program {
     };
   }
 
-  const newAst = JSON.parse(
-    JSON.stringify(ast, modifyJSXToPrerenderComponents),
-  );
-
-  if (needsPrerenderImport) {
-    newAst.body.unshift({
-      type: 'ImportDeclaration',
-      specifiers: [
-        {
-          type: 'ImportSpecifier',
-          imported: {
-            type: 'Identifier',
-            name: '__prerender__macro',
+  /**
+   * This function should be used after applying the step1_modifyJSXToPrerenderComponents
+   * to the AST. It should be used to add any necessary imports to the AST.
+   */
+  function step2_addPrerenderImport(ast: ESTree.Program) {
+    if (needsPrerenderImport) {
+      ast.body.unshift({
+        type: 'ImportDeclaration',
+        specifiers: [
+          {
+            type: 'ImportSpecifier',
+            imported: {
+              type: 'Identifier',
+              name: '__prerender__macro',
+            },
+            local: {
+              type: 'Identifier',
+              name: '__prerender__macro',
+            },
           },
-          local: {
-            type: 'Identifier',
-            name: '__prerender__macro',
-          },
+        ],
+        source: {
+          type: 'Literal',
+          value: 'brisa/server',
         },
-      ],
-      source: {
-        type: 'Literal',
-        value: 'brisa/server',
-      },
-    });
+      });
+    }
   }
 
-  return newAst;
+  return {
+    step1_modifyJSXToPrerenderComponents,
+    step2_addPrerenderImport,
+  };
 }
 
 function differentThanRenderOnBuildTime(p: any) {
