@@ -1,6 +1,5 @@
 import type { ESTree } from 'meriyah';
-
-const JSX_IDENTIFIERS = new Set(['jsxDEV', 'jsx', 'jsxs']);
+import { JSX_NAME } from '../ast/constants';
 
 export default function renderOnBuildTime() {
   const allImportsWithPath = new Map<string, string>();
@@ -160,7 +159,7 @@ function differentThanRenderOnBuildTime(p: any) {
 function getRenderOnValue(jsxCall: ESTree.CallExpression) {
   if (
     jsxCall?.type === 'CallExpression' &&
-    JSX_IDENTIFIERS.has(jsxCall.callee?.name) &&
+    JSX_NAME.has(jsxCall.callee?.name) &&
     jsxCall.arguments[1]?.type === 'ObjectExpression'
   ) {
     for (const prop of jsxCall.arguments[1].properties as any) {

@@ -1,11 +1,9 @@
 import type { ESTree } from 'meriyah';
 import { getConstants } from '@/constants';
-import {
-  JSX_NAME,
-  NO_REACTIVE_CHILDREN_EXPRESSION,
-} from '@/utils/client-build-plugin/constants';
+import { NO_REACTIVE_CHILDREN_EXPRESSION } from '@/utils/client-build-plugin/constants';
 import wrapWithArrowFn from '@/utils/client-build-plugin/wrap-with-arrow-fn';
 import { logError, logWarning } from '@/utils/log/log-build';
+import { JSX_NAME } from '@/utils/ast/constants';
 
 export const logsPerFile = new Set<string | undefined>();
 
