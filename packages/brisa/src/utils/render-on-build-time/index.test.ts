@@ -7,6 +7,38 @@ const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
 describe('utils', () => {
   describe('renderOnBuildTime aka: renderOn="build"', () => {
+    it('should not transform the ast if there is no renderOn="build"', () => {
+      const code = `
+				import Foo from '@/foo';
+
+				export default function App() {
+					return <Foo foo="bar" />;
+				}
+			`;
+      const expectedCode = toExpected(code);
+
+      const output = getOutput(code);
+      expect(output).toEqual(expectedCode);
+    });
+
+    it('should only remove the attribute if there is renderOn="runtime"', () => {
+      const code = `
+				import Foo from '@/foo';
+
+				export default function App() {
+					return <Foo renderOn="runtime" foo="bar" />;
+				}
+			`;
+      const expectedCode = toExpected(`
+				import Foo from '@/foo';
+				
+				export default function App() {
+					return <Foo foo="bar" />;
+				}`);
+
+      const output = getOutput(code);
+      expect(output).toEqual(expectedCode);
+    });
     it('should transform the ast to apply the prerender macro', () => {
       const code = `
 				import Foo from '@/foo';
