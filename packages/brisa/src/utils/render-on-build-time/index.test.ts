@@ -17,12 +17,13 @@ describe('utils', () => {
 			`);
       const expectedCode = normalizeHTML(`
 				import {__prerender__macro} from 'brisa/server';
+				import Foo from '@/foo';
 
 				export default function App() {
-					return prerender({
+					return __prerender__macro({
 						componentPath: "@/foo",
 						componentModuleName: "default",
-						componentProps: { foo: "bar" },
+						componentProps: {foo: "bar"}
 					});
 				}
 			`);
