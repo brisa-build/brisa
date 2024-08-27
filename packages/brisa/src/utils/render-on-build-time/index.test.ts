@@ -96,6 +96,105 @@ describe('utils', () => {
       const output = getOutput(code);
       expect(output).toEqual(expectedCode);
     });
+
+    it('should transform a named export component', () => {
+      const code = `
+			import {Foo} from '@/foo';
+
+			export default function App() {
+				return (
+					<div>
+						<Foo renderOn="build" foo="bar" />
+					</div>
+				);
+			}
+		`;
+      const expectedCode = toExpected(`
+			import {__prerender__macro} from 'brisa/server';
+			import {Foo} from '@/foo';
+
+			export default function App() {
+				return (
+					<div>
+						{__prerender__macro({
+							componentPath: "@/foo",
+							componentModuleName: "default",
+							componentProps: {foo: "bar"}
+						})}
+					</div>
+				);
+			}
+		`);
+
+      const output = getOutput(code);
+      expect(output).toEqual(expectedCode);
+    });
+  });
+
+  it('should transform a named import with "require" component', () => {
+    const code = `
+			const {Foo} = require('@/foo');
+
+			export default function App() {
+				return (
+					<div>
+						<Foo renderOn="build" foo="bar" />
+					</div>
+				);
+			}
+		`;
+    const expectedCode = toExpected(`
+			import {__prerender__macro} from 'brisa/server';
+			const {Foo} = require('@/foo');
+
+			export default function App() {
+				return (
+					<div>
+						{__prerender__macro({
+							componentPath: "@/foo",
+							componentModuleName: "default",
+							componentProps: {foo: "bar"}
+						})}
+					</div>
+				);
+			}
+		`);
+
+    const output = getOutput(code);
+    expect(output).toEqual(expectedCode);
+  });
+
+  it('should transform a default import with "require" component', () => {
+    const code = `
+				const Foo = require('@/foo').default;
+	
+				export default function App() {
+					return (
+						<div>
+							<Foo renderOn="build" foo="bar" />
+						</div>
+					);
+				}
+			`;
+    const expectedCode = toExpected(`
+				import {__prerender__macro} from 'brisa/server';
+				const Foo = require('@/foo').default;
+	
+				export default function App() {
+					return (
+						<div>
+							{__prerender__macro({
+								componentPath: "@/foo",
+								componentModuleName: "default",
+								componentProps: {foo: "bar"}
+							})}
+						</div>
+					);
+				}
+			`);
+
+    const output = getOutput(code);
+    expect(output).toEqual(expectedCode);
   });
 });
 
