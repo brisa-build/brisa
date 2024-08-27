@@ -7,6 +7,8 @@ import mime from 'mime-types';
  *
  * @todo TODO: Remove this in the future when we have a better solution in Node.js
  *
+ *       Node issue: https://github.com/nodejs/node/issues/54595
+ *
  *       In Bun is possible via Bun(file).type, but there are some differences, like:
  *       - test.js is text/javascript;charset=utf-8 instead of application/javascript;charset=utf-8
  */
