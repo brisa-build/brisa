@@ -7,7 +7,7 @@ import { getServeOptions } from '@/cli/serve/serve-options';
 import { RenderInitiator } from '@/public-constants';
 import { fileSystemRouter } from '@/utils/file-system-router';
 import serve from '@/cli/serve/bun-serve';
-import { __prerender__macro } from '@/utils/render-on-build-time/prerender';
+import { __prerender__macro } from '@/utils/prerender-util/prerender';
 
 export {
   SSRWebComponent,

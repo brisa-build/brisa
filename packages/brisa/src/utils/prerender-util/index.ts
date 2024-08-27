@@ -1,7 +1,7 @@
 import type { ESTree } from 'meriyah';
 import { JSX_NAME } from '../ast/constants';
 
-export default function renderOnBuildTime() {
+export default function getPrerenderUtil() {
   const allImportsWithPath = new Map<string, string>();
   let needsPrerenderImport = false;
 

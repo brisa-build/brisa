@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'bun:test';
 import AST from '../ast';
-import renderOnBuild from '.';
+import getPrerenderUtil from '.';
 import { normalizeHTML } from '@/helpers';
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
 describe('utils', () => {
-  describe('renderOnBuildTime aka: renderOn="build"', () => {
+  describe('getPrerenderUtil (renderOn="build")', () => {
     it('should not transform the ast if there is no renderOn="build"', () => {
       const code = `
 				import Foo from '@/foo';
@@ -200,7 +200,7 @@ describe('utils', () => {
 
 function getOutput(code: string) {
   const ast = parseCodeToAST(code);
-  const p = renderOnBuild();
+  const p = getPrerenderUtil();
   const newAst = JSON.parse(
     JSON.stringify(ast, p.step1_modifyJSXToPrerenderComponents),
   );
