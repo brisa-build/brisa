@@ -4,6 +4,7 @@ import replaceAstImportsToAbsolute from '@/utils/replace-ast-imports-to-absolute
 import { logWarning } from '@/utils/log/log-build';
 import getDependenciesList from '@/utils/ast/get-dependencies-list';
 import wrapDefaultExportWithSSRWebComponent from './wrap-default-export-with-ssr-web-component';
+import getPrerenderUtil from '../prerender-util';
 
 type ServerComponentPluginOptions = {
   allWebComponents: Record<string, string>;
@@ -40,6 +41,7 @@ const jsxs = jsx;
 Fragment.__isFragment = true;
 `;
 
+// TODO: We need to refactor this function, is hard to understand and mantain
 export default function serverComponentPlugin(
   code: string,
   {
@@ -52,6 +54,7 @@ export default function serverComponentPlugin(
   const { IS_PRODUCTION, CONFIG } = getConstants();
   const ast = parseCodeToAST(code);
   const isServerOutput = SERVER_OUPUTS.has(CONFIG.output ?? 'bun');
+  const prerenderUtil = getPrerenderUtil();
   const analyzeAction = isServerOutput || !IS_PRODUCTION;
   const isWebComponent = WEB_COMPONENT_REGEX.test(path);
   const detectedWebComponents: Record<string, string> = {};
@@ -149,7 +152,7 @@ export default function serverComponentPlugin(
           });
         }
       }
-      return value;
+      return prerenderUtil.step1_modifyJSXToPrerenderComponents(key, value);
     }
 
     if (isActionsFlag && FN_DECLARATIONS.has(value?.declaration?.type)) {
@@ -453,13 +456,15 @@ export default function serverComponentPlugin(
     if (value?._hasActions) this._hasActions = true;
     if (value?._actionPropagation) this._actionPropagation = true;
 
-    return value;
+    return prerenderUtil.step1_modifyJSXToPrerenderComponents(key, value);
   }
 
   let modifiedAst = JSON.parse(
     JSON.stringify(ast, registerDeclarationsAndImports),
     traverseB2A,
   );
+
+  prerenderUtil.step2_addPrerenderImport(modifiedAst);
 
   if (!isServerOutput && hasActions) {
     logWarning([

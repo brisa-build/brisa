@@ -15,7 +15,13 @@ describe('utils', () => {
 					return <Foo foo="bar" />;
 				}
 			`;
-      const expectedCode = toExpected(code);
+      const expectedCode = toExpected(`
+				import Foo from '@/foo';
+
+				export default function App() {
+					return jsxDEV(Foo, {foo: "bar"}, undefined, false, undefined, this);
+				}
+			`);
 
       const output = getOutput(code);
       expect(output).toEqual(expectedCode);
@@ -33,7 +39,7 @@ describe('utils', () => {
 				import Foo from '@/foo';
 				
 				export default function App() {
-					return <Foo foo="bar" />;
+					return jsxDEV(Foo, {foo: "bar"}, undefined, false, undefined, this);
 				}`);
 
       const output = getOutput(code);
@@ -48,7 +54,7 @@ describe('utils', () => {
 				}
 			`;
       const expectedCode = normalizeHTML(`
-				import {__prerender__macro} from 'brisa/server';
+				import {__prerender__macro} from 'brisa/server' with { type: "macro" };
 				import Foo from '@/foo';
 
 				export default function App() {
@@ -77,18 +83,15 @@ describe('utils', () => {
 				}
 			`;
       const expectedCode = toExpected(`
-				import {__prerender__macro} from 'brisa/server';
+				import {__prerender__macro} from 'brisa/server' with { type: "macro" };
 				import Foo from '@/foo';
 
 				export default function App() {
-					return (
-						<>
-							{__prerender__macro({
-								componentPath: "@/foo",
-								componentModuleName: "default",
-								componentProps: {foo: "bar"}
-							})}
-						</>
+					return jsxDEV(Fragment, {children: __prerender__macro({
+							componentPath: "@/foo",
+							componentModuleName: "default",
+							componentProps: {foo: "bar"}
+						})}, undefined, false, undefined, this
 					);
 				}
 			`);
@@ -103,26 +106,20 @@ describe('utils', () => {
 
 			export default function App() {
 				return (
-					<div>
-						<Foo renderOn="build" foo="bar" />
-					</div>
+					<Foo renderOn="build" foo="bar" />
 				);
 			}
 		`;
       const expectedCode = toExpected(`
-			import {__prerender__macro} from 'brisa/server';
+			import {__prerender__macro} from 'brisa/server' with { type: "macro" };
 			import {Foo} from '@/foo';
 
 			export default function App() {
-				return (
-					<div>
-						{__prerender__macro({
-							componentPath: "@/foo",
-							componentModuleName: "default",
-							componentProps: {foo: "bar"}
-						})}
-					</div>
-				);
+				return __prerender__macro({
+					componentPath: "@/foo",
+					componentModuleName: "default",
+					componentProps: {foo: "bar"}
+				});
 			}
 		`);
 
@@ -137,26 +134,20 @@ describe('utils', () => {
 
 			export default function App() {
 				return (
-					<div>
-						<Foo renderOn="build" foo="bar" />
-					</div>
+					<Foo renderOn="build" foo="bar" />
 				);
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro} from 'brisa/server';
+			import {__prerender__macro} from 'brisa/server' with { type: "macro" };
 			const {Foo} = require('@/foo');
 
 			export default function App() {
-				return (
-					<div>
-						{__prerender__macro({
-							componentPath: "@/foo",
-							componentModuleName: "default",
-							componentProps: {foo: "bar"}
-						})}
-					</div>
-				);
+				return __prerender__macro({
+						componentPath: "@/foo",
+						componentModuleName: "default",
+						componentProps: {foo: "bar"}
+				});
 			}
 		`);
 
@@ -166,32 +157,29 @@ describe('utils', () => {
 
   it('should transform a default import with "require" component', () => {
     const code = `
-				const Foo = require('@/foo').default;
-	
-				export default function App() {
-					return (
-						<div>
-							<Foo renderOn="build" foo="bar" />
-						</div>
-					);
-				}
-			`;
+			const Foo = require('@/foo').default;
+
+			export default function App() {
+				return (
+					<div>
+						<Foo renderOn="build" foo="bar" />
+					</div>
+				);
+			}
+		`;
     const expectedCode = toExpected(`
-				import {__prerender__macro} from 'brisa/server';
-				const Foo = require('@/foo').default;
-	
-				export default function App() {
-					return (
-						<div>
-							{__prerender__macro({
-								componentPath: "@/foo",
-								componentModuleName: "default",
-								componentProps: {foo: "bar"}
-							})}
-						</div>
-					);
-				}
-			`);
+			import {__prerender__macro} from 'brisa/server' with { type: "macro" };
+			const Foo = require('@/foo').default;
+
+			export default function App() {
+				return jsxDEV("div", {children: __prerender__macro({
+							componentPath: "@/foo",
+							componentModuleName: "default",
+							componentProps: {foo: "bar"}
+					})}, undefined, false, undefined, this
+				);
+			}
+		`);
 
     const output = getOutput(code);
     expect(output).toEqual(expectedCode);
@@ -211,5 +199,5 @@ function getOutput(code: string) {
 }
 
 function toExpected(code: string) {
-  return normalizeHTML(generateCodeFromAST(parseCodeToAST(code)));
+  return normalizeHTML(code);
 }

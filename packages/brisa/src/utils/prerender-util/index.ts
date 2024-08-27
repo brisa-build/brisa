@@ -133,6 +133,22 @@ export default function getPrerenderUtil() {
           type: 'Literal',
           value: 'brisa/server',
         },
+        attributes: [
+          {
+            type: 'ImportAttribute',
+            key: {
+              type: 'Literal',
+              value: 'type',
+              // @ts-ignore
+              // This astring is looking for "name", but meriyah "value"...
+              name: 'type',
+            },
+            value: {
+              type: 'Literal',
+              value: 'macro',
+            },
+          },
+        ],
       });
     }
   }
