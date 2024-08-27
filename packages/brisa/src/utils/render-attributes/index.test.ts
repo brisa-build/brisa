@@ -282,6 +282,46 @@ describe('utils', () => {
       expect(attributes).toBe(' lang="ru" dir="ltr"');
     });
 
+    it('should add the "dir" and "lang" when the js-runtime does not support "getTextInfo"', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request('https://example.com/ru'),
+      });
+
+      request.i18n = {
+        locale: 'ru',
+        locales: ['en', 'ru'],
+        defaultLocale: 'en',
+        pages: {},
+        t: () => '' as any,
+        overrideMessages: () => {},
+      };
+
+      const originalIntlLocale = Intl.Locale;
+
+      Object.assign(Intl, {
+        Locale: class {
+          constructor(locale: string) {
+            return {
+              textInfo: {
+                direction: 'ltr',
+              },
+            };
+          }
+        },
+      });
+
+      const attributes = renderAttributes({
+        elementProps: {},
+        request,
+        type: 'html',
+      });
+
+      Object.assign(Intl, {
+        Locale: originalIntlLocale,
+      });
+      expect(attributes).toBe(' lang="ru" dir="ltr"');
+    });
+
     it('should modify the existing lang in the "html" tag the ltr direction (when I18N enable)', () => {
       const request = extendRequestContext({
         originalRequest: new Request('https://example.com/ru'),

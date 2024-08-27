@@ -4,7 +4,6 @@ import type {
   IndicatorSignal,
   Props,
   RequestContext,
-  Translations,
 } from '@/types';
 import routeMatchPathname from '@/utils/route-match-pathname';
 import { serializeServer } from '@/utils/serialization/server';
@@ -235,9 +234,12 @@ export default function renderAttributes({
   }
 
   if (locale && type === 'html') {
-    attributes += ` lang="${locale}"`;
-    const { direction } = (new Intl.Locale(locale) as any).getTextInfo();
-    attributes += ` dir="${direction}"`;
+    const localeInfo = new Intl.Locale(locale) as any;
+    // Note: In some versions of some js-runtimes, "getTextInfo" method
+    // was implemented as an accessor property called textInfo
+    const { direction } = localeInfo.textInfo ?? localeInfo.getTextInfo();
+
+    attributes += ` lang="${locale}" dir="${direction}"`;
   }
 
   if (type === 'head' && basePath) {
@@ -258,7 +260,7 @@ export function renderHrefAttribute(
   let formattedHref = hrefValue.replace(/\/$/, '');
 
   for (const [key, value] of Object.entries(request.route?.params ?? {})) {
-    formattedHref = formattedHref.replace(`[${key}]`, value);
+    formattedHref = formattedHref.replace(`[${key}]`, value as string);
   }
 
   if (isExternalUrl) {
@@ -273,7 +275,7 @@ export function renderHrefAttribute(
 
   if (page) {
     const [pageName, translations] = page;
-    const translatedPage = (translations as Translations)?.[locale] ?? pageName;
+    const translatedPage = (translations as any)?.[locale] ?? pageName;
     formattedHref = substituteI18nRouteValues(translatedPage, formattedHref);
   }
 
