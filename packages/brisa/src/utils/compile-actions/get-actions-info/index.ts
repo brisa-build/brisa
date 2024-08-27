@@ -1,5 +1,5 @@
 import AST from '@/utils/ast';
-import { JSX_NAME } from '@/utils/client-build-plugin/constants';
+import { JSX_NAME } from '@/utils/ast/constants';
 import type { ESTree } from 'meriyah';
 
 export type ActionInfo = {

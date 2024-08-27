@@ -7,7 +7,6 @@ export const NO_REACTIVE_CHILDREN_EXPRESSION = new Set([
 export const ALTERNATIVE_PREFIX = '_';
 export const NATIVE_FOLDER = `${ALTERNATIVE_PREFIX}native`;
 export const SUPPORTED_DEFAULT_PROPS_OPERATORS = new Set(['??', '||']);
-export const JSX_NAME = new Set(['jsx', 'jsxDEV', 'jsxs']);
 export const WEB_COMPONENT_ALTERNATIVE_REGEX = new RegExp(
   `web-components.*(/|\)${ALTERNATIVE_PREFIX}`,
 );
@@ -74,9 +73,3 @@ export const TRANSLATE_CORE_IMPORT = {
     value: 'brisa',
   },
 } as ESTree.ImportDeclaration;
-
-export const FN = new Set([
-  'ArrowFunctionExpression',
-  'FunctionExpression',
-  'FunctionDeclaration',
-]);

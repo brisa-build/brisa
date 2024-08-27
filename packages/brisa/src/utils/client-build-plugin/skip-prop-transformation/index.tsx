@@ -1,6 +1,6 @@
+import { FN } from '@/utils/ast/constants';
 import getAllPatternNames from '@/utils/ast/get-all-pattern-names';
 import getSortedKeysMemberExpression from '@/utils/ast/get-sorted-keys-member-expression';
-import { FN } from '@/utils/client-build-plugin/constants';
 
 const PROPS_OPTIMIZATION_IDENTIFIER = '__b_props__';
 
