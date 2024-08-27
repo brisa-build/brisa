@@ -1993,6 +1993,38 @@ describe('utils', () => {
       );
     });
 
+    it('should modify the JSX to prerender when renderOn="build"', () => {
+      const code = `
+        import Foo from '@/__fixtures__/lib/foo';
+
+        export default function App() {
+          return <Foo renderOn="build" foo="bar" />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+
+      expect(normalizeHTML(out.code)).toBe(
+        normalizeHTML(
+          `
+        import {__prerender__macro} from 'brisa/server' with { type: "macro" };
+				import Foo from '@/__fixtures__/lib/foo';
+
+				export default function App() {
+					return __prerender__macro({
+						componentPath: "@/__fixtures__/lib/foo",
+						componentModuleName: "default",
+						componentProps: {foo: "bar"}
+					});
+				}
+      ` + workaroundText,
+        ),
+      );
+    });
+
     it.todo(
       'should solve identifiers from imports when no actions in the component',
       () => {
