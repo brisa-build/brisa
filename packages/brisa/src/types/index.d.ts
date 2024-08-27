@@ -31,6 +31,7 @@ declare module 'bun' {
  * Internal types used by Brisa and output adapters.
  */
 export type BrisaConstants = {
+  JS_RUNTIME: 'bun' | 'node';
   PAGE_404: string;
   PAGE_500: string;
   VERSION: string;
