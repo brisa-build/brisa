@@ -21,6 +21,18 @@ export default function renderOnBuildTime() {
       }
     }
 
+    if (isRequire(value)) {
+      for (const argument of (value.init.object ?? value.init).arguments) {
+        if (value.id?.properties) {
+          for (const p of value.id?.properties) {
+            allImportsWithPath.set(p.value.name, argument.value);
+          }
+        } else {
+          allImportsWithPath.set(value.id.name, argument.value);
+        }
+      }
+    }
+
     const renderOnValue = getRenderOnValue(value);
 
     if (renderOnValue !== 'build') {
@@ -130,6 +142,15 @@ export default function renderOnBuildTime() {
     step1_modifyJSXToPrerenderComponents,
     step2_addPrerenderImport,
   };
+}
+
+function isRequire(value: any) {
+  const init = value?.init?.object ?? value?.init;
+  return (
+    value?.type === 'VariableDeclarator' &&
+    init?.type === 'CallExpression' &&
+    init.callee?.name === 'require'
+  );
 }
 
 function differentThanRenderOnBuildTime(p: any) {
