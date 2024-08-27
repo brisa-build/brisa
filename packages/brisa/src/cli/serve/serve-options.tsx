@@ -38,6 +38,7 @@ export async function getServeOptions() {
     PAGES_DIR,
     ASSETS_DIR,
     CONFIG,
+    JS_RUNTIME,
     LOG_PREFIX,
     HEADERS: { CACHE_CONTROL },
   } = getConstants();
@@ -100,6 +101,13 @@ export async function getServeOptions() {
         url.pathname === '/__brisa_dev_file__' &&
         req.method === 'POST'
       ) {
+        if (JS_RUNTIME !== 'bun') {
+          // Note: This only happens on development, and we use
+          // the Bun runtime in development. Other runtimes like
+          // Node.js for now are only supported in production.
+          return new Response(null, { status: 404 });
+        }
+
         let file = url.searchParams.get('file');
         const line = url.searchParams.get('line');
         const column = url.searchParams.get('column');

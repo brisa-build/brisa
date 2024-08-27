@@ -111,6 +111,7 @@ const defaultConfig = {
 };
 
 const constants = {
+  JS_RUNTIME: typeof Bun !== 'undefined' ? 'bun' : 'node',
   PAGE_404,
   PAGE_500,
   VERSION: version,
