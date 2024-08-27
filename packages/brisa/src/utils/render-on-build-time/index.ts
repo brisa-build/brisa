@@ -21,7 +21,16 @@ export default function renderOnBuildTime() {
       }
     }
 
-    if (!isJSXCallToPrerender(value)) return value;
+    const renderOnValue = getRenderOnValue(value);
+
+    if (renderOnValue !== 'build') {
+      if (renderOnValue) {
+        value.arguments[1].properties = value.arguments[1].properties.filter(
+          differentThanRenderOnBuildTime,
+        );
+      }
+      return value;
+    }
 
     needsPrerenderImport = true;
 
@@ -127,17 +136,16 @@ function differentThanRenderOnBuildTime(p: any) {
   return p?.key?.name !== 'renderOn';
 }
 
-function isJSXCallToPrerender(jsxCall: ESTree.CallExpression) {
-  return (
+function getRenderOnValue(jsxCall: ESTree.CallExpression) {
+  if (
     jsxCall?.type === 'CallExpression' &&
     JSX_IDENTIFIERS.has(jsxCall.callee?.name) &&
-    jsxCall.arguments[1]?.type === 'ObjectExpression' &&
-    jsxCall.arguments[1]?.properties?.some?.(
-      (p: any) =>
-        p?.type === 'Property' &&
-        p?.key?.type === 'Identifier' &&
-        p?.key?.name === 'renderOn' &&
-        p?.value?.value === 'build',
-    )
-  );
+    jsxCall.arguments[1]?.type === 'ObjectExpression'
+  ) {
+    for (const prop of jsxCall.arguments[1].properties as any) {
+      if (prop?.key?.name === 'renderOn') {
+        return prop?.value?.value;
+      }
+    }
+  }
 }
