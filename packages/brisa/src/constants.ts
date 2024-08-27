@@ -17,6 +17,11 @@ const IS_SERVE_PROCESS = Boolean(
     path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
   ),
 );
+
+const IS_BUILD_PROCESS = Boolean(
+  process.argv[1]?.endsWith?.(path.join('brisa', 'out', 'cli', 'build.js')),
+);
+
 const rootDir = process.cwd();
 const staticExportOutputOption = new Set([
   'static',
@@ -27,7 +32,7 @@ const staticExportOutputOption = new Set([
 const srcDir = path.resolve(rootDir, 'src');
 const buildDir =
   process.env.BRISA_BUILD_FOLDER ?? path.resolve(rootDir, 'build');
-const WORKSPACE = IS_SERVE_PROCESS ? buildDir : srcDir;
+const WORKSPACE = IS_BUILD_PROCESS ? srcDir : buildDir;
 const PAGE_404 = '/_404';
 const PAGE_500 = '/_500';
 const integrations = await importFileIfExists(
