@@ -23,12 +23,12 @@ export default function renderOnBuildTime() {
 
     if (isRequire(value)) {
       for (const argument of (value.init.object ?? value.init).arguments) {
-        if (value.id?.properties) {
-          for (const p of value.id?.properties) {
-            allImportsWithPath.set(p.value.name, argument.value);
-          }
-        } else {
+        if (!value.id?.properties) {
           allImportsWithPath.set(value.id.name, argument.value);
+          continue;
+        }
+        for (const p of value.id?.properties) {
+          allImportsWithPath.set(p.value.name, argument.value);
         }
       }
     }
