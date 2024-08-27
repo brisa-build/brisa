@@ -7,7 +7,7 @@ const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
 describe('utils', () => {
   describe('renderOnBuildTime aka: renderOn="build"', () => {
-    it('should transfrom the ast to apply the prerender macro', () => {
+    it('should transform the ast to apply the prerender macro', () => {
       const code = `
 				import Foo from '@/foo';
 
@@ -31,6 +31,39 @@ describe('utils', () => {
       const output = getOutput(code);
       expect(output).toEqual(expectedCode);
     });
+
+    it('should transform inside a fragment', () => {
+      const code = `
+				import Foo from '@/foo';
+
+				export default function App() {
+					return (
+						<>
+							<Foo renderOn="build" foo="bar" />
+						</>
+					);
+				}
+			`;
+      const expectedCode = toExpected(`
+				import {__prerender__macro} from 'brisa/server';
+				import Foo from '@/foo';
+
+				export default function App() {
+					return (
+						<>
+							{__prerender__macro({
+								componentPath: "@/foo",
+								componentModuleName: "default",
+								componentProps: {foo: "bar"}
+							})}
+						</>
+					);
+				}
+			`);
+
+      const output = getOutput(code);
+      expect(output).toEqual(expectedCode);
+    });
   });
 });
 
@@ -44,4 +77,8 @@ function getOutput(code: string) {
   p.step2_addPrerenderImport(newAst);
 
   return normalizeHTML(generateCodeFromAST(newAst));
+}
+
+function toExpected(code: string) {
+  return normalizeHTML(generateCodeFromAST(parseCodeToAST(code)));
 }
