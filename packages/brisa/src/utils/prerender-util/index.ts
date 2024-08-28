@@ -1,11 +1,13 @@
 import type { ESTree } from 'meriyah';
 import { JSX_NAME } from '@/utils/ast/constants';
 
+type ImportsMapType = Map<
+  string,
+  { componentPath: string; componentModuleName: string }
+>;
+
 export default function getPrerenderUtil() {
-  const allImportsWithPath = new Map<
-    string,
-    { componentPath: string; componentModuleName: string }
-  >();
+  const allImportsWithPath = new Map() as ImportsMapType;
   let needsPrerenderImport = false;
 
   /**
@@ -62,7 +64,6 @@ export default function getPrerenderUtil() {
 
     const name = value.arguments[0].name;
     const isSSRWebComponent = name === '_Brisa_SSRWebComponent';
-    const properties = [];
     let { componentPath, componentModuleName } =
       allImportsWithPath.get(name) ?? {};
 
@@ -71,33 +72,6 @@ export default function getPrerenderUtil() {
     if (isSSRWebComponent) {
       componentModuleName = 'SSRWebComponent';
       componentPath = 'brisa/server';
-    }
-
-    for (const prop of value.arguments[1].properties) {
-      if (isSSRWebComponent && prop?.key?.name === 'Component') {
-        const component = allImportsWithPath.get(prop.value.name);
-        if (component) {
-          properties.push({
-            type: 'Property',
-            key: {
-              type: 'Identifier',
-              name: prop.key.name,
-            },
-            value: {
-              type: 'Literal',
-              value: component.componentPath,
-            },
-            kind: 'init',
-            computed: false,
-            method: false,
-            shorthand: false,
-          });
-          continue;
-        }
-      }
-      if (differentThanRenderOnBuildTime(prop)) {
-        properties.push(prop);
-      }
     }
 
     return {
@@ -148,7 +122,10 @@ export default function getPrerenderUtil() {
               },
               value: {
                 type: 'ObjectExpression',
-                properties,
+                properties: getPrerenderProperties(value, {
+                  imports: allImportsWithPath,
+                  isSSRWebComponent,
+                }),
               },
               kind: 'init',
               computed: false,
@@ -237,4 +214,33 @@ function getRenderOnValue(jsxCall: ESTree.CallExpression) {
       }
     }
   }
+}
+
+function getPrerenderProperties(
+  jsxCall: ESTree.CallExpression,
+  {
+    imports,
+    isSSRWebComponent,
+  }: { imports: ImportsMapType; isSSRWebComponent: boolean },
+) {
+  const properties = [];
+
+  for (const prop of (jsxCall.arguments[1] as any).properties) {
+    if (isSSRWebComponent && prop?.key?.name === 'Component') {
+      const component = imports.get(prop.value.name);
+      if (component) {
+        prop.value = {
+          type: 'Literal',
+          value: component.componentPath,
+        };
+        properties.push(prop);
+        continue;
+      }
+    }
+    if (differentThanRenderOnBuildTime(prop)) {
+      properties.push(prop);
+    }
+  }
+
+  return properties;
 }
