@@ -1,4 +1,5 @@
 import { describe, expect, it, afterEach } from 'bun:test';
+import { join } from 'node:path';
 import SSRWebComponent, { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '.';
 import type {
   I18nConfig,
@@ -12,6 +13,8 @@ import translateCore from '@/utils/translate-core';
 import { getConstants } from '@/constants';
 import { Fragment } from '@/jsx-runtime';
 
+const FIXTURES = join(import.meta.dir, '..', '..', '__fixtures__');
+const webComponentPath = join(FIXTURES, 'web-components', 'web-component.tsx');
 const requestContext = extendRequestContext({
   originalRequest: new Request('http://localhost'),
   route: {
@@ -845,6 +848,20 @@ describe('utils', () => {
       expect(
         output.props.children[0].props.children[0].props.children,
       ).toBeUndefined();
+    });
+
+    it('should be possible to use Component as component path string to load the component inside (useful for renderOn="build")', async () => {
+      const Component = webComponentPath;
+      const selector = 'web-component';
+      const output = (await SSRWebComponent(
+        { Component, selector },
+        requestContext,
+      )) as any;
+
+      expect(output.type).toBe(selector);
+      expect(output.props.children[0].props.children[0].props.children).toBe(
+        'Hello World',
+      );
     });
   });
 });
