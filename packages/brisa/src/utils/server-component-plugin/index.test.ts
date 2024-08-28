@@ -2025,6 +2025,38 @@ describe('utils', () => {
       );
     });
 
+    it('should modify the JSX to prerender a web component when renderOn="buiild"', () => {
+      const code = `
+        export default function App() {
+          return <web-component renderOn="build" foo="bar" />;
+        }
+      `;
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {
+          'web-component': webComponentPath,
+        },
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+
+      expect(normalizeHTML(out.code)).toBe(
+        normalizeHTML(
+          `
+        import {SSRWebComponent as _Brisa_SSRWebComponent} from 'brisa/server';
+        import _Brisa_WC1 from '${webComponentPath}';
+        import {__prerender__macro} from 'brisa/server' with { type: "macro" };
+
+        export default function App() {
+          return __prerender__macro({
+            componentPath: "brisa/server",
+            componentModuleName: "SSRWebComponent",
+            componentProps: {Component: _Brisa_WC1,selector: "web-component",foo: "bar"}
+          });
+        }` + workaroundText,
+        ),
+      );
+    });
+
     it.todo(
       'should solve identifiers from imports when no actions in the component',
       () => {
