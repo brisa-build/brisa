@@ -8,6 +8,7 @@ import { RenderInitiator } from '@/public-constants';
 import { fileSystemRouter } from '@/utils/file-system-router';
 import serve from '@/cli/serve/bun-serve';
 import { __prerender__macro } from '@/utils/prerender-util/prerender';
+import __resolveImportSync from '@/utils/resolve-import-sync';
 
 export {
   SSRWebComponent,
@@ -20,4 +21,5 @@ export {
   fileSystemRouter,
   serve,
   __prerender__macro,
+  __resolveImportSync,
 };

@@ -1,4 +1,7 @@
 import renderToString from '../render-to-string';
+import constants from '@/constants';
+
+const { LOG_PREFIX, SRC_DIR } = constants;
 
 type PrerenderParams = {
   componentPath: string;
@@ -13,8 +16,18 @@ async function prerender({
   componentProps = {},
 }: PrerenderParams) {
   try {
+    const componentRelative = componentPath.replace(SRC_DIR, '');
     const Component = (await import(componentPath))[componentModuleName];
-    return await renderToString(Component, componentProps);
+    const start = Date.now();
+    console.log(LOG_PREFIX.WAIT, ` - prerendering ${componentRelative}...`);
+    const html = await renderToString(<Component {...componentProps} />);
+    const ms = Date.now() - start;
+    console.log(
+      LOG_PREFIX.INFO,
+      LOG_PREFIX.TICK,
+      `Prerendered successfully in ${ms}ms!`,
+    );
+    return html;
   } catch (e) {
     console.error(e);
   }

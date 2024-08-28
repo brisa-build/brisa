@@ -27,6 +27,7 @@ export default async function SSRWebComponent(
 
   // Note: For renderOn="build" we need to import the component inside
   // to execute the SSRWebComponent in a macro with serialized props.
+  // Note: Should be an absolute path.
   if (typeof Component === 'string') {
     Component = await import(Component).then((m) => m.default);
   }
