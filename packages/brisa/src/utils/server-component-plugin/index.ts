@@ -470,7 +470,7 @@ export default function serverComponentPlugin(
       'This limitation is due to the requirement of a server infrastructure for the proper functioning',
       'of server actions.',
       '',
-      'To resolve this, ensure that the "output" option is set to "server" when using server actions.',
+      'To resolve this, ensure that the "output" option is set to "bun" or "node" when using server actions.',
       '',
       'Feel free to reach out if you have any further questions or encounter challenges during this process.',
       '',

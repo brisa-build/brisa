@@ -41,7 +41,8 @@ Then, run `bun run build` to build your application. Finally, run `bun run start
 
 Brisa supports multiple [output](/building-your-application/configuring/output) strategies to build your application. You can choose between:
 
-- [Build a Web Service App](/building-your-application/building/web-service-app)
+- [Build a Bun Server App](/building-your-application/building/bun-server)
+- [Build a Node.js Server App](/building-your-application/building/node-server)
 - [Build a Static Site App](/building-your-application/building/static-site-app)
 - [Build a Desktop App](/building-your-application/building/desktop-app)
 - [Build a Android App](/building-your-application/building/android-app)

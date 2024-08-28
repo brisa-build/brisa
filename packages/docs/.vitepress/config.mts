@@ -340,12 +340,12 @@ export default defineConfig({
             link: '/building-your-application/building/index',
             items: [
               {
-                text: 'Web Service App',
-                link: '/building-your-application/building/web-service-app',
+                text: 'Bun Server (default)',
+                link: '/building-your-application/building/bun-server',
               },
               {
-                text: 'Static Site App',
-                link: '/building-your-application/building/static-site-app',
+                text: 'Node.js Server',
+                link: '/building-your-application/building/node-server',
               },
               {
                 text: 'Desktop app',

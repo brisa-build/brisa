@@ -5,6 +5,15 @@ import { getConstants } from '@/constants';
 import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
 
+const outputText = {
+  bun: 'Bun.js Web Service App',
+  node: 'Node.js Server App',
+  static: 'Static Site App',
+  android: 'Android App',
+  ios: 'iOS App',
+  desktop: 'Desktop App',
+};
+
 export default async function build() {
   const constants = getConstants();
   const {
@@ -21,7 +30,7 @@ export default async function build() {
   console.log(
     LOG_PREFIX.WAIT,
     IS_PRODUCTION
-      ? '🚀 building your Brisa app...'
+      ? `🚀 Brisa: building your ${outputText[CONFIG.output ?? 'bun']}...`
       : 'starting the development server...',
   );
 
