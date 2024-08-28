@@ -128,6 +128,33 @@ describe('utils', () => {
     });
   });
 
+  it('should transform a named export component with rename', () => {
+    const code = `
+		import {Foo as Foo2} from '@/foo';
+
+		export default function App() {
+			return (
+				<Foo2 renderOn="build" foo="bar" />
+			);
+		}
+	`;
+    const expectedCode = toExpected(`
+		import {__prerender__macro} from 'brisa/server' with { type: "macro" };
+		import {Foo as Foo2} from '@/foo';
+
+		export default function App() {
+			return __prerender__macro({
+				componentPath: "@/foo",
+				componentModuleName: "Foo",
+				componentProps: {foo: "bar"}
+			});
+		}
+	`);
+
+    const output = getOutput(code);
+    expect(output).toEqual(expectedCode);
+  });
+
   it('should transform a named import with "require" component', () => {
     const code = `
 			const {Foo} = require('@/foo');
@@ -147,6 +174,33 @@ describe('utils', () => {
 						componentPath: "@/foo",
 						componentModuleName: "Foo",
 						componentProps: {foo: "bar"}
+				});
+			}
+		`);
+
+    const output = getOutput(code);
+    expect(output).toEqual(expectedCode);
+  });
+
+  it('should transform a named import with "require" component and renamed', () => {
+    const code = `
+			const {Foo: Foo2} = require('@/foo');
+
+			export default function App() {
+				return (
+					<Foo2 renderOn="build" foo="bar" />
+				);
+			}
+		`;
+    const expectedCode = toExpected(`
+			import {__prerender__macro} from 'brisa/server' with { type: "macro" };
+			const {Foo: Foo2} = require('@/foo');
+
+			export default function App() {
+				return __prerender__macro({
+					componentPath: "@/foo",
+					componentModuleName: "Foo",
+					componentProps: {foo: "bar"}
 				});
 			}
 		`);

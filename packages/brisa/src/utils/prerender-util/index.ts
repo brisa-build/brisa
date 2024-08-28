@@ -23,7 +23,7 @@ export default function getPrerenderUtil() {
         const componentModuleName =
           specifier.type === 'ImportDefaultSpecifier'
             ? 'default'
-            : specifier.local.name;
+            : specifier.imported.name;
         allImportsWithPath.set(specifier.local.name, {
           componentPath,
           componentModuleName,
@@ -43,7 +43,7 @@ export default function getPrerenderUtil() {
         for (const p of value.id?.properties) {
           allImportsWithPath.set(p.value.name, {
             componentPath: argument.value,
-            componentModuleName: p.value?.name ?? 'default',
+            componentModuleName: p.key?.name ?? 'default',
           });
         }
       }
