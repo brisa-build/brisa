@@ -286,7 +286,7 @@ describe('utils', () => {
 			return jsxDEV("div", {children: __prerender__macro({
 					componentPath: "brisa/server",
 					componentModuleName: "SSRWebComponent",
-					componentProps: {Component: Foo,selector: "web-component",foo: "bar"}
+					componentProps: {Component: '@/foo',selector: "web-component",foo: "bar"}
 				})}, undefined, false, undefined, this
 			);
 		}

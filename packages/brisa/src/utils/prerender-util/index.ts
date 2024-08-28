@@ -61,14 +61,43 @@ export default function getPrerenderUtil() {
     }
 
     const name = value.arguments[0].name;
+    const isSSRWebComponent = name === '_Brisa_SSRWebComponent';
+    const properties = [];
     let { componentPath, componentModuleName } =
       allImportsWithPath.get(name) ?? {};
 
     needsPrerenderImport = true;
 
-    if (name === '_Brisa_SSRWebComponent') {
+    if (isSSRWebComponent) {
       componentModuleName = 'SSRWebComponent';
       componentPath = 'brisa/server';
+    }
+
+    for (const prop of value.arguments[1].properties) {
+      if (isSSRWebComponent && prop?.key?.name === 'Component') {
+        const component = allImportsWithPath.get(prop.value.name);
+        if (component) {
+          properties.push({
+            type: 'Property',
+            key: {
+              type: 'Identifier',
+              name: prop.key.name,
+            },
+            value: {
+              type: 'Literal',
+              value: component.componentPath,
+            },
+            kind: 'init',
+            computed: false,
+            method: false,
+            shorthand: false,
+          });
+          continue;
+        }
+      }
+      if (differentThanRenderOnBuildTime(prop)) {
+        properties.push(prop);
+      }
     }
 
     return {
@@ -119,9 +148,7 @@ export default function getPrerenderUtil() {
               },
               value: {
                 type: 'ObjectExpression',
-                properties: value.arguments[1].properties.filter(
-                  differentThanRenderOnBuildTime,
-                ),
+                properties,
               },
               kind: 'init',
               computed: false,
