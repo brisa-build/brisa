@@ -34,6 +34,10 @@ To change the port, you can use the flag `--port`:
 brisa start --port 8080
 ```
 
+> [!NOTE]
+>
+> The default port is `process.env.PORT` or `3000`.
+
 After running `brisa build`, Brisa will generate a Bun server that serves your application on the port 8080.
 
 > [!TIP]
