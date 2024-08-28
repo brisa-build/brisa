@@ -2,7 +2,7 @@ import type { ESTree } from 'meriyah';
 import { logError } from '@/utils/log/log-build';
 import resolveImportSync from '@/utils/resolve-import-sync';
 
-const EXCEPTIONS = new Set(['brisa', 'brisa/server', 'brisa/client']);
+const EXCEPTIONS = new Set(['brisa/macros']);
 
 /**
  * It is necessary when we create entrypoints on the fly during compilation,

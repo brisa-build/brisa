@@ -11,8 +11,7 @@ describe('utils', () => {
   describe('replace-ast-imports-to-absolute', () => {
     it('should not transform "brisa" and "brisa/server" imports', async () => {
       const code = `
-        import {dangerHTML} from 'brisa';
-        import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+        import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
         import dangerHTML from "@/utils/danger-html";
       `;
 
@@ -24,7 +23,6 @@ describe('utils', () => {
       const result = normalizeHTML(generateCodeFromAST(modifiedAst));
       // macro is removed after the transpilation
       const expected = normalizeHTML(`
-        import {dangerHTML} from 'brisa';
         import dangerHTML from "${utilsDir}/danger-html/index.ts";
       `);
 

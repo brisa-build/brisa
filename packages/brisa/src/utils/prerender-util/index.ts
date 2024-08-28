@@ -183,7 +183,7 @@ export default function getPrerenderUtil() {
         ],
         source: {
           type: 'Literal',
-          value: 'brisa/server',
+          value: 'brisa/macros',
         },
         attributes: [
           {

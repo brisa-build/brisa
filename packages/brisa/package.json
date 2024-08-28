@@ -47,8 +47,14 @@
       "import": "./server/index.js",
       "require": "./server/index.js",
       "bun": "./server/index.js",
-      "node": "./server/index.js",
-      "macro": "./server/index.js"
+      "node": "./server/index.js"
+    },
+    "./macros": {
+      "import": "./macros/index.js",
+      "require": "./macros/index.js",
+      "macro": "./macros/index.js",
+      "bun": "./macros/index.js",
+      "node": "./macros/index.js"
     },
     "./server/node": {
       "import": "./server/node.js",
@@ -82,15 +88,17 @@
     "client",
     "client-simplified",
     "server",
+    "macros",
     "test",
     "cli.js"
   ],
   "workspaces": ["packages/*"],
   "scripts": {
-    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-test",
+    "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-macros && bun run build:core-test",
     "build:cli": "bun build --minify --target=bun --outdir=./ cli.ts && bun run build:cli-utils",
     "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/build-standalone/index.ts && bun build --minify --target=node --outdir=out/cli src/cli/serve/index.tsx src/cli/integrations/mdx.ts",
     "build:core": "bun build --minify --outdir=out/core src/core/index.ts && bun run build:cli && cp src/types/index.d.ts out/core/index.d.ts",
+    "build:core-macros": "bun build --minify --target=node --outdir=macros src/core/macros/index.ts && bun run build:cli",
     "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:core-client-simplified && bun run build:cli",
     "build:core-client-simplified": "bun build --minify --outdir=client-simplified src/core/client/index.ts --define '__TRAILING_SLASH__=false' --define '__WEB_CONTEXT_PLUGINS__=false' --define '__BASE_PATH__=\"\"' --define '__ASSET_PREFIX__=\"\"' --define '__USE_LOCALE__=false' --define '__USE_PAGE_TRANSLATION__=false'",
     "build:core-server": "bun build --minify --target=node --outdir=server src/core/server/index.ts src/core/server/node.ts && bun run build:cli && cp src/types/server.d.ts server/index.d.ts && cp src/types/server.node.d.ts server/node.d.ts",
