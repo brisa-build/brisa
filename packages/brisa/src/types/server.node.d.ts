@@ -3,4 +3,6 @@ export function handler(
   res: http.ServerResponse,
 ): Promise<void>;
 
-export function serve({ port }: { port: number }): void;
+export function serve({
+  port,
+}: { port: number }): ReturnType<typeof http.createServer>;

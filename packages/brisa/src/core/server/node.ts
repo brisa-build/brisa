@@ -25,7 +25,7 @@ export async function handler(
 }
 
 export function serve({ port = PORT } = { port: PORT }) {
-  http.createServer(handler).listen(port, () => {
+  return http.createServer(handler).listen(port, () => {
     console.log(
       constants.LOG_PREFIX.INFO,
       `Node.js Server running at http://localhost:${port}`,
