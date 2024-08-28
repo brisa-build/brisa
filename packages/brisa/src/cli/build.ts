@@ -28,7 +28,12 @@ export default async function build() {
   const start = Bun.nanoseconds();
 
   if (fs.existsSync(BUILD_DIR)) {
-    fs.rmSync(BUILD_DIR, { recursive: true });
+    // Remove all files and folders except _brisa folder
+    const files = fs.readdirSync(BUILD_DIR);
+    for (const file of files) {
+      if (file === '_brisa') continue;
+      fs.rmSync(path.join(BUILD_DIR, file), { recursive: true });
+    }
   }
 
   // Copy prebuild folder inside build
