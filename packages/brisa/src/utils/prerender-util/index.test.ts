@@ -155,6 +155,33 @@ describe('utils', () => {
     expect(output).toEqual(expectedCode);
   });
 
+  it('should transform a named import with "require" component without destructuring', () => {
+    const code = `
+			const Foo = require('@/foo').Foo;
+
+			export default function App() {
+				return (
+					<Foo renderOn="build" foo="bar" />
+				);
+			}
+		`;
+    const expectedCode = toExpected(`
+			import {__prerender__macro} from 'brisa/server' with { type: "macro" };
+			const Foo = require('@/foo').Foo;
+
+			export default function App() {
+				return __prerender__macro({
+						componentPath: "@/foo",
+						componentModuleName: "Foo",
+						componentProps: {foo: "bar"}
+				});
+			}
+		`);
+
+    const output = getOutput(code);
+    expect(output).toEqual(expectedCode);
+  });
+
   it('should transform a default import with "require" component', () => {
     const code = `
 			const Foo = require('@/foo').default;

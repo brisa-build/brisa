@@ -2,7 +2,10 @@ import type { ESTree } from 'meriyah';
 import { JSX_NAME } from '@/utils/ast/constants';
 
 export default function getPrerenderUtil() {
-  const allImportsWithPath = new Map<string, string>();
+  const allImportsWithPath = new Map<
+    string,
+    { componentPath: string; componentModuleName: string }
+  >();
   let needsPrerenderImport = false;
 
   /**
@@ -16,18 +19,32 @@ export default function getPrerenderUtil() {
   ) {
     if (value?.type === 'ImportDeclaration') {
       for (const specifier of value.specifiers) {
-        allImportsWithPath.set(specifier.local.name, value.source.value);
+        const componentPath = value.source.value;
+        const componentModuleName =
+          specifier.type === 'ImportDefaultSpecifier'
+            ? 'default'
+            : specifier.local.name;
+        allImportsWithPath.set(specifier.local.name, {
+          componentPath,
+          componentModuleName,
+        });
       }
     }
 
     if (isRequire(value)) {
       for (const argument of (value.init.object ?? value.init).arguments) {
         if (!value.id?.properties) {
-          allImportsWithPath.set(value.id.name, argument.value);
+          allImportsWithPath.set(value.id.name, {
+            componentPath: argument.value,
+            componentModuleName: value.init?.property?.name ?? 'default',
+          });
           continue;
         }
         for (const p of value.id?.properties) {
-          allImportsWithPath.set(p.value.name, argument.value);
+          allImportsWithPath.set(p.value.name, {
+            componentPath: argument.value,
+            componentModuleName: p.value?.name ?? 'default',
+          });
         }
       }
     }
@@ -44,8 +61,8 @@ export default function getPrerenderUtil() {
     }
 
     const name = value.arguments[0].name;
-    let componentModuleName = 'default';
-    let componentPath = allImportsWithPath.get(name);
+    let { componentPath, componentModuleName } =
+      allImportsWithPath.get(name) ?? {};
 
     needsPrerenderImport = true;
 
