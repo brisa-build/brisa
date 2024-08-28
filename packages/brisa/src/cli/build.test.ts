@@ -62,13 +62,19 @@ describe('cli', () => {
       globalThis.mockConstants = undefined;
     });
 
-    it('should remove the build directory if it exists', async () => {
+    it('should remove the content of build directory if it exists (except _brisa)', async () => {
       spyOn(fs, 'existsSync').mockImplementationOnce((v) => true);
+      spyOn(fs, 'readdirSync').mockImplementationOnce(
+        () => ['_brisa', 'pages'] as any,
+      );
       spyOn(fs, 'rmSync').mockImplementationOnce((v) => null);
 
       await build();
       expect(fs.existsSync).toHaveBeenCalled();
-      expect(fs.rmSync).toHaveBeenCalled();
+      expect(fs.rmSync).toHaveBeenCalledWith(
+        path.join(getConstants()?.BUILD_DIR, 'pages'),
+        { recursive: true },
+      );
     });
 
     it('should NOT remove the build directory if does not exist', async () => {
