@@ -4,9 +4,9 @@ description: Learn how to prerender pages to have a hybrid static/dynamic app
 
 # Static pages
 
-## Prerender some pages in `output="server"`
+## Prerender some pages in `output="bun"` or `output="node"`
 
-In Brisa you can prerender pages to have a static/dynamic hybrid app. Although in the [configuration is `output="server"`](/building-your-application/configuring/output) you can indicate which pages you want to prerender during the build and then only have to serve the generated HTML file.
+In Brisa you can prerender pages to have a static/dynamic hybrid app. Although in the [configuration is a JS Server](/building-your-application/configuring/output) you can indicate which pages you want to prerender during the build and then only have to serve the generated HTML file.
 
 For this to be possible, you have to put `prerender` named export on your pages:
 
@@ -24,7 +24,7 @@ In the case of a page that is not `[dynamic]`, `[[...catchAll]]`, or `[...rest]`
 
 > [!NOTE]
 >
-> The `boolean` only applies when the `output="server"`, for the other [output](/building-your-application/configuring/output) types all pages will automatically be pre-rendered since there will be no server.
+> The `boolean` only applies when the [`output` is a JS Server (`bun` | node`)](/building-your-application/configuring/output), for the other `output` types all pages will automatically be pre-rendered since there will be no server.
 
 ## Prerender dynamic routes
 
