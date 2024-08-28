@@ -8,24 +8,40 @@ Brisa, offers versatile output configuration options to tailor your build output
 
 ## Understanding Output Types
 
-### 1. Server Output (`server`)
+### 1. Bun.js Server Output (`bun`)
 
-The `server` output type generates a deployable server that can be hosted on a server infrastructure ([Bun runtime](https://bun.sh/docs/cli/run)). This is the default output type. To utilize this output type in your Brisa project, ensure that your `brisa.config.ts` file includes the following:
+The `bun` output type generates a deployable server that can be hosted on a server infrastructure ([Bun runtime](https://bun.sh/docs/cli/run)). This is the default output type. To utilize this output type in your Brisa project, ensure that your `brisa.config.ts` file includes the following:
 
 ```ts
 import type { Configuration } from "brisa";
 
 export default {
-  // "server" is the default value when this configuration is not set
-  output: "server",
+  // "bun" is the default value when this configuration is not set
+  output: "bun",
 } satisfies Configuration;
 ```
 
 > [!NOTE]
 >
-> It is recommended to use the `server` output type to leverage the complete set of features Brisa provides, enhancing your project with middleware capabilities, API endpoints, and server-specific functionalities.
+> It is recommended to use the `bun` output type to leverage the complete set of features Brisa provides, enhancing your project with middleware capabilities, API endpoints, web sockets, and server-specific functionalities.
 
-### 2. Static Output (`static`)
+### 2. Node.js Server Output (`node`)
+
+The `node` output type is designed for creating deployable Node.js applications. To configure your Brisa project for Node.js server output, adjust your `brisa.config.ts` as follows:
+
+```ts
+import type { Configuration } from "brisa";
+
+export default {
+  output: "node",
+} satisfies Configuration;
+```
+
+> [!NOTE]
+>
+> You can use specific Bun.js features only related with building the application, like Macros, but not runtime features like [`bun:ffi`](/building-your-application/configuring/zig-rust-c-files), for that you need to find the equivalent in Node.js.
+
+### 3. Static Output (`static`)
 
 The `static` output type creates a static export suitable for deployment to static hosting services. To configure your Brisa project for static output, adjust your `brisa.config.ts` as follows:
 
@@ -41,7 +57,7 @@ export default {
 >
 > Pure server stuff like api endpoints and server interactions will not work in runtime. All the interaction part should be in web-components only.
 
-### 3. Desktop Output (`desktop`)
+### 4. Desktop Output (`desktop`)
 
 The `desktop` output type is designed for creating deployable desktop applications, integrated with [Tauri](https://tauri.app/). To set up your Brisa project for desktop output, modify your `brisa.config.ts` as shown below:
 
@@ -68,7 +84,7 @@ Once activated you can call `brisa dev` to work locally with hotreloading in the
 >
 > Lean how to [build a desktop app here](/building-your-application/building/desktop-app).
 
-### 4. Android Output (`android`)
+### 5. Android Output (`android`)
 
 The `android` output type is designed for creating deployable android applications, integrated with [Tauri](https://tauri.app/). To set up your Brisa project for desktop output, modify your `brisa.config.ts` as shown below:
 
@@ -99,7 +115,7 @@ Once activated you can call `brisa dev` to work locally with hotreloading in the
 >
 > Lean how to [build a android app here](/building-your-application/building/android-app).
 
-### 5. iOS Output (`ios`)
+### 6. iOS Output (`ios`)
 
 The `ios` output type is designed for creating deployable iOS applications, integrated with [Tauri](https://tauri.app/). To set up your Brisa project for desktop output, modify your `brisa.config.ts` as shown below:
 

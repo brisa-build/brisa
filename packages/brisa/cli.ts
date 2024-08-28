@@ -79,7 +79,7 @@ async function main({
   let BUN_EXEC: string;
   let BUNX_EXEC: string;
   let IS_TAURI_APP = false; // default value depends on brisa.config.ts
-  let OUTPUT = 'server';
+  let OUTPUT = 'bun';
 
   // Check if is desktop app
   try {

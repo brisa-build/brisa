@@ -59,15 +59,15 @@ describe('adapter-vercel', () => {
     });
   });
 
-  describe('output=server', () => {
+  describe('output=bun', () => {
     // This is temporal, in the near future we are going to support this
-    it('should not create .vercel/output/config.json if output is server', async () => {
+    it('should not create .vercel/output/config.json if output is "bun"', async () => {
       const generatedMap = await createOutFixture(['index.html']);
       const { adapt } = vercelAdapter();
       await adapt(
         {
           ...brisaConstants,
-          CONFIG: { ...brisaConstants.CONFIG, output: 'server' },
+          CONFIG: { ...brisaConstants.CONFIG, output: 'bun' },
         },
         generatedMap,
       );

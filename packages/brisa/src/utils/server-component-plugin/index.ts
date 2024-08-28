@@ -14,6 +14,7 @@ type ServerComponentPluginOptions = {
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 const JSX_NAME = new Set(['jsx', 'jsxDEV', 'jsxs']);
+const SERVER_OUPUTS = new Set(['bun', 'node']);
 const WEB_COMPONENT_REGEX = /.*\/web-components\/.*/;
 const FN_EXPRESSIONS = new Set([
   'ArrowFunctionExpression',
@@ -50,7 +51,7 @@ export default function serverComponentPlugin(
 ) {
   const { IS_PRODUCTION, CONFIG } = getConstants();
   const ast = parseCodeToAST(code);
-  const isServerOutput = CONFIG.output === 'server';
+  const isServerOutput = SERVER_OUPUTS.has(CONFIG.output ?? 'bun');
   const analyzeAction = isServerOutput || !IS_PRODUCTION;
   const isWebComponent = WEB_COMPONENT_REGEX.test(path);
   const detectedWebComponents: Record<string, string> = {};

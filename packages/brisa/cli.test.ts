@@ -82,7 +82,7 @@ describe('Brisa CLI', () => {
     originalArgv = process.argv.slice();
     mock.module(path.join(FIXTURES, 'brisa.config.ts'), () => ({
       default: {
-        output: 'server',
+        output: 'bun',
       },
     }));
 
