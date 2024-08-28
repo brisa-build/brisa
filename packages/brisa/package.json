@@ -37,6 +37,10 @@
       "import": "./server/index.js",
       "require": "./server/index.js"
     },
+    "./server/node": {
+      "import": "./server/node.js",
+      "require": "./server/node.js"
+    },
     "./test": {
       "import": "./test/index.js",
       "require": "./test/index.js"
@@ -70,7 +74,7 @@
     "build:core": "bun build --minify --outdir=out/core src/core/index.ts && bun run build:cli && cp src/types/index.d.ts out/core/index.d.ts",
     "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:core-client-simplified && bun run build:cli",
     "build:core-client-simplified": "bun build --minify --outdir=client-simplified src/core/client/index.ts --define '__TRAILING_SLASH__=false' --define '__WEB_CONTEXT_PLUGINS__=false' --define '__BASE_PATH__=\"\"' --define '__ASSET_PREFIX__=\"\"' --define '__USE_LOCALE__=false' --define '__USE_PAGE_TRANSLATION__=false'",
-    "build:core-server": "bun build --minify --target=node --outdir=server src/core/server/index.ts && bun run build:cli && cp src/types/server.d.ts server/index.d.ts",
+    "build:core-server": "bun build --minify --target=node --outdir=server src/core/server/index.ts src/core/server/node.ts && bun run build:cli && cp src/types/server.d.ts server/index.d.ts && cp src/types/server.node.d.ts server/node.d.ts",
     "build:core-test": "bun build --minify --target=bun --outdir=test src/core/test/index.ts && bun run build:cli && cp src/types/test.d.ts test/index.d.ts",
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
     "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-runtime/index.d.ts",
