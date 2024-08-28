@@ -2015,7 +2015,7 @@ describe('utils', () => {
 
 				export default function App() {
 					return __prerender__macro({
-						componentPath: "@/__fixtures__/lib/foo",
+						componentPath: __resolveImportSync("@/__fixtures__/lib/foo"),
 						componentModuleName: "default",
 						componentProps: {foo: "bar"}
 					});
@@ -2048,9 +2048,9 @@ describe('utils', () => {
 
         export default function App() {
           return __prerender__macro({
-            componentPath: "brisa/server",
+            componentPath: __resolveImportSync("brisa/server"),
             componentModuleName: "SSRWebComponent",
-            componentProps: {Component: '${webComponentPath}',selector: "web-component",foo: "bar"}
+            componentProps: {Component: __resolveImportSync('${webComponentPath}'),selector: "web-component",foo: "bar"}
           });
         }` + workaroundText,
         ),

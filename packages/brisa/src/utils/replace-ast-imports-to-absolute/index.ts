@@ -2,6 +2,8 @@ import type { ESTree } from 'meriyah';
 import { logError } from '@/utils/log/log-build';
 import resolveImportSync from '@/utils/resolve-import-sync';
 
+const EXCEPTIONS = new Set(['brisa', 'brisa/server', 'brisa/client']);
+
 /**
  * It is necessary when we create entrypoints on the fly during compilation,
  * for example for server actions, in this case files are created based on
@@ -14,14 +16,18 @@ export default function replaceAstImportsToAbsolute(
   function replacer(key: string, value: any) {
     try {
       // "import something from '../some/path'" => "import something from '/absolute/some/path'"
-      if (value?.type === 'ImportDeclaration') {
+      if (
+        value?.type === 'ImportDeclaration' &&
+        !EXCEPTIONS.has(value.source.value)
+      ) {
         value.source.value = resolveImportSync(value.source.value, path);
       }
 
       // "require('../some/path')" => "require('/absolute/some/path')"
       if (
         value?.callee?.name === 'require' &&
-        value?.arguments?.[0]?.type === 'Literal'
+        value?.arguments?.[0]?.type === 'Literal' &&
+        !EXCEPTIONS.has(value.arguments[0].value)
       ) {
         value.arguments = [
           {
@@ -34,7 +40,8 @@ export default function replaceAstImportsToAbsolute(
       // "import('../some/path')" => "import('/absolute/some/path')"
       if (
         value?.type === 'ImportExpression' &&
-        value?.source?.type === 'Literal'
+        value?.source?.type === 'Literal' &&
+        !EXCEPTIONS.has(value.source.value)
       ) {
         value.source.value = resolveImportSync(value.source.value, path);
       }

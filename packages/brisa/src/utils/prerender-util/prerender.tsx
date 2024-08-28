@@ -1,3 +1,5 @@
+import dangerHTML from '../danger-html';
+import { boldLog } from '../log/log-color';
 import renderToString from '../render-to-string';
 import constants from '@/constants';
 
@@ -14,8 +16,9 @@ async function prerender({
   componentModuleName = 'default',
   componentProps = {},
 }: PrerenderParams) {
+  const componentRelative = componentPath.replace(SRC_DIR, '');
+
   try {
-    const componentRelative = componentPath.replace(SRC_DIR, '');
     const Component = (await import(componentPath))[componentModuleName];
     const start = Date.now();
     console.log(LOG_PREFIX.WAIT, ` - prerendering ${componentRelative}...`);
@@ -26,9 +29,12 @@ async function prerender({
       LOG_PREFIX.TICK,
       `Prerendered successfully in ${ms}ms!`,
     );
-    return html;
+    return dangerHTML(html);
   } catch (e) {
-    console.error(e);
+    console.log(
+      LOG_PREFIX.ERROR,
+      `Failed to prerender ${componentRelative}: ${boldLog(String(e))}`,
+    );
   }
 }
 

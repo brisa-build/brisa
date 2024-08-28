@@ -59,7 +59,7 @@ describe('utils', () => {
 
 				export default function App() {
 					return __prerender__macro({
-						componentPath: "@/foo",
+						componentPath: __resolveImportSync("@/foo"),
 						componentModuleName: "default",
 						componentProps: {foo: "bar"}
 					});
@@ -88,7 +88,7 @@ describe('utils', () => {
 
 				export default function App() {
 					return jsxDEV(Fragment, {children: __prerender__macro({
-							componentPath: "@/foo",
+							componentPath: __resolveImportSync("@/foo"),
 							componentModuleName: "default",
 							componentProps: {foo: "bar"}
 						})}, undefined, false, undefined, this
@@ -116,7 +116,7 @@ describe('utils', () => {
 
 			export default function App() {
 				return __prerender__macro({
-					componentPath: "@/foo",
+					componentPath: __resolveImportSync("@/foo"),
 					componentModuleName: "Foo",
 					componentProps: {foo: "bar"}
 				});
@@ -144,7 +144,7 @@ describe('utils', () => {
 
 		export default function App() {
 			return __prerender__macro({
-				componentPath: "@/foo",
+				componentPath: __resolveImportSync("@/foo"),
 				componentModuleName: "Foo",
 				componentProps: {foo: "bar"}
 			});
@@ -171,7 +171,7 @@ describe('utils', () => {
 
 			export default function App() {
 				return __prerender__macro({
-						componentPath: "@/foo",
+						componentPath: __resolveImportSync("@/foo"),
 						componentModuleName: "Foo",
 						componentProps: {foo: "bar"}
 				});
@@ -198,7 +198,7 @@ describe('utils', () => {
 
 			export default function App() {
 				return __prerender__macro({
-					componentPath: "@/foo",
+					componentPath: __resolveImportSync("@/foo"),
 					componentModuleName: "Foo",
 					componentProps: {foo: "bar"}
 				});
@@ -225,7 +225,7 @@ describe('utils', () => {
 
 			export default function App() {
 				return __prerender__macro({
-						componentPath: "@/foo",
+						componentPath: __resolveImportSync("@/foo"),
 						componentModuleName: "Foo",
 						componentProps: {foo: "bar"}
 				});
@@ -254,7 +254,7 @@ describe('utils', () => {
 
 			export default function App() {
 				return jsxDEV("div", {children: __prerender__macro({
-							componentPath: "@/foo",
+							componentPath: __resolveImportSync("@/foo"),
 							componentModuleName: "default",
 							componentProps: {foo: "bar"}
 					})}, undefined, false, undefined, this
@@ -284,9 +284,9 @@ describe('utils', () => {
 
 		export default function App() {
 			return jsxDEV("div", {children: __prerender__macro({
-					componentPath: "brisa/server",
+					componentPath: __resolveImportSync("brisa/server"),
 					componentModuleName: "SSRWebComponent",
-					componentProps: {Component: '@/foo',selector: "web-component",foo: "bar"}
+					componentProps: {Component: __resolveImportSync('@/foo'),selector: "web-component",foo: "bar"}
 				})}, undefined, false, undefined, this
 			);
 		}
@@ -311,9 +311,9 @@ describe('utils', () => {
 
 		export default function App() {
 			return jsxDEV("div", {children: __prerender__macro({
-					componentPath: "brisa/server",
+					componentPath: __resolveImportSync("brisa/server"),
 					componentModuleName: "SSRWebComponent",
-					componentProps: {Component: '@/foo',selector: "web-component",foo: "bar"}
+					componentProps: {Component: __resolveImportSync('@/foo'),selector: "web-component",foo: "bar"}
 				})}, undefined, false, undefined, this
 			);
 		}
