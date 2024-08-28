@@ -7,7 +7,6 @@ type PrerenderParams = {
   componentPath: string;
   componentModuleName?: string;
   componentProps?: Record<string, unknown>;
-  prerenderConfigPath: string;
 };
 
 async function prerender({

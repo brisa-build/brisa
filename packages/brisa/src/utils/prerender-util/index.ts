@@ -160,6 +160,17 @@ export default function getPrerenderUtil() {
               name: '__prerender__macro',
             },
           },
+          {
+            type: 'ImportSpecifier',
+            imported: {
+              type: 'Identifier',
+              name: '__resolveImportSync',
+            },
+            local: {
+              type: 'Identifier',
+              name: '__resolveImportSync',
+            },
+          },
         ],
         source: {
           type: 'Literal',
