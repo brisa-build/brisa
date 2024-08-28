@@ -9,6 +9,27 @@ const utilsDir = join(import.meta.dir, '..');
 
 describe('utils', () => {
   describe('replace-ast-imports-to-absolute', () => {
+    it('should not transform "brisa" and "brisa/server" imports', async () => {
+      const code = `
+        import {dangerHTML} from 'brisa';
+        import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+        import dangerHTML from "@/utils/danger-html";
+      `;
+
+      const ast = parseCodeToAST(code);
+      const modifiedAst = await replaceAstImportsToAbsolute(
+        ast,
+        import.meta.url,
+      );
+      const result = normalizeHTML(generateCodeFromAST(modifiedAst));
+      // macro is removed after the transpilation
+      const expected = normalizeHTML(`
+        import {dangerHTML} from 'brisa';
+        import dangerHTML from "${utilsDir}/danger-html/index.ts";
+      `);
+
+      expect(result).toEqual(expected);
+    });
     it('should transform relative imports to absolute', async () => {
       const code = `
         import createPortal from "@/utils/create-portal";

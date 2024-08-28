@@ -92,8 +92,17 @@ export default function getPrerenderUtil() {
                 name: 'componentPath',
               },
               value: {
-                type: 'Literal',
-                value: componentPath,
+                type: 'CallExpression',
+                callee: {
+                  type: 'Identifier',
+                  name: '__resolveImportSync',
+                },
+                arguments: [
+                  {
+                    type: 'Literal',
+                    value: componentPath,
+                  },
+                ],
               },
               kind: 'init',
               computed: false,
@@ -252,8 +261,17 @@ function processPrerenderProperties(
       const component = imports.get(prop.value.name);
       if (component) {
         prop.value = {
-          type: 'Literal',
-          value: component.componentPath,
+          type: 'CallExpression',
+          callee: {
+            type: 'Identifier',
+            name: '__resolveImportSync',
+          },
+          arguments: [
+            {
+              type: 'Literal',
+              value: component.componentPath,
+            },
+          ],
         };
         properties.push(prop);
         continue;

@@ -47,7 +47,8 @@
       "import": "./server/index.js",
       "require": "./server/index.js",
       "bun": "./server/index.js",
-      "node": "./server/index.js"
+      "node": "./server/index.js",
+      "macro": "./server/index.js"
     },
     "./server/node": {
       "import": "./server/node.js",
