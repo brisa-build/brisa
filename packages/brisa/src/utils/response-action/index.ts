@@ -16,7 +16,7 @@ export default async function responseAction(req: RequestContext) {
   const action =
     req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';
   const actionsHeaderValue = req.headers.get('x-actions') ?? '[]';
-  const actionFile = action.split('_').at(0);
+  const actionFile = getActionFile(action);
   const actionModule = await import(join(BUILD_DIR, 'actions', actionFile!));
   let resetForm = false;
 
@@ -201,4 +201,8 @@ export default async function responseAction(req: RequestContext) {
   }
 
   return response;
+}
+
+export function getActionFile(action: string) {
+  return action.split('_').at(0) + '.js';
 }
