@@ -2010,7 +2010,7 @@ describe('utils', () => {
       expect(normalizeHTML(out.code)).toBe(
         normalizeHTML(
           `
-        import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+        import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 				import Foo from '@/__fixtures__/lib/foo';
 
 				export default function App() {
@@ -2044,7 +2044,7 @@ describe('utils', () => {
           `
         import {SSRWebComponent as _Brisa_SSRWebComponent} from 'brisa/server';
         import _Brisa_WC1 from '${webComponentPath}';
-        import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+        import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 
         export default function App() {
           return __prerender__macro({

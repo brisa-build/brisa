@@ -4,7 +4,12 @@ import type { ESTree } from 'meriyah';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const SPECIFIERS = new Set(['ImportDefaultSpecifier', 'ImportSpecifier']);
-const AVOIDED_DEPENDENCIES = new Set(['brisa', 'brisa/server', 'brisa/client']);
+const AVOIDED_DEPENDENCIES = new Set([
+  'brisa',
+  'brisa/server',
+  'brisa/client',
+  'brisa/macros',
+]);
 
 export default function getDependenciesList(
   ast: ESTree.Program,

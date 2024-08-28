@@ -54,7 +54,7 @@ describe('utils', () => {
 				}
 			`;
       const expectedCode = normalizeHTML(`
-				import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+				import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 				import Foo from '@/foo';
 
 				export default function App() {
@@ -83,7 +83,7 @@ describe('utils', () => {
 				}
 			`;
       const expectedCode = toExpected(`
-				import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+				import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 				import Foo from '@/foo';
 
 				export default function App() {
@@ -111,7 +111,7 @@ describe('utils', () => {
 			}
 		`;
       const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 			import {Foo} from '@/foo';
 
 			export default function App() {
@@ -139,7 +139,7 @@ describe('utils', () => {
 		}
 	`;
     const expectedCode = toExpected(`
-		import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+		import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 		import {Foo as Foo2} from '@/foo';
 
 		export default function App() {
@@ -166,7 +166,7 @@ describe('utils', () => {
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 			const {Foo} = require('@/foo');
 
 			export default function App() {
@@ -193,7 +193,7 @@ describe('utils', () => {
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 			const {Foo: Foo2} = require('@/foo');
 
 			export default function App() {
@@ -220,7 +220,7 @@ describe('utils', () => {
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 			const Foo = require('@/foo').Foo;
 
 			export default function App() {
@@ -249,7 +249,7 @@ describe('utils', () => {
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 			const Foo = require('@/foo').default;
 
 			export default function App() {
@@ -279,7 +279,7 @@ describe('utils', () => {
 		}
 	`;
     const expectedCode = toExpected(`
-		import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+		import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 		import Foo from '@/foo';
 
 		export default function App() {
@@ -307,7 +307,7 @@ describe('utils', () => {
 		}
 	`;
     const expectedCode = toExpected(`
-		import {__prerender__macro, __resolveImportSync} from 'brisa/server' with { type: "macro" };
+		import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
 
 		export default function App() {
 			return jsxDEV("div", {children: __prerender__macro({

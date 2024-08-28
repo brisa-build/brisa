@@ -15,6 +15,7 @@ packages/brisa/jsx-dev-runtime/
 packages/brisa/client/
 packages/brisa/client-simplified/
 packages/brisa/server/
+packages/brisa/macros/
 packages/brisa/build
 packages/brisa/test
 

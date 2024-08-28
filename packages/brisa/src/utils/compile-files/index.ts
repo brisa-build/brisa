@@ -20,7 +20,7 @@ import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-p
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
 
 const TS_REGEX = /\.tsx?$/;
-const BRISA_DEPS = ['brisa', 'brisa/server'];
+const BRISA_DEPS = ['brisa/server'];
 
 export default async function compileFiles() {
   const {
