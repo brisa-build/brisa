@@ -1,10 +1,10 @@
 ---
-description: Learn how build a Web Service App in Brisa
+description: Learn how build a Bun.js Web Service App in Brisa
 ---
 
-# Web Service App
+# Bun Server
 
-Brisa by default is a web service application. This means that when you run `brisa build`, Brisa generates a Bun server that serves your application on the port 3000 by default, it can be changed with the flag `--port`.
+Brisa by default is a [Bun.js](https://bun.sh/) web service application. This means that when you run `brisa build`, Brisa generates a Bun server that serves your application on the port 3000 by default, it can be changed with the flag `--port`.
 
 This server is capable of serving your application with all the features that Brisa offers, such as i18n, routing, server actions and middleware.
 
@@ -16,7 +16,7 @@ To enable a web service application, change the output mode inside [`brisa.confi
 import type { Configuration } from "brisa";
 
 export default {
-  output: "server", // It is the default value
+  output: "bun", // It is the default value
 } satisfies Configuration;
 ```
 
@@ -27,7 +27,7 @@ After running `brisa build`, Brisa will generate a Bun server that serves your a
 To change the port, you can use the flag `--port`:
 
 ```sh
-brisa build --port 8080
+brisa start --port 8080
 ```
 
 After running `brisa build`, Brisa will generate a Bun server that serves your application on the port 8080.

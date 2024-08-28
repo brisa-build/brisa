@@ -1038,7 +1038,7 @@ export type Configuration = {
    *
    * The `output` config property is used to change the output type.
    *
-   * The default value is `bun`.
+   * **The default value is `bun`**.
    *
    * All different outputs:
    *
