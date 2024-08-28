@@ -9,7 +9,7 @@ This documentation outlines the process of deploying a Brisa application on AWS.
 Depending on your [`output`](/building-your-application/configuring/output) strategy, you can deploy your Brisa application on AWS using different approaches:
 
 - **Static exports** ([`output="static"`](/building-your-application/configuring/output#2-static-output-static)): You can deploy your Brisa application as a static website on [Amazon S3](https://aws.amazon.com/s3/) or [Amazon CloudFront](https://aws.amazon.com/cloudfront/).
-- **Docker containers** ([`output="server"`](/building-your-application/configuring/output#1-server-output-server)): You can containerize your Brisa application using [Docker](/building-your-application/deploying/docker) and deploy it on [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (ECS). This approach is recommended for applications that require server-side logic or API endpoints.
+- **Docker containers** ([`output="bun"` | `output="node"`](/building-your-application/configuring/output#1-build-a-bun-server-app)): You can containerize your Brisa application using [Docker](/building-your-application/deploying/docker) and deploy it on [Amazon Elastic Container Service](https://aws.amazon.com/ecs/) (ECS). This approach is recommended for applications that require server-side logic or API endpoints.
 
 ## Deploying as a static website
 

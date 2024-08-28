@@ -45,7 +45,7 @@ While web-components these actions are browser events and are processed from the
 
 > [!CAUTION]
 >
-> Server actions only work with the `output: "server"` [configuration](/building-your-application/configuring/output) (the default).
+> Server actions only work with a server (`output` as [`bun` | `node`](/building-your-application/configuring/output)).
 
 ## Forms
 

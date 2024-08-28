@@ -9,7 +9,7 @@ This documentation outlines the process of deploying a Brisa application on [Ren
 Depending on your [`output`](/building-your-application/configuring/output) strategy, you can deploy your Brisa application on Render.com using different approaches:
 
 - **Static Sites** ([`output="static"`](/building-your-application/configuring/output#2-static-output-static)): You can deploy your Brisa application as a static website on Render.com.
-- **Web Services** ([`output="server"`](/building-your-application/configuring/output#1-server-output-server)): You can containerize your Brisa application using [Docker](/building-your-application/deploying/docker) and deploy it on Render.com.
+- **Web Services** ([`output="bun"` | `output="node"`](/building-your-application/configuring/output#1-build-a-bun-server-app)): You can containerize your Brisa application using [Docker](/building-your-application/deploying/docker) and deploy it on Render.com.
 
 ## Deploying as a Static Website
 
