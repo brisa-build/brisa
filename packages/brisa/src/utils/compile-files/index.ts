@@ -31,6 +31,7 @@ export default async function compileFiles() {
     LOG_PREFIX,
     IS_STATIC_EXPORT,
   } = getConstants();
+  const isNode = CONFIG.output === 'node' && IS_PRODUCTION;
   const webComponentsDir = join(SRC_DIR, 'web-components');
   const pagesDir = join(SRC_DIR, 'pages');
   const apiDir = join(SRC_DIR, 'api');
@@ -76,8 +77,7 @@ export default async function compileFiles() {
     outdir: BUILD_DIR,
     sourcemap: IS_PRODUCTION ? undefined : 'inline',
     root: SRC_DIR,
-    // Necessary to use bun:ffi and bun API in server files
-    target: 'bun',
+    target: isNode ? 'node' : 'bun',
     minify: IS_PRODUCTION,
     // splitting: false -> necessary to analyze the server pages
     // for the client build. FIXME: improve this to analyze each
