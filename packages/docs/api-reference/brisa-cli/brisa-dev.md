@@ -25,7 +25,7 @@ Options:
 
 ## Changing the port
 
-The application will start at `http://localhost:3000` by default. The default port can be changed with `-p`, like so:
+The application will start at `http://localhost:3000` by default. The default port can be changed via `process.env.PORT` or with `-p` flag, like so:
 
 ```sh
 brisa dev -p 8080

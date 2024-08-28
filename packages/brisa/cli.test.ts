@@ -118,6 +118,7 @@ describe('Brisa CLI', () => {
     mockExistsSync.mockRestore();
     mockRandomBytes.mockRestore();
     process.argv = originalArgv.slice();
+    process.env.PORT = undefined;
   });
 
   it('should display the --help options', async () => {
@@ -179,6 +180,34 @@ describe('Brisa CLI', () => {
       'bun',
       [SERVE_PATH, '3000', 'DEV'],
       devOptions,
+    ]);
+  });
+
+  it('should use process.env.PORT as default port on bun dev', async () => {
+    process.env.PORT = '3005';
+    process.argv = ['bun', 'brisa', 'dev'];
+
+    const newDevOptions = {
+      ...devOptions,
+      env: { ...devOptions.env, PORT: '3005' },
+    };
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      'bun',
+      ['--version'],
+      { stdio: 'ignore' },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [BUILD_PATH, 'DEV'],
+      newDevOptions,
+    ]);
+    expect(mockSpawnSync.mock.calls[2]).toEqual([
+      'bun',
+      [SERVE_PATH, '3005', 'DEV'],
+      newDevOptions,
     ]);
   });
 
@@ -316,6 +345,67 @@ describe('Brisa CLI', () => {
       'bunx',
       ['tauri', 'dev', '--port', '3000'],
       devOptions,
+    ]);
+  });
+
+  it('should use process.env.PORT as default port on tauri integration', async () => {
+    process.env.PORT = '5000';
+    process.argv = ['bun', 'brisa', 'dev'];
+
+    const newDevOptions = {
+      ...devOptions,
+      env: { ...devOptions.env, PORT: '5000' },
+    };
+
+    mock.module(path.join(FIXTURES, 'brisa.config.ts'), () => ({
+      default: {
+        output: 'desktop',
+      },
+    }));
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      'bun',
+      ['--version'],
+      { stdio: 'ignore' },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      ['i', '@tauri-apps/cli@2.0.0-beta.21'],
+      newDevOptions,
+    ]);
+    expect(mockSpawnSync.mock.calls[2]).toEqual([
+      'bunx',
+      [
+        'tauri',
+        'init',
+        '-A',
+        'test',
+        '-W',
+        'test',
+        '-D',
+        '../out',
+        '--dev-url',
+        'http://localhost:5000',
+        '--before-dev-command',
+        "echo 'Starting desktop app...'",
+        '--before-build-command',
+        "echo 'Building desktop app...'",
+      ],
+      newDevOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[3]).toEqual([
+      'bun',
+      [BUILD_PATH, 'DEV'],
+      newDevOptions,
+    ]);
+
+    expect(mockSpawnSync.mock.calls[4]).toEqual([
+      'bunx',
+      ['tauri', 'dev', '--port', '5000'],
+      newDevOptions,
     ]);
   });
 
@@ -1088,6 +1178,30 @@ describe('Brisa CLI', () => {
       'bun',
       [SERVE_PATH, '3000', 'PROD'],
       prodOptions,
+    ]);
+  });
+
+  it('should use process.env.PORT as default port on bun start', async () => {
+    process.env.PORT = '3005';
+    process.argv = ['bun', 'brisa', 'start'];
+
+    const newProdOptions = {
+      ...prodOptions,
+      env: { ...prodOptions.env, PORT: '3005' },
+    };
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      'bun',
+      ['--version'],
+      { stdio: 'ignore' },
+    ]);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [SERVE_PATH, '3005', 'PROD'],
+      newProdOptions,
     ]);
   });
 

@@ -107,7 +107,7 @@ async function main({
 
     // Command: brisa dev
     if (process.argv[2] === 'dev') {
-      let PORT = 3000; // default port
+      let PORT = process.env.PORT ?? 3000; // default port
       let DEBUG_MODE = false; // default debug mode
 
       for (let i = 3; i < process.argv.length; i++) {
@@ -278,7 +278,7 @@ async function main({
 
     // Command: brisa start
     else if (process.argv[2] === 'start') {
-      let PORT = 3000; // default port
+      let PORT = process.env.PORT ?? 3000; // default port
 
       for (let i = 3; i < process.argv.length; i++) {
         switch (process.argv[i]) {
@@ -343,7 +343,10 @@ async function main({
     return process.exit(1);
   }
 
-  async function initTauri(options = devOptions, port = 3000) {
+  async function initTauri(
+    options = devOptions,
+    port = process.env.PORT ?? 3000,
+  ) {
     const tauriConfigPath = path.join(
       process.cwd(),
       'src-tauri',
