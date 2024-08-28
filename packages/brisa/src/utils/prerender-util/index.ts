@@ -18,6 +18,7 @@ export default function getPrerenderUtil() {
     this: any,
     key: string,
     value: any,
+    webComponents?: Map<string, string>,
   ) {
     if (value?.type === 'ImportDeclaration') {
       for (const specifier of value.specifiers) {
@@ -122,9 +123,10 @@ export default function getPrerenderUtil() {
               },
               value: {
                 type: 'ObjectExpression',
-                properties: getPrerenderProperties(value, {
+                properties: processPrerenderProperties(value, {
                   imports: allImportsWithPath,
                   isSSRWebComponent,
+                  webComponents,
                 }),
               },
               kind: 'init',
@@ -216,14 +218,23 @@ function getRenderOnValue(jsxCall: ESTree.CallExpression) {
   }
 }
 
-function getPrerenderProperties(
+function processPrerenderProperties(
   jsxCall: ESTree.CallExpression,
   {
     imports,
     isSSRWebComponent,
-  }: { imports: ImportsMapType; isSSRWebComponent: boolean },
+    webComponents,
+  }: {
+    imports: ImportsMapType;
+    isSSRWebComponent: boolean;
+    webComponents?: Map<string, string>;
+  },
 ) {
   const properties = [];
+  const entries = webComponents?.entries() ?? [];
+  for (const [key, value] of entries) {
+    imports.set(value, { componentPath: key, componentModuleName: value });
+  }
 
   for (const prop of (jsxCall.arguments[1] as any).properties) {
     if (isSSRWebComponent && prop?.key?.name === 'Component') {

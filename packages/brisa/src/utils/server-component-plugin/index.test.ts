@@ -2050,7 +2050,7 @@ describe('utils', () => {
           return __prerender__macro({
             componentPath: "brisa/server",
             componentModuleName: "SSRWebComponent",
-            componentProps: {Component: _Brisa_WC1,selector: "web-component",foo: "bar"}
+            componentProps: {Component: '${webComponentPath}',selector: "web-component",foo: "bar"}
           });
         }` + workaroundText,
         ),
