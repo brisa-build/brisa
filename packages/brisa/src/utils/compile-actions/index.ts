@@ -28,7 +28,8 @@ export default async function compileActions({
   actionsEntrypoints,
   define,
 }: CompileActionsParams) {
-  const { BUILD_DIR, IS_PRODUCTION } = getConstants();
+  const { BUILD_DIR, IS_PRODUCTION, CONFIG } = getConstants();
+  const isNode = CONFIG.output === 'node' && IS_PRODUCTION;
   const rawActionsDir = join(BUILD_DIR, 'actions_raw');
   const res = await Bun.build({
     entrypoints: actionsEntrypoints,
@@ -36,7 +37,7 @@ export default async function compileActions({
     external: ['brisa'],
     sourcemap: IS_PRODUCTION ? undefined : 'inline',
     root: rawActionsDir,
-    target: 'bun',
+    target: isNode ? 'node' : 'bun',
     minify: IS_PRODUCTION,
     splitting: true,
     define,
